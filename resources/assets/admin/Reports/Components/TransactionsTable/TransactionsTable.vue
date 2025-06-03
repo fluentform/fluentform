@@ -1,101 +1,148 @@
 <template>
     <div class="transactions-table">
         <card>
-            <card-head class="transactions-table-header">
-                <h3>Recent Transactions</h3>
-                <div>
-                    <el-select
-                        v-model="formFilter"
-                        placeholder="Filter by Form"
-                        clearable
-                        @change="applyFilters"
-                        class="filter-select"
-                    >
-                        <el-option
-                            v-for="form in paymentForms"
-                            :key="form.id"
-                            :label="'#' + form.id + ' - ' + form.title"
-                            :value="form.id">
-                        </el-option>
-                    </el-select>
-                    <el-select
-                        v-model="statusFilter"
-                        placeholder="Filter by Status"
-                        clearable
-                        @change="applyFilters"
-                        class="filter-select"
-                    >
-                        <el-option
-                            v-for="(label, key) in payment_statuses"
-                            :key="key"
-                            :label="label"
-                            :value="key"
-                        />
-                    </el-select>
-                    <el-select
-                        v-model="paymentMethodFilter"
-                        placeholder="Filter by Payment Method"
-                        clearable
-                        @change="applyFilters"
-                        class="filter-select"
-                    >
-                        <el-option
-                            v-for="status in payment_methods"
-                            :key="status.method_value"
-                            :label="status.title"
-                            :value="status.method_value"
-                        />
-                    </el-select>
-                    <el-date-picker
-                        v-model="dateRange"
-                        type="daterange"
-                        range-separator="-"
-                        start-placeholder="Start date"
-                        end-placeholder="End date"
-                        format="MMM d, yyyy"
-                        value-format="MMM d, yyyy"
-                        :default-time="['00:00:00', '23:59:59']"
-                        @change="handleDateChange"
-                        :disabledDate="disableFutureDates"
-                    />
+            <card-head>
+                <h3>Recent Transaction</h3>
+                <div class="card-controls">
+                    <el-switch
+                        v-model="advancedFilter"
+                        active-text="Advanced Filter"
+                        inactive-text=""
+                        size="small"
+                    ></el-switch>
                 </div>
             </card-head>
 
             <card-body class="transactions-table-body">
+                <!-- Advanced Filter Section -->
+                <div v-if="advancedFilter" class="advanced-filter-section">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Form:</label>
+                            <el-select
+                                v-model="formFilter"
+                                placeholder="All Forms"
+                                size="small"
+                                @change="applyFilters"
+                                clearable
+                            >
+                                <el-option label="All Forms" :value="null"></el-option>
+                                <el-option
+                                    v-for="form in paymentForms"
+                                    :key="form.id"
+                                    :label="`${form.title} (ID: ${form.id})`"
+                                    :value="form.id"
+                                ></el-option>
+                            </el-select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Status:</label>
+                            <el-select
+                                v-model="statusFilter"
+                                placeholder="All Status"
+                                size="small"
+                                @change="applyFilters"
+                                clearable
+                            >
+                                <el-option label="All Status" :value="null"></el-option>
+                                <el-option
+                                    v-for="status in payment_statuses"
+                                    :key="status.value"
+                                    :label="status.label"
+                                    :value="status.value"
+                                ></el-option>
+                            </el-select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Methods:</label>
+                            <el-select
+                                v-model="paymentMethodFilter"
+                                placeholder="All Methods"
+                                size="small"
+                                @change="applyFilters"
+                                clearable
+                            >
+                                <el-option label="All Methods" :value="null"></el-option>
+                                <el-option
+                                    v-for="method in payment_methods"
+                                    :key="method.value"
+                                    :label="method.label"
+                                    :value="method.value"
+                                ></el-option>
+                            </el-select>
+                        </div>
+                    </div>
+                </div>
+
                 <div v-if="!transactions || transactions.length === 0" class="empty-state">
                     No transactions found
                 </div>
-                <el-table
-                    v-else
-                    :data="transactions"
-                    stripe
-                    style="width: 100%"
-                >
-                    <el-table-column prop="transactionId" label="Transaction ID">
-                        <template slot-scope="{ row }">
-                            <a href="#" class="transaction-link" @click.prevent="viewTransaction(row.submissionLink)">
-                                {{ row.transactionId }}
-                            </a>
-                        </template>
-                    </el-table-column>
 
-                    <el-table-column prop="date" label="Date" sortable width="150"></el-table-column>
-                    <el-table-column prop="amount" label="Amount" sortable width="120">
-                        <template slot-scope="{ row }">
-                            {{ row.currency + ' ' + row.amount }}
-                        </template>
-                    </el-table-column>
+                <div v-else>
+                    <el-table
+                        :data="paginatedTransactions"
+                        style="width: 100%"
+                        :show-header="true"
+                        class="modern-table"
+                        size="medium"
+                    >
+                        <el-table-column prop="transactionId" label="Transaction ID">
+                            <template slot-scope="{ row }">
+                                <a href="#" class="transaction-link" @click.prevent="viewTransaction(row.submissionLink)">
+                                    {{ row.transactionId }}
+                                </a>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column prop="paymentMethod" label="Payment Method" width="150"></el-table-column>
+                        <el-table-column prop="date" label="Date" width="120" align="center">
+                            <template slot-scope="{ row }">
+                                <span class="date-text">{{ row.date }}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column label="Status" width="120">
-                        <template slot-scope="{ row }">
-                            <el-tag :type="getStatusType(row.status)" effect="light">
-                                <i :class="getStatusIcon(row.status)"></i> {{ row.status }}
-                            </el-tag>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                        <el-table-column prop="amount" label="Amount" width="90" align="center">
+                            <template slot-scope="{ row }">
+                                <span class="amount-text">${{ row.amount }}</span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column prop="paymentMethod" label="Payment" width="90" align="center">
+                            <template slot-scope="{ row }">
+                                <span class="payment-method">{{ row.paymentMethod }}</span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="Status" width="90" align="center">
+                            <template slot-scope="{ row }">
+                                <el-tag
+                                    :type="getStatusType(row.status)"
+                                    effect="light"
+                                    size="mini"
+                                    class="status-tag"
+                                >
+                                    {{ row.status }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                    <!-- Pagination component -->
+                    <div class="pagination-container">
+                        <el-pagination
+                            class="ff_pagination"
+                            :page-sizes="[5, 10, 20, 50, 100]"
+                            @current-change="handlePageChange"
+                            :current-page.sync="currentPage"
+                            :page-size="pageSize"
+                            layout="prev, pager, next"
+                            :total="totalTransactions"
+                            :hide-on-single-page="true"
+                            background
+                            small
+                        >
+                        </el-pagination>
+                    </div>
+                </div>
             </card-body>
         </card>
     </div>
@@ -105,6 +152,7 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+
 export default {
     name: 'TransactionsTable',
     components: {
@@ -112,20 +160,16 @@ export default {
         CardBody,
         CardHead,
     },
-    props: ['transactions', 'forms_list'],
-    emits: ['transactions-date-change'],
+    props: ['transactions', 'forms_list', 'global_date_params'],
+    emits: ['transactions-filter-change', 'page-change'],
     data() {
-        const now = new Date();
-        const thirtyDaysAgo = new Date(now);
-        thirtyDaysAgo.setDate(now.getDate() - 30);
         return {
-            dateRange: [
-                this.formatDateForDisplay(thirtyDaysAgo),
-                this.formatDateForDisplay(now)
-            ],
             formFilter: null,
             statusFilter: null,
             paymentMethodFilter: null,
+            advancedFilter: false,
+            currentPage: 1,
+            pageSize: 5
         };
     },
     methods: {
@@ -154,65 +198,51 @@ export default {
         viewTransaction(link) {
             window.location.href = link;
         },
-        disableFutureDates(date) {
-            return date > new Date();
-        },
-        formatDateForDisplay(date) {
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-        },
-        handleDateChange(range) {
-            if (!range || !range[0] || !range[1]) return;
-
-            // Parse the date strings
-            const startParts = range[0].split(" ");
-            const startMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(startParts[0]);
-            const startDay = parseInt(startParts[1].replace(',', ''));
-            const startYear = parseInt(startParts[2]);
-
-            const endParts = range[1].split(" ");
-            const endMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(endParts[0]);
-            const endDay = parseInt(endParts[1].replace(',', ''));
-            const endYear = parseInt(endParts[2]);
-
-            // Create Date objects
-            const startDate = new Date(startYear, startMonth, startDay);
-            const endDate = new Date(endYear, endMonth, endDay);
-
-            // Format dates for API
-            const formatDateForApi = (date, isStart) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const time = isStart ? '00:00:00' : '23:59:59';
-                return `${year}-${month}-${day} ${time}`;
-            };
-
+        applyFilters() {
+            this.currentPage = 1;
             this.$emit('transactions-filter-change', {
-                startDate: formatDateForApi(startDate, true),
-                endDate: formatDateForApi(endDate, false),
                 formId: this.formFilter,
                 paymentStatus: this.statusFilter,
                 paymentMethod: this.paymentMethodFilter
             });
         },
-
-        applyFilters() {
-            // If we have date range, use it to trigger the filter with all current values
-            if (this.dateRange && this.dateRange[0] && this.dateRange[1]) {
-                this.handleDateChange(this.dateRange);
-            }
-        },
+        handlePageChange(page) {
+            this.currentPage = page;
+            this.$emit('page-change', page);
+        }
     },
     computed: {
+        totalTransactions() {
+            return this.transactions ? this.transactions.length : 0;
+        },
+        paginatedTransactions() {
+            if (!this.transactions) return [];
+
+            const startIndex = (this.currentPage - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+
+            return this.transactions.slice(startIndex, endIndex);
+        },
         paymentForms() {
-            return this.forms_list.filter(form => form.has_payment == 1);
+            return this.forms_list ? this.forms_list.filter(form => form.has_payment == 1) : [];
         },
         payment_statuses() {
-            return window.FluentFormApp.payment_statuses || [];
+            return window.FluentFormApp?.payment_statuses || [
+                { label: 'Paid', value: 'paid' },
+                { label: 'Pending', value: 'pending' },
+                { label: 'Failed', value: 'failed' },
+                { label: 'Processing', value: 'processing' },
+                { label: 'Refunded', value: 'refunded' }
+            ];
         },
         payment_methods() {
-            return window.FluentFormApp.payment_methods || [];
+            return window.FluentFormApp?.payment_methods || [
+                { label: 'PayPal', value: 'paypal' },
+                { label: 'Stripe', value: 'stripe' },
+                { label: 'SSLCommerz', value: 'sslcommerz' },
+                { label: 'RazorPay', value: 'razorpay' },
+                { label: 'Mollie', value: 'mollie' }
+            ];
         }
     }
 };

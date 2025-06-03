@@ -1,89 +1,68 @@
 <template>
-    <div class="submission-heatmap">
-        <card>
-            <card-head class="submission-heatmap-header">
-                <h3>Submission Heatmap</h3>
-                <el-date-picker
-                    v-model="dateRange"
-                    type="daterange"
-                    range-separator="-"
-                    start-placeholder="Start date"
-                    end-placeholder="End date"
-                    value-format="MMM d, yyyy"
-                    format="MMM d, yyyy"
-                    :disabledDate="disableFutureDates"
-                    @change="handleDateRangeChange"
-                />
-            </card-head>
-            <card-body class="submission-heatmap-body">
-                <div class="table-container" v-loading="loading">
-                    <div class="heatmap-wrapper" ref="gridWrapper">
-                        <transition name="slide-fade" mode="out-in">
-                            <div class="heatmap-grid" :key="tableKey" :class="{'slide-right': isSlideRight, 'slide-left': isSlideLeft}">
-                                <!-- Header row with navigation and time slots -->
-                                <div class="header-row">
-                                    <div class="navigation-cell">
-                                        <div class="nav-controls">
-                                            <button
-                                                class="nav-btn"
-                                                @click="navigateDates('prev')"
-                                                :disabled="isNavigating || loading || isPrevDisabled"
-                                            >
-                                                <i class="el-icon-arrow-left"></i>
-                                            </button>
-                                            <button
-                                                class="nav-btn"
-                                                @click="navigateDates('next')"
-                                                :disabled="isNavigating || loading || isNextDisabled"
-                                            >
-                                                <i class="el-icon-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <!-- Time slot headers -->
-                                    <div
-                                        v-for="(timeSlot, index) in timeSlots"
-                                        :key="'header-' + index"
-                                        class="time-header"
-                                    >
-                                        {{ timeSlot }}
-                                    </div>
-                                </div>
-
-                                <!-- Data rows -->
-                                <div
-                                    v-for="(day, rowIndex) in visibleDays"
-                                    :key="'row-' + rowIndex"
-                                    class="data-row"
-                                >
-                                    <!-- Date cell -->
-                                    <div class="date-cell">
-                                        {{ formatDayHeader(day) }}
-                                    </div>
-
-                                    <!-- Data cells -->
-                                    <div
-                                        v-for="(timeSlot, colIndex) in timeSlots"
-                                        :key="`cell-${rowIndex}-${colIndex}`"
-                                        class="data-cell"
-                                        :class="getCellClass(getValueForCell(colIndex, day))"
-                                        @mouseenter="highlightCell($event, colIndex, day)"
-                                        @mouseleave="removeHighlight()"
-                                    >
-                                        {{ getValueForCell(colIndex, day) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </transition>
-                    </div>
-
-                    <div v-if="tooltip.visible" class="tooltip" :style="tooltip.style">
-                        {{ tooltip.text }}
+    <card>
+        <card-head>
+            <h3>Entries grouped by</h3>
+            <div class="heatmap-navigation">
+                <el-button
+                    size="mini"
+                    icon="el-icon-arrow-left"
+                    @click="navigateDates('prev')"
+                    :disabled="isPrevDisabled"
+                ></el-button>
+                <el-button
+                    size="mini"
+                    icon="el-icon-arrow-right"
+                    @click="navigateDates('next')"
+                    :disabled="isNextDisabled"
+                ></el-button>
+            </div>
+        </card-head>
+        <card-body>
+            <div class="heatmap-container" v-loading="loading">
+                <div class="heatmap-header">
+                    <div class="date-column-header"></div>
+                    <div
+                        v-for="(timeSlot, index) in timeSlots"
+                        :key="'header-' + index"
+                        class="time-header"
+                    >
+                        {{ timeSlot }}
                     </div>
                 </div>
-            </card-body>
-        </card>
-    </div>
+
+                <!-- Heatmap grid -->
+                <div class="heatmap-grid">
+                    <div
+                        v-for="(day, rowIndex) in visibleDays"
+                        :key="'row-' + rowIndex"
+                        class="heatmap-row"
+                    >
+                        <!-- Date cell -->
+                        <div class="date-cell">
+                            <div class="date-number">{{ formatDayNumber(day) }}</div>
+                            <div class="date-day">{{ formatDayName(day) }}</div>
+                        </div>
+
+                        <!-- Data cells -->
+                        <div
+                            v-for="(timeSlot, colIndex) in timeSlots"
+                            :key="`cell-${rowIndex}-${colIndex}`"
+                            class="data-cell"
+                            :class="getCellClass(getValueForCell(colIndex, day))"
+                            @mouseenter="highlightCell($event, colIndex, day)"
+                            @mouseleave="removeHighlight()"
+                        >
+                            <span class="cell-value">{{ getValueForCell(colIndex, day) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="tooltip.visible" class="tooltip" :style="tooltip.style">
+                    {{ tooltip.text }}
+                </div>
+            </div>
+        </card-body>
+    </card>
 </template>
 
 <script>
@@ -98,8 +77,7 @@ export default {
         CardBody,
         CardHead
     },
-    props: ['heatmap_data'],
-    emits: ['heatmap-date-change'],
+    props: ['heatmap_data', 'global_date_params'],
     data() {
         const now = new Date();
         const sevenDaysAgo = new Date(now);
@@ -107,24 +85,20 @@ export default {
 
         return {
             loading: false,
-            dateRange: [
-                this.formatDateForRange(sevenDaysAgo),
-                this.formatDateForRange(now)
-            ],
             currentStartDate: sevenDaysAgo,
             daysToShow: 7,
             skipNextAnimation: false,
             isSlideRight: false,
             isSlideLeft: false,
             timeSlots: [
-                "12:00 AM-03:00 AM",
-                "03:00 AM-06:00 AM",
-                "06:00 AM-09:00 AM",
-                "09:00 AM-12:00 PM",
-                "12:00 PM-03:00 PM",
-                "03:00 PM-06:00 PM",
-                "06:00 PM-09:00 PM",
-                "09:00 PM-12:00 AM"
+                "12:00 AM-3:00 AM",
+                "3:00 AM-6:00 AM",
+                "6:00 AM-9:00 AM",
+                "9:00 AM-12:00 PM",
+                "12:00 PM-3:00 PM",
+                "3:00 PM-6:00 PM",
+                "6:00 PM-9:00 PM",
+                "9:00 PM-12:00 AM"
             ],
             heatmapDataStore: {},
             isNavigating: false,
@@ -137,8 +111,10 @@ export default {
                     left: '0px'
                 }
             },
-            // Date boundaries for navigation
-            maxHistoryDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)) // 1 year ago
+            maxHistoryDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+            selectedRangeStart: null,
+            selectedRangeEnd: null,
+            selectedRangeDays: 0
         };
     },
     computed: {
@@ -153,34 +129,44 @@ export default {
 
             return days.reverse();
         },
-        // Check if next button should be disabled (if end date would be in the future)
         isNextDisabled() {
-            // Calculate the end date of the current view
+            // If no selected range, use default logic (don't go beyond today)
+            if (!this.selectedRangeStart || !this.selectedRangeEnd) {
+                const currentEndDate = new Date(this.currentStartDate);
+                currentEndDate.setDate(currentEndDate.getDate() + 6); // 7 days total
+                const today = new Date();
+
+                return (
+                    currentEndDate.getFullYear() === today.getFullYear() &&
+                    currentEndDate.getMonth() === today.getMonth() &&
+                    currentEndDate.getDate() === today.getDate()
+                );
+            }
+
+            // Calculate the current end date of the visible window
             const currentEndDate = new Date(this.currentStartDate);
-            currentEndDate.setDate(currentEndDate.getDate() + (this.daysToShow - 1));
+            currentEndDate.setDate(currentEndDate.getDate() + 6); // 7 days total
 
-            // Get today's date
-            const today = new Date();
-
-            // Compare only the date parts (year, month, day), ignoring time
-            return (
-                currentEndDate.getFullYear() === today.getFullYear() &&
-                currentEndDate.getMonth() === today.getMonth() &&
-                currentEndDate.getDate() === today.getDate()
-            );
+            // Disable if we're already showing the end of the selected range
+            return currentEndDate >= this.selectedRangeEnd;
         },
-        // Check if prev button should be disabled (if start date is beyond the history limit)
+
+        // Check if prev button should be disabled
         isPrevDisabled() {
-            // Get the current start date and reset time to midnight
-            const currentStartDate = new Date(this.currentStartDate);
-            currentStartDate.setHours(0, 0, 0, 0);
+            // If no selected range, use default logic (don't go beyond history limit)
+            if (!this.selectedRangeStart || !this.selectedRangeEnd) {
+                const currentStartDate = new Date(this.currentStartDate);
+                currentStartDate.setHours(0, 0, 0, 0);
+                const maxHistoryDate = new Date(this.maxHistoryDate);
+                maxHistoryDate.setHours(0, 0, 0, 0);
 
-            // Get the maximum history date and reset time to midnight
-            const maxHistoryDate = new Date(this.maxHistoryDate);
-            maxHistoryDate.setHours(0, 0, 0, 0);
+                return currentStartDate.getTime() <= maxHistoryDate.getTime();
+            }
 
-            // Compare dates (now effectively comparing just the date portions)
-            return currentStartDate.getTime() <= maxHistoryDate.getTime();
+            const newStartDate = new Date(this.currentStartDate);
+            newStartDate.setDate(newStartDate.getDate() - 7); // Move 7 days backward
+
+            return newStartDate < this.selectedRangeStart;
         }
     },
     watch: {
@@ -191,46 +177,104 @@ export default {
                     setTimeout(() => {
                         this.loading = false;
                     }, 300);
+                } else {
+                    this.initializeEmptyData();
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        global_date_params: {
+            handler(newParams) {
+                if (newParams && newParams.startDate && newParams.endDate) {
+                    const globalStartDate = new Date(newParams.startDate.split(' ')[0]); // Remove time part
+                    const globalEndDate = new Date(newParams.endDate.split(' ')[0]); // Remove time part
+
+                    // Calculate the number of days in the selected range
+                    const timeDiff = globalEndDate.getTime() - globalStartDate.getTime();
+                    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // +1 to include both start and end dates
+
+                    // Store the actual selected range for data filtering
+                    this.selectedRangeStart = globalStartDate;
+                    this.selectedRangeEnd = globalEndDate;
+                    this.selectedRangeDays = daysDiff;
+
+                    // Always show exactly 7 days, use the end date as reference
+                    const endDate = new Date(globalEndDate);
+
+                    const startDate = new Date(endDate);
+                    startDate.setDate(endDate.getDate() - 6); // 7 days total
+
+                    this.daysToShow = 7;
+                    this.currentStartDate = startDate;
+
+                    if (this.heatmap_data && this.heatmap_data.heatmap_data) {
+                        this.processHeatmapData(this.heatmap_data.heatmap_data);
+                    } else {
+                        this.initializeEmptyData();
+                    }
                 }
             },
             deep: true,
             immediate: true
         }
     },
+    mounted() {
+        if (!this.heatmap_data || !this.heatmap_data.heatmap_data) {
+            this.generateSampleData();
+        }
+    },
     methods: {
-        // Disable future dates in the date picker
         disableFutureDates(date) {
             return date > new Date();
         },
         processHeatmapData(data) {
-            this.heatmapDataStore = {...data};
-        },
-        emitDateChange() {
-            const startDate = this.formatDateForApi(this.currentStartDate);
+            this.heatmapDataStore = {};
 
-            // Calculate the end date as start date + 6 days (for 7 days total, inclusive)
-            const endDate = new Date(this.currentStartDate);
-            endDate.setDate(endDate.getDate() + (this.daysToShow - 1));
+            // Process data for the visible 7 days
+            this.visibleDays.forEach(day => {
+                const dateKey = this.formatDateKey(day);
 
-            // Ensure end date is not in the future
-            const today = new Date();
-            today.setHours(23, 59, 59, 999);
+                // Initialize with zeros for all time slots
+                this.heatmapDataStore[dateKey] = {};
+                for (let i = 0; i < 8; i++) {
+                    this.heatmapDataStore[dateKey][i] = 0;
+                }
 
-            const finalEndDate = endDate > today ? today : endDate;
-
-            // Also update the dateRange picker to show what we're actually requesting
-            this.dateRange = [
-                this.formatDateForRange(this.currentStartDate),
-                this.formatDateForRange(finalEndDate)
-            ];
-
-            this.$emit('heatmap-date-change', {
-                startDate: startDate,
-                endDate: this.formatDateForApi(finalEndDate)
+                // If real data exists for this date, use it
+                if (data && data[dateKey]) {
+                    if (Array.isArray(data[dateKey])) {
+                        for (let i = 0; i < 8; i++) {
+                            this.heatmapDataStore[dateKey][i] = data[dateKey][i] || 0;
+                        }
+                    } else {
+                        for (let i = 0; i < 8; i++) {
+                            this.heatmapDataStore[dateKey][i] = data[dateKey][i] || 0;
+                        }
+                    }
+                }
             });
-
-            this.loading = true;
         },
+
+        initializeEmptyData() {
+            this.heatmapDataStore = {};
+
+            // Initialize data for the visible 7 days with all zeros
+            this.visibleDays.forEach(day => {
+                const dateKey = this.formatDateKey(day);
+                this.heatmapDataStore[dateKey] = {};
+
+                // Initialize all time slots with 0
+                for (let i = 0; i < 8; i++) {
+                    this.heatmapDataStore[dateKey][i] = 0;
+                }
+            });
+        },
+
+        generateSampleData() {
+            this.initializeEmptyData();
+        },
+
         formatDateForApi(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -240,9 +284,16 @@ export default {
         formatDateKey(date) {
             return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         },
+        formatDayNumber(date) {
+            return String(date.getDate()).padStart(2, '0');
+        },
+        formatDayName(date) {
+            const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            return days[date.getDay()];
+        },
         formatDayHeader(date) {
             const day = String(date.getDate()).padStart(2, '0');
-            const months = ['Januaryuary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Nov', 'December'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             const month = months[date.getMonth()];
             return `${month} ${day}`;
         },
@@ -254,11 +305,11 @@ export default {
             return 0;
         },
         getCellClass(value) {
-            if (value === 0) return 'empty';
+            if (value === 0) return 'level-0';
             if (value <= 2) return 'level-1';
             if (value <= 5) return 'level-2';
-            if (value <= 20) return 'level-3';
-            if (value <= 40) return 'level-4';
+            if (value <= 15) return 'level-3';
+            if (value <= 30) return 'level-4';
             return 'level-5';
         },
         navigateDates(direction) {
@@ -272,23 +323,26 @@ export default {
             const newDate = new Date(this.currentStartDate);
 
             if (direction === 'next') {
-                newDate.setDate(newDate.getDate() + this.daysToShow);
+                newDate.setDate(newDate.getDate() + 7);
 
-                // Don't allow navigation to future dates
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+                if (this.selectedRangeEnd) {
+                    const newEndDate = new Date(newDate);
+                    newEndDate.setDate(newEndDate.getDate() + 6); // 7 days total
 
-                const endDate = new Date(newDate);
-                endDate.setDate(endDate.getDate() + (this.daysToShow - 1));
-
-                // If the end date would be in the future, adjust to show today at the end
-                if (endDate > today) {
-                    // Calculate a new start date that would make today the end date
-                    newDate.setTime(today.getTime());
-                    newDate.setDate(newDate.getDate() - (this.daysToShow - 1));
+                    if (newEndDate > this.selectedRangeEnd) {
+                        this.isNavigating = false;
+                        return;
+                    }
                 }
             } else {
-                newDate.setDate(newDate.getDate() - this.daysToShow);
+                newDate.setDate(newDate.getDate() - 7); // Always move by exactly 7 days
+
+                if (this.selectedRangeStart) {
+                    if (newDate < this.selectedRangeStart) {
+                        this.isNavigating = false;
+                        return;
+                    }
+                }
             }
 
             // Wait for animation to complete before updating data
@@ -299,101 +353,34 @@ export default {
 
                 this.currentStartDate = newDate;
 
-                // Update the dateRange to reflect the new visible dates
-                const endDate = new Date(newDate);
-                endDate.setDate(endDate.getDate() + (this.daysToShow - 1));
-
-                // Ensure end date is not in the future
-                const today = new Date();
-                const finalEndDate = endDate > today ? today : endDate;
-
-                this.dateRange = [
-                    this.formatDateForRange(newDate),
-                    this.formatDateForRange(finalEndDate)
-                ];
+                // Process existing heatmap data for the new visible range
+                if (this.heatmap_data && this.heatmap_data.heatmap_data) {
+                    this.processHeatmapData(this.heatmap_data.heatmap_data);
+                } else {
+                    this.initializeEmptyData();
+                }
 
                 this.isNavigating = false;
-                this.emitDateChange();
             }, 300);
         },
         formatDateForRange(date) {
             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
         },
-        handleDateRangeChange(range) {
-            if (!range || !range[0] || !range[1]) return;
 
-            // Parse the date strings and set the currentStartDate
-            const startParts = range[0].split(" ");
-            const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Nov', 'December'].indexOf(startParts[0]);
-            const day = parseInt(startParts[1].replace(',', ''));
-            const year = parseInt(startParts[2]);
-
-            // Create new start date
-            const newStartDate = new Date(year, month, day);
-
-            // Ensure we're not showing future dates
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Calculate what the end date would be
-            const newEndDate = new Date(newStartDate);
-            newEndDate.setDate(newEndDate.getDate() + (this.daysToShow - 1));
-
-            // If the end date would be future, adjust to show today at the end
-            if (newEndDate > today) {
-                // Move start date back so today is the end date
-                newStartDate.setTime(today.getTime());
-                newStartDate.setDate(newStartDate.getDate() - (this.daysToShow - 1));
-            }
-
-            this.currentStartDate = newStartDate;
-            this.tableKey++; // Force re-render
-            this.emitDateChange();
-        },
         highlightCell(event, timeSlotIndex, date) {
             const value = this.getValueForCell(timeSlotIndex, date);
             const dateStr = this.formatDateForDisplay(date);
             const timeSlot = this.timeSlots[timeSlotIndex];
 
-            this.tooltip.text = `${dateStr} | ${timeSlot}: ${value} Submission`;
+            this.tooltip.text = `${dateStr} | ${timeSlot}: ${value} Submission${value !== 1 ? 's' : ''}`;
             this.tooltip.visible = true;
 
-            // Position the tooltip near the cell
             const rect = event.target.getBoundingClientRect();
-            const gridRect = this.$refs.gridWrapper.getBoundingClientRect();
-
-            // Estimate tooltip dimensions
-            const tooltipHeight = 30;
-            const tooltipWidth = 180; // Estimate based on text length
-
-            // Check if we're near the bottom of the container
-            const distanceToBottom = gridRect.bottom - rect.bottom;
-            const isNearBottom = distanceToBottom < tooltipHeight + 20; // Add padding
-
-            // Check if we're near the right edge of the container
-            const distanceToRight = gridRect.right - rect.right;
-            const isNearRight = distanceToRight < tooltipWidth/2 + 20; // Add padding
-
-            // Determine vertical position
-            let topPosition;
-            if (isNearBottom) {
-                topPosition = `${rect.top - gridRect.top - tooltipHeight - 10}px`;
-            } else {
-                topPosition = `${rect.top - gridRect.top + rect.height + 10}px`;
-            }
-
-            // Determine horizontal position
-            let leftPosition;
-            if (isNearRight) {
-                leftPosition = `${rect.left - gridRect.left - tooltipWidth}px`;
-            } else {
-                leftPosition = `${rect.left - gridRect.left + (rect.width / 2) - 75}px`;
-            }
 
             this.tooltip.style = {
-                top: topPosition,
-                left: leftPosition,
+                top: `${rect.top - 40}px`,
+                left: `${rect.left + (rect.width / 2) - 90}px`,
                 zIndex: '999'
             };
         },
@@ -401,9 +388,10 @@ export default {
             this.tooltip.visible = false;
         },
         formatDateForDisplay(date) {
-            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            const options = {year: 'numeric', month: 'short', day: 'numeric'};
             return date.toLocaleDateString(undefined, options);
         }
     }
 };
 </script>
+

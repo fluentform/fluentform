@@ -1,7 +1,22 @@
 import Vue from 'vue';
 import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
-import VueApexCharts from 'vue-apexcharts';
+import ECharts from 'vue-echarts';
+import { use } from 'echarts/core';
+import {
+    CanvasRenderer
+} from 'echarts/renderers';
+import {
+    BarChart,
+    LineChart,
+    PieChart
+} from 'echarts/charts';
+import {
+    GridComponent,
+    TooltipComponent,
+    LegendComponent,
+    TitleComponent
+} from 'echarts/components';
 
 import {
     Row,
@@ -71,7 +86,19 @@ import {_$t} from "@/admin/helpers";
 
 locale.use(lang);
 
-Vue.component('apexchart', VueApexCharts)
+// Register ECharts components
+use([
+    CanvasRenderer,
+    BarChart,
+    LineChart,
+    PieChart,
+    GridComponent,
+    TooltipComponent,
+    LegendComponent,
+    TitleComponent
+]);
+
+Vue.component('v-chart', ECharts);
 
 Vue.mixin({
     methods: {

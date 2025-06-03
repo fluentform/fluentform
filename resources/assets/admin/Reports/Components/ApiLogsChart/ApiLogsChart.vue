@@ -3,18 +3,6 @@
         <card>
             <card-head class="api-logs-header">
                 <h3>API Logs</h3>
-                <el-date-picker
-                    v-model="dateRange"
-                    type="daterange"
-                    range-separator="-"
-                    start-placeholder="Start date"
-                    end-placeholder="End date"
-                    format="MMM d, yyyy"
-                    value-format="MMM d, yyyy"
-                    :default-time="['00:00:00', '23:59:59']"
-                    @change="handleDateChange"
-                    :disabledDate="disableFutureDates"
-                />
             </card-head>
             <card-body class="api-logs-body">
                 <div v-if="loading" class="loading-overlay">
@@ -23,36 +11,13 @@
                         <span>Loading data...</span>
                     </div>
                 </div>
-                <div class="chart-legend">
-                    <div class="legend-item">
-                        <span class="legend-dot success"></span>
-                        <span>Success ({{ getTotalByStatus('success') }})</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot processing"></span>
-                        <span>Processing ({{ getTotalByStatus('pending') }})</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot failed"></span>
-                        <span>Failed ({{ getTotalByStatus('failed') }})</span>
-                    </div>
-                </div>
                 <div class="chart-wrapper">
-                    <apexchart
+                    <v-chart
                         v-if="!loading"
-                        type="line"
-                        height="400"
-                        :options="chartOptions"
-                        :series="series"
+                        :option="chartOptions"
+                        style="height: 400px;"
+                        autoresize
                     />
-                </div>
-                <div class="chart-nav">
-                    <div class="nav-item">
-                        <i class="el-icon-top"></i> Total Counts
-                    </div>
-                    <div class="nav-item">
-                        Timeline <i class="el-icon-right"></i>
-                    </div>
                 </div>
             </card-body>
         </card>
@@ -66,24 +31,15 @@ import CardHead from "@/admin/components/Card/CardHead.vue";
 
 export default {
     name: "ApiLogs",
-    props: ['api_logs'],
-    emits: ['api-logs-date-change'],
+    props: ['api_logs', 'global_date_params'],
     components: {
         Card,
         CardBody,
         CardHead,
     },
     data() {
-        const now = new Date();
-        const thirtyDaysAgo = new Date(now);
-        thirtyDaysAgo.setDate(now.getDate() - 30);
-
         return {
             loading: false,
-            dateRange: [
-                this.formatDateForDisplay(thirtyDaysAgo),
-                this.formatDateForDisplay(now)
-            ],
             viewMode: 'counts', // 'counts' or 'timeline'
             totalLogsByStatus: {
                 success: 0,
@@ -136,11 +92,116 @@ export default {
         },
 
         chartOptions() {
-            if (!this.api_logs || !this.api_logs.logs_data) {
-                return this.getDefaultChartOptions(['No data']);
-            }
+            const categories = this.api_logs?.logs_data?.categories || ['No data'];
+            const colors = ['#22c55e', '#4f46e5', '#ef4444']; // Success, Processing, Failed
 
-            return this.getDefaultChartOptions(this.api_logs.logs_data.categories);
+            return {
+                title: {
+                    show: false
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    }
+                },
+                legend: {
+                    show: true,
+                    top: 'top',
+                    right: '20px',
+                    orient: 'horizontal',
+                    itemGap: 20,
+                    itemWidth: 12,
+                    itemHeight: 12,
+                    icon: 'circle',
+                    textStyle: {
+                        color: '#6b7280',
+                        fontSize: 14
+                    },
+                    itemStyle: {
+                        borderWidth: 0
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(0, 0, 0, 0.3)'
+                        }
+                    },
+                    data: [
+                        {
+                            name: 'Success',
+                            icon: 'circle'
+                        },
+                        {
+                            name: 'Processing',
+                            icon: 'circle'
+                        },
+                        {
+                            name: 'Failed',
+                            icon: 'circle'
+                        }
+                    ]
+                },
+                color: colors,
+                grid: {
+                    top: '50px', // Increased to make room for the legend
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: categories,
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontSize: 12
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 0,
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontSize: 12,
+                        formatter: function(val) {
+                            return Math.round(val);
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#e0e0e0',
+                            type: 'dashed'
+                        }
+                    }
+                },
+                series: this.series.map((serie, index) => ({
+                    name: serie.name,
+                    type: 'line',
+                    data: serie.data,
+                    smooth: true,
+                    lineStyle: {
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: colors[index]
+                    },
+                    symbol: 'circle',
+                    symbolSize: 5
+                }))
+            };
         }
     },
     watch: {
@@ -168,145 +229,6 @@ export default {
 
         getTotalByStatus(status) {
             return this.totalLogsByStatus[status] || 0;
-        },
-
-        handleDateChange(range) {
-            if (!range || !range[0] || !range[1]) return;
-
-            // Parse the date strings
-            const startParts = range[0].split(" ");
-            const startMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(startParts[0]);
-            const startDay = parseInt(startParts[1].replace(',', ''));
-            const startYear = parseInt(startParts[2]);
-
-            const endParts = range[1].split(" ");
-            const endMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(endParts[0]);
-            const endDay = parseInt(endParts[1].replace(',', ''));
-            const endYear = parseInt(endParts[2]);
-
-            // Create Date objects
-            const startDate = new Date(startYear, startMonth, startDay);
-            const endDate = new Date(endYear, endMonth, endDay);
-
-            // Format dates for API
-            const formatDateForApi = (date, isStart) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const time = isStart ? '00:00:00' : '23:59:59';
-                return `${year}-${month}-${day} ${time}`;
-            };
-
-            this.loading = true;
-
-            // Emit event to parent
-            this.$emit('api-logs-date-change', {
-                startDate: formatDateForApi(startDate, true),
-                endDate: formatDateForApi(endDate, false)
-            });
-        },
-
-        formatDateForDisplay(date) {
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-        },
-
-        getDefaultChartOptions(categories) {
-            return {
-                chart: {
-                    type: 'line',
-                    toolbar: {
-                        show: false
-                    },
-                    zoom: {
-                        enabled: false
-                    }
-                },
-                animations: {
-                    enabled: true
-                },
-                colors: ['#22c55e', '#4f46e5', '#ef4444'], // Green, Blue, Red
-                stroke: {
-                    curve: 'smooth',
-                    width: 3
-                },
-                grid: {
-                    borderColor: '#e0e0e0',
-                    row: {
-                        colors: ['transparent'],
-                        opacity: 0.5
-                    },
-                    xaxis: {
-                        lines: {
-                            show: false
-                        }
-                    },
-                    yaxis: {
-                        lines: {
-                            show: true,
-                            borderColor: '#e0e0e0',
-                            strokeDashArray: 5
-                        }
-                    },
-                },
-                markers: {
-                    size: 5,
-                    hover: {
-                        size: 7
-                    }
-                },
-                xaxis: {
-                    categories: categories,
-                    labels: {
-                        style: {
-                            colors: '#666',
-                            fontSize: '12px'
-                        }
-                    },
-                    axisBorder: {
-                        show: false
-                    },
-                    axisTicks: {
-                        show: false
-                    }
-                },
-                yaxis: {
-                    min: 0,
-                    tickAmount: 5,
-                    labels: {
-                        style: {
-                            colors: '#666',
-                            fontSize: '12px'
-                        },
-                        formatter: function(val) {
-                            return Math.round(val);
-                        }
-                    }
-                },
-                legend: {
-                    show: false // Using custom legend
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                tooltip: {
-                    enabled: true,
-                    shared: true,
-                    intersect: false,
-                    followCursor: false,
-                    marker: {
-                        show: true
-                    },
-                    x: {
-                        show: true
-                    },
-                    y: {
-                        formatter: function(val) {
-                            return Math.round(val);
-                        }
-                    }
-                }
-            };
         }
     }
 };

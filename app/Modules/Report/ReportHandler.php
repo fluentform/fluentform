@@ -50,13 +50,20 @@ class ReportHandler
 
     public function getReports()
     {
+        // Extract universal parameters
+        $startDate = sanitize_text_field($this->app->request->get('start_date'));
+        $endDate = sanitize_text_field($this->app->request->get('end_date'));
+        $formId = intval($this->app->request->get('form_id'));
+
         $reports = [
             'reports' => [
-                'overview_chart' => $this->getOverviewChartData(),
-                'form_stats'     => $this->getFormStats(),
-                'heatmap_data'   => $this->getSubmissionHeatmap(),
-                'api_logs'       => $this->getApiLogs(),
-                'transactions'   => $this->getTransactions()
+                'overview_chart'    => $this->getOverviewChartData($startDate, $endDate, $formId),
+                'form_stats'        => $this->getFormStats($startDate, $endDate),
+                'completion_rate'   => $this->getCompletionRateData($startDate, $endDate, $formId),
+                'heatmap_data'      => $this->getSubmissionHeatmap($startDate, $endDate),
+                'api_logs'          => $this->getApiLogs($startDate, $endDate),
+                'transactions'      => $this->getTransactions($startDate, $endDate),
+                'subscriptions'     => $this->getSubscriptions($startDate, $endDate)
             ]
         ];
 
@@ -74,28 +81,9 @@ class ReportHandler
         ]);
     }
 
-    public function getOverviewChartData()
+    public function getOverviewChartData($startDate, $endDate, $formId)
     {
-        $startDate = sanitize_text_field($this->app->request->get('start_date'));
-        $endDate = sanitize_text_field($this->app->request->get('end_date'));
         $view = sanitize_text_field($this->app->request->get('view'));
-        $formId = intval($this->app->request->get('form_id'));
-
-        if ($formId) {
-            if (empty($startDate) || empty($endDate)) {
-                $dateRange = $this->getFormSpecificDateRange($formId, $view);
-                $startDate = $dateRange['start_date'];
-                $endDate = $dateRange['end_date'];
-            }
-        }
-
-        if (empty($startDate) || empty($endDate)) {
-            $now = new \DateTime();
-            $endDate = $now->format('Y-m-d 23:59:59');
-
-            $thirtyDaysAgo = (new \DateTime())->modify('-30 days');
-            $startDate = $thirtyDaysAgo->format('Y-m-d 00:00:00');
-        }
 
         // Process and fix date ranges if needed
         list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
@@ -111,7 +99,7 @@ class ReportHandler
 
         // Get data based on the view type
         if ($view === 'conversion') {
-            return $this->getFormViewsAndConversions($startDate, $endDate, $groupingMode, $formId);
+            $chartData = $this->getFormViewsAndConversions($startDate, $endDate, $groupingMode, $formId);
         } else {
             $data = $this->getAggregatedData($startDate, $endDate, $groupingMode, $view, $formId);
 
@@ -119,8 +107,10 @@ class ReportHandler
             $dateLabels = $this->getDateLabels($startDateTime, $endDateTime, $groupingMode);
 
             // Format the data for the chart
-            return $this->formatDataForChart($dateLabels, $data);
+            $chartData = $this->formatDataForChart($dateLabels, $data);
         }
+
+        return $chartData;
     }
 
     private function getFormSpecificDateRange($formId, $view)
@@ -165,18 +155,14 @@ class ReportHandler
         if ($view === 'conversion') {
             return [
                 'start_date'        => $formCreatedDate->format('Y-m-d 00:00:00'),
-                // Ensure we start at beginning of day
                 'end_date'          => $lastSubmissionDate->format('Y-m-d 23:59:59'),
-                // Ensure we include full day
                 'total_submissions' => $totalSubmissions
             ];
-        } // For submissions and payments views, use first to last submission dates
+        }
         else {
             return [
                 'start_date'        => $firstSubmissionDate->format('Y-m-d 00:00:00'),
-                // Ensure we start at beginning of day
                 'end_date'          => $lastSubmissionDate->format('Y-m-d 23:59:59'),
-                // Ensure we include full day
                 'total_submissions' => $totalSubmissions
             ];
         }
@@ -514,6 +500,41 @@ class ReportHandler
     }
 
     /**
+     * Get completion rate data for the gauge chart
+     */
+    private function getCompletionRateData($startDate, $endDate, $formId)
+    {
+        $completeQuery = Submission::whereBetween('created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $completeQuery->where('form_id', $formId);
+        }
+
+        $completeSubmissions = $completeQuery->count();
+
+        $incompleteQuery = wpFluent()->table('fluentform_draft_submissions')
+                                    ->whereBetween('created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $incompleteQuery->where('form_id', $formId);
+        }
+
+        $incompleteSubmissions = $incompleteQuery->count();
+
+        // Calculate totals - total_submissions should be complete submissions only
+        // Total attempts = complete + incomplete (drafts)
+        $totalAttempts = $completeSubmissions + $incompleteSubmissions;
+        $completionRate = $totalAttempts > 0 ? round(($completeSubmissions / $totalAttempts) * 100, 1) : 0;
+
+        return [
+            'completion_rate' => $completionRate,
+            'incomplete_submissions' => $incompleteSubmissions,
+            'total_submissions' => $completeSubmissions, // This should be complete submissions only
+            'total_attempts' => $totalAttempts // Total form attempts (complete + incomplete)
+        ];
+    }
+
+    /**
      * Get form views and conversions by date chunks
      */
     private function getFormViewsAndConversions($startDate, $endDate, $groupingMode, $formId)
@@ -694,43 +715,25 @@ class ReportHandler
         ];
     }
 
-    public function getFormStats()
+    public function getFormStats($startDate, $endDate)
     {
-        $range = $this->app->request->get('stats_range', 'month');
+        // Process and fix date ranges if needed
+        list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
 
-        $now = new \DateTime();
-        $today = $now->format('Y-m-d');
+        // Calculate the date range duration to determine previous period
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+        $interval = $startDateTime->diff($endDateTime);
+        $daysDifference = $interval->days;
 
-        // Set date range based on selection
-        switch ($range) {
-            case 'today':
-                $startDate = $today . ' 00:00:00';
-                $endDate = $today . ' 23:59:59';
-                $previousStartDate = (new \DateTime())->modify('-1 day')->format('Y-m-d 00:00:00');
-                $previousEndDate = (new \DateTime())->modify('-1 day')->format('Y-m-d 23:59:59');
-                break;
+        // Calculate previous period dates (same duration, shifted back)
+        $previousEndDateTime = clone $startDateTime;
+        $previousEndDateTime->modify('-1 day');
+        $previousStartDateTime = clone $previousEndDateTime;
+        $previousStartDateTime->modify("-{$daysDifference} days");
 
-            case 'week':
-                $startDate = (new \DateTime())->modify('-7 days')->format('Y-m-d H:i:s');
-                $endDate = $now->format('Y-m-d H:i:s');
-                $previousStartDate = (new \DateTime())->modify('-14 days')->format('Y-m-d H:i:s');
-                $previousEndDate = (new \DateTime())->modify('-8 days')->format('Y-m-d H:i:s');
-                break;
-
-            case 'month':
-                $startDate = (new \DateTime())->modify('-30 days')->format('Y-m-d H:i:s');
-                $endDate = $now->format('Y-m-d H:i:s');
-                $previousStartDate = (new \DateTime())->modify('-60 days')->format('Y-m-d H:i:s');
-                $previousEndDate = (new \DateTime())->modify('-31 days')->format('Y-m-d H:i:s');
-                break;
-
-            case 'year':
-                $startDate = (new \DateTime())->modify('-365 days')->format('Y-m-d H:i:s');
-                $endDate = $now->format('Y-m-d H:i:s');
-                $previousStartDate = (new \DateTime())->modify('-730 days')->format('Y-m-d H:i:s');
-                $previousEndDate = (new \DateTime())->modify('-366 days')->format('Y-m-d H:i:s');
-                break;
-        }
+        $previousStartDate = $previousStartDateTime->format('Y-m-d H:i:s');
+        $previousEndDate = $previousEndDateTime->format('Y-m-d H:i:s');
 
         // Get submission counts
         $periodSubmissions = Submission::whereBetween('created_at',
@@ -780,7 +783,7 @@ class ReportHandler
         $spamType = $spamPercentage > 0 ? 'up' : ($spamPercentage < 0 ? 'down' : '');
 
         return [
-            'period'              => $range,
+            'period'              => $daysDifference . ' days',
             'total_submissions'   => [
                 'value'        => $periodSubmissions,
                 'period_value' => $periodSubmissions,
@@ -805,18 +808,28 @@ class ReportHandler
         ];
     }
 
-    public function getSubmissionHeatmap()
+    public function getSubmissionHeatmap($startDate, $endDate)
     {
-        $startDate = sanitize_text_field($this->app->request->get('heatmap_start_date'));
-        $endDate = sanitize_text_field($this->app->request->get('heatmap_end_date'));
-
-        if (!$startDate || !$endDate) {
-            $endDate = date('Y-m-d H:i:s');
-            $startDate = date('Y-m-d H:i:s', strtotime('-14 days'));
-        }
-
         // Process and fix date ranges if needed
         list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
+
+        // Create DateTime objects for iteration
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+
+        // Generate all dates in the range
+        $allDates = [];
+        $current = clone $startDateTime;
+        while ($current <= $endDateTime) {
+            $allDates[] = $current->format('Y-m-d');
+            $current->modify('+1 day');
+        }
+
+        // Initialize heatmap data with zeros for all dates and time slots
+        $heatmapData = [];
+        foreach ($allDates as $date) {
+            $heatmapData[$date] = array_fill(0, 8, 0); // 8 time slots, all initialized to 0
+        }
 
         // Query submissions using Eloquent-like syntax
         $results = Submission::whereBetween('created_at', [$startDate, $endDate])
@@ -828,9 +841,7 @@ class ReportHandler
                              ->orderBy('submission_hour')
                              ->get();
 
-        // Transform into time slot buckets (8 time slots of 3 hours each)
-        $heatmapData = [];
-
+        // Fill in actual submission data
         foreach ($results as $row) {
             $date = $row->submission_date;
             $hour = (int)$row->submission_hour;
@@ -839,13 +850,10 @@ class ReportHandler
             // Calculate time slot index (0-7) for 3-hour intervals
             $timeSlotIndex = floor($hour / 3);
 
-            // Initialize date in heatmap data if not exists
-            if (!isset($heatmapData[$date])) {
-                $heatmapData[$date] = array_fill(0, 8, 0);
+            // Add count to the appropriate time slot (date should already exist)
+            if (isset($heatmapData[$date])) {
+                $heatmapData[$date][$timeSlotIndex] += $count;
             }
-
-            // Add count to the appropriate time slot
-            $heatmapData[$date][$timeSlotIndex] += $count;
         }
 
         return [
@@ -855,16 +863,8 @@ class ReportHandler
         ];
     }
 
-    public function getApiLogs()
+    public function getApiLogs($startDate, $endDate)
     {
-        $startDate = sanitize_text_field($this->app->request->get('api_logs_start_date'));
-        $endDate = sanitize_text_field($this->app->request->get('api_logs_end_date'));
-
-        if (!$startDate || !$endDate) {
-            $endDate = date('Y-m-d H:i:s');
-            $startDate = date('Y-m-d H:i:s', strtotime('-30 days'));
-        }
-
         // Process date range
         list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
 
@@ -980,23 +980,16 @@ class ReportHandler
         ];
     }
 
-    public function getTransactions()
+    public function getTransactions($startDate, $endDate)
     {
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if (!$paymentSettings || !ArrayHelper::get($paymentSettings, 'status')) {
             return []; // Return empty if payment module is disabled
         }
 
-        $startDate = sanitize_text_field($this->app->request->get('transactions_start_date'));
-        $endDate = sanitize_text_field($this->app->request->get('transactions_end_date'));
         $formId = intval($this->app->request->get('transactions_form_id'));
         $paymentStatus = sanitize_text_field($this->app->request->get('transactions_payment_status'));
         $paymentMethod = sanitize_text_field($this->app->request->get('transactions_payment_method'));
-
-        if (!$startDate || !$endDate) {
-            $endDate = date('Y-m-d H:i:s');
-            $startDate = date('Y-m-d H:i:s', strtotime('-30 days'));
-        }
 
         // Process date range
         list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
@@ -1056,5 +1049,135 @@ class ReportHandler
         }
 
         return $formattedTransactions;
+    }
+
+    public function getSubscriptions($startDate, $endDate)
+    {
+        $paymentSettings = get_option('__fluentform_payment_module_settings');
+        if (!$paymentSettings || !ArrayHelper::get($paymentSettings, 'status')) {
+            return []; // Return empty if payment module is disabled
+        }
+
+        // Process date range
+        list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
+
+        // Get form filter if set
+        $formId = intval($this->app->request->get('subscriptions_form_id'));
+        $status = sanitize_text_field($this->app->request->get('subscriptions_status'));
+
+        // Query subscriptions
+        $query = wpFluent()
+            ->table('fluentform_subscriptions')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        // Apply filters
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+
+        if ($status) {
+            $query->where('status', strtolower($status));
+        }
+
+        // Fetch subscriptions
+        $subscriptions = $query->get();
+
+        // Calculate totals for the subscriptions dashboard
+        $activeSubscriptions = array_filter($subscriptions, function($sub) {
+            return in_array(strtolower($sub->status), ['active', 'trialing']);
+        });
+
+        // Group subscriptions by plan_name for chart display
+        $subscriptionsByPlan = [];
+        $totalRecurringAmount = 0;
+
+        foreach ($activeSubscriptions as $subscription) {
+            $planName = $subscription->plan_name ?: ($subscription->item_name ?: 'Unnamed Plan');
+            $recurringAmount = $subscription->recurring_amount / 100; // Convert cents to dollars
+
+            if (!isset($subscriptionsByPlan[$planName])) {
+                $subscriptionsByPlan[$planName] = 0;
+            }
+
+            $subscriptionsByPlan[$planName] += $recurringAmount;
+            $totalRecurringAmount += $recurringAmount;
+        }
+
+        // Sort by amount (highest first)
+        arsort($subscriptionsByPlan);
+
+        // Calculate growth compared to previous period
+        $previousStartDate = (new \DateTime($startDate))->modify('-' . $this->getDateDifference($startDate, $endDate) . ' days')->format('Y-m-d H:i:s');
+        $previousEndDate = (new \DateTime($startDate))->modify('-1 day')->format('Y-m-d H:i:s');
+
+        $previousQuery = wpFluent()
+            ->table('fluentform_subscriptions')
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where(function($q) {
+                $q->where('status', 'active')
+                    ->orWhere('status', 'trialing');
+            });
+
+        if ($formId) {
+            $previousQuery->where('form_id', $formId);
+        }
+
+        $previousSubscriptions = $previousQuery->get();
+        $previousTotalRecurring = 0;
+
+        foreach ($previousSubscriptions as $subscription) {
+            $previousTotalRecurring += $subscription->recurring_amount / 100;
+        }
+
+        // Calculate growth percentage
+        $growthPercentage = 0;
+        if ($previousTotalRecurring > 0) {
+            $growthPercentage = round((($totalRecurringAmount - $previousTotalRecurring) / $previousTotalRecurring) * 100, 1);
+        } elseif ($totalRecurringAmount > 0) {
+            $growthPercentage = 100;
+        }
+
+        // Format data for chart display
+        $chartData = [];
+        $colors = [
+            '#45aaf2', // Light blue
+            '#4c6ef5', // Blue
+            '#fa8231', // Orange
+            '#26de81', // Green
+            '#a55eea', // Purple
+            '#fd9644', // Light orange
+            '#2bcbba', // Teal
+            '#eb3b5a'  // Red
+        ];
+
+        $colorIndex = 0;
+        foreach ($subscriptionsByPlan as $plan => $amount) {
+            $chartData[] = [
+                'name' => $plan,
+                'value' => $amount,
+                'color' => $colors[$colorIndex % count($colors)]
+            ];
+            $colorIndex++;
+        }
+
+        // Limit to top 5 plans for readability
+        $chartData = array_slice($chartData, 0, 5);
+
+        return [
+            'total_recurring' => $totalRecurringAmount,
+            'growth_percentage' => $growthPercentage,
+            'subscription_count' => count($activeSubscriptions),
+            'chart_data' => $chartData,
+            'start_date' => $startDate,
+            'end_date' => $endDate
+        ];
+    }
+
+    private function getDateDifference($startDate, $endDate)
+    {
+        $start = new \DateTime($startDate);
+        $end = new \DateTime($endDate);
+        $interval = $start->diff($end);
+        return $interval->days + 1;
     }
 }
