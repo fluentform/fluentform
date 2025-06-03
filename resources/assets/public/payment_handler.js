@@ -84,15 +84,29 @@ export class Payment_handler {
 
         this.totalAmount = totalAmount;
 
-        const discounts = this.getDiscounts();
+        let discounts = this.getDiscounts();
+        const validDiscounts = [];
 
         jQuery.each(discounts, (index, discount) => {
             let discountAmount = discount.amount;
+
+            // If minimum amount isn't purchased before this discount can be used, remove the discount and show error message
+            if (discount.min_amount && discount.min_amount > this.totalAmount) {
+                delete this.appliedCoupons[discount.code];
+                this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                this.$form.find(`.ff_resp_item_${discount.code}`).remove();
+                this.recordCouponMessage(this.$form.find('.ff_coupon_wrapper'), discount.code, `${discount.code} - ${discount.min_amount_message}`, 'error');
+                return;
+            }
+
             if (discount.coupon_type === 'percent') {
                 discountAmount = (discount.amount / 100) * this.totalAmount;
             }
             this.totalAmount -= discountAmount;
+            validDiscounts.push(discount);
         });
+
+        discounts = validDiscounts;
 
         form.trigger('payment_amount_change', {
             amount: totalAmount,
