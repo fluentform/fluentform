@@ -362,15 +362,12 @@ class Submission extends Model
         }
 
 
-        if ($start && $startTime = (strtotime($start) + 24 * 60 * 60)) {
-            if ($start === $end) {
-                $startTime = strtotime($start);
-            }
-            $from = date('Y-m-d H:i:s', $startTime);
+        if ($start && $startTime = strtotime($start)) {
+            $from = date('Y-m-d 00:00:00', $startTime);
         }
 
-        if ($end  && $endTime = (strtotime($end) + 24 * 60 * 60)) {
-            $to = date('Y-m-d H:i:s', $endTime);
+        if ($end  && $endTime = strtotime($end)) {
+            $to = date('Y-m-d 23:59:59', $endTime);
         }
 
         $period = new \DatePeriod(new \DateTime($from), new \DateInterval('P1D'), new \DateTime($to));
