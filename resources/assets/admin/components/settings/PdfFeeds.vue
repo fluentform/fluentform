@@ -136,7 +136,7 @@
                 this.creating = true;
                 FluentFormsGlobal.$post({
                     form_id: this.form_id,
-                    action: 'fluentform_pdf_admin_ajax_actions',
+                    action: 'fluent_pdf_admin_ajax_actions',
                     route: 'create_feed',
                     template: templateName
                 })
@@ -160,7 +160,7 @@
             remove(id) {
                 FluentFormsGlobal.$post({
                     form_id: this.form_id,
-                    action: 'fluentform_pdf_admin_ajax_actions',
+                    action: 'fluent_pdf_admin_ajax_actions',
                     route: 'delete_feed',
                     feed_id: id
                 })
@@ -185,7 +185,7 @@
                 this.loading = true;
                 FluentFormsGlobal.$get({
                     form_id: this.form_id,
-                    action: 'fluentform_pdf_admin_ajax_actions',
+                    action: 'fluent_pdf_admin_ajax_actions',
                     route: 'get_feeds'
                 })
                     .then(response => {
