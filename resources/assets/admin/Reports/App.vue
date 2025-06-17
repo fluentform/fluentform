@@ -102,19 +102,36 @@
             </el-col>
         </el-row>
 
-        <!-- API Logs Section -->
-        <div class="api-logs-chart-section">
-            <api-logs-chart
-                :api_logs="reports.api_logs"
-                :global_date_params="globalDateParams"
-            />
-        </div>
+        <el-row :gutter="24">
+            <el-col :span="14">
+                <!-- API Logs Section -->
+                <div class="api-logs-chart-section">
+                    <api-logs-chart
+                        :api_logs="reports.api_logs"
+                        :global_date_params="globalDateParams"
+                    />
+                </div>
+            </el-col>
+
+            <el-col :span="10">
+                <!-- Country Heatmap Section -->
+                <div class="country-heatmap-section">
+                    <submission-country-heatmap
+                        :country-heatmap="reports.country_heatmap"
+                        :global-date-params="globalDateParams"
+                        :forms_list="formsList"
+                        @country-heatmap-form-change="handleCountryHeatmapFormChange"
+                    />
+                </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 <script type="text/babel">
 import OverviewChart from './Components/OverviewChart/OverviewChart.vue';
 import FormStatsCard from './Components/FormStats/FormStatsCard.vue';
 import SubmissionHeatmap from "@/admin/Reports/Components/SubmissionHeatmap/SubmissionHeatmap.vue";
+import SubmissionCountryHeatmap from './Components/SubmissionCountryHeatmap/SubmissionCountryHeatmap.vue';
 import ApiLogsChart from './Components/ApiLogsChart/ApiLogsChart.vue';
 import TransactionsTable from './Components/TransactionsTable/TransactionsTable.vue';
 import CompletionRatesGauge from './Components/CompletionRatesGauge/CompletionRatesGauge.vue';
@@ -125,6 +142,7 @@ export default {
     components: {
         ApiLogsChart,
         SubmissionHeatmap,
+        SubmissionCountryHeatmap,
         OverviewChart,
         FormStatsCard,
         TransactionsTable,
@@ -165,8 +183,10 @@ export default {
             gaugeLoading: false,
             statsLoading: false,
             transactionsLoading: false,
+            countryHeatmapLoading: false,
             selectedOverviewFormId: null,
             selectedGaugeFormId: null,
+            selectedCountryHeatmapFormId: null,
             subscriptionsLoading: false,
             globalDateParams: {
                 startDate: formatDateForApi(thirtyDaysAgo, true),
@@ -306,13 +326,6 @@ export default {
             }
             return 0; // Default value
         },
-        totalAttempts() {
-            const completionData = this.reports.completion_rate;
-            if (completionData && completionData.total_attempts !== undefined) {
-                return completionData.total_attempts;
-            }
-            return 0; // Default value
-        }
     },
     methods: {
         fetchReports() {
@@ -353,12 +366,6 @@ export default {
                 .fail(error => {
                     console.error('Error fetching forms list:', error);
                 });
-        },
-
-        handleRangeChange() {
-            this.lastUsedSelector = 'range';
-            this.dateRange = null;
-            this.updateGlobalDateParams();
         },
 
         handleDateRangeChange() {
@@ -448,32 +455,6 @@ export default {
                 });
         },
 
-        handleStatsRangeChange(range) {
-            this.statsLoading = true;
-            this.globalDateParams.statsRange = range;
-
-            const data = {
-                action: 'fluentform-get-reports',
-                component: 'form_stats',
-                start_date: this.globalDateParams.startDate,
-                end_date: this.globalDateParams.endDate,
-                stats_range: range
-            };
-
-            FluentFormsGlobal.$get(data)
-                .then(response => {
-                    if (response.data && response.data.reports && response.data.reports.form_stats) {
-                        this.reports.form_stats = response.data.reports.form_stats;
-                    }
-                })
-                .fail(error => {
-                    console.error('Error fetching form stats data:', error);
-                })
-                .always(() => {
-                    this.statsLoading = false;
-                });
-        },
-
         handleTransactionsFilterChange(params) {
             this.transactionsLoading = true;
             this.transactionsParams = {
@@ -533,6 +514,32 @@ export default {
                 });
         },
 
+        handleCountryHeatmapFormChange(formId) {
+            this.selectedCountryHeatmapFormId = formId;
+            this.countryHeatmapLoading = true;
+
+            const data = {
+                action: 'fluentform-get-reports',
+                component: 'country_heatmap',
+                start_date: this.globalDateParams.startDate,
+                end_date: this.globalDateParams.endDate,
+                form_id: formId
+            };
+
+            FluentFormsGlobal.$get(data)
+                .then(response => {
+                    if (response.data && response.data.reports && response.data.reports.country_heatmap) {
+                        this.reports.country_heatmap = response.data.reports.country_heatmap;
+                    }
+                })
+                .fail(error => {
+                    console.error('Error fetching completion rates data:', error);
+                })
+                .always(() => {
+                    this.gaugeLoading = false;
+                });
+        },
+
         updateGlobalDateParams() {
             const today = new Date();
             let startDate, endDate;
@@ -582,19 +589,6 @@ export default {
             const day = String(date.getDate()).padStart(2, '0');
             const time = isStart ? '00:00:00' : '23:59:59';
             return `${year}-${month}-${day} ${time}`;
-        },
-
-        formatDateRange(startDate, endDate) {
-            if (!startDate || !endDate) return '';
-
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-            const startStr = `${months[start.getMonth()]} ${start.getDate()}, ${start.getFullYear()}`;
-            const endStr = `${months[end.getMonth()]} ${end.getDate()}, ${end.getFullYear()}`;
-
-            return `${startStr} - ${endStr}`;
         },
 
         disableFutureDates(date) {

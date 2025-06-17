@@ -24,13 +24,14 @@
                                 placeholder="All Forms"
                                 size="small"
                                 @change="applyFilters"
+                                filterable
                                 clearable
                             >
                                 <el-option label="All Forms" :value="null"></el-option>
                                 <el-option
                                     v-for="form in paymentForms"
                                     :key="form.id"
-                                    :label="`${form.title} (ID: ${form.id})`"
+                                    :label="`#${form.id} - ${form.title}`"
                                     :value="form.id"
                                 ></el-option>
                             </el-select>
@@ -59,8 +60,9 @@
                                 v-model="paymentMethodFilter"
                                 placeholder="All Methods"
                                 size="small"
-                                @change="applyFilters"
                                 clearable
+                                filterable
+                                @change="applyFilters"
                             >
                                 <el-option label="All Methods" :value="null"></el-option>
                                 <el-option

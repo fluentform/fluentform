@@ -15,7 +15,7 @@
                     <v-chart
                         v-if="!loading"
                         :option="chartOptions"
-                        style="height: 400px;"
+                        style="height: 440px;"
                         autoresize
                     />
                 </div>

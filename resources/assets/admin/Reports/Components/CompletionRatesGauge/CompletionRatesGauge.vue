@@ -10,6 +10,8 @@
                     v-model="selectedFormId"
                     placeholder="Select Form"
                     size="medium"
+                    clearable
+                    filterable
                     style="width: 100%;"
                     @change="handleFormChange"
                 >
@@ -20,7 +22,7 @@
                     <el-option
                         v-for="form in forms_list"
                         :key="form.id"
-                        :label="`${form.title}`"
+                        :label="`#${form.id} - ${form.title}`"
                         :value="form.id"
                     ></el-option>
                 </el-select>

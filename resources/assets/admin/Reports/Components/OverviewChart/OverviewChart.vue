@@ -35,13 +35,15 @@
                             v-model="selectedFormId"
                             placeholder="Select Form"
                             size="small"
+                            clearable
+                            filterable
                             @change="handleFormChange"
                         >
                             <el-option label="All Forms" :value="null"></el-option>
                             <el-option
                                 v-for="form in forms_list"
                                 :key="form.id"
-                                :label="`${form.title} (ID: ${form.id})`"
+                                :label="`#${form.id} - ${form.title}`"
                                 :value="form.id"
                             ></el-option>
                         </el-select>

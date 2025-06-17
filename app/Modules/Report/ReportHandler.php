@@ -80,6 +80,9 @@ class ReportHandler
         else if ($component === 'heatmap_data') {
             $reports['reports']['heatmap_data'] = $this->getSubmissionHeatmap($startDate, $endDate);
         }
+        else if ($component === 'country_heatmap') {
+            $reports['reports']['country_heatmap'] = $this->getSubmissionsByCountry($startDate, $endDate, $formId);
+        }
         else if ($component === 'api_logs') {
             $reports['reports']['api_logs'] = $this->getApiLogs($startDate, $endDate);
         }
@@ -114,6 +117,7 @@ class ReportHandler
                 'form_stats'        => $this->getFormStats($startDate, $endDate, $statsRange),
                 'completion_rate'   => $this->getCompletionRateData($startDate, $endDate, $formId),
                 'heatmap_data'      => $this->getSubmissionHeatmap($startDate, $endDate),
+                'country_heatmap'   => $this->getSubmissionsByCountry($startDate, $endDate, $formId),
                 'api_logs'          => $this->getApiLogs($startDate, $endDate),
                 'transactions'      => $this->getTransactions(
                     $startDate,
@@ -1229,5 +1233,45 @@ class ReportHandler
         $end = new \DateTime($endDate);
         $interval = $start->diff($end);
         return $interval->days + 1;
+    }
+
+    public function getSubmissionsByCountry($startDate, $endDate, $formId = null)
+    {
+        list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
+
+        $query = Submission::whereBetween('created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+        
+        $submissions = $query->select(['id', 'country'])
+                            ->get();
+
+        $countryData = [];
+        $countryNames = getFluentFormCountryList();
+
+        foreach ($submissions as $submission) {
+            $country = $submission->country;
+
+            if (!empty($country)) {
+                $countryCode = strtoupper($country);
+                if (!isset($countryData[$countryCode])) {
+                    $countryData[$countryCode] = [
+                        'name' => isset($countryNames[$countryCode]) ? $countryNames[$countryCode] : $countryCode,
+                        'value' => 0
+                    ];
+                }
+                $countryData[$countryCode]['value']++;
+            }
+        }
+
+        uasort($countryData, function($a, $b) {
+            return $b['value'] - $a['value'];
+        });
+
+        return [
+            'country_data' => array_values($countryData)
+        ];
     }
 }

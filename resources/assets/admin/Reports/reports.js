@@ -9,13 +9,17 @@ import {
 import {
     BarChart,
     LineChart,
-    PieChart
+    PieChart,
+    MapChart,
+    TreemapChart
 } from 'echarts/charts';
 import {
     GridComponent,
     TooltipComponent,
     LegendComponent,
-    TitleComponent
+    TitleComponent,
+    GeoComponent,
+    VisualMapComponent
 } from 'echarts/components';
 
 import {
@@ -92,10 +96,14 @@ use([
     BarChart,
     LineChart,
     PieChart,
+    MapChart,
+    TreemapChart,
     GridComponent,
     TooltipComponent,
     LegendComponent,
-    TitleComponent
+    TitleComponent,
+    GeoComponent,
+    VisualMapComponent
 ]);
 
 Vue.component('v-chart', ECharts);
