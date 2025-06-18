@@ -266,8 +266,10 @@
             },
 
             isChecked(optVal) {
-                if (typeof this.editItem.attributes.value != 'number') {
+                if (Array.isArray(this.editItem.attributes.value)) {
                     return this.editItem.attributes.value.includes(optVal);
+                } else {
+                    return this.editItem.attributes.value == optVal;
                 }
             },
 
