@@ -205,6 +205,38 @@
     .charts-row {
         margin-bottom: 24px;
     }
+
+    // Completion Rates Row
+    .completion-rates-row {
+        margin-bottom: 24px;
+
+        .completion-rates-gauge-section {
+            .ff_card {
+                height: auto;
+            }
+        }
+    }
+
+    // Chart Metrics Selector
+    .chart-metrics-selector-section {
+        .ff_card {
+            height: 100%;
+        }
+    }
+
+    // Overview Chart Header Controls
+    .conversion-chart-section {
+        .card-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .header-filter-group {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
 }
 
 // Form Stats Section
@@ -529,6 +561,68 @@
     }
 }
 
+// Top Performing Forms Section
+.top-performing-forms-section {
+    height: 550px;
+
+    .card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 16px; // Reduce default padding
+    }
+
+    .top-forms-chart {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chart-wrapper {
+        flex: 1;
+        min-height: 0; // Allow shrinking
+    }
+
+    // Radio button group styling
+    .metric-radio-group {
+        .el-radio-button__inner {
+            border: 1px solid #dcdfe6;
+            border-radius: 0;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .el-radio-button:first-child .el-radio-button__inner {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .el-radio-button:last-child .el-radio-button__inner {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+            background-color: #409eff;
+            border-color: #409eff;
+            color: #fff;
+            box-shadow: -1px 0 0 0 #409eff;
+        }
+
+        .el-radio-button__inner:hover {
+            color: #409eff;
+        }
+    }
+}
+
 // Submission Heatmap Section
 .submission-heatmap-section {
     // Heatmap Navigation in Card Head
@@ -696,7 +790,7 @@
                 align-items: center;
             }
         }
-        
+
         &-body {
             overflow: scroll;
         }

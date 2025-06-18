@@ -24,6 +24,8 @@ class ReportHandler
         $app->addAction('fluentform/render_report', [$this, 'renderReport']);
         $app->addAdminAjaxAction('fluentform-get-reports', [$this, 'getReports']);
         $app->addAdminAjaxAction('fluentform-get-forms', [$this, 'getFormsForDropdown']);
+        $app->addAdminAjaxAction('fluentform-get-net-revenue-by-group', [$this, 'getNetRevenueByGroup']);
+        $app->addAdminAjaxAction('fluentform-get-submission-analysis-by-group', [$this, 'getSubmissionAnalysisByGroup']);
     }
 
     public function renderReport()
@@ -36,7 +38,7 @@ class ReportHandler
         if ($paymentSettings && ArrayHelper::get($paymentSettings, 'status') === 'yes') {
             $hasPayment = true;
         }
-        
+
         wp_localize_script('fluentform_reports', 'FluentFormApp', [
             'has_payment' => $hasPayment,
             'payment_statuses' => PaymentHelper::getPaymentStatuses(),
@@ -54,7 +56,7 @@ class ReportHandler
         $endDate = sanitize_text_field($this->app->request->get('end_date'));
         $formId = intval($this->app->request->get('form_id'));
         $component = sanitize_text_field($this->app->request->get('component', ''));
-        
+
         // if no start or end date, then set default date range as last month
         if (!$startDate || !$endDate) {
             $now = new \DateTime();
@@ -86,6 +88,10 @@ class ReportHandler
         else if ($component === 'api_logs') {
             $reports['reports']['api_logs'] = $this->getApiLogs($startDate, $endDate);
         }
+        else if ($component === 'top_performing_forms') {
+            $metric = sanitize_text_field($this->app->request->get('metric', 'entries'));
+            $reports['reports']['top_performing_forms'] = $this->getTopPerformingForms($startDate, $endDate, $metric);
+        }
         else if ($component === 'transactions') {
             $transactionsFormId = intval($this->app->request->get('transactions_form_id'));
             $transactionsPaymentStatus = sanitize_text_field($this->app->request->get('transactions_payment_status'));
@@ -113,20 +119,21 @@ class ReportHandler
             $transactionsPaymentMethod = sanitize_text_field($this->app->request->get('transactions_payment_method'));
 
             $reports['reports'] = [
-                'overview_chart'    => $this->getOverviewChartData($startDate, $endDate, $formId, $view),
-                'form_stats'        => $this->getFormStats($startDate, $endDate, $statsRange),
-                'completion_rate'   => $this->getCompletionRateData($startDate, $endDate, $formId),
-                'heatmap_data'      => $this->getSubmissionHeatmap($startDate, $endDate),
-                'country_heatmap'   => $this->getSubmissionsByCountry($startDate, $endDate, $formId),
-                'api_logs'          => $this->getApiLogs($startDate, $endDate),
-                'transactions'      => $this->getTransactions(
+                'overview_chart'        => $this->getOverviewChartData($startDate, $endDate, $formId, $view),
+                'form_stats'            => $this->getFormStats($startDate, $endDate, $statsRange),
+                'completion_rate'       => $this->getCompletionRateData($startDate, $endDate, $formId),
+                'heatmap_data'          => $this->getSubmissionHeatmap($startDate, $endDate),
+                'country_heatmap'       => $this->getSubmissionsByCountry($startDate, $endDate, $formId),
+                'api_logs'              => $this->getApiLogs($startDate, $endDate),
+                'top_performing_forms'  => $this->getTopPerformingForms($startDate, $endDate, 'entries'),
+                'transactions'          => $this->getTransactions(
                     $startDate,
                     $endDate,
                     $transactionsFormId,
                     $transactionsPaymentStatus,
                     $transactionsPaymentMethod
                 ),
-                'subscriptions'     => $this->getSubscriptions($startDate, $endDate)
+                'subscriptions'         => $this->getSubscriptions($startDate, $endDate)
             ];
         }
 
@@ -264,7 +271,7 @@ class ReportHandler
             $paidQuery = clone $baseQuery;
             $pendingQuery = clone $baseQuery;
             $refundedQuery = clone $baseQuery;
-            
+
             // Get paid payments
             $paidQuery->whereNotNull('payment_total')
                       ->where(function($query) {
@@ -844,7 +851,7 @@ class ReportHandler
         $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
         $spamType = $spamPercentage > 0 ? 'down' : ($spamPercentage < 0 ? 'up' : 'neutral');
 
-        return [
+        $stats = [
             'period'              => $daysDifference . ' days',
             'total_submissions'   => [
                 'value'        => $periodSubmissions,
@@ -867,6 +874,134 @@ class ReportHandler
             'read_submissions'    => [
                 'value' => $readSubmissions,
             ],
+        ];
+
+        // Add payment statistics if payment module is enabled
+        $paymentSettings = get_option('__fluentform_payment_module_settings');
+        if ($paymentSettings && ArrayHelper::get($paymentSettings, 'status') === 'yes') {
+            // Get payment statistics
+            $paymentStats = $this->getPaymentStats($startDate, $endDate, $previousStartDate, $previousEndDate);
+            $stats = array_merge($stats, $paymentStats);
+        }
+
+        return $stats;
+    }
+
+    private function getPaymentStats($startDate, $endDate, $previousStartDate, $previousEndDate)
+    {
+        // Get total payments (paid status) for current period
+        $currentPayments = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'paid')
+            ->sum('payment_total');
+
+        // Get total payments for previous period
+        $previousPayments = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where('status', 'paid')
+            ->sum('payment_total');
+
+        // Get pending payments for current period
+        $currentPending = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'pending')
+            ->sum('payment_total');
+
+        // Get pending payments for previous period
+        $previousPending = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where('status', 'pending')
+            ->sum('payment_total');
+
+        // Get total refunds for current period
+        $currentRefunds = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'refunded')
+            ->sum('payment_total');
+
+        // Get total refunds for previous period
+        $previousRefunds = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where('status', 'refunded')
+            ->sum('payment_total');
+
+        // Convert from cents to dollars
+        $currentPayments = $currentPayments ? $currentPayments / 100 : 0;
+        $previousPayments = $previousPayments ? $previousPayments / 100 : 0;
+        $currentPending = $currentPending ? $currentPending / 100 : 0;
+        $previousPending = $previousPending ? $previousPending / 100 : 0;
+        $currentRefunds = $currentRefunds ? $currentRefunds / 100 : 0;
+        $previousRefunds = $previousRefunds ? $previousRefunds / 100 : 0;
+
+        // Calculate payment growth percentage
+        $paymentGrowthPercentage = 0;
+        if ($previousPayments > 0) {
+            $paymentGrowthPercentage = round((($currentPayments - $previousPayments) / $previousPayments) * 100, 1);
+        } elseif ($currentPayments > 0) {
+            $paymentGrowthPercentage = 100;
+        }
+
+        $paymentGrowthText = $paymentGrowthPercentage > 0 ? '+' . $paymentGrowthPercentage . '%' : $paymentGrowthPercentage . '%';
+        $paymentGrowthType = $paymentGrowthPercentage > 0 ? 'up' : ($paymentGrowthPercentage < 0 ? 'down' : 'neutral');
+
+        // Calculate refund growth percentage
+        $refundGrowthPercentage = 0;
+        if ($previousRefunds > 0) {
+            $refundGrowthPercentage = round((($currentRefunds - $previousRefunds) / $previousRefunds) * 100, 1);
+        } elseif ($currentRefunds > 0) {
+            $refundGrowthPercentage = 100;
+        }
+
+        $refundGrowthText = $refundGrowthPercentage > 0 ? '+' . $refundGrowthPercentage . '%' : $refundGrowthPercentage . '%';
+        $refundGrowthType = $refundGrowthPercentage > 0 ? 'down' : ($refundGrowthPercentage < 0 ? 'up' : 'neutral'); // Refunds going up is bad
+
+        // Calculate pending growth percentage
+        $pendingGrowthPercentage = 0;
+        if ($previousPending > 0) {
+            $pendingGrowthPercentage = round((($currentPending - $previousPending) / $previousPending) * 100, 1);
+        } elseif ($currentPending > 0) {
+            $pendingGrowthPercentage = 100;
+        }
+
+        $pendingGrowthText = $pendingGrowthPercentage > 0 ? '+' . $pendingGrowthPercentage . '%' : $pendingGrowthPercentage . '%';
+        $pendingGrowthType = $pendingGrowthPercentage > 0 ? 'up' : ($pendingGrowthPercentage < 0 ? 'down' : 'neutral');
+
+        // Get default currency from payment settings
+        $paymentSettings = PaymentHelper::getPaymentSettings();
+        $currency = ArrayHelper::get($paymentSettings, 'currency', 'USD');
+        $currencySymbol = PaymentHelper::getCurrencySymbol($currency);
+
+        return [
+            'total_payments' => [
+                'value' => number_format($currentPayments, 2),
+                'raw_value' => $currentPayments,
+                'currency' => $currency,
+                'currency_symbol' => $currencySymbol,
+                'change' => $paymentGrowthText,
+                'change_type' => $paymentGrowthType
+            ],
+            'pending_payments' => [
+                'value' => number_format($currentPending, 2),
+                'raw_value' => $currentPending,
+                'currency' => $currency,
+                'currency_symbol' => $currencySymbol,
+                'change' => $pendingGrowthText,
+                'change_type' => $pendingGrowthType
+            ],
+            'total_refunds' => [
+                'value' => number_format($currentRefunds, 2),
+                'raw_value' => $currentRefunds,
+                'currency' => $currency,
+                'currency_symbol' => $currencySymbol,
+                'change' => $refundGrowthText,
+                'change_type' => $refundGrowthType
+            ]
         ];
     }
 
@@ -1132,7 +1267,7 @@ class ReportHandler
         if ($interval && $interval !== 'all') {
             $query->where('billing_interval', $interval);
         }
-        
+
         // Apply form id
         if ($formId && $formId !== 'null') {
             $query->where('form_id', $formId);
@@ -1244,7 +1379,7 @@ class ReportHandler
         if ($formId) {
             $query->where('form_id', $formId);
         }
-        
+
         $submissions = $query->select(['id', 'country'])
                             ->get();
 
@@ -1273,5 +1408,560 @@ class ReportHandler
         return [
             'country_data' => array_values($countryData)
         ];
+    }
+
+    /**
+     * Get top performing forms by entries, views, or payments
+     */
+    public function getTopPerformingForms($startDate, $endDate, $metric = 'entries')
+    {
+        list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
+
+        $forms = Form::select(['id', 'title'])->get();
+        $topForms = [];
+
+        foreach ($forms as $form) {
+            $value = 0;
+
+            switch ($metric) {
+                case 'entries':
+                    $value = Submission::where('form_id', $form->id)
+                        ->whereBetween('created_at', [$startDate, $endDate])
+                        ->count();
+                    break;
+
+                case 'payments':
+                    // Check if payment module is enabled
+                    $paymentSettings = get_option('__fluentform_payment_module_settings');
+                    if ($paymentSettings && ArrayHelper::get($paymentSettings, 'status')) {
+                        $value = wpFluent()
+                            ->table('fluentform_transactions')
+                            ->where('form_id', $form->id)
+                            ->where('status', 'paid')
+                            ->whereBetween('created_at', [$startDate, $endDate])
+                            ->sum('payment_total');
+                        // Convert from cents to dollars
+                        $value = $value ? round($value / 100, 2) : 0;
+                    }
+                    break;
+            }
+
+            if ($value > 0) {
+                $topForms[] = [
+                    'id' => $form->id,
+                    'title' => $form->title ?: 'Untitled Form',
+                    'value' => $value
+                ];
+            }
+        }
+
+        // Sort by value in descending order
+        usort($topForms, function($a, $b) {
+            return $b['value'] - $a['value'];
+        });
+
+        // Return top 5 forms
+        return array_slice($topForms, 0, 5);
+    }
+
+    /**
+     * Get net revenue grouped by different criteria
+     */
+    public function getNetRevenueByGroup()
+    {
+        // Verify user permissions
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Insufficient permissions'], 403);
+            return;
+        }
+
+        $groupBy = sanitize_text_field($this->app->request->get('group_by', 'forms'));
+        $startDate = sanitize_text_field($this->app->request->get('start_date'));
+        $endDate = sanitize_text_field($this->app->request->get('end_date'));
+        $formId = intval($this->app->request->get('form_id', 0));
+
+        // Validate and set default dates if not provided
+        if (!$startDate || !$endDate) {
+            $endDate = current_time('Y-m-d H:i:s');
+            $startDate = date('Y-m-d H:i:s', strtotime('-30 days', strtotime($endDate)));
+        }
+
+        try {
+            $data = [];
+
+            switch ($groupBy) {
+                case 'forms':
+                    $data = $this->getNetRevenueByForms($startDate, $endDate);
+                    break;
+                case 'payment_method':
+                    $data = $this->getNetRevenueByPaymentMethod($startDate, $endDate, $formId);
+                    break;
+                case 'payment_type':
+                    $data = $this->getNetRevenueByPaymentType($startDate, $endDate, $formId);
+                    break;
+                default:
+                    wp_send_json_error(['message' => 'Invalid group_by parameter'], 400);
+                    return;
+            }
+
+            wp_send_json_success([
+                'data' => $data,
+                'group_by' => $groupBy,
+                'date_range' => [
+                    'start' => $startDate,
+                    'end' => $endDate
+                ]
+            ]);
+        } catch (\Exception $e) {
+            wp_send_json_error(['message' => 'Error fetching revenue data: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Get net revenue grouped by forms
+     */
+    private function getNetRevenueByForms($startDate, $endDate)
+    {
+        global $wpdb;
+
+        $transactionsTable = $wpdb->prefix . 'fluentform_transactions';
+        $formsTable = $wpdb->prefix . 'fluentform_forms';
+
+        $sql = "SELECT
+            f.id as form_id,
+            f.title as form_title,
+            SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) as paid_amount,
+            SUM(CASE WHEN t.status = 'pending' THEN t.payment_total ELSE 0 END) as pending_amount,
+            SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END) as refunded_amount,
+            (SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) - SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END)) as net_revenue
+        FROM {$transactionsTable} t
+        INNER JOIN {$formsTable} f ON t.form_id = f.id
+        WHERE t.created_at BETWEEN %s AND %s
+        AND t.status IN ('paid', 'pending', 'refunded')
+        GROUP BY f.id, f.title
+        ORDER BY net_revenue DESC";
+
+        $query = $wpdb->get_results($wpdb->prepare($sql, $startDate, $endDate));
+
+        $results = [];
+        foreach ($query as $row) {
+            $results[] = [
+                'form_id' => $row->form_id,
+                'form_title' => $row->form_title ?: 'Untitled Form',
+                'paid_amount' => round($row->paid_amount / 100, 2),
+                'pending_amount' => round($row->pending_amount / 100, 2),
+                'refunded_amount' => round($row->refunded_amount / 100, 2),
+                'net_revenue' => round($row->net_revenue / 100, 2)
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get net revenue grouped by payment method
+     */
+    private function getNetRevenueByPaymentMethod($startDate, $endDate, $formId = null)
+    {
+        global $wpdb;
+
+        $transactionsTable = $wpdb->prefix . 'fluentform_transactions';
+
+        $sql = "SELECT
+            t.payment_method,
+            SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) as paid_amount,
+            SUM(CASE WHEN t.status = 'pending' THEN t.payment_total ELSE 0 END) as pending_amount,
+            SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END) as refunded_amount,
+            (SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) - SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END)) as net_revenue,
+            COUNT(*) as transaction_count
+        FROM {$transactionsTable} t
+        WHERE t.created_at BETWEEN %s AND %s
+        AND t.status IN ('paid', 'pending', 'refunded')
+        AND t.payment_method IS NOT NULL";
+
+        $params = [$startDate, $endDate];
+
+        if ($formId) {
+            $sql .= " AND t.form_id = %d";
+            $params[] = $formId;
+        }
+
+        $sql .= " GROUP BY t.payment_method ORDER BY net_revenue DESC";
+
+        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
+
+        $results = [];
+        foreach ($query as $row) {
+            $paymentMethodName = $this->formatPaymentMethodName($row->payment_method);
+
+            $results[] = [
+                'payment_method' => $row->payment_method,
+                'payment_method_name' => $paymentMethodName,
+                'paid_amount' => round($row->paid_amount / 100, 2),
+                'pending_amount' => round($row->pending_amount / 100, 2),
+                'refunded_amount' => round($row->refunded_amount / 100, 2),
+                'net_revenue' => round($row->net_revenue / 100, 2),
+                'transaction_count' => $row->transaction_count
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get net revenue grouped by payment type (one-time vs subscription)
+     */
+    private function getNetRevenueByPaymentType($startDate, $endDate, $formId = null)
+    {
+        global $wpdb;
+
+        $transactionsTable = $wpdb->prefix . 'fluentform_transactions';
+
+        $sql = "SELECT
+            t.transaction_type,
+            SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) as paid_amount,
+            SUM(CASE WHEN t.status = 'pending' THEN t.payment_total ELSE 0 END) as pending_amount,
+            SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END) as refunded_amount,
+            (SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) - SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END)) as net_revenue,
+            COUNT(*) as transaction_count
+        FROM {$transactionsTable} t
+        WHERE t.created_at BETWEEN %s AND %s
+        AND t.status IN ('paid', 'pending', 'refunded')
+        AND t.transaction_type IN ('onetime', 'subscription')";
+
+        $params = [$startDate, $endDate];
+
+        if ($formId) {
+            $sql .= " AND t.form_id = %d";
+            $params[] = $formId;
+        }
+
+        $sql .= " GROUP BY t.transaction_type ORDER BY net_revenue DESC";
+
+        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
+
+        $results = [];
+        foreach ($query as $row) {
+            $typeName = $row->transaction_type === 'onetime' ? 'One-time Payment' : 'Subscription';
+
+            $results[] = [
+                'payment_type' => $row->transaction_type,
+                'payment_type_name' => $typeName,
+                'paid_amount' => round($row->paid_amount / 100, 2),
+                'pending_amount' => round($row->pending_amount / 100, 2),
+                'refunded_amount' => round($row->refunded_amount / 100, 2),
+                'net_revenue' => round($row->net_revenue / 100, 2),
+                'transaction_count' => $row->transaction_count
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Format payment method name for display
+     */
+    private function formatPaymentMethodName($paymentMethod)
+    {
+        $methodNames = [
+            'stripe' => 'Stripe',
+            'paypal' => 'PayPal',
+            'razorpay' => 'Razorpay',
+            'paystack' => 'Paystack',
+            'mollie' => 'Mollie',
+            'square' => 'Square',
+            'paddle' => 'Paddle',
+            'test' => 'Offline/Test',
+            'offline' => 'Offline'
+        ];
+
+        return $methodNames[$paymentMethod] ?? ucfirst($paymentMethod);
+    }
+
+    /**
+     * Get submission analysis grouped by different criteria
+     */
+    public function getSubmissionAnalysisByGroup()
+    {
+        // Verify user permissions
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Insufficient permissions'], 403);
+            return;
+        }
+
+        $groupBy = sanitize_text_field($this->app->request->get('group_by', 'forms'));
+        $startDate = sanitize_text_field($this->app->request->get('start_date'));
+        $endDate = sanitize_text_field($this->app->request->get('end_date'));
+        $formId = intval($this->app->request->get('form_id', 0));
+
+        // Validate and set default dates if not provided
+        if (!$startDate || !$endDate) {
+            $endDate = current_time('Y-m-d H:i:s');
+            $startDate = date('Y-m-d H:i:s', strtotime('-30 days', strtotime($endDate)));
+        }
+
+        try {
+            $data = [];
+
+            switch ($groupBy) {
+                case 'forms':
+                    $data = $this->getSubmissionAnalysisByForms($startDate, $endDate);
+                    break;
+                case 'submission_source':
+                    $data = $this->getSubmissionAnalysisBySource($startDate, $endDate, $formId);
+                    break;
+                case 'email':
+                    $data = $this->getSubmissionAnalysisByEmail($startDate, $endDate, $formId);
+                    break;
+                case 'country':
+                    $data = $this->getSubmissionAnalysisByCountry($startDate, $endDate, $formId);
+                    break;
+                case 'submission_date':
+                    $data = $this->getSubmissionAnalysisByDate($startDate, $endDate, $formId);
+                    break;
+                default:
+                    wp_send_json_error(['message' => 'Invalid group_by parameter'], 400);
+                    return;
+            }
+
+            wp_send_json_success([
+                'data' => $data,
+                'group_by' => $groupBy,
+                'date_range' => [
+                    'start' => $startDate,
+                    'end' => $endDate
+                ]
+            ]);
+        } catch (\Exception $e) {
+            wp_send_json_error(['message' => 'Error fetching submission analysis data: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Get submission analysis grouped by forms
+     */
+    private function getSubmissionAnalysisByForms($startDate, $endDate)
+    {
+        global $wpdb;
+
+        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
+        $formsTable = $wpdb->prefix . 'fluentform_forms';
+
+        $sql = "SELECT
+            f.id as form_id,
+            f.title as form_title,
+            COUNT(*) as total_submissions,
+            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
+            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+        FROM {$submissionsTable} s
+        INNER JOIN {$formsTable} f ON s.form_id = f.id
+        WHERE s.created_at BETWEEN %s AND %s
+        GROUP BY f.id, f.title
+        ORDER BY total_submissions DESC";
+
+        $query = $wpdb->get_results($wpdb->prepare($sql, $startDate, $endDate));
+
+        $results = [];
+        foreach ($query as $row) {
+            $results[] = [
+                'form_id' => $row->form_id,
+                'form_title' => $row->form_title ?: 'Untitled Form',
+                'total_submissions' => (int)$row->total_submissions,
+                'read_submissions' => (int)$row->read_submissions,
+                'unread_submissions' => (int)$row->unread_submissions,
+                'spam_submissions' => (int)$row->spam_submissions,
+                'conversion_rate' => (float)$row->conversion_rate
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get submission analysis grouped by source URL
+     */
+    private function getSubmissionAnalysisBySource($startDate, $endDate, $formId = null)
+    {
+        global $wpdb;
+
+        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
+
+        $sql = "SELECT
+            s.source_url,
+            COUNT(*) as total_submissions,
+            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
+            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+        FROM {$submissionsTable} s
+        WHERE s.created_at BETWEEN %s AND %s";
+
+        $params = [$startDate, $endDate];
+
+        if ($formId) {
+            $sql .= " AND s.form_id = %d";
+            $params[] = $formId;
+        }
+
+        $sql .= " GROUP BY s.source_url ORDER BY total_submissions DESC";
+
+        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
+
+        $results = [];
+        foreach ($query as $row) {
+            $results[] = [
+                'source_url' => $row->source_url ?: 'Direct Access',
+                'total_submissions' => (int)$row->total_submissions,
+                'read_submissions' => (int)$row->read_submissions,
+                'unread_submissions' => (int)$row->unread_submissions,
+                'spam_submissions' => (int)$row->spam_submissions,
+                'conversion_rate' => (float)$row->conversion_rate
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get submission analysis grouped by email
+     */
+    private function getSubmissionAnalysisByEmail($startDate, $endDate, $formId = null)
+    {
+        global $wpdb;
+
+        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
+
+        // Extract email from response JSON
+        $sql = "SELECT
+            COALESCE(
+                JSON_UNQUOTE(JSON_EXTRACT(s.response, '$.email')),
+                JSON_UNQUOTE(JSON_EXTRACT(s.response, '$.email_1')),
+                JSON_UNQUOTE(JSON_EXTRACT(s.response, '$.user_email')),
+                'No Email'
+            ) as email,
+            COUNT(*) as total_submissions,
+            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
+            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+        FROM {$submissionsTable} s
+        WHERE s.created_at BETWEEN %s AND %s";
+
+        $params = [$startDate, $endDate];
+
+        if ($formId) {
+            $sql .= " AND s.form_id = %d";
+            $params[] = $formId;
+        }
+
+        $sql .= " GROUP BY email ORDER BY total_submissions DESC LIMIT 100";
+
+        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
+
+        $results = [];
+        foreach ($query as $row) {
+            $results[] = [
+                'email' => $row->email,
+                'total_submissions' => (int)$row->total_submissions,
+                'read_submissions' => (int)$row->read_submissions,
+                'unread_submissions' => (int)$row->unread_submissions,
+                'spam_submissions' => (int)$row->spam_submissions,
+                'conversion_rate' => (float)$row->conversion_rate
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get submission analysis grouped by country
+     */
+    private function getSubmissionAnalysisByCountry($startDate, $endDate, $formId = null)
+    {
+        global $wpdb;
+
+        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
+
+        $sql = "SELECT
+            s.country,
+            COUNT(*) as total_submissions,
+            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
+            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+        FROM {$submissionsTable} s
+        WHERE s.created_at BETWEEN %s AND %s";
+
+        $params = [$startDate, $endDate];
+
+        if ($formId) {
+            $sql .= " AND s.form_id = %d";
+            $params[] = $formId;
+        }
+
+        $sql .= " GROUP BY s.country ORDER BY total_submissions DESC";
+
+        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
+
+        $results = [];
+        foreach ($query as $row) {
+            $results[] = [
+                'country' => $row->country ?: 'Unknown',
+                'total_submissions' => (int)$row->total_submissions,
+                'read_submissions' => (int)$row->read_submissions,
+                'unread_submissions' => (int)$row->unread_submissions,
+                'spam_submissions' => (int)$row->spam_submissions,
+                'conversion_rate' => (float)$row->conversion_rate
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get submission analysis grouped by submission date
+     */
+    private function getSubmissionAnalysisByDate($startDate, $endDate, $formId = null)
+    {
+        global $wpdb;
+
+        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
+
+        $sql = "SELECT
+            DATE(s.created_at) as submission_date,
+            COUNT(*) as total_submissions,
+            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
+            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+        FROM {$submissionsTable} s
+        WHERE s.created_at BETWEEN %s AND %s";
+
+        $params = [$startDate, $endDate];
+
+        if ($formId) {
+            $sql .= " AND s.form_id = %d";
+            $params[] = $formId;
+        }
+
+        $sql .= " GROUP BY DATE(s.created_at) ORDER BY submission_date DESC";
+
+        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
+
+        $results = [];
+        foreach ($query as $row) {
+            $results[] = [
+                'submission_date' => $row->submission_date,
+                'total_submissions' => (int)$row->total_submissions,
+                'read_submissions' => (int)$row->read_submissions,
+                'unread_submissions' => (int)$row->unread_submissions,
+                'spam_submissions' => (int)$row->spam_submissions,
+                'conversion_rate' => (float)$row->conversion_rate
+            ];
+        }
+
+        return $results;
     }
 }

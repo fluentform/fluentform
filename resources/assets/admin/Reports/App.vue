@@ -49,13 +49,44 @@
                         :forms_list="formsList"
                         :global_date_params="globalDateParams"
                         :chart_view="chartView"
+                        :selected-metrics="selectedChartMetrics"
                         @view-change="handleViewChange"
                         @form-change="handleFormChange"
+                        @chart-mode-change="handleChartModeChange"
                     />
                 </div>
             </el-col>
 
-            <!-- Completion Rates Section -->
+            <!-- Chart Metrics Selector Section -->
+            <el-col :span="8">
+                <div class="chart-metrics-selector-section">
+                    <chart-metrics-selector
+                        :reports="reports"
+                        :has-payment="hasPayment"
+                        :payment-currency="paymentCurrency"
+                        :selected-metrics="selectedChartMetrics"
+                        :chart-mode="chartMode"
+                        @metrics-changed="handleMetricsChanged"
+                    />
+                </div>
+            </el-col>
+        </el-row>
+
+        <!-- Completion Rates and Top Performing Forms Row -->
+        <el-row :gutter="24" class="completion-rates-row">
+            <el-col :span="16">
+                <div class="top-performing-forms-section">
+                    <top-performing-forms
+                            :top-forms-data="reports.top_performing_forms || []"
+                            :global-date-params="globalDateParams"
+                            :has-payment="hasPayment"
+                            :payment-currency="paymentCurrency"
+                            :loading="topFormsLoading"
+                            @metric-change="handleTopFormsMetricChange"
+                    />
+                </div>
+            </el-col>
+
             <el-col :span="8">
                 <div class="completion-rates-gauge-section">
                     <completion-rates-gauge
@@ -67,6 +98,7 @@
                     />
                 </div>
             </el-col>
+
         </el-row>
 
         <!-- Entries Grouped By Section -->
@@ -74,6 +106,23 @@
             <submission-heatmap
                 :heatmap_data="reports.heatmap_data"
                 :global_date_params="globalDateParams"
+            />
+        </div>
+
+        <!-- Net Revenue Analysis Section -->
+        <div v-if="hasPayment" class="net-revenue-section" style="margin-bottom: 24px;">
+            <net-revenue-by-group
+                :forms-list="formsList"
+                :global-date-params="globalDateParams"
+                :payment-currency="paymentCurrency"
+            />
+        </div>
+
+        <!-- Submission Analysis Section -->
+        <div class="submission-analysis-section" style="margin-bottom: 24px;">
+            <submission-analysis
+                :forms-list="formsList"
+                :global-date-params="globalDateParams"
             />
         </div>
 
@@ -136,6 +185,10 @@ import ApiLogsChart from './Components/ApiLogsChart/ApiLogsChart.vue';
 import TransactionsTable from './Components/TransactionsTable/TransactionsTable.vue';
 import CompletionRatesGauge from './Components/CompletionRatesGauge/CompletionRatesGauge.vue';
 import SubscriptionStats from './Components/SubscriptionStats/SubscriptionStats.vue';
+import ChartMetricsSelector from './Components/ChartMetrics/ChartMetricsSelector.vue';
+import TopPerformingForms from './Components/TopPerformingForms/TopPerformingForms.vue';
+import NetRevenueByGroup from './Components/NetRevenue/NetRevenueByGroup.vue';
+import SubmissionAnalysis from './Components/SubmissionAnalysis/SubmissionAnalysis.vue';
 
 export default {
     name: 'Reports',
@@ -147,7 +200,11 @@ export default {
         FormStatsCard,
         TransactionsTable,
         CompletionRatesGauge,
-        SubscriptionStats
+        SubscriptionStats,
+        ChartMetricsSelector,
+        TopPerformingForms,
+        NetRevenueByGroup,
+        SubmissionAnalysis
     },
     data() {
         const now = new Date();
@@ -188,6 +245,10 @@ export default {
             selectedGaugeFormId: null,
             selectedCountryHeatmapFormId: null,
             subscriptionsLoading: false,
+            topFormsLoading: false,
+            selectedTopFormsMetric: 'entries',
+            selectedChartMetrics: ['submissions', 'views'], // Default selected metrics
+            chartMode: 'activity', // Track current chart mode
             globalDateParams: {
                 startDate: formatDateForApi(thirtyDaysAgo, true),
                 endDate: formatDateForApi(now, false),
@@ -257,7 +318,7 @@ export default {
         },
         formStatsCards() {
             const stats = this.reports.form_stats || {};
-            return [
+            const cards = [
                 {
                     key: 'total_submissions',
                     title: 'Total Submissions',
@@ -293,17 +354,12 @@ export default {
                     changeType: stats.read_submissions?.change_type,
                     icon: 'el-icon-view',
                     bgColor: '#EFEBFF'
-                },
-                {
-                    key: 'active_integrations',
-                    title: 'Active Integrations',
-                    value: stats.active_integrations?.value,
-                    change: stats.active_integrations?.change,
-                    changeType: stats.active_integrations?.change_type,
-                    icon: 'el-icon-connection',
-                    bgColor: '#EEFBF6'
                 }
             ];
+
+
+
+            return cards;
         },
         completionRate() {
             const completionData = this.reports.completion_rate;
@@ -326,6 +382,13 @@ export default {
             }
             return 0; // Default value
         },
+        paymentCurrency() {
+            const stats = this.reports.form_stats || {};
+            if (stats.total_payments && stats.total_payments.currency_symbol) {
+                return stats.total_payments.currency_symbol;
+            }
+            return '$'; // Default fallback
+        }
     },
     methods: {
         fetchReports() {
@@ -486,7 +549,7 @@ export default {
                     this.transactionsLoading = false;
                 });
         },
-        
+
         handleSubscriptionFilterChange(params) {
             this.subscriptionsLoading = true;
 
@@ -593,6 +656,50 @@ export default {
 
         disableFutureDates(date) {
             return date > new Date();
+        },
+
+        handleMetricsChanged(selectedMetrics) {
+            this.selectedChartMetrics = selectedMetrics;
+            // The chart will automatically update due to the reactive prop binding
+        },
+
+        handleTopFormsMetricChange(metric) {
+            this.selectedTopFormsMetric = metric;
+            this.topFormsLoading = true;
+
+            const data = {
+                action: 'fluentform-get-reports',
+                component: 'top_performing_forms',
+                start_date: this.globalDateParams.startDate,
+                end_date: this.globalDateParams.endDate,
+                metric: metric
+            };
+
+            FluentFormsGlobal.$get(data)
+                .then(response => {
+                    if (response.data && response.data.reports && response.data.reports.top_performing_forms) {
+                        this.reports.top_performing_forms = response.data.reports.top_performing_forms;
+                    }
+                })
+                .fail(error => {
+                    console.error('Error fetching top performing forms data:', error);
+                })
+                .always(() => {
+                    this.topFormsLoading = false;
+                });
+        },
+
+        handleChartModeChange(mode) {
+            this.chartMode = mode;
+            // The ChartMetricsSelector will automatically update its available metrics
+            // and emit updated selected metrics through its watcher
+        },
+
+        decodeHtmlEntities(text) {
+            if (!text) return '$';
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = text;
+            return textarea.value;
         }
     },
     mounted() {
@@ -602,4 +709,34 @@ export default {
 };
 </script>
 
+<style scoped>
+/* Ensure equal heights for completion rates row */
+.completion-rates-row {
+    display: flex;
+    align-items: stretch;
+}
+
+.completion-rates-row .el-col {
+    display: flex;
+}
+
+.completion-rates-gauge-section,
+.top-performing-forms-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.completion-rates-gauge-section .card,
+.top-performing-forms-section .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.completion-rates-gauge-section .card-body,
+.top-performing-forms-section .card-body {
+    flex: 1;
+}
+</style>
 

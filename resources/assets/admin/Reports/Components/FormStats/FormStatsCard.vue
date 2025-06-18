@@ -5,7 +5,7 @@
         </div>
         <div class="stats-content">
             <div class="stats-title">{{ title }}</div>
-            <div class="stats-value">{{ formattedValue }}</div>
+            <div class="stats-value"><span v-html="formattedValue"></span></div>
             <div class="stats-change" :class="changeClass" v-if="change">
                 <i :class="changeIcon"></i>
                 {{ change }}

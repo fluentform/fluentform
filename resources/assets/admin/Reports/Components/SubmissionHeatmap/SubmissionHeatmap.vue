@@ -3,6 +3,10 @@
         <card-head>
             <h3>Entries grouped by</h3>
             <div class="heatmap-navigation">
+                    <div class="week-item">
+                        <span class="week-label">Viewing Week:</span>
+                        <span class="week-dates">{{ formatCurrentWeek() }}</span>
+                    </div>
                 <el-button
                     size="mini"
                     icon="el-icon-arrow-left"
@@ -425,8 +429,107 @@ export default {
         formatDateForDisplay(date) {
             const options = {year: 'numeric', month: 'short', day: 'numeric'};
             return date.toLocaleDateString(undefined, options);
-        }
+        },
+
+        formatSelectedRange() {
+            if (!this.selectedRangeStart || !this.selectedRangeEnd) {
+                return 'No range selected';
+            }
+
+            const startFormatted = this.formatDateForDisplay(this.selectedRangeStart);
+            const endFormatted = this.formatDateForDisplay(this.selectedRangeEnd);
+
+            // If same date, show only once
+            if (startFormatted === endFormatted) {
+                return startFormatted;
+            }
+
+            return `${startFormatted} - ${endFormatted}`;
+        },
+
+        formatCurrentWeek() {
+            if (!this.visibleDays || this.visibleDays.length === 0) {
+                return 'No data';
+            }
+
+            // visibleDays is reversed, so get the actual start and end
+            const weekStart = this.visibleDays[this.visibleDays.length - 1]; // Last item is earliest date
+            const weekEnd = this.visibleDays[0]; // First item is latest date
+
+            const startFormatted = this.formatDateForDisplay(weekStart);
+            const endFormatted = this.formatDateForDisplay(weekEnd);
+
+            // If same date, show only once
+            if (startFormatted === endFormatted) {
+                return startFormatted;
+            }
+
+            return `${startFormatted} - ${endFormatted}`;
+        },
+
+
     }
 };
 </script>
 
+<style scoped>
+.week-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 4px 0;
+}
+
+.week-label {
+    font-weight: 500;
+    color: #9ca3af;
+    min-width: 90px;
+    opacity: 0.9;
+    font-size: 12px;
+}
+
+.week-dates {
+    font-weight: 500;
+    color: #4b5563;
+    background: #f8fafc;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    font-size: 12px;
+    letter-spacing: 0.025em;
+    transition: all 0.2s ease;
+}
+
+.week-dates:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.heatmap-navigation {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .week-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 2px 0;
+    }
+
+    .week-label {
+        min-width: auto;
+        font-size: 11px;
+    }
+
+    .week-dates {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+}
+</style>
