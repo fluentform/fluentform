@@ -90,4 +90,37 @@ class FormIntegrationController extends Controller
         }
     }
     
+    public function createIntegrationField()
+    {
+        try {
+            $integrationName = sanitize_text_field($this->request->get('integration_name'));
+            $formId = intval($this->request->get('form_id'));
+            $fieldName = sanitize_text_field($this->request->get('field_name'));
+            $actionType = sanitize_text_field($this->request->get('action_type'));
+
+            $additionalData = $this->request->except(['integration_name', 'form_id', 'field_name', 'action_type']);
+
+            $result = apply_filters(
+                'fluentform/create_integration_field_' . $integrationName,
+                [
+                    'success' => false,
+                    'message' => __('Integration field creation not supported', 'fluentform')
+                ],
+                $fieldName,
+                $actionType,
+                $additionalData,
+                $formId
+            );
+
+            if ($result['success']) {
+                return $this->sendSuccess($result);
+            } else {
+                return $this->sendError($result, 422);
+            }
+        } catch (\Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
 }

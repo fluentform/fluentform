@@ -106,6 +106,7 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
         $router->delete('/', 'FormIntegrationController@delete');
         
         $router->get('/integration-list-id', 'FormIntegrationController@integrationListComponent');
+        $router->post('/create-field', 'FormIntegrationController@createIntegrationField');
     });
 });
 /*
