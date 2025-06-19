@@ -542,6 +542,26 @@ jQuery(document).ready(function () {
                     $(document).on('reset', formSelector, function (e) {
                         formResetHandler($(this))
                     });
+
+                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+
+                            // For radio buttons, just check it
+                            if ($(this).attr('type') === 'radio') {
+                                $(this).prop('checked', true);
+                            }
+                            // For checkboxes, toggle the checked state
+                            else if ($(this).attr('type') === 'checkbox') {
+                                $(this).prop('checked', !$(this).prop('checked'));
+                            }
+
+                            // Trigger change event for both types
+                            $(this).trigger('change');
+                            e.stopPropagation();
+                            return false;
+                        }
+                    });
                 };
 
                 /**
@@ -1618,8 +1638,4 @@ jQuery(document).ready(function () {
             .html('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
             .insertAfter(jQuery(this));
     });
-});
-
-jQuery(document.body).on('fluentform_init', function (e, $theForm) {
-
 });
