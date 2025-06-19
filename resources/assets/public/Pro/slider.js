@@ -187,6 +187,10 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
                     jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
+
+                    if ($el.closest('.ff-el-group').find('.ff-el-ratings').length) {
+                        jQuery(`[name=${key}][value="${value}"]`).closest('label').trigger('mouseenter');
+                    }
                 } else {
                     let $canvas = $el.closest('.ff-el-group').find('.fluentform-signature-pad');
                     if ($canvas.length) {
