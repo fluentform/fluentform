@@ -859,7 +859,7 @@ jQuery(document).ready(function () {
                     });
 
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
-                        const content = $(this).data('content');
+                        let content = $(this).data('content');
                         let $popContent = $('.ff-el-pop-content');
                         if (!$popContent.length) {
                             $('<div/>', {
@@ -1518,16 +1518,17 @@ jQuery(document).ready(function () {
                         return true;
                     }
 
-                    if (typeof window.intlTelInputGlobals == 'undefined') {
-                        return true;
-                    }
-
                     if (!el || !el[0]) {
                         return;
                     }
 
+                    let iti;
+                    if (typeof window.intlTelInputGlobals !== 'undefined') {
+                        iti = window.intlTelInputGlobals.getInstance(el[0]);
+                    } else {
+                        iti = el.data('iti');
+                    }
 
-                    var iti = window.intlTelInputGlobals.getInstance(el[0]);
                     if (!iti) {
                         return true;
                     }

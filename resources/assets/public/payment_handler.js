@@ -84,15 +84,29 @@ export class Payment_handler {
 
         this.totalAmount = totalAmount;
 
-        const discounts = this.getDiscounts();
+        let discounts = this.getDiscounts();
+        const validDiscounts = [];
 
         jQuery.each(discounts, (index, discount) => {
             let discountAmount = discount.amount;
+
+            // If minimum amount isn't purchased before this discount can be used, remove the discount and show error message
+            if (discount.min_amount && discount.min_amount > this.totalAmount) {
+                delete this.appliedCoupons[discount.code];
+                this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                this.$form.find(`.ff_resp_item_${discount.code}`).remove();
+                this.recordCouponMessage(this.$form.find('.ff_coupon_wrapper'), discount.code, `${discount.code} - ${discount.min_amount_message}`, 'error');
+                return;
+            }
+
             if (discount.coupon_type === 'percent') {
                 discountAmount = (discount.amount / 100) * this.totalAmount;
             }
             this.totalAmount -= discountAmount;
+            validDiscounts.push(discount);
         });
+
+        discounts = validDiscounts;
 
         form.trigger('payment_amount_change', {
             amount: totalAmount,
@@ -470,9 +484,11 @@ export class Payment_handler {
             html: '&times;',
             click: (e) => {
                 $responseDiv.find('.ff_resp_item_' + coupon_code).remove();
-                delete this.appliedCoupons[coupon_code];
-                this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
-                this.$form.trigger('do_calculation');
+                if (coupon_code in this.appliedCoupons) {
+                    delete this.appliedCoupons[coupon_code];
+                    this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                    this.$form.trigger('do_calculation');
+                }
             }
         });
 
@@ -827,22 +843,25 @@ export class Payment_handler {
         jQuery('#form_success').remove();
     }
 }
+// Register payment handler events only if pro is not installed.
+// If pro is installed, payment handler events is registered from payment_handler_pro.js
+if (!window.fluentFormVars.pro_payment_script_compatible) {
+    (function ($) {
+        $.each($('form.fluentform_has_payment'), function () {
+            const $form = $(this);
+            $form.on('fluentform_init_single', function (event, instance) {
+                (new Payment_handler($form, instance)).init();
+            });
+        });
 
-(function ($) {
-    $.each($('form.fluentform_has_payment'), function () {
-        const $form = $(this);
-        $form.on('fluentform_init_single', function (event, instance) {
+        $(document).on('ff_reinit', function (e, formItem) {
+            var $form = $(formItem);
+            $form.attr('data-ff_reinit', 'yes');
+            const instance = fluentFormApp($form);
+            if (!instance) {
+                return false;
+            }
             (new Payment_handler($form, instance)).init();
         });
-    });
-
-    $(document).on('ff_reinit', function (e, formItem) {
-        var $form = $(formItem);
-        $form.attr('data-ff_reinit', 'yes');
-        const instance = fluentFormApp($form);
-        if (!instance) {
-            return false;
-        }
-        (new Payment_handler($form, instance)).init();
-    });
-}(jQuery));
+    }(jQuery));
+}

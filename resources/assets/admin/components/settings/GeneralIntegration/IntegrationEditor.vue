@@ -163,6 +163,7 @@
                                     <filed-general
                                             field_type="textarea"
                                             :editorShortcodes="editorShortcodes"
+                                            :placeholder="field?.placeholder"
                                             v-model="settings[field.key]"
                                     />
                                 </template>
