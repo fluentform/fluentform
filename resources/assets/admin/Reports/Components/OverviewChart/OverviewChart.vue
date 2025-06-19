@@ -6,22 +6,22 @@
                     <h3>Conversion Chart</h3>
                 </div>
                 <div class="card-controls">
-                  <el-select
-                    v-model="chartType"
-                    placeholder="Chart Type"
-                    size="small"
-                    @change="handleChartTypeChange"
-                    style="width: 120px; margin-right: 12px;"
-                  >
-                    <el-option label="Bar Chart" value="bar">
-                      <i class="el-icon-s-data" style="margin-right: 8px;"></i>
-                      Bar Chart
-                    </el-option>
-                    <el-option label="Line Chart" value="line">
-                      <i class="el-icon-s-marketing" style="margin-right: 8px;"></i>
-                      Line Chart
-                    </el-option>
-                  </el-select>
+<!--                  <el-select-->
+<!--                    v-model="chartType"-->
+<!--                    placeholder="Chart Type"-->
+<!--                    size="small"-->
+<!--                    @change="handleChartTypeChange"-->
+<!--                    style="width: 120px; margin-right: 12px;"-->
+<!--                  >-->
+<!--                    <el-option label="Bar Chart" value="bar">-->
+<!--                      <i class="el-icon-s-data" style="margin-right: 8px;"></i>-->
+<!--                      Bar Chart-->
+<!--                    </el-option>-->
+<!--                    <el-option label="Line Chart" value="line">-->
+<!--                      <i class="el-icon-s-marketing" style="margin-right: 8px;"></i>-->
+<!--                      Line Chart-->
+<!--                    </el-option>-->
+<!--                  </el-select>-->
                   <el-radio-group
                     v-model="chartMode"
                     size="small"
