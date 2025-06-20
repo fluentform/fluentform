@@ -153,6 +153,7 @@ const formConditional = function ($, $theForm, form) {
             let $theform = getTheForm();
             var el = $("[data-name='" + name + "']", $theform);
             el = el.length ? el : $("[name='" + name + "']", $theform);
+            el = el.length ? el : $("[data-condition_field_name='" + name + "']", $theform);
             return el.length ? el : $("[name='" + name + "[]']", $theform);
         };
 

@@ -120,12 +120,14 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     addFilesToElement($el, value);
                 } else if ($el.prop('multiple')) {
                     if ($.isFunction(window.Choices)) {
-                        let choiceJs = $el.data('choicesjs');
-                        
-                        choiceJsInputs.push({
-                            handler: choiceJs,
-                            values: value
-                        });
+                        let choiceJs  = $el.data('choicesjs');
+
+                        if (choiceJs) {
+                            choiceJsInputs.push({
+                                handler: choiceJs,
+                                values: value
+                            });
+                        }
                     } else {
                         $el.val(value).change();
                     }
@@ -187,7 +189,17 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
                     $theForm.find(`[name=${key}][value="${value}"]`).prop('checked', true).change();
+
+                    if ($el.closest('.ff-el-group').find('.ff-el-ratings').length) {
+                        $theForm.find(`[name=${key}][value="${value}"]`).closest('label').trigger('mouseenter');
+                    }
+
                 } else {
+                    if ($el.hasClass('ff_has_multi_select') && $el.data('choicesjs')) {
+                        $el.data('choicesjs').removeActiveItems(value);
+                        $el.data('choicesjs').setChoiceByValue(value);
+                    }
+
                     let $canvas = $el.closest('.ff-el-group').find('.fluentform-signature-pad');
                     if ($canvas.length) {
                         let canvas = $canvas[0];
@@ -202,10 +214,19 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 }
             }
         });
+
         // populate ChoiceJs Values separately as it breaks the loop
         if (choiceJsInputs.length > 0 ){
             for (let i = 0; i < choiceJsInputs.length ; i++) {
-                choiceJsInputs[i].handler.setValue(choiceJsInputs[i].values).change();
+                const handler = choiceJsInputs[i].handler;
+                const values = choiceJsInputs[i].values;
+                // First set the value
+                handler.setValue(values);
+                // Then trigger change on the original element
+                const element = handler.passedElement?.element;
+                if (element) {
+                    $(element).trigger('change');
+                }
             }
         }
 

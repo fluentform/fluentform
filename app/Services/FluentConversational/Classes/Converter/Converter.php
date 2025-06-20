@@ -425,6 +425,11 @@ class Converter
                 } else {
                     $question['step'] = 1;
                 }
+
+                $enabledQtyMapping = 'yes' === ArrayHelper::get($field, 'settings.enable_target_product');
+                if ($enabledQtyMapping && $targetProductName = ArrayHelper::get($field, 'settings.target_product')) {
+                    $question['targetProduct'] = $targetProductName;
+                }
                 
                 $question['is_calculable'] = true;
                 $question['type'] = 'FlowFormRangesliderType';
