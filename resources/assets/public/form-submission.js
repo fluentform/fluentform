@@ -143,6 +143,13 @@ jQuery(document).ready(function () {
                     try {
                         var $inputs = $theForm
                             .find(':input').filter(function (i, el) {
+                                // Ignore repeater container
+                                if ($(el).attr('data-type') === 'repeater_container') {
+                                    if ($(this).closest('.has-conditions').hasClass('ff_excluded')) {
+                                        $(this).val('');
+                                    }
+                                    return true;
+                                }
                                 return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                             });
 
@@ -153,7 +160,7 @@ jQuery(document).ready(function () {
                         // data names array
                         var inputsDataNames = inputsData.map(item => item.name);
 
-                        // Ignore chekbox and radio which one inside table like checkable-grid, net-promoter-score etc
+                        // Ignore checkbox and radio which one inside table like checkable-grid, net-promoter-score etc
                         $inputs = $inputs.filter(function () {
                             return !$(this).closest('.ff-el-input--content').find('table').length;
                         });
