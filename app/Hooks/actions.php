@@ -488,6 +488,26 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         }
         return $item;
     });
+
+    add_filter('fluentform/editor_init_element_gdpr_agreement', function ($item, $form) {
+        $isConversationalForm = Helper::isConversionForm($form->id);
+        
+        if ($isConversationalForm) {
+            $item['settings']['tc_agree_text'] = __('I accept', 'fluentform');
+        }
+        
+        return $item;
+    }, 10, 2);
+
+    add_filter('fluentform/editor_init_element_terms_and_condition', function ($item, $form) {
+        $isConversationalForm = Helper::isConversionForm($form->id);
+        
+        if ($isConversationalForm) {
+            $item['settings']['hide_disagree'] = false;
+        }
+
+        return $item;
+    }, 10, 2);
 }, 10);
 
 $app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use ($app) {

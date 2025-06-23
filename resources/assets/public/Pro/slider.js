@@ -62,16 +62,16 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             if (!value) return;
             let type = Object.prototype.toString.call(value);
 
-
             if (type === '[object Object]') {
-                let $el = jQuery(`[data-name=${key}]`);
+                let $el = $theForm.find(`[data-name=${key}]`);
 
                 if ($el.length && $el.attr('data-type') === 'tabular-element') {
                     // Tabular Grid
                     jQuery.each(value, (row, columns) => {
-                        let $checkboxes = jQuery(`[name="${key}[${row}]\\[\\]"]`);
+                        // Limit to current form
+                        let $checkboxes = $theForm.find(`[name="${key}[${row}]\\[\\]"]`);
                         if (!$checkboxes.length) {
-                            $checkboxes = jQuery(`[name="${key}[${row}]"]`);
+                            $checkboxes = $theForm.find(`[name="${key}[${row}]"]`);
                         }
                         jQuery.each($checkboxes, (i, cbox) => {
                             let $val = $(cbox).val();
@@ -105,15 +105,17 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                         });
                     });
                 } else {
-                    // Names, Address e.t.c. fields
                     jQuery.each(value, (k, v) => {
-                        jQuery(`[name="${key}[${k}]"]`).val(v).change();
+                        $theForm.find(`[name="${key}[${k}]"]`).val(v).change();
                     });
                 }
             } else if (type === '[object Array]') {
-                let $el = jQuery(`[name=${key}]`);
-                $el = $el.length ? $el : jQuery(`[data-name=${key}]`);
-                $el = $el.length ? $el : jQuery(`[name=${key}\\[\\]]`);
+                // Limit to current form
+                let $el = $theForm.find(`[name=${key}]`);
+                $el = $el.length ? $el : $theForm.find(`[data-name=${key}]`);
+                $el = $el.length ? $el : $theForm.find(`[name=${key}\\[\\]]`);
+                
+                // Rest of the code remains the same but uses $el which is now form-specific
                 if ($el.attr('type') == 'file') {
                     addFilesToElement($el, value);
                 } else if ($el.prop('multiple')) {
@@ -126,7 +128,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                                 values: value
                             });
                         }
-                    }else{
+                    } else {
                         $el.val(value).change();
                     }
                 } else if ($el.attr('data-type') === 'repeater_field') {
@@ -162,10 +164,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     });
                 }
             } else {
-                // Others
-                let $el = jQuery(`[name=${key}]`);
+                let $el = $theForm.find(`[name=${key}]`);
 
-                //rich text
                 if ($el.hasClass('fluentform-post-content')) {
                     if (window.wp && window.wp.editor) {
                         let editorId = $el.attr('id');
@@ -188,11 +188,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 }
 
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
-                    jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
+                    $theForm.find(`[name=${key}][value="${value}"]`).prop('checked', true).change();
 
                     if ($el.closest('.ff-el-group').find('.ff-el-ratings').length) {
-                        jQuery(`[name=${key}][value="${value}"]`).closest('label').trigger('mouseenter');
+                        $theForm.find(`[name=${key}][value="${value}"]`).closest('label').trigger('mouseenter');
                     }
+
                 } else {
                     if ($el.hasClass('ff_has_multi_select') && $el.data('choicesjs')) {
                         $el.data('choicesjs').removeActiveItems(value);
