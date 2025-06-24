@@ -30,7 +30,18 @@ class ShortCodeParser
         'submission'      => null,
     ];
 
-    public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false, $providerOrIsHTML = false)
+    /**
+     * Parse shortcodes in content
+     * 
+     * @param mixed $parsable
+     * @param int $entryId
+     * @param array $data
+     * @param object|null $form
+     * @param bool $isUrl
+     * @param mixed $providerOrIsHTML
+     * @return mixed
+     */
+    public static function parse($parsable, $entryId, $data = [], ?object $form = null, $isUrl = false, $providerOrIsHTML = false)
     {
         try {
             static::setDependencies($entryId, $data, $form, $providerOrIsHTML);

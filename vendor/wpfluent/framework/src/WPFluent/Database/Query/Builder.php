@@ -209,15 +209,15 @@ class Builder
     /**
      * Create a new query builder instance.
      *
-     * @param  \FluentForm\Framework\Database\ConnectionInterface  $connection
-     * @param  \FluentForm\Framework\Database\Query\Grammar  $grammar
-     * @param  \FluentForm\Framework\Database\Query\Processor  $processor
-     * @return void
+     * @param ConnectionInterface $connection
+     * @param Grammar|null $grammar
+     * @param Processor | null $processor
      */
-    public function __construct(ConnectionInterface $connection,
-                                Grammar $grammar = null,
-                                Processor $processor = null)
-    {
+    public function __construct(
+        ConnectionInterface $connection,
+        ?Grammar $grammar = null,
+        ?Processor $processor = null
+    ) {
         $this->connection = $connection;
         $this->grammar = $grammar ?: $connection->getQueryGrammar();
         $this->processor = $processor ?: $connection->getPostProcessor();
