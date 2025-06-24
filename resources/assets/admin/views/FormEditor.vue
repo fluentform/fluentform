@@ -539,7 +539,7 @@
             containerSupportedFields : [
                 { key: 'input_text', label: 'Text Field' },
                 { key: 'input_email', label: 'Email Field' },
-                { key: 'select', label: 'Select Field' },
+                { key: 'select', label: 'Select Field', condition: field => !field.attributes.multiple }, // Only allow non-multiple select
                 { key: 'input_mask', label: 'Mask Field' },
                 { key: 'custom_html', label: 'Custom HTML' },
                 { key: 'textarea', label: 'Text Area' },
@@ -569,18 +569,34 @@
 
 	    filteredGeneralMockList() {
 		    if (this.editorInserterInContainerRepeater) {
-			    return this.generalMockList.filter(item =>
-				    this.containerSupportedFields.find(field => field.key === item.element)
-			    );
+			    return this.generalMockList.filter(item => {
+				    const supportedField = this.containerSupportedFields.find(field => field.key === item.element);
+                    
+				    if (!supportedField) return false;
+				    
+				    if (supportedField.condition && typeof supportedField.condition === 'function') {
+					    return supportedField.condition(item);
+				    }
+				    
+				    return true;
+			    });
 		    }
 		    return this.generalMockList;
 	    },
 
 	    filteredAdvancedMockList() {
 		    if (this.editorInserterInContainerRepeater) {
-			    return this.advancedMockList.filter(item =>
-				    this.containerSupportedFields.find(field => field.key === item.element)
-			    );
+			    return this.advancedMockList.filter(item => {
+				    const supportedField = this.containerSupportedFields.find(field => field.key === item.element);
+				    
+				    if (!supportedField) return false;
+				    
+				    if (supportedField.condition && typeof supportedField.condition === 'function') {
+					    return supportedField.condition(item);
+				    }
+				    
+				    return true;
+			    });
 		    }
 		    return this.advancedMockList;
 	    },
@@ -863,19 +879,41 @@
                 });
                 return false;
             }
-	        let $repeaterContainerElement = jQuery(event.target).closest('.repeater-item-container');
-	        if ($repeaterContainerElement.length) {
-		        const isSupportedField = this.containerSupportedFields.some(field => field.key === item.element);
-		        if (!isSupportedField && this.form.dropzone != list) {
-					this.fieldNotSupportInContainerRepeater = true;
-			        const supportedFieldsList = this.containerSupportedFields.map(field => field.label).join(', ');
-			        this.$message({
-				        message: this.$t(`This field is not supported in the container. Supported fields are: ${supportedFieldsList}`),                    type: 'warning',
-			        });
-			        return false;
-		        }
-	        }
-
+            
+            let $repeaterContainerElement = jQuery(event.target).closest('.repeater-item-container');
+            if ($repeaterContainerElement.length) {
+                // Check if it's a multi-select
+                if (item.element === 'select' && item.attributes && item.attributes.multiple) {
+                    this.$message({
+                        message: this.$t('Multi-select fields are not supported in container repeaters.'),
+                        type: 'warning',
+                    });
+                    return false;
+                }
+                
+                const isSupportedField = this.containerSupportedFields.some(field => {
+                    if (field.key === item.element) {
+                        if (field.condition && typeof field.condition === 'function') {
+                            return field.condition(item);
+                        }
+                        return true;
+                    }
+                    return false;
+                });
+                
+                if (!isSupportedField && this.form.dropzone != list) {
+                    this.fieldNotSupportInContainerRepeater = true;
+                    const supportedFieldsList = this.containerSupportedFields
+                        .filter(field => !field.condition)
+                        .map(field => field.label)
+                        .join(', ');
+                    this.$message({
+                        message: this.$t(`This field is not supported in the container. Supported fields are: ${supportedFieldsList}`),
+                        type: 'warning',
+                    });
+                    return false;
+                }
+            }
 
             const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
             if (this.isAutoloadCaptchaEnabled && captchas.includes(item.element)) {
@@ -925,12 +963,36 @@
                 return;
             }
 
-            const isSupportedField = this.containerSupportedFields.some(field => field.key === item.element);
+            // Check if it's a multi-select being added to a repeater container
+            if (this.editorInserterInContainerRepeater && 
+                freshCopy.element === 'select' && 
+                freshCopy.attributes && 
+                freshCopy.attributes.multiple) {
+                this.$message({
+                    message: this.$t('Multi-select fields are not supported in container repeaters.'),
+                    type: 'warning',
+                });
+                return;
+            }
+
+            const isSupportedField = this.containerSupportedFields.some(field => {
+                if (field.key === item.element) {
+                    if (field.condition && typeof field.condition === 'function') {
+                        return field.condition(item);
+                    }
+                    return true;
+                }
+                return false;
+            });
 
             if (this.editorInserterInContainerRepeater && !isSupportedField) {
-                const supportedFieldsList = this.containerSupportedFields.map(field => field.label).join(', ');
+                const supportedFieldsList = this.containerSupportedFields
+                    .filter(field => !field.condition)
+                    .map(field => field.label)
+                    .join(', ');
                 this.$message({
-                    message: this.$t(`This field is not supported in the container repeater. Supported fields are: ${supportedFieldsList}`),                    type: 'warning',
+                    message: this.$t(`This field is not supported in the container repeater. Supported fields are: ${supportedFieldsList}`),
+                    type: 'warning',
                 });
                 return false;
             }
