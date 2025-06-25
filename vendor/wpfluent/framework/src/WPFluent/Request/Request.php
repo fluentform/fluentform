@@ -139,19 +139,23 @@ class Request
      */
     public function getIp()
     {
-        // Prioritize REMOTE_ADDR as WordFence Suggestion
-        $ip = $this->server('REMOTE_ADDR');
-
-        if (empty($ip) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $this->server('HTTP_X_FORWARDED_FOR');
+        // Nginx + Cloudflare setup
+        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            return $this->server('HTTP_CF_CONNECTING_IP');
         }
 
-        if (empty($ip) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $this->server('HTTP_CLIENT_IP');
+        if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            return $this->server('HTTP_X_REAL_IP');
         }
 
-        // If no valid IP is found, return '0.0.0.0'
-        return !empty($ip) ? $ip : '0.0.0.0';
+        // Nginx is configured to use X-Forwarded-For
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $this->server('HTTP_X_FORWARDED_FOR'));
+            return trim($ips[0]); // First IP is typically the client
+        }
+
+        // Fallback to direct connection
+        return $this->server('REMOTE_ADDR') ? $this->server('REMOTE_ADDR') : '0.0.0.0';
     }
 
     public function server($key = null, $default = null)

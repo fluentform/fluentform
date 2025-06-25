@@ -8,6 +8,10 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 
 class GravityFormsMigrator extends BaseMigrator
 {
+    /**
+     * @var bool
+     */
+    protected $hasStep = false;
 
     public function __construct()
     {

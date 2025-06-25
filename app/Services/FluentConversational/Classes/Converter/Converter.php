@@ -329,10 +329,14 @@ class Converter
                 ];
                 
                 if ('terms_and_condition' === $field['element']) {
-                    $question['options'][] = [
-                        'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I don\'t accept'),
-                        'value' => 'off',
-                    ];
+                    $hideDisagreeOption = ArrayHelper::isTrue($field, 'settings.hide_disagree');
+                    
+                    if (!$hideDisagreeOption) {
+                        $question['options'][] = [
+                            'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I don\'t accept'),
+                            'value' => 'off',
+                        ];
+                    }
                 }
                 
                 $question['nextStepOnAnswer'] = true;

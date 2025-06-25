@@ -104,6 +104,19 @@
             this.fetchInputs();
             this.fetchAllEditorShortcodes();
 
+            const isIntegrationRoute = this.$route.path.startsWith('/all-integrations');
+            
+            // If we're on an integration route, find and activate the all-integrations menu item
+            if (isIntegrationRoute) {
+                const $integrationEl = jQuery('.ff_settings_list a[data-route_key="/all-integrations"]');
+                if ($integrationEl.length) {
+                    this.maybeSetRoute($integrationEl);
+                    handleSidebarActiveLink($integrationEl.parent(), true, true);
+                    return;
+                }
+            }
+
+            // Original code for other routes
             const $el = jQuery('.ff_settings_list a[data-route_key="' + this.$route.path + '"]');
             if ($el.length) {
                 this.maybeSetRoute($el)
@@ -132,6 +145,32 @@
             // init scrolling page
             this.scrollTo();
 
+            // Add this to handle page reloads with integration routes
+            window.addEventListener('load', () => {
+                if (isIntegrationRoute) {
+                    const $integrationEl = jQuery('.ff_settings_list a[data-route_key="/all-integrations"]');
+                    if ($integrationEl.length) {
+                        handleSidebarActiveLink($integrationEl.parent(), true, true);
+                    }
+                }
+            });
+        },
+        watch: {
+            '$route'(to, from) {
+                // Check if navigating to an integration route
+                if (to.path.startsWith('/all-integrations')) {
+                    const $integrationEl = jQuery('.ff_settings_list a[data-route_key="/all-integrations"]');
+                    if ($integrationEl.length) {
+                        handleSidebarActiveLink($integrationEl.parent(), true, true);
+                    }
+                } else {
+                    // For non-integration routes, find the matching menu item
+                    const $el = jQuery('.ff_settings_list a[data-route_key="' + to.path + '"]');
+                    if ($el.length) {
+                        handleSidebarActiveLink($el.parent(), true, true);
+                    }
+                }
+            }
         }
     }
 </script>
