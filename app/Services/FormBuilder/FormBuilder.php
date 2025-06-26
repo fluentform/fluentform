@@ -412,6 +412,7 @@ class FormBuilder
             $gridRows = $item['settings']['grid_rows'];
             $gridType = $item['settings']['tabular_field_type'];
             foreach ($gridRows as $rowKey => $rowValue) {
+                $rowKey = trim(sanitize_text_field($rowKey));
                 if ('radio' == $gridType) {
                     $item['attributes']['name'] = $gridName . '[' . $rowKey . ']';
                     $this->extractValidationRule($item);
