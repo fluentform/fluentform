@@ -358,7 +358,7 @@ class FormValidationService
 
         $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
         if ($isCountryRestrictionEnabled) {
-            if ($ipInfo = $this->getIpInfo()) {
+            if ($ipInfo = $this->getIpInfo($ip)) {
                 $country = Arr::get($ipInfo, 'country');
             } else {
                 $country = $this->getIpBasedOnCountry($ip);
@@ -690,12 +690,15 @@ class FormValidationService
      *
      * @throws ValidationException
      */
-    private function getIpInfo() {
+    private function getIpInfo($ip) {
         $token = Helper::getIpinfo();
-        $url = 'https://ipinfo.io';
-        if ($token) {
-            $url = 'https://ipinfo.io/?token=' . $token;
+        
+        if (!$token) {
+            $message = __('Sorry! Please provide valid token for ipinfo.io in global settings.', 'fluentform');
+            self::throwValidationException($message);
         }
+        
+        $url = 'https://ipinfo.io/' . $ip . '?token=' . $token;
         $data = wp_remote_get($url);
         $code = wp_remote_retrieve_response_code($data);
         $body = wp_remote_retrieve_body($data);
