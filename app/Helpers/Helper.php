@@ -966,8 +966,10 @@ class Helper
                 $options = array_flip(ArrayHelper::get($rawField, 'options', []));
             } elseif ('ratings' == $fieldType) {
                 $options = array_keys(ArrayHelper::get($rawField, 'options', []));
-            } elseif ('gdpr_agreement' == $fieldType || 'terms_and_condition' == $fieldType) {
+            } elseif ('gdpr_agreement' == $fieldType) {
                 $options = ['on'];
+            } elseif ('terms_and_condition' == $fieldType) {
+                $options = ['on', 'off'];
             } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
                 if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
