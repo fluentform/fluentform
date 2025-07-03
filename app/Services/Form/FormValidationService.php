@@ -358,7 +358,7 @@ class FormValidationService
 
         $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
         if ($isCountryRestrictionEnabled) {
-            if ($ipInfo = $this->getIpInfo()) {
+            if ($ipInfo = $this->getIpInfo($ip)) {
                 $country = Arr::get($ipInfo, 'country');
             } else {
                 $country = $this->getIpBasedOnCountry($ip);
@@ -534,6 +534,11 @@ class FormValidationService
      */
     private function validateReCaptcha()
     {
+        // Check if autoload_captcha is enabled and if it's not recaptcha, skip validation
+        if ($this->shouldSkipCaptchaValidation('recaptcha')) {
+            return;
+        }
+
         $hasAutoRecap =  apply_filters_deprecated(
             'ff_has_auto_recaptcha',
             [
@@ -574,6 +579,11 @@ class FormValidationService
      */
     private function validateHCaptcha()
     {
+        // Check if autoload_captcha is enabled and if it's not hcaptcha, skip validation
+        if ($this->shouldSkipCaptchaValidation('hcaptcha')) {
+            return;
+        }
+
         $hasAutoHcap = apply_filters_deprecated(
             'ff_has_auto_hcaptcha',
             [
@@ -611,6 +621,11 @@ class FormValidationService
      */
     private function validateTurnstile()
     {
+        // Check if autoload_captcha is enabled and if it's not turnstile, skip validation
+        if ($this->shouldSkipCaptchaValidation('turnstile')) {
+            return;
+        }
+
         $hasAutoTurnsTile = apply_filters_deprecated(
             'ff_has_auto_turnstile',
             [
@@ -675,12 +690,15 @@ class FormValidationService
      *
      * @throws ValidationException
      */
-    private function getIpInfo() {
+    private function getIpInfo($ip) {
         $token = Helper::getIpinfo();
-        $url = 'https://ipinfo.io';
-        if ($token) {
-            $url = 'https://ipinfo.io/?token=' . $token;
+        
+        if (!$token) {
+            $message = __('Sorry! Please provide valid token for ipinfo.io in global settings.', 'fluentform');
+            self::throwValidationException($message);
         }
+        
+        $url = 'https://ipinfo.io/' . $ip . '?token=' . $token;
         $data = wp_remote_get($url);
         $code = wp_remote_retrieve_response_code($data);
         $body = wp_remote_retrieve_body($data);
@@ -832,5 +850,31 @@ class FormValidationService
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Check if captcha validation should be skipped when autoload captcha is enabled
+     *
+     * @return bool True if validation should be skipped, false otherwise
+     */
+    private function shouldSkipCaptchaValidation($captchaType)
+    {
+        $globalSettings = get_option('_fluentform_global_form_settings');
+        $autoloadEnabled = Arr::get($globalSettings, 'misc.autoload_captcha');
+
+        // If autoload captcha is not enabled, don't skip any validation
+        if (!$autoloadEnabled) {
+            return false;
+        }
+
+        $selectedCaptchaType = Arr::get($globalSettings, 'misc.captcha_type');
+
+        // If the current captcha type is the selected autoload type, don't skip validation
+        if ($captchaType === $selectedCaptchaType) {
+            return false;
+        }
+
+        // If autoload_captcha is enabled and this is not the selected type, skip validation
+        return true;
     }
 }

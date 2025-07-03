@@ -379,7 +379,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
      * Get an item from the collection by key.
      *
      * @param  mixed  $key
-     * @param  mixed  $default
+     * @param  mixed|null  $default
      * @return mixed
      */
     public function get($key, $default = null)

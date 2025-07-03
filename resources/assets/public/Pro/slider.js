@@ -109,11 +109,11 @@ class FluentFormSlider {
             let type = Object.prototype.toString.call(value);
 
             if (type === '[object Object]') {
-                let $el = $(`[data-name=${key}]`);
+                let $el = this.$theForm.find(`[data-name=${key}]`);
 
                 if ($el.length && $el.attr('data-type') === 'tabular-element') {
                     // Tabular Grid
-                    $.each(value, (row, columns) => {
+                    jQuery.each(value, (row, columns) => {
                         // Limit to current form
                         let $checkboxes = this.$theForm.find(`[name="${key}[${row}]\\[\\]"]`);
                         if (!$checkboxes.length) {
@@ -209,6 +209,7 @@ class FluentFormSlider {
                     });
                 }
             } else {
+
                 let $el = this.$theForm.find(`[name=${key}]`);
 
                 if ($el.hasClass('fluentform-post-content')) {
@@ -233,12 +234,14 @@ class FluentFormSlider {
                 }
 
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
+
                     $(`[name=${key}][value="${value}"]`).prop('checked', true).change();
                     this.$theForm.find(`[name=${key}][value="${value}"]`).prop('checked', true).change();
 
                     if ($el.closest('.ff-el-group').find('.ff-el-ratings').length) {
                         this.$theForm.find(`[name=${key}][value="${value}"]`).closest('label').trigger('mouseenter');
                     }
+
                 } else {
                     if ($el.hasClass('ff_has_multi_select') && $el.data('choicesjs')) {
                         $el.data('choicesjs').removeActiveItems(value);

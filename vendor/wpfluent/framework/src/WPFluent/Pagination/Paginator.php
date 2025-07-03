@@ -97,7 +97,7 @@ class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAc
      * @param  \FluentForm\Framework\Pagination\Presenter|null  $presenter
      * @return string
      */
-    public function links(Presenter $presenter = null)
+    public function links(?Presenter $presenter = null)
     {
         return $this->render($presenter);
     }
@@ -108,7 +108,7 @@ class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAc
      * @param  \FluentForm\Framework\Pagination\Presenter|null  $presenter
      * @return string
      */
-    public function render(Presenter $presenter = null)
+    public function render(?Presenter $presenter = null)
     {
         // if (is_null($presenter) && static::$presenterResolver) {
         //     $presenter = call_user_func(static::$presenterResolver, $this);

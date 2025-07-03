@@ -38,6 +38,39 @@
   }
 }
 
+.ffp_table_wrapper {
+  position: relative;
+}
+
+.ffp_table_close {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  z-index: 1;
+}
+
+.ffp_close_icon {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #66666A;
+  border-radius: 50%;
+  background: #F1F1F1;
+  box-shadow: 0 0 2px 4px #E1E1E1;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+.ffp_close_icon:hover {
+  opacity: 1;
+  color: #33333A;
+}
+
 table.input_items_table {
   border-collapse: collapse;
   margin-bottom: 0;

@@ -24,6 +24,7 @@ class SubmissionHandlerService
     protected $formData;
     protected $validationService;
     protected $submissionService;
+    protected $alreadyInsertedId;
     
     public function __construct()
     {
@@ -448,6 +449,9 @@ class SubmissionHandlerService
                 'result'    => $this->getReturnData($insertId, $this->form, $this->formData),
             ];
         }
+        
+        // Set a property for already inserted data for spam
+        $this->alreadyInsertedId = $insertId;
 
         return false;
     }
@@ -545,6 +549,11 @@ class SubmissionHandlerService
                 'Use fluentform/before_insert_payment_form instead of fluentform_before_insert_payment_form.'
             );
             do_action('fluentform/before_insert_payment_form', $insertData, $formDataRaw, $this->form);
+        }
+        
+        // Check if we already have an inserted ID from spam processing
+        if (isset($this->alreadyInsertedId) && $this->alreadyInsertedId) {
+            return $this->alreadyInsertedId;
         }
         
         $insertId = Submission::insertGetId($insertData);
