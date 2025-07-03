@@ -25,7 +25,7 @@
 
                             <el-select class="w-100 ff-input-s1" v-model="layout.labelPlacement">
                                 <el-option v-for="(label, value) in labelPlacementOptions" :key="value"
-                                        :label="label" :value="value"
+                                        :label="$t(label)" :value="value"
                                 ></el-option>
                             </el-select>
                         </el-form-item>
@@ -50,7 +50,8 @@
                                 <el-option
                                     v-for="(label, value) in {'with_label': 'Next to Label', 'under_input': 'Below Input Element'}"
                                     :key="value"
-                                    :label="label" :value="value"
+                                    :label="$t(label)"
+                                    :value="value"
                                 ></el-option>
                             </el-select>
                         </el-form-item>
@@ -75,7 +76,8 @@
                                 <el-option
                                     v-for="(label, value) in {'stackToBottom': 'Stack to Bottom', 'inline': 'Below Input Element'}"
                                     :key="value"
-                                    :label="label" :value="value"
+                                    :label="$t(label)"
+                                    :value="value"
                                 ></el-option>
                             </el-select>
                         </el-form-item>
@@ -152,8 +154,8 @@
                                     </el-tooltip>
                                 </template>
                                 <el-select class="w-100 ff-input-s1" :placeholder="$t('Select Day')" v-model="email_report.sending_day">
-                                    <el-option v-for="(sendDay,dayKey) in sending_days" :key="dayKey" :value="dayKey"
-                                            :label="sendDay"></el-option>
+                                    <el-option v-for="(sendDay, dayKey) in sending_days" :key="dayKey" :value="dayKey"
+                                            :label="$t(sendDay)"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
@@ -577,7 +579,7 @@
                             </template>
                         </el-col>
                         <el-col :span="24">
-                            <p v-if="misc.geo_provider && geo_providers[misc.geo_provider].token_instruction" class="text-note" style="margin-top: -14px;">{{geo_providers[misc.geo_provider].token_instruction}}</p>
+                            <p v-if="misc.geo_provider && geo_providers[misc.geo_provider].token_instruction" class="text-note" style="margin-top: -14px;">({{ this.$t(geo_providers[misc.geo_provider].token_instruction) }}</p>
                         </el-col>
                     </el-row>
                     <notice class="ff_alert_between" type="danger-soft" v-else>
@@ -767,9 +769,9 @@
         data() {
             return {
                 labelPlacementOptions: {
-                    'top': 'Top Aligned',
-                    'left': 'Left Aligned',
-                    'right': 'Right Aligned'
+                    'top': 'Top aligned',
+                    'left': 'Left aligned',
+                    'right': 'Right aligned'
                 },
                 helpMessagePlacementOptions: {
                     'with_label': 'Beside Label as Tooltip',
