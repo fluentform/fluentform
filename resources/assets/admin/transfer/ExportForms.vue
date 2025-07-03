@@ -27,7 +27,7 @@
                             </el-tooltip>
                         </template>
 
-                        <el-select class="ff_input_width" v-model="selected" multiple filterable>
+                        <el-select class="ff_input_width" v-model="selected" multiple filterable :placeholder="$t('Select Forms')">
                             <el-option v-for="(form, index) in forms" :key="index"
                                     :label="'#'+ form.id +' - ' +form.title" :value="form.id"
                             ></el-option>

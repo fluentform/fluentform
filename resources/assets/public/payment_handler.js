@@ -349,11 +349,15 @@ export class Payment_handler {
             planTitle = $element.data('plan_name');
         }
 
+        let signupLabel = '';
+        if (planTitle) {
+            signupLabel = this.$t('Signup Fee for %1s - %2s', label, planTitle);
+        } else {
+            signupLabel = this.$t('Signup Fee for %s', label);
+        }
+        
         if (initialAmount) {
-            const signupLabel = this.$t('Signup Fee for') + ' ' + label + (planTitle ? ' - ' + planTitle : '');
-
             pushItem(elementName + '_signup_fee', signupLabel, initialAmount);
-
             itemValue = itemValue - initialAmount;
         }
 
@@ -370,7 +374,6 @@ export class Payment_handler {
             pushItem(elementName, label, parseFloat(itemValue));
 
             if (signupFee) {
-                const signupLabel = this.$t('Signup Fee for') + ' ' + label;
                 pushItem(elementName + '_signup_fee', signupLabel, signupFee);
             }
 
