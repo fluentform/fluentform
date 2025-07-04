@@ -100,10 +100,10 @@ interface PaginatorInterface
     public function isEmpty();
 
     /**
-     * Render the paginator using the given presenter.
+     * Render the paginator using a given Presenter.
      *
      * @param  \FluentForm\Framework\Pagination\Presenter|null  $presenter
      * @return string
      */
-    public function render(?Presenter $presenter = null);
+    public function render(Presenter $presenter = null);
 }

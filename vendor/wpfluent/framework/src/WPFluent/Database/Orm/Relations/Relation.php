@@ -301,13 +301,12 @@ abstract class Relation
      * @param  bool  $merge
      * @return array
      */
-    public static function morphMap(?array $map = null, $merge = true)
+    public static function morphMap(array $map = null, $merge = true)
     {
         $map = static::buildMorphMapFromModels($map);
 
         if (is_array($map)) {
-            static::$morphMap = $merge && static::$morphMap
-                            ? $map + static::$morphMap : $map;
+            static::$morphMap = $merge ? array_merge(static::$morphMap, $map) : $map;
         }
 
         return static::$morphMap;
@@ -319,15 +318,17 @@ abstract class Relation
      * @param  string[]|null  $models
      * @return array|null
      */
-    protected static function buildMorphMapFromModels(?array $models = null)
+    protected static function buildMorphMapFromModels(array $models = null)
     {
         if (is_null($models) || Arr::isAssoc($models)) {
             return $models;
         }
 
-        return array_combine(array_map(function ($model) {
+        $tables = array_map(function ($model) {
             return (new $model)->getTable();
-        }, $models), $models);
+        }, $models);
+
+        return array_combine($tables, $models);
     }
 
     /**

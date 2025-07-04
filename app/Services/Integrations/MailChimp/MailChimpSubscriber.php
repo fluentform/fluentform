@@ -322,15 +322,4 @@ trait MailChimpSubscriber
         $subscriber_hash = md5(strtolower($email_address));
         return $MailChimp->get('lists/' . $list_id . '/members/' . $subscriber_hash);
     }
-
-    /**
-     * Parse CSV data
-     * 
-     * @param string $data
-     * @return array
-     */
-    protected function parseCSV($data)
-    {
-        return str_getcsv($data, ',', '"', '\\');
-    }
 }
