@@ -235,25 +235,6 @@
                                     </template>
                                 </div>
 
-                                <template v-else-if="field.component == 'create_field_ajax'">
-                                    <div class="ff_create_field_ajax">
-                                        <div class="ff_create_field_form">
-                                            <el-input
-                                                v-model="newFieldName"
-                                                :placeholder="field.field_placeholder"
-                                            ></el-input>
-                                            <el-button
-                                                type="primary"
-                                                :loading="creatingField"
-                                                @click="createField(field)"
-                                                :disabled="!newFieldName || !newFieldName.trim()"
-                                            >
-                                                {{ field.button_text }}
-                                            </el-button>
-                                        </div>
-                                    </div>
-                                </template>
-
                                 <template v-else-if="field.component == 'chained_select'">
                                     <chained-selects
                                             :settings="settings"
@@ -402,9 +383,7 @@
                 settings_fields: {},
                 attachedForms: [],
                 fromChainedAjax: false,
-                refreshQuery: null,
-                newFieldName: '',
-                creatingField: false,
+                refreshQuery: null
             }
         },
         computed: {
@@ -470,29 +449,29 @@
                 };
                 this.loadIntegrationSettings();
             },
-            chainedAjax(key) {
-                for (const key in this.settings.chained_config) {
-                    if (this.settings.chained_config[key] == '') {
-                        return;
-                    }
-                }
+	        chainedAjax(key) {
+		        for (const key in this.settings.chained_config) {
+			        if (this.settings.chained_config[key] == '') {
+				        return;
+			        }
+		        }
 
-                // Handle Google Sheets specific chaining
-                if (this.integration_name === 'google_sheet') {
-                    if (key === 'spreadsheet_id') {
-                        this.settings.chained_config['work_sheet_id'] = '';
-                    }
-                }
+		        // Handle Google Sheets specific chaining
+		        if (this.integration_name === 'google_sheet') {
+			        if (key === 'spreadsheet_id') {
+				        this.settings.chained_config['work_sheet_id'] = '';
+			        }
+		        }
 
-                // Handle Airtable specific chaining
-                if (this.integration_name === 'airtable_v2') {
-                    if (key == 'base_id') {
-                        this.settings.chained_config['table_id'] = '';
-                    }
-                }
-                this.fromChainedAjax = true;
-                this.loadIntegrationSettings();
-            },
+		        // Handle Airtable specific chaining
+		        if (this.integration_name === 'airtable_v2') {
+			        if (key == 'base_id') {
+				        this.settings.chained_config['table_id'] = '';
+			        }
+		        }
+		        this.fromChainedAjax = true;
+		        this.loadIntegrationSettings();
+	        },
             loadMergeFields() {
                 this.loading_list = true;
                 const url = FluentFormsGlobal.$rest.route('getFormIntegrationList', this.form_id, this.integration_id)
@@ -549,44 +528,6 @@
             },
             setMergeModel(key) {
                 this.settings[key] = {};
-            },
-            createField(field) {
-                if (!this.newFieldName || !this.newFieldName.trim()) {
-                    return;
-                }
-
-                this.creatingField = true;
-
-                let data = {
-                    integration_name: this.integration_name,
-                    form_id: this.form_id,
-                    field_name: this.newFieldName.trim(),
-                    action_type: field.action_type || 'create_field',
-                    ...this.settings.chained_config
-                };
-
-                if (field.additional_data) {
-                    data = { ...data, ...field.additional_data };
-                }
-
-                const url = FluentFormsGlobal.$rest.route('createIntegrationField', this.form_id);
-
-                FluentFormsGlobal.$rest.post(url, data)
-                    .then(response => {
-                        this.newFieldName = '';
-                        this.$success(response.message);
-                    })
-                    .then(() => {
-                        setTimeout(() => {
-                            this.loadIntegrationSettings();
-                        }, 500);
-                    })
-                    .catch(error => {
-                        this.$fail(error?.data?.message || error?.message);
-                    })
-                    .finally(() => {
-                        this.creatingField = false;
-                    });
             }
         },
         mounted() {
