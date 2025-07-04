@@ -24,17 +24,6 @@ class Address extends BaseComponent
     public function compile($data, $form)
     {
         $elementName = $data['element'];
-    
-        $data = apply_filters_deprecated(
-            'fluentform_rendering_field_data_' . $elementName,
-            [
-                $data,
-                $form
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/rendering_field_data_' . $elementName,
-            'Use fluentform/rendering_field_data_' . $elementName . ' instead of fluentform_rendering_field_data_' . $elementName
-        );
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $rootName = $data['attributes']['name'];
@@ -42,15 +31,20 @@ class Address extends BaseComponent
         $data['attributes']['class'] .= ' ff-name-address-wrapper ' . $this->wrapperClass . ' ' . $hasConditions;
         $data['attributes']['class'] = trim($data['attributes']['class']);
 
-       
-        if ('yes' == ArrayHelper::get($data, 'settings.save_coordinates')) {
+        // Handle both legacy and new provider systems
+        $provider = ArrayHelper::get($data, 'settings.autocomplete_provider', null);
+        $legacyGoogle = ArrayHelper::get($data, 'settings.enable_g_autocomplete', 'no') === 'yes';
+        $isLegacyProvider = !$provider || $provider === 'none';
+
+        // Render coordinate fields if Pro is active and coordinate saving is enabled
+        if (defined('FLUENTFORMPRO') && 'yes' == ArrayHelper::get($data, 'settings.save_coordinates')) {
             $coordinateFields = [
                 'latitude' => $rootName . '[latitude]',
                 'longitude' => $rootName . '[longitude]'
             ];
-    
+
             $textComponent = new \FluentForm\App\Services\FormBuilder\Components\Text();
-    
+
             foreach ($coordinateFields as $type => $fieldName) {
                 $fieldConfig = [
                     'attributes' => [
@@ -60,23 +54,27 @@ class Address extends BaseComponent
                     ],
                     'element' => 'input_hidden'
                 ];
-        
+
                 $textComponent->compile($fieldConfig, $form);
             }
         }
-        if ('yes' == ArrayHelper::get($data, 'settings.enable_g_autocomplete')) {
+
+        if ($provider === 'google' || ($isLegacyProvider && $legacyGoogle)) {
             $data['attributes']['class'] .= ' ff_map_autocomplete';
-            if ('yes' == ArrayHelper::get($data, 'settings.enable_g_map')) {
-                $data['attributes']['data-ff_with_g_map'] = '1';
-            }
+            $data['attributes']['data-ff_with_g_map'] = ArrayHelper::get($data, 'settings.enable_g_map', 'no') === 'yes' ? '1' : '';
             $data['attributes']['data-ff_with_auto_locate'] = ArrayHelper::get($data, 'settings.enable_auto_locate', false);
+            do_action('fluentform/address_map_autocomplete', $data, $form);
+        } elseif ($provider === 'html5') {
+            $data['attributes']['class'] .= ' ff_html5_geolocate';
+            $data['attributes']['data-ff_html5_locate'] = ArrayHelper::get($data, 'settings.enable_auto_locate', 'on_click');
+            $data['attributes']['data-name'] = $data['attributes']['name'];
             do_action('fluentform/address_map_autocomplete', $data, $form);
         }
 
         $atts = $this->buildAttributes(
             ArrayHelper::except($data['attributes'], 'name')
         );
-        
+
         //re order fields from version 4.3.2
         if ($order = ArrayHelper::get($data, 'settings.field_order')) {
             $order = array_values(array_column($order, 'value'));
@@ -102,11 +100,11 @@ class Address extends BaseComponent
             echo '</div>';
         endif;
         echo "<div class='ff-el-input--content'>";
-       
+
         $visibleFields = array_chunk(array_filter($data['fields'], function ($field) {
             return $field['settings']['visible'];
         }), 2);
-        
+
 
         $googleAutoComplete = 'yes' === ArrayHelper::get($data, 'settings.enable_g_autocomplete');
         foreach ($visibleFields as $chunked) {
@@ -129,7 +127,7 @@ class Address extends BaseComponent
                         }
                         $item['attributes']['data-autocomplete_restrictions'] = json_encode(array_filter($selectedCountries));
                     }
-    
+
                     $item = apply_filters_deprecated(
                         'fluentform_before_render_item',
                         [
@@ -163,7 +161,7 @@ class Address extends BaseComponent
         echo '</div>';
 
         $html = ob_get_clean();
-    
+
         $html = apply_filters_deprecated(
             'fluentform_rendering_field_html_' . $elementName,
             [
