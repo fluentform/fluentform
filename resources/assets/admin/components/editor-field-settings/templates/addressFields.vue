@@ -99,9 +99,13 @@
             <el-select v-model="editItem.settings.autocomplete_provider" placeholder="Select provider" style="width: 100%;">
                 <el-option label="None" value="none" />
                 <el-option label="Google Maps" value="google" :disabled="!has_gmap_api" />
-                <el-option label="Browser Geolocation (HTML5)" value="html5" />
+                <el-option label="Browser Geolocation (HTML5)" value="html5" :disabled="!has_pro" />
             </el-select>
         </el-form-item>
+      
+        <small v-if="!has_pro">
+           {{$t('Available on Pro Version')}}
+        </small>
 
         <!-- HTML5 Locate Radio (manual) -->
         <el-form-item v-if="editItem.settings.autocomplete_provider === 'html5'" :label="$t('HTML5 Locate')">
@@ -176,7 +180,8 @@ export default {
     },
     data() {
         return {
-            has_gmap_api: !!window.FluentFormApp.has_address_gmap_api
+            has_gmap_api: !!window.FluentFormApp.has_address_gmap_api,
+            has_pro: !!window.FluentFormApp.hasPro
         }
     },
     methods: {
