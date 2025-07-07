@@ -1312,7 +1312,6 @@
 
         initKeyboardDelete(e) {
             const isDelete = e.key === 'Backspace' || e.key === 'Delete';
-            // Only trigger delete if an item is selected (editItem is not empty)
             if (isDelete && Object.keys(this.editItem).length > 0) {
                 e.preventDefault();
                 FluentFormEditorEvents.$emit('keyboard-delete-selected-item', this.editItem);
