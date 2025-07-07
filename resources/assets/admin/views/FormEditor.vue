@@ -571,13 +571,13 @@
 		    if (this.editorInserterInContainerRepeater) {
 			    return this.generalMockList.filter(item => {
 				    const supportedField = this.containerSupportedFields.find(field => field.key === item.element);
-                    
+
 				    if (!supportedField) return false;
-				    
+
 				    if (supportedField.condition && typeof supportedField.condition === 'function') {
 					    return supportedField.condition(item);
 				    }
-				    
+
 				    return true;
 			    });
 		    }
@@ -588,13 +588,13 @@
 		    if (this.editorInserterInContainerRepeater) {
 			    return this.advancedMockList.filter(item => {
 				    const supportedField = this.containerSupportedFields.find(field => field.key === item.element);
-				    
+
 				    if (!supportedField) return false;
-				    
+
 				    if (supportedField.condition && typeof supportedField.condition === 'function') {
 					    return supportedField.condition(item);
 				    }
-				    
+
 				    return true;
 			    });
 		    }
@@ -879,7 +879,7 @@
                 });
                 return false;
             }
-            
+
             let $repeaterContainerElement = jQuery(event.target).closest('.repeater-item-container');
             if ($repeaterContainerElement.length) {
                 // Check if it's a multi-select
@@ -890,7 +890,7 @@
                     });
                     return false;
                 }
-                
+
                 const isSupportedField = this.containerSupportedFields.some(field => {
                     if (field.key === item.element) {
                         if (field.condition && typeof field.condition === 'function') {
@@ -900,7 +900,7 @@
                     }
                     return false;
                 });
-                
+
                 if (!isSupportedField && this.form.dropzone != list) {
                     this.fieldNotSupportInContainerRepeater = true;
                     const supportedFieldsList = this.containerSupportedFields
@@ -964,9 +964,9 @@
             }
 
             // Check if it's a multi-select being added to a repeater container
-            if (this.editorInserterInContainerRepeater && 
-                freshCopy.element === 'select' && 
-                freshCopy.attributes && 
+            if (this.editorInserterInContainerRepeater &&
+                freshCopy.element === 'select' &&
+                freshCopy.attributes &&
                 freshCopy.attributes.multiple) {
                 this.$message({
                     message: this.$t('Multi-select fields are not supported in container repeaters.'),
@@ -1308,6 +1308,14 @@
                     this.undo();
                 }
             }
+        },
+
+        initKeyboardDelete(e) {
+            const isDelete = e.key === 'Backspace' || e.key === 'Delete';
+            if (isDelete && Object.keys(this.editItem).length > 0) {
+                e.preventDefault();
+                FluentFormEditorEvents.$emit('keyboard-delete-selected-item', this.editItem);
+            }
         }
     },
 
@@ -1379,12 +1387,13 @@
             }, 100);
         }
         document.addEventListener('keydown', this.initKeyboardSave);
-
         document.addEventListener('keydown', this.initKeyboardUndoRedo);
+        document.addEventListener('keydown', this.initKeyboardDelete);
     },
     beforeDestroy() {
         document.removeEventListener('keydown', this.initKeyboardSave);
         document.removeEventListener('keydown', this.initKeyboardUndoRedo);
+        document.removeEventListener('keydown', this.initKeyboardDelete);
         if (this.undoRedoManager) {
             this.undoRedoManager.off('undo');
             this.undoRedoManager.off('redo');

@@ -128,6 +128,12 @@
                 contextMenuStyle :{},
             }
         },
-        methods: NestedHandler.methods
+        methods: NestedHandler.methods,
+        mounted() {
+            FluentFormEditorEvents.$on('keyboard-delete-selected-item', this.handleKeyboardDelete);
+        },
+        beforeDestroy() {
+            FluentFormEditorEvents.$off('keyboard-delete-selected-item', this.handleKeyboardDelete);
+        },
     };
 </script>
