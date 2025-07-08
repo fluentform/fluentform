@@ -139,6 +139,11 @@ $element_customization_settings = [
         'template'  => 'inputYesNoCheckBox',
         'label'     => __('Enable Searchable Smart Options', 'fluentform'),
         'help_text' => __('If you enable this then options will be searchable by select2 js library', 'fluentform'),
+        'dependency' => [
+            'depends_on' => 'parent_container',
+            'operator'   => '!=',
+            'value'      => 'repeater_container',
+        ],
     ],
     'pricing_options' => [
         'template'  => 'pricingOptions',
@@ -682,6 +687,21 @@ $element_customization_settings = [
         'label'                => __('Column Width %', 'fluentform'),
         'help_text'            => __('Set the width of the columns. The minimum column width is 10%.', 'fluentform'),
         'width_limitation_msg' => __('The minimum column width is 10%', 'fluentform'),
+    ],
+    'render_recaptcha_v3_badge' => [
+        'template'  => 'radio',
+        'label'     => __('Render ReCaptcha V3 badge', 'fluentform'),
+        'help_text' => __('Select if ReCaptcha V3 verified badge should render in the form or not', 'fluentform'),
+        'options'   => [
+            [
+                'value' => true,
+                'label' => __('Yes', 'fluentform'),
+            ],
+            [
+                'value' => false,
+                'label' => __('No', 'fluentform'),
+            ],
+        ],
     ]
 ];
 

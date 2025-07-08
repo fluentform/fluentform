@@ -4,7 +4,8 @@ namespace FluentForm\App\Services\FluentConversational\Classes;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
-use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Modules\Payments\PaymentHelper;
+use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeSettings;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Form\Settings\FormCssJs;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
@@ -92,7 +93,7 @@ class Form
 
         wp_localize_script('fluent_forms_conversational_design', 'ffc_conv_vars', [
             'form_id'     => $formId,
-            'preview_url' => site_url('?' . $paramKey . '=' . $formId),
+            'preview_url' => Helper::getFrontendFacingUrl('?' . $paramKey . '=' . $formId),
             'fonts'       => Fonts::getFonts(),
             'has_pro'     => defined('FLUENTFORMPRO'),
         ]);
@@ -328,7 +329,7 @@ class Form
             'rangeslider',
             'save_progress_button',
             'dynamic_field',
-            'shortcode'
+            'rangeslider'
         ];
 
         $acceptedFieldElements = apply_filters(
@@ -363,6 +364,7 @@ class Form
                         $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
                         if ('terms_and_condition' == $element) {
                             $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
+                            $existingSettings['hide_disagree'] = false;
                         }
                         $field['settings'] = $existingSettings;
                     }
@@ -599,7 +601,7 @@ class Form
 
     public function maybeAlterPlacement($placements, $form)
     {
-        if (!Helper::isConversionForm($form->id) || empty($placements['terms_and_condition'])) {
+        if (!Helper::isConversionForm($form->id) || empty($placements['terms_and_condition']) || empty($placements['gdpr_agreement'])) {
             return $placements;
         }
 
@@ -619,6 +621,22 @@ class Form
             'tc_dis_agree_text' => [
                 'template' => 'inputText',
                 'label'    => 'Disagree Button Text',
+            ],
+            'hide_disagree' => [
+                'template' => 'inputCheckbox',
+                'options'  => [
+                    [
+                        'value' => false,
+                        'label' => __('Hide Disagree Button', 'fluentform'),
+                    ],
+                ],
+            ],
+        ];
+
+        $placements['gdpr_agreement']['generalExtras'] = [
+            'tc_agree_text'     => [
+                'template' => 'inputText',
+                'label'    => 'Agree Option Text',
             ],
         ];
 
@@ -824,8 +842,8 @@ class Form
     {
         $paymentConfig = null;
 
-        if ($form->has_payment && defined('FLUENTFORMPRO')) {
-            $publishableKeyStripe = \FluentFormPro\Payments\PaymentMethods\Stripe\StripeSettings::getPublishableKey($form->id);
+        if ($form->has_payment) {
+            $publishableKeyStripe = StripeSettings::getPublishableKey($form->id);
             $publishableKeyStripe = apply_filters_deprecated(
                 'fluentform-payment_stripe_publishable_key',
                 [
@@ -844,27 +862,27 @@ class Form
             );
 
             $paymentConfig = [
-                'currency_settings' => \FluentFormPro\Payments\PaymentHelper::getCurrencyConfig($form->id),
+                'currency_settings' => PaymentHelper::getCurrencyConfig($form->id),
                 'stripe'            => [
                     'publishable_key' => $publishableKey,
-                    'inlineConfig'    => \FluentFormPro\Payments\PaymentHelper::getStripeInlineConfig($form->id),
+                    'inlineConfig'    => PaymentHelper::getStripeInlineConfig($form->id),
                 ],
                 'stripe_app_info'   => [
                     'name'       => 'Fluent Forms',
-                    'version'    => FLUENTFORMPRO_VERSION,
+                    'version'    => FLUENTFORM_VERSION,
                     'url'        => site_url(),
                     'partner_id' => 'pp_partner_FN62GfRLM2Kx5d',
                 ],
                 'i18n'              => [
-                    'item'            => __('Item', 'fluentformpro'),
-                    'price'           => __('Price', 'fluentformpro'),
-                    'qty'             => __('Qty', 'fluentformpro'),
-                    'line_total'      => __('Line Total', 'fluentformpro'),
-                    'total'           => __('Total', 'fluentformpro'),
-                    'not_found'       => __('No payment item selected yet', 'fluentformpro'),
-                    'discount:'       => __('Discount:', 'fluentformpro'),
-                    'processing_text' => __('Processing payment. Please wait...', 'fluentformpro'),
-                    'confirming_text' => __('Confirming payment. Please wait...', 'fluentformpro'),
+                    'item'            => __('Item', 'fluentform'),
+                    'price'           => __('Price', 'fluentform'),
+                    'qty'             => __('Qty', 'fluentform'),
+                    'line_total'      => __('Line Total', 'fluentform'),
+                    'total'           => __('Total', 'fluentform'),
+                    'not_found'       => __('No payment item selected yet', 'fluentform'),
+                    'discount:'       => __('Discount:', 'fluentform'),
+                    'processing_text' => __('Processing payment. Please wait...', 'fluentform'),
+                    'confirming_text' => __('Confirming payment. Please wait...', 'fluentform'),
                 ],
             ];
 
@@ -912,6 +930,7 @@ class Form
             'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
             'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
             'has_save_link'             => $form->save_state?? false,
+            'has_save_and_resume_button'=> $form->hasSaveAndResumeButton ?? false,
             'step_completed'            => $form->stepCompleted ?? 0
         ];
     }
@@ -920,13 +939,13 @@ class Form
     {
         $vars = apply_filters('fluentform/save_progress_vars', [
             'ajaxurl'                   => admin_url('admin-ajax.php'),
-            'source_url'                => home_url($_SERVER['REQUEST_URI']),
+            'source_url'                => Helper::getFrontendFacingUrl($_SERVER['REQUEST_URI']),
             'form_id'                   => $formId,
             'nonce'                     => wp_create_nonce(),
             'copy_button'               => fluentFormMix('img/copy.svg'),
             'copy_success_button'       => fluentFormMix('img/check.svg'),
             'email_button'              => fluentFormMix('img/email.svg'),
-            'email_placeholder_str'     => __('Your Email Here', 'fluentformpro'),
+            'email_placeholder_str'     => __('Your Email Here', 'fluentform'),
             'email_resume_link_enabled' => false,
             'save_progress_btn_name'    => ArrayHelper::get($field, 'attributes.name'),
         ]);

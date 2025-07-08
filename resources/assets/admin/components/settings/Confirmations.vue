@@ -131,7 +131,7 @@
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <div slot="content">
                                             <p>
-                                                {{ $t('Enable this feed conditionally') }}
+	                                            {{ $t('Enable this feed conditionally. Select to match whether all rules are required, any rule is sufficient, or use group logic. If the conditions match, the feed will be run. For groups, if any group\'s conditions are fully met, the feed will be run.') }}
                                             </p>
                                         </div>
 

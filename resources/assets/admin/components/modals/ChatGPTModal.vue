@@ -5,28 +5,67 @@
             width="70%"
             top= "50px"
             :before-close="close"
+            @opened="focusInput"
         >
             <template slot="title">
-                <h3 class="title">{{$t('Create Using ChatGPT')}}</h3>
-                <p>{{ $t('Use AI to create the initial structure. The response uses ChatGPT, so please note that there might be some inaccuracy in the output.') }}</p>
+                <h3 class="title">{{$t(`Create Using ${ai_model === 'chat_gpt' ? $t('ChatGPT') : $t('AI')}`)}}</h3>
+                <p>{{ $t(`Use AI to create the initial structure. ${ ai_model === 'chat_gpt' ? 'The response uses ChatGPT, so please' : 'Please'} note that there might be some inaccuracy in the output.`) }}</p>
             </template>
 
             <div class="mt-6">
                 <el-form class="mt-4" :model="{}" label-position="top" >
+	                <el-form-item v-if="has_chat_gpt" class="ff-form-item" :label="$t('Choose a model')">
+		                <el-radio-group v-model="ai_model">
+			                <el-radio-button label="default">{{ $t('Fluent Forms AI-Assisted') }}</el-radio-button>
+			                <el-radio-button label="chat_gpt">{{ $t('OpenAI ChatGPT') }}</el-radio-button>
+		                </el-radio-group>
+	                </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Create a form for')">
-                        <el-input :placeholder="$t('Customer Review for product')"  type="textarea" v-model="query">
+                        <el-input  ref="queryInput" :placeholder="$t('Customer Review for product')"  type="textarea" v-model="query">
                         </el-input>
                     </el-form-item>
+
+	                <el-form-item class="ff-form-item" :label="$t('Suggestions')">
+		                <div class="flex-col">
+			                <el-button
+				                v-for="(item, index) in suggestions"
+				                :key="index"
+				                type="primary"
+				                plain
+				                class="mb-2"
+				                size="small"
+				                @click="setQuery(item)"
+			                >
+				                {{ item.key }}
+			                </el-button>
+		                </div>
+	                </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Including these questions')">
                         <el-input :placeholder="$t('User satisfaction level, most liked and disliked features')"  type="textarea" v-model="additional_query">
                         </el-input>
                     </el-form-item>
-                    <el-button v-loading="loading" @click="createForm">
+                    <el-button @click="createForm">
                         {{ $t('Create') }}
                     </el-button>
                 </el-form>
             </div><!-- .ff_predefined_options -->
         </el-dialog>
+
+	    <!-- Loading Dialog -->
+	    <div class="ff-ai-creating-form-loading-wrap" :class="{'ff_backdrop': loading}">
+		    <el-dialog
+			    :visible.sync="loading"
+			    width="30%"
+			    :show-close="false"
+			    :close-on-click-modal="false"
+			    :close-on-press-escape="false"
+		    >
+			    <div class="ff-ai-creating-form-loading-container">
+				    <img :src="loadingImg" alt="Loading" class="ff-ai-creating-form-loading-image" />
+				    <p>{{ $t('Creating your form') }} <span class="typing-indicator"><span>.</span><span>.</span><span>.</span></span></p>
+			    </div>
+		    </el-dialog>
+	    </div>
     </div>
 </template>
 
@@ -40,11 +79,52 @@
         data() {
             return {
                 query: '',
+	            ai_model: !!window.FluentFormApp.has_gpt_feature ? 'chat_gpt' : 'default',
+	            has_chat_gpt: !!window.FluentFormApp.has_gpt_feature,
+	            loadingImg:  window.FluentFormApp.plugin_public_url + 'img/ai-form-create-loading.gif',
                 additional_query: '',
                 creatingForm: false,
                 loading: false,
                 has_pro: !!window.FluentFormApp.hasPro,
                 current: null,
+                suggestions: [
+                    {
+                        key: "Newsletter Signup",
+                        value: "Create a sleek signup form to capture emails and grow your audience—perfect for sharing updates or deals (Ideal for: lead generation, marketing)"
+                    },
+                    {
+                        key: "Book Appointment",
+                        value: "Design a smart booking form with time slots—save time and impress clients with seamless scheduling (Ideal for: consultants, service providers)"
+                    },
+                    {
+                        key: "Customer Feedback",
+                        value: "Craft a quick, friendly form to gather insights—turn responses into growth with minimal fields (Ideal for: surveys, customer satisfaction)"
+                    },
+                    {
+                        key: "Event Signup",
+                        value: "Generate an event registration form that pops—fill your webinars or workshops with ease (Ideal for: events, promotions)"
+                    },
+                    {
+                        key: "Membership Join",
+                        value: "Make a standout form for memberships or subscriptions—lock in loyal customers with perks (Ideal for: communities, recurring revenue)"
+                    },
+                    {
+                        key: "Product Review",
+                        value: "Create an easy form for customer reviews—boost trust and credibility with star ratings and comments (Ideal for: e-commerce, testimonials)"
+                    },
+                    {
+                        key: "Job Application",
+                        value: "Build a professional form to collect applicant info—hire top talent without the hassle (Ideal for: recruitment, team growth)"
+                    },
+                    {
+                        key: "Donation Support",
+                        value: "Design a heartfelt donation form to rally support—make giving simple and impactful (Ideal for: nonprofits, crowdfunding)"
+                    },
+                    {
+                        key: "Onboarding Checklist",
+                        value: "Generate a smooth onboarding form for new clients—start relationships right with key details (Ideal for: client setup, services)"
+                    }
+                ]
             }
         },
         computed: {
@@ -56,10 +136,12 @@
 
             createForm() {
                 this.loading = true;
+                this.visibility = false;
 	            FluentFormsGlobal.$post({
-			            action: 'fluentform_chat_gpt_create_form',
+			            action: 'fluentform_ai_create_form',
 			            query: this.query,
 			            additional_query: this.additional_query,
+			            ai_model: this.ai_model,
 		            })
                 .then((response) => {
                     this.$notify.success({
@@ -72,6 +154,7 @@
                     }
                 })
                 .fail(error => {
+	                this.visibility = true;
                     this.$notify.error({
 	                    title: this.$t('Error'),
 	                    message: error.responseJSON?.data.message,
@@ -82,6 +165,18 @@
                     this.loading = false;
                 });
             },
+            focusInput() {
+                this.$nextTick(() => {
+                    this.$refs.queryInput?.focus();
+                });
+            },
+            setQuery(item) {
+                this.query = `${item.key} : ${item.value}`;
+                this.$nextTick(() => {
+                    this.$refs.queryInput?.focus();
+                });
+            }
+
         },
         mounted() {
         }

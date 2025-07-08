@@ -7,6 +7,7 @@ use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Foundation\Application;
@@ -263,7 +264,7 @@ class Menu
         wp_enqueue_script('fluent_forms_global');
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-            'ajaxurl'                  => admin_url('admin-ajax.php'),
+            'ajaxurl'                  => Helper::getAjaxUrl(),
             'admin_i18n'               => TranslationString::getAdminI18n(),
             'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
             'payments_str'             => TranslationString::getPaymentsI18n(),
@@ -704,10 +705,13 @@ class Menu
 
         $currentRoute = sanitize_key($this->app->request->get('sub_route', ''));
 
+        $hasDoubleOptinEnable = 'yes' === ArrayHelper::get(get_option('_fluentform_double_optin_settings'), 'enabled');
+
         $this->app->view->render('admin.form.settings_wrapper', [
             'form_id'           => $form_id,
             'settings_menus'    => $settingsMenus,
             'current_sub_route' => $currentRoute,
+            'has_double_opt_in' => $hasDoubleOptinEnable
         ]);
     }
 
@@ -751,6 +755,7 @@ class Menu
             ],
             'countries'            => getFluentFormCountryList(),
             'getIpInfo'            => Helper::getIpinfo(),
+            'google_sheet_api' => apply_filters('fluentform/google_sheet_api_settings', []),
             'has_conv_form_save_and_resume' => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.12', '>=')
         ]);
 
@@ -976,7 +981,7 @@ class Menu
             'element_search_tags'            => $searchTags,
             'element_settings_placement'     => $elementPlacements,
             'all_forms_url'                  => admin_url('admin.php?page=fluent_forms'),
-            'has_payment_features'           => !defined('FLUENTFORMPRO'),
+            'has_payment_features'           => true,
             'upgrade_url'                    => fluentform_upgrade_url(),
             'is_conversion_form'             => Helper::isConversionForm($formId),
             'is_autoload_captcha'            => Helper::isAutoloadCaptchaEnabled(),
@@ -1059,7 +1064,6 @@ class Menu
         );
         
         $components = apply_filters('fluentform/global_settings_components', $components);
-    
 
         $components['reCAPTCHA'] = [
             'hash'  => 're_captcha',
@@ -1074,6 +1078,11 @@ class Menu
         $components['Turnstile'] = [
             'hash'  => 'turnstile',
             'title' => 'Turnstile',
+        ];
+
+        $components['CleanTalk'] = [
+            'hash'  => 'cleantalk',
+            'title' => 'CleanTalk',
         ];
 
         $customLinks = apply_filters('fluentform/global_settings_menu', []);
@@ -1159,14 +1168,11 @@ class Menu
 
     public function renderGlobalMenu()
     {
-        $showPayment = false;
-        if (defined('FLUENTFORMPRO')) {
-            $showPayment = !get_option('__fluentform_payment_module_settings');
-            if ($showPayment) {
-                $formCount = wpFluent()->table('fluentform_forms')
-                                ->count();
-                $showPayment = $formCount > 2;
-            }
+        $showPayment = !PaymentHelper::hasPaymentSettings();
+        if ($showPayment) {
+            $formCount = wpFluent()->table('fluentform_forms')
+                ->count();
+            $showPayment = $formCount > 2;
         }
         $showPaymentEntry = apply_filters_deprecated('fluentform_show_payment_entries', [
                 false

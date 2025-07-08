@@ -1499,10 +1499,11 @@ $defaultElements = [
             'index'      => 2,
             'element'    => 'recaptcha',
             'attributes' => ['name' => 'g-recaptcha-response'],
-            'settings'   => [
-                'label'            => '',
-                'label_placement'  => '',
-                'validation_rules' => [],
+            'settings' => [
+                'label'                     => '',
+                'label_placement'           => '',
+                'validation_rules'          => [],
+                'render_recaptcha_v3_badge' => false
             ],
             'editor_options' => [
                 'title'              => __('reCaptcha', 'fluentform'),
@@ -1821,87 +1822,6 @@ if (! defined('FLUENTFORMPRO')) {
             'title'      => __('Color Picker', 'fluentform'),
             'icon_class' => 'ff-edit-tint',
             'template'   => 'inputText',
-        ],
-    ];
-    $defaultElements['payments'] = [
-        'multi_payment_component' => [
-            'index'          => 6,
-            'element'        => 'multi_payment_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Payment Item', 'fluentform'),
-                'icon_class' => 'ff-edit-shopping-cart',
-                'element'    => 'input-radio',
-                'template'   => 'inputMultiPayment',
-            ],
-        ],
-        'subscription_payment_component' => [
-            'index'          => 6,
-            'element'        => 'subscription_payment_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Subscription', 'fluentform'),
-                'icon_class' => 'ff-edit-shopping-cart',
-                'element'    => 'input-radio',
-                'template'   => 'inputSubscriptionPayment',
-            ],
-        ],
-        'custom_payment_component' => [
-            'index'          => 6,
-            'element'        => 'custom_payment_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Custom Payment Amount', 'fluentform'),
-                'icon_class' => 'ff-edit-keyboard-o',
-                'template'   => 'inputText',
-            ],
-        ],
-        'item_quantity_component' => [
-            'index'          => 6,
-            'element'        => 'item_quantity_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Item Quantity', 'fluentform'),
-                'icon_class' => 'ff-edit-keyboard-o',
-                'template'   => 'inputText',
-            ],
-        ],
-        'payment_method' => [
-            'index'          => 6,
-            'element'        => 'payment_method',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Payment Method', 'fluentform'),
-                'icon_class' => 'ff-edit-credit-card',
-                'template'   => 'inputPaymentMethods',
-            ],
-        ],
-        'payment_summary_component' => [
-            'index'          => 6,
-            'element'        => 'payment_summary_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Payment Summary', 'fluentform'),
-                'icon_class' => 'ff-edit-html',
-                'template'   => 'customHTML',
-            ],
-        ],
-        'payment_coupon' => [
-            'index'          => 6,
-            'element'        => 'payment_coupon',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Coupon', 'fluentform'),
-                'icon_class' => 'el-icon-postcard',
-                'template'   => 'inputText',
-            ],
         ],
     ];
 }

@@ -808,8 +808,9 @@
   padding: 3px;
   &.active {
     height: auto;
+    width: 100%; // active container full width
   }
-  .ff_summary_container{
+  .ff_summary_container {
     margin-top: 10px;
     font-size: 14px;
   }
@@ -902,8 +903,4 @@
 
 .iti-mobile .iti--container {
   z-index: 9999;
-}
-
-.grecaptcha-badge {
-  visibility: hidden;
 }

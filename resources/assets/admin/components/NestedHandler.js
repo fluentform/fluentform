@@ -314,6 +314,15 @@ export default {
                 let selectedPane = jQuery(e.target).closest('.splitpanes__pane')[0];
                 selectedPane.style.overflow = this.contextMenuIndex[index] ? 'visible' : 'hidden';
             }
+        },
+
+        /**
+         * Handle keyboard delete event for selected item
+         */
+        handleKeyboardDelete(selectedItem) {
+            if (this.item.uniqElKey === selectedItem.uniqElKey) {
+                this.askRemoveConfirm(this.index);
+            }
         }
     }
 };

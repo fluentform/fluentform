@@ -25,7 +25,7 @@ class ConditionApp {
 
     evaluate(item, key) {
         if (item._visited) {
-            console.warn(`Circular dependency detected for field: ${key} , `);
+            console.warn(`Circular dependency detected for field: ${key}`);
             return false;
         }
         let mainResult = false;
@@ -33,40 +33,92 @@ class ConditionApp {
             this.counter++;
             let type = item.type;
             let result = 1;
-            if (type == 'any') {
-                result = 0;
-            }
+
+
             item._visited = true;
-            item.conditions.forEach(condition => {
-                let evalValue = this.getItemEvaluateValue(condition, this.formData[condition.field]);
 
-                if (evalValue && this.fields[condition.field] && condition.field != key) {
-                    evalValue = this.evaluate(this.fields[condition.field], condition.field);
-                }
-
+            if (type === 'group' && item?.condition_groups) {
+                mainResult = this.evaluateGroups(item.condition_groups);
+            } else {
                 if (type == 'any') {
-                    if (evalValue) {
-                        result = 1;
-                    }
-                } else {
-                    // For All
-                    if (!evalValue && result) {
-                        result = false;
-                    }
+                    result = 0;
                 }
-            });
-            mainResult = result == 1;
-            item._visited = false;
-        }
+                item.conditions.forEach(condition => {
+                    let evalValue = this.getItemEvaluateValue(condition, this.formData[condition.field]);
 
-        if(item.status && item.conditions.length && !mainResult) {
-            return mainResult;
+                    if (evalValue && this.fields[condition.field] && condition.field != key) {
+                        evalValue = this.evaluate(this.fields[condition.field], condition.field);
+                    }
+
+                    if (type == 'any') {
+                        if (evalValue) {
+                            result = 1;
+                        }
+                    } else {
+                        // For All
+                        if (!evalValue && result) {
+                            result = false;
+                        }
+                    }
+                });
+                mainResult = result == 1;
+            }
+
+
+            item._visited = false;
+
+            // If field conditions exist but failed, return immediately without checking container_condition
+            if ((item.conditions?.length || item.condition_groups?.length) && !mainResult) {
+                return mainResult;
+            }
         }
 
         if (item.container_condition) {
             mainResult = this.evaluate(item.container_condition, key);
         }
+
         return mainResult;
+    }
+
+    evaluateGroups(groups) {
+        for (const group of groups) {
+            if (!group || !Array.isArray(group.rules) || group.rules.length === 0) {
+                continue;
+            }
+            try {
+                console.log('Evaluating group rules:', group.rules);
+                const result = this.evaluateRuleGroup(group.rules);
+                console.log('Group evaluation result:', result);
+                if (result === true) {
+                    return true;
+                }
+            } catch (error) {
+                console.warn(`Error evaluating group:`, error);
+                continue;
+            }
+        }
+
+        return false;
+    }
+    evaluateRuleGroup(rules) {
+
+        let results = rules.map(rule => {
+            try {
+                const evalResult = this.getItemEvaluateValue(rule, this.formData[rule.field]);
+                // If rule passes, then check dependencies if any
+                if (evalResult && this.fields[rule.field] && this.fields[rule.field].status) {
+                    const dependencyResult = this.evaluate(this.fields[rule.field], rule.field);
+                    return dependencyResult;
+                }
+
+                return evalResult;
+            } catch (error) {
+                console.warn(`Error evaluating rule:`, rule, error);
+                return false;
+            }
+        });
+
+        return results.every(result => result === true);
     }
 
     getItemEvaluateValue(item, val) {

@@ -119,18 +119,9 @@ class SettingsService
         } else {
             FormMeta::remove($formId, 'conv_form_resume_from_last_step');
         }
-
-        do_action_deprecated(
-            'fluentform_after_save_form_settings',
-            [
-                $formId,
-                $attributes
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/after_save_form_settings',
-            'Use fluentform/after_save_form_settings instead of fluentform_after_save_form_settings.'
-        );
-
+      
+    
+    
         do_action('fluentform/after_save_form_settings', $formId, $attributes);
     }
 
@@ -305,7 +296,7 @@ class SettingsService
             $params['form'] = $meta['share_key'];
         }
 
-        $shareUrl = add_query_arg($params, site_url());
+        $shareUrl = add_query_arg($params, Helper::getFrontendFacingUrl());
         return [
             'message'   => __('Settings successfully updated'),
             'share_url' => $shareUrl,

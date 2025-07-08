@@ -3,6 +3,7 @@
 namespace FluentForm\App\Models;
 
 use Exception;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Support\Arr;
 
@@ -262,10 +263,10 @@ class Submission extends Model
 
         EntryDetails::whereIn('submission_id', $submissionIds)->delete();
 
-        //delete the pro models this way for now
-        // todo: handle these pro models deletion
+        //delete  models this way for now
+        // todo: update wpFluent to the framework model
         try {
-            if(defined('FLUENTFORMPRO_VERSION')) {
+            if (PaymentHelper::hasPaymentSettings()) {
                 wpFluent()->table('fluentform_order_items')
                     ->whereIn('submission_id', $submissionIds)
                     ->delete();
@@ -361,15 +362,12 @@ class Submission extends Model
         }
 
 
-        if ($start && $startTime = (strtotime($start) + 24 * 60 * 60)) {
-            if ($start === $end) {
-                $startTime = strtotime($start);
-            }
-            $from = date('Y-m-d H:i:s', $startTime);
+        if ($start && $startTime = strtotime($start)) {
+            $from = date('Y-m-d 00:00:00', $startTime);
         }
 
-        if ($end  && $endTime = (strtotime($end) + 24 * 60 * 60)) {
-            $to = date('Y-m-d H:i:s', $endTime);
+        if ($end  && $endTime = strtotime($end)) {
+            $to = date('Y-m-d 23:59:59', $endTime);
         }
 
         $period = new \DatePeriod(new \DateTime($from), new \DateInterval('P1D'), new \DateTime($to));

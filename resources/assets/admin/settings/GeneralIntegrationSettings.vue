@@ -1,5 +1,13 @@
 <template>
     <div class="ff_general_integration_wrap">
+	    <notice class="ff_alert_between mb-4" type="info-soft" v-if="integration.status && !settings.is_new_google_api">
+		    <div>
+			    <h6 class="title">{{ $t('Google Sheet API') }}</h6>
+			    <p class="text">
+				    {{ $t('Please upgrade Google Access Code to get automatically fetch spreadsheet and worksheet.') }}</p>
+		    </div>
+	    </notice>
+
         <card v-if="settings.hide_on_valid && integration.status">
             <card-head>
                 <h5 class="title">{{ settings.menu_title }}</h5>
@@ -128,12 +136,14 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import wpEditor from '@/common/_wp_editor';
+import Notice from '@/admin/components/Notice/Notice.vue';
 
 
 export default {
     name: "generalIntegration",
     props: ['app', 'settings_key'],
     components: {
+	    Notice,
         Errors ,
         ErrorView,
         VideoDoc,

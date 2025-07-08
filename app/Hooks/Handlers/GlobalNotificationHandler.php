@@ -100,14 +100,7 @@ class GlobalNotificationHandler
         $scheduler = $this->app['fluentFormAsyncRequest'];
         
         foreach ($enabledFeeds as $feed) {
-            $sentIntegrations = Helper::getSubmissionMeta($insertId, '_ff_integration_sent');
-            if ($sentIntegrations) {
-                $sentIntegrations = json_decode($sentIntegrations, true);
-            }
-            $feedIdentifier = ArrayHelper::get($feed, 'settings.name') . '_' . ArrayHelper::get($feed, 'id');
-            if (in_array($feedIdentifier, $sentIntegrations)) {
-                return;
-            }
+            $feed = apply_filters('fluentform/integration_feed_before_parse', $feed, $insertId, $formData, $form);
             // We will decide if this feed will run on async or sync
             $integrationKey = ArrayHelper::get($feedKeys, $feed['meta_key']);
 
@@ -158,18 +151,6 @@ class GlobalNotificationHandler
                 $asyncFeeds[] = $scheduleAction;
 
                 $queueId = $scheduler->queue($scheduleAction);
-                if (!apply_filters('fluentform/is_pending_feed', false)) {
-                    if (is_array($queueId)) {
-                        foreach ($queueId as $action) {
-                            $id = $action->id;
-                            as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $id], 'fluentform');
-                        }
-                    } else {
-                        as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId], 'fluentform');
-                    }
-                }
-                
-                $queueId = $scheduler->queue($scheduleAction);
 
                 as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId], 'fluentform');
             } else {
@@ -194,8 +175,6 @@ class GlobalNotificationHandler
 
                 do_action($newAction, $feed, $formData, $entry, $form);
             }
-
-            Helper::setSubmissionMetaAsArrayPush($insertId, '_ff_integration_sent', $feedIdentifier);
         }
         
         if (! $asyncFeeds) {
