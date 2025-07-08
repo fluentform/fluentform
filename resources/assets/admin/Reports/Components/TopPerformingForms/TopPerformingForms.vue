@@ -2,7 +2,7 @@
     <card>
         <card-head>
             <h3>Top Performing Forms</h3>
-            <div class="card-controls">
+            <div class="">
                 <el-radio-group
                     v-model="selectedMetric"
                     size="small"

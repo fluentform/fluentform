@@ -3,8 +3,7 @@
         <card-head>
             <div class="net-revenue-header">
                 <div class="title-section">
-                    <h3>Net Revenue Analysis</h3>
-                    <p class="subtitle">Revenue breakdown by {{ groupByOptions[selectedGroupBy] }}</p>
+                    <h3>Net Revenue Analysis : {{ groupByOptions[selectedGroupBy] }}</h3>
                 </div>
                 <div class="controls-section">
                     <div class="date-range-display">

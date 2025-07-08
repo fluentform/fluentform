@@ -3,8 +3,7 @@
         <card-head>
             <div class="submission-analysis-header">
                 <div class="title-section">
-                    <h3>Submission Analysis</h3>
-                    <p class="subtitle">Submission breakdown by {{ groupByOptions[selectedGroupBy] }}</p>
+                    <h3>Submission Analysis : {{ groupByOptions[selectedGroupBy] }}</h3>
                 </div>
                 <div class="controls-section">
                     <div class="date-range-display">

@@ -811,16 +811,20 @@ class ReportHandler
         $previousPeriodSubmissions = Submission::whereBetween('created_at',
             [$previousStartDate, $previousEndDate])->count();
 
-        // Get submission status counts
-        $unreadSubmissions = Submission::whereBetween('created_at',
-            [$startDate, $endDate])->where('status', 'unread')->count();
-        $readSubmissions = Submission::whereBetween('created_at',
-            [$startDate, $endDate])->where('status', 'read')->count();
+        // Get submission status counts (grouped)
+        $statusCounts = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
+        $unreadSubmissions = $statusCounts['unread'] ?? 0;
+        $readSubmissions = $statusCounts['read'] ?? 0;
+        $periodSpamSubmissions = $statusCounts['spam'] ?? 0;
 
-        $periodSpamSubmissions = Submission::whereBetween('created_at',
-            [$startDate, $endDate])->where('status', 'spam')->count();
-        $previousSpamSubmissions = Submission::whereBetween('created_at',
-            [$previousStartDate, $previousEndDate])->where('status', 'spam')->count();
+        $previousStatusCounts = Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
+        $previousSpamSubmissions = $previousStatusCounts['spam'] ?? 0;
 
         // Get active integrations count from wp_options
         $modulesStatus = get_option('fluentform_global_modules_status');
