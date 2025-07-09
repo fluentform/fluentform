@@ -1311,6 +1311,9 @@
         },
 
         initKeyboardDelete(e) {
+			if (this.editorInserterVisible || this.fieldMode !== 'edit') {
+				return;
+			}
             const isDelete = e.key === 'Backspace' || e.key === 'Delete';
             if (isDelete && Object.keys(this.editItem).length > 0) {
                 e.preventDefault();
