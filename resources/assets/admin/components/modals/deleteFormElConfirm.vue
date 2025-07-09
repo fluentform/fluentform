@@ -18,6 +18,9 @@
                 <strong>Note:</strong>
                 {{ dataLostMsg }}
             </p>
+            <p class="ff-tip-text text-xs text-muted mb-3" >
+                You can also press <kbd>Del</kbd> or <kbd>⌫</kbd> to delete a selected field. Undo with <kbd>Ctrl+Z</kbd> or <kbd>⌘Z</kbd>.
+            </p>
         </div>
 
         <div slot="footer" class="dialog-footer">
@@ -46,8 +49,13 @@ export default {
         editItem: Object
     },
     watch: {
-        visibility() {
-            if (this.visibility) {
+        visibility(val) {
+            if (val) {
+                this.$nextTick(() => {
+                    // Focus the first button in the dialog
+                    const btn = this.$el.querySelector('.el-button');
+                    if (btn) btn.focus();
+                });
                 setTimeout( _ => {
                     const zIndex = Number(jQuery('.v-modal').css('z-index'));
                     jQuery('.ff_form_wrap').css('z-index', zIndex + 1);

@@ -240,6 +240,16 @@
                         dialogEl.parentElement.classList.remove('ff_backdrop');
                         dialogEl.classList.add('hidden');
                         dialogEl.classList.remove('dialog-fade-enter-active');
+                        
+                        const videoElement = dialogEl.querySelector('video, iframe');
+                        if (videoElement) {
+                            if (videoElement.tagName === 'VIDEO') {
+                                videoElement.pause();
+                                videoElement.currentTime = 0;
+                            } else if (videoElement.tagName === 'IFRAME') {
+                                videoElement.src = videoElement.src;
+                            }
+                        }
                     });
                 });
             ");

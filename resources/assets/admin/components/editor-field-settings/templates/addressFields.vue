@@ -103,6 +103,7 @@
             </el-select>
         </el-form-item>
 
+
         <small v-if="!has_gmap_api && editItem.settings.autocomplete_provider === 'google'">
            {{$t('Google Maps API key required. Configure in FluentForm Pro settings.')}}
         </small>
@@ -150,7 +151,9 @@
             </el-radio-group>
         </el-form-item>
 
+
         <el-form-item v-if="has_pro && ((editItem.settings.autocomplete_provider === 'google' && has_gmap_api) || editItem.settings.autocomplete_provider === 'html5')">
+
             <div slot="label">
                 {{$t('Save Coordinates')}}
                 <el-tooltip poper-class="ff_tooltip_wrap" :content="$t('If enabled, the user\'s latitude and longitude will be saved with the address field.')" placement="top">

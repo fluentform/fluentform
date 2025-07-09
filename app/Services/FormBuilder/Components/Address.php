@@ -25,19 +25,19 @@ class Address extends BaseComponent
     {
         $elementName = $data['element'];
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
-
+        
         $rootName = $data['attributes']['name'];
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
         $data['attributes']['class'] .= ' ff-name-address-wrapper ' . $this->wrapperClass . ' ' . $hasConditions;
         $data['attributes']['class'] = trim($data['attributes']['class']);
 
-        // Handle both legacy and new provider systems
+
         $provider = ArrayHelper::get($data, 'settings.autocomplete_provider', null);
         $legacyGoogle = ArrayHelper::get($data, 'settings.enable_g_autocomplete', 'no') === 'yes';
         $isLegacyProvider = !$provider || $provider === 'none';
-
         // Render coordinate fields if Pro is active and coordinate saving is enabled
         if (defined('FLUENTFORMPRO') && 'yes' == ArrayHelper::get($data, 'settings.save_coordinates')) {
+
             $coordinateFields = [
                 'latitude' => $rootName . '[latitude]',
                 'longitude' => $rootName . '[longitude]'
@@ -59,6 +59,7 @@ class Address extends BaseComponent
             }
         }
 
+
         if ($provider === 'google' || ($isLegacyProvider && $legacyGoogle)) {
             $data['attributes']['class'] .= ' ff_map_autocomplete';
             $data['attributes']['data-ff_with_g_map'] = ArrayHelper::get($data, 'settings.enable_g_map', 'no') === 'yes' ? '1' : '';
@@ -70,6 +71,7 @@ class Address extends BaseComponent
             $data['attributes']['data-name'] = $data['attributes']['name'];
             do_action('fluentform/address_map_autocomplete', $data, $form);
         }
+
 
         $atts = $this->buildAttributes(
             ArrayHelper::except($data['attributes'], 'name')
