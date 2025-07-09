@@ -363,6 +363,8 @@ $defaultElements = [
             'settings' => [
                 'label'                 => __('Address', 'fluentform'),
                 'enable_g_autocomplete' => 'no',
+                'autocomplete_provider' => 'none', // added in address vue component
+                'enable_auto_locate'   => 'on_click',
                 'admin_field_label'     => 'Address',
                 'field_order'           => [
                     ['id' => 1, 'value' => 'address_line_1'],
@@ -732,6 +734,30 @@ $defaultElements = [
                         'element'    => 'country-list',
                         'icon_class' => 'icon-text-width',
                         'template'   => 'selectCountry',
+                    ],
+                ],
+                'latitude' => [
+                    'element'    => 'input_hidden',
+                    'attributes' => [
+                        'type'  => 'hidden',
+                        'name'  => 'latitude',
+                        'value' => '',
+                    ],
+                    'settings' => [
+                        'visible' => true,
+                        'label'   => 'Latitude',
+                    ],
+                ],
+                'longitude' => [
+                    'element'    => 'input_hidden',
+                    'attributes' => [
+                        'type'  => 'hidden',
+                        'name'  => 'longitude',
+                        'value' => '',
+                    ],
+                    'settings' => [
+                        'visible' => true,
+                        'label'   => 'Longitude',
                     ],
                 ],
             ],

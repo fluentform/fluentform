@@ -464,6 +464,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes submission on Enter key press with selected radio/checkbox using keyboard
 - Fixes entries chart date range filtering
 - Fixes database creation errors in WordPress Studio environments
+- Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
 
 = 6.0.4 (Date: May 29, 2025) =
 - Fixes the net promoter score field's zero (0) value in the visual report

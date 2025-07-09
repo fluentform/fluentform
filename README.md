@@ -181,6 +181,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes submission on Enter key press with selected radio/checkbox using keyboard
 - Fixes entries chart date range filtering
 - Fixes database creation errors in WordPress Studio environments
+- Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
 
 ### 6.0.4 (Date: May 29, 2025) =
 - Improve honeypot condition check

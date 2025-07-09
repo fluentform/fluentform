@@ -808,8 +808,15 @@ class FormValidationService
             return;
         }
 
-        $providedKeywords = explode(',', Arr::get($settings, 'fields.keywords.values'));
-        $providedKeywords =  array_map('trim', $providedKeywords);
+        $keywords = Arr::get($settings, 'fields.keywords.values');
+        if (!$keywords || !is_string($keywords)) {
+            return;
+        }
+        $providedKeywords = explode(',', $keywords);
+        $providedKeywords =  array_filter(array_map('trim', $providedKeywords));
+        if (!$providedKeywords) {
+            return;
+        }
         $inputSubmission = array_intersect_key(
             $this->formData,
             array_flip(
