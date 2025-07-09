@@ -10,7 +10,7 @@ class Extractor
 {
     /**
      * The form field settings.
-     *
+     * 
      * @var array
      */
     protected $fields;
@@ -136,7 +136,7 @@ class Extractor
 
             // If the field is a Container (collection of other fields)
             // then we will recursively call this function to resolve.
-            if ($field['element'] === 'container') {             
+            if ($field['element'] === 'container') {
                 foreach ($field['columns'] as $item) {
                     $this->looperEssential($formData, $item['fields']);
                 }
@@ -381,13 +381,17 @@ class Extractor
             $isAddressOrNameField = in_array(Arr::get($this->field, 'element'), ['address', 'input_name']);
 
             $isRepeatField = Arr::get($this->field, 'element') === 'input_repeat' || Arr::get($this->field, 'element') == 'repeater_field';
-
+          
+            
             foreach ($customFields as $index => $customField) {
                 // If the current field is in fact `address` || `name` field
                 // then we have to only keep the enabled child fields
                 // by the user from the form editor settings.
                 if ($isAddressOrNameField) {
-                    if (!Arr::get($customField, 'settings.visible', false)) {
+                  
+                    $subFieldName = Arr::get($customField, 'attributes.name');
+                    // Always include latitude and longitude for address fields
+                    if (!Arr::get($customField, 'settings.visible', false) && !in_array($subFieldName, ['latitude', 'longitude'])) {
                         unset($customFields[$index]);
                         continue;
                     }
