@@ -165,7 +165,7 @@ class ValidationRuleParser
         if (strpos($rule, ':') !== false) {
             list($rule, $parameter) = explode(':', $rule, 2);
 
-            $parameters = str_getcsv($parameter);
+            $parameters = str_getcsv($rule, ',', '"', '\\');
         }
 
         return [trim($rule), $parameters];

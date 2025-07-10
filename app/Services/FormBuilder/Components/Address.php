@@ -24,31 +24,25 @@ class Address extends BaseComponent
     public function compile($data, $form)
     {
         $elementName = $data['element'];
+    
+        $data = apply_filters_deprecated(
+            'fluentform_rendering_field_data_' . $elementName,
+            [
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_data_' . $elementName,
+            'Use fluentform/rendering_field_data_' . $elementName . ' instead of fluentform_rendering_field_data_' . $elementName
+        );
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
-        
+
         $rootName = $data['attributes']['name'];
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
         $data['attributes']['class'] .= ' ff-name-address-wrapper ' . $this->wrapperClass . ' ' . $hasConditions;
         $data['attributes']['class'] = trim($data['attributes']['class']);
 
-        $provider = ArrayHelper::get($data, 'settings.autocomplete_provider', null);
-        $legacyGoogle = ArrayHelper::get($data, 'settings.enable_g_autocomplete', 'no') === 'yes';
-        $isLegacyProvider = !$provider || $provider === 'none';
-
-        // Treat legacy as google
-        if ($provider === 'google' || ($isLegacyProvider && $legacyGoogle)) {
-            $data['attributes']['class'] .= ' ff_map_autocomplete';
-            $data['attributes']['data-ff_with_g_map'] = ArrayHelper::get($data, 'settings.enable_g_map', 'no');
-            $data['attributes']['data-ff_with_auto_locate'] = ArrayHelper::get($data, 'settings.enable_auto_locate', 'no');
-        } elseif ($provider === 'html5') {
-            $data['attributes']['class'] .= ' ff_html5_geolocate';
-            $data['attributes']['data-ff_html5_locate'] = ArrayHelper::get($data, 'settings.enable_html5_locate', 'on_click');
-        }
-
-        if ($provider === 'google' || $provider === 'html5') {
-            do_action('fluentform/address_map_autocomplete', $data, $form);
-        }
-
+       
         if ('yes' == ArrayHelper::get($data, 'settings.save_coordinates')) {
             $coordinateFields = [
                 'latitude' => $rootName . '[latitude]',
@@ -69,6 +63,14 @@ class Address extends BaseComponent
         
                 $textComponent->compile($fieldConfig, $form);
             }
+        }
+        if ('yes' == ArrayHelper::get($data, 'settings.enable_g_autocomplete')) {
+            $data['attributes']['class'] .= ' ff_map_autocomplete';
+            if ('yes' == ArrayHelper::get($data, 'settings.enable_g_map')) {
+                $data['attributes']['data-ff_with_g_map'] = '1';
+            }
+            $data['attributes']['data-ff_with_auto_locate'] = ArrayHelper::get($data, 'settings.enable_auto_locate', false);
+            do_action('fluentform/address_map_autocomplete', $data, $form);
         }
 
         $atts = $this->buildAttributes(
