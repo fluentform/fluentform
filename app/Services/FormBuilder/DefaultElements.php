@@ -363,8 +363,6 @@ $defaultElements = [
             'settings' => [
                 'label'                 => __('Address', 'fluentform'),
                 'enable_g_autocomplete' => 'no',
-                'autocomplete_provider' => 'none', // added in address vue component
-                'enable_auto_locate'   => 'on_click',
                 'admin_field_label'     => 'Address',
                 'field_order'           => [
                     ['id' => 1, 'value' => 'address_line_1'],
