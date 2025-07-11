@@ -1465,7 +1465,7 @@ class ReportHandler
         });
 
         // Return top 5 forms
-        return array_slice($topForms, 0, 5);
+        return array_reverse(array_slice($topForms, 0, 5));
     }
 
     /**
