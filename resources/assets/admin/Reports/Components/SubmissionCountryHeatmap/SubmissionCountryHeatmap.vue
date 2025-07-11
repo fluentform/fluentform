@@ -2,7 +2,7 @@
     <card>
         <div class="submission-country-heatmap">
             <card-head class="card-header">
-                <h3>Submissions by Country</h3>
+                <h3>Submissions By Country</h3>
                 <div class="form-selector">
                     <el-select
                         v-model="selectedFormId"

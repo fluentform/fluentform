@@ -32,7 +32,7 @@ export default {
         changeType: {
             type: String,
             default: '',
-            validator: value => ['up', 'down', ''].includes(value)
+            validator: value => ['up', 'down', '', 'neutral'].includes(value)
         },
         icon: {
             type: String,
@@ -52,7 +52,7 @@ export default {
             return {
                 'stats-change--up': this.changeType === 'up',
                 'stats-change--down': this.changeType === 'down',
-                'stats-change--neutral': this.changeType === ''
+                'stats-change--neutral': this.changeType === '' || this.changeType === 'neutral'
             };
         },
         changeIcon() {

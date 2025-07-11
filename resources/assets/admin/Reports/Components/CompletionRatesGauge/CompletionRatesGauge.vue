@@ -1,7 +1,7 @@
 <template>
     <card>
         <card-head>
-            <h4>Completion rates</h4>
+            <h4>Completion Rates</h4>
         </card-head>
 
         <card-body>

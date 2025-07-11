@@ -278,8 +278,6 @@ export default {
             const data = this.overview_chart;
             this.categories = data.dates || [];
 
-            console.log('Raw overview_chart data:', data);
-
             // Reset chart data
             this.chartData = {
                 views: [],
@@ -327,7 +325,6 @@ export default {
                                     (data.values && Array.isArray(data.values) ? data.values : []) ||
                                     [];
                 this.chartData.payments = paymentValues;
-                console.log('Payment data from alternative sources:', this.chartData.payments);
             }
 
             // Process other data types
@@ -352,8 +349,6 @@ export default {
                 this.chartData.unread = this.chartData.submissions.map(val => Math.floor(val * 0.3));
                 this.chartData.read = this.chartData.submissions.map(val => Math.floor(val * 0.6));
             }
-
-            console.log('Final processed chart data:', this.chartData);
         },
 
         // Handle chart mode change

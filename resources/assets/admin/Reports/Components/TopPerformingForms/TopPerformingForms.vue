@@ -2,7 +2,7 @@
     <card>
         <card-head>
             <h3>Top Performing Forms</h3>
-            <div class="card-controls">
+            <div class="">
                 <el-radio-group
                     v-model="selectedMetric"
                     size="small"
@@ -214,7 +214,7 @@ export default {
             } else if (value >= 1000) {
                 return (value / 1000).toFixed(1) + 'K';
             }
-            return value.toString();
+            return value.toFixed(0).toString();
         },
 
         formatCurrency(value) {

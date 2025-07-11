@@ -3,8 +3,7 @@
         <card-head>
             <div class="net-revenue-header">
                 <div class="title-section">
-                    <h3>Net Revenue Analysis</h3>
-                    <p class="subtitle">Revenue breakdown by {{ groupByOptions[selectedGroupBy] }}</p>
+                    <h3>Net Revenue Analysis : {{ groupByOptions[selectedGroupBy] }}</h3>
                 </div>
                 <div class="controls-section">
                     <div class="date-range-display">
@@ -169,25 +168,40 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                
+                <!-- Add pagination -->
+                <div class="pagination-container">
+                    <el-pagination
+                        class="ff_pagination"
+                        background
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[5, 10, 20, 50, 100]"
+                        :page-size="parseInt(pageSize)"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="totalItems">
+                    </el-pagination>
+                </div>
 
                 <!-- Summary Row -->
                 <div class="summary-row">
                     <div class="summary-item">
                         <span class="label">Total Paid</span>
-                        <span class="value paid">{{ formatCurrency(totals.paid) }}</span>
+                        <span class="value paid">{{ formatCurrency(summaryTotals.paid) }}</span>
                     </div>
                     <div class="summary-item">
                         <span class="label">Total Pending</span>
-                        <span class="value pending">{{ formatCurrency(totals.pending) }}</span>
+                        <span class="value pending">{{ formatCurrency(summaryTotals.pending) }}</span>
                     </div>
                     <div class="summary-item">
                         <span class="label">Total Refunded</span>
-                        <span class="value refunded">{{ formatCurrency(totals.refunded) }}</span>
+                        <span class="value refunded">{{ formatCurrency(summaryTotals.refunded) }}</span>
                     </div>
                     <div class="summary-item">
                         <span class="label">Net Revenue</span>
-                        <span class="value net-revenue" :class="{ negative: totals.net < 0 }">
-                            {{ formatCurrency(totals.net) }}
+                        <span class="value net-revenue" :class="{ negative: summaryTotals.net < 0 }">
+                            {{ formatCurrency(summaryTotals.net) }}
                         </span>
                     </div>
                 </div>
@@ -232,24 +246,19 @@ export default {
                 'forms': 'Forms',
                 'payment_method': 'Payment Method',
                 'payment_type': 'Payment Type'
+            },
+            currentPage: 1,
+            pageSize: localStorage.getItem('ffReportNetRevenuePerPage') || 5,
+            totalItems: 0,
+            summaryTotals: {
+                paid: 0,
+                pending: 0,
+                refunded: 0,
+                net: 0
             }
         };
     },
     computed: {
-        totals() {
-            if (!this.revenueData.length) {
-                return { paid: 0, pending: 0, refunded: 0, net: 0 };
-            }
-
-            return this.revenueData.reduce((acc, row) => {
-                acc.paid += row.paid_amount || 0;
-                acc.pending += row.pending_amount || 0;
-                acc.refunded += row.refunded_amount || 0;
-                acc.net += row.net_revenue || 0;
-                return acc;
-            }, { paid: 0, pending: 0, refunded: 0, net: 0 });
-        },
-
         decodedCurrency() {
             return this.decodeHtmlEntities(this.paymentCurrency);
         }
@@ -274,20 +283,27 @@ export default {
                 group_by: this.selectedGroupBy,
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
-                form_id: this.selectedFormId
+                form_id: this.selectedFormId,
+                per_page: this.pageSize,
+                page: this.currentPage
             };
 
             FluentFormsGlobal.$get(data)
                 .then(response => {
-                    if (response.data && response.data.data) {
-                        this.revenueData = response.data.data;
+                    if (response.data) {
+                        this.revenueData = response.data.data || [];
+                        this.totalItems = response.data.total || 0;
+                        this.summaryTotals = response.data.totals || { paid: 0, pending: 0, refunded: 0, net: 0 };
                     } else {
                         this.revenueData = [];
+                        this.totalItems = 0;
+                        this.summaryTotals = { paid: 0, pending: 0, refunded: 0, net: 0 };
                     }
                 })
                 .fail(error => {
-                    console.error('Error fetching net revenue data:', error);
                     this.revenueData = [];
+                    this.totalItems = 0;
+                    this.summaryTotals = { paid: 0, pending: 0, refunded: 0, net: 0 };
                     this.$message.error('Failed to load revenue data');
                 })
                 .always(() => {
@@ -298,10 +314,12 @@ export default {
         handleGroupByChange() {
             // Reset form selection when changing group by
             this.selectedFormId = null;
+            this.currentPage = 1;
             this.fetchRevenueData();
         },
 
         handleFormChange() {
+            this.currentPage = 1;
             this.fetchRevenueData();
         },
 
@@ -368,12 +386,30 @@ export default {
                 day: 'numeric'
             };
             return date.toLocaleDateString('en-US', options);
+        },
+        handleSizeChange(newSize) {
+            this.pageSize = newSize;
+            localStorage.setItem('ffReportNetRevenuePerPage', newSize);
+            this.currentPage = 1;
+            this.fetchRevenueData();
+        },
+        handleCurrentChange(newPage) {
+            this.currentPage = newPage;
+            this.fetchRevenueData();
         }
     }
 };
 </script>
 
 <style scoped>
+/* Add pagination styling */
+.pagination-container {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Keep existing styles */
 .net-revenue-header {
     display: flex;
     justify-content: space-between;

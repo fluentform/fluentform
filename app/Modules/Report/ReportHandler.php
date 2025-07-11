@@ -811,16 +811,20 @@ class ReportHandler
         $previousPeriodSubmissions = Submission::whereBetween('created_at',
             [$previousStartDate, $previousEndDate])->count();
 
-        // Get submission status counts
-        $unreadSubmissions = Submission::whereBetween('created_at',
-            [$startDate, $endDate])->where('status', 'unread')->count();
-        $readSubmissions = Submission::whereBetween('created_at',
-            [$startDate, $endDate])->where('status', 'read')->count();
+        // Get submission status counts (grouped)
+        $statusCounts = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
+        $unreadSubmissions = $statusCounts['unread'] ?? 0;
+        $readSubmissions = $statusCounts['read'] ?? 0;
+        $periodSpamSubmissions = $statusCounts['spam'] ?? 0;
 
-        $periodSpamSubmissions = Submission::whereBetween('created_at',
-            [$startDate, $endDate])->where('status', 'spam')->count();
-        $previousSpamSubmissions = Submission::whereBetween('created_at',
-            [$previousStartDate, $previousEndDate])->where('status', 'spam')->count();
+        $previousStatusCounts = Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
+        $previousSpamSubmissions = $previousStatusCounts['spam'] ?? 0;
 
         // Get active integrations count from wp_options
         $modulesStatus = get_option('fluentform_global_modules_status');
@@ -1461,7 +1465,7 @@ class ReportHandler
         });
 
         // Return top 5 forms
-        return array_slice($topForms, 0, 5);
+        return array_reverse(array_slice($topForms, 0, 5));
     }
 
     /**
@@ -1479,6 +1483,8 @@ class ReportHandler
         $startDate = sanitize_text_field($this->app->request->get('start_date'));
         $endDate = sanitize_text_field($this->app->request->get('end_date'));
         $formId = intval($this->app->request->get('form_id', 0));
+        $perPage = intval($this->app->request->get('per_page', 10));
+        $currentPage = intval($this->app->request->get('page', 1));
 
         // Validate and set default dates if not provided
         if (!$startDate || !$endDate) {
@@ -1487,17 +1493,15 @@ class ReportHandler
         }
 
         try {
-            $data = [];
-
             switch ($groupBy) {
                 case 'forms':
-                    $data = $this->getNetRevenueByForms($startDate, $endDate);
+                    $data = $this->getNetRevenueByForms($startDate, $endDate, $perPage, $currentPage);
                     break;
                 case 'payment_method':
-                    $data = $this->getNetRevenueByPaymentMethod($startDate, $endDate, $formId);
+                    $data = $this->getNetRevenueByPaymentMethod($startDate, $endDate, $formId, $perPage, $currentPage);
                     break;
                 case 'payment_type':
-                    $data = $this->getNetRevenueByPaymentType($startDate, $endDate, $formId);
+                    $data = $this->getNetRevenueByPaymentType($startDate, $endDate, $formId, $perPage, $currentPage);
                     break;
                 default:
                     wp_send_json_error(['message' => 'Invalid group_by parameter'], 400);
@@ -1505,7 +1509,9 @@ class ReportHandler
             }
 
             wp_send_json_success([
-                'data' => $data,
+                'data' => $data['data'],
+                'totals' => $data['totals'],
+                'total' => $data['total'],
                 'group_by' => $groupBy,
                 'date_range' => [
                     'start' => $startDate,
@@ -1518,34 +1524,63 @@ class ReportHandler
     }
 
     /**
-     * Get net revenue grouped by forms
+     * Get net revenue grouped by forms with pagination
      */
-    private function getNetRevenueByForms($startDate, $endDate)
+    private function getNetRevenueByForms($startDate, $endDate, $perPage = 5, $currentPage = 1)
     {
         global $wpdb;
+        $prefix = $wpdb->prefix;
+        $query = wpFluent()
+            ->table('fluentform_transactions')
+            ->join('fluentform_forms', 'fluentform_transactions.form_id', '=', 'fluentform_forms.id')
+            ->select(
+                'fluentform_forms.id as form_id',
+                'fluentform_forms.title as form_title',
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid_amount"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending_amount"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded_amount"),
+                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net_revenue")
+            )
+            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
+            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded'])
+            ->groupBy('fluentform_forms.id', 'fluentform_forms.title')
+            ->orderBy('net_revenue', 'DESC');
 
-        $transactionsTable = $wpdb->prefix . 'fluentform_transactions';
-        $formsTable = $wpdb->prefix . 'fluentform_forms';
+        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $total = $results->total();
+        
+        // Get totals for all data
+        $totalsQuery = wpFluent()
+            ->table('fluentform_transactions')
+            ->select(
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded"),
+                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net")
+            )
+            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
+            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded']);
+        
+        $totals = $totalsQuery->first();
+        if ($totals) {
+            $formattedTotals = [
+                'paid' => round($totals->paid / 100, 2),
+                'pending' => round($totals->pending / 100, 2),
+                'refunded' => round($totals->refunded / 100, 2),
+                'net' => round($totals->net / 100, 2)
+            ];
+        } else {
+            $formattedTotals = [
+                'paid' => 0,
+                'pending' => 0,
+                'refunded' => 0,
+                'net' => 0
+            ];
+        }
 
-        $sql = "SELECT
-            f.id as form_id,
-            f.title as form_title,
-            SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) as paid_amount,
-            SUM(CASE WHEN t.status = 'pending' THEN t.payment_total ELSE 0 END) as pending_amount,
-            SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END) as refunded_amount,
-            (SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) - SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END)) as net_revenue
-        FROM {$transactionsTable} t
-        INNER JOIN {$formsTable} f ON t.form_id = f.id
-        WHERE t.created_at BETWEEN %s AND %s
-        AND t.status IN ('paid', 'pending', 'refunded')
-        GROUP BY f.id, f.title
-        ORDER BY net_revenue DESC";
-
-        $query = $wpdb->get_results($wpdb->prepare($sql, $startDate, $endDate));
-
-        $results = [];
-        foreach ($query as $row) {
-            $results[] = [
+        $formattedResults = [];
+        foreach ($results->items() as $row) {
+            $formattedResults[] = [
                 'form_id' => $row->form_id,
                 'form_title' => $row->form_title ?: 'Untitled Form',
                 'paid_amount' => round($row->paid_amount / 100, 2),
@@ -1554,47 +1589,78 @@ class ReportHandler
                 'net_revenue' => round($row->net_revenue / 100, 2)
             ];
         }
-
-        return $results;
+        
+        return [
+            'data' => $formattedResults,
+            'totals' => $formattedTotals,
+            'total' => $total
+        ];
     }
 
     /**
-     * Get net revenue grouped by payment method
+     * Get net revenue grouped by payment method with pagination
      */
-    private function getNetRevenueByPaymentMethod($startDate, $endDate, $formId = null)
+    private function getNetRevenueByPaymentMethod($startDate, $endDate, $formId = null, $perPage = 5, $currentPage = 1)
     {
         global $wpdb;
-
-        $transactionsTable = $wpdb->prefix . 'fluentform_transactions';
-
-        $sql = "SELECT
-            t.payment_method,
-            SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) as paid_amount,
-            SUM(CASE WHEN t.status = 'pending' THEN t.payment_total ELSE 0 END) as pending_amount,
-            SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END) as refunded_amount,
-            (SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) - SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END)) as net_revenue,
-            COUNT(*) as transaction_count
-        FROM {$transactionsTable} t
-        WHERE t.created_at BETWEEN %s AND %s
-        AND t.status IN ('paid', 'pending', 'refunded')
-        AND t.payment_method IS NOT NULL";
-
-        $params = [$startDate, $endDate];
+        $prefix = $wpdb->prefix;
+        $query = wpFluent()
+            ->table('fluentform_transactions')
+            ->select(
+                'fluentform_transactions.payment_method',
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid_amount"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending_amount"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded_amount"),
+                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net_revenue"),
+                wpFluent()->raw("COUNT(*) as transaction_count")
+            )
+            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
+            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded'])
+            ->whereNotNull('fluentform_transactions.payment_method');
 
         if ($formId) {
-            $sql .= " AND t.form_id = %d";
-            $params[] = $formId;
+            $query->where('fluentform_transactions.form_id', $formId);
         }
 
-        $sql .= " GROUP BY t.payment_method ORDER BY net_revenue DESC";
+        $query->groupBy('fluentform_transactions.payment_method')
+            ->orderBy('net_revenue', 'DESC');
 
-        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
+        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $total = $results->total();
+        
+        // Get totals for all data
+        $totalsQuery = wpFluent()
+            ->table('fluentform_transactions')
+            ->select(
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded"),
+                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net")
+            )
+            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
+            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded']);
+        
+        $totals = $totalsQuery->first();
+        if ($totals) {
+            $formattedTotals = [
+                'paid' => round($totals->paid / 100, 2),
+                'pending' => round($totals->pending / 100, 2),
+                'refunded' => round($totals->refunded / 100, 2),
+                'net' => round($totals->net / 100, 2)
+            ];
+        } else {
+            $formattedTotals = [
+                'paid' => 0,
+                'pending' => 0,
+                'refunded' => 0,
+                'net' => 0
+            ];
+        }
 
-        $results = [];
-        foreach ($query as $row) {
+        $formattedResults = [];
+        foreach ($results->items() as $row) {
             $paymentMethodName = $this->formatPaymentMethodName($row->payment_method);
-
-            $results[] = [
+            $formattedResults[] = [
                 'payment_method' => $row->payment_method,
                 'payment_method_name' => $paymentMethodName,
                 'paid_amount' => round($row->paid_amount / 100, 2),
@@ -1604,47 +1670,81 @@ class ReportHandler
                 'transaction_count' => $row->transaction_count
             ];
         }
-
-        return $results;
+        return [
+            'data' => $formattedResults,
+            'totals' => $formattedTotals,
+            'total' => $total
+        ];
     }
 
     /**
-     * Get net revenue grouped by payment type (one-time vs subscription)
+     * Get net revenue grouped by payment type with pagination
      */
-    private function getNetRevenueByPaymentType($startDate, $endDate, $formId = null)
+    private function getNetRevenueByPaymentType($startDate, $endDate, $formId = null, $perPage = 5, $currentPage = 1)
     {
         global $wpdb;
-
-        $transactionsTable = $wpdb->prefix . 'fluentform_transactions';
-
-        $sql = "SELECT
-            t.transaction_type,
-            SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) as paid_amount,
-            SUM(CASE WHEN t.status = 'pending' THEN t.payment_total ELSE 0 END) as pending_amount,
-            SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END) as refunded_amount,
-            (SUM(CASE WHEN t.status = 'paid' THEN t.payment_total ELSE 0 END) - SUM(CASE WHEN t.status = 'refunded' THEN t.payment_total ELSE 0 END)) as net_revenue,
-            COUNT(*) as transaction_count
-        FROM {$transactionsTable} t
-        WHERE t.created_at BETWEEN %s AND %s
-        AND t.status IN ('paid', 'pending', 'refunded')
-        AND t.transaction_type IN ('onetime', 'subscription')";
-
-        $params = [$startDate, $endDate];
+        $prefix = $wpdb->prefix;
+        $query = wpFluent()
+            ->table('fluentform_transactions')
+            ->select(
+                'fluentform_transactions.transaction_type',
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid_amount"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending_amount"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded_amount"),
+                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net_revenue"),
+                wpFluent()->raw("COUNT(*) as transaction_count")
+            )
+            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
+            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded'])
+            ->whereIn('fluentform_transactions.transaction_type', ['onetime', 'subscription']);
 
         if ($formId) {
-            $sql .= " AND t.form_id = %d";
-            $params[] = $formId;
+            $query->where('fluentform_transactions.form_id', $formId);
         }
 
-        $sql .= " GROUP BY t.transaction_type ORDER BY net_revenue DESC";
+        $query->groupBy('fluentform_transactions.transaction_type')
+            ->orderBy('net_revenue', 'DESC');
 
-        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
+        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $total = $results->total();
+        
+        // Get totals for all data
+        $totalsQuery = wpFluent()
+            ->table('fluentform_transactions')
+            ->select(
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded"),
+                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net")
+            )
+            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
+            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded']);
+        
+        if ($formId) {
+            $totalsQuery->where('fluentform_transactions.form_id', $formId);
+        }
+        
+        $totals = $totalsQuery->first();
+        if ($totals) {
+            $formattedTotals = [
+                'paid' => round($totals->paid / 100, 2),
+                'pending' => round($totals->pending / 100, 2),
+                'refunded' => round($totals->refunded / 100, 2),
+                'net' => round($totals->net / 100, 2)
+            ];
+        } else {
+            $formattedTotals = [
+                'paid' => 0,
+                'pending' => 0,
+                'refunded' => 0,
+                'net' => 0
+            ];
+        }
 
-        $results = [];
-        foreach ($query as $row) {
+        $formattedResults = [];
+        foreach ($results->items() as $row) {
             $typeName = $row->transaction_type === 'onetime' ? 'One-time Payment' : 'Subscription';
-
-            $results[] = [
+            $formattedResults[] = [
                 'payment_type' => $row->transaction_type,
                 'payment_type_name' => $typeName,
                 'paid_amount' => round($row->paid_amount / 100, 2),
@@ -1654,8 +1754,12 @@ class ReportHandler
                 'transaction_count' => $row->transaction_count
             ];
         }
-
-        return $results;
+        
+        return [
+            'data' => $formattedResults,
+            'totals' => $formattedTotals,
+            'total' => $total
+        ];
     }
 
     /**
@@ -1693,6 +1797,8 @@ class ReportHandler
         $startDate = sanitize_text_field($this->app->request->get('start_date'));
         $endDate = sanitize_text_field($this->app->request->get('end_date'));
         $formId = intval($this->app->request->get('form_id', 0));
+        $perPage = intval($this->app->request->get('per_page', 10));
+        $currentPage = intval($this->app->request->get('page', 1));
 
         // Validate and set default dates if not provided
         if (!$startDate || !$endDate) {
@@ -1701,23 +1807,23 @@ class ReportHandler
         }
 
         try {
-            $data = [];
+            $result = [];
 
             switch ($groupBy) {
                 case 'forms':
-                    $data = $this->getSubmissionAnalysisByForms($startDate, $endDate);
+                    $result = $this->getSubmissionAnalysisByForms($startDate, $endDate, $perPage, $currentPage);
                     break;
                 case 'submission_source':
-                    $data = $this->getSubmissionAnalysisBySource($startDate, $endDate, $formId);
+                    $result = $this->getSubmissionAnalysisBySource($startDate, $endDate, $formId, $perPage, $currentPage);
                     break;
                 case 'email':
-                    $data = $this->getSubmissionAnalysisByEmail($startDate, $endDate, $formId);
+                    $result = $this->getSubmissionAnalysisByEmail($startDate, $endDate, $formId, $perPage, $currentPage);
                     break;
                 case 'country':
-                    $data = $this->getSubmissionAnalysisByCountry($startDate, $endDate, $formId);
+                    $result = $this->getSubmissionAnalysisByCountry($startDate, $endDate, $formId, $perPage, $currentPage);
                     break;
                 case 'submission_date':
-                    $data = $this->getSubmissionAnalysisByDate($startDate, $endDate, $formId);
+                    $result = $this->getSubmissionAnalysisByDate($startDate, $endDate, $formId, $perPage, $currentPage);
                     break;
                 default:
                     wp_send_json_error(['message' => 'Invalid group_by parameter'], 400);
@@ -1725,7 +1831,9 @@ class ReportHandler
             }
 
             wp_send_json_success([
-                'data' => $data,
+                'data' => $result['data'],
+                'total' => $result['total'],
+                'totals' => $result['totals'],
                 'group_by' => $groupBy,
                 'date_range' => [
                     'start' => $startDate,
@@ -1738,34 +1846,64 @@ class ReportHandler
     }
 
     /**
-     * Get submission analysis grouped by forms
+     * Get submission analysis grouped by forms with pagination
      */
-    private function getSubmissionAnalysisByForms($startDate, $endDate)
+    private function getSubmissionAnalysisByForms($startDate, $endDate, $perPage = 5, $currentPage = 1)
     {
         global $wpdb;
+        $prefix = $wpdb->prefix;
+        $query = wpFluent()
+            ->table('fluentform_submissions')
+            ->join('fluentform_forms', 'fluentform_submissions.form_id', '=', 'fluentform_forms.id')
+            ->select(
+                'fluentform_forms.id as form_id',
+                'fluentform_forms.title as form_title',
+                wpFluent()->raw('COUNT(*) as total_submissions'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions"),
+                wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate])
+            ->groupBy('fluentform_forms.id', 'fluentform_forms.title')
+            ->orderBy('total_submissions', 'DESC');
 
-        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
-        $formsTable = $wpdb->prefix . 'fluentform_forms';
+        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $total = $results->total();
+        
+        // Get totals for all data
+        $totalsQuery = wpFluent()
+            ->table('fluentform_submissions')
+            ->select(
+                wpFluent()->raw('COUNT(*) as `total`'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
+        
+        $totalsData = $totalsQuery->first();
+        if ($totalsData) {
+            $totals = [
+                'total' => (int)$totalsData->total,
+                'read' => (int)$totalsData->read_count,
+                'unread' => (int)$totalsData->unread_count,
+                'spam' => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+            ];
+        } else {
+            $totals = [
+                'total' => 0,
+                'read' => 0,
+                'unread' => 0,
+                'spam' => 0,
+                'readRate' => 0
+            ];
+        }
 
-        $sql = "SELECT
-            f.id as form_id,
-            f.title as form_title,
-            COUNT(*) as total_submissions,
-            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
-            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
-            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
-            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
-        FROM {$submissionsTable} s
-        INNER JOIN {$formsTable} f ON s.form_id = f.id
-        WHERE s.created_at BETWEEN %s AND %s
-        GROUP BY f.id, f.title
-        ORDER BY total_submissions DESC";
-
-        $query = $wpdb->get_results($wpdb->prepare($sql, $startDate, $endDate));
-
-        $results = [];
-        foreach ($query as $row) {
-            $results[] = [
+        $formattedResults = [];
+        foreach ($results->items() as $row) {
+            $formattedResults[] = [
                 'form_id' => $row->form_id,
                 'form_title' => $row->form_title ?: 'Untitled Form',
                 'total_submissions' => (int)$row->total_submissions,
@@ -1776,42 +1914,80 @@ class ReportHandler
             ];
         }
 
-        return $results;
+        return [
+            'data' => $formattedResults,
+            'total' => $total,
+            'totals' => $totals
+        ];
     }
 
     /**
-     * Get submission analysis grouped by source URL
+     * Get submission analysis grouped by source URL with pagination
      */
-    private function getSubmissionAnalysisBySource($startDate, $endDate, $formId = null)
+    private function getSubmissionAnalysisBySource($startDate, $endDate, $formId = null, $perPage = 5, $currentPage = 1)
     {
         global $wpdb;
-
-        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
-
-        $sql = "SELECT
-            s.source_url,
-            COUNT(*) as total_submissions,
-            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
-            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
-            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
-            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
-        FROM {$submissionsTable} s
-        WHERE s.created_at BETWEEN %s AND %s";
-
-        $params = [$startDate, $endDate];
+        $prefix = $wpdb->prefix;
+        // Build the query using wpFluent with full table names
+        $query = wpFluent()
+            ->table('fluentform_submissions')
+            ->select(
+                'fluentform_submissions.source_url',
+                wpFluent()->raw('COUNT(*) as total_submissions'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions"),
+                wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
 
         if ($formId) {
-            $sql .= " AND s.form_id = %d";
-            $params[] = $formId;
+            $query->where('fluentform_submissions.form_id', $formId);
+        }
+        // Group by source URL and order by total submissions descending
+        $query->groupBy('fluentform_submissions.source_url')
+              ->orderBy('total_submissions', 'DESC');
+
+        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $total = $results->total();
+        
+        // Get totals for all data
+        $totalsQuery = wpFluent()
+            ->table('fluentform_submissions')
+            ->select(
+                wpFluent()->raw('COUNT(*) as `total`'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $totalsQuery->where('fluentform_submissions.form_id', $formId);
+        }
+        
+        $totalsData = $totalsQuery->first();
+        if ($totalsData) {
+            $totals = [
+                'total' => (int)$totalsData->total,
+                'read' => (int)$totalsData->read_count,
+                'unread' => (int)$totalsData->unread_count,
+                'spam' => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+            ];
+        } else {
+            $totals = [
+                'total' => 0,
+                'read' => 0,
+                'unread' => 0,
+                'spam' => 0,
+                'readRate' => 0
+            ];
         }
 
-        $sql .= " GROUP BY s.source_url ORDER BY total_submissions DESC";
-
-        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
-
-        $results = [];
-        foreach ($query as $row) {
-            $results[] = [
+        $formattedResults = [];
+        foreach ($results->items() as $row) {
+            $formattedResults[] = [
                 'source_url' => $row->source_url ?: 'Direct Access',
                 'total_submissions' => (int)$row->total_submissions,
                 'read_submissions' => (int)$row->read_submissions,
@@ -1821,48 +1997,82 @@ class ReportHandler
             ];
         }
 
-        return $results;
+        return [
+            'data' => $formattedResults,
+            'total' => $total,
+            'totals' => $totals
+        ];
     }
 
     /**
-     * Get submission analysis grouped by email
+     * Get submission analysis grouped by email with pagination
      */
-    private function getSubmissionAnalysisByEmail($startDate, $endDate, $formId = null)
+    private function getSubmissionAnalysisByEmail($startDate, $endDate, $formId = null, $perPage = 5, $currentPage = 1)
     {
         global $wpdb;
-
-        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
-
-        // Extract email from response JSON
-        $sql = "SELECT
+        $prefix = $wpdb->prefix;
+        // Create a subquery with the email expression to handle the grouping properly
+        $subQuery = "SELECT 
             COALESCE(
-                JSON_UNQUOTE(JSON_EXTRACT(s.response, '$.email')),
-                JSON_UNQUOTE(JSON_EXTRACT(s.response, '$.email_1')),
-                JSON_UNQUOTE(JSON_EXTRACT(s.response, '$.user_email')),
+                NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
+                NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),
+                NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.user_email')), ''),
                 'No Email'
             ) as email,
             COUNT(*) as total_submissions,
-            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
-            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
-            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
-            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
-        FROM {$submissionsTable} s
-        WHERE s.created_at BETWEEN %s AND %s";
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
+            ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+        FROM {$prefix}fluentform_submissions
+        WHERE {$prefix}fluentform_submissions.created_at BETWEEN '{$startDate}' AND '{$endDate}'
+        " . ($formId ? " AND {$prefix}fluentform_submissions.form_id = {$formId}" : "") . "
+        GROUP BY email";
 
-        $params = [$startDate, $endDate];
+        $query = wpFluent()
+            ->table(wpFluent()->raw("({$subQuery}) as email_stats"))
+            ->orderBy('total_submissions', 'DESC');
+
+        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $total = $results->total();
+        
+        // Get totals for all data
+        $totalsQuery = wpFluent()
+            ->table('fluentform_submissions')
+            ->select(
+                wpFluent()->raw('COUNT(*) as `total`'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
 
         if ($formId) {
-            $sql .= " AND s.form_id = %d";
-            $params[] = $formId;
+            $totalsQuery->where('fluentform_submissions.form_id', $formId);
+        }
+        
+        $totalsData = $totalsQuery->first();
+        if ($totalsData) {
+            $totals = [
+                'total' => (int)$totalsData->total,
+                'read' => (int)$totalsData->read_count,
+                'unread' => (int)$totalsData->unread_count,
+                'spam' => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+            ];
+        } else {
+            $totals = [
+                'total' => 0,
+                'read' => 0,
+                'unread' => 0,
+                'spam' => 0,
+                'readRate' => 0
+            ];
         }
 
-        $sql .= " GROUP BY email ORDER BY total_submissions DESC LIMIT 100";
-
-        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
-
-        $results = [];
-        foreach ($query as $row) {
-            $results[] = [
+        $formattedResults = [];
+        foreach ($results->items() as $row) {
+            $formattedResults[] = [
                 'email' => $row->email,
                 'total_submissions' => (int)$row->total_submissions,
                 'read_submissions' => (int)$row->read_submissions,
@@ -1872,42 +2082,81 @@ class ReportHandler
             ];
         }
 
-        return $results;
+        return [
+            'data' => $formattedResults,
+            'total' => $total,
+            'totals' => $totals
+        ];
     }
 
     /**
-     * Get submission analysis grouped by country
+     * Get submission analysis grouped by country with pagination
      */
-    private function getSubmissionAnalysisByCountry($startDate, $endDate, $formId = null)
+    private function getSubmissionAnalysisByCountry($startDate, $endDate, $formId = null, $perPage = 5, $currentPage = 1)
     {
         global $wpdb;
-
-        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
-
-        $sql = "SELECT
-            s.country,
-            COUNT(*) as total_submissions,
-            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
-            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
-            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
-            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
-        FROM {$submissionsTable} s
-        WHERE s.created_at BETWEEN %s AND %s";
-
-        $params = [$startDate, $endDate];
+        $prefix = $wpdb->prefix;
+        $query = wpFluent()
+            ->table('fluentform_submissions')
+            ->select(
+                'fluentform_submissions.country',
+                wpFluent()->raw('COUNT(*) as total_submissions'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions"),
+                wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
 
         if ($formId) {
-            $sql .= " AND s.form_id = %d";
-            $params[] = $formId;
+            $query->where('fluentform_submissions.form_id', $formId);
+        }
+        
+        // Group by country and order by total submissions descending
+        $query->groupBy('fluentform_submissions.country')
+              ->orderBy('total_submissions', 'DESC');
+
+        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
+
+        $total = $results->total();
+        
+        // Get totals for all data
+        $totalsQuery = wpFluent()
+            ->table('fluentform_submissions')
+            ->select(
+                wpFluent()->raw('COUNT(*) as `total`'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $totalsQuery->where('fluentform_submissions.form_id', $formId);
+        }
+        
+        $totalsData = $totalsQuery->first();
+        if ($totalsData) {
+            $totals = [
+                'total' => (int)$totalsData->total,
+                'read' => (int)$totalsData->read_count,
+                'unread' => (int)$totalsData->unread_count,
+                'spam' => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+            ];
+        } else {
+            $totals =  [
+                'total' => 0,
+                'read' => 0,
+                'unread' => 0,
+                'spam' => 0,
+                'readRate' => 0,
+            ];
         }
 
-        $sql .= " GROUP BY s.country ORDER BY total_submissions DESC";
-
-        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
-
-        $results = [];
-        foreach ($query as $row) {
-            $results[] = [
+        $formattedResults = [];
+        foreach ($results->items() as $row) {
+            $formattedResults[] = [
                 'country' => $row->country ?: 'Unknown',
                 'total_submissions' => (int)$row->total_submissions,
                 'read_submissions' => (int)$row->read_submissions,
@@ -1917,42 +2166,80 @@ class ReportHandler
             ];
         }
 
-        return $results;
+        return [
+            'data' => $formattedResults,
+            'total' => $total,
+            'totals' => $totals
+        ];
     }
 
     /**
      * Get submission analysis grouped by submission date
      */
-    private function getSubmissionAnalysisByDate($startDate, $endDate, $formId = null)
+    private function getSubmissionAnalysisByDate($startDate, $endDate, $formId = null, $perPage = 5, $currentPage = 1)
     {
         global $wpdb;
-
-        $submissionsTable = $wpdb->prefix . 'fluentform_submissions';
-
-        $sql = "SELECT
-            DATE(s.created_at) as submission_date,
-            COUNT(*) as total_submissions,
-            SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
-            SUM(CASE WHEN s.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
-            SUM(CASE WHEN s.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
-            ROUND((SUM(CASE WHEN s.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
-        FROM {$submissionsTable} s
-        WHERE s.created_at BETWEEN %s AND %s";
-
-        $params = [$startDate, $endDate];
+        $prefix = $wpdb->prefix;
+        $query = wpFluent()
+            ->table('fluentform_submissions')
+            ->select(
+                wpFluent()->raw("DATE({$prefix}fluentform_submissions.created_at) as submission_date"),
+                wpFluent()->raw('COUNT(*) as total_submissions'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions"),
+                wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
 
         if ($formId) {
-            $sql .= " AND s.form_id = %d";
-            $params[] = $formId;
+            $query->where('fluentform_submissions.form_id', $formId);
+        }
+        
+        // Group by date and order by date descending
+        $query->groupBy(wpFluent()->raw("DATE({$prefix}fluentform_submissions.created_at)"))
+              ->orderBy('submission_date', 'DESC');
+
+        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $total = $results->total();
+        
+        // Get totals for all data
+        $totalsQuery = wpFluent()
+            ->table('fluentform_submissions')
+            ->select(
+                wpFluent()->raw('COUNT(*) as `total`'),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+            )
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $totalsQuery->where('fluentform_submissions.form_id', $formId);
+        }
+        
+        $totalsData = $totalsQuery->first();
+        if ($totalsData) {
+            $totals = [
+                'total' => (int)$totalsData->total,
+                'read' => (int)$totalsData->read_count,
+                'unread' => (int)$totalsData->unread_count,
+                'spam' => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+            ];
+        } else {
+            $totals =  [
+                'total' => 0,
+                'read' => 0,
+                'unread' => 0,
+                'spam' => 0,
+                'readRate' => 0,
+            ];
         }
 
-        $sql .= " GROUP BY DATE(s.created_at) ORDER BY submission_date DESC";
-
-        $query = $wpdb->get_results($wpdb->prepare($sql, ...$params));
-
-        $results = [];
-        foreach ($query as $row) {
-            $results[] = [
+        $formattedResults = [];
+        foreach ($results->items() as $row) {
+            $formattedResults[] = [
                 'submission_date' => $row->submission_date,
                 'total_submissions' => (int)$row->total_submissions,
                 'read_submissions' => (int)$row->read_submissions,
@@ -1962,6 +2249,10 @@ class ReportHandler
             ];
         }
 
-        return $results;
+        return [
+            'data' => $formattedResults,
+            'total' => $total,
+            'totals' => $totals
+        ];
     }
 }
