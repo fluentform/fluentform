@@ -149,15 +149,7 @@ class EditorShortCode
         return apply_filters('fluentform/form_settings_smartcodes', $groups, $form);
     }
 
-    /**
-     * Parse shortcodes in string or array
-     * 
-     * @param string|array $string
-     * @param array $data
-     * @param callable|null $arrayFormatter
-     * @return string|array
-     */
-    public static function parse($string, $data, ?callable $arrayFormatter = null)
+    public static function parse($string, $data, callable $arrayFormatter = null)
     {
         if (is_array($string)) {
             return static::parseArray($string, $data, $arrayFormatter);
@@ -179,15 +171,7 @@ class EditorShortCode
         return $string;
     }
 
-    /**
-     * Parse shortcodes in string
-     * 
-     * @param string $string
-     * @param array $data
-     * @param callable|null $arrayFormatter
-     * @return string
-     */
-    public static function parseString($string, $data, ?callable $arrayFormatter = null)
+    public static function parseString($string, $data, callable $arrayFormatter = null)
     {
         return preg_replace_callback('/{+(.*?)}/', function ($matches) use (&$data, &$arrayFormatter) {
             if (! isset($data[$matches[1]])) {

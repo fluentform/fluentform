@@ -29,8 +29,7 @@ class Helper
      * Sanitize form inputs recursively.
      *
      * @param $input
-     * @param null $attribute
-     * @param array $fields
+     *
      * @return string $input
      */
     public static function sanitizer($input, $attribute = null, $fields = [])

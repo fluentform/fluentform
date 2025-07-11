@@ -12,7 +12,7 @@ class WpFormsMigrator extends BaseMigrator
     /**
      * @var bool
      */
-    public $hasStep = false;
+    protected $hasStep = false;
 
     public function __construct()
     {

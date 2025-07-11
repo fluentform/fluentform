@@ -108,15 +108,4 @@ class Str
         }
         return $separateArray;
     }
-
-    /**
-     * Parse CSV string to array
-     * 
-     * @param string $string
-     * @return array
-     */
-    public static function csvToArray($string)
-    {
-        return str_getcsv($string, ',', '"', '\\');
-    }
 }
