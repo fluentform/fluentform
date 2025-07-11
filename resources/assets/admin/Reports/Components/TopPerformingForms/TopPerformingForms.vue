@@ -214,7 +214,7 @@ export default {
             } else if (value >= 1000) {
                 return (value / 1000).toFixed(1) + 'K';
             }
-            return value.toString();
+            return value.toFixed(0).toString();
         },
 
         formatCurrency(value) {

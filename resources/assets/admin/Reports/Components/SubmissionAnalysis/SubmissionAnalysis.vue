@@ -205,6 +205,21 @@
                     </el-table-column>
                 </el-table>
 
+                <!-- Add pagination -->
+                <div class="pagination-container">
+                    <el-pagination
+                        class="ff_pagination"
+                        background
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[5, 10, 20, 50, 100]"
+                        :page-size="parseInt(pageSize)"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="totalItems">
+                    </el-pagination>
+                </div>
+
                 <!-- Summary Row -->
                 <div class="summary-row">
                     <div class="summary-item">
@@ -269,27 +284,18 @@ export default {
                 'email': 'Email',
                 'country': 'Country',
                 'submission_date': 'Submission Date'
+            },
+            currentPage: 1,
+            pageSize: localStorage.getItem('ffReportSubmissionAnalysisPerPage') || 5,
+            totalItems: 0,
+            totals: { 
+                total: 0, 
+                read: 0, 
+                unread: 0, 
+                spam: 0, 
+                readRate: 0 
             }
         };
-    },
-    computed: {
-        totals() {
-            if (!this.submissionData.length) {
-                return { total: 0, read: 0, unread: 0, spam: 0, readRate: 0 };
-            }
-
-            const totals = this.submissionData.reduce((acc, row) => {
-                acc.total += row.total_submissions || 0;
-                acc.read += row.read_submissions || 0;
-                acc.unread += row.unread_submissions || 0;
-                acc.spam += row.spam_submissions || 0;
-                return acc;
-            }, { total: 0, read: 0, unread: 0, spam: 0 });
-
-            totals.readRate = totals.total > 0 ? (totals.read / totals.total) * 100 : 0;
-
-            return totals;
-        }
     },
     watch: {
         globalDateParams: {
@@ -311,20 +317,46 @@ export default {
                 group_by: this.selectedGroupBy,
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
-                form_id: this.selectedFormId
+                form_id: this.selectedFormId,
+                per_page: this.pageSize,
+                page: this.currentPage
             };
 
             FluentFormsGlobal.$get(data)
                 .then(response => {
-                    if (response.data && response.data.data) {
-                        this.submissionData = response.data.data;
+                    if (response.data) {
+                        this.submissionData = response.data.data || [];
+                        this.totalItems = response.data.total || 0;
+                        this.currentPage = parseInt(response.data.current_page || this.currentPage);
+                        this.totals = response.data.totals || { 
+                            total: 0, 
+                            read: 0, 
+                            unread: 0, 
+                            spam: 0, 
+                            readRate: 0 
+                        };
                     } else {
                         this.submissionData = [];
+                        this.totalItems = 0;
+                        this.totals = { 
+                            total: 0, 
+                            read: 0, 
+                            unread: 0, 
+                            spam: 0, 
+                            readRate: 0 
+                        };
                     }
                 })
                 .fail(error => {
-                    console.error('Error fetching submission analysis data:', error);
                     this.submissionData = [];
+                    this.totalItems = 0;
+                    this.totals = { 
+                        total: 0, 
+                        read: 0, 
+                        unread: 0, 
+                        spam: 0, 
+                        readRate: 0 
+                    };
                     this.$message.error('Failed to load submission analysis data');
                 })
                 .always(() => {
@@ -335,10 +367,24 @@ export default {
         handleGroupByChange() {
             // Reset form selection when changing group by
             this.selectedFormId = null;
+            this.currentPage = 1;
             this.fetchSubmissionData();
         },
 
         handleFormChange() {
+            this.currentPage = 1;
+            this.fetchSubmissionData();
+        },
+
+        handleSizeChange(newSize) {
+            this.pageSize = newSize;
+            localStorage.setItem('ffReportSubmissionAnalysisPerPage', newSize);
+            this.currentPage = 1;
+            this.fetchSubmissionData();
+        },
+        
+        handleCurrentChange(newPage) {
+            this.currentPage = newPage;
             this.fetchSubmissionData();
         },
 
@@ -449,6 +495,13 @@ export default {
 </script>
 
 <style scoped>
+/* Add pagination styling */
+.pagination-container {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
 .submission-analysis-header {
     display: flex;
     justify-content: space-between;
