@@ -18,4 +18,3 @@ public_build
 !/assets/js
 /assets/js/*
 !/assets/js/fluent_gutenblock.js
-*.code-workspace
