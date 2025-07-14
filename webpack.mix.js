@@ -64,6 +64,8 @@ mix
         extractStyles: true
     })
     .js('resources/assets/admin/fluent_forms_editor_helper.js', `assets/js/fluent_forms_editor_helper.js`)
+    .js('resources/assets/admin/fluent-cart/main.js',
+    'assets/js/fluent-cart/fluent-cart-product-fluent-form-connection.js')
 
     .sass('resources/assets/admin/css/element-ui-css.scss', `assets/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `assets/css/fluent-forms-admin-sass.css`)
