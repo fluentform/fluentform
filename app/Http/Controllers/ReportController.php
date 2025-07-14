@@ -36,4 +36,38 @@ class ReportController extends Controller
             ]);
         }
     }
+
+    /**
+     * Get Reports Data
+     * @return \WP_REST_Response
+     */
+    public function getReports(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getReports($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Forms for Dropdown
+     * @return \WP_REST_Response
+     */
+    public function getFormsDropdown(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getFormsDropdown()
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 }

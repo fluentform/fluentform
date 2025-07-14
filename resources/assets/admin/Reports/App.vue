@@ -393,39 +393,35 @@
             fetchReports() {
                 this.loading = true;
 
-                let data = {
-                    action: 'fluentform-get-reports',
+                const data = {
                     start_date: this.globalDateParams.startDate,
                     end_date: this.globalDateParams.endDate,
                     view: this.globalDateParams.view,
                     stats_range: this.globalDateParams.statsRange,
                     form_id: this.globalDateParams.formId,
                 };
-
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('report');
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        this.reports = response.data.reports;
+                        this.reports = response.reports;
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },
 
             fetchFormsList() {
-                const data = {
-                    action: 'fluentform-get-forms'
-                };
-
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('selectFormsForReport');
+                FluentFormsGlobal.$rest.get(url)
                     .then(response => {
-                        if (response.data && response.data.forms) {
-                            this.formsList = response.data.forms;
+                        if (response.forms) {
+                            this.formsList = response.forms;
                         }
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.error('Error fetching forms list:', error);
                     });
             },
@@ -442,24 +438,23 @@
                 this.globalDateParams.view = view;
 
                 const data = {
-                    action: 'fluentform-get-reports',
                     component: 'overview_chart',
                     start_date: this.globalDateParams.startDate,
                     end_date: this.globalDateParams.endDate,
                     view: view,
                     form_id: this.selectedOverviewFormId || this.globalDateParams.formId
                 };
-
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('report');
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        if (response.data && response.data.reports && response.data.reports.overview_chart) {
-                            this.reports.overview_chart = response.data.reports.overview_chart;
+                        if (response.reports && response.reports.overview_chart) {
+                            this.reports.overview_chart = response.reports.overview_chart;
                         }
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.error('Error fetching overview chart data:', error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.chartLoading = false;
                     });
             },
@@ -469,7 +464,6 @@
                 this.overviewLoading = true;
 
                 const data = {
-                    action: 'fluentform-get-reports',
                     component: 'overview_chart',
                     start_date: this.globalDateParams.startDate,
                     end_date: this.globalDateParams.endDate,
@@ -477,16 +471,17 @@
                     form_id: formId
                 };
 
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('report');
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        if (response.data && response.data.reports && response.data.reports.overview_chart) {
-                            this.reports.overview_chart = response.data.reports.overview_chart;
+                        if (response.reports && response.reports.overview_chart) {
+                            this.reports.overview_chart = response.reports.overview_chart;
                         }
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.error('Error fetching overview chart data:', error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.overviewLoading = false;
                     });
             },
@@ -496,23 +491,23 @@
                 this.gaugeLoading = true;
 
                 const data = {
-                    action: 'fluentform-get-reports',
                     component: 'completion_rate',
                     start_date: this.globalDateParams.startDate,
                     end_date: this.globalDateParams.endDate,
                     form_id: formId
                 };
 
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('report');
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        if (response.data && response.data.reports && response.data.reports.completion_rate) {
-                            this.reports.completion_rate = response.data.reports.completion_rate;
+                        if (response && response.reports && response.reports.completion_rate) {
+                            this.reports.completion_rate = response.reports.completion_rate;
                         }
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.error('Error fetching completion rates data:', error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.gaugeLoading = false;
                     });
             },
@@ -526,7 +521,6 @@
                 };
 
                 const data = {
-                    action: 'fluentform-get-reports',
                     component: 'transactions',
                     start_date: this.globalDateParams.startDate,
                     end_date: this.globalDateParams.endDate,
@@ -534,17 +528,17 @@
                     transactions_payment_status: params.paymentStatus,
                     transactions_payment_method: params.paymentMethod
                 };
-
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('report');
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        if (response.data && response.data.reports && response.data.reports.transactions) {
-                            this.reports.transactions = response.data.reports.transactions;
+                        if (response && response.reports && response.reports.transactions) {
+                            this.reports.transactions = response.reports.transactions;
                         }
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.error('Error fetching transactions data:', error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.transactionsLoading = false;
                     });
             },
@@ -553,7 +547,6 @@
                 this.subscriptionsLoading = true;
 
                 const data = {
-                    action: 'fluentform-get-reports',
                     component: 'subscriptions',
                     start_date: this.globalDateParams.startDate,
                     end_date: this.globalDateParams.endDate,
@@ -561,17 +554,17 @@
                     subscriptions_interval: params.interval,
                     subscriptions_form_id: params.formId
                 };
-
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('report');
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        if (response.data && response.data.reports && response.data.reports.subscriptions) {
-                            this.reports.subscriptions = response.data.reports.subscriptions;
+                        if (response && response.reports && response.reports.subscriptions) {
+                            this.reports.subscriptions = response.reports.subscriptions;
                         }
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.error('Error fetching subscription data:', error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.subscriptionsLoading = false;
                     });
             },
@@ -581,23 +574,22 @@
                 this.countryHeatmapLoading = true;
 
                 const data = {
-                    action: 'fluentform-get-reports',
                     component: 'country_heatmap',
                     start_date: this.globalDateParams.startDate,
                     end_date: this.globalDateParams.endDate,
                     form_id: formId
                 };
-
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('report');
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        if (response.data && response.data.reports && response.data.reports.country_heatmap) {
-                            this.reports.country_heatmap = response.data.reports.country_heatmap;
+                        if (response && response.reports && response.reports.country_heatmap) {
+                            this.reports.country_heatmap = response.reports.country_heatmap;
                         }
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.error('Error fetching completion rates data:', error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.gaugeLoading = false;
                     });
             },
@@ -667,23 +659,22 @@
                 this.topFormsLoading = true;
 
                 const data = {
-                    action: 'fluentform-get-reports',
                     component: 'top_performing_forms',
                     start_date: this.globalDateParams.startDate,
                     end_date: this.globalDateParams.endDate,
                     metric: metric
                 };
-
-                FluentFormsGlobal.$get(data)
+                const url = FluentFormsGlobal.$rest.route('report');
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        if (response.data && response.data.reports && response.data.reports.top_performing_forms) {
-                            this.reports.top_performing_forms = response.data.reports.top_performing_forms;
+                        if (response && response.reports && response.reports.top_performing_forms) {
+                            this.reports.top_performing_forms = response.reports.top_performing_forms;
                         }
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.error('Error fetching top performing forms data:', error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.topFormsLoading = false;
                     });
             },

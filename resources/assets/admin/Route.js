@@ -102,6 +102,7 @@ class Route {
     resetFormAnalytics = this.analytics + '/{param}/reset/'
 
     report = 'report';
+    selectFormsForReport = this.report + '/select-forms';
     formsReport = this.report + '/forms'
     formReport = this.formsReport + '/{param}'
     submissionsReport = this.report + '/submissions';
