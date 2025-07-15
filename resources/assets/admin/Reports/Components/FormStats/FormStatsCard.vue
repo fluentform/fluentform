@@ -1,7 +1,8 @@
 <template>
-    <div class="stats-card">
+  <el-skeleton v-if="value === null || value === undefined" :rows="3" animated/>
+  <div class="stats-card" :class="type" v-else>
         <div class="stats-icon" :style="{ backgroundColor: bgColor }">
-            <i :class="icon"></i>
+            <span v-if="icon" v-html="icon"></span>
         </div>
         <div class="stats-content">
             <div class="stats-title">{{ title }}</div>
@@ -39,6 +40,11 @@ export default {
         },
         bgColor: {
             type: String,
+            default: '#F2F5F8'
+        },
+        type: {
+              type: String,
+              default: ''
         }
     },
     computed: {
@@ -56,8 +62,8 @@ export default {
             };
         },
         changeIcon() {
-            if (this.changeType === 'up') return 'el-icon-arrow-up';
-            if (this.changeType === 'down') return 'el-icon-arrow-down';
+            if (this.changeType === 'up') return 'el-icon-top';
+            if (this.changeType === 'down') return 'el-icon-bottom';
             return 'el-icon-minus';
         }
     }

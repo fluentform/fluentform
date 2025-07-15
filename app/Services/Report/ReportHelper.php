@@ -363,9 +363,9 @@ class ReportHelper
             ->selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
             ->pluck('count', 'status');
-        $unreadSubmissions = $statusCounts['unread'] ?? 0;
-        $readSubmissions = $statusCounts['read'] ?? 0;
-        $periodSpamSubmissions = $statusCounts['spam'] ?? 0;
+        $unreadSubmissions = +$statusCounts['unread'] ?? 0;
+        $readSubmissions = +$statusCounts['read'] ?? 0;
+        $periodSpamSubmissions = +$statusCounts['spam'] ?? 0;
 
         $previousStatusCounts = Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->selectRaw('status, COUNT(*) as count')
@@ -402,6 +402,20 @@ class ReportHelper
         $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
         $spamType = $spamPercentage > 0 ? 'down' : ($spamPercentage < 0 ? 'up' : 'neutral');
 
+        // Active forms
+        $periodActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$startDate, $endDate])->count();
+        $previousActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$previousStartDate, $previousEndDate])->count();
+        $activeFormsPercentage = 0;
+        if ($previousActiveFormsCount > 0) {
+            $activeFormsPercentage = round((($periodActiveFormsCount - $previousActiveFormsCount) / $previousActiveFormsCount) * 100, 1);
+        } elseif ($periodActiveFormsCount > 0) {
+            $activeFormsPercentage = 100;
+        }
+        $activeFormsText = $activeFormsPercentage > 0 ? '+' . $activeFormsPercentage . '%' : $activeFormsPercentage . '%';
+        $activeFormsType = $activeFormsPercentage > 0 ? 'up' : ($activeFormsPercentage < 0 ? 'down' : 'neutral');
+
+        $readRate = $periodSubmissions > 0 ? round(($readSubmissions / $periodSubmissions) * 100, 1) : 0;
+
         $stats = [
             'period'              => $daysDifference . ' days',
             'total_submissions'   => [
@@ -425,6 +439,14 @@ class ReportHelper
             'read_submissions'    => [
                 'value' => $readSubmissions,
             ],
+            'active_forms'         => [
+                'value' => $periodActiveFormsCount,
+                'change' => $activeFormsText,
+                'change_type' => $activeFormsType
+            ],
+            'read_submission_rate' => [
+                'value' => $readRate,
+            ]
         ];
 
         // Add payment statistics if payment module is enabled
@@ -1519,6 +1541,12 @@ class ReportHelper
                 'currency_symbol' => $currencySymbol,
                 'change' => $refundGrowthText,
                 'change_type' => $refundGrowthType
+            ],
+            'total_revenue' => [
+                'value' => number_format($currentPayments - $currentRefunds, 2),
+                'raw_value' => $currentPayments - $currentRefunds,
+                'currency' => $currency,
+                'currency_symbol' => $currencySymbol
             ]
         ];
     }
