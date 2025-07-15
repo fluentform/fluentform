@@ -361,17 +361,17 @@ class FluentCartIntegration
      */
     public function renderFormBeforeCheckout($data)
     {
-        add_filter('fluentform/is_hide_submit_btn_' . 1, '__return_true');
-        add_filter('fluentform/replace_form_tag_' . 1, function ($tag) {
-            return 'div';
-        });
-
         $settings = new StoreSettings();
         $formId = intval($settings->get('fluent_forms'));
 
         if (!$formId) {
             return;
         }
+        
+        add_filter('fluentform/is_hide_submit_btn_' . $formId, '__return_true');
+        add_filter('fluentform/replace_form_tag_' . $formId, function ($tag) {
+            return 'div';
+        });
 
         echo do_shortcode('[fluentform id="' . $formId . '"]');
     }
