@@ -87,7 +87,7 @@ class FluentCartIntegration
      */
     protected function registerSettingsHooks()
     {
-        add_filter("fluent_cart/store_setting_fields", [$this, 'addFormSettingsToFluentCart']);
+        add_filter("fluent_cart/store_settings/fields", [$this, 'addFormSettingsToFluentCart']);
         add_filter('fluent_cart/store_settings/sanitizer', [$this, 'addFormSettingsSanitizer']);
     }
 
