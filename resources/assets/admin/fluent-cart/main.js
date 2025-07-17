@@ -17,10 +17,25 @@ class FluentCartFormIntegration {
         // Initialize the form integration
         this.initFluentCartFormIntegration();
 
-        // Set up the checkout callback
+        // Initialize price calculation display
+        this.initPriceCalculation();
+
+        // Set up the checkout callbacks
         window.addEventListener("fluent_cart_after_checkout_js_loaded", (e) => {
+            window.fluentCartCheckout['beforeCheckoutCallbacks'].push(async (data) => {
+                try {
+                    return this.validateFluentFormClientSide();
+                } catch (error) {
+                    return false;
+                }
+            });
+
             window.fluentCartCheckout['afterCheckoutCallbacks'].push(async () => {
-                await this.submitFluentFormViaAjax();
+                try {
+                    await this.submitFluentFormViaAjax();
+                } catch (error) {
+                    console.error('FluentForm submission failed after checkout:', error);
+                }
             });
         });
     }
@@ -35,6 +50,49 @@ class FluentCartFormIntegration {
     }
 
     /**
+     * Initialize price calculation and display
+     */
+    initPriceCalculation() {
+        // Wait for DOM to be ready
+        jQuery(document).ready(() => {
+            this.setupPriceCalculation();
+        });
+    }
+
+    /**
+     * Set up price calculation listeners
+     */
+    setupPriceCalculation() {
+        const $formWrapper = jQuery('.fluent-cart-single-product-page');
+        if (!$formWrapper.length) {
+            return;
+        }
+
+        // Create price display element
+        this.createPriceDisplay($formWrapper);
+
+        // Listen for variation changes (radio button selection)
+        $formWrapper.on('change', 'input[type="radio"][data-cart-id]', () => {
+            this.updatePriceDisplay();
+        });
+
+        // Listen for quantity field changes
+        $formWrapper.on('input change', 'input[name="item-quantity"], input[data-name="item-quantity"], input[data-quantity_item="yes"], .ff_quantity_item', () => {
+            this.updatePriceDisplay();
+        });
+
+        // Listen for any calculation field changes
+        $formWrapper.on('input change', 'input[data-calc_value], .ff_numeric', () => {
+            this.updatePriceDisplay();
+        });
+
+        // Initial price calculation
+        setTimeout(() => {
+            this.updatePriceDisplay();
+        }, 500);
+    }
+
+    /**
      * Handle successful form submissions on product pages
      */
     handleFormSubmissionSuccess(event, data) {
@@ -46,7 +104,12 @@ class FluentCartFormIntegration {
             return;
         }
 
-        const selectedVariationId = form.find('input[type="radio"]:checked').data('cart-id');
+        // Hide the default success message for add-to-cart forms
+        this.hideDefaultSuccessMessage(form);
+
+        const $selectedVariation = form.find('input[type="radio"]:checked');
+        const selectedVariationId = $selectedVariation.data('cart-id');
+
         if (!selectedVariationId) {
             return;
         }
@@ -55,14 +118,142 @@ class FluentCartFormIntegration {
 
         const $quantityField = $formWrapper.find('input[name="item-quantity"], input[data-name="item-quantity"], input[data-quantity_item="yes"], .ff_quantity_item');
         if ($quantityField.length) {
-            quantity = parseInt($quantityField.val());
+            quantity = parseInt($quantityField.val()) || 1;
         }
 
+        // Pass custom price to cart
         this.addToCartWithFluentCart(selectedVariationId, quantity);
     }
 
     /**
-     * Add to cart using Fluent Cart's native API (event-driven approach)
+     * Hide the default Fluent Forms success message for add-to-cart forms
+     */
+    hideDefaultSuccessMessage(form) {
+        const formId = form.attr('data-form_id') || form.find('[data-form_id]').attr('data-form_id');
+
+        if (formId) {
+            jQuery('#' + formId + '_success').hide();
+            jQuery('#fluentform_' + formId + '_success').hide();
+        }
+
+        // Hide generic success message classes
+        form.find('.ff-message-success').hide();
+        form.parents('.fluent-cart-single-product-page').find('.ff-message-success').hide();
+
+        // Also hide any success messages that might appear after a delay
+        setTimeout(() => {
+            if (formId) {
+                jQuery('#' + formId + '_success').hide();
+                jQuery('#fluentform_' + formId + '_success').hide();
+            }
+            form.find('.ff-message-success').hide();
+            form.parents('.fluent-cart-single-product-page').find('.ff-message-success').hide();
+        }, 50);
+    }
+
+    /**
+     * Create price display element
+     */
+    createPriceDisplay($formWrapper) {
+        if ($formWrapper.find('.fluent-cart-price-display').length) {
+            return;
+        }
+
+        // Find the submit button to place price display before it
+        const $submitButtonDiv = $formWrapper.find('.ff-btn-submit, button[type="submit"], input[type="submit"]').parents('.ff-el-group');
+        if (!$submitButtonDiv.length) {
+            return;
+        }
+
+        // Create price display HTML
+        const priceDisplayHtml = `
+            <div class="ff-el-input--label fluent-cart-price-display" style="margin-bottom: 20px; display: inline-block;">
+                <label for="ff_total_calculation" class="price-label" aria-label="Total:">
+                    Total:
+                </label>
+                <div class="ff-el-input--content" style="display: inline-block;">
+                    <div class="price-amount" style="font-weight: bold;">
+                        00.00
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $submitButtonDiv.before(priceDisplayHtml);
+    }
+
+    /**
+     * Update the price display
+     */
+    updatePriceDisplay() {
+        const $formWrapper = jQuery('.fluent-cart-single-product-page');
+        const $priceDisplay = $formWrapper.find('.fluent-cart-price-display');
+
+        if (!$priceDisplay.length) {
+            return;
+        }
+
+        // Get selected variation and its price
+        const $selectedVariation = $formWrapper.find('input[type="radio"][data-cart-id]:checked');
+
+        // Get base price from the selected variation
+        const basePrice = parseFloat($selectedVariation.data('payment_value')) || 0;
+
+        // Get quantity (default to 1 if not found or empty)
+        let quantity = this.getQuantity($formWrapper);
+
+        // Calculate total price
+        const totalPrice = basePrice * quantity;
+
+        // Format price
+        const formattedPrice = this.formatPrice(totalPrice);
+        const formattedBasePrice = this.formatPrice(basePrice);
+
+        // Update display
+        $priceDisplay.find('.price-amount').text(formattedPrice);
+    }
+
+    /**
+     * Get quantity from form fields
+     */
+    getQuantity($formWrapper) {
+        // Look for quantity fields
+        const $quantityField = $formWrapper.find('input[name="item-quantity"], input[data-name="item-quantity"], input[data-quantity_item="yes"], .ff_quantity_item');
+
+        if ($quantityField.length) {
+            const quantity = parseInt($quantityField.val()) || 1;
+            return Math.max(1, quantity); // Ensure minimum quantity of 1
+        }
+
+        // Look for any numeric calculation fields that might represent quantity
+        const $calcFields = $formWrapper.find('input[data-calc_value], .ff_numeric');
+        if ($calcFields.length) {
+            let totalCalc = 0;
+            $calcFields.each(function() {
+                const value = parseFloat(jQuery(this).val()) || 0;
+                totalCalc += value;
+            });
+
+            if (totalCalc > 0) {
+                return Math.max(1, Math.floor(totalCalc));
+            }
+        }
+
+        return 1;
+    }
+
+    /**
+     * Format price for display
+     */
+    formatPrice(price) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        }).format(price);
+    }
+
+    /**
+     * Add to cart using Fluent Cart's native API
      */
     addToCartWithFluentCart(variationId, quantity = 1) {
         if (typeof window.fluentCartCart !== 'undefined') {
@@ -95,6 +286,55 @@ class FluentCartFormIntegration {
         }
     }
 
+    /**
+     * Validate FluentForm using client-side validation (same as submissionAjaxHandler)
+     * Returns true if valid, false if invalid (and shows errors)
+     */
+    validateFluentFormClientSide() {
+        const fluentFormDiv = document.querySelector('[data-form_id]');
+        if (!fluentFormDiv) {
+            return true;
+        }
+
+        const formId = fluentFormDiv.getAttribute('data-form_id');
+        const $form = jQuery('#fluentform_' + formId);
+        if (!$form.length) {
+            return true;
+        }
+        
+        const formInstance = window.fluentFormApp($form);
+
+        try {
+            // Get form inputs (same logic as submissionAjaxHandler)
+            const $inputs = $form.find(':input').filter(function (i, el) {
+                if (jQuery(el).attr('data-type') === 'repeater_container') {
+                    if (jQuery(this).closest('.has-conditions').hasClass('ff_excluded')) {
+                        jQuery(this).val('');
+                    }
+                    return true;
+                }
+                return !jQuery(el).closest('.has-conditions').hasClass('ff_excluded');
+            });
+
+            // Clear previous errors
+            $inputs.each((i, el) => {
+                jQuery(el).closest('.ff-el-group').removeClass('ff-el-is-error').find('.error').remove();
+            });
+
+            formInstance.validate($inputs);
+
+            return true;
+        } catch (error) {
+            if (error instanceof window.ffValidationError) {
+                formInstance.showErrorMessages(error.messages);
+                formInstance.scrollToFirstError(350);
+                return false;
+            } else {
+                return false;
+            }
+        }
+    }
+    
     /**
      * Submit a Fluent Form via AJAX
      */
@@ -147,7 +387,12 @@ class FluentCartFormIntegration {
                         response: error,
                         formData: formData
                     });
-                    reject(error);
+                    reject({
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        error: error,
+                        responseText: xhr.responseText
+                    });
                 }
             });
         });

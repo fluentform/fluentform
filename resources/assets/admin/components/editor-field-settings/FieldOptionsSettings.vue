@@ -124,6 +124,7 @@ import selectGroup from "./templates/selectGroup.vue";
 import CustomSettingsField from "./templates/CustomSettingsField.vue";
 import dynamicFilter from "./templates/dynamicFilter.vue";
 import repeaterContainers from "./templates/repeaterContainers.vue";
+import fluentCartIntegration from "./templates/fluentCartIntegration.vue";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -177,7 +178,8 @@ export default {
         ff_selectGroup: selectGroup,
         ff_dynamicFilter: dynamicFilter,
         ff_repeaterContainers: repeaterContainers,
-        ff_CustomSettingsField: CustomSettingsField
+        ff_CustomSettingsField: CustomSettingsField,
+        ff_fluentCartIntegration: fluentCartIntegration
     },
     data() {
         return {
