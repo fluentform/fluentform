@@ -453,7 +453,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as total_submissions'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions"),
                 wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate])
@@ -470,7 +470,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as `total`'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as `spam_count`")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
         
@@ -528,7 +528,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as total_submissions'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions"),
                 wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
@@ -550,7 +550,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as `total`'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as `spam_count`")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
 
@@ -614,7 +614,7 @@ class ReportHandler
             COUNT(*) as total_submissions,
             SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
             SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
-            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions,
             ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
         FROM {$prefix}fluentform_submissions
         WHERE {$prefix}fluentform_submissions.created_at BETWEEN '{$startDate}' AND '{$endDate}'
@@ -635,7 +635,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as `total`'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as `spam_count`")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
 
@@ -695,7 +695,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as total_submissions'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions"),
                 wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
@@ -719,7 +719,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as `total`'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as `spam_count`")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
 
@@ -779,7 +779,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as total_submissions'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as spam_submissions"),
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions"),
                 wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
@@ -802,7 +802,7 @@ class ReportHandler
                 wpFluent()->raw('COUNT(*) as `total`'),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as `read_count`"),
                 wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as `unread_count`"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'trashed' THEN 1 ELSE 0 END) as `spam_count`")
+                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as `spam_count`")
             )
             ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
 

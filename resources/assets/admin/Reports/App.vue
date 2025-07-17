@@ -11,19 +11,11 @@
                             <p class="reports-description">A brief look at your overall form performance</p>
                         </div>
                         <div class="reports-controls">
-                            <el-date-picker
-                                v-model="dateRange"
-                                type="daterange"
-                                range-separator="-"
-                                start-placeholder="Start date"
-                                end-placeholder="End date"
-                                :default-time="['00:00:00', '23:59:59']"
-                                value-format="MMM d, yyyy"
-                                format="MMM d, yyyy"
-                                @change="handleDateRangeChange"
-                                :disabled-date="disableFutureDates"
-                                :picker-options="pickerOptions"
-                                size="small"
+                            <date-range-controls
+                                :selected-range="selectedRange"
+                                :date-range="dateRange"
+                                @range-select="handleRangeSelect"
+                                @date-range-change="handleDateRangeChange"
                             />
                         </div>
                     </div>
@@ -48,22 +40,21 @@
                     <!-- Charts Row -->
                     <el-row :gutter="24" class="charts-row">
                         <!-- Conversion Chart Section -->
-                        <el-col :span="16">
+                        <el-col :span="24" :md="16" >
                             <div class="conversion-chart-section">
                                 <overview-chart
-                                    :overview_chart="reports.overview_chart"
+                                    :overview_chart="overviewChartData"
                                     :forms_list="formsList"
                                     :global_date_params="globalDateParams"
-                                    :chart_view="chartView"
+                                    :chart_view="chartMode"
                                     :selected-metrics="selectedChartMetrics"
-                                    @view-change="handleViewChange"
                                     @form-change="handleFormChange"
-                                    @chart-mode-change="handleChartModeChange"
+                                    @chart-mode-change="handleViewChange"
                                 />
                             </div>
                         </el-col>
 
-                        <el-col :span="8">
+                        <el-col :span="24" :md="8">
                             <div class="completion-rates-gauge-section">
                                 <completion-rates-gauge
                                     :completion-rate="completionRate"
@@ -78,7 +69,7 @@
 
                     <!-- Completion Rates and Top Performing Forms Row -->
                     <el-row :gutter="24" class="completion-rates-row">
-                        <el-col :span="14">
+                        <el-col :span="24" :md="12">
                             <div class="top-performing-forms-section">
                                 <top-performing-forms
                                     :top-forms-data="reports.top_performing_forms || []"
@@ -91,7 +82,7 @@
                             </div>
                         </el-col>
 
-                        <el-col :span="10">
+                        <el-col :span="24" :md="12">
                             <!-- Country Heatmap Section -->
                             <div class="country-heatmap-section">
                                 <submission-country-heatmap
@@ -113,6 +104,19 @@
                         />
                     </div>
 
+                    <el-row :gutter="24">
+                        <el-col :span="24">
+                            <!-- API Logs Section -->
+                            <div class="api-logs-chart-section">
+                                <line-chart
+                                    :data="reports.api_logs"
+                                    title="API Logs"
+                                    type="api_logs"
+                                />
+                            </div>
+                        </el-col>
+                    </el-row>
+
                 </el-tab-pane>
                 <el-tab-pane label="Revenue" name="revenue">
                     <!-- Revenue Header -->
@@ -122,19 +126,11 @@
                             <p class="reports-description">A brief look at net revenue performance</p>
                         </div>
                         <div class="reports-controls">
-                            <el-date-picker
-                                v-model="dateRange"
-                                type="daterange"
-                                range-separator="-"
-                                start-placeholder="Start date"
-                                end-placeholder="End date"
-                                :default-time="['00:00:00', '23:59:59']"
-                                value-format="MMM d, yyyy"
-                                format="MMM d, yyyy"
-                                @change="handleDateRangeChange"
-                                :disabled-date="disableFutureDates"
-                                :picker-options="pickerOptions"
-                                size="small"
+                            <date-range-controls
+                                :selected-range="selectedRange"
+                                :date-range="dateRange"
+                                @range-select="handleRangeSelect"
+                                @date-range-change="handleDateRangeChange"
                             />
                         </div>
                     </div>
@@ -154,6 +150,14 @@
                             />
                         </div>
                     </div>
+
+                    <!-- Revenue Logs Chart -->
+                    <line-chart
+                        :data="reports.revenue_chart"
+                        title="Revenue"
+                        type="revenue"
+                    />
+
                     <!-- Net Revenue Analysis Section -->
                     <div v-if="hasPayment" class="net-revenue-section" style="margin-bottom: 24px;">
                         <net-revenue-by-group
@@ -171,19 +175,11 @@
                             <p class="reports-description">A brief look at submission performance</p>
                         </div>
                         <div class="reports-controls">
-                            <el-date-picker
-                                v-model="dateRange"
-                                type="daterange"
-                                range-separator="-"
-                                start-placeholder="Start date"
-                                end-placeholder="End date"
-                                :default-time="['00:00:00', '23:59:59']"
-                                value-format="MMM d, yyyy"
-                                format="MMM d, yyyy"
-                                @change="handleDateRangeChange"
-                                :disabled-date="disableFutureDates"
-                                :picker-options="pickerOptions"
-                                size="small"
+                            <date-range-controls
+                                :selected-range="selectedRange"
+                                :date-range="dateRange"
+                                @range-select="handleRangeSelect"
+                                @date-range-change="handleDateRangeChange"
                             />
                         </div>
                     </div>
@@ -203,6 +199,15 @@
                             />
                         </div>
                     </div>
+
+                    <!-- Submission Chart Section -->
+                    <div class="submission-chart-section">
+                        <line-chart
+                            :data="reports.overview_chart"
+                            title="Submission"
+                        />
+                    </div>
+
                     <!-- Submission Analysis Section -->
                     <div class="submission-analysis-section" style="margin-bottom: 24px;">
                         <submission-analysis
@@ -213,18 +218,6 @@
                 </el-tab-pane>
             </el-tabs>
         </div>
-
-        <el-row :gutter="24">
-            <el-col :span="14">
-                <!-- API Logs Section -->
-                <div class="api-logs-chart-section">
-                    <api-logs-chart
-                        :api_logs="reports.api_logs"
-                        :global_date_params="globalDateParams"
-                    />
-                </div>
-            </el-col>
-        </el-row>
     </div>
 </template>
 <script type="text/babel">
@@ -232,7 +225,7 @@ import OverviewChart from "./Components/OverviewChart/OverviewChart.vue";
 import FormStatsCard from "./Components/FormStats/FormStatsCard.vue";
 import SubmissionHeatmap from "@/admin/Reports/Components/SubmissionHeatmap/SubmissionHeatmap.vue";
 import SubmissionCountryHeatmap from "./Components/SubmissionCountryHeatmap/SubmissionCountryHeatmap.vue";
-import ApiLogsChart from "./Components/ApiLogsChart/ApiLogsChart.vue";
+import LineChart from "./Components/LineChart.vue";
 import TransactionsTable from "./Components/TransactionsTable/TransactionsTable.vue";
 import CompletionRatesGauge from "./Components/CompletionRatesGauge/CompletionRatesGauge.vue";
 import SubscriptionStats from "./Components/SubscriptionStats/SubscriptionStats.vue";
@@ -240,11 +233,12 @@ import ChartMetricsSelector from "./Components/ChartMetrics/ChartMetricsSelector
 import TopPerformingForms from "./Components/TopPerformingForms/TopPerformingForms.vue";
 import NetRevenueByGroup from "./Components/NetRevenue/NetRevenueByGroup.vue";
 import SubmissionAnalysis from "./Components/SubmissionAnalysis/SubmissionAnalysis.vue";
+import DateRangeControls from "./Components/DateRangeControls/DateRangeControls.vue";
 
 export default {
     name: "Reports",
     components: {
-        ApiLogsChart,
+        LineChart,
         SubmissionHeatmap,
         SubmissionCountryHeatmap,
         OverviewChart,
@@ -255,25 +249,13 @@ export default {
         ChartMetricsSelector,
         TopPerformingForms,
         NetRevenueByGroup,
-        SubmissionAnalysis
+        SubmissionAnalysis,
+        DateRangeControls
     },
     data() {
         const now = new Date();
         const thirtyDaysAgo = new Date(now);
         thirtyDaysAgo.setDate(now.getDate() - 30);
-
-        const formatDateForApi = (date, isStart) => {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const day = String(date.getDate()).padStart(2, "0");
-            const time = isStart ? "00:00:00" : "23:59:59";
-            return `${ year }-${ month }-${ day } ${ time }`;
-        };
-
-        const formatDateForDisplay = (date) => {
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            return `${ months[date.getMonth()] } ${ date.getDate() }, ${ date.getFullYear() }`;
-        };
 
         return {
             activeTab: "overview",
@@ -282,11 +264,10 @@ export default {
             formsList: [],
             selectedRange: "month",
             dateRange: [
-                formatDateForDisplay(thirtyDaysAgo),
-                formatDateForDisplay(now)
+                this.formatDateForDisplay(thirtyDaysAgo),
+                this.formatDateForDisplay(now)
             ],
             lastUsedSelector: "range",
-            chartView: "submissions",
             selectedFormId: null,
             chartLoading: false,
             gaugeLoading: false,
@@ -299,74 +280,28 @@ export default {
             subscriptionsLoading: false,
             topFormsLoading: false,
             selectedTopFormsMetric: "entries",
-            selectedChartMetrics: ["submissions", "views"], // Default selected metrics
+            selectedChartMetrics: ["submissions", "views", 'spam', 'unread', 'read'], // Default selected metrics
             chartMode: "activity", // Track current chart mode
             globalDateParams: {
-                startDate: formatDateForApi(thirtyDaysAgo, true),
-                endDate: formatDateForApi(now, false),
-                view: "submission",
+                startDate: this.formatDateForApi(thirtyDaysAgo, true),
+                endDate: this.formatDateForApi(now, false),
                 formId: null,
                 statsRange: "month"
             },
+            isDateQuickSelectOpen: false,
             transactionsParams: {
                 formId: null,
                 paymentStatus: null,
                 paymentMethod: null
-            },
-            pickerOptions: {
-                shortcuts: [
-                    {
-                        text: "Last week",
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit("pick", [start, end]);
-                        }
-                    },
-                    {
-                        text: "Last month",
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                            picker.$emit("pick", [start, end]);
-                        }
-                    },
-                    {
-                        text: "Last 3 months",
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                            picker.$emit("pick", [start, end]);
-                        }
-                    },
-                    {
-                        text: "Last 6 months",
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
-                            picker.$emit("pick", [start, end]);
-                        }
-                    },
-                    {
-                        text: "Last Year",
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
-                            picker.$emit("pick", [start, end]);
-                        }
-                    }
-                ]
             }
         };
     },
     computed: {
         hasPayment() {
             return !!window.FluentFormApp.has_payment;
+        },
+        overviewChartData() {
+            return this.chartMode === 'activity' ? this.reports.overview_chart : this.reports.revenue_chart;
         },
         formOverviewStatsCards() {
             const stats = this.reports.form_stats || {};
@@ -512,7 +447,7 @@ export default {
             const data = {
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
-                view: this.globalDateParams.view,
+                view: this.chartMode,
                 stats_range: this.globalDateParams.statsRange,
                 form_id: this.globalDateParams.formId
             };
@@ -542,48 +477,24 @@ export default {
                 });
         },
 
-        handleDateRangeChange() {
+        handleDateRangeChange(range) {
             this.lastUsedSelector = "datepicker";
+            this.dateRange = range;
             this.selectedRange = null;
             this.updateGlobalDateParams();
         },
 
         handleViewChange(view) {
-            this.chartLoading = true;
-            this.chartView = view;
-            this.globalDateParams.view = view;
-
-            const data = {
-                component: "overview_chart",
-                start_date: this.globalDateParams.startDate,
-                end_date: this.globalDateParams.endDate,
-                view: view,
-                form_id: this.selectedOverviewFormId || this.globalDateParams.formId
-            };
-            const url = FluentFormsGlobal.$rest.route("report");
-            FluentFormsGlobal.$rest.get(url, data)
-                .then(response => {
-                    if (response.reports && response.reports.overview_chart) {
-                        this.reports.overview_chart = response.reports.overview_chart;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching overview chart data:", error);
-                })
-                .finally(() => {
-                    this.chartLoading = false;
-                });
+            this.chartMode = view;
         },
 
         handleFormChange(formId) {
             this.selectedOverviewFormId = formId;
-            this.overviewLoading = true;
 
             const data = {
                 component: "overview_chart",
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
-                view: this.globalDateParams.view || "submissions",
                 form_id: formId
             };
 
@@ -593,12 +504,14 @@ export default {
                     if (response.reports && response.reports.overview_chart) {
                         this.reports.overview_chart = response.reports.overview_chart;
                     }
+                    if (response.reports && response.reports.revenue_chart) {
+                        this.reports.revenue_chart = response.reports.revenue_chart;
+                    }
                 })
                 .catch(error => {
                     console.error("Error fetching overview chart data:", error);
                 })
                 .finally(() => {
-                    this.overviewLoading = false;
                 });
         },
 
@@ -715,25 +628,28 @@ export default {
             let startDate, endDate;
 
             if (this.lastUsedSelector === "range" || !this.dateRange) {
-                if (this.selectedRange === "today") {
-                    startDate = this.formatDateForApi(today, true);
-                    endDate = this.formatDateForApi(today, false);
-                } else if (this.selectedRange === "week") {
-                    const firstDay = new Date(today);
-                    firstDay.setDate(today.getDate() - 6);
-                    startDate = this.formatDateForApi(firstDay, true);
-                    endDate = this.formatDateForApi(today, false);
-                } else if (this.selectedRange === "month") {
-                    const firstDay = new Date(today);
-                    firstDay.setDate(today.getDate() - 30);
-                    startDate = this.formatDateForApi(firstDay, true);
-                    endDate = this.formatDateForApi(today, false);
-                } else if (this.selectedRange === "year") {
-                    const firstDay = new Date(today);
-                    firstDay.setDate(today.getDate() - 365);
-                    startDate = this.formatDateForApi(firstDay, true);
-                    endDate = this.formatDateForApi(today, false);
+                let firstDay = new Date(today);
+                const rangeMap = {
+                    today: 0,
+                    yesterday: 1,
+                    week: 6,
+                    month: 30,
+                    "3_months": 90,
+                    "6_months": 180,
+                    year: 365,
+                };
+                if (this.selectedRange in rangeMap) {
+                    firstDay.setDate(today.getDate() - rangeMap[this.selectedRange]);
+                    if (this.selectedRange === "yesterday") {
+                        today.setDate(today.getDate() - 1);
+                    }
                 }
+                startDate = this.formatDateForApi(firstDay, true);
+                endDate = this.formatDateForApi(today, false);
+                this.dateRange = [
+                    this.formatDateForDisplay(new Date(startDate)),
+                    this.formatDateForDisplay(new Date(endDate))
+                ];
             } else if (this.lastUsedSelector === "datepicker" && this.dateRange && this.dateRange.length === 2) {
                 try {
                     const startObj = new Date(this.dateRange[0]);
@@ -747,7 +663,6 @@ export default {
                     endDate = this.formatDateForApi(today, false);
                 }
             }
-
             this.globalDateParams.startDate = startDate;
             this.globalDateParams.endDate = endDate;
             this.fetchReports();
@@ -794,18 +709,15 @@ export default {
                     this.topFormsLoading = false;
                 });
         },
-
-        handleChartModeChange(mode) {
-            this.chartMode = mode;
-            // The ChartMetricsSelector will automatically update its available metrics
-            // and emit updated selected metrics through its watcher
+        // Method to handle range select dropdown change
+        handleRangeSelect(range) {
+            this.lastUsedSelector = "range";
+            this.selectedRange = range;
+            this.updateGlobalDateParams();
         },
-
-        decodeHtmlEntities(text) {
-            if (!text) return "$";
-            const textarea = document.createElement("textarea");
-            textarea.innerHTML = text;
-            return textarea.value;
+        formatDateForDisplay(date) {
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            return `${ months[date.getMonth()] } ${ date.getDate() }, ${ date.getFullYear() }`;
         }
     },
     mounted() {
@@ -845,4 +757,5 @@ export default {
     flex: 1;
 }
 </style>
+
 

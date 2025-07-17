@@ -6,56 +6,40 @@
                     <h3>Conversion Chart</h3>
                 </div>
                 <div class="card-controls">
-<!--                  <el-select-->
-<!--                    v-model="chartType"-->
-<!--                    placeholder="Chart Type"-->
-<!--                    size="small"-->
-<!--                    @change="handleChartTypeChange"-->
-<!--                    style="width: 120px; margin-right: 12px;"-->
-<!--                  >-->
-<!--                    <el-option label="Bar Chart" value="bar">-->
-<!--                      <i class="el-icon-s-data" style="margin-right: 8px;"></i>-->
-<!--                      Bar Chart-->
-<!--                    </el-option>-->
-<!--                    <el-option label="Line Chart" value="line">-->
-<!--                      <i class="el-icon-s-marketing" style="margin-right: 8px;"></i>-->
-<!--                      Line Chart-->
-<!--                    </el-option>-->
-<!--                  </el-select>-->
-                  <el-radio-group
-                    v-model="chartMode"
-                    size="small"
-                    @change="handleChartModeChange"
-                    class="mode-toggle-group"
-                    style="margin-right: 12px;"
-                  >
-                    <el-radio-button label="activity"> Activity</el-radio-button>
-                    <el-radio-button label="revenue"> Revenue</el-radio-button>
-                  </el-radio-group>
-                  <el-select
-                    v-model="selectedFormId"
-                    placeholder="Select Form"
-                    size="small"
-                    clearable
-                    filterable
-                    @change="handleFormChange"
-                    style="width: 200px;"
-                  >
-                    <el-option label="All Forms" :value="null"></el-option>
-                    <el-option
-                      v-for="form in forms_list"
-                      :key="form.id"
-                      :label="`#${form.id} - ${form.title}`"
-                      :value="form.id"
-                    ></el-option>
-                  </el-select>
+                    <el-radio-group
+                        v-model="chartMode"
+                        size="small"
+                        class="mode-toggle-group"
+                        style="margin-right: 12px;"
+                    >
+                        <el-radio-button label="activity">Activity</el-radio-button>
+                        <el-radio-button label="revenue">Revenue</el-radio-button>
+                    </el-radio-group>
+                    <div class="form-selector">
+                        <el-select
+                            popper-class="report-form-select-popper"
+                            v-model="selectedFormId"
+                            placeholder="Select Form"
+                            size="small"
+                            clearable
+                            filterable
+                            @change="handleFormChange"
+                            style="width: 200px;"
+                        >
+                            <el-option label="All Forms" :value="null"></el-option>
+                            <el-option
+                                v-for="form in forms_list"
+                                :key="form.id"
+                                :label="`#${form.id} - ${form.title}`"
+                                :value="form.id"
+                            ></el-option>
+                        </el-select>
+                    </div>
                 </div>
             </div>
         </card-head>
 
         <card-body>
-
-
             <!-- Single Chart -->
             <div class="chart-wrapper">
                 <!-- Show message when in revenue mode but no payment data -->
@@ -70,9 +54,20 @@
                     v-else
                     ref="chart"
                     :option="chartOptions"
-                    style="height: 400px; width: 100%;"
+                    style="height: 350px; width: 100%;"
                     autoresize
                 />
+                <div class="overview-chart-footer">
+                    <div class="">
+                        <i class="el-icon-top"></i>
+                        <span v-if="isRevenueMode">Total Amount</span>
+                        <span v-else>Total Counts</span>
+                    </div>
+                    <div class="">
+                        <span> Time Line</span>
+                        <i class="el-icon-right"></i>
+                    </div>
+                </div>
             </div>
         </card-body>
     </card>
@@ -91,13 +86,11 @@ export default {
         CardHead
     },
     props: ['overview_chart', 'forms_list', 'global_date_params', 'chart_view', 'selectedMetrics'],
-    emits: ['view-change', 'form-change', 'chart-mode-change'],
+    emits: ['form-change', 'chart-mode-change'],
     data() {
         return {
-            activeView: 'submissions',
             selectedFormId: null,
             chartType: 'bar', // Default to bar chart
-            chartMode: 'activity', // 'activity' or 'revenue'
             categories: [],
             internalSelectedMetrics: ['submissions', 'views'],
             chartData: {
@@ -115,6 +108,14 @@ export default {
         };
     },
     computed: {
+        chartMode: {
+            get() {
+                return this.chart_view;
+            },
+            set(value) {
+                this.$emit('chart-mode-change', value);
+            }
+        },
 
         // Check if payment data exists
         hasPaymentData() {
@@ -131,20 +132,6 @@ export default {
                   (this.overview_chart.values.paid || this.overview_chart.values.pending || this.overview_chart.values.refunded)));
 
             const hasData = hasPaymentArray || hasPaidData || hasPendingData || hasRefundedData || hasPaymentInOverview;
-
-            console.log('Payment data check:', {
-                chartDataPayments: this.chartData.payments,
-                chartDataPaid: this.chartData.paid,
-                chartDataPending: this.chartData.pending,
-                chartDataRefunded: this.chartData.refunded,
-                overviewChart: this.overview_chart,
-                hasPaymentArray: hasPaymentArray,
-                hasPaidData: hasPaidData,
-                hasPendingData: hasPendingData,
-                hasRefundedData: hasRefundedData,
-                hasPaymentInOverview: hasPaymentInOverview,
-                finalHasData: hasData
-            });
 
             return hasData;
         },
@@ -196,6 +183,9 @@ export default {
                         if (this.chartData.refunded && this.chartData.refunded.some(val => val > 0)) {
                             metrics.push('refunded');
                         }
+                        if (this.chartData.payments && this.chartData.payments.some(val => val > 0)) {
+                            metrics.push('payments');
+                        }
                         return metrics;
                     }
                     return ['payments'];
@@ -229,14 +219,6 @@ export default {
             deep: true,
             immediate: true
         },
-        chart_view: {
-            handler(newView) {
-                if (newView) {
-                    this.activeView = newView;
-                }
-            },
-            immediate: true
-        },
         overview_chart: {
             handler() {
                 this.processChartData();
@@ -260,17 +242,6 @@ export default {
             this.$emit('form-change', this.selectedFormId);
         },
 
-        // Handle chart type change
-        handleChartTypeChange() {
-            // Chart will automatically update due to computed seriesData
-            // No need to emit event as this is a local UI preference
-        },
-
-        // Handle view type change
-        handleViewChange() {
-            this.$emit('view-change', this.activeView);
-        },
-
         // Process chart data for ECharts
         processChartData() {
             if (!this.overview_chart) return;
@@ -291,76 +262,20 @@ export default {
                 unread: [],
                 read: []
             };
-
             // Handle different data structures based on the view type
-            if (data.values && typeof data.values === 'object' && !Array.isArray(data.values)) {
-                // Payment data structure: { values: { paid: [...], pending: [...], refunded: [...] } }
-                if (data.values.paid || data.values.pending || data.values.refunded) {
-                    // Store individual payment status data
-                    this.chartData.paid = data.values.paid || [];
-                    this.chartData.pending = data.values.pending || [];
-                    this.chartData.refunded = data.values.refunded || [];
+            // Handle payment data types
+            this.chartData.paid = data.values.paid || [];
+            this.chartData.pending = data.values.pending || [];
+            this.chartData.refunded = data.values.refunded || [];
+            this.chartData.payments = data.values.payments || [];
 
-                    // Calculate total payments (paid + pending - refunded is more accurate than just paid)
-                    this.chartData.payments = this.calculateTotalPayments();
-
-                    console.log('Found payment data in values object:', {
-                        paid: data.values.paid,
-                        pending: data.values.pending,
-                        refunded: data.values.refunded,
-                        total: this.chartData.payments
-                    });
-                } else {
-                    // Other object structures - shouldn't happen but fallback
-                    this.chartData.submissions = data.submissions || [];
-                }
-            } else {
-                // Standard array data structure for submissions, views, etc.
-                this.chartData.submissions = data.values || data.submissions || [];
-            }
-
-            // Try to get payment data from various sources if not already set
-            if (this.chartData.payments.length === 0 && this.chartData.paid.length === 0) {
-                const paymentValues = data.payment_values ||
-                                    (data.values && Array.isArray(data.values) ? data.values : []) ||
-                                    [];
-                this.chartData.payments = paymentValues;
-            }
-
-            // Process other data types
-            this.chartData.views = data.views || [];
-            this.chartData.conversions = data.conversion_rates || data.conversions || [];
-
-            // Handle submission status data (if available)
-            this.chartData.spam = data.spam_submissions || [];
-            this.chartData.unread = data.unread_submissions || [];
-            this.chartData.read = data.read_submissions || [];
-
-            // If we don't have separate views data, generate it based on submissions
-            if (this.chartData.views.length === 0 && this.chartData.submissions.length > 0) {
-                this.chartData.views = this.chartData.submissions.map(val => Math.floor(val * 2.5));
-            }
-
-            // If we don't have separate status data, try to derive from submissions
-            if (this.chartData.spam.length === 0 && this.chartData.submissions.length > 0) {
-                // These are placeholder calculations - in real implementation,
-                // the backend should provide this data
-                this.chartData.spam = this.chartData.submissions.map(val => Math.floor(val * 0.1));
-                this.chartData.unread = this.chartData.submissions.map(val => Math.floor(val * 0.3));
-                this.chartData.read = this.chartData.submissions.map(val => Math.floor(val * 0.6));
-            }
-        },
-
-        // Handle chart mode change
-        handleChartModeChange() {
-            // Chart will automatically update due to computed chartOptions
-            // Emit event to notify parent about chart mode change
-            this.$emit('chart-mode-change', this.chartMode);
-        },
-
-        // Handle metrics change (for existing ChartMetricsSelector integration)
-        handleMetricsChanged(selectedMetrics) {
-            this.internalSelectedMetrics = selectedMetrics;
+            // Process activity data types
+            this.chartData.submissions = data.values.submissions || [];
+            this.chartData.views = data.values.views || [];
+            this.chartData.conversions = data.values.conversions || [];
+            this.chartData.spam = data.values.spam || [];
+            this.chartData.unread = data.values.unread || [];
+            this.chartData.read = data.values.read || [];
         },
 
         // Generate chart options for both chart types
@@ -381,8 +296,7 @@ export default {
                         params.forEach(param => {
                             let value = param.value;
                             if (isPaymentChart) {
-                                // Format as currency
-                                value = '$' + (typeof value === 'number' ? value.toLocaleString() : value);
+                                value = this.getCurrencySymbol() + (typeof value === 'number' ? value.toLocaleString() : value);
                             }
                             result += `${param.marker} ${param.seriesName}: ${value}<br/>`;
                         });
@@ -392,12 +306,10 @@ export default {
                 legend: {
                     show: true,
                     top: 'top',
-                    right: '20px',
                     orient: 'horizontal',
                     itemGap: 20,
                     itemWidth: 12,
                     itemHeight: 12,
-                    icon: 'circle',
                     textStyle: {
                         color: '#6b7280',
                         fontSize: 12
@@ -437,7 +349,7 @@ export default {
                         fontSize: 12,
                         formatter: (value) => {
                             if (isPaymentChart) {
-                                return '$' + (value >= 1000 ? (value/1000).toFixed(1) + 'K' : value);
+                                return this.getCurrencySymbol() + (value >= 1000 ? (value/1000).toFixed(1) + 'K' : value);
                             }
                             return value >= 1000 ? (value/1000).toFixed(1) + 'K' : value;
                         }
@@ -606,147 +518,13 @@ export default {
 
             return series;
         },
-
-        // Format date range for display
-        formatDateRange() {
-            if (!this.global_date_params || !this.global_date_params.startDate || !this.global_date_params.endDate) {
-                return 'No date range selected';
+        getCurrencySymbol() {
+            if (!this.overview_chart) {
+                return '$';
             }
-
-            const startDate = new Date(this.global_date_params.startDate.split(' ')[0]);
-            const endDate = new Date(this.global_date_params.endDate.split(' ')[0]);
-
-            const formatDate = (date) => {
-                const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                return date.toLocaleDateString(undefined, options);
-            };
-
-            const startFormatted = formatDate(startDate);
-            const endFormatted = formatDate(endDate);
-
-            // If same date, show only once
-            if (startFormatted === endFormatted) {
-                return startFormatted;
-            }
-
-            return `${startFormatted} - ${endFormatted}`;
-        },
-
-        // Get date range duration
-        getDateRangeDuration() {
-            if (!this.global_date_params || !this.global_date_params.startDate || !this.global_date_params.endDate) {
-                return null;
-            }
-
-            const startDate = new Date(this.global_date_params.startDate.split(' ')[0]);
-            const endDate = new Date(this.global_date_params.endDate.split(' ')[0]);
-
-            const timeDiff = endDate.getTime() - startDate.getTime();
-            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-
-            if (daysDiff === 1) {
-                return '1 day';
-            } else if (daysDiff <= 7) {
-                return `${daysDiff} days`;
-            } else if (daysDiff <= 30) {
-                const weeks = Math.floor(daysDiff / 7);
-                const remainingDays = daysDiff % 7;
-                if (remainingDays === 0) {
-                    return `${weeks} week${weeks > 1 ? 's' : ''}`;
-                } else {
-                    return `${weeks}w ${remainingDays}d`;
-                }
-            } else {
-                const months = Math.floor(daysDiff / 30);
-                const remainingDays = daysDiff % 30;
-                if (remainingDays === 0) {
-                    return `${months} month${months > 1 ? 's' : ''}`;
-                } else {
-                    return `~${months}m ${Math.floor(remainingDays / 7)}w`;
-                }
-            }
-        },
-
-        // Check if chart has data
-        hasChartData() {
-            return this.overview_chart && (
-                (this.chartData.submissions && this.chartData.submissions.some(val => val > 0)) ||
-                (this.chartData.views && this.chartData.views.some(val => val > 0)) ||
-                (this.chartData.payments && this.chartData.payments.some(val => val > 0)) ||
-                (this.chartData.paid && this.chartData.paid.some(val => val > 0)) ||
-                (this.chartData.pending && this.chartData.pending.some(val => val > 0)) ||
-                (this.chartData.refunded && this.chartData.refunded.some(val => val > 0))
-            );
-        },
-
-        // Get data status
-        getDataStatus() {
-            if (!this.hasChartData()) {
-                return '⚠ No Data';
-            }
-
-            const totalSubmissions = this.chartData.submissions ? this.chartData.submissions.reduce((a, b) => a + b, 0) : 0;
-            const totalViews = this.chartData.views ? this.chartData.views.reduce((a, b) => a + b, 0) : 0;
-            const totalPayments = this.chartData.payments ? this.chartData.payments.reduce((a, b) => a + b, 0) : 0;
-            const totalPaid = this.chartData.paid ? this.chartData.paid.reduce((a, b) => a + b, 0) : 0;
-            const totalPending = this.chartData.pending ? this.chartData.pending.reduce((a, b) => a + b, 0) : 0;
-            const totalRefunded = this.chartData.refunded ? this.chartData.refunded.reduce((a, b) => a + b, 0) : 0;
-
-            if (this.chartMode === 'revenue') {
-                if (totalPayments > 0 || totalPaid > 0 || totalPending > 0 || totalRefunded > 0) {
-                    return '✓ Revenue Data Available';
-                } else {
-                    return '⚠ No Revenue Data';
-                }
-            } else {
-                if (totalSubmissions > 0 || totalViews > 0) {
-                    return '✓ Activity Data Available';
-                } else {
-                    return '⚠ No Activity Data';
-                }
-            }
-        },
-
-        // Get data status CSS class
-        getDataStatusClass() {
-            if (!this.hasChartData()) {
-                return 'status-no-data';
-            }
-
-            const totalSubmissions = this.chartData.submissions ? this.chartData.submissions.reduce((a, b) => a + b, 0) : 0;
-            const totalViews = this.chartData.views ? this.chartData.views.reduce((a, b) => a + b, 0) : 0;
-            const totalPayments = this.chartData.payments ? this.chartData.payments.reduce((a, b) => a + b, 0) : 0;
-            const totalPaid = this.chartData.paid ? this.chartData.paid.reduce((a, b) => a + b, 0) : 0;
-            const totalPending = this.chartData.pending ? this.chartData.pending.reduce((a, b) => a + b, 0) : 0;
-            const totalRefunded = this.chartData.refunded ? this.chartData.refunded.reduce((a, b) => a + b, 0) : 0;
-
-            if (this.chartMode === 'revenue') {
-                return (totalPayments > 0 || totalPaid > 0 || totalPending > 0 || totalRefunded > 0) ? 'status-has-data' : 'status-no-data';
-            } else {
-                return (totalSubmissions > 0 || totalViews > 0) ? 'status-has-data' : 'status-no-data';
-            }
-        },
-
-        // Calculate total payments from individual payment status arrays
-        calculateTotalPayments() {
-            const paid = this.chartData.paid || [];
-            const pending = this.chartData.pending || [];
-            const refunded = this.chartData.refunded || [];
-
-            // Calculate total for each time period
-            const maxLength = Math.max(paid.length, pending.length, refunded.length);
-            const totals = [];
-
-            for (let i = 0; i < maxLength; i++) {
-                const paidAmount = paid[i] || 0;
-                const pendingAmount = pending[i] || 0;
-                const refundedAmount = refunded[i] || 0;
-
-                // Total = paid + pending - refunded (refunded is typically negative impact)
-                totals.push(paidAmount + pendingAmount - refundedAmount);
-            }
-
-            return totals;
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = this.overview_chart?.currency_sign || '$';
+            return textarea.value;
         }
     }
 };

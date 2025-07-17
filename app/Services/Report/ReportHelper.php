@@ -286,12 +286,11 @@ class ReportHelper
             $chartData = self::getFormViewsAndConversions($startDate, $endDate, $groupingMode, $formId);
         } else {
             $data = self::getAggregatedData($startDate, $endDate, $groupingMode, $view, $formId);
-
             // Get date labels based on grouping mode
             $dateLabels = self::getDateLabels($startDateTime, $endDateTime, $groupingMode);
 
             // Format the data for the chart
-            $chartData = self::formatDataForChart($dateLabels, $data);
+            $chartData = self::formatDataForChart($dateLabels, $data, $formId);
         }
 
         return $chartData;
@@ -1119,8 +1118,11 @@ class ReportHelper
             // If the date parameter explicitly requested "today" (has today's date)
             $today = new \DateTime('today');
             $isToday = $startDateTime->format('Y-m-d') === $today->format('Y-m-d');
+            // Or Yesterday
+            $yesterday = new \DateTime('yesterday');
+            $isYesterday = $startDateTime->format('Y-m-d') === $yesterday->format('Y-m-d');
 
-            if (!$isToday) {
+            if (!$isToday && !$isYesterday) {
                 $startDateTime->modify('-1 year');
                 $startDate = $startDateTime->format('Y-m-d H:i:s');
             }
@@ -1148,7 +1150,7 @@ class ReportHelper
     /**
      * Get aggregated data based on grouping mode
      */
-    private static function getAggregatedData($startDate, $endDate, $groupingMode, $dataType, $formId)
+    private static function getAggregatedData($startDate, $endDate, $groupingMode, $view, $formId)
     {
         $baseQuery = Submission::whereBetween('created_at', [$startDate, $endDate]);
 
@@ -1157,7 +1159,7 @@ class ReportHelper
             $baseQuery->where('form_id', $formId);
         }
 
-        if ($dataType === 'payments') {
+        if ($view === 'revenue') {
             // Clone the base query for each payment status
             $paidQuery = clone $baseQuery;
             $pendingQuery = clone $baseQuery;
@@ -1225,10 +1227,12 @@ class ReportHelper
             $pendingResults = $pendingQuery->orderBy('date_group')->get();
             $refundedResults = $refundedQuery->orderBy('date_group')->get();
 
+
             // Format the data
-            $paidData = [];
+            $paidData = $revenuePayments = [];
             foreach ($paidResults as $result) {
                 $paidData[$result->date_group] = $result->count;
+                $revenuePayments[$result->date_group] = $result->count;
             }
 
             $pendingData = [];
@@ -1239,16 +1243,21 @@ class ReportHelper
             $refundedData = [];
             foreach ($refundedResults as $result) {
                 $refundedData[$result->date_group] = $result->count;
+                if (isset($revenuePayments[$result->date_group])) {
+                    $revenuePayments[$result->date_group] -= $result->count;
+                }
             }
 
             // Return all three datasets
             return [
                 'paid'     => $paidData,
                 'pending'  => $pendingData,
-                'refunded' => $refundedData
+                'refunded' => $refundedData,
+                'payments' => $revenuePayments
             ];
         } else {
-            $query = $baseQuery->selectRaw('COUNT(*) as count');
+            $query = $baseQuery->selectRaw('COUNT(*) as count')->selectRaw('status');
+            $query->groupBy('status');
 
             // Apply grouping based on mode
             if ($groupingMode === 'day') {
@@ -1276,13 +1285,26 @@ class ReportHelper
             }
 
             $results = $query->orderBy('date_group')->get();
-
-            $data = [];
+            $total = $read = $unread = $spam = [];
             foreach ($results as $result) {
-                $data[$result->date_group] = $result->count;
+                if ($result->status === 'read') {
+                    $read[$result->date_group] = $result->count;
+                }
+                if ($result->status === 'unread') {
+                    $unread[$result->date_group] = $result->count;
+                }
+                if ($result->status === 'spam') {
+                    $spam[$result->date_group] = $result->count;
+                }
+                $total[$result->date_group] = isset($total[$result->date_group]) ? $total[$result->date_group] + $result->count : $result->count;
             }
-
-            return $data;
+            // Return all four datasets
+            return [
+                'submissions' => $total,
+                'read' => $read,
+                'unread' => $unread,
+                'spam' => $spam,
+            ];
         }
     }
 
@@ -1387,7 +1409,7 @@ class ReportHelper
     /**
      * Format data for the chart
      */
-    private static function formatDataForChart($dateLabels, $data)
+    private static function formatDataForChart($dateLabels, $data, $formId)
     {
         $dates = $dateLabels['dates'];
         $labels = $dateLabels['labels'];
@@ -1396,34 +1418,67 @@ class ReportHelper
             $paidValues = self::fillMissingData($dates, $data['paid']);
             $pendingValues = self::fillMissingData($dates, $data['pending']);
             $refundedValues = self::fillMissingData($dates, $data['refunded']);
+            $paymentsValues = self::fillMissingData($dates, $data['payments']);
+            $currencyConfig = PaymentHelper::getCurrencyConfig($formId);
 
             return [
-                'dates'  => $labels,
-                'values' => [
+                'dates'         => $labels,
+                'currency_sign' => Arr::get($currencyConfig, 'currency_sign', '$'),
+                'currency'      => Arr::get($currencyConfig, 'currency', 'USD'),
+                'values'        => [
                     'paid'     => array_values($paidValues),
                     'pending'  => array_values($pendingValues),
-                    'refunded' => array_values($refundedValues)
+                    'refunded' => array_values($refundedValues),
+                    'payments' => array_values($paymentsValues)
                 ]
             ];
         } else {
-            $values = self::fillMissingData($dates, $data);
-
             return [
                 'dates'  => $labels,
-                'values' => array_values($values)
+                'values' => [
+                    'submissions' => array_values(self::fillMissingData($dates, $data['submissions'])),
+                    'read'        => array_values(self::fillMissingData($dates, $data['read'])),
+                    'unread'      => array_values(self::fillMissingData($dates, $data['unread'])),
+                    'spam'        => array_values(self::fillMissingData($dates, $data['spam'])),
+                ]
             ];
         }
     }
 
     /**
-     * Fill in missing data with zeros
+     * Fill in missing data based on date intervals
+     * @param array $allDates Array of interval start dates
+     * @param array $data Associative array of date => value pairs
+     * @return array Result with interval start dates mapped to summed values
      */
     private static function fillMissingData($allDates, $data)
     {
         $result = [];
-        foreach ($allDates as $date) {
-            $result[$date] = isset($data[$date]) ? $data[$date] : 0;
+
+        for ($i = 0; $i < count($allDates); $i++) {
+            $startDate = new \DateTime($allDates[$i]);
+
+            // Calculate end date of interval (exclusive)
+            // Next interval start date, or use a 3-day interval for the last one
+            $endDate = isset($allDates[$i + 1]) ? new \DateTime($allDates[$i + 1]) : (clone $startDate)->modify('+3 days');
+
+            $sum = 0;
+            $hasData = false;
+
+            // Check each date in the data array
+            foreach ($data as $date => $value) {
+                $checkDate = new \DateTime($date);
+
+                // If date is within current interval
+                if ($checkDate >= $startDate && $checkDate < $endDate) {
+                    $sum += $value;
+                    $hasData = true;
+                }
+            }
+
+            $result[$allDates[$i]] = $hasData ? $sum : 0;
         }
+
         return $result;
     }
 

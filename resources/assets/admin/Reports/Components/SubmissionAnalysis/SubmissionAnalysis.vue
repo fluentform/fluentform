@@ -1,253 +1,223 @@
 <template>
-    <card>
-        <card-head>
-            <div class="submission-analysis-header">
-                <div class="title-section">
-                    <h3>Submission Analysis : {{ groupByOptions[selectedGroupBy] }}</h3>
-                </div>
-                <div class="controls-section">
-                    <div class="date-range-display">
-                        <span class="date-range-label">Viewing Period:</span>
-                        <span class="date-range-dates">{{ formatCurrentDateRange() }}</span>
+    <div>
+        <card>
+            <card-head>
+                <div class="submission-analysis-header">
+                    <div class="title-section">
+                        <h3>Submission Analysis</h3>
                     </div>
+                    <div class="controls-section">
 
-                    <el-select
-                        v-model="selectedGroupBy"
-                        placeholder="Group By"
-                        size="small"
-                        @change="handleGroupByChange"
-                        style="width: 180px; margin-right: 12px;"
-                    >
-                        <el-option
-                            v-for="(label, value) in groupByOptions"
-                            :key="value"
-                            :label="label"
-                            :value="value"
-                        />
-                    </el-select>
+                        <el-select
+                            v-model="selectedGroupBy"
+                            placeholder="Group By"
+                            size="small"
+                            @change="handleGroupByChange"
+                            style="width: 180px; margin-right: 12px;"
+                        >
+                            <el-option
+                                v-for="(label, value) in groupByOptions"
+                                :key="value"
+                                :label="label"
+                                :value="value"
+                            />
+                        </el-select>
 
-                    <el-select
-                        v-if="selectedGroupBy !== 'forms'"
-                        v-model="selectedFormId"
-                        placeholder="Select Form"
-                        size="small"
-                        clearable
-                        filterable
-                        @change="handleFormChange"
-                        style="width: 200px;"
-                    >
-                        <el-option label="All Forms" :value="null" />
-                        <el-option
-                            v-for="form in formsList"
-                            :key="form.id"
-                            :label="`#${form.id} - ${form.title}`"
-                            :value="form.id"
-                        />
-                    </el-select>
+                        <el-select
+                            v-if="selectedGroupBy !== 'forms'"
+                            v-model="selectedFormId"
+                            placeholder="Select Form"
+                            size="small"
+                            clearable
+                            filterable
+                            @change="handleFormChange"
+                            style="width: 200px;"
+                        >
+                            <el-option label="All Forms" :value="null" />
+                            <el-option
+                                v-for="form in formsList"
+                                :key="form.id"
+                                :label="`#${form.id} - ${form.title}`"
+                                :value="form.id"
+                            />
+                        </el-select>
+                    </div>
                 </div>
-            </div>
-        </card-head>
+            </card-head>
 
-        <card-body>
-            <div v-if="loading" class="loading-state">
-                <el-skeleton :rows="5" animated />
-            </div>
+            <card-body>
+                <div v-if="loading" class="loading-state">
+                    <el-skeleton :rows="12" animated />
+                </div>
 
-            <div v-else-if="submissionData.length === 0" class="no-data-state">
-                <div class="no-data-icon">📊</div>
-                <h4>No Submission Data Available</h4>
-                <p>No submission data found for the selected criteria and date range.</p>
-            </div>
+                <div v-else-if="submissionData.length === 0" class="no-data-state">
+                    <div class="no-data-icon">📊</div>
+                    <h4>No Submission Data Available</h4>
+                    <p>No submission data found for the selected criteria and date range.</p>
+                </div>
 
-            <div v-else class="submission-table-container">
-                <el-table
-                    :data="submissionData"
-                    style="width: 100%"
-                    :default-sort="{ prop: 'total_submissions', order: 'descending' }"
-                    stripe
-                >
-                    <!-- Dynamic columns based on group by selection -->
-                    <el-table-column
-                        v-if="selectedGroupBy === 'forms'"
-                        prop="form_title"
-                        label="Form"
-                        min-width="200"
-                        sortable
+                <div v-else class="submission-table-container">
+                    <el-table
+                        :data="submissionData"
+                        style="width: 100%"
+                        :default-sort="{ prop: 'total_submissions', order: 'descending' }"
+                        stripe
                     >
-                        <template #default="{ row }">
-                            <div class="form-info">
-                                <span class="form-title">{{ row.form_title }}</span>
-                                <span class="form-id">#{{ row.form_id }}</span>
-                            </div>
-                        </template>
-                    </el-table-column>
+                        <!-- Dynamic columns based on group by selection -->
+                        <el-table-column
+                            v-if="selectedGroupBy === 'forms'"
+                            prop="form_title"
+                            label="Form"
+                            min-width="200"
+                            sortable
+                        >
+                            <template #default="{ row }">
+                                <div class="form-info">
+                                    <span class="form-title">{{ row.form_title }}</span>
+                                    <span class="form-id">#{{ row.form_id }}</span>
+                                </div>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        v-if="selectedGroupBy === 'submission_source'"
-                        prop="source_url"
-                        label="Submission Source"
-                        min-width="250"
-                        sortable
-                    >
-                        <template #default="{ row }">
-                            <div class="source-info">
+                        <el-table-column
+                            v-if="selectedGroupBy === 'submission_source'"
+                            prop="source_url"
+                            label="Submission Source"
+                            min-width="250"
+                            sortable
+                        >
+                            <template #default="{ row }">
+                                <div class="source-info">
                                 <span class="source-url" :title="row.source_url">
                                     {{ formatSourceUrl(row.source_url) }}
                                 </span>
-                                <span class="source-count">{{ row.total_submissions }} submissions</span>
-                            </div>
-                        </template>
-                    </el-table-column>
+                                    <span class="source-count">{{ row.total_submissions }} submissions</span>
+                                </div>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        v-if="selectedGroupBy === 'email'"
-                        prop="email"
-                        label="Email"
-                        min-width="200"
-                        sortable
-                    >
-                        <template #default="{ row }">
-                            <div class="email-info">
-                                <span class="email-address">{{ row.email || 'No Email' }}</span>
-                            </div>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            v-if="selectedGroupBy === 'email'"
+                            prop="email"
+                            label="Email"
+                            min-width="200"
+                            sortable
+                        >
+                            <template #default="{ row }">
+                                <div class="email-info">
+                                    <span class="email-address">{{ row.email || 'No Email' }}</span>
+                                </div>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        v-if="selectedGroupBy === 'country'"
-                        prop="country"
-                        label="Country"
-                        min-width="150"
-                        sortable
-                    >
-                        <template #default="{ row }">
-                            <div class="country-info">
-                                <span class="country-name">{{ row.country || 'Unknown' }}</span>
-                                <span class="country-flag" v-if="row.country">{{ getCountryFlag(row.country) }}</span>
-                            </div>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            v-if="selectedGroupBy === 'country'"
+                            prop="country"
+                            label="Country"
+                            min-width="150"
+                            sortable
+                        >
+                            <template #default="{ row }">
+                                <div class="country-info">
+                                    <span class="country-name">{{ row.country || 'Unknown' }}</span>
+                                    <span class="country-flag" v-if="row.country">{{ getCountryFlag(row.country) }}</span>
+                                </div>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        v-if="selectedGroupBy === 'submission_date'"
-                        prop="submission_date"
-                        label="Date"
-                        min-width="120"
-                        sortable
-                    >
-                        <template #default="{ row }">
-                            <div class="date-info">
-                                <span class="date-value">{{ formatSubmissionDate(row.submission_date) }}</span>
-                            </div>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            v-if="selectedGroupBy === 'submission_date'"
+                            prop="submission_date"
+                            label="Date"
+                            min-width="120"
+                            sortable
+                        >
+                            <template #default="{ row }">
+                                <div class="date-info">
+                                    <span class="date-value">{{ formatSubmissionDate(row.submission_date) }}</span>
+                                </div>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        prop="total_submissions"
-                        label="Total Submissions"
-                        min-width="140"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
-                            <span class="count-value total">{{ formatNumber(row.total_submissions) }}</span>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            prop="total_submissions"
+                            label="Total Submissions"
+                            min-width="140"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
+                                <span class="count-value total">{{ formatNumber(row.total_submissions) }}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        prop="read_submissions"
-                        label="Read"
-                        min-width="100"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
-                            <span class="count-value read">{{ formatNumber(row.read_submissions) }}</span>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            prop="read_submissions"
+                            label="Read"
+                            min-width="100"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
+                                <span class="count-value read">{{ formatNumber(row.read_submissions) }}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        prop="unread_submissions"
-                        label="Unread"
-                        min-width="100"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
-                            <span class="count-value unread">{{ formatNumber(row.unread_submissions) }}</span>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            prop="unread_submissions"
+                            label="Unread"
+                            min-width="100"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
+                                <span class="count-value unread">{{ formatNumber(row.unread_submissions) }}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        prop="spam_submissions"
-                        label="Spam"
-                        min-width="100"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
-                            <span class="count-value spam">{{ formatNumber(row.spam_submissions) }}</span>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            prop="spam_submissions"
+                            label="Spam"
+                            min-width="100"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
+                                <span class="count-value spam">{{ formatNumber(row.spam_submissions) }}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        prop="conversion_rate"
-                        label="Read Rate"
-                        min-width="120"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
+                        <el-table-column
+                            prop="conversion_rate"
+                            label="Read Rate"
+                            min-width="120"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
                             <span class="percentage-value" :class="getReadRateClass(row.conversion_rate)">
                                 {{ formatPercentage(row.conversion_rate) }}
                             </span>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
-                <!-- Add pagination -->
-                <div class="pagination-container">
-                    <el-pagination
-                        class="ff_pagination"
-                        background
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                        :current-page="currentPage"
-                        :page-sizes="[5, 10, 20, 50, 100]"
-                        :page-size="parseInt(pageSize)"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="totalItems">
-                    </el-pagination>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </div>
-
-                <!-- Summary Row -->
-                <div class="summary-row">
-                    <div class="summary-item">
-                        <span class="label">Total Submissions:</span>
-                        <span class="value total">{{ formatNumber(totals.total) }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Read</span>
-                        <span class="value read">{{ formatNumber(totals.read) }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Unread</span>
-                        <span class="value unread">{{ formatNumber(totals.unread) }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Spam</span>
-                        <span class="value spam">{{ formatNumber(totals.spam) }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Overall Read Rate</span>
-                        <span class="value percentage" :class="getReadRateClass(totals.readRate)">
-                            {{ formatPercentage(totals.readRate) }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </card-body>
-    </card>
+            </card-body>
+        </card>
+        <div class="ff_pagination_wrap text-right pagination-container mt-4">
+            <el-pagination
+                class="ff_pagination"
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[5, 10, 20, 50, 100]"
+                :page-size="parseInt(pageSize)"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalItems">
+            </el-pagination>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -520,45 +490,11 @@ export default {
     font-weight: 600;
     color: #374151;
 }
-
-.subtitle {
-    margin: 0;
-    font-size: 14px;
-    color: #6b7280;
-}
-
 .controls-section {
     display: flex;
     align-items: center;
     gap: 16px;
     flex-shrink: 0;
-}
-
-.date-range-display {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    line-height: 1.4;
-    padding: 4px 0;
-}
-
-.date-range-label {
-    font-weight: 500;
-    color: #9ca3af;
-    min-width: 90px;
-    opacity: 0.9;
-    font-size: 12px;
-}
-
-.date-range-dates {
-    font-weight: 500;
-    color: #4b5563;
-    background: #f8fafc;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .loading-state {
@@ -658,62 +594,10 @@ export default {
     color: #374151;
 }
 
-
-
-.summary-row {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 20px;
-    margin-top: 16px;
-    background: #f9fafb;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-}
-
-.summary-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-
-.summary-item .label {
-    font-size: 12px;
-    color: #6b7280;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
 .summary-item .value {
     font-size: 18px;
     font-weight: 700;
 }
-
-.summary-item .value.total {
-    color: #374151;
-    font-size: 20px;
-}
-
-.summary-item .value.read {
-    color: #059669;
-}
-
-.summary-item .value.unread {
-    color: #d97706;
-}
-
-.summary-item .value.spam {
-    color: #dc2626;
-}
-
-.summary-item .value.percentage {
-    font-size: 16px;
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {

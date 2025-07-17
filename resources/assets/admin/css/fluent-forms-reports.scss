@@ -17,14 +17,14 @@
         display: flex;
         flex-direction: column;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        margin-bottom: 24px;
+        padding: 0;
 
         .ff_card_head {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 24px 16px 24px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid $report-border-color;
             margin-bottom: 0;
             height: 56px;
 
@@ -35,7 +35,41 @@
                 color: #1f2937;
             }
 
-            .card-controls, .chart-controls {
+            .card-controls{
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                .el-radio-group {
+                    margin-right: 0 !important;
+                    height: 32px;
+                    padding: 4px;
+                    background: #F5F7FA;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    border-radius: 8px;
+                    .el-radio-button__inner {
+                        border: none;
+                        height: 24px;
+                        border-radius: 6px;
+                        padding: 4px;
+                        background: transparent;
+                        color: #99A0AE;
+                        font-size: 12px;
+                        font-weight: 500;
+                        line-height: 16px;
+                        transition: all 0.2s ease;
+                    }
+                    .el-radio-button.is-active {
+                        .el-radio-button__inner {
+                            color: $report-primary;
+                            background: #FFFFFF;
+                            box-shadow: 0 2px 4px 0 #0E121B08;
+                        }
+                    }
+                }
+            }
+            .chart-controls {
                 display: flex;
                 align-items: center;
                 gap: 12px;
@@ -50,7 +84,7 @@
             position: relative;
 
             .chart-wrapper {
-                margin: 20px 0;
+                margin: 0;
                 flex: 1;
             }
         }
@@ -65,7 +99,7 @@
         padding: 16px;
         background-color: #f8f9fa;
         border-radius: 8px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid $report-border-color;
         margin-bottom: 20px;
 
         .filter-row {
@@ -183,16 +217,16 @@
                 margin-right: 20px;
                 height: auto;
                 line-height: 1.5;
-                color: #525866;
+                color: $report-text-color;
 
                 &.is-active {
-                    color: #0E121B;
+                    color: $report-primary;
                     font-weight: 600;
-                    border-bottom: 2px solid #0E121B;
+                    border-bottom: 2px solid $report-primary;
                 }
 
                 &:hover {
-                    color: #0E121B;
+                    color: $report-primary;
                 }
             }
 
@@ -213,14 +247,14 @@
             margin: 0;
             font-size: 18px;
             font-weight: 500;
-            color: #0E121B;
+            color: $report-primary;
             line-height: 1.5;
         }
         .reports-description {
             margin: 0;
             font-size: 14px;
             font-weight: 400;
-            color: #525866;
+            color: $report-text-color;
             line-height: 1.5;
         }
 
@@ -237,14 +271,62 @@
                 background: #f3f4f6;
                 border-radius: 6px;
             }
+            .reports-date-range-controls {
+                display: flex;
+                align-items: center;
+                .el-select {
+                    width: 128px;
+                    margin-right: 0 !important;
+                    .el-input__inner {
+                        border-top-right-radius: 0;
+                        border-bottom-right-radius: 0;
+                        border-color: #E1E4EA;
+                        box-shadow: 0 1px 2px 0 #0A0D1408;
+                        &:focus {
+                            border-color: $report-primary !important;
+                        }
+                        &:hover {
+                            border-color: $report-primary !important;
+                        }
+                    }
 
-            .el-select {
-                width: 120px;
+                }
+                .report-date-quick-select-wrapper {
+                    position: relative;
+                    display: inline-block;
+                }
+
+                .report-date-quick-select-arrow {
+                    display: flex;
+                    align-items: center;
+                    position: absolute;
+                    top: 50%;
+                    right: 8px;
+                    transform: translateY(-50%);
+                    pointer-events: none; /* Allow clicks to pass through to the select element */
+                    z-index: 2;
+                    transition: transform 0.3s ease;
+                    &.is-reverse {
+                        transform: translateY(-50%) rotate(180deg);
+                    }
+                }
+
+                /* Hide the default arrow */
+                .report-date-quick-select-wrapper .el-input__suffix {
+                    visibility: hidden;
+                }
+
+                .el-date-editor {
+                    width: 242px;
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                    border-color: #E1E4EA;
+                    box-shadow: 0 1px 2px 0 #0A0D1408;
+                }
             }
 
-            .el-date-editor {
-                width: 280px;
-                height: 40px;
+            .el-select {
+                width: 128px;
             }
         }
     }
@@ -285,6 +367,33 @@
             }
         }
     }
+    .el-icon-arrow-up {
+        &::before {
+            color: $report-primary;
+            font-weight: 600;
+        }
+    }
+
+    .form-selector {
+        .el-select {
+            .el-input__inner {
+                border: 1px solid $report-border-color;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 400;
+                color: $report-primary;
+                background: #ffffff;
+
+                &:focus {
+                    border-color: $report-primary !important;
+                }
+                &:hover {
+                    border-color: $report-primary !important;
+                }
+            }
+        }
+
+    }
 }
 
 // Form Stats Section
@@ -309,12 +418,12 @@
     .stats-card {
         display: flex;
         flex-direction: column;
-        padding: 20px;
+        padding: 16px;
         background: white;
         border-radius: 8px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
-        gap: 12px;
+        gap: 16px;
 
         &.overview {
             flex-direction: row;
@@ -350,7 +459,7 @@
             flex: 1;
             .stats-title {
                 font-size: 14px;
-                color: #525866;
+                color: $report-text-color;
                 margin-bottom: 8px;
                 font-weight: 500;
             }
@@ -392,9 +501,9 @@
 
 // Overview/Conversion Chart Section
 .conversion-chart-section {
-    height: 550px;
+    height: 450px;
     .chart-header {
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid $report-border-color;
         padding-bottom: 16px;
         margin-bottom: 20px;
 
@@ -482,30 +591,36 @@
             }
         }
     }
+
+    .overview-chart-footer {
+        display: flex;
+        align-items: center;
+        margin-top: -20px;
+        margin-left: 24px;
+        gap: 20px;
+        & > div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: $report-text-color;
+            font-size: 12px;
+            &:last-child {
+                gap: 4px;
+            }
+        }
+    }
 }
 
 // Completion Rates Gauge Section
 .completion-rates-gauge-section {
-    height: 550px;
-    .form-selector {
-        .el-select .el-input__inner {
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #6b7280;
-            background-color: #f9fafb;
-
-            &:focus {
-                border-color: #3b82f6;
-                background-color: white;
-            }
-        }
-    }
+    height: 450px;
 
     .gauge-container {
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 180px;
 
         .gauge-wrapper {
             position: relative;
@@ -614,7 +729,7 @@
             padding: 16px;
             margin-top: 16px;
             background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
+            border: 1px solid $report-border-color;
             border-radius: 8px;
             font-size: 14px;
             color: #6b7280;
@@ -625,7 +740,7 @@
 
 // Top Performing Forms Section
 .top-performing-forms-section {
-    height: 550px;
+    height: 350px;
 
     .card {
         height: 100%;
@@ -669,6 +784,7 @@
 
 // Submission Heatmap Section
 .submission-heatmap-section {
+    margin-bottom: 24px;
     // Heatmap Navigation in Card Head
     .heatmap-navigation {
         display: flex;
@@ -704,6 +820,22 @@
             @media (max-width: 768px) {
                 font-size: 10px;
                 padding: 6px 2px;
+            }
+        }
+        &-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            > button {
+                height: 32px;
+                width: 40px;
+                padding: 6px 0;
+                border-top-width: 0;
+                border-right-width: 1px;
+                border-bottom-width: 1px;
+                border-left-width: 0;
+                border-style: solid;
+                border-color: #E1E4EA;
             }
         }
     }
@@ -820,7 +952,7 @@
             justify-content: space-between;
             align-items: center;
             padding-bottom: 16px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid $report-border-color;
 
             h3 {
                 margin: 0;
@@ -855,7 +987,7 @@
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid $report-border-color;
             padding: 12px 8px;
         }
 
@@ -981,7 +1113,7 @@
 // Country Heatmap Section
 .country-heatmap-section {
     width: 100%;
-    height: 550px;
+    height: 350px;
     .submission-country-heatmap {
         .card-header {
             display: flex;
@@ -1014,7 +1146,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 400px;
+            height: 250px;
             color: #909399;
 
             .no-data-icon {
@@ -1048,8 +1180,8 @@
 
             .chart-element {
                 width: 100%;
-                height: 520px;
-                min-height: 520px;
+                height: 250px;
+                min-height: 350px;
                 background: #f8f9fa;
             }
         }
@@ -1109,8 +1241,10 @@
 }
 
 // API Logs Chart Section
-.api-logs-chart-section {
-    .api-logs-header {
+.report-line-chart {
+    margin-bottom: 24px;
+
+    .line-chart-header {
         h3 {
             margin: 0;
             font-size: 18px;
@@ -1119,7 +1253,7 @@
         }
     }
 
-    .api-logs-body {
+    .line-chart-body {
         position: relative;
 
         .loading-overlay {
@@ -1150,6 +1284,46 @@
                     color: #6b7280;
                 }
             }
+        }
+    }
+}
+
+// Element ui style override
+.report-date-quick-select-popper {
+    .el-select-dropdown__item {
+        &:hover {
+            color: $report-primary;
+        }
+        &.selected {
+            color: $report-primary;
+        }
+    }
+}
+.report-date-picker-popper {
+    .el-date-table td {
+        &:hover {
+            color: $report-primary;
+        }
+        &.current {
+            color: $report-primary;
+        }
+        &.today span {
+            color: $report-primary;
+        }
+        &.start-date span, &.end-date span{
+            color: #fff;
+            background-color: $report-primary;
+        }
+    }
+}
+
+.report-form-select-popper {
+    .el-select-dropdown__item {
+        &:hover {
+            color: $report-primary;
+        }
+        &.selected {
+            color: $report-primary;
         }
     }
 }

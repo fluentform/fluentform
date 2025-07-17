@@ -86,8 +86,8 @@ class ReportService
         $reports = ['reports' => []];
 
         if ($component === 'overview_chart') {
-            $view = Arr::get($data, 'view', 'submissions');
-            $reports['reports']['overview_chart'] = ReportHelper::getOverviewChartData($startDate, $endDate, $formId, $view);
+            $reports['reports']['overview_chart'] = ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'activity');
+            $reports['reports']['revenue_chart'] = ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue');
         } else if ($component === 'completion_rate') {
             $reports['reports']['completion_rate'] = ReportHelper::getCompletionRateData($startDate, $endDate, $formId);
         } else if ($component === 'form_stats') {
@@ -120,15 +120,14 @@ class ReportService
             $reports['reports']['subscriptions'] = ReportHelper::getSubscriptions($startDate, $endDate, $subscriptionsStatus, $subscriptionsInterval, $subscriptionsFormId);
         } else {
             // Return all reports if no specific component requested
-            $view = Arr::get($data, 'view', 'submissions');
-            $statsRange = Arr::get($data, 'stats_range', 'month');
             $transactionsFormId = intval(Arr::get($data, 'transactions_form_id'));
             $transactionsPaymentStatus = Arr::get($data, 'transactions_payment_status', '');
             $transactionsPaymentMethod = Arr::get($data, 'transactions_payment_method', '');
 
             $reports['reports'] = [
-                'overview_chart'        => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, $view),
-                'form_stats'            => ReportHelper::getFormStats($startDate, $endDate, $statsRange),
+                'overview_chart'        => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'activity'),
+                'revenue_chart'         => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue'),
+                'form_stats'            => ReportHelper::getFormStats($startDate, $endDate),
                 'completion_rate'       => ReportHelper::getCompletionRateData($startDate, $endDate, $formId),
                 'heatmap_data'          => ReportHelper::getSubmissionHeatmap($startDate, $endDate),
                 'country_heatmap'       => ReportHelper::getSubmissionsByCountry($startDate, $endDate, $formId),

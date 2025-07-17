@@ -95,14 +95,14 @@ export default {
             isSlideRight: false,
             isSlideLeft: false,
             timeSlots: [
-                "12:00 AM-3:00 AM",
-                "3:00 AM-6:00 AM",
-                "6:00 AM-9:00 AM",
-                "9:00 AM-12:00 PM",
-                "12:00 PM-3:00 PM",
-                "3:00 PM-6:00 PM",
-                "6:00 PM-9:00 PM",
-                "9:00 PM-12:00 AM"
+                "12AM-3AM",
+                "3AM-6AM",
+                "6AM-9AM",
+                "9AM-12PM",
+                "12PM-3PM",
+                "3PM-6PM",
+                "6PM-9PM",
+                "9PM-12AM"
             ],
             heatmapDataStore: {},
             isNavigating: false,

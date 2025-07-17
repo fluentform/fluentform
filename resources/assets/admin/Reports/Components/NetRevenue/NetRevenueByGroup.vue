@@ -1,213 +1,186 @@
 <template>
-    <card>
-        <card-head>
-            <div class="net-revenue-header">
-                <div class="title-section">
-                    <h3>Net Revenue Analysis : {{ groupByOptions[selectedGroupBy] }}</h3>
-                </div>
-                <div class="controls-section">
-                    <div class="date-range-display">
-                        <span class="date-range-label">Viewing Period:</span>
-                        <span class="date-range-dates">{{ formatCurrentDateRange() }}</span>
+    <div>
+        <card>
+            <card-head>
+                <div class="net-revenue-header">
+                    <div class="title-section">
+                        <h3>Revenue Analysis </h3>
                     </div>
+                    <div class="controls-section">
+                        <el-select
+                            v-model="selectedGroupBy"
+                            placeholder="Group By"
+                            size="small"
+                            @change="handleGroupByChange"
+                            style="width: 150px; margin-right: 12px;"
+                        >
+                            <el-option
+                                v-for="(label, value) in groupByOptions"
+                                :key="value"
+                                :label="label"
+                                :value="value"
+                            />
+                        </el-select>
 
-                    <el-select
-                        v-model="selectedGroupBy"
-                        placeholder="Group By"
-                        size="small"
-                        @change="handleGroupByChange"
-                        style="width: 150px; margin-right: 12px;"
-                    >
-                        <el-option
-                            v-for="(label, value) in groupByOptions"
-                            :key="value"
-                            :label="label"
-                            :value="value"
-                        />
-                    </el-select>
-
-                    <el-select
-                        v-if="selectedGroupBy !== 'forms'"
-                        v-model="selectedFormId"
-                        placeholder="Select Form"
-                        size="small"
-                        clearable
-                        filterable
-                        @change="handleFormChange"
-                        style="width: 200px;"
-                    >
-                        <el-option label="All Forms" :value="null" />
-                        <el-option
-                            v-for="form in formsList"
-                            :key="form.id"
-                            :label="`#${form.id} - ${form.title}`"
-                            :value="form.id"
-                        />
-                    </el-select>
+                        <el-select
+                            v-if="selectedGroupBy !== 'forms'"
+                            v-model="selectedFormId"
+                            placeholder="Select Form"
+                            size="small"
+                            clearable
+                            filterable
+                            @change="handleFormChange"
+                            style="width: 200px;"
+                        >
+                            <el-option label="All Forms" :value="null" />
+                            <el-option
+                                v-for="form in formsList"
+                                :key="form.id"
+                                :label="`#${form.id} - ${form.title}`"
+                                :value="form.id"
+                            />
+                        </el-select>
+                    </div>
                 </div>
-            </div>
-        </card-head>
+            </card-head>
 
-        <card-body>
-            <div v-if="loading" class="loading-state">
-                <el-skeleton :rows="5" animated />
-            </div>
+            <card-body>
+                <div v-if="loading" class="loading-state">
+                    <el-skeleton :rows="12" animated />
+                </div>
 
-            <div v-else-if="revenueData.length === 0" class="no-data-state">
-                <div class="no-data-icon">💰</div>
-                <h4>No Revenue Data Available</h4>
-                <p>No revenue data found for the selected criteria and date range.</p>
-            </div>
+                <div v-else-if="revenueData.length === 0" class="no-data-state">
+                    <div class="no-data-icon">💰</div>
+                    <h4>No Revenue Data Available</h4>
+                    <p>No revenue data found for the selected criteria and date range.</p>
+                </div>
 
-            <div v-else class="revenue-table-container">
-                <el-table
-                    :data="revenueData"
-                    style="width: 100%"
-                    :default-sort="{ prop: 'net_revenue', order: 'descending' }"
-                    stripe
-                >
-                    <!-- Dynamic columns based on group by selection -->
-                    <el-table-column
-                        v-if="selectedGroupBy === 'forms'"
-                        prop="form_title"
-                        label="Form"
-                        min-width="200"
-                        sortable
+                <div v-else class="revenue-table-container">
+                    <el-table
+                        :data="revenueData"
+                        style="width: 100%"
+                        :default-sort="{ prop: 'net_revenue', order: 'descending' }"
+                        stripe
                     >
-                        <template #default="{ row }">
-                            <div class="form-info">
-                                <span class="form-title">{{ row.form_title }}</span>
-                                <span class="form-id">#{{ row.form_id }}</span>
-                            </div>
-                        </template>
-                    </el-table-column>
+                        <!-- Dynamic columns based on group by selection -->
+                        <el-table-column
+                            v-if="selectedGroupBy === 'forms'"
+                            prop="form_title"
+                            label="Form"
+                            min-width="200"
+                            sortable
+                        >
+                            <template #default="{ row }">
+                                <div class="form-info">
+                                    <span class="form-title">{{ row.form_title }}</span>
+                                    <span class="form-id">#{{ row.form_id }}</span>
+                                </div>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        v-if="selectedGroupBy === 'payment_method'"
-                        prop="payment_method_name"
-                        label="Payment Method"
-                        min-width="150"
-                        sortable
-                    >
-                        <template #default="{ row }">
-                            <div class="payment-method">
-                                <span class="method-name">{{ row.payment_method_name }}</span>
-                                <span class="method-code">({{ row.payment_method }})</span>
-                            </div>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            v-if="selectedGroupBy === 'payment_method'"
+                            prop="payment_method_name"
+                            label="Payment Method"
+                            min-width="150"
+                            sortable
+                        >
+                            <template #default="{ row }">
+                                <div class="payment-method">
+                                    <span class="method-name">{{ row.payment_method_name }}</span>
+                                    <span class="method-code">({{ row.payment_method }})</span>
+                                </div>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        v-if="selectedGroupBy === 'payment_type'"
-                        prop="payment_type_name"
-                        label="Payment Type"
-                        min-width="150"
-                        sortable
-                    />
+                        <el-table-column
+                            v-if="selectedGroupBy === 'payment_type'"
+                            prop="payment_type_name"
+                            label="Payment Type"
+                            min-width="150"
+                            sortable
+                        />
 
-                    <el-table-column
-                        prop="paid_amount"
-                        label="Paid Amount"
-                        min-width="120"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
-                            <span class="amount paid">{{ formatCurrency(row.paid_amount) }}</span>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            prop="paid_amount"
+                            label="Paid Amount"
+                            min-width="120"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
+                                <span class="amount paid">{{ formatCurrency(row.paid_amount) }}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        prop="pending_amount"
-                        label="Pending Amount"
-                        min-width="120"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
-                            <span class="amount pending">{{ formatCurrency(row.pending_amount) }}</span>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            prop="pending_amount"
+                            label="Pending Amount"
+                            min-width="120"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
+                                <span class="amount pending">{{ formatCurrency(row.pending_amount) }}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        prop="refunded_amount"
-                        label="Refunded Amount"
-                        min-width="120"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
-                            <span class="amount refunded">{{ formatCurrency(row.refunded_amount) }}</span>
-                        </template>
-                    </el-table-column>
+                        <el-table-column
+                            prop="refunded_amount"
+                            label="Refunded Amount"
+                            min-width="120"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
+                                <span class="amount refunded">{{ formatCurrency(row.refunded_amount) }}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        prop="net_revenue"
-                        label="Net Revenue"
-                        min-width="140"
-                        sortable
-                        align="right"
-                    >
-                        <template #default="{ row }">
+                        <el-table-column
+                            prop="net_revenue"
+                            label="Net Revenue"
+                            min-width="140"
+                            sortable
+                            align="right"
+                        >
+                            <template #default="{ row }">
                             <span class="amount net-revenue" :class="{ negative: row.net_revenue < 0 }">
                                 {{ formatCurrency(row.net_revenue) }}
                             </span>
-                        </template>
-                    </el-table-column>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column
-                        v-if="selectedGroupBy !== 'forms'"
-                        prop="transaction_count"
-                        label="Transactions"
-                        min-width="100"
-                        sortable
-                        align="center"
-                    >
-                        <template #default="{ row }">
-                            <el-tag size="small" type="info">{{ row.transaction_count }}</el-tag>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                
-                <!-- Add pagination -->
-                <div class="pagination-container">
-                    <el-pagination
-                        class="ff_pagination"
-                        background
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                        :current-page="currentPage"
-                        :page-sizes="[5, 10, 20, 50, 100]"
-                        :page-size="parseInt(pageSize)"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="totalItems">
-                    </el-pagination>
+                        <el-table-column
+                            v-if="selectedGroupBy !== 'forms'"
+                            prop="transaction_count"
+                            label="Transactions"
+                            min-width="100"
+                            sortable
+                            align="center"
+                        >
+                            <template #default="{ row }">
+                                <el-tag size="small" type="info">{{ row.transaction_count }}</el-tag>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </div>
-
-                <!-- Summary Row -->
-                <div class="summary-row">
-                    <div class="summary-item">
-                        <span class="label">Total Paid</span>
-                        <span class="value paid">{{ formatCurrency(summaryTotals.paid) }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Total Pending</span>
-                        <span class="value pending">{{ formatCurrency(summaryTotals.pending) }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Total Refunded</span>
-                        <span class="value refunded">{{ formatCurrency(summaryTotals.refunded) }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Net Revenue</span>
-                        <span class="value net-revenue" :class="{ negative: summaryTotals.net < 0 }">
-                            {{ formatCurrency(summaryTotals.net) }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </card-body>
-    </card>
+            </card-body>
+        </card>
+        <div class="ff_pagination_wrap text-right pagination-container mt-4">
+            <el-pagination
+                class="ff_pagination"
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[5, 10, 20, 50, 100]"
+                :page-size="parseInt(pageSize)"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalItems">
+            </el-pagination>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -429,45 +402,11 @@ export default {
     color: #374151;
 }
 
-.subtitle {
-    margin: 0;
-    margin: 0;
-    font-size: 14px;
-    color: #6b7280;
-}
-
 .controls-section {
     display: flex;
     align-items: center;
     gap: 16px;
     flex-shrink: 0;
-}
-
-.date-range-display {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    line-height: 1.4;
-    padding: 4px 0;
-}
-
-.date-range-label {
-    font-weight: 500;
-    color: #9ca3af;
-    min-width: 90px;
-    opacity: 0.9;
-    font-size: 12px;
-}
-
-.date-range-dates {
-    font-weight: 500;
-    color: #4b5563;
-    background: #f8fafc;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .loading-state {
@@ -541,59 +480,6 @@ export default {
     text-transform: lowercase;
 }
 
-
-.summary-row {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 20px;
-    margin-top: 16px;
-    background: #f9fafb;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-}
-
-.summary-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-
-.summary-item .label {
-    font-size: 12px;
-    color: #6b7280;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.summary-item .value {
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.summary-item .value.paid {
-    color: #059669;
-}
-
-.summary-item .value.pending {
-    color: #d97706;
-}
-
-.summary-item .value.refunded {
-    color: #dc2626;
-}
-
-.summary-item .value.net-revenue {
-    color: #059669;
-    font-size: 20px;
-}
-
-.summary-item .value.net-revenue.negative {
-    color: #dc2626;
-}
-
 /* Responsive adjustments */
 @media (max-width: 1024px) {
     .net-revenue-header {
@@ -616,29 +502,8 @@ export default {
         width: 100%;
     }
 
-    .date-range-display {
-        justify-content: center;
-    }
-
     .controls-section .el-select {
         width: 100% !important;
-    }
-
-    .summary-row {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .summary-item {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .summary-item:last-child {
-        border-bottom: none;
     }
 }
 </style>
