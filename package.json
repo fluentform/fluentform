@@ -26,7 +26,9 @@
         "vue": "^2.6.14",
         "vue-html-to-paper": "^1.4.4",
         "vue-router": "^3.5.3",
-        "vuex": "^3.6.2"
+        "vuex": "^3.6.2",
+        "vuedraggable": "^2.24.3",
+        "vue-grid-layout": "^2.3.12"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.22.5",

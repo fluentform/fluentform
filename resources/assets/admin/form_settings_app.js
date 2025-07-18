@@ -9,6 +9,7 @@ import lang from 'element-ui/lib/locale/lang/en';
 import notifier from './notifier';
 
 import {
+    Alert,
     Button,
     Row,
     Col,
@@ -56,6 +57,7 @@ global.ffSettingsEvents = new Vue();
 locale.use(lang);
 Vue.use(Router);
 
+Vue.use(Alert);
 Vue.use(CollapseItem);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
