@@ -331,7 +331,7 @@ class ReportHelper
         ];
     }
 
-    public static function getFormStats($startDate, $endDate)
+    public static function getFormStats($startDate, $endDate, $formId)
     {
         // Process and fix date ranges if needed
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
@@ -352,14 +352,22 @@ class ReportHelper
         $previousEndDate = $previousEndDateTime->format('Y-m-d H:i:s');
 
         // Get submission counts
-        $periodSubmissions = Submission::whereBetween('created_at',
-            [$startDate, $endDate])->count();
+        $periodSubmissions = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })->count();
         $previousPeriodSubmissions = Submission::whereBetween('created_at',
-            [$previousStartDate, $previousEndDate])->count();
+            [$previousStartDate, $previousEndDate])
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })->count();
 
         // Get submission status counts (grouped)
         $statusCounts = Submission::whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw('status, COUNT(*) as count')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->groupBy('status')
             ->pluck('count', 'status');
         $unreadSubmissions = +$statusCounts['unread'] ?? 0;
@@ -368,6 +376,9 @@ class ReportHelper
 
         $previousStatusCounts = Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->selectRaw('status, COUNT(*) as count')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->groupBy('status')
             ->pluck('count', 'status');
         $previousSpamSubmissions = $previousStatusCounts['spam'] ?? 0;
@@ -452,7 +463,7 @@ class ReportHelper
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if ($paymentSettings && Arr::get($paymentSettings, 'status') === 'yes') {
             // Get payment statistics
-            $paymentStats = self::getPaymentStats($startDate, $endDate, $previousStartDate, $previousEndDate);
+            $paymentStats = self::getPaymentStats($startDate, $endDate, $previousStartDate, $previousEndDate, $formId);
             $stats = array_merge($stats, $paymentStats);
         }
 
@@ -725,73 +736,7 @@ class ReportHelper
         return array_reverse(array_slice($topForms, 0, 5));
     }
 
-    public static function getTransactions($startDate, $endDate, $formId = null, $paymentStatus = null, $paymentMethod = null)
-    {
-        $paymentSettings = get_option('__fluentform_payment_module_settings');
-        if (!$paymentSettings || !Arr::get($paymentSettings, 'status')) {
-            return []; // Return empty if payment module is disabled
-        }
-
-        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
-
-        $query = wpFluent()
-            ->table('fluentform_transactions')
-            ->whereBetween('created_at', [$startDate, $endDate]);
-
-        // Apply filters
-        if ($formId) {
-            $query->where('form_id', $formId);
-        }
-
-        if ($paymentStatus) {
-            $query->where('status', strtolower($paymentStatus));
-        }
-
-        if ($paymentMethod) {
-            $query->where('payment_method', strtolower($paymentMethod));
-        }
-
-        $transactions = $query->get([
-            'id',
-            'submission_id',
-            'form_id',
-            'transaction_hash',
-            'payment_method',
-            'payment_total',
-            'status',
-            'currency',
-            'created_at'
-        ]);
-
-        $formattedTransactions = [];
-
-        foreach ($transactions as $transaction) {
-            $status = ucfirst($transaction->status);
-            $standardStatus = 'Failed';
-            if ($status === 'Paid' || $status === 'Pending' || $status === 'Failed' || $status === 'Processing' || $status === 'Cancelled' || $status === 'Refunded' || $status === 'Intended') {
-                $standardStatus = $status;
-            }
-
-            $submissionLink = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $transaction->form_id . '#/entries/' . $transaction->submission_id);
-
-            $formattedTransactions[] = [
-                'id'             => $transaction->id,
-                'submissionLink' => $submissionLink,
-                'formId'         => $transaction->form_id,
-                'transactionId'  => $transaction->transaction_hash,
-                'date'           => $transaction->created_at ? date('d M, Y',
-                    strtotime($transaction->created_at)) : 'N/A',
-                'amount'         => $transaction->payment_total / 100,
-                'paymentMethod'  => ucfirst($transaction->payment_method),
-                'status'         => $standardStatus,
-                'currency'       => $transaction->currency ?: 'USD'
-            ];
-        }
-
-        return $formattedTransactions;
-    }
-
-    public static function getSubscriptions($startDate, $endDate, $status = 'all', $interval = 'all', $formId = 'null')
+    public static function getSubscriptions($startDate, $endDate, $formId = null)
     {
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if (!$paymentSettings || !Arr::get($paymentSettings, 'status')) {
@@ -806,18 +751,8 @@ class ReportHelper
             ->table('fluentform_subscriptions')
             ->whereBetween('created_at', [$startDate, $endDate]);
 
-        // Apply status filter
-        if ($status && $status !== 'all') {
-            $query->where('status', $status);
-        }
-
-        // Apply interval filter
-        if ($interval && $interval !== 'all') {
-            $query->where('billing_interval', $interval);
-        }
-
         // Apply form id
-        if ($formId && $formId !== 'null') {
+        if ($formId) {
             $query->where('form_id', $formId);
         }
 
@@ -876,25 +811,11 @@ class ReportHelper
 
         // Format data for chart display
         $chartData = [];
-        $colors = [
-            '#45aaf2', // Light blue
-            '#4c6ef5', // Blue
-            '#fa8231', // Orange
-            '#26de81', // Green
-            '#a55eea', // Purple
-            '#fd9644', // Light orange
-            '#2bcbba', // Teal
-            '#eb3b5a'  // Red
-        ];
-
-        $colorIndex = 0;
         foreach ($subscriptionsByPlan as $plan => $amount) {
             $chartData[] = [
                 'name' => $plan,
                 'value' => $amount,
-                'color' => $colors[$colorIndex % count($colors)]
             ];
-            $colorIndex++;
         }
 
         // Limit to top 5 plans for readability
@@ -906,6 +827,7 @@ class ReportHelper
             'subscription_count' => count($subscriptions),
             'chart_data' => $chartData,
             'start_date' => $startDate,
+            'currency_symbol' => Arr::get(PaymentHelper::getCurrencyConfig($formId), 'currency_sign', '$'),
             'end_date' => $endDate
         ];
     }
@@ -1482,13 +1404,16 @@ class ReportHelper
         return $result;
     }
 
-    private static function getPaymentStats($startDate, $endDate, $previousStartDate, $previousEndDate)
+    private static function getPaymentStats($startDate, $endDate, $previousStartDate, $previousEndDate, $formId)
     {
         // Get total payments (paid status) for current period
         $currentPayments = wpFluent()
             ->table('fluentform_transactions')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', 'paid')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->sum('payment_total');
 
         // Get total payments for previous period
@@ -1496,6 +1421,9 @@ class ReportHelper
             ->table('fluentform_transactions')
             ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->where('status', 'paid')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->sum('payment_total');
 
         // Get pending payments for current period
@@ -1503,6 +1431,9 @@ class ReportHelper
             ->table('fluentform_transactions')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', 'pending')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->sum('payment_total');
 
         // Get pending payments for previous period
@@ -1510,6 +1441,9 @@ class ReportHelper
             ->table('fluentform_transactions')
             ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->where('status', 'pending')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->sum('payment_total');
 
         // Get total refunds for current period
@@ -1517,6 +1451,9 @@ class ReportHelper
             ->table('fluentform_transactions')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', 'refunded')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->sum('payment_total');
 
         // Get total refunds for previous period
@@ -1524,6 +1461,9 @@ class ReportHelper
             ->table('fluentform_transactions')
             ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->where('status', 'refunded')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->sum('payment_total');
 
         // Convert from cents to dollars
@@ -1603,6 +1543,86 @@ class ReportHelper
                 'currency' => $currency,
                 'currency_symbol' => $currencySymbol
             ]
+        ];
+    }
+
+    /**
+     * Get payment data grouped by payment status
+     *
+     * @param string $startDate
+     * @param string $endDate
+     * @param string $paymentType Either 'subscription' or 'onetime'
+     * @return array
+     */
+    public static function getPaymentsByType($startDate, $endDate, $paymentType = 'subscription', $formId = null)
+    {
+        $paymentSettings = get_option('__fluentform_payment_module_settings');
+        if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
+            return []; // Return empty if payment module is disabled
+        }
+        // Process date range
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        // Base query for transactions
+        $query = wpFluent()->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        // Filter by transaction type if specified
+        if ($paymentType === 'subscription') {
+            $query->whereIn('transaction_type', ['subscription', 'subscription_signup_fee']);
+        } elseif ($paymentType === 'onetime') {
+            $query->where('transaction_type', 'onetime');
+        }
+
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+
+        // Get payments grouped by status
+        $payments = $query->select('status')
+            ->selectRaw('SUM(payment_total) as total_amount')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('status')
+            ->get();
+
+        // Get the total payment amount
+        $totalAmount = 0;
+        foreach ($payments as $payment) {
+            $totalAmount += $payment->total_amount;
+        }
+
+        $formattedData = [];
+        foreach ($payments as $payment) {
+            $status = strtolower($payment->status);
+            $amount = $payment->total_amount / 100; // Convert from cents to dollars
+            $percentage = $totalAmount > 0 ? round(($payment->total_amount / $totalAmount) * 100, 2) : 0;
+
+            $formattedData[$status] = [
+                'amount' => $amount,
+                'percentage' => $percentage,
+                'count' => $payment->count
+            ];
+        }
+
+        // Calculate weekly average paid amount
+        $daysInRange = self::getDateDifference($startDate, $endDate);
+        $weeksInRange = max(1, round($daysInRange / 7, 1));
+
+        $paidAmount = 0;
+        foreach ($formattedData as $status => $data) {
+            if ($status === 'paid') {
+                $paidAmount = $data['amount'];
+                break;
+            }
+        }
+
+        $weeklyAverage = $paidAmount / $weeksInRange;
+
+        return [
+            'currency_symbol' => Arr::get(PaymentHelper::getCurrencyConfig($formId), 'currency_sign', '$'),
+            'payment_statuses' => $formattedData,
+            'total_amount'     => $totalAmount / 100, // Convert from cents to dollars
+            'weekly_average'   => round($weeklyAverage, 2)
         ];
     }
 

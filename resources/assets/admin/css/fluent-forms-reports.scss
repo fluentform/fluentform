@@ -394,6 +394,69 @@
         }
 
     }
+
+    @media (max-width: 768px) {
+        .reports-header {
+            align-items: start;
+            gap: 12px;
+            .reports-controls {
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: flex-end;
+                gap: 12px;
+            }
+        }
+    }
+    @media (max-width: 500px) {
+        .conversion-chart-section {
+            height: 500px;
+            .ff_card .ff_card_head {
+                height: auto;
+                padding: 12px 10px;
+            }
+            .overview-chart-header {
+                flex-direction: column;
+                gap: 12px;
+                .card-controls {
+                    flex-direction: column;
+                    width: 100%;
+                    align-items: flex-end;
+                    .el-radio-group {
+                        margin-top: -40px;
+
+                    }
+                    .form-selector {
+                        width: 100%;
+                        .el-select {
+                            width: 100% !important;
+                        }
+                    }
+                }
+            }
+        }
+
+        .submission-heatmap-section {
+            .ff_card .ff_card_head {
+                height: auto;
+                flex-direction: column;
+                align-items: flex-start;
+                .heatmap-navigation {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+            }
+        }
+
+        .reports-header {
+            flex-direction: column;
+            .reports-controls {
+                align-items: flex-start;
+                .el-select {
+                    width: 100% !important;
+                }
+            }
+        }
+    }
 }
 
 // Form Stats Section
@@ -591,23 +654,24 @@
             }
         }
     }
+}
 
-    .overview-chart-footer {
+// Chart footer info
+.chart-wrapper .chart-footer-info {
+    display: flex;
+    align-items: center;
+    margin-top: -20px;
+    margin-left: 24px;
+    gap: 20px;
+    & > div {
         display: flex;
         align-items: center;
-        margin-top: -20px;
-        margin-left: 24px;
-        gap: 20px;
-        & > div {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            color: $report-text-color;
-            font-size: 12px;
-            &:last-child {
-                gap: 4px;
-            }
+        gap: 8px;
+        font-weight: 500;
+        color: $report-text-color;
+        font-size: 12px;
+        &:last-child {
+            gap: 4px;
         }
     }
 }
@@ -1036,9 +1100,10 @@
     }
 }
 
-// Subscription Stats Section
-.subscription-stats-section {
+// Subscription Stats and Payment by Type Section
+.top-performing-subscription-plan-section {
     height: 420px;
+    margin-bottom: 24px;
     .subscription-summary {
         margin-bottom: 20px;
 
@@ -1046,6 +1111,7 @@
             display: flex;
             gap: 8px;
             justify-content: space-between;
+            align-items: center;
         }
     }
 
@@ -1067,9 +1133,9 @@
             gap: 8px;
 
             .total-amount {
-                font-size: 24px;
-                font-weight: 700;
-                color: #1f2937;
+                font-size: 14px;
+                font-weight: 500;
+                color: #0E121B;
             }
 
             .growth-indicator {
@@ -1107,6 +1173,92 @@
                 font-size: 24px;
             }
         }
+    }
+}
+
+// Payment by Type Section
+.payment-by-type-section {
+    height: 420px;
+    margin-bottom: 24px;
+    .payment-amount-section {
+        margin-bottom: 20px;
+    }
+    .total-amount-section {
+        text-align: left;
+    }
+    .amount-label {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0 0 5px 0;
+    }
+    .amount-value {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    .payment-chart-section {
+        min-height: 230px;
+    }
+    .loading-chart, .no-data {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 150px;
+        color: #9ca3af;
+        text-align: center;
+        gap: 12px;
+    }
+    .payment-bar-chart {
+        margin-top: 20px;
+    }
+    .payment-bars {
+        margin-bottom: 20px;
+    }
+    .payment-bar-container {
+        height: 24px;
+        background-color: #f3f4f6;
+        overflow: hidden;
+        display: flex;
+        gap: 4px;
+    }
+    .payment-bar {
+        height: 100%;
+        border-radius: 4px;
+    }
+    .payment-status-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .payment-status-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .status-icon {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    .status-label {
+        flex: 1;
+        font-size: 14px;
+        color: #4b5563;
+    }
+    .status-amount {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    .weekly-average {
+        text-align: center;
+        padding: 12px;
+        background-color: #f9fafb;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #6b7280;
+        font-weight: 500;
     }
 }
 

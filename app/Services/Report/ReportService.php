@@ -60,19 +60,13 @@ class ReportService
             'component' => 'sanitizeTextField',
             'view' => 'sanitizeTextField',
             'metric' => 'sanitizeTextField',
-            'transactions_payment_status' => 'sanitizeTextField',
-            'transactions_payment_method' => 'sanitizeTextField',
-            'subscriptions_status' => 'sanitizeTextField',
-            'subscriptions_interval' => 'sanitizeTextField',
-            'subscriptions_form_id' => 'sanitizeTextField',
             'stats_range' => 'sanitizeTextField'
         ]);
 
         $startDate = Arr::get($data, 'start_date');
         $endDate = Arr::get($data, 'end_date');
         $formId = intval(Arr::get($data, 'form_id'));
-        $component = Arr::get($data, 'component');
-        
+        $components = array_map('trim', explode(',', Arr::get($data, 'component', '')));
         // if no start or end date, then set default date range as last month
         if (!$startDate || !$endDate) {
             $now = new \DateTime();
@@ -84,63 +78,62 @@ class ReportService
         }
 
         $reports = ['reports' => []];
-
-        if ($component === 'overview_chart') {
+        if (in_array('overview_chart', $components)) {
             $reports['reports']['overview_chart'] = ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'activity');
             $reports['reports']['revenue_chart'] = ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue');
-        } else if ($component === 'completion_rate') {
+        }
+
+        if (in_array('completion_rate', $components)) {
             $reports['reports']['completion_rate'] = ReportHelper::getCompletionRateData($startDate, $endDate, $formId);
-        } else if ($component === 'form_stats') {
-            $reports['reports']['form_stats'] = ReportHelper::getFormStats($startDate, $endDate);
-        } else if ($component === 'heatmap_data') {
+        }
+
+        if (in_array('form_stats', $components)) {
+            $reports['reports']['form_stats'] = ReportHelper::getFormStats($startDate, $endDate, $formId);
+        }
+
+        if (in_array('heatmap_data', $components)) {
             $reports['reports']['heatmap_data'] = ReportHelper::getSubmissionHeatmap($startDate, $endDate);
-        } else if ($component === 'country_heatmap') {
+        }
+
+        if (in_array('country_heatmap', $components)) {
             $reports['reports']['country_heatmap'] = ReportHelper::getSubmissionsByCountry($startDate, $endDate, $formId);
-        } else if ($component === 'api_logs') {
+        }
+
+        if (in_array('api_logs', $components)) {
             $reports['reports']['api_logs'] = ReportHelper::getApiLogs($startDate, $endDate);
-        } else if ($component === 'top_performing_forms') {
+        }
+
+        if (in_array('top_performing_forms', $components)) {
             $metric = Arr::get($data, 'metric', 'entries');
             $reports['reports']['top_performing_forms'] = ReportHelper::getTopPerformingForms($startDate, $endDate, $metric);
-        } else if ($component === 'transactions') {
-            $transactionsFormId = intval(Arr::get($data, 'transactions_form_id'));
-            $transactionsPaymentStatus = Arr::get($data, 'transactions_payment_status', '');
-            $transactionsPaymentMethod = Arr::get($data, 'transactions_payment_method', '');
+        }
 
-            $reports['reports']['transactions'] = ReportHelper::getTransactions(
-                $startDate,
-                $endDate,
-                $transactionsFormId,
-                $transactionsPaymentStatus,
-                $transactionsPaymentMethod
-            );
-        } else if ($component === 'subscriptions') {
-            $subscriptionsStatus = Arr::get($data, 'subscriptions_status', 'all');
-            $subscriptionsInterval = Arr::get($data, 'subscriptions_interval', 'all');
-            $subscriptionsFormId = Arr::get($data, 'subscriptions_form_id', 0);
-            $reports['reports']['subscriptions'] = ReportHelper::getSubscriptions($startDate, $endDate, $subscriptionsStatus, $subscriptionsInterval, $subscriptionsFormId);
-        } else {
-            // Return all reports if no specific component requested
-            $transactionsFormId = intval(Arr::get($data, 'transactions_form_id'));
-            $transactionsPaymentStatus = Arr::get($data, 'transactions_payment_status', '');
-            $transactionsPaymentMethod = Arr::get($data, 'transactions_payment_method', '');
+        if (in_array('subscriptions', $components)) {
+            $reports['reports']['subscriptions'] = ReportHelper::getSubscriptions($startDate, $endDate, $formId);
+        }
 
+        if (in_array('payment_types', $components)) {
+            $reports['reports']['payment_types'] = [
+                'subscription' => ReportHelper::getPaymentsByType($startDate, $endDate, 'subscription', $formId),
+                'onetime' => ReportHelper::getPaymentsByType($startDate, $endDate, 'onetime', $formId)
+            ];
+        }
+
+        if (!$components || empty($reports['reports'])) {
             $reports['reports'] = [
                 'overview_chart'        => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'activity'),
                 'revenue_chart'         => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue'),
-                'form_stats'            => ReportHelper::getFormStats($startDate, $endDate),
+                'form_stats'            => ReportHelper::getFormStats($startDate, $endDate, $formId),
                 'completion_rate'       => ReportHelper::getCompletionRateData($startDate, $endDate, $formId),
                 'heatmap_data'          => ReportHelper::getSubmissionHeatmap($startDate, $endDate),
                 'country_heatmap'       => ReportHelper::getSubmissionsByCountry($startDate, $endDate, $formId),
                 'api_logs'              => ReportHelper::getApiLogs($startDate, $endDate),
                 'top_performing_forms'  => ReportHelper::getTopPerformingForms($startDate, $endDate, 'entries'),
-                'transactions'          => ReportHelper::getTransactions(
-                    $startDate,
-                    $endDate,
-                    $transactionsFormId,
-                    $transactionsPaymentStatus,
-                    $transactionsPaymentMethod
-                ),
-                'subscriptions'         => ReportHelper::getSubscriptions($startDate, $endDate)
+                'subscriptions'         => ReportHelper::getSubscriptions($startDate, $endDate, $formId),
+                'payment_types' => [
+                    'subscription' => ReportHelper::getPaymentsByType($startDate, $endDate, 'subscription', $formId),
+                    'onetime' => ReportHelper::getPaymentsByType($startDate, $endDate, 'onetime', $formId)
+                ],
             ];
         }
 

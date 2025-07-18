@@ -118,7 +118,7 @@
                     </el-row>
 
                 </el-tab-pane>
-                <el-tab-pane label="Revenue" name="revenue">
+                <el-tab-pane label="Revenue" name="revenue" v-if="hasPayment">
                     <!-- Revenue Header -->
                     <div class="reports-header">
                         <div>
@@ -126,6 +126,23 @@
                             <p class="reports-description">A brief look at net revenue performance</p>
                         </div>
                         <div class="reports-controls">
+                            <el-select
+                                v-model="selectedGlobalFormId"
+                                placeholder="Select Form"
+                                size="small"
+                                clearable
+                                filterable
+                                @change="fetchReportsData"
+                                style="width: 200px;"
+                            >
+                                <el-option label="All Forms" :value="null" />
+                                <el-option
+                                    v-for="form in paymentFormsList"
+                                    :key="form.id"
+                                    :label="`#${form.id} - ${form.title}`"
+                                    :value="form.id"
+                                />
+                            </el-select>
                             <date-range-controls
                                 :selected-range="selectedRange"
                                 :date-range="dateRange"
@@ -158,12 +175,33 @@
                         type="revenue"
                     />
 
+                    <!-- Subscription Plan and Payment by type -->
+                    <el-row :gutter="24" class="subscription-plan-payment-type-section">
+                        <el-col :span="24" :md="12">
+                            <div class="top-performing-subscription-plan-section">
+                                <top-subscription-by-plan
+                                    :subscription-data="reports.subscriptions"
+                                    :global-date-params="globalDateParams"
+                                />
+                            </div>
+                        </el-col>
+
+                        <el-col :span="24" :md="12">
+                            <div class="payment-by-type-section">
+                                <payment-by-type-chart
+                                    :payment-data="reports.payment_types"
+                                />
+                            </div>
+                        </el-col>
+                    </el-row>
+
                     <!-- Net Revenue Analysis Section -->
-                    <div v-if="hasPayment" class="net-revenue-section" style="margin-bottom: 24px;">
+                    <div class="net-revenue-section" style="margin-bottom: 24px;">
                         <net-revenue-by-group
-                            :forms-list="formsList"
+                            :forms-list="paymentFormsList"
                             :global-date-params="globalDateParams"
                             :payment-currency="paymentCurrency"
+                            :selected-form-id="selectedGlobalFormId"
                         />
                     </div>
                 </el-tab-pane>
@@ -175,6 +213,23 @@
                             <p class="reports-description">A brief look at submission performance</p>
                         </div>
                         <div class="reports-controls">
+                            <el-select
+                                v-model="selectedGlobalFormId"
+                                placeholder="Select Form"
+                                size="small"
+                                clearable
+                                filterable
+                                @change="fetchReportsData"
+                                style="width: 200px;"
+                            >
+                                <el-option label="All Forms" :value="null" />
+                                <el-option
+                                    v-for="form in formsList"
+                                    :key="form.id"
+                                    :label="`#${form.id} - ${form.title}`"
+                                    :value="form.id"
+                                />
+                            </el-select>
                             <date-range-controls
                                 :selected-range="selectedRange"
                                 :date-range="dateRange"
@@ -213,6 +268,7 @@
                         <submission-analysis
                             :forms-list="formsList"
                             :global-date-params="globalDateParams"
+                            :selected-form-id="selectedGlobalFormId"
                         />
                     </div>
                 </el-tab-pane>
@@ -226,9 +282,9 @@ import FormStatsCard from "./Components/FormStats/FormStatsCard.vue";
 import SubmissionHeatmap from "@/admin/Reports/Components/SubmissionHeatmap/SubmissionHeatmap.vue";
 import SubmissionCountryHeatmap from "./Components/SubmissionCountryHeatmap/SubmissionCountryHeatmap.vue";
 import LineChart from "./Components/LineChart.vue";
-import TransactionsTable from "./Components/TransactionsTable/TransactionsTable.vue";
 import CompletionRatesGauge from "./Components/CompletionRatesGauge/CompletionRatesGauge.vue";
-import SubscriptionStats from "./Components/SubscriptionStats/SubscriptionStats.vue";
+import TopSubscriptionByPlan from "./Components/SubscriptionStats/TopSubscriptionByPlan.vue";
+import PaymentByTypeChart from "./Components/PaymentByTypeChart.vue";
 import ChartMetricsSelector from "./Components/ChartMetrics/ChartMetricsSelector.vue";
 import TopPerformingForms from "./Components/TopPerformingForms/TopPerformingForms.vue";
 import NetRevenueByGroup from "./Components/NetRevenue/NetRevenueByGroup.vue";
@@ -243,9 +299,9 @@ export default {
         SubmissionCountryHeatmap,
         OverviewChart,
         FormStatsCard,
-        TransactionsTable,
         CompletionRatesGauge,
-        SubscriptionStats,
+        TopSubscriptionByPlan,
+        PaymentByTypeChart,
         ChartMetricsSelector,
         TopPerformingForms,
         NetRevenueByGroup,
@@ -269,6 +325,7 @@ export default {
             ],
             lastUsedSelector: "range",
             selectedFormId: null,
+            selectedGlobalFormId: null,
             chartLoading: false,
             gaugeLoading: false,
             statsLoading: false,
@@ -438,6 +495,9 @@ export default {
                 return stats.total_payments.currency_symbol;
             }
             return "$"; // Default fallback
+        },
+        paymentFormsList() {
+            return this.formsList.filter(form => form.has_payment && form.has_payment !== "0");
         }
     },
     methods: {
@@ -449,7 +509,7 @@ export default {
                 end_date: this.globalDateParams.endDate,
                 view: this.chartMode,
                 stats_range: this.globalDateParams.statsRange,
-                form_id: this.globalDateParams.formId
+                form_id: ['submission', 'revenue'].includes(this.activeTab) ? this.selectedGlobalFormId : this.globalDateParams.formId
             };
             const url = FluentFormsGlobal.$rest.route("report");
             FluentFormsGlobal.$rest.get(url, data)
@@ -515,6 +575,39 @@ export default {
                 });
         },
 
+        fetchReportsData() {
+            const data = {
+                component: "form_stats,overview_chart,revenue_chart,subscriptions,payment_types",
+                start_date: this.globalDateParams.startDate,
+                end_date: this.globalDateParams.endDate,
+                form_id: this.selectedGlobalFormId
+            };
+            const url = FluentFormsGlobal.$rest.route("report");
+            FluentFormsGlobal.$rest.get(url, data)
+                .then(response => {
+                    if (response.reports && response.reports.form_stats) {
+                        this.reports.form_stats = response.reports.form_stats;
+                    }
+                    if (response.reports && response.reports.overview_chart) {
+                        this.reports.overview_chart = response.reports.overview_chart;
+                    }
+                    if (response.reports && response.reports.revenue_chart) {
+                        this.reports.revenue_chart = response.reports.revenue_chart;
+                    }
+                    if (response.reports && response.reports.subscriptions) {
+                        this.reports.subscriptions = response.reports.subscriptions;
+                    }
+                    if (response.reports && response.reports.payment_types) {
+                        this.reports.payment_types = response.reports.payment_types;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching overview chart data:", error);
+                })
+                .finally(() => {
+                });
+        },
+
         handleGaugeFormChange(formId) {
             this.selectedGaugeFormId = formId;
             this.gaugeLoading = true;
@@ -540,64 +633,6 @@ export default {
                     this.gaugeLoading = false;
                 });
         },
-
-        handleTransactionsFilterChange(params) {
-            this.transactionsLoading = true;
-            this.transactionsParams = {
-                formId: params.formId,
-                paymentStatus: params.paymentStatus,
-                paymentMethod: params.paymentMethod
-            };
-
-            const data = {
-                component: "transactions",
-                start_date: this.globalDateParams.startDate,
-                end_date: this.globalDateParams.endDate,
-                transactions_form_id: params.formId,
-                transactions_payment_status: params.paymentStatus,
-                transactions_payment_method: params.paymentMethod
-            };
-            const url = FluentFormsGlobal.$rest.route("report");
-            FluentFormsGlobal.$rest.get(url, data)
-                .then(response => {
-                    if (response && response.reports && response.reports.transactions) {
-                        this.reports.transactions = response.reports.transactions;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching transactions data:", error);
-                })
-                .finally(() => {
-                    this.transactionsLoading = false;
-                });
-        },
-
-        handleSubscriptionFilterChange(params) {
-            this.subscriptionsLoading = true;
-
-            const data = {
-                component: "subscriptions",
-                start_date: this.globalDateParams.startDate,
-                end_date: this.globalDateParams.endDate,
-                subscriptions_status: params.status,
-                subscriptions_interval: params.interval,
-                subscriptions_form_id: params.formId
-            };
-            const url = FluentFormsGlobal.$rest.route("report");
-            FluentFormsGlobal.$rest.get(url, data)
-                .then(response => {
-                    if (response && response.reports && response.reports.subscriptions) {
-                        this.reports.subscriptions = response.reports.subscriptions;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching subscription data:", error);
-                })
-                .finally(() => {
-                    this.subscriptionsLoading = false;
-                });
-        },
-
         handleCountryHeatmapFormChange(formId) {
             this.selectedCountryHeatmapFormId = formId;
             this.countryHeatmapLoading = true;

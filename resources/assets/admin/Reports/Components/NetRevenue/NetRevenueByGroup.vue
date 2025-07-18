@@ -21,25 +21,6 @@
                                 :value="value"
                             />
                         </el-select>
-
-                        <el-select
-                            v-if="selectedGroupBy !== 'forms'"
-                            v-model="selectedFormId"
-                            placeholder="Select Form"
-                            size="small"
-                            clearable
-                            filterable
-                            @change="handleFormChange"
-                            style="width: 200px;"
-                        >
-                            <el-option label="All Forms" :value="null" />
-                            <el-option
-                                v-for="form in formsList"
-                                :key="form.id"
-                                :label="`#${form.id} - ${form.title}`"
-                                :value="form.id"
-                            />
-                        </el-select>
                     </div>
                 </div>
             </card-head>
@@ -103,7 +84,7 @@
 
                         <el-table-column
                             prop="paid_amount"
-                            label="Paid Amount"
+                            label="Paid"
                             min-width="120"
                             sortable
                             align="right"
@@ -115,7 +96,7 @@
 
                         <el-table-column
                             prop="pending_amount"
-                            label="Pending Amount"
+                            label="Pending"
                             min-width="120"
                             sortable
                             align="right"
@@ -127,7 +108,7 @@
 
                         <el-table-column
                             prop="refunded_amount"
-                            label="Refunded Amount"
+                            label="Refunded"
                             min-width="120"
                             sortable
                             align="right"
@@ -154,13 +135,15 @@
                         <el-table-column
                             v-if="selectedGroupBy !== 'forms'"
                             prop="transaction_count"
-                            label="Transactions"
+                            label="Count"
                             min-width="100"
                             sortable
                             align="center"
                         >
                             <template #default="{ row }">
-                                <el-tag size="small" type="info">{{ row.transaction_count }}</el-tag>
+                                <span class="transaction-count net-revenue" :class="{ negative: row.net_revenue < 0 }">
+                                    {{ row.transaction_count }}
+                                </span>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -207,6 +190,9 @@ export default {
         paymentCurrency: {
             type: String,
             default: '$'
+        },
+        selectedFormId: {
+            type: Number
         }
     },
     data() {
@@ -214,7 +200,6 @@ export default {
             loading: false,
             revenueData: [],
             selectedGroupBy: 'forms',
-            selectedFormId: null,
             groupByOptions: {
                 'forms': 'Forms',
                 'payment_method': 'Payment Method',
@@ -242,6 +227,9 @@ export default {
                 this.fetchRevenueData();
             },
             deep: true
+        },
+        selectedFormId() {
+            this.fetchRevenueData();
         }
     },
     mounted() {
@@ -285,8 +273,6 @@ export default {
         },
 
         handleGroupByChange() {
-            // Reset form selection when changing group by
-            this.selectedFormId = null;
             this.currentPage = 1;
             this.fetchRevenueData();
         },
@@ -478,32 +464,5 @@ export default {
     font-size: 12px;
     color: #9ca3af;
     text-transform: lowercase;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .net-revenue-header {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .controls-section {
-        align-self: flex-end;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-}
-
-@media (max-width: 768px) {
-    .controls-section {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        width: 100%;
-    }
-
-    .controls-section .el-select {
-        width: 100% !important;
-    }
 }
 </style>

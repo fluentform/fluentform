@@ -18,6 +18,18 @@
                         style="height: 440px;"
                         autoresize
                     />
+
+                    <div class="chart-footer-info">
+                        <div class="">
+                            <i class="el-icon-top"></i>
+                            <span v-if="type === 'revenue'">Total Amount</span>
+                            <span v-else>Total Counts</span>
+                        </div>
+                        <div class="">
+                            <span> Time Line</span>
+                            <i class="el-icon-right"></i>
+                        </div>
+                    </div>
                 </div>
             </card-body>
         </card>

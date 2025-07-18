@@ -22,25 +22,6 @@
                                 :value="value"
                             />
                         </el-select>
-
-                        <el-select
-                            v-if="selectedGroupBy !== 'forms'"
-                            v-model="selectedFormId"
-                            placeholder="Select Form"
-                            size="small"
-                            clearable
-                            filterable
-                            @change="handleFormChange"
-                            style="width: 200px;"
-                        >
-                            <el-option label="All Forms" :value="null" />
-                            <el-option
-                                v-for="form in formsList"
-                                :key="form.id"
-                                :label="`#${form.id} - ${form.title}`"
-                                :value="form.id"
-                            />
-                        </el-select>
                     </div>
                 </div>
             </card-head>
@@ -240,6 +221,9 @@ export default {
         globalDateParams: {
             type: Object,
             default: () => ({})
+        },
+        selectedFormId: {
+            type: Number
         }
     },
     data() {
@@ -247,7 +231,6 @@ export default {
             loading: false,
             submissionData: [],
             selectedGroupBy: 'forms',
-            selectedFormId: null,
             groupByOptions: {
                 'forms': 'Forms',
                 'submission_source': 'Submission Source',
@@ -273,6 +256,9 @@ export default {
                 this.fetchSubmissionData();
             },
             deep: true
+        },
+        selectedFormId() {
+            this.fetchSubmissionData();
         }
     },
     mounted() {
@@ -336,7 +322,6 @@ export default {
 
         handleGroupByChange() {
             // Reset form selection when changing group by
-            this.selectedFormId = null;
             this.currentPage = 1;
             this.fetchSubmissionData();
         },
@@ -597,53 +582,5 @@ export default {
 .summary-item .value {
     font-size: 18px;
     font-weight: 700;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .submission-analysis-header {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .controls-section {
-        align-self: flex-end;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-}
-
-@media (max-width: 768px) {
-    .controls-section {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        width: 100%;
-    }
-
-    .date-range-display {
-        justify-content: center;
-    }
-
-    .controls-section .el-select {
-        width: 100% !important;
-    }
-
-    .summary-row {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .summary-item {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .summary-item:last-child {
-        border-bottom: none;
-    }
 }
 </style>

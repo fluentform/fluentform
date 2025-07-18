@@ -57,7 +57,7 @@
                     style="height: 350px; width: 100%;"
                     autoresize
                 />
-                <div class="overview-chart-footer">
+                <div class="chart-footer-info">
                     <div class="">
                         <i class="el-icon-top"></i>
                         <span v-if="isRevenueMode">Total Amount</span>
@@ -134,35 +134,6 @@ export default {
             const hasData = hasPaymentArray || hasPaidData || hasPendingData || hasRefundedData || hasPaymentInOverview;
 
             return hasData;
-        },
-
-        // Get available metrics based on current mode
-        availableMetrics() {
-            if (this.chartMode === 'revenue') {
-                const metrics = [
-                    { key: 'payments', label: 'Total Revenue', color: '#059669' }
-                ];
-
-                // Add individual payment status metrics if we have breakdown data
-                if (this.chartData.paid && this.chartData.paid.some(val => val > 0)) {
-                    metrics.push({ key: 'paid', label: 'Paid', color: '#10b981' });
-                }
-                if (this.chartData.pending && this.chartData.pending.some(val => val > 0)) {
-                    metrics.push({ key: 'pending', label: 'Pending', color: '#f59e0b' });
-                }
-                if (this.chartData.refunded && this.chartData.refunded.some(val => val > 0)) {
-                    metrics.push({ key: 'refunded', label: 'Refunded', color: '#ef4444' });
-                }
-
-                return metrics;
-            }
-            return [
-                { key: 'submissions', label: 'Submissions', color: '#8b5cf6' },
-                { key: 'views', label: 'Views', color: '#3b82f6' },
-                { key: 'spam', label: 'Spam', color: '#ef4444' },
-                { key: 'unread', label: 'Unread', color: '#f59e0b' },
-                { key: 'read', label: 'Read', color: '#10b981' }
-            ];
         },
 
         // Get current metrics based on chart mode
@@ -552,113 +523,11 @@ export default {
     color: #374151;
 }
 
-.date-range-display {
-    margin-top: 4px;
-}
-
-.date-range-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.date-range-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-.range-label {
-    font-weight: 500;
-    color: #6b7280;
-    min-width: 80px;
-}
-
-.range-dates {
-    font-weight: 600;
-    color: #374151;
-    background: #f3f4f6;
-    padding: 2px 8px;
-    border-radius: 4px;
-    border: 1px solid #e5e7eb;
-}
-
-.range-duration {
-    font-weight: 400;
-    color: #9ca3af;
-    font-size: 12px;
-    font-style: italic;
-}
-
-
-.status-has-data {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
-}
-
-.status-no-data {
-    background-color: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
-}
-
 .card-controls {
     display: flex;
     align-items: flex-start;
     gap: 8px;
     flex-shrink: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .overview-chart-header {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .card-controls {
-        align-self: flex-end;
-        width: 100%;
-        justify-content: flex-end;
-    }
-}
-
-@media (max-width: 768px) {
-    .date-range-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
-
-    .range-label {
-        min-width: auto;
-        font-size: 12px;
-    }
-
-    .range-dates {
-        font-size: 12px;
-        padding: 1px 6px;
-    }
-
-    .card-controls {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .card-controls .el-select {
-        width: 100% !important;
-        margin-right: 0 !important;
-        margin-bottom: 8px;
-    }
-}
-
-.chart-mode-toggle {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
 }
 
 .chart-wrapper {
@@ -698,20 +567,6 @@ export default {
     font-size: 14px;
     max-width: 300px;
     line-height: 1.5;
-}
-
-/* Ensure card body has proper padding and doesn't overflow */
-:deep(.ff_card_body) {
-    padding: 20px;
-    overflow: hidden;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .chart-wrapper {
-        min-height: 350px;
-        height: auto;
-    }
 }
 </style>
 
