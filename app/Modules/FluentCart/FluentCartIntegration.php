@@ -6,6 +6,7 @@ use FluentCart\Api\StoreSettings;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\Form\SubmissionHandlerService;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Support\Arr;
 
@@ -58,6 +59,8 @@ class FluentCartIntegration
         // Override form redirect behavior for add-to-cart forms
         add_filter('fluentform/form_submission_confirmation', [$this, 'overrideFormRedirectForCart'], 10, 3);
         add_filter('fluentform/submission_confirmation', [$this, 'hideMessageForCartForms'], 10, 5);
+
+        add_action('fluent_cart/after_checkout', [$this, 'fluentFormSubmission'], 10, 1);
 
         // Enqueue assets
         add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
@@ -869,6 +872,74 @@ class FluentCartIntegration
         }
 
         return $components;
+    }
+
+    public function fluentFormSubmission($inputs)
+    {
+        $settings = new StoreSettings();
+        $formId = intval($settings->get('fluent_forms'));
+
+        if (!$formId) {
+            return;
+        }
+
+        $form = Form::find($formId);
+        if (!$form) {
+            return;
+        }
+
+        $fields = FormFieldsParser::getInputs($form, ['attributes']);
+        $data = [];
+        $nestedParents = [];
+
+        // First, identify all parent keys of nested fields
+        foreach ($fields as $field) {
+            $key = Arr::get($field, 'attributes.name');
+            if (!$key) continue;
+
+            if (strpos($key, '[') !== false && strpos($key, ']') !== false) {
+                preg_match('/^([^\[]+)\[([^\]]+)\]/', $key, $matches);
+                if (count($matches) === 3) {
+                    $nestedParents[] = $matches[1];
+                }
+            }
+        }
+
+        // Remove duplicates
+        $nestedParents = array_unique($nestedParents);
+
+        // Now process all fields
+        foreach ($fields as $field) {
+            $key = Arr::get($field, 'attributes.name');
+            if (!$key) continue;
+
+            // Check if this is a nested field notation (with brackets)
+            if (strpos($key, '[') !== false && strpos($key, ']') !== false) {
+                // Skip these, we'll handle them through their parent
+                continue;
+            }
+            // Check if this is a parent of nested fields
+            elseif (in_array($key, $nestedParents)) {
+                // Use the complete nested array from inputs
+                if (isset($inputs['inputs'][$key]) && is_array($inputs['inputs'][$key])) {
+                    $data[$key] = $inputs['inputs'][$key];
+                }
+            }
+            // Regular field
+            else {
+                $data[$key] = Arr::get($inputs['inputs'], $key);
+            }
+        }
+
+        $data['_fluentform_' . $formId . '_fluentformnonce'] = $inputs['inputs']['_fluentform_' . $formId . '_fluentformnonce'];
+        $data['_wp_http_referer'] = $inputs['inputs']['_wp_http_referer'];
+
+        try {
+            $response = (new SubmissionHandlerService())->handleSubmission($data, $formId);
+            return $response;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**

@@ -32,7 +32,7 @@ class FluentCartFormIntegration {
 
             window.fluentCartCheckout['afterCheckoutCallbacks'].push(async () => {
                 try {
-                    await this.submitFluentFormViaAjax();
+                    // await this.submitFluentFormViaAjax();
                 } catch (error) {
                     console.error('FluentForm submission failed after checkout:', error);
                 }
