@@ -269,7 +269,6 @@ export default {
             this.loading = true;
 
             const data = {
-                action: 'fluentform-get-submission-analysis-by-group',
                 group_by: this.selectedGroupBy,
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
@@ -277,14 +276,15 @@ export default {
                 per_page: this.pageSize,
                 page: this.currentPage
             };
+            const url = FluentFormsGlobal.$rest.route('submissionsAnalysisReport');
 
-            FluentFormsGlobal.$get(data)
+            FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    if (response.data) {
-                        this.submissionData = response.data.data || [];
-                        this.totalItems = response.data.total || 0;
-                        this.currentPage = parseInt(response.data.current_page || this.currentPage);
-                        this.totals = response.data.totals || { 
+                    if (response) {
+                        this.submissionData = response.data || [];
+                        this.totalItems = response.total || 0;
+                        this.currentPage = parseInt(response.current_page || this.currentPage);
+                        this.totals = response.totals || {
                             total: 0, 
                             read: 0, 
                             unread: 0, 
@@ -303,7 +303,7 @@ export default {
                         };
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     this.submissionData = [];
                     this.totalItems = 0;
                     this.totals = { 
@@ -315,7 +315,7 @@ export default {
                     };
                     this.$message.error('Failed to load submission analysis data');
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },

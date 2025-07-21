@@ -141,6 +141,117 @@ class ReportService
     }
 
     /**
+     * Get Net Revenue Data
+     *
+     * @return array{data: mixed, totals: mixed, total: mixed, group_by: array|\ArrayAccess|mixed, date_range: array{start: mixed, end: mixed}}
+     */
+    public function netRevenue($data)
+    {
+        $data = Sanitizer::sanitize($data, [
+            'start_date' => 'sanitizeTextField',
+            'end_date' => 'sanitizeTextField',
+            'group_by' => 'sanitizeTextField',
+        ]);
+
+        $groupBy = Arr::get($data, 'group_by', 'forms');
+        $startDate = Arr::get($data, 'start_date');
+        $endDate = Arr::get($data, 'end_date');
+        $formId = intval(Arr::get($data, 'form_id'));
+        $perPage = intval(Arr::get($data, 'per_page', 10));
+        $currentPage = intval(Arr::get($data, 'page', 1));
+
+        if (!$startDate || !$endDate) {
+            $endDate = current_time('Y-m-d H:i:s');
+            $startDate = date('Y-m-d H:i:s', strtotime('-30 days', strtotime($endDate)));
+        }
+
+        try {
+            switch ($groupBy) {
+                case 'forms':
+                    $data = ReportHelper::getNetRevenueByForms($startDate, $endDate, $perPage, $currentPage);
+                    break;
+                case 'payment_method':
+                    $data = ReportHelper::getNetRevenueByPaymentMethod($startDate, $endDate, $formId, $perPage, $currentPage);
+                    break;
+                case 'payment_type':
+                    $data = ReportHelper::getNetRevenueByPaymentType($startDate, $endDate, $formId, $perPage, $currentPage);
+                    break;
+                default:
+                    throw new Exception('Invalid group_by parameter');
+            }
+
+            return [
+                'data' => $data['data'],
+                'totals' => $data['totals'],
+                'total' => $data['total'],
+                'group_by' => $groupBy,
+                'date_range' => [
+                    'start' => $startDate,
+                    'end' => $endDate
+                ]
+            ];
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function submissionsAnalysis($data)
+    {
+        $data = Sanitizer::sanitize($data, [
+            'group_by' => 'sanitizeTextField',
+            'start_date' => 'sanitizeTextField',
+            'end_date' => 'sanitizeTextField'
+        ]);
+
+        $groupBy = Arr::get($data, 'group_by', 'forms');
+        $startDate = Arr::get($data, 'start_date');
+        $endDate = Arr::get($data, 'end_date');
+        $formId = intval(Arr::get($data, 'form_id'));
+        $perPage = intval(Arr::get($data, 'per_page', 10));
+        $currentPage = intval(Arr::get($data, 'page', 1));
+
+        if (!$startDate || !$endDate) {
+            $endDate = current_time('Y-m-d H:i:s');
+            $startDate = date('Y-m-d H:i:s', strtotime('-30 days', strtotime($endDate)));
+        }
+
+        try {
+            switch ($groupBy) {
+                case 'forms':
+                    $data = ReportHelper::getSubmissionAnalysisByForms($startDate, $endDate, $perPage, $currentPage);
+                    break;
+                case 'submission_source':
+                    $data = ReportHelper::getSubmissionAnalysisBySource($startDate, $endDate, $formId, $perPage, $currentPage);
+                    break;
+                case 'email':
+                    $data = ReportHelper::getSubmissionAnalysisByEmail($startDate, $endDate, $formId, $perPage, $currentPage);
+                    break;
+                case 'country':
+                    $data = ReportHelper::getSubmissionAnalysisByCountry($startDate, $endDate, $formId, $perPage, $currentPage);
+                    break;
+                case 'submission_date':
+                    $data = ReportHelper::getSubmissionAnalysisByDate($startDate, $endDate, $formId, $perPage, $currentPage);
+                    break;
+                default:
+                    throw new Exception('Invalid group_by parameter');
+            }
+
+            return [
+                'data' => $data['data'],
+                'total' => $data['total'],
+                'totals' => $data['totals'],
+                'group_by' => $groupBy,
+                'date_range' => [
+                    'start' => $startDate,
+                    'end' => $endDate
+                ]
+            ];
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
      * Get forms for dropdown
      * 
      * @return array

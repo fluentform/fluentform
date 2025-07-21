@@ -240,7 +240,6 @@ export default {
             this.loading = true;
 
             const data = {
-                action: 'fluentform-get-net-revenue-by-group',
                 group_by: this.selectedGroupBy,
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
@@ -248,26 +247,27 @@ export default {
                 per_page: this.pageSize,
                 page: this.currentPage
             };
+            const url = FluentFormsGlobal.$rest.route("netRevenueReport");
 
-            FluentFormsGlobal.$get(data)
+            FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    if (response.data) {
-                        this.revenueData = response.data.data || [];
-                        this.totalItems = response.data.total || 0;
-                        this.summaryTotals = response.data.totals || { paid: 0, pending: 0, refunded: 0, net: 0 };
+                    if (response) {
+                        this.revenueData = response.data || [];
+                        this.totalItems = response.total || 0;
+                        this.summaryTotals = response.totals || { paid: 0, pending: 0, refunded: 0, net: 0 };
                     } else {
                         this.revenueData = [];
                         this.totalItems = 0;
                         this.summaryTotals = { paid: 0, pending: 0, refunded: 0, net: 0 };
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     this.revenueData = [];
                     this.totalItems = 0;
                     this.summaryTotals = { paid: 0, pending: 0, refunded: 0, net: 0 };
                     this.$message.error('Failed to load revenue data');
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },
