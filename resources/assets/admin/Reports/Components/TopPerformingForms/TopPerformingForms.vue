@@ -2,7 +2,7 @@
     <card>
         <card-head>
             <h3>Top Performing Forms</h3>
-            <div class="">
+            <div class="card-controls">
                 <el-radio-group
                     v-model="selectedMetric"
                     size="small"
@@ -28,7 +28,7 @@
                     <v-chart
                         ref="chart"
                         :option="chartOptions"
-                        style="height: 380px;"
+                        style="height: 256px;"
                         autoresize
                     />
                 </div>
@@ -168,16 +168,17 @@ export default {
                         value: value,
                         itemStyle: {
                             color: this.getBarColor(index),
-                            borderRadius: [0, 4, 4, 0]
+                            borderRadius: [0, 2, 2, 0],
                         }
                     })),
                     barWidth: '40%',
+                    barMinHeight: 24,
                     label: {
                         show: true,
                         position: 'right',
                         color: '#374151',
-                        fontSize: 11,
-                        fontWeight: 500,
+                        fontSize: 12,
+                        fontWeight: 400,
                         formatter: (params) => {
                             return this.formatValue(params.value);
                         }
@@ -197,8 +198,11 @@ export default {
         },
 
         getBarColor(index) {
-
-            return '#8b5cf6';
+            const colors = ['#D5E2FF','#C0D5FF', '#97BAFF', '#6895FF', '#335CFF'];
+                if (index < colors.length) {
+                    return colors[index];
+                }
+            return '#D5E2FF';
         },
 
         formatValue(value) {

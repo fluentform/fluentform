@@ -49,7 +49,9 @@ import {
     FormItem,
     Tooltip,
     Card,
-    Tag
+    Tag,
+    Tabs,
+    TabPane
 } from 'element-ui';
 
 Vue.use(Loading.directive);
@@ -81,6 +83,8 @@ Vue.use(FormItem);
 Vue.use(Tooltip);
 Vue.use(Card);
 Vue.use(Tag);
+Vue.use(Tabs);
+Vue.use(TabPane);
 
 import App from './App.vue';
 import globalSearch from '../global_search';

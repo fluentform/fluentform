@@ -2,72 +2,20 @@
     <card>
         <card-head>
             <h3>Subscription</h3>
-            <div class="card-controls">
-                <el-switch
-                    v-model="advancedFilter"
-                    active-text="Advanced Filter"
-                    inactive-text=""
-                    size="small"
-                ></el-switch>
-            </div>
         </card-head>
 
         <card-body>
             <div class="subscription-amount">
-                <div v-if="advancedFilter" class="advanced-filter-section">
-                    <div class="filter-row">
-                        <div class="filter-group">
-                            <el-select
-                                v-model="selectedFormId"
-                                placeholder="Select Form"
-                                size="small"
-                                clearable
-                                filterable
-                                @change="handleFilterChange"
-                            >
-                                <el-option
-                                    label="All Forms"
-                                    :value="null"
-                                ></el-option>
-                                <el-option
-                                    v-for="form in formsList"
-                                    :key="form.id"
-                                    :label="`#${form.id} - ${form.title}`"
-                                    :value="form.id"
-                                ></el-option>
-                            </el-select>
-                        </div>
-                        <div class="filter-group">
-                            <el-select v-model="selectedStatus" size="small" @change="handleFilterChange">
-                                <el-option label="All Status" value="all"></el-option>
-                                <el-option label="Active" value="active"></el-option>
-                                <el-option label="Pending" value="pending"></el-option>
-                                <el-option label="Trialling" value="trialling"></el-option>
-                                <el-option label="Failing" value="failing"></el-option>
-                                <el-option label="Cancelled" value="cancelled"></el-option>
-                            </el-select>
-                        </div>
-                        <div class="filter-group">
-                            <el-select v-model="selectedInterval" size="small" @change="handleFilterChange">
-                                <el-option label="All Interval" value="all"></el-option>
-                                <el-option label="Day" value="day"></el-option>
-                                <el-option label="Week" value="week"></el-option>
-                                <el-option label="Month" value="month"></el-option>
-                                <el-option label="Year" value="year"></el-option>
-                            </el-select>
-                        </div>
-                    </div>
-                </div>
-                
-                <p>Recurring Amount</p>
+                <p>Recurring</p>
                 <div class="subscription-total">
-                    <span class="total-amount">${{ formatNumber(totalAmount) }}</span>
+                    <span class="total-amount">{{ getCurrencySymbol() }}{{ formatNumber(totalAmount) }}</span>
                     <span
                         class="growth-indicator"
                         :class="{ 'positive': growthPercentage > 0, 'negative': growthPercentage < 0 }"
                     >
-                        <i :class="growthPercentage >= 0 ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"></i> 
-                        {{ Math.abs(growthPercentage) }}%
+                        <svg v-if="growthPercentage > 0" width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.6668 1.66602L9.42108 6.91177C9.15707 7.17578 9.02506 7.30779 8.87284 7.35725C8.73895 7.40075 8.59471 7.40075 8.46082 7.35725C8.3086 7.30779 8.17659 7.17578 7.91258 6.91177L6.08774 5.08693C5.82373 4.82292 5.69173 4.69091 5.53951 4.64145C5.40561 4.59795 5.26138 4.59795 5.12748 4.64145C4.97527 4.69091 4.84326 4.82292 4.57925 5.08693L1.3335 8.33268M14.6668 1.66602H10.0002M14.6668 1.66602V6.33268" stroke="#23A682" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg v-else width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.6668 1.66602L9.42108 6.91177C9.15707 7.17578 9.02506 7.30779 8.87284 7.35725C8.73895 7.40075 8.59471 7.40075 8.46082 7.35725C8.3086 7.30779 8.17659 7.17578 7.91258 6.91177L6.08774 5.08693C5.82373 4.82292 5.69173 4.69091 5.53951 4.64145C5.40561 4.59795 5.26138 4.59795 5.12748 4.64145C4.97527 4.69091 4.84326 4.82292 4.57925 5.08693L1.3335 8.33268M14.6668 1.66602H10.0002M14.6668 1.66602V6.33268" stroke="red" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>{{ Math.abs(growthPercentage) }}%</span>
                     </span>
                 </div>
             </div>
@@ -85,7 +33,7 @@
                     v-else
                     ref="chart"
                     :option="chartOptions"
-                    style="height: 270px;"
+                    style="height: 256px;"
                     autoresize
                 />
             </div>
@@ -99,7 +47,7 @@ import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 
 export default {
-    name: 'SubscriptionStats',
+    name: 'TopSubscriptionByPlan',
     components: {
         Card,
         CardBody,
@@ -118,7 +66,6 @@ export default {
     },
     data() {
         return {
-            advancedFilter: false,
             selectedStatus: 'all',
             selectedInterval: 'all',
             selectedFormId: null,
@@ -144,12 +91,6 @@ export default {
                 : 0;
         },
 
-        subscriptionCount() {
-            return this.subscriptionData && this.subscriptionData.subscription_count !== undefined
-                ? this.subscriptionData.subscription_count
-                : 0;
-        },
-
         chartData() {
             return this.hasSubscriptionData
                 ? this.subscriptionData.chart_data
@@ -159,10 +100,30 @@ export default {
         chartOptions() {
             if (!this.hasSubscriptionData) {
                 return {
-                    grid: { top: 10, right: 30, bottom: 30, left: 100 },
-                    xAxis: { type: 'value', min: 0, max: 100 },
-                    yAxis: { type: 'category', data: [] },
-                    series: [{ type: 'bar', data: [] }]
+                    title: {
+                        text: 'No Data Available',
+                        left: 'center',
+                        top: 'middle',
+                        textStyle: {
+                            color: '#9ca3af',
+                            fontSize: 14,
+                            fontWeight: 'normal'
+                        }
+                    },
+                    grid: {
+                        left: '25%',
+                        right: '10%',
+                        top: '5%',
+                        bottom: '5%'
+                    },
+                    xAxis: {
+                        type: 'value',
+                        show: false
+                    },
+                    yAxis: {
+                        type: 'category',
+                        show: false
+                    },
                 };
             }
 
@@ -229,10 +190,10 @@ export default {
                 },
                 series: [{
                     type: 'bar',
-                    data: chartData.map(item => ({
+                    data: chartData.map((item, index) => ({
                         value: item.value,
                         itemStyle: {
-                            color: item.color
+                            color: this.getBarColor(index)
                         }
                     })),
                     barWidth: '40%',
@@ -248,7 +209,7 @@ export default {
                     },
                     formatter: (params) => {
                         const data = params[0];
-                        return `${data.name}: $${this.formatNumber(data.value)}`;
+                        return `${data.name}: ${this.getCurrencySymbol()}${this.formatNumber(data.value)}`;
                     }
                 },
                 animation: true
@@ -256,6 +217,18 @@ export default {
         }
     },
     methods: {
+        getBarColor(index) {
+            const colors = ['#DCD5FF','#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4'];
+            if (index < colors.length) {
+                return colors[index];
+            }
+            return '#A897FF';
+        },
+        getCurrencySymbol() {
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = this.subscriptionData?.currency_symbol || '$';
+            return textarea.value;
+        },
         formatNumber(num) {
             return parseFloat(num).toLocaleString('en-US', {
                 minimumFractionDigits: 2,
@@ -281,15 +254,7 @@ export default {
             if (num <= 500) return Math.ceil(num / 100) * 100;
             if (num <= 1000) return Math.ceil(num / 200) * 200;
             return Math.ceil(num / 1000) * 1000;
-        },
-
-        handleFilterChange() {
-            this.$emit('subscription-filter-change', {
-                status: this.selectedStatus,
-                interval: this.selectedInterval,
-                formId: this.selectedFormId
-            });
-        },
+        }
     },
 };
 </script>

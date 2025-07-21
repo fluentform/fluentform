@@ -4,8 +4,12 @@ namespace FluentForm\App\Services\Report;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\EntryDetails;
+use FluentForm\App\Models\Form;
+use FluentForm\App\Models\FormAnalytics;
+use FluentForm\App\Models\Log;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
@@ -258,5 +262,1375 @@ class ReportHelper
             $submissionService->recordEntryDetails($datum->id, $formId, $value);
         }
         return true;
+    }
+
+    /**
+     * Get overview chart data
+     */
+    public static function getOverviewChartData($startDate, $endDate, $formId, $view)
+    {
+        // Process and fix date ranges if needed
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        // Calculate date difference to determine grouping
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+        $interval = $startDateTime->diff($endDateTime);
+        $daysInterval = $interval->days + 1;
+
+        // Determine grouping mode based on date range
+        $groupingMode = self::getGroupingMode($daysInterval);
+
+        // Get data based on the view type
+        if ($view === 'conversion') {
+            $chartData = self::getFormViewsAndConversions($startDate, $endDate, $groupingMode, $formId);
+        } else {
+            $data = self::getAggregatedData($startDate, $endDate, $groupingMode, $view, $formId);
+            // Get date labels based on grouping mode
+            $dateLabels = self::getDateLabels($startDateTime, $endDateTime, $groupingMode);
+
+            // Format the data for the chart
+            $chartData = self::formatDataForChart($dateLabels, $data, $formId);
+        }
+
+        return $chartData;
+    }
+
+    /**
+     * Get completion rate data for the gauge chart
+     */
+    public static function getCompletionRateData($startDate, $endDate, $formId)
+    {
+        $completeQuery = Submission::whereBetween('created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $completeQuery->where('form_id', $formId);
+        }
+
+        $completeSubmissions = $completeQuery->count();
+
+        $incompleteQuery = wpFluent()->table('fluentform_draft_submissions')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $incompleteQuery->where('form_id', $formId);
+        }
+
+        $incompleteSubmissions = $incompleteQuery->count();
+
+        // Calculate totals - total_submissions should be complete submissions only
+        // Total attempts = complete + incomplete (drafts)
+        $totalAttempts = $completeSubmissions + $incompleteSubmissions;
+        $completionRate = $totalAttempts > 0 ? round(($completeSubmissions / $totalAttempts) * 100, 1) : 0;
+
+        return [
+            'completion_rate' => $completionRate,
+            'incomplete_submissions' => $incompleteSubmissions,
+            'total_submissions' => $completeSubmissions, // This should be complete submissions only
+            'total_attempts' => $totalAttempts // Total form attempts (complete + incomplete)
+        ];
+    }
+
+    public static function getFormStats($startDate, $endDate, $formId)
+    {
+        // Process and fix date ranges if needed
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        // Calculate the date range duration to determine previous period
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+        $interval = $startDateTime->diff($endDateTime);
+        $daysDifference = $interval->days;
+
+        // Calculate previous period dates (same duration, shifted back)
+        $previousEndDateTime = clone $startDateTime;
+        $previousEndDateTime->modify('-1 day');
+        $previousStartDateTime = clone $previousEndDateTime;
+        $previousStartDateTime->modify("-{$daysDifference} days");
+
+        $previousStartDate = $previousStartDateTime->format('Y-m-d H:i:s');
+        $previousEndDate = $previousEndDateTime->format('Y-m-d H:i:s');
+
+        // Get submission counts
+        $periodSubmissions = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })->count();
+        $previousPeriodSubmissions = Submission::whereBetween('created_at',
+            [$previousStartDate, $previousEndDate])
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })->count();
+
+        // Get submission status counts (grouped)
+        $statusCounts = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('status, COUNT(*) as count')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->groupBy('status')
+            ->pluck('count', 'status');
+        $unreadSubmissions = +$statusCounts['unread'] ?? 0;
+        $readSubmissions = +$statusCounts['read'] ?? 0;
+        $periodSpamSubmissions = +$statusCounts['spam'] ?? 0;
+
+        $previousStatusCounts = Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->selectRaw('status, COUNT(*) as count')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->groupBy('status')
+            ->pluck('count', 'status');
+        $previousSpamSubmissions = $previousStatusCounts['spam'] ?? 0;
+
+        // Get active integrations count from wp_options
+        $modulesStatus = get_option('fluentform_global_modules_status');
+        $activeIntegrations = count(array_filter($modulesStatus, function($status) {
+            return $status === 'yes' || $status == 1 || $status == 'true';
+        }));
+
+        // Calculate period growth percentage
+        $growthPercentage = 0;
+        if ($previousPeriodSubmissions > 0) {
+            $growthPercentage = round((($periodSubmissions - $previousPeriodSubmissions) / $previousPeriodSubmissions) * 100,
+                1);
+        } elseif ($periodSubmissions > 0) {
+            $growthPercentage = 100;
+        }
+
+        $growthText = $growthPercentage > 0 ? '+' . $growthPercentage . '%' : $growthPercentage . '%';
+        $growthType = $growthPercentage > 0 ? 'up' : ($growthPercentage < 0 ? 'down' : 'neutral');
+
+        // calculate spam percentage
+        $spamPercentage = 0;
+        if ($previousSpamSubmissions > 0) {
+            $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100, 1);
+        } elseif ($periodSpamSubmissions > 0) {
+            $spamPercentage = 100;
+        }
+
+        $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
+        $spamType = $spamPercentage > 0 ? 'down' : ($spamPercentage < 0 ? 'up' : 'neutral');
+
+        // Active forms
+        $periodActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$startDate, $endDate])->count();
+        $previousActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$previousStartDate, $previousEndDate])->count();
+        $activeFormsPercentage = 0;
+        if ($previousActiveFormsCount > 0) {
+            $activeFormsPercentage = round((($periodActiveFormsCount - $previousActiveFormsCount) / $previousActiveFormsCount) * 100, 1);
+        } elseif ($periodActiveFormsCount > 0) {
+            $activeFormsPercentage = 100;
+        }
+        $activeFormsText = $activeFormsPercentage > 0 ? '+' . $activeFormsPercentage . '%' : $activeFormsPercentage . '%';
+        $activeFormsType = $activeFormsPercentage > 0 ? 'up' : ($activeFormsPercentage < 0 ? 'down' : 'neutral');
+
+        $readRate = $periodSubmissions > 0 ? round(($readSubmissions / $periodSubmissions) * 100, 1) : 0;
+
+        $stats = [
+            'period'              => $daysDifference . ' days',
+            'total_submissions'   => [
+                'value'        => $periodSubmissions,
+                'period_value' => $periodSubmissions,
+                'change'       => $growthText,
+                'change_type'  => $growthType
+            ],
+            'spam_submissions'    => [
+                'value'        => $periodSpamSubmissions,
+                'period_value' => $previousSpamSubmissions,
+                'change'       => $spamText,
+                'change_type'  => $spamType
+            ],
+            'active_integrations' => [
+                'value' => $activeIntegrations,
+            ],
+            'unread_submissions'  => [
+                'value' => $unreadSubmissions,
+            ],
+            'read_submissions'    => [
+                'value' => $readSubmissions,
+            ],
+            'active_forms'         => [
+                'value' => $periodActiveFormsCount,
+                'change' => $activeFormsText,
+                'change_type' => $activeFormsType
+            ],
+            'read_submission_rate' => [
+                'value' => $readRate,
+            ]
+        ];
+
+        // Add payment statistics if payment module is enabled
+        $paymentSettings = get_option('__fluentform_payment_module_settings');
+        if ($paymentSettings && Arr::get($paymentSettings, 'status') === 'yes') {
+            // Get payment statistics
+            $paymentStats = self::getPaymentStats($startDate, $endDate, $previousStartDate, $previousEndDate, $formId);
+            $stats = array_merge($stats, $paymentStats);
+        }
+
+        return $stats;
+    }
+
+    public static function getSubmissionHeatmap($startDate, $endDate)
+    {
+        // Process and fix date ranges if needed
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        // Create DateTime objects for iteration
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+
+        // Generate all dates in the range
+        $allDates = [];
+        $current = clone $startDateTime;
+        while ($current <= $endDateTime) {
+            $allDates[] = $current->format('Y-m-d');
+            $current->modify('+1 day');
+        }
+
+        // Initialize heatmap data with zeros for all dates and time slots
+        $heatmapData = [];
+        foreach ($allDates as $date) {
+            $heatmapData[$date] = array_fill(0, 8, 0); // 8 time slots, all initialized to 0
+        }
+
+        // Query submissions using Eloquent-like syntax
+        $results = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as submission_date')
+            ->selectRaw('HOUR(created_at) as submission_hour')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('submission_date', 'submission_hour')
+            ->orderBy('submission_date')
+            ->orderBy('submission_hour')
+            ->get();
+
+        // Fill in actual submission data
+        foreach ($results as $row) {
+            $date = $row->submission_date;
+            $hour = (int)$row->submission_hour;
+            $count = (int)$row->count;
+
+            // Calculate time slot index (0-7) for 3-hour intervals
+            $timeSlotIndex = floor($hour / 3);
+
+            // Add count to the appropriate time slot (date should already exist)
+            if (isset($heatmapData[$date])) {
+                $heatmapData[$date][$timeSlotIndex] += $count;
+            }
+        }
+
+        return [
+            'heatmap_data' => $heatmapData,
+            'start_date'   => $startDate,
+            'end_date'     => $endDate
+        ];
+    }
+
+    public static function getSubmissionsByCountry($startDate, $endDate, $formId = null)
+    {
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        $query = Submission::whereBetween('created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+
+        $submissions = $query->select(['id', 'country'])
+            ->get();
+
+        $countryData = [];
+        $countryNames = getFluentFormCountryList();
+
+        foreach ($submissions as $submission) {
+            $country = $submission->country;
+
+            if (!empty($country)) {
+                $countryCode = strtoupper($country);
+                if (!isset($countryData[$countryCode])) {
+                    $countryData[$countryCode] = [
+                        'name' => isset($countryNames[$countryCode]) ? $countryNames[$countryCode] : $countryCode,
+                        'value' => 0
+                    ];
+                }
+                $countryData[$countryCode]['value']++;
+            }
+        }
+
+        uasort($countryData, function($a, $b) {
+            return $b['value'] - $a['value'];
+        });
+
+        return [
+            'country_data' => array_values($countryData)
+        ];
+    }
+
+    public static function getApiLogs($startDate, $endDate)
+    {
+        // Process date range
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        // Calculate date difference to determine grouping
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+        $interval = $startDateTime->diff($endDateTime);
+        $daysInterval = $interval->days + 1;
+
+        // Determine grouping mode based on date range
+        $groupingMode = self::getGroupingMode($daysInterval);
+
+        // Define the date format based on grouping mode
+        if ($groupingMode === 'day') {
+            $dateFormat = "DATE(created_at)";
+        } elseif ($groupingMode === '3days') {
+            $dateFormat = "DATE(created_at)";
+        } elseif ($groupingMode === 'week') {
+            $dateFormat = "DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY))";
+        } else { // month
+            $dateFormat = "DATE_FORMAT(created_at, '%Y-%m-01')";
+        }
+
+        // Components to exclude
+        $excludedComponents = [
+            'postFeeds',
+            'AdminApproval',
+            'Payment',
+            'EntryEditor',
+            'DoubleOptin',
+            'Subscription',
+            'UserRegistration',
+            'Akismet Integration',
+            'CleanTalk API Integration'
+        ];
+
+        // Get logs grouped by date and status using Eloquent, excluding specific components
+        $logsQuery = Log::whereBetween('created_at', [$startDate, $endDate]);
+
+        // Exclude components - handle both NULL and specific values
+        $logsQuery->where(function($query) use ($excludedComponents) {
+            $query->whereNull('component')
+                ->orWhereNotIn('component', $excludedComponents);
+        });
+
+        $results = $logsQuery->selectRaw($dateFormat . ' as log_date')
+            ->selectRaw('status')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('log_date', 'status')
+            ->orderBy('log_date')
+            ->get();
+
+        // Get total counts by status (also excluding the specific components)
+        $totalsQuery = Log::whereBetween('created_at', [$startDate, $endDate]);
+
+        $totalsQuery->where(function($query) use ($excludedComponents) {
+            $query->whereNull('component')
+                ->orWhereNotIn('component', $excludedComponents);
+        });
+
+        $totalsResults = $totalsQuery->selectRaw('status')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('status')
+            ->get();
+
+        $totals = [
+            'success' => 0,
+            'pending' => 0,
+            'failed'  => 0
+        ];
+
+        foreach ($totalsResults as $total) {
+            $status = strtolower($total->status);
+            if (isset($totals[$status])) {
+                $totals[$status] = (int)$total->count;
+            }
+        }
+
+        // Get date labels and prepare data
+        $dateLabels = self::getDateLabels($startDateTime, $endDateTime, $groupingMode);
+        $dates = $dateLabels['dates'];
+        $formattedLabels = $dateLabels['labels'];
+
+        // Initialize data structure - always with all dates, even if no data exists
+        $seriesData = [
+            'success' => array_fill_keys($dates, 0),
+            'pending' => array_fill_keys($dates, 0),
+            'failed'  => array_fill_keys($dates, 0)
+        ];
+
+        // Fill in data from results when available
+        foreach ($results as $row) {
+            $date = $row->log_date;
+            $status = strtolower($row->status);
+            $count = (int)$row->count;
+
+            // Map status to our categories
+            if ($status === 'success' || $status === 'pending' || $status === 'failed') {
+                if (isset($seriesData[$status][$date])) {
+                    $seriesData[$status][$date] = $count;
+                }
+            }
+        }
+
+        return [
+            'logs_data'  => [
+                'categories' => $formattedLabels,
+                'series'     => $seriesData
+            ],
+            'totals'     => $totals,
+            'start_date' => $startDate,
+            'end_date'   => $endDate
+        ];
+    }
+
+    /**
+     * Get top performing forms by entries, views, or payments
+     */
+    public static function getTopPerformingForms($startDate, $endDate, $metric = 'entries')
+    {
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        $forms = Form::select(['id', 'title'])->get();
+        $topForms = [];
+
+        foreach ($forms as $form) {
+            $value = 0;
+
+            switch ($metric) {
+                case 'entries':
+                    $value = Submission::where('form_id', $form->id)
+                        ->whereBetween('created_at', [$startDate, $endDate])
+                        ->count();
+                    break;
+
+                case 'payments':
+                    // Check if payment module is enabled
+                    $paymentSettings = get_option('__fluentform_payment_module_settings');
+                    if ($paymentSettings && Arr::get($paymentSettings, 'status')) {
+                        $value = wpFluent()
+                            ->table('fluentform_transactions')
+                            ->where('form_id', $form->id)
+                            ->where('status', 'paid')
+                            ->whereBetween('created_at', [$startDate, $endDate])
+                            ->sum('payment_total');
+                        // Convert from cents to dollars
+                        $value = $value ? round($value / 100, 2) : 0;
+                    }
+                    break;
+            }
+
+            if ($value > 0) {
+                $topForms[] = [
+                    'id' => $form->id,
+                    'title' => $form->title ?: 'Untitled Form',
+                    'value' => $value
+                ];
+            }
+        }
+
+        // Sort by value in descending order
+        usort($topForms, function($a, $b) {
+            return $b['value'] - $a['value'];
+        });
+
+        // Return top 5 forms
+        return array_reverse(array_slice($topForms, 0, 5));
+    }
+
+    public static function getSubscriptions($startDate, $endDate, $formId = null)
+    {
+        $paymentSettings = get_option('__fluentform_payment_module_settings');
+        if (!$paymentSettings || !Arr::get($paymentSettings, 'status')) {
+            return []; // Return empty if payment module is disabled
+        }
+
+        // Process date range
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        // Query subscriptions
+        $query = wpFluent()
+            ->table('fluentform_subscriptions')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        // Apply form id
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+
+        // Fetch subscriptions
+        $subscriptions = $query->get();
+
+        // Group subscriptions by plan_name for chart display
+        $subscriptionsByPlan = [];
+        $totalRecurringAmount = 0;
+
+        foreach ($subscriptions as $subscription) {
+            $planName = $subscription->plan_name ?: ($subscription->item_name ?: 'Unnamed Plan');
+            $recurringAmount = $subscription->recurring_amount / 100; // Convert cents to dollars
+
+            if (!isset($subscriptionsByPlan[$planName])) {
+                $subscriptionsByPlan[$planName] = 0;
+            }
+
+            $subscriptionsByPlan[$planName] += $recurringAmount;
+            $totalRecurringAmount += $recurringAmount;
+        }
+
+        // Sort by amount (highest first)
+        arsort($subscriptionsByPlan);
+
+        // Calculate growth compared to previous period
+        $previousStartDate = (new \DateTime($startDate))->modify('-' . self::getDateDifference($startDate, $endDate) . ' days')->format('Y-m-d H:i:s');
+        $previousEndDate = (new \DateTime($startDate))->modify('-1 day')->format('Y-m-d H:i:s');
+
+        $previousQuery = wpFluent()
+            ->table('fluentform_subscriptions')
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where(function($q) {
+                $q->where('status', 'active')
+                    ->orWhere('status', 'trialing');
+            });
+
+        if ($formId) {
+            $previousQuery->where('form_id', $formId);
+        }
+
+        $previousSubscriptions = $previousQuery->get();
+        $previousTotalRecurring = 0;
+
+        foreach ($previousSubscriptions as $subscription) {
+            $previousTotalRecurring += $subscription->recurring_amount / 100;
+        }
+
+        // Calculate growth percentage
+        $growthPercentage = 0;
+        if ($previousTotalRecurring > 0) {
+            $growthPercentage = round((($totalRecurringAmount - $previousTotalRecurring) / $previousTotalRecurring) * 100, 1);
+        } elseif ($totalRecurringAmount > 0) {
+            $growthPercentage = 100;
+        }
+
+        // Format data for chart display
+        $chartData = [];
+        foreach ($subscriptionsByPlan as $plan => $amount) {
+            $chartData[] = [
+                'name' => $plan,
+                'value' => $amount,
+            ];
+        }
+
+        // Limit to top 5 plans for readability
+        $chartData = array_slice($chartData, 0, 5);
+
+        return [
+            'total_recurring' => $totalRecurringAmount,
+            'growth_percentage' => $growthPercentage,
+            'subscription_count' => count($subscriptions),
+            'chart_data' => $chartData,
+            'start_date' => $startDate,
+            'currency_symbol' => Arr::get(PaymentHelper::getCurrencyConfig($formId), 'currency_sign', '$'),
+            'end_date' => $endDate
+        ];
+    }
+
+
+    /**
+     * Get form views and conversions by date chunks
+     */
+    private static function getFormViewsAndConversions($startDate, $endDate, $groupingMode, $formId)
+    {
+        if (apply_filters('fluentform/disabled_analytics', false)) {
+            return [];
+        }
+
+        // Convert to DateTime objects
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+
+        // Get date labels for X-axis
+        $dateLabels = self::getDateLabels($startDateTime, $endDateTime, $groupingMode);
+        $dates = $dateLabels['dates'];
+        $labels = $dateLabels['labels'];
+
+        // Initialize data arrays
+        $viewsData = array_fill_keys($dates, 0);
+        $submissionsData = array_fill_keys($dates, 0);
+        $formCountData = array_fill_keys($dates, 0);
+
+        // 1. Get UNIQUE VIEWS by IP address
+        $viewsQuery = FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotNull('ip');
+
+        if ($formId) {
+            $viewsQuery->where('form_id', $formId);
+        }
+
+        // Group by date and IP to count unique visitors
+        if ($groupingMode === 'day') {
+            $viewsQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count');
+        } elseif ($groupingMode === '3days') {
+            // Get min date for reference
+            $minDateRecord = FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
+                ->selectRaw('MIN(DATE(created_at)) as min_date')
+                ->first();
+
+            if ($minDateRecord && $minDateRecord->min_date) {
+                $minDate = $minDateRecord->min_date;
+                $viewsQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                    ->selectRaw('MIN(DATE(created_at)) as date_group')
+                    ->selectRaw('COUNT(DISTINCT ip) as unique_count')
+                    ->groupBy('group_num');
+            } else {
+                $viewsQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count')
+                    ->groupBy('date_group');
+            }
+        } elseif ($groupingMode === 'week') {
+            $viewsQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group, COUNT(DISTINCT ip) as unique_count");
+        } else { // month
+            $viewsQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group, COUNT(DISTINCT ip) as unique_count");
+        }
+
+        if ($groupingMode !== '3days' || !(isset($minDateRecord) && $minDateRecord->min_date)) {
+            $viewsQuery->groupBy('date_group');
+        }
+
+        $viewsResults = $viewsQuery->get();
+
+        // Map views results to our date keys
+        foreach ($viewsResults as $result) {
+            $dateKey = $result->date_group;
+            if (isset($viewsData[$dateKey])) {
+                $viewsData[$dateKey] = $result->unique_count;
+            }
+        }
+
+        // 2. Get UNIQUE SUBMISSIONS by IP address
+        $submissionQuery = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotNull('ip');
+
+        if ($formId) {
+            $submissionQuery->where('form_id', $formId);
+        }
+
+        $minDateRecord = null;
+        // Group by date and IP to count unique submitters
+        if ($groupingMode === 'day') {
+            $submissionQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count');
+        } elseif ($groupingMode === '3days') {
+            // Get min date for reference
+            $minDateRecord = Submission::whereBetween('created_at', [$startDate, $endDate])
+                ->selectRaw('MIN(DATE(created_at)) as min_date')
+                ->first();
+
+            if ($minDateRecord && $minDateRecord->min_date) {
+                $minDate = $minDateRecord->min_date;
+                $submissionQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                    ->selectRaw('MIN(DATE(created_at)) as date_group')
+                    ->selectRaw('COUNT(DISTINCT ip) as unique_count')
+                    ->groupBy('group_num');
+            } else {
+                $submissionQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count')
+                    ->groupBy('date_group');
+            }
+        } elseif ($groupingMode === 'week') {
+            $submissionQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group, COUNT(DISTINCT ip) as unique_count");
+        } else { // month
+            $submissionQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group, COUNT(DISTINCT ip) as unique_count");
+        }
+
+        if ($groupingMode !== '3days' || !($minDateRecord && $minDateRecord->min_date)) {
+            $submissionQuery->groupBy('date_group');
+        }
+
+        $submissionResults = $submissionQuery->get();
+
+        // Map submission results to our date keys
+        foreach ($submissionResults as $result) {
+            $dateKey = $result->date_group;
+            if (isset($submissionsData[$dateKey])) {
+                $submissionsData[$dateKey] = $result->unique_count;
+            }
+        }
+
+        // 3. Count forms created in each time period
+        $formQuery = Form::whereBetween('created_at', [$startDate, $endDate]);
+
+        // Group forms by date
+        if ($groupingMode === 'day') {
+            $formQuery->selectRaw('DATE(created_at) as date_group, COUNT(*) as count');
+        } elseif ($groupingMode === '3days') {
+            // Get min date for reference
+            $minDateRecord = Form::whereBetween('created_at', [$startDate, $endDate])
+                ->selectRaw('MIN(DATE(created_at)) as min_date')
+                ->first();
+
+            if ($minDateRecord && $minDateRecord->min_date) {
+                $minDate = $minDateRecord->min_date;
+                $formQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                    ->selectRaw('MIN(DATE(created_at)) as date_group')
+                    ->selectRaw('COUNT(*) as count')
+                    ->groupBy('group_num');
+            } else {
+                $formQuery->selectRaw('DATE(created_at) as date_group, COUNT(*) as count')
+                    ->groupBy('date_group');
+            }
+        } elseif ($groupingMode === 'week') {
+            $formQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group, COUNT(*) as count");
+        } else { // month
+            $formQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group, COUNT(*) as count");
+        }
+
+        if ($groupingMode !== '3days' || !($minDateRecord && $minDateRecord->min_date)) {
+            $formQuery->groupBy('date_group');
+        }
+
+        $formResults = $formQuery->get();
+
+        // Map form results to our date keys
+        foreach ($formResults as $result) {
+            $dateKey = $result->date_group;
+            if (isset($formCountData[$dateKey])) {
+                $formCountData[$dateKey] = $result->count;
+            }
+        }
+
+        // Calculate conversion rates
+        $conversionRates = [];
+        foreach ($dates as $date) {
+            $views = $viewsData[$date];
+            $submissions = $submissionsData[$date];
+
+            // Calculate conversion rate (avoid division by zero)
+            $conversionRate = $views > 0 ? round(($submissions / $views) * 100, 2) : 0;
+            $conversionRates[$date] = $conversionRate;
+        }
+
+        // Format for chart display
+        return [
+            'dates'            => $labels,
+            'views'            => array_values($viewsData),
+            'submissions'      => array_values($submissionsData),
+            'conversion_rates' => array_values($conversionRates),
+            'form_counts'      => array_values($formCountData)
+        ];
+    }
+
+    /**
+     * Process date range
+     */
+    public static function processDateRange($startDate, $endDate)
+    {
+        // Sanity check - ensure start date is before end date
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+
+        // If start date is after end date, swap them
+        if ($startDateTime > $endDateTime) {
+            $temp = $startDate;
+            $startDate = $endDate;
+            $endDate = $temp;
+
+            // Update datetime objects
+            $startDateTime = new \DateTime($startDate);
+            $endDateTime = new \DateTime($endDate);
+        }
+
+        // Check if range appears to be same day (possibly "Today" selection)
+        $interval = $startDateTime->diff($endDateTime);
+        if ($interval->days < 1) {
+            // If the date parameter explicitly requested "today" (has today's date)
+            $today = new \DateTime('today');
+            $isToday = $startDateTime->format('Y-m-d') === $today->format('Y-m-d');
+            // Or Yesterday
+            $yesterday = new \DateTime('yesterday');
+            $isYesterday = $startDateTime->format('Y-m-d') === $yesterday->format('Y-m-d');
+
+            if (!$isToday && !$isYesterday) {
+                $startDateTime->modify('-1 year');
+                $startDate = $startDateTime->format('Y-m-d H:i:s');
+            }
+        }
+
+        return [$startDate, $endDate];
+    }
+
+    /**
+     * Determine grouping mode based on date range
+     */
+    private static function getGroupingMode($daysInterval)
+    {
+        if ($daysInterval <= 7) {
+            return 'day'; // 1-7 days: group by day
+        } elseif ($daysInterval <= 31) {
+            return '3days'; // 8-31 days: group by 3 days
+        } elseif ($daysInterval <= 92) {
+            return 'week'; // Group by week for 1-3 months
+        } else {
+            return 'month'; // 3+ months: group by month
+        }
+    }
+
+    /**
+     * Get aggregated data based on grouping mode
+     */
+    private static function getAggregatedData($startDate, $endDate, $groupingMode, $view, $formId)
+    {
+        $baseQuery = Submission::whereBetween('created_at', [$startDate, $endDate]);
+
+        // Filter by form ID if provided
+        if ($formId) {
+            $baseQuery->where('form_id', $formId);
+        }
+
+        if ($view === 'revenue') {
+            // Clone the base query for each payment status
+            $paidQuery = clone $baseQuery;
+            $pendingQuery = clone $baseQuery;
+            $refundedQuery = clone $baseQuery;
+
+            // Get paid payments
+            $paidQuery->whereNotNull('payment_total')
+                ->where(function($query) {
+                    $query->where('payment_status', 'paid');
+                })
+                ->selectRaw('ROUND(SUM(payment_total) / 100, 2) as count');
+
+            // Get pending payments
+            $pendingQuery->whereNotNull('payment_total')
+                ->where('payment_status', 'pending')
+                ->selectRaw('ROUND(SUM(payment_total) / 100, 2) as count');
+
+            // Get refunded payments
+            $refundedQuery->whereNotNull('payment_total')
+                ->where('payment_status', 'refunded')
+                ->selectRaw('ROUND(SUM(payment_total) / 100, 2) as count');
+
+            // Apply grouping based on mode to all three queries
+            if ($groupingMode === 'day') {
+                $paidQuery->selectRaw('DATE(created_at) as date_group')->groupBy('date_group');
+                $pendingQuery->selectRaw('DATE(created_at) as date_group')->groupBy('date_group');
+                $refundedQuery->selectRaw('DATE(created_at) as date_group')->groupBy('date_group');
+            } elseif ($groupingMode === '3days') {
+                // Get minimum date for reference
+                $minDateRecord = Submission::whereBetween('created_at', [$startDate, $endDate])
+                    ->selectRaw('MIN(DATE(created_at)) as min_date')
+                    ->first();
+
+                if ($minDateRecord && $minDateRecord->min_date) {
+                    $minDate = $minDateRecord->min_date;
+
+                    $paidQuery->selectRaw("MIN(DATE(created_at)) as date_group")
+                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                        ->groupBy('group_num');
+
+                    $pendingQuery->selectRaw("MIN(DATE(created_at)) as date_group")
+                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                        ->groupBy('group_num');
+
+                    $refundedQuery->selectRaw("MIN(DATE(created_at)) as date_group")
+                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                        ->groupBy('group_num');
+                } else {
+                    $paidQuery->selectRaw('DATE(created_at) as date_group')->groupBy('date_group');
+                    $pendingQuery->selectRaw('DATE(created_at) as date_group')->groupBy('date_group');
+                    $refundedQuery->selectRaw('DATE(created_at) as date_group')->groupBy('date_group');
+                }
+            } elseif ($groupingMode === 'week') {
+                $paidQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group")->groupBy('date_group');
+                $pendingQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group")->groupBy('date_group');
+                $refundedQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group")->groupBy('date_group');
+            } else {
+                $paidQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group")->groupBy('date_group');
+                $pendingQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group")->groupBy('date_group');
+                $refundedQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group")->groupBy('date_group');
+            }
+
+            // Execute the queries
+            $paidResults = $paidQuery->orderBy('date_group')->get();
+            $pendingResults = $pendingQuery->orderBy('date_group')->get();
+            $refundedResults = $refundedQuery->orderBy('date_group')->get();
+
+
+            // Format the data
+            $paidData = $revenuePayments = [];
+            foreach ($paidResults as $result) {
+                $paidData[$result->date_group] = $result->count;
+                $revenuePayments[$result->date_group] = $result->count;
+            }
+
+            $pendingData = [];
+            foreach ($pendingResults as $result) {
+                $pendingData[$result->date_group] = $result->count;
+            }
+
+            $refundedData = [];
+            foreach ($refundedResults as $result) {
+                $refundedData[$result->date_group] = $result->count;
+                if (isset($revenuePayments[$result->date_group])) {
+                    $revenuePayments[$result->date_group] -= $result->count;
+                }
+            }
+
+            // Return all three datasets
+            return [
+                'paid'     => $paidData,
+                'pending'  => $pendingData,
+                'refunded' => $refundedData,
+                'payments' => $revenuePayments
+            ];
+        } else {
+            $query = $baseQuery->selectRaw('COUNT(*) as count')->selectRaw('status');
+            $query->groupBy('status');
+
+            // Apply grouping based on mode
+            if ($groupingMode === 'day') {
+                $query->selectRaw('DATE(created_at) as date_group')
+                    ->groupBy('date_group');
+            } elseif ($groupingMode === '3days') {
+                $minDateRecord = Submission::whereBetween('created_at', [$startDate, $endDate])
+                    ->selectRaw('MIN(DATE(created_at)) as min_date')
+                    ->first();
+
+                if ($minDateRecord && $minDateRecord->min_date) {
+                    $query->selectRaw("MIN(DATE(created_at)) as date_group")
+                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDateRecord->min_date}') / 3) as group_num")
+                        ->groupBy('group_num');
+                } else {
+                    $query->selectRaw('DATE(created_at) as date_group')
+                        ->groupBy('date_group');
+                }
+            } elseif ($groupingMode === 'week') {
+                $query->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group")
+                    ->groupBy('date_group');
+            } else {
+                $query->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group")
+                    ->groupBy('date_group');
+            }
+
+            $results = $query->orderBy('date_group')->get();
+            $total = $read = $unread = $spam = [];
+            foreach ($results as $result) {
+                if ($result->status === 'read') {
+                    $read[$result->date_group] = $result->count;
+                }
+                if ($result->status === 'unread') {
+                    $unread[$result->date_group] = $result->count;
+                }
+                if ($result->status === 'spam') {
+                    $spam[$result->date_group] = $result->count;
+                }
+                $total[$result->date_group] = isset($total[$result->date_group]) ? $total[$result->date_group] + $result->count : $result->count;
+            }
+            // Return all four datasets
+            return [
+                'submissions' => $total,
+                'read' => $read,
+                'unread' => $unread,
+                'spam' => $spam,
+            ];
+        }
+    }
+
+    /**
+     * Generate date labels based on grouping mode
+     */
+    private static function getDateLabels(\DateTime $startDate, \DateTime $endDate, $groupingMode)
+    {
+        $dates = [];
+        $labels = [];
+        $current = clone $startDate;
+
+        if ($groupingMode === 'day') {
+            // Generate daily labels
+            while ($current <= $endDate) {
+                $dateKey = $current->format('Y-m-d');
+                $dates[] = $dateKey;
+                $labels[] = $current->format('M d');
+                $current->modify('+1 day');
+            }
+        } elseif ($groupingMode === '3days') {
+            // Generate labels for every 3 days
+            $dayIndex = 0;
+            $groupStartDate = clone $current;
+
+            while ($current <= $endDate) {
+                if ($dayIndex % 3 === 0 && $dayIndex > 0) {
+                    $previousDate = clone $current;
+                    $previousDate->modify('-1 day');
+
+                    $dateKey = $groupStartDate->format('Y-m-d');
+                    $dates[] = $dateKey;
+                    $labels[] = $groupStartDate->format('M d');
+
+                    $groupStartDate = clone $current;
+                }
+
+                $current->modify('+1 day');
+                $dayIndex++;
+            }
+
+            // Add the last group if needed
+            if ($groupStartDate <= $endDate) {
+                $dateKey = $groupStartDate->format('Y-m-d');
+                $dates[] = $dateKey;
+                $labels[] = $groupStartDate->format('M d');
+            }
+        } elseif ($groupingMode === 'week') {
+            // Generate weekly labels
+            while ($current <= $endDate) {
+                // Use simple approach to get Monday (start of week)
+                $dayOfWeek = (int)$current->format('N'); // 1 (Monday) through 7 (Sunday)
+                $daysToSubtract = $dayOfWeek - 1;
+
+                $weekStart = clone $current;
+                if ($daysToSubtract > 0) {
+                    $weekStart->modify("-{$daysToSubtract} days");
+                }
+
+                // Calculate end of week (Sunday)
+                $weekEnd = clone $weekStart;
+                $weekEnd->modify('+6 days');
+
+                // If weekend exceeds the range end, cap it
+                if ($weekEnd > $endDate) {
+                    $weekEnd = clone $endDate;
+                }
+
+                $dateKey = $weekStart->format('Y-m-d');
+                $dates[] = $dateKey;
+                $labels[] = $weekStart->format('M d');
+
+                // Move to next week
+                $current->modify('+7 days');
+            }
+        } else {
+            // Generate monthly labels
+            while ($current <= $endDate) {
+                $dateKey = $current->format('Y-m-01');
+                $dates[] = $dateKey;
+                $labels[] = $current->format('M Y');
+
+                // Manually move to first day of next month
+                $year = (int)$current->format('Y');
+                $month = (int)$current->format('m');
+
+                // Move to next month
+                $month++;
+                if ($month > 12) {
+                    $month = 1;
+                    $year++;
+                }
+
+                // Set to first day of next month
+                $current = new \DateTime("$year-$month-01");
+            }
+        }
+
+        return ['dates' => $dates, 'labels' => $labels];
+    }
+
+    /**
+     * Format data for the chart
+     */
+    private static function formatDataForChart($dateLabels, $data, $formId)
+    {
+        $dates = $dateLabels['dates'];
+        $labels = $dateLabels['labels'];
+
+        if (is_array($data) && isset($data['paid'])) {
+            $paidValues = self::fillMissingData($dates, $data['paid']);
+            $pendingValues = self::fillMissingData($dates, $data['pending']);
+            $refundedValues = self::fillMissingData($dates, $data['refunded']);
+            $paymentsValues = self::fillMissingData($dates, $data['payments']);
+            $currencyConfig = PaymentHelper::getCurrencyConfig($formId);
+
+            return [
+                'dates'         => $labels,
+                'currency_sign' => Arr::get($currencyConfig, 'currency_sign', '$'),
+                'currency'      => Arr::get($currencyConfig, 'currency', 'USD'),
+                'values'        => [
+                    'paid'     => array_values($paidValues),
+                    'pending'  => array_values($pendingValues),
+                    'refunded' => array_values($refundedValues),
+                    'payments' => array_values($paymentsValues)
+                ]
+            ];
+        } else {
+            return [
+                'dates'  => $labels,
+                'values' => [
+                    'submissions' => array_values(self::fillMissingData($dates, $data['submissions'])),
+                    'read'        => array_values(self::fillMissingData($dates, $data['read'])),
+                    'unread'      => array_values(self::fillMissingData($dates, $data['unread'])),
+                    'spam'        => array_values(self::fillMissingData($dates, $data['spam'])),
+                ]
+            ];
+        }
+    }
+
+    /**
+     * Fill in missing data based on date intervals
+     * @param array $allDates Array of interval start dates
+     * @param array $data Associative array of date => value pairs
+     * @return array Result with interval start dates mapped to summed values
+     */
+    private static function fillMissingData($allDates, $data)
+    {
+        $result = [];
+
+        for ($i = 0; $i < count($allDates); $i++) {
+            $startDate = new \DateTime($allDates[$i]);
+
+            // Calculate end date of interval (exclusive)
+            // Next interval start date, or use a 3-day interval for the last one
+            $endDate = isset($allDates[$i + 1]) ? new \DateTime($allDates[$i + 1]) : (clone $startDate)->modify('+3 days');
+
+            $sum = 0;
+            $hasData = false;
+
+            // Check each date in the data array
+            foreach ($data as $date => $value) {
+                $checkDate = new \DateTime($date);
+
+                // If date is within current interval
+                if ($checkDate >= $startDate && $checkDate < $endDate) {
+                    $sum += $value;
+                    $hasData = true;
+                }
+            }
+
+            $result[$allDates[$i]] = $hasData ? $sum : 0;
+        }
+
+        return $result;
+    }
+
+    private static function getPaymentStats($startDate, $endDate, $previousStartDate, $previousEndDate, $formId)
+    {
+        // Get total payments (paid status) for current period
+        $currentPayments = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'paid')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->sum('payment_total');
+
+        // Get total payments for previous period
+        $previousPayments = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where('status', 'paid')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->sum('payment_total');
+
+        // Get pending payments for current period
+        $currentPending = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'pending')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->sum('payment_total');
+
+        // Get pending payments for previous period
+        $previousPending = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where('status', 'pending')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->sum('payment_total');
+
+        // Get total refunds for current period
+        $currentRefunds = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'refunded')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->sum('payment_total');
+
+        // Get total refunds for previous period
+        $previousRefunds = wpFluent()
+            ->table('fluentform_transactions')
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where('status', 'refunded')
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->sum('payment_total');
+
+        // Convert from cents to dollars
+        $currentPayments = $currentPayments ? $currentPayments / 100 : 0;
+        $previousPayments = $previousPayments ? $previousPayments / 100 : 0;
+        $currentPending = $currentPending ? $currentPending / 100 : 0;
+        $previousPending = $previousPending ? $previousPending / 100 : 0;
+        $currentRefunds = $currentRefunds ? $currentRefunds / 100 : 0;
+        $previousRefunds = $previousRefunds ? $previousRefunds / 100 : 0;
+
+        // Calculate payment growth percentage
+        $paymentGrowthPercentage = 0;
+        if ($previousPayments > 0) {
+            $paymentGrowthPercentage = round((($currentPayments - $previousPayments) / $previousPayments) * 100, 1);
+        } elseif ($currentPayments > 0) {
+            $paymentGrowthPercentage = 100;
+        }
+
+        $paymentGrowthText = $paymentGrowthPercentage > 0 ? '+' . $paymentGrowthPercentage . '%' : $paymentGrowthPercentage . '%';
+        $paymentGrowthType = $paymentGrowthPercentage > 0 ? 'up' : ($paymentGrowthPercentage < 0 ? 'down' : 'neutral');
+
+        // Calculate refund growth percentage
+        $refundGrowthPercentage = 0;
+        if ($previousRefunds > 0) {
+            $refundGrowthPercentage = round((($currentRefunds - $previousRefunds) / $previousRefunds) * 100, 1);
+        } elseif ($currentRefunds > 0) {
+            $refundGrowthPercentage = 100;
+        }
+
+        $refundGrowthText = $refundGrowthPercentage > 0 ? '+' . $refundGrowthPercentage . '%' : $refundGrowthPercentage . '%';
+        $refundGrowthType = $refundGrowthPercentage > 0 ? 'down' : ($refundGrowthPercentage < 0 ? 'up' : 'neutral'); // Refunds going up is bad
+
+        // Calculate pending growth percentage
+        $pendingGrowthPercentage = 0;
+        if ($previousPending > 0) {
+            $pendingGrowthPercentage = round((($currentPending - $previousPending) / $previousPending) * 100, 1);
+        } elseif ($currentPending > 0) {
+            $pendingGrowthPercentage = 100;
+        }
+
+        $pendingGrowthText = $pendingGrowthPercentage > 0 ? '+' . $pendingGrowthPercentage . '%' : $pendingGrowthPercentage . '%';
+        $pendingGrowthType = $pendingGrowthPercentage > 0 ? 'up' : ($pendingGrowthPercentage < 0 ? 'down' : 'neutral');
+
+        // Get default currency from payment settings
+        $paymentSettings = PaymentHelper::getPaymentSettings();
+        $currency = Arr::get($paymentSettings, 'currency', 'USD');
+        $currencySymbol = PaymentHelper::getCurrencySymbol($currency);
+
+        return [
+            'total_payments' => [
+                'value' => number_format($currentPayments, 2),
+                'raw_value' => $currentPayments,
+                'currency' => $currency,
+                'currency_symbol' => $currencySymbol,
+                'change' => $paymentGrowthText,
+                'change_type' => $paymentGrowthType
+            ],
+            'pending_payments' => [
+                'value' => number_format($currentPending, 2),
+                'raw_value' => $currentPending,
+                'currency' => $currency,
+                'currency_symbol' => $currencySymbol,
+                'change' => $pendingGrowthText,
+                'change_type' => $pendingGrowthType
+            ],
+            'total_refunds' => [
+                'value' => number_format($currentRefunds, 2),
+                'raw_value' => $currentRefunds,
+                'currency' => $currency,
+                'currency_symbol' => $currencySymbol,
+                'change' => $refundGrowthText,
+                'change_type' => $refundGrowthType
+            ],
+            'total_revenue' => [
+                'value' => number_format($currentPayments - $currentRefunds, 2),
+                'raw_value' => $currentPayments - $currentRefunds,
+                'currency' => $currency,
+                'currency_symbol' => $currencySymbol
+            ]
+        ];
+    }
+
+    /**
+     * Get payment data grouped by payment status
+     *
+     * @param string $startDate
+     * @param string $endDate
+     * @param string $paymentType Either 'subscription' or 'onetime'
+     * @return array
+     */
+    public static function getPaymentsByType($startDate, $endDate, $paymentType = 'subscription', $formId = null)
+    {
+        $paymentSettings = get_option('__fluentform_payment_module_settings');
+        if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
+            return []; // Return empty if payment module is disabled
+        }
+        // Process date range
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+
+        // Base query for transactions
+        $query = wpFluent()->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        // Filter by transaction type if specified
+        if ($paymentType === 'subscription') {
+            $query->whereIn('transaction_type', ['subscription', 'subscription_signup_fee']);
+        } elseif ($paymentType === 'onetime') {
+            $query->where('transaction_type', 'onetime');
+        }
+
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+
+        // Get payments grouped by status
+        $payments = $query->select('status')
+            ->selectRaw('SUM(payment_total) as total_amount')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('status')
+            ->get();
+
+        // Get the total payment amount
+        $totalAmount = 0;
+        foreach ($payments as $payment) {
+            $totalAmount += $payment->total_amount;
+        }
+
+        $formattedData = [];
+        foreach ($payments as $payment) {
+            $status = strtolower($payment->status);
+            $amount = $payment->total_amount / 100; // Convert from cents to dollars
+            $percentage = $totalAmount > 0 ? round(($payment->total_amount / $totalAmount) * 100, 2) : 0;
+
+            $formattedData[$status] = [
+                'amount' => $amount,
+                'percentage' => $percentage,
+                'count' => $payment->count
+            ];
+        }
+
+        // Calculate weekly average paid amount
+        $daysInRange = self::getDateDifference($startDate, $endDate);
+        $weeksInRange = max(1, round($daysInRange / 7, 1));
+
+        $paidAmount = 0;
+        foreach ($formattedData as $status => $data) {
+            if ($status === 'paid') {
+                $paidAmount = $data['amount'];
+                break;
+            }
+        }
+
+        $weeklyAverage = $paidAmount / $weeksInRange;
+
+        return [
+            'currency_symbol' => Arr::get(PaymentHelper::getCurrencyConfig($formId), 'currency_sign', '$'),
+            'payment_statuses' => $formattedData,
+            'total_amount'     => $totalAmount / 100, // Convert from cents to dollars
+            'weekly_average'   => round($weeklyAverage, 2)
+        ];
+    }
+
+    private static function getDateDifference($startDate, $endDate)
+    {
+        $start = new \DateTime($startDate);
+        $end = new \DateTime($endDate);
+        $interval = $start->diff($end);
+        return $interval->days + 1;
     }
 }

@@ -7,6 +7,7 @@
         <card-body>
             <div class="form-selector">
                 <el-select
+                    popper-class="report-form-select-popper"
                     v-model="selectedFormId"
                     placeholder="Select Form"
                     size="medium"
