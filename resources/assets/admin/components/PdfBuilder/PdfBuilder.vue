@@ -3,55 +3,9 @@
     <!-- Toolbar -->
     <div class="pdf-toolbar">
       <div class="toolbar-left">
-        <el-button-group>
-          <el-button 
-            :type="pageSize === 'a4' ? 'primary' : ''"
-            @click="changePageSize('a4')"
-            size="small"
-          >
-            A4
-          </el-button>
-          <el-button 
-            :type="pageSize === 'letter' ? 'primary' : ''"
-            @click="changePageSize('letter')"
-            size="small"
-          >
-            Letter
-          </el-button>
-        </el-button-group>
-        
-        <el-button-group class="ml-3">
-          <el-button 
-            :type="orientation === 'portrait' ? 'primary' : ''"
-            @click="changeOrientation('portrait')"
-            size="small"
-          >
-            Portrait
-          </el-button>
-          <el-button 
-            :type="orientation === 'landscape' ? 'primary' : ''"
-            @click="changeOrientation('landscape')"
-            size="small"
-          >
-            Landscape
-          </el-button>
-        </el-button-group>
-
-        <el-button-group class="ml-3">
-          <el-button 
-            @click="showHeaderFooterDialog = true"
-            size="small"
-            icon="el-icon-document"
-          >
-            {{ $t('Header/Footer') }}
-          </el-button>
-        </el-button-group>
+        <!-- Removed sidebar toggle button -->
       </div>
-      
       <div class="toolbar-right">
-        <el-button @click="previewPdf" type="info" size="small" icon="el-icon-view">
-          {{ $t('Preview') }}
-        </el-button>
         <el-button @click="savePdf" type="primary" size="small" icon="el-icon-check">
           {{ $t('Save') }}
         </el-button>
@@ -60,7 +14,7 @@
 
     <div class="pdf-builder-content">
       <!-- Element Palette -->
-      <div class="element-palette">
+      <div class="element-palette ff_layout_section_sidebar">
         <h4>{{ $t('Elements') }}</h4>
         <div class="palette-list">
           <div
@@ -79,18 +33,20 @@
 
       <!-- Canvas Area -->
       <div class="canvas-container">
-        <div class="canvas-wrapper">
+        <div class="canvas-wrapper" :style="`width: ${canvasWidth}px; margin: 20px;`">
           <div 
             class="pdf-canvas" 
-            :class="'canvas-' + pageSize + ' canvas-' + orientation"
+            :key="`canvas-${appearance?.paper_size}-${appearance?.orientation}`"
+            :style="canvasStyle"
             ref="pdfCanvas"
             @drop="handleDrop"
             @dragover="handleDragOver"
             @dragenter="handleDragEnter"
             @dragleave="handleDragLeave"
+            @click="deselectElement"
           >
             <!-- Grid Background -->
-            <div class="grid-background"></div>
+            <div class="grid-background" :style="gridStyle"></div>
             
             <!-- Canvas Elements -->
             <div
@@ -118,12 +74,14 @@
               </div>
 
               <!-- Element Content -->
-              <pdf-element
-                :element="item"
-                :form-data="sampleFormData"
-                :form-fields="formFields"
-                @update="updateElement"
-              />
+              <div class="element-content">
+                <PdfElement 
+                  :element="item" 
+                  :formData="formData" 
+                  :formFields="formFields"
+                  @update="updateElement"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -149,70 +107,148 @@
             {{ $t('Select an element to edit its properties') }}
           </div>
           
-          <pdf-element-properties
-            v-if="selectedElement"
-            :element="selectedElement"
-            :form-fields="formFields"
-            :canvas-width="canvasWidth"
-            :canvas-height="canvasHeight"
-            :editor-shortcodes="editorShortcodes"
-            @update="updateElement"
-            @update-position="updateElementPosition"
-            @update-size="updateElementSize"
-          />
+          <div v-if="selectedElement" class="element-properties">
+            <el-form label-position="top" size="small">
+              <el-form-item :label="$t('Position')">
+                <el-row :gutter="10">
+                  <el-col :span="12">
+                    <el-input-number 
+                      v-model="selectedElement.x" 
+                      :min="0" 
+                      :max="canvasWidth - selectedElement.w"
+                      size="mini"
+                      controls-position="right"
+                      @change="updateElementPosition"
+                    />
+                    <label>X</label>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-input-number 
+                      v-model="selectedElement.y" 
+                      :min="0" 
+                      :max="canvasHeight - selectedElement.h"
+                      size="mini"
+                      controls-position="right"
+                      @change="updateElementPosition"
+                    />
+                    <label>Y</label>
+                  </el-col>
+                </el-row>
+              </el-form-item>
+              
+              <el-form-item :label="$t('Size')">
+                <el-row :gutter="10">
+                  <el-col :span="12">
+                    <el-input-number 
+                      v-model="selectedElement.w" 
+                      :min="20" 
+                      :max="canvasWidth"
+                      size="mini"
+                      controls-position="right"
+                      @change="updateElementSize"
+                    />
+                    <label>W</label>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-input-number 
+                      v-model="selectedElement.h" 
+                      :min="20" 
+                      :max="canvasHeight"
+                      size="mini"
+                      controls-position="right"
+                      @change="updateElementSize"
+                    />
+                    <label>H</label>
+                  </el-col>
+                </el-row>
+              </el-form-item>
+
+              <!-- Element-specific properties -->
+              <template v-if="selectedElement.type === 'text'">
+                <el-form-item :label="$t('Content')">
+                  <input-popover 
+                    v-model="selectedElement.props.content" 
+                    fieldType="textarea"
+                    :data="editorShortcodes"
+                    :placeholder="$t('Enter text or select field')"
+                    @input="updateElementProps"
+                  />
+                </el-form-item>
+                <el-form-item :label="$t('Font Size')">
+                  <el-input-number 
+                    v-model="selectedElement.props.fontSize" 
+                    :min="8" 
+                    :max="72"
+                    @change="updateElementProps"
+                  />
+                </el-form-item>
+                <el-form-item :label="$t('Font Weight')">
+                  <el-select v-model="selectedElement.props.fontWeight" @change="updateElementProps">
+                    <el-option label="Normal" value="normal"></el-option>
+                    <el-option label="Bold" value="bold"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('Font Style')">
+                  <el-select v-model="selectedElement.props.fontStyle" @change="updateElementProps">
+                    <el-option label="Normal" value="normal"></el-option>
+                    <el-option label="Italic" value="italic"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('Text Align')">
+                  <el-select v-model="selectedElement.props.textAlign" @change="updateElementProps">
+                    <el-option label="Left" value="left"></el-option>
+                    <el-option label="Center" value="center"></el-option>
+                    <el-option label="Right" value="right"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('Text Color')">
+                  <el-color-picker v-model="selectedElement.props.color" @change="updateElementProps" />
+                </el-form-item>
+                <el-form-item :label="$t('Background Color')">
+                  <el-color-picker 
+                    v-model="selectedElement.props.backgroundColor" 
+                    @change="updateElementProps"
+                    show-alpha
+                  />
+                </el-form-item>
+                <el-form-item :label="$t('Vertical Align')">
+                  <el-select v-model="selectedElement.props.verticalAlign" @change="updateElementProps">
+                    <el-option label="Top" value="top"></el-option>
+                    <el-option label="Middle" value="middle"></el-option>
+                    <el-option label="Bottom" value="bottom"></el-option>
+                  </el-select>
+                </el-form-item>
+              </template>
+
+              <template v-if="selectedElement.type === 'field'">
+                <el-form-item :label="$t('Field Name')">
+                  <el-select v-model="selectedElement.props.fieldName" @change="updateElementProps">
+                    <el-option 
+                      v-for="field in formFields" 
+                      :key="field.name" 
+                      :label="field.label || field.name" 
+                      :value="field.name"
+                    />
+                  </el-select>
+                </el-form-item>
+              </template>
+            </el-form>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Header/Footer Dialog -->
-    <el-dialog
-      :title="$t('PDF Header and Footer')"
-      :visible.sync="showHeaderFooterDialog"
-      width="600px"
-    >
-      <el-form label-position="top">
-        <el-form-item :label="$t('Header Content')">
-          <el-input
-            v-model="headerContent"
-            type="textarea"
-            :rows="3"
-            :placeholder="$t('Enter header content (HTML allowed)')"
-          />
-          <div class="help-text">
-            {{ $t('Available variables: {DATE}, {PAGENO}, {nbpg}') }}
-          </div>
-        </el-form-item>
-        
-        <el-form-item :label="$t('Footer Content')">
-          <el-input
-            v-model="footerContent"
-            type="textarea"
-            :rows="3"
-            :placeholder="$t('Enter footer content (HTML allowed)')"
-          />
-          <div class="help-text">
-            {{ $t('Available variables: {DATE}, {PAGENO}, {nbpg}') }}
-          </div>
-        </el-form-item>
-      </el-form>
-      
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="showHeaderFooterDialog = false">{{ $t('Cancel') }}</el-button>
-        <el-button type="primary" @click="saveHeaderFooter">{{ $t('Save') }}</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import PdfElement from './PdfElement.vue';
-import PdfElementProperties from './PdfElementProperties.vue';
+import inputPopover from '../input-popover.vue';
 
 export default {
   name: 'PdfBuilder',
   components: {
     PdfElement,
-    PdfElementProperties
+    inputPopover
   },
   props: {
     templateData: {
@@ -226,41 +262,54 @@ export default {
     editorShortcodes: {
       type: Array,
       default: () => []
+    },
+    appearance: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
     return {
-      pageSize: 'a4',
-      orientation: 'portrait',
-      gridSize: 10,
+      pdfLayout: [],
       selectedElement: null,
       draggingElement: null,
-      dragStartPos: { x: 0, y: 0 },
       resizing: false,
       resizeHandle: null,
       elementCounter: 0,
-      pdfLayout: [],
-      showHeaderFooterDialog: false,
-      showPagesDialog: false,
-      headerContent: '',
-      footerContent: '',
-      pages: [{ id: 1, name: 'Page 1', layout: [] }],
+      isDragOver: false,
+      pages: [
+        {
+          id: 1,
+          name: 'Page 1',
+          layout: []
+        }
+      ],
       currentPageIndex: 0,
+      sampleFormData: {
+        first_name: 'John',
+        last_name: 'Doe',
+        email: 'john@example.com',
+        phone: '123-456-7890'
+      },
       availableElements: [
         {
           type: 'text',
-          label: this.$t('Text'),
+          label: 'Text',
           icon: 'el-icon-edit-outline',
           defaultProps: {
             content: 'Sample Text',
             fontSize: 14,
             fontWeight: 'normal',
-            color: '#000000'
+            fontStyle: 'normal',
+            textAlign: 'left',
+            verticalAlign: 'middle',
+            color: '#000000',
+            backgroundColor: 'transparent'
           }
         },
         {
           type: 'field',
-          label: this.$t('Form Field'),
+          label: 'Form Field',
           icon: 'el-icon-tickets',
           defaultProps: {
             fieldName: '',
@@ -270,52 +319,218 @@ export default {
         },
         {
           type: 'image',
-          label: this.$t('Image'),
-          icon: 'el-icon-picture-outline',
+          label: 'Image',
+          icon: 'el-icon-picture',
           defaultProps: {
             src: '',
-            alt: 'Image'
-          }
-        },
-        {
-          type: 'table',
-          label: this.$t('Table'),
-          icon: 'el-icon-menu',
-          defaultProps: {
-            rows: 3,
-            cols: 3,
-            showHeaders: true
+            alt: 'Image',
+            width: 100,
+            height: 100
           }
         },
         {
           type: 'line',
-          label: this.$t('Line'),
+          label: 'Line',
           icon: 'el-icon-minus',
           defaultProps: {
+            color: '#000000',
             thickness: 1,
-            color: '#000000'
+            style: 'solid'
           }
         }
       ],
-      sampleFormData: {
-        name: 'John Doe',
-        email: 'john@example.com',
-        phone: '+1234567890',
-        message: 'This is a sample message for preview purposes.'
-      }
+      gridSize: 10,
     };
   },
   computed: {
     canvasWidth() {
-      return this.pageSize === 'a4' 
-        ? (this.orientation === 'portrait' ? 595 : 842)
-        : (this.orientation === 'portrait' ? 612 : 792);
+      const paperSize = this.appearance?.paper_size || 'A4';
+      const orientation = this.appearance?.orientation || 'P';
+      
+      // Convert mm to pixels at 96 DPI (1mm = 3.78 pixels)
+      const mmToPx = (mm) => Math.round(mm * 3.78);
+      
+      const paperSizes = {
+        // A Series
+        'A0': { w: mmToPx(841), h: mmToPx(1189) },
+        'A1': { w: mmToPx(594), h: mmToPx(841) },
+        'A2': { w: mmToPx(420), h: mmToPx(594) },
+        'A3': { w: mmToPx(297), h: mmToPx(420) },
+        'A4': { w: mmToPx(210), h: mmToPx(297) },
+        'A5': { w: mmToPx(148), h: mmToPx(210) },
+        'A6': { w: mmToPx(105), h: mmToPx(148) },
+        'A7': { w: mmToPx(74), h: mmToPx(105) },
+        'A8': { w: mmToPx(52), h: mmToPx(74) },
+        'A9': { w: mmToPx(37), h: mmToPx(52) },
+        'A10': { w: mmToPx(26), h: mmToPx(37) },
+        
+        // B Series
+        'B0': { w: mmToPx(1414), h: mmToPx(1000) },
+        'B1': { w: mmToPx(1000), h: mmToPx(707) },
+        'B2': { w: mmToPx(707), h: mmToPx(500) },
+        'B3': { w: mmToPx(500), h: mmToPx(353) },
+        'B4': { w: mmToPx(353), h: mmToPx(250) },
+        'B5': { w: mmToPx(250), h: mmToPx(176) },
+        'B6': { w: mmToPx(176), h: mmToPx(125) },
+        'B7': { w: mmToPx(125), h: mmToPx(88) },
+        'B8': { w: mmToPx(88), h: mmToPx(62) },
+        'B9': { w: mmToPx(62), h: mmToPx(44) },
+        'B10': { w: mmToPx(44), h: mmToPx(31) },
+        
+        // C Series
+        'C0': { w: mmToPx(1297), h: mmToPx(917) },
+        'C1': { w: mmToPx(917), h: mmToPx(648) },
+        'C2': { w: mmToPx(648), h: mmToPx(458) },
+        'C3': { w: mmToPx(458), h: mmToPx(324) },
+        'C4': { w: mmToPx(324), h: mmToPx(229) },
+        'C5': { w: mmToPx(229), h: mmToPx(162) },
+        'C6': { w: mmToPx(162), h: mmToPx(114) },
+        'C7': { w: mmToPx(114), h: mmToPx(81) },
+        'C8': { w: mmToPx(81), h: mmToPx(57) },
+        'C9': { w: mmToPx(57), h: mmToPx(40) },
+        'C10': { w: mmToPx(40), h: mmToPx(28) },
+        
+        // RA Series
+        'RA0': { w: mmToPx(860), h: mmToPx(1220) },
+        'RA1': { w: mmToPx(610), h: mmToPx(860) },
+        'RA2': { w: mmToPx(430), h: mmToPx(610) },
+        'RA3': { w: mmToPx(305), h: mmToPx(430) },
+        'RA4': { w: mmToPx(215), h: mmToPx(305) },
+        
+        // SRA Series
+        'SRA0': { w: mmToPx(900), h: mmToPx(1280) },
+        'SRA1': { w: mmToPx(640), h: mmToPx(900) },
+        'SRA2': { w: mmToPx(450), h: mmToPx(640) },
+        'SRA3': { w: mmToPx(320), h: mmToPx(450) },
+        'SRA4': { w: mmToPx(225), h: mmToPx(320) },
+        
+        // US/Imperial sizes (convert inches to pixels at 96 DPI)
+        'Letter': { w: 816, h: 1056 }, // 8.5 x 11 inches
+        'Legal': { w: 816, h: 1344 }, // 8.5 x 14 inches
+        'ledger': { w: 1056, h: 1632 }, // 11 x 17 inches (Tabloid)
+        'Executive': { w: 672, h: 960 }, // 7 x 10 inches
+        
+        // Other formats
+        'B': { w: mmToPx(128), h: mmToPx(198) },
+        'A': { w: mmToPx(111), h: mmToPx(178) },
+        'DEMY': { w: mmToPx(135), h: mmToPx(216) },
+        'ROYAL': { w: mmToPx(135), h: mmToPx(216) }
+      };
+      
+      const size = paperSizes[paperSize] || paperSizes['A4'];
+      return orientation === 'L' ? size.h : size.w;
     },
+    
     canvasHeight() {
-      return this.pageSize === 'a4'
-        ? (this.orientation === 'portrait' ? 842 : 595)
-        : (this.orientation === 'portrait' ? 792 : 612);
-    }
+      const paperSize = this.appearance?.paper_size || 'A4';
+      const orientation = this.appearance?.orientation || 'P';
+      
+      // Convert mm to pixels at 96 DPI (1mm = 3.78 pixels)
+      const mmToPx = (mm) => Math.round(mm * 3.78);
+      
+      const paperSizes = {
+        // A Series
+        'A0': { w: mmToPx(841), h: mmToPx(1189) },
+        'A1': { w: mmToPx(594), h: mmToPx(841) },
+        'A2': { w: mmToPx(420), h: mmToPx(594) },
+        'A3': { w: mmToPx(297), h: mmToPx(420) },
+        'A4': { w: mmToPx(210), h: mmToPx(297) },
+        'A5': { w: mmToPx(148), h: mmToPx(210) },
+        'A6': { w: mmToPx(105), h: mmToPx(148) },
+        'A7': { w: mmToPx(74), h: mmToPx(105) },
+        'A8': { w: mmToPx(52), h: mmToPx(74) },
+        'A9': { w: mmToPx(37), h: mmToPx(52) },
+        'A10': { w: mmToPx(26), h: mmToPx(37) },
+        
+        // B Series
+        'B0': { w: mmToPx(1414), h: mmToPx(1000) },
+        'B1': { w: mmToPx(1000), h: mmToPx(707) },
+        'B2': { w: mmToPx(707), h: mmToPx(500) },
+        'B3': { w: mmToPx(500), h: mmToPx(353) },
+        'B4': { w: mmToPx(353), h: mmToPx(250) },
+        'B5': { w: mmToPx(250), h: mmToPx(176) },
+        'B6': { w: mmToPx(176), h: mmToPx(125) },
+        'B7': { w: mmToPx(125), h: mmToPx(88) },
+        'B8': { w: mmToPx(88), h: mmToPx(62) },
+        'B9': { w: mmToPx(62), h: mmToPx(44) },
+        'B10': { w: mmToPx(44), h: mmToPx(31) },
+        
+        // C Series
+        'C0': { w: mmToPx(1297), h: mmToPx(917) },
+        'C1': { w: mmToPx(917), h: mmToPx(648) },
+        'C2': { w: mmToPx(648), h: mmToPx(458) },
+        'C3': { w: mmToPx(458), h: mmToPx(324) },
+        'C4': { w: mmToPx(324), h: mmToPx(229) },
+        'C5': { w: mmToPx(229), h: mmToPx(162) },
+        'C6': { w: mmToPx(162), h: mmToPx(114) },
+        'C7': { w: mmToPx(114), h: mmToPx(81) },
+        'C8': { w: mmToPx(81), h: mmToPx(57) },
+        'C9': { w: mmToPx(57), h: mmToPx(40) },
+        'C10': { w: mmToPx(40), h: mmToPx(28) },
+        
+        // RA Series
+        'RA0': { w: mmToPx(860), h: mmToPx(1220) },
+        'RA1': { w: mmToPx(610), h: mmToPx(860) },
+        'RA2': { w: mmToPx(430), h: mmToPx(610) },
+        'RA3': { w: mmToPx(305), h: mmToPx(430) },
+        'RA4': { w: mmToPx(215), h: mmToPx(305) },
+        
+        // SRA Series
+        'SRA0': { w: mmToPx(900), h: mmToPx(1280) },
+        'SRA1': { w: mmToPx(640), h: mmToPx(900) },
+        'SRA2': { w: mmToPx(450), h: mmToPx(640) },
+        'SRA3': { w: mmToPx(320), h: mmToPx(450) },
+        'SRA4': { w: mmToPx(225), h: mmToPx(320) },
+        
+        // US/Imperial sizes
+        'Letter': { w: 816, h: 1056 },
+        'Legal': { w: 816, h: 1344 },
+        'ledger': { w: 1056, h: 1632 },
+        'Executive': { w: 672, h: 960 },
+        
+        // Other formats
+        'B': { w: mmToPx(128), h: mmToPx(198) },
+        'A': { w: mmToPx(111), h: mmToPx(178) },
+        'DEMY': { w: mmToPx(135), h: mmToPx(216) },
+        'ROYAL': { w: mmToPx(135), h: mmToPx(216) }
+      };
+      
+      const size = paperSizes[paperSize] || paperSizes['A4'];
+      return orientation === 'L' ? size.w : size.h;
+    },
+
+    canvasStyle() {
+      return {
+        width: Math.round(this.canvasWidth) + 'px',
+        height: Math.round(this.canvasHeight) + 'px',
+        position: 'relative',
+        backgroundColor: '#ffffff',
+        border: '1px solid #ddd',
+        margin: '20px auto',
+        minHeight: '400px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      };
+    },
+
+    canvasScale() {
+      return 1; // No scaling for now
+    },
+    
+    gridStyle() {
+      return {
+        backgroundImage: `
+          linear-gradient(to right, #f0f0f0 1px, transparent 1px),
+          linear-gradient(to bottom, #f0f0f0 1px, transparent 1px)
+        `,
+        backgroundSize: `${this.gridSize}px ${this.gridSize}px`,
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        pointerEvents: 'none'
+      };
+    },
   },
   methods: {
     // Drag and Drop Handlers
@@ -331,18 +546,18 @@ export default {
 
     handleDragEnter(event) {
       event.preventDefault();
-      this.$refs.pdfCanvas.classList.add('drag-over');
+      this.isDragOver = true;
     },
 
     handleDragLeave(event) {
-      if (!this.$refs.pdfCanvas.contains(event.relatedTarget)) {
-        this.$refs.pdfCanvas.classList.remove('drag-over');
+      if (this.$refs.pdfCanvas && !this.$refs.pdfCanvas.contains(event.relatedTarget)) {
+        this.isDragOver = false;
       }
     },
 
     handleDrop(event) {
       event.preventDefault();
-      this.$refs.pdfCanvas.classList.remove('drag-over');
+      this.isDragOver = false;
       
       try {
         const elementData = JSON.parse(event.dataTransfer.getData('text/plain'));
@@ -356,93 +571,299 @@ export default {
 
     addElementToCanvas(elementData, event) {
       const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
+      
+      // Calculate drop position relative to canvas
       const dropX = Math.round((event.clientX - canvasRect.left) / this.gridSize) * this.gridSize;
       const dropY = Math.round((event.clientY - canvasRect.top) / this.gridSize) * this.gridSize;
 
       const defaultWidth = this.getDefaultWidth(elementData.type);
       const defaultHeight = this.getDefaultHeight(elementData.type);
 
-      // Find a non-overlapping position starting from drop location
-      const position = this.findNonOverlappingPosition(dropX, dropY, defaultWidth, defaultHeight);
+      // Ensure the position is within canvas bounds
+      const constrainedX = Math.max(0, Math.min(dropX, this.canvasWidth - defaultWidth));
+      const constrainedY = Math.max(0, Math.min(dropY, this.canvasHeight - defaultHeight));
+
+      // Always use findNonOverlappingPosition to prevent overlaps
+      const position = this.findNonOverlappingPosition(constrainedX, constrainedY, defaultWidth, defaultHeight);
 
       const newElement = {
-        ...elementData,
-        i: 'element_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        i: `element_${++this.elementCounter}`,
         x: position.x,
         y: position.y,
         w: defaultWidth,
         h: defaultHeight,
+        type: elementData.type,
+        z: 1,
         props: { ...elementData.defaultProps }
       };
 
       this.pdfLayout.push(newElement);
-      this.selectElement(newElement);
+      this.selectedElement = newElement;
     },
 
-    findNonOverlappingPosition(preferredX, preferredY, width, height) {
-      // Ensure within canvas bounds first
-      preferredX = Math.max(0, Math.min(preferredX, this.canvasWidth - width));
-      preferredY = Math.max(0, Math.min(preferredY, this.canvasHeight - height));
-
-      // Check if preferred position is free
-      if (!this.isPositionOccupied(preferredX, preferredY, width, height)) {
-        return { x: preferredX, y: preferredY };
+    // Page Settings
+    changePageSize(size) {
+      this.pageSize = size;
+      if (size === 'a4') {
+        this.canvasWidth = this.orientation === 'portrait' ? 794 : 1123;
+        this.canvasHeight = this.orientation === 'portrait' ? 1123 : 794;
+      } else if (size === 'letter') {
+        this.canvasWidth = this.orientation === 'portrait' ? 816 : 1056;
+        this.canvasHeight = this.orientation === 'portrait' ? 1056 : 816;
       }
-
-      // Search in expanding spiral pattern
-      const step = this.gridSize;
-      for (let radius = step; radius <= Math.max(this.canvasWidth, this.canvasHeight); radius += step) {
-        // Check positions in a square pattern around the preferred position
-        for (let angle = 0; angle < 8; angle++) {
-          let testX, testY;
-          
-          switch (angle) {
-            case 0: testX = preferredX + radius; testY = preferredY; break;
-            case 1: testX = preferredX - radius; testY = preferredY; break;
-            case 2: testX = preferredX; testY = preferredY + radius; break;
-            case 3: testX = preferredX; testY = preferredY - radius; break;
-            case 4: testX = preferredX + radius; testY = preferredY + radius; break;
-            case 5: testX = preferredX - radius; testY = preferredY - radius; break;
-            case 6: testX = preferredX + radius; testY = preferredY - radius; break;
-            case 7: testX = preferredX - radius; testY = preferredY + radius; break;
-          }
-
-          // Ensure within bounds
-          testX = Math.max(0, Math.min(testX, this.canvasWidth - width));
-          testY = Math.max(0, Math.min(testY, this.canvasHeight - height));
-
-          if (!this.isPositionOccupied(testX, testY, width, height)) {
-            return { x: testX, y: testY };
-          }
+      
+      this.pdfLayout.forEach(element => {
+        if (element.x + element.w > this.canvasWidth) {
+          element.x = Math.max(0, this.canvasWidth - element.w);
         }
-      }
-
-      // If no position found, try systematic grid search
-      for (let y = 0; y <= this.canvasHeight - height; y += step) {
-        for (let x = 0; x <= this.canvasWidth - width; x += step) {
-          if (!this.isPositionOccupied(x, y, width, height)) {
-            return { x, y };
-          }
+        if (element.y + element.h > this.canvasHeight) {
+          element.y = Math.max(0, this.canvasHeight - element.h);
         }
-      }
-
-      // Last resort - return original position
-      return { x: preferredX, y: preferredY };
+      });
     },
 
-    isPositionOccupied(x, y, width, height) {
-      return this.pdfLayout.some(element => {
-        // Check if rectangles overlap
-        return !(
-          x >= element.x + element.w ||  // new element is to the right
-          x + width <= element.x ||      // new element is to the left
-          y >= element.y + element.h ||  // new element is below
-          y + height <= element.y        // new element is above
-        );
+    changeOrientation(orientation) {
+      this.orientation = orientation;
+      const tempWidth = this.canvasWidth;
+      this.canvasWidth = this.canvasHeight;
+      this.canvasHeight = tempWidth;
+      
+      this.pdfLayout.forEach(element => {
+        if (element.x + element.w > this.canvasWidth) {
+          element.x = Math.max(0, this.canvasWidth - element.w);
+        }
+        if (element.y + element.h > this.canvasHeight) {
+          element.y = Math.max(0, this.canvasHeight - element.h);
+        }
       });
     },
 
     // Element Management
+    selectElement(element) {
+      this.selectedElement = element;
+    },
+
+    updateElement(elementId, updatedProps) {
+      const element = this.pdfLayout.find(el => el.i === elementId);
+      if (element) {
+        Object.assign(element.props, updatedProps);
+      }
+    },
+
+    deleteElement(elementId) {
+      this.$confirm(
+        'Are you sure you want to delete this element?',
+        'Delete Element',
+        {
+          confirmButtonText: 'Delete',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }
+      ).then(() => {
+        const index = this.pdfLayout.findIndex(el => el.i === elementId);
+        if (index > -1) {
+          this.pdfLayout.splice(index, 1);
+          if (this.selectedElement && this.selectedElement.i === elementId) {
+            this.selectedElement = null;
+          }
+        }
+      }).catch(() => {
+        // User cancelled
+      });
+    },
+
+    deselectElement(event) {
+      if (event.target === this.$refs.pdfCanvas || event.target.classList.contains('grid-background')) {
+        this.selectedElement = null;
+      }
+    },
+
+    // Drag Movement
+    startDrag(event, element) {
+      if (event.target.classList.contains('resize-handle')) {
+        return;
+      }
+      
+      this.selectElement(element);
+      this.draggingElement = element.i;
+      
+      const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
+      
+      const mouseScreenX = event.clientX - canvasRect.left;
+      const mouseScreenY = event.clientY - canvasRect.top;
+      
+      this._dragStartPos = {
+        x: mouseScreenX - element.x,
+        y: mouseScreenY - element.y
+      };
+
+      const boundHandleDragMove = this.handleDragMove.bind(this);
+      const boundHandleDragEnd = this.handleDragEnd.bind(this);
+      
+      document.addEventListener('mousemove', boundHandleDragMove);
+      document.addEventListener('mouseup', boundHandleDragEnd);
+      
+      this._boundHandleDragMove = boundHandleDragMove;
+      this._boundHandleDragEnd = boundHandleDragEnd;
+      
+      event.preventDefault();
+    },
+
+    handleDragMove(event) {
+      if (this.draggingElement !== null) {
+        const elementIndex = this.pdfLayout.findIndex(el => el.i === this.draggingElement);
+        
+        if (elementIndex !== -1) {
+          const element = this.pdfLayout[elementIndex];
+          const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
+          
+          const mouseScreenX = event.clientX - canvasRect.left;
+          const mouseScreenY = event.clientY - canvasRect.top;
+          
+          let newX = (mouseScreenX - this._dragStartPos.x);
+          let newY = (mouseScreenY - this._dragStartPos.y);
+          
+          newX = Math.round(newX / this.gridSize) * this.gridSize;
+          newY = Math.round(newY / this.gridSize) * this.gridSize;
+          
+          newX = Math.max(0, Math.min(newX, this.canvasWidth - element.w));
+          newY = Math.max(0, Math.min(newY, this.canvasHeight - element.h));
+          
+          // Check for overlap before updating position
+          const testPosition = {
+            x: newX,
+            y: newY,
+            w: element.w,
+            h: element.h
+          };
+          
+          if (!this.wouldOverlap(testPosition, element.i)) {
+            this.$set(this.pdfLayout[elementIndex], 'x', newX);
+            this.$set(this.pdfLayout[elementIndex], 'y', newY);
+          }
+        }
+      }
+    },
+
+    handleDragEnd() {
+      this.draggingElement = null;
+      this.resizing = false;
+      this.resizeHandle = null;
+      
+      if (this._boundHandleDragMove) {
+        document.removeEventListener('mousemove', this._boundHandleDragMove);
+        this._boundHandleDragMove = null;
+      }
+      if (this._boundHandleDragEnd) {
+        document.removeEventListener('mouseup', this._boundHandleDragEnd);
+        this._boundHandleDragEnd = null;
+      }
+    },
+
+    // Resize handlers
+    startResize(event, element, handle) {
+      this.resizing = true;
+      this.resizeHandle = handle;
+      this.selectElement(element);
+      
+      const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
+      
+      this._resizeStartPos = {
+        x: event.clientX,
+        y: event.clientY,
+        elementX: element.x,
+        elementY: element.y,
+        elementW: element.w,
+        elementH: element.h
+      };
+
+      const boundHandleResize = this.handleResize.bind(this);
+      const boundHandleDragEnd = this.handleDragEnd.bind(this);
+      
+      document.addEventListener('mousemove', boundHandleResize);
+      document.addEventListener('mouseup', boundHandleDragEnd);
+      
+      this._boundHandleResize = boundHandleResize;
+      this._boundHandleDragEnd = boundHandleDragEnd;
+      
+      event.preventDefault();
+      event.stopPropagation();
+    },
+
+    handleResize(event) {
+      if (!this.resizing || !this.selectedElement) return;
+
+      const element = this.selectedElement;
+      
+      const deltaX = event.clientX - this._resizeStartPos.x;
+      const deltaY = event.clientY - this._resizeStartPos.y;
+
+      let newX = this._resizeStartPos.elementX;
+      let newY = this._resizeStartPos.elementY;
+      let newW = this._resizeStartPos.elementW;
+      let newH = this._resizeStartPos.elementH;
+
+      // Handle different resize handles
+      if (this.resizeHandle.includes('n')) {
+        newY = this._resizeStartPos.elementY + deltaY;
+        newH = this._resizeStartPos.elementH - deltaY;
+      }
+      if (this.resizeHandle.includes('s')) {
+        newH = this._resizeStartPos.elementH + deltaY;
+      }
+      if (this.resizeHandle.includes('w')) {
+        newX = this._resizeStartPos.elementX + deltaX;
+        newW = this._resizeStartPos.elementW - deltaX;
+      }
+      if (this.resizeHandle.includes('e')) {
+        newW = this._resizeStartPos.elementW + deltaX;
+      }
+
+      // Constrain to minimum size
+      newW = Math.max(20, newW);
+      newH = Math.max(20, newH);
+
+      // Constrain to canvas bounds
+      newX = Math.max(0, Math.min(newX, this.canvasWidth - newW));
+      newY = Math.max(0, Math.min(newY, this.canvasHeight - newH));
+      newW = Math.min(newW, this.canvasWidth - newX);
+      newH = Math.min(newH, this.canvasHeight - newY);
+
+      // Snap to grid
+      newX = Math.round(newX / this.gridSize) * this.gridSize;
+      newY = Math.round(newY / this.gridSize) * this.gridSize;
+      newW = Math.round(newW / this.gridSize) * this.gridSize;
+      newH = Math.round(newH / this.gridSize) * this.gridSize;
+
+      // Check for overlap with other elements
+      const testPosition = {
+        x: newX,
+        y: newY,
+        w: newW,
+        h: newH
+      };
+      
+      // Only update if no overlap with other elements
+      if (!this.wouldOverlap(testPosition, element.i)) {
+        element.x = newX;
+        element.y = newY;
+        element.w = newW;
+        element.h = newH;
+      }
+    },
+
+    // Helper methods
+    getElementStyle(item) {
+      return {
+        position: 'absolute',
+        left: item.x + 'px',
+        top: item.y + 'px',
+        width: item.w + 'px',
+        height: item.h + 'px',
+        zIndex: item.z || 1
+      };
+    },
+
     getDefaultWidth(type) {
       const widths = {
         text: 200,
@@ -465,468 +886,256 @@ export default {
       return heights[type] || 40;
     },
 
-    getElementStyle(item) {
-      return {
-        position: 'absolute',
-        left: item.x + 'px',
-        top: item.y + 'px',
-        width: item.w + 'px',
-        height: item.h + 'px',
-        zIndex: item.z || 1
-      };
-    },
+    findNonOverlappingPosition(preferredX, preferredY, width, height) {
+      // Ensure the position is within canvas bounds
+      preferredX = Math.max(0, Math.min(preferredX, this.canvasWidth - width));
+      preferredY = Math.max(0, Math.min(preferredY, this.canvasHeight - height));
 
-    selectElement(element) {
-      this.selectedElement = element;
-    },
-
-    updateElement(elementId, updatedElement) {
-      console.log('PdfBuilder: Updating element', elementId, updatedElement);
-      const index = this.pdfLayout.findIndex(el => el.i === elementId);
-      if (index !== -1) {
-        this.$set(this.pdfLayout, index, { ...updatedElement });
-        this.$forceUpdate();
+      if (!this.isPositionOccupied(preferredX, preferredY, width, height)) {
+        return { x: preferredX, y: preferredY };
       }
-    },
 
-    deleteElement(elementId) {
-      this.$confirm(
-        this.$t('Are you sure you want to delete this element?'),
-        this.$t('Delete Element'),
-        {
-          confirmButtonText: this.$t('Delete'),
-          cancelButtonText: this.$t('Cancel'),
-          type: 'warning'
-        }
-      ).then(() => {
-        const index = this.pdfLayout.findIndex(el => el.i === elementId);
-        if (index > -1) {
-          this.pdfLayout.splice(index, 1);
-          if (this.selectedElement && this.selectedElement.i === elementId) {
-            this.selectedElement = null;
-          }
-        }
-      }).catch(() => {
-        // User cancelled
-      });
-    },
-
-    // Drag Movement with smooth animation
-    startDrag(event, element) {
-      if (event.target.classList.contains('resize-handle')) return;
+      // Try to find a non-overlapping position by spiraling outward
+      const maxAttempts = 100;
+      const step = this.gridSize;
       
-      this.selectElement(element);
-      this.draggingElement = element.i;
-      
-      const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
-      this.dragStartPos = {
-        x: event.clientX - canvasRect.left - element.x,
-        y: event.clientY - canvasRect.top - element.y
-      };
-
-      document.addEventListener('mousemove', this.handleDragMove);
-      document.addEventListener('mouseup', this.handleDragEnd);
-      event.preventDefault();
-    },
-
-    handleDragMove(event) {
-      if (this.draggingElement && !this.resizing) {
-        const element = this.pdfLayout.find(el => el.i === this.draggingElement);
-        if (element) {
-          const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
-          const newX = event.clientX - canvasRect.left - this.dragStartPos.x;
-          const newY = event.clientY - canvasRect.top - this.dragStartPos.y;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const radius = attempt * step;
+        
+        // Try positions in a spiral pattern
+        for (let angle = 0; angle < 360; angle += 45) {
+          const radians = angle * Math.PI / 180;
+          let testX = preferredX + Math.round(radius * Math.cos(radians) / step) * step;
+          let testY = preferredY + Math.round(radius * Math.sin(radians) / step) * step;
           
-          // Snap to grid and constrain to canvas bounds
-          const snappedX = Math.round(newX / this.gridSize) * this.gridSize;
-          const snappedY = Math.round(newY / this.gridSize) * this.gridSize;
-          
-          const constrainedX = Math.max(0, Math.min(snappedX, this.canvasWidth - element.w));
-          const constrainedY = Math.max(0, Math.min(snappedY, this.canvasHeight - element.h));
+          // Ensure the position is within canvas bounds
+          testX = Math.max(0, Math.min(testX, this.canvasWidth - width));
+          testY = Math.max(0, Math.min(testY, this.canvasHeight - height));
 
-          // Check for overlap with other elements (excluding self)
-          const tempLayout = this.pdfLayout.filter(el => el.i !== this.draggingElement);
-          const wouldOverlap = tempLayout.some(otherElement => {
-            return !(
-              constrainedX >= otherElement.x + otherElement.w ||
-              constrainedX + element.w <= otherElement.x ||
-              constrainedY >= otherElement.y + otherElement.h ||
-              constrainedY + element.h <= otherElement.y
-            );
-          });
-
-          // Only update position if no overlap
-          if (!wouldOverlap) {
-            element.x = constrainedX;
-            element.y = constrainedY;
+          if (!this.isPositionOccupied(testX, testY, width, height)) {
+            return { x: testX, y: testY };
           }
         }
       }
+
+      return { x: preferredX, y: preferredY };
     },
 
-    handleDragEnd() {
-      this.draggingElement = null;
-      this.resizing = false;
-      this.resizeHandle = null;
-      document.removeEventListener('mousemove', this.handleDragMove);
-      document.removeEventListener('mousemove', this.handleResize);
-      document.removeEventListener('mouseup', this.handleDragEnd);
-    },
-
-    // Resize Functionality with boundary constraints
-    startResize(event, element, handle) {
-      this.resizing = true;
-      this.resizeHandle = handle;
-      this.selectedElement = element;
-      this.dragStartPos = {
-        x: event.clientX,
-        y: event.clientY,
-        elementX: element.x,
-        elementY: element.y,
-        elementW: element.w,
-        elementH: element.h
-      };
-
-      document.addEventListener('mousemove', this.handleResize);
-      document.addEventListener('mouseup', this.handleDragEnd);
-      event.preventDefault();
-    },
-
-    handleResize(event) {
-      if (!this.resizing || !this.selectedElement) return;
-
-      const deltaX = event.clientX - this.dragStartPos.x;
-      const deltaY = event.clientY - this.dragStartPos.y;
-      const element = this.selectedElement;
-
-      let newX = element.x;
-      let newY = element.y;
-      let newW = element.w;
-      let newH = element.h;
-
-      switch (this.resizeHandle) {
-        case 'se':
-          newW = Math.max(20, this.dragStartPos.elementW + deltaX);
-          newH = Math.max(20, this.dragStartPos.elementH + deltaY);
-          break;
-        case 'sw':
-          newW = Math.max(20, this.dragStartPos.elementW - deltaX);
-          newH = Math.max(20, this.dragStartPos.elementH + deltaY);
-          newX = this.dragStartPos.elementX + deltaX;
-          break;
-        case 'ne':
-          newW = Math.max(20, this.dragStartPos.elementW + deltaX);
-          newH = Math.max(20, this.dragStartPos.elementH - deltaY);
-          newY = this.dragStartPos.elementY + deltaY;
-          break;
-        case 'nw':
-          newW = Math.max(20, this.dragStartPos.elementW - deltaX);
-          newH = Math.max(20, this.dragStartPos.elementH - deltaY);
-          newX = this.dragStartPos.elementX + deltaX;
-          newY = this.dragStartPos.elementY + deltaY;
-          break;
-        case 'n':
-          newH = Math.max(20, this.dragStartPos.elementH - deltaY);
-          newY = this.dragStartPos.elementY + deltaY;
-          break;
-        case 's':
-          newH = Math.max(20, this.dragStartPos.elementH + deltaY);
-          break;
-        case 'w':
-          newW = Math.max(20, this.dragStartPos.elementW - deltaX);
-          newX = this.dragStartPos.elementX + deltaX;
-          break;
-        case 'e':
-          newW = Math.max(20, this.dragStartPos.elementW + deltaX);
-          break;
-      }
-
-      // Constrain to canvas bounds
-      if (newX < 0) {
-        newW += newX;
-        newX = 0;
-      }
-      if (newY < 0) {
-        newH += newY;
-        newY = 0;
-      }
-      if (newX + newW > this.canvasWidth) {
-        newW = this.canvasWidth - newX;
-      }
-      if (newY + newH > this.canvasHeight) {
-        newH = this.canvasHeight - newY;
-      }
-
-      // Snap to grid
-      element.x = Math.round(newX / this.gridSize) * this.gridSize;
-      element.y = Math.round(newY / this.gridSize) * this.gridSize;
-      element.w = Math.round(newW / this.gridSize) * this.gridSize;
-      element.h = Math.round(newH / this.gridSize) * this.gridSize;
-    },
-
-    // Property Updates with boundary constraints
-    updateElementPosition(elementId, field, value) {
-      const element = this.pdfLayout.find(el => el.i === elementId);
-      if (element) {
-        const numValue = parseInt(value) || 0;
-        if (field === 'x') {
-          element.x = Math.max(0, Math.min(numValue, this.canvasWidth - element.w));
-        } else if (field === 'y') {
-          element.y = Math.max(0, Math.min(numValue, this.canvasHeight - element.h));
-        }
-        this.$forceUpdate();
-      }
-    },
-
-    updateElementSize(elementId, field, value) {
-      const element = this.pdfLayout.find(el => el.i === elementId);
-      if (element) {
-        const numValue = parseInt(value) || 10;
-        if (field === 'w') {
-          element.w = Math.max(10, Math.min(numValue, this.canvasWidth - element.x));
-        } else if (field === 'h') {
-          element.h = Math.max(10, Math.min(numValue, this.canvasHeight - element.y));
-        }
-        this.$forceUpdate();
-      }
-    },
-
-    // Page Settings
-    changePageSize(size) {
-      this.pageSize = size;
-      // Reposition elements that are now outside bounds
-      this.pdfLayout.forEach(element => {
-        if (element.x + element.w > this.canvasWidth) {
-          element.x = Math.max(0, this.canvasWidth - element.w);
-        }
-        if (element.y + element.h > this.canvasHeight) {
-          element.y = Math.max(0, this.canvasHeight - element.h);
-        }
+    isPositionOccupied(x, y, width, height) {
+      return this.pdfLayout.some(element => {
+        return !(x >= element.x + element.w || 
+                 x + width <= element.x || 
+                 y >= element.y + element.h || 
+                 y + height <= element.y);
       });
     },
 
-    changeOrientation(orientation) {
-      this.orientation = orientation;
-      // Reposition elements that are now outside bounds
-      this.pdfLayout.forEach(element => {
-        if (element.x + element.w > this.canvasWidth) {
-          element.x = Math.max(0, this.canvasWidth - element.w);
-        }
-        if (element.y + element.h > this.canvasHeight) {
-          element.y = Math.max(0, this.canvasHeight - element.h);
-        }
-      });
-    },
-
-    // Header/Footer methods
-    saveHeaderFooter() {
-      this.showHeaderFooterDialog = false;
-      this.$message.success(this.$t('Header and footer saved'));
-    },
-
-    // Page management methods
-    addNewPage() {
-      const newPage = {
-        id: Date.now(),
-        name: `Page ${this.pages.length + 1}`,
-        layout: []
-      };
-      this.pages.push(newPage);
-    },
-
-    switchToPage(pageIndex) {
-      // Save current page layout
-      this.pages[this.currentPageIndex].layout = [...this.pdfLayout];
-      
-      // Switch to new page
-      this.currentPageIndex = pageIndex;
-      this.pdfLayout = [...this.pages[pageIndex].layout];
-      this.selectedElement = null;
-      
-      this.showPagesDialog = false;
-      this.$message.success(this.$t('Switched to') + ' ' + this.pages[pageIndex].name);
-    },
-
-    duplicatePage(pageIndex) {
-      const originalPage = this.pages[pageIndex];
-      const duplicatedPage = {
-        id: Date.now(),
-        name: originalPage.name + ' (Copy)',
-        layout: JSON.parse(JSON.stringify(originalPage.layout))
-      };
-      this.pages.splice(pageIndex + 1, 0, duplicatedPage);
-    },
-
-    deletePage(pageIndex) {
-      this.$confirm(
-        this.$t('Are you sure you want to delete this page?'),
-        this.$t('Delete Page'),
-        {
-          confirmButtonText: this.$t('Delete'),
-          cancelButtonText: this.$t('Cancel'),
-          type: 'warning'
-        }
-      ).then(() => {
-        this.pages.splice(pageIndex, 1);
-        
-        // Adjust current page index if necessary
-        if (this.currentPageIndex >= pageIndex && this.currentPageIndex > 0) {
-          this.currentPageIndex--;
-        }
-        
-        // Load the current page layout
-        this.pdfLayout = [...this.pages[this.currentPageIndex].layout];
-        this.selectedElement = null;
-      });
-    },
-
-    updatePageName(pageIndex, newName) {
-      this.pages[pageIndex].name = newName;
-    },
-
-    // Updated save method to include all pages
     savePdf() {
-      // Save current page layout
       this.pages[this.currentPageIndex].layout = [...this.pdfLayout];
       
       const templateData = {
-        pages: this.pages,
-        pageSize: this.pageSize,
-        orientation: this.orientation,
-        headerContent: this.headerContent,
-        footerContent: this.footerContent
+        pages: this.pages
       };
       this.$emit('save', templateData);
     },
 
-    // Updated preview method
-    previewPdf() {
-      // Save current page layout
-      this.pages[this.currentPageIndex].layout = [...this.pdfLayout];
-      
-      const templateData = {
-        pages: this.pages,
-        pageSize: this.pageSize,
-        orientation: this.orientation,
-        headerContent: this.headerContent,
-        footerContent: this.footerContent
-      };
-      this.$emit('preview', templateData);
+    getElementPreview(item) {
+      switch (item.type) {
+        case 'text':
+          return item.props.content || 'Text Element';
+        case 'field':
+          return `{${item.props.fieldName || 'field_name'}}`;
+        case 'image':
+          return '[Image]';
+        case 'line':
+          return '—————';
+        default:
+          return item.type;
+      }
     },
 
-    getFormFieldOptions() {
-      return this.formFields.map(field => ({
-        value: field.name,
-        label: field.label || field.name
-      }));
+    updateElementProps() {
+      // Force reactivity by updating the element reference
+      if (this.selectedElement) {
+        const elementIndex = this.pdfLayout.findIndex(el => el.i === this.selectedElement.i);
+        if (elementIndex !== -1) {
+          // Trigger reactivity by replacing the element
+          this.$set(this.pdfLayout, elementIndex, { ...this.selectedElement });
+        }
+      }
+      this.$forceUpdate();
     },
 
-    updateAvailableElements() {
-      this.availableElements = [
-        {
-          type: 'text',
-          label: this.$t('Text'),
-          icon: 'el-icon-edit-outline',
-          defaultProps: {
-            content: 'Sample Text',
-            fontSize: 14,
-            fontWeight: 'normal',
-            color: '#000000'
-          }
-        },
-        {
-          type: 'field',
-          label: this.$t('Form Field'),
-          icon: 'el-icon-tickets',
-          defaultProps: {
-            fieldName: this.formFields.length > 0 ? this.formFields[0].name : '',
-            label: true,
-            fontSize: 12
-          }
-        },
-        {
-          type: 'image',
-          label: this.$t('Image'),
-          icon: 'el-icon-picture-outline',
-          defaultProps: {
-            src: '',
-            alt: 'Image'
-          }
-        },
-        {
-          type: 'table',
-          label: this.$t('Table'),
-          icon: 'el-icon-menu',
-          defaultProps: {
-            rows: 3,
-            cols: 3,
-            showHeaders: true,
-            headers: ['Header 1', 'Header 2', 'Header 3'],
-            data: [
-              ['Cell 1-1', 'Cell 1-2', 'Cell 1-3'],
-              ['Cell 2-1', 'Cell 2-2', 'Cell 2-3'],
-              ['Cell 3-1', 'Cell 3-2', 'Cell 3-3']
-            ]
-          }
-        },
-        {
-          type: 'line',
-          label: this.$t('Line'),
-          icon: 'el-icon-minus',
-          defaultProps: {
-            thickness: 1,
-            color: '#000000'
+    updateElementPosition() {
+      // Trigger reactivity
+      this.$forceUpdate();
+    },
+
+    updateElementSize() {
+      // Trigger reactivity
+      this.$forceUpdate();
+    },
+
+    adjustElementsToCanvas() {
+      // Adjust elements that are outside the new canvas bounds
+      this.pdfLayout.forEach(element => {
+        if (element.x + element.w > this.canvasWidth) {
+          element.x = Math.max(0, this.canvasWidth - element.w);
+        }
+        if (element.y + element.h > this.canvasHeight) {
+          element.y = Math.max(0, this.canvasHeight - element.h);
+        }
+        
+        // Ensure elements don't exceed canvas bounds
+        if (element.w > this.canvasWidth) {
+          element.w = this.canvasWidth - 20;
+        }
+        if (element.h > this.canvasHeight) {
+          element.h = this.canvasHeight - 20;
+        }
+      });
+    },
+
+    // Helper method to check if a position would overlap with other elements
+    wouldOverlap(position, currentElementId) {
+      return this.pdfLayout.some(element => {
+        // Skip checking against itself
+        if (element.i === currentElementId) {
+          return false;
+        }
+        
+        // Check for overlap using proper boundary detection
+        return !(
+          position.x >= element.x + element.w || 
+          position.x + position.w <= element.x || 
+          position.y >= element.y + element.h || 
+          position.y + position.h <= element.y
+        );
+      });
+    },
+
+    // Ensure elements stay within canvas bounds
+    constrainElementsToCanvas() {
+      this.pdfLayout.forEach(element => {
+        // Ensure element is within canvas bounds
+        if (element.x + element.w > this.canvasWidth) {
+          if (element.w > this.canvasWidth) {
+            element.w = this.canvasWidth - 20;
+            element.x = 0;
+          } else {
+            element.x = this.canvasWidth - element.w;
           }
         }
-      ];
+        
+        if (element.y + element.h > this.canvasHeight) {
+          if (element.h > this.canvasHeight) {
+            element.h = this.canvasHeight - 20;
+            element.y = 0;
+          } else {
+            element.y = this.canvasHeight - element.h;
+          }
+        }
+        
+        // Ensure element is not negative
+        element.x = Math.max(0, element.x);
+        element.y = Math.max(0, element.y);
+      });
+    },
+    toggleSettingsSidebar() {
+      this.settingsSidebarVisible = !this.settingsSidebarVisible;
+      
+      // Toggle the settings sidebar with class ff_settings_sidebar ff_layout_section_sidebar
+      const settingsSidebar = document.querySelector('.ff_settings_sidebar.ff_layout_section_sidebar');
+      if (settingsSidebar) {
+        if (this.settingsSidebarVisible) {
+          settingsSidebar.style.display = 'block';
+        } else {
+          settingsSidebar.style.display = 'none';
+        }
+      }
+      
+      // Also toggle the sidebar wrapper if it exists
+      const sidebarWrapper = document.querySelector('.ff_settings_sidebar_wrap');
+      if (sidebarWrapper) {
+        if (this.settingsSidebarVisible) {
+          sidebarWrapper.style.display = 'block';
+        } else {
+          sidebarWrapper.style.display = 'none';
+        }
+      }
     }
   },
-
   watch: {
-    formFields: {
-      handler(newFields, oldFields) {
-        this.updateAvailableElements();
+    templateData: {
+      handler(newTemplateData) {
+        if (newTemplateData && newTemplateData.pages && newTemplateData.pages.length > 0) {
+          // Load the layout from the first page
+          this.pdfLayout = [...(newTemplateData.pages[0].layout || [])];
+          this.pages = [...newTemplateData.pages];
+          
+          // Update element counter to avoid ID conflicts
+          if (this.pdfLayout.length > 0) {
+            const maxId = Math.max(...this.pdfLayout.map(el => {
+              const match = el.i.match(/element_(\d+)/);
+              return match ? parseInt(match[1]) : 0;
+            }));
+            this.elementCounter = maxId;
+          }
+        }
       },
       immediate: true,
       deep: true
+    },
+    
+    appearance: {
+      handler(newAppearance, oldAppearance) {
+        this.$nextTick(() => {
+          this.constrainElementsToCanvas();
+          this.$forceUpdate();
+        });
+      },
+      deep: true,
+      immediate: true
+    },
+    
+    canvasWidth() {
+      this.$nextTick(() => {
+        this.constrainElementsToCanvas();
+      });
+    },
+    
+    canvasHeight() {
+      this.$nextTick(() => {
+        this.constrainElementsToCanvas();
+      });
     }
   },
-
   mounted() {
-    // Load existing template data
-    if (this.templateData.layout) {
-      this.pdfLayout = [...this.templateData.layout];
-      this.pageSize = this.templateData.pageSize || 'a4';
-      this.orientation = this.templateData.orientation || 'portrait';
-      this.elementCounter = this.pdfLayout.length;
+    // Load template data on mount if available
+    if (this.templateData && this.templateData.pages && this.templateData.pages.length > 0) {
+      this.pdfLayout = [...(this.templateData.pages[0].layout || [])];
+      this.pages = [...this.templateData.pages];
     }
-
-    this.updateAvailableElements();
-
-    // Handle clicks outside canvas to deselect
-    document.addEventListener('click', (event) => {
-      if (!this.$refs.pdfCanvas.contains(event.target) && 
-          !event.target.closest('.properties-panel')) {
-        this.selectedElement = null;
-      }
-    });
-
-    // Handle keyboard delete
-    document.addEventListener('keydown', (event) => {
+    
+    this.handleKeyboardDelete = (event) => {
       if (event.key === 'Delete' || event.key === 'Backspace') {
         if (this.selectedElement && !event.target.matches('input, textarea')) {
           event.preventDefault();
           this.deleteElement(this.selectedElement.i);
         }
       }
-    });
-  },
+    };
 
+    document.addEventListener('keydown', this.handleKeyboardDelete);
+  },
   beforeDestroy() {
-    // Clean up event listeners
-    document.removeEventListener('mousemove', this.handleDragMove);
-    document.removeEventListener('mousemove', this.handleResize);
-    document.removeEventListener('mouseup', this.handleDragEnd);
+    document.removeEventListener('keydown', this.handleKeyboardDelete);
+    if (this._boundHandleDragMove) {
+      document.removeEventListener('mousemove', this._boundHandleDragMove);
+    }
+    if (this._boundHandleDragEnd) {
+      document.removeEventListener('mouseup', this._boundHandleDragEnd);
+    }
   }
 };
 </script>
@@ -936,112 +1145,75 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 600px;
 }
 
 .pdf-toolbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 15px;
+  padding: 10px;
+  background-color: #f5f7fa;
   border-bottom: 1px solid #e4e7ed;
-  background: #f8f9fa;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
 }
 
 .pdf-builder-content {
   display: flex;
   flex: 1;
-  min-height: 0;
+  height: calc(100vh - 120px);
+  overflow: hidden;
+}
+
+.pdf-builder-content.sidebar-hidden .canvas-container {
+  width: 100%;
 }
 
 .element-palette {
-  width: 200px;
+  width: 250px;
   border-right: 1px solid #e4e7ed;
   padding: 15px;
-  background: #fafafa;
+  overflow-y: auto;
+  transition: width 0.3s ease;
 }
 
-.element-palette h4 {
-  margin: 0 0 15px 0;
-  font-size: 14px;
-  color: #606266;
-}
-
-.palette-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.palette-item {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  background: white;
-  cursor: grab;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.palette-item:hover {
-  border-color: #409eff;
-  background: #ecf5ff;
-  transform: translateY(-1px);
-}
-
-.palette-item:active {
-  cursor: grabbing;
-  transform: translateY(0);
-}
-
-.palette-item i {
-  margin-right: 8px;
-  color: #409eff;
+.element-palette.hidden {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: none;
 }
 
 .canvas-container {
   flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px;
-  background: #f0f2f5;
   overflow: auto;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-start; /* Allow scrolling to leftmost */
+  align-items: flex-start;
+  min-height: 0;
 }
 
 .canvas-wrapper {
-  position: relative;
+  display: block; /* Change from flex to block */
+  width: 100%;
+  min-width: max-content; /* Ensure wrapper is at least as wide as canvas */
+  text-align: center; /* Center the canvas horizontally */
 }
 
 .pdf-canvas {
   position: relative;
+  overflow: visible;
   background: white;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: border-color 0.2s ease;
-}
-
-.canvas-a4.canvas-portrait {
-  width: 595px;
-  height: 842px;
-}
-
-.canvas-a4.canvas-landscape {
-  width: 842px;
-  height: 595px;
-}
-
-.canvas-letter.canvas-portrait {
-  width: 612px;
-  height: 792px;
-}
-
-.canvas-letter.canvas-landscape {
-  width: 792px;
-  height: 612px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .pdf-canvas.drag-over {
@@ -1053,14 +1225,11 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    linear-gradient(to right, #f0f0f0 1px, transparent 1px),
-    linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
-  background-size: 10px 10px;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  opacity: 0.5;
+  z-index: 0;
+  /* The background will be set by the gridStyle computed property */
 }
 
 .canvas-element {
@@ -1068,6 +1237,7 @@ export default {
   border: 1px solid transparent;
   cursor: move;
   transition: border-color 0.2s ease;
+  z-index: 1;
 }
 
 .canvas-element:hover {
@@ -1077,12 +1247,6 @@ export default {
 .canvas-element.selected {
   border-color: #409eff;
   box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
-}
-
-.canvas-element.dragging {
-  opacity: 0.8;
-  z-index: 1000;
-  transition: none;
 }
 
 .resize-handles {
@@ -1096,76 +1260,85 @@ export default {
 
 .resize-handle {
   position: absolute;
+  width: 8px;
+  height: 8px;
   background: #409eff;
-  border: 1px solid white;
+  border: 1px solid #fff;
   pointer-events: all;
-  z-index: 10;
-  transition: all 0.2s ease;
+  border-radius: 1px;
 }
 
-.resize-handle:hover {
-  background: #66b1ff;
-  transform: scale(1.2);
-}
-
-.resize-handle.nw, .resize-handle.ne, .resize-handle.sw, .resize-handle.se {
-  width: 8px;
-  height: 8px;
-}
-
-.resize-handle.n, .resize-handle.s {
-  width: 8px;
-  height: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.resize-handle.w, .resize-handle.e {
-  width: 4px;
-  height: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.resize-handle.nw { top: -4px; left: -4px; cursor: nw-resize; }
-.resize-handle.ne { top: -4px; right: -4px; cursor: ne-resize; }
-.resize-handle.sw { bottom: -4px; left: -4px; cursor: sw-resize; }
-.resize-handle.se { bottom: -4px; right: -4px; cursor: se-resize; }
-.resize-handle.n { top: -4px; cursor: n-resize; }
-.resize-handle.s { bottom: -4px; cursor: s-resize; }
-.resize-handle.w { left: -4px; cursor: w-resize; }
-.resize-handle.e { right: -4px; cursor: e-resize; }
+.resize-handle.nw { top: 0; left: 0; cursor: nw-resize; }
+.resize-handle.ne { top: 0; right: 0; cursor: ne-resize; }
+.resize-handle.sw { bottom: 0; left: 0; cursor: sw-resize; }
+.resize-handle.se { bottom: 0; right: 0; cursor: se-resize; }
+.resize-handle.n { top: 0; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+.resize-handle.s { bottom: 0; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+.resize-handle.w { left: 0; top: 50%; transform: translateY(-50%); cursor: w-resize; }
+.resize-handle.e { right: 0; top: 50%; transform: translateY(-50%); cursor: e-resize; }
 
 .properties-panel {
-  width: 250px;
+  width: 300px;
   border-left: 1px solid #e4e7ed;
-  padding: 15px;
   background: #fafafa;
+  display: flex;
+  flex-direction: column;
 }
 
-.properties-panel h4 {
-  margin: 0 0 15px 0;
-  font-size: 14px;
-  color: #606266;
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #e4e7ed;
 }
 
-.property-group {
-  margin-bottom: 20px;
+.panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #303133;
 }
 
-.property-group label {
-  display: block;
-  margin-bottom: 8px;
+.panel-content {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.no-selection {
+  text-align: center;
+  color: #909399;
+  font-style: italic;
+  margin-top: 50px;
+}
+
+.canvas-info {
   font-size: 12px;
-  color: #606266;
-  font-weight: 500;
+  color: #666;
 }
 
-.property-group small {
+.element-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  font-size: 12px;
+  color: #666;
+  background: rgba(64, 158, 255, 0.1);
+  border-radius: 2px;
+}
+
+.element-properties .el-form-item {
+  margin-bottom: 15px;
+}
+
+.element-properties label {
+  font-size: 10px;
+  color: #999;
   display: block;
   text-align: center;
-  font-size: 10px;
-  color: #909399;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 </style>

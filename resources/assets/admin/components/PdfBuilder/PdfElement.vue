@@ -95,12 +95,38 @@ export default {
     },
     
     textStyle() {
+      const textAlign = this.element.props.textAlign || 'left';
+      const verticalAlign = this.element.props.verticalAlign || 'middle';
+      
+      let justifyContent = 'flex-start';
+      if (textAlign === 'center') {
+        justifyContent = 'center';
+      } else if (textAlign === 'right') {
+        justifyContent = 'flex-end';
+      }
+      
+      let alignItems = 'center';
+      if (verticalAlign === 'top') {
+        alignItems = 'flex-start';
+      } else if (verticalAlign === 'bottom') {
+        alignItems = 'flex-end';
+      }
+      
       return {
         fontSize: this.element.props.fontSize + 'px',
-        fontWeight: this.element.props.fontWeight,
-        color: this.element.props.color,
+        fontWeight: this.element.props.fontWeight || 'normal',
+        fontStyle: this.element.props.fontStyle || 'normal',
+        color: this.element.props.color || '#000000',
+        backgroundColor: this.element.props.backgroundColor || 'transparent',
         lineHeight: '1.2',
-        wordWrap: 'break-word'
+        wordWrap: 'break-word',
+        padding: '4px',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: alignItems,
+        justifyContent: justifyContent,
+        textAlign: textAlign
       };
     },
     
@@ -199,6 +225,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 4px;
+  box-sizing: border-box;
 }
 
 .field-element {
