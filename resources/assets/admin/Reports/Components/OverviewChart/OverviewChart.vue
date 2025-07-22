@@ -102,7 +102,8 @@ export default {
                 refunded: [],
                 spam: [],
                 unread: [],
-                read: []
+                read: [],
+                trashed: []
             }
         };
     },
@@ -129,10 +130,7 @@ export default {
                  (this.overview_chart.payment_values && this.overview_chart.payment_values.length > 0) ||
                  (this.overview_chart.values && typeof this.overview_chart.values === 'object' &&
                   (this.overview_chart.values.paid || this.overview_chart.values.pending || this.overview_chart.values.refunded)));
-
-            const hasData = hasPaymentArray || hasPaidData || hasPendingData || hasRefundedData || hasPaymentInOverview;
-
-            return hasData;
+            return hasPaymentArray || hasPaidData || hasPendingData || hasRefundedData || hasPaymentInOverview;
         },
 
         // Get current metrics based on chart mode
@@ -230,7 +228,8 @@ export default {
                 refunded: [],
                 spam: [],
                 unread: [],
-                read: []
+                read: [],
+                trashed: []
             };
             // Handle different data structures based on the view type
             // Handle payment data types
@@ -246,6 +245,7 @@ export default {
             this.chartData.spam = data.values.spam || [];
             this.chartData.unread = data.values.unread || [];
             this.chartData.read = data.values.read || [];
+            this.chartData.trashed = data.values.trashed || [];
         },
 
         // Generate chart options for both chart types
@@ -408,6 +408,21 @@ export default {
                     data: this.chartData.read,
                     itemStyle: {
                         color: '#10b981',
+                        ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
+                    },
+                    ...(isLineChart ? {
+                        lineStyle: { color: '#10b981', width: 3 },
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        smooth: true
+                    } : {})
+                },
+                trashed: {
+                    name: 'Trashed',
+                    type: this.chartType,
+                    data: this.chartData.trashed,
+                    itemStyle: {
+                        color: '#FB4BA3',
                         ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
                     },
                     ...(isLineChart ? {

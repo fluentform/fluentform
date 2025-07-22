@@ -1841,7 +1841,7 @@ class ReportHelper
             }
 
             $results = $query->orderBy('date_group')->get();
-            $total = $read = $unread = $spam = [];
+            $total = $read = $unread = $spam = $trashed = [];
             foreach ($results as $result) {
                 if ($result->status === 'read') {
                     $read[$result->date_group] = $result->count;
@@ -1852,6 +1852,9 @@ class ReportHelper
                 if ($result->status === 'spam') {
                     $spam[$result->date_group] = $result->count;
                 }
+                if ($result->status === 'trashed') {
+                    $trashed[$result->date_group] = $result->count;
+                }
                 $total[$result->date_group] = isset($total[$result->date_group]) ? $total[$result->date_group] + $result->count : $result->count;
             }
             // Return all four datasets
@@ -1860,6 +1863,7 @@ class ReportHelper
                 'read' => $read,
                 'unread' => $unread,
                 'spam' => $spam,
+                'trashed' => $trashed
             ];
         }
     }
@@ -2016,6 +2020,7 @@ class ReportHelper
                     'read'        => array_values(self::fillMissingData($dates, $data['read'])),
                     'unread'      => array_values(self::fillMissingData($dates, $data['unread'])),
                     'spam'        => array_values(self::fillMissingData($dates, $data['spam'])),
+                    'trashed'     => array_values(self::fillMissingData($dates, $data['trashed']))
                 ]
             ];
         }

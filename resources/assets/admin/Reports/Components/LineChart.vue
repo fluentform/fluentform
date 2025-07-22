@@ -59,11 +59,12 @@ export default {
                 read: { name: 'Read', color: '#335CFF' },
                 unread: { name: 'Unread', color: '#F6B51E' },
                 spam: { name: 'Spam', color: '#FB3748' },
+                trashed: { name: 'Trashed', color: '#FB4BA3' },
                 revenue: {
-                    payments: { name: 'Total Revenue', color: '#F6B51E' },
-                    paid: { name: 'Paid', color: '#1FC16B' },
-                    pending: { name: 'Pending', color: '#7D52F4' },
-                    refunded: { name: 'Refunded', color: '#335CFF' }
+                    payments: { name: 'Total Revenue', color: '#7D52F4' },
+                    paid: { name: 'Paid', color: '#23A682' },
+                    pending: { name: 'Pending', color: '#F6B51E' },
+                    refunded: { name: 'Refunded', color: '#FB4BA3' }
                 }
             },
         };

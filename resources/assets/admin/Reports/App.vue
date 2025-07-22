@@ -338,7 +338,7 @@ export default {
             subscriptionsLoading: false,
             topFormsLoading: false,
             selectedTopFormsMetric: "entries",
-            selectedChartMetrics: ["submissions", "views", 'spam', 'unread', 'read'], // Default selected metrics
+            selectedChartMetrics: ["submissions", "views", 'spam', 'unread', 'read', 'trashed'], // Default selected metrics
             chartMode: "activity", // Track current chart mode
             globalDateParams: {
                 startDate: this.formatDateForApi(thirtyDaysAgo, true),
