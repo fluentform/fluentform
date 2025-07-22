@@ -373,9 +373,11 @@ class ReportHelper
             })
             ->groupBy('status')
             ->pluck('count', 'status');
+
         $unreadSubmissions = intval(Arr::get($statusCounts, 'unread', 0));
         $readSubmissions = intval(Arr::get($statusCounts, 'read', 0));
         $periodSpamSubmissions = intval(Arr::get($statusCounts, 'spam', 0));
+
 
         $previousStatusCounts = Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->selectRaw('status, COUNT(*) as count')
@@ -384,7 +386,8 @@ class ReportHelper
             })
             ->groupBy('status')
             ->pluck('count', 'status');
-        $previousSpamSubmissions = $previousStatusCounts['spam'] ?? 0;
+
+        $previousSpamSubmissions = intval(Arr::get($previousStatusCounts, 'spam', 0));
 
         // Get active integrations count from wp_options
         $modulesStatus = get_option('fluentform_global_modules_status');
@@ -1224,7 +1227,7 @@ class ReportHelper
         global $wpdb;
         $prefix = $wpdb->prefix;
         // Create a subquery with the email expression to handle the grouping properly
-        $subQuery = "SELECT 
+        $subQuery = "SELECT
             COALESCE(
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),

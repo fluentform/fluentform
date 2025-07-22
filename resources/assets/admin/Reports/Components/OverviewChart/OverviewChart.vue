@@ -44,7 +44,6 @@
             <div class="chart-wrapper">
                 <!-- Show message when in revenue mode but no payment data -->
                 <div v-if="chartMode === 'revenue' && !hasPaymentData" class="no-payment-data">
-                    <div class="no-data-icon">💰</div>
                     <h4>No Payment Data Available</h4>
                     <p>Payment data will appear here once you have forms with payment fields and received payments.</p>
                 </div>

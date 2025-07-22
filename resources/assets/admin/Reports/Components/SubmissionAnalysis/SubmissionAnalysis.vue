@@ -4,7 +4,7 @@
             <card-head>
                 <div class="submission-analysis-header">
                     <div class="title-section">
-                        <h3>Submission Analysis</h3>
+                        <h3>{{ getDynamicTitle() }}</h3>
                     </div>
                     <div class="controls-section">
 
@@ -32,8 +32,7 @@
                 </div>
 
                 <div v-else-if="submissionData.length === 0" class="no-data-state">
-                    <div class="no-data-icon">📊</div>
-                    <h4>No Submission Data Available</h4>
+                    <i class="el-icon-data-analysis no-data-icon"></i>
                     <p>No submission data found for the selected criteria and date range.</p>
                 </div>
 
@@ -241,12 +240,12 @@ export default {
             currentPage: 1,
             pageSize: localStorage.getItem('ffReportSubmissionAnalysisPerPage') || 5,
             totalItems: 0,
-            totals: { 
-                total: 0, 
-                read: 0, 
-                unread: 0, 
-                spam: 0, 
-                readRate: 0 
+            totals: {
+                total: 0,
+                read: 0,
+                unread: 0,
+                spam: 0,
+                readRate: 0
             }
         };
     },
@@ -285,33 +284,33 @@ export default {
                         this.totalItems = response.total || 0;
                         this.currentPage = parseInt(response.current_page || this.currentPage);
                         this.totals = response.totals || {
-                            total: 0, 
-                            read: 0, 
-                            unread: 0, 
-                            spam: 0, 
-                            readRate: 0 
+                            total: 0,
+                            read: 0,
+                            unread: 0,
+                            spam: 0,
+                            readRate: 0
                         };
                     } else {
                         this.submissionData = [];
                         this.totalItems = 0;
-                        this.totals = { 
-                            total: 0, 
-                            read: 0, 
-                            unread: 0, 
-                            spam: 0, 
-                            readRate: 0 
+                        this.totals = {
+                            total: 0,
+                            read: 0,
+                            unread: 0,
+                            spam: 0,
+                            readRate: 0
                         };
                     }
                 })
                 .catch(error => {
                     this.submissionData = [];
                     this.totalItems = 0;
-                    this.totals = { 
-                        total: 0, 
-                        read: 0, 
-                        unread: 0, 
-                        spam: 0, 
-                        readRate: 0 
+                    this.totals = {
+                        total: 0,
+                        read: 0,
+                        unread: 0,
+                        spam: 0,
+                        readRate: 0
                     };
                     this.$message.error('Failed to load submission analysis data');
                 })
@@ -337,7 +336,7 @@ export default {
             this.currentPage = 1;
             this.fetchSubmissionData();
         },
-        
+
         handleCurrentChange(newPage) {
             this.currentPage = newPage;
             this.fetchSubmissionData();
@@ -444,6 +443,13 @@ export default {
                 day: 'numeric'
             };
             return date.toLocaleDateString('en-US', options);
+        },
+        getDynamicTitle() {
+            const baseTitle = 'Submission Analysis';
+            if (this.selectedGroupBy && this.groupByOptions[this.selectedGroupBy]) {
+                return `${baseTitle} by ${this.groupByOptions[this.selectedGroupBy]}`;
+            }
+            return baseTitle;
         }
     }
 };

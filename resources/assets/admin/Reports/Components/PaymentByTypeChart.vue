@@ -20,8 +20,8 @@
             </div>
 
             <div class="payment-chart-section">
-                <div v-if="!hasPaymentData" class="no-data">
-                    <i class="el-icon-data-analysis"></i>
+                <div v-if="!hasPaymentData"  class="no-data">
+                    <i class="el-icon-data-analysis  no-data-icon"></i>
                     <span>No payment data available for the selected period</span>
                 </div>
                 <div v-else class="payment-bar-chart">
@@ -54,8 +54,8 @@
                 </div>
             </div>
 
-            <div class="weekly-average">
-                Weekly average paid ${{ formatNumber(weeklyAverage) }}
+            <div v-if="hasPaymentData" class="weekly-average">
+                Weekly average paid {{ currencySymbol }}{{ formatNumber(weeklyAverage) }}
             </div>
         </card-body>
     </card>

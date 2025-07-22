@@ -4,7 +4,7 @@
             <card-head>
                 <div class="net-revenue-header">
                     <div class="title-section">
-                        <h3>Revenue Analysis </h3>
+                        <h3>{{ getDynamicTitle() }}</h3>
                     </div>
                     <div class="controls-section">
                         <el-select
@@ -31,9 +31,8 @@
                 </div>
 
                 <div v-else-if="revenueData.length === 0" class="no-data-state">
-                    <div class="no-data-icon">💰</div>
-                    <h4>No Revenue Data Available</h4>
-                    <p>No revenue data found for the selected criteria and date range.</p>
+                    <i class="el-icon-money no-data-icon"></i>
+                    <span>No revenue data found for the selected date range.</span>
                 </div>
 
                 <div v-else class="revenue-table-container">
@@ -53,7 +52,13 @@
                         >
                             <template #default="{ row }">
                                 <div class="form-info">
-                                    <span class="form-title">{{ row.form_title }}</span>
+                                    <a
+                                        :href="getFormPreviewUrl(row.form_id)"
+                                        target="_blank"
+                                        class="form-title-link"
+                                    >
+                                        <span class="form-title">{{ row.form_title }}</span>
+                                    </a>
                                     <span class="form-id">#{{ row.form_id }}</span>
                                 </div>
                             </template>
@@ -150,7 +155,7 @@
                 </div>
             </card-body>
         </card>
-        <div class="ff_pagination_wrap text-right pagination-container mt-4">
+        <div v-if="totalItems > pageSize" class="ff_pagination_wrap text-right pagination-container mt-4">
             <el-pagination
                 class="ff_pagination"
                 background
@@ -355,6 +360,16 @@ export default {
         handleCurrentChange(newPage) {
             this.currentPage = newPage;
             this.fetchRevenueData();
+        },
+        getDynamicTitle() {
+            const baseTitle = 'Revenue Analysis';
+            if (this.selectedGroupBy && this.groupByOptions[this.selectedGroupBy]) {
+                return `${baseTitle} by ${this.groupByOptions[this.selectedGroupBy]}`;
+            }
+            return baseTitle;
+        },
+        getFormPreviewUrl(formId) {
+            return `${window.location.origin}/?fluent_forms_pages=1&design_mode=1&preview_id=${formId}#ff_preview`;
         }
     }
 };
@@ -464,5 +479,9 @@ export default {
     font-size: 12px;
     color: #9ca3af;
     text-transform: lowercase;
+}
+
+.form-title-link:hover {
+    text-decoration: underline;
 }
 </style>

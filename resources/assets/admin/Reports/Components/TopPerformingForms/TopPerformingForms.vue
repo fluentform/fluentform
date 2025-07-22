@@ -24,15 +24,19 @@
             </div>
 
             <div class="top-forms-chart" v-else>
-                <div class="chart-wrapper">
+                <div v-if="!topFormsData || topFormsData.length === 0" class="no-data">
+                    <i class="el-icon-s-order no-data-icon"></i>
+                    <span>No form data available for the selected period</span>
+                </div>
+                <div v-else class="chart-wrapper">
                     <v-chart
                         ref="chart"
                         :option="chartOptions"
                         style="height: 256px;"
                         autoresize
+                        @click="handleChartClick"
                     />
                 </div>
-
             </div>
         </card-body>
     </card>
@@ -192,16 +196,38 @@ export default {
             this.$emit('metric-change', this.selectedMetric);
         },
 
+        handleChartClick(params) {
+            // Handle clicks on form titles (yAxis labels) or bars
+            if (params.componentType === 'yAxis' || params.componentType === 'series') {
+                const dataIndex = params.componentType === 'yAxis' ? params.value : params.dataIndex;
+                const formIndex = params.componentType === 'yAxis'
+                    ? this.topFormsData.findIndex(form => this.truncateTitle(form.title) === dataIndex)
+                    : dataIndex;
+
+                if (formIndex >= 0 && this.topFormsData[formIndex]) {
+                    const formId = this.topFormsData[formIndex].id;
+
+                    const previewUrl = `${window.location.origin}/?fluent_forms_pages=1&design_mode=1&preview_id=${formId}#ff_preview`;
+                    window.open(previewUrl, '_blank');
+                }
+            }
+        },
+
         truncateTitle(title, maxLength = 25) {
             if (!title) return 'Untitled Form';
             return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
         },
 
         getBarColor(index) {
-            const colors = ['#D5E2FF','#C0D5FF', '#97BAFF', '#6895FF', '#335CFF'];
-                if (index < colors.length) {
-                    return colors[index];
-                }
+            const colors = ['#DCD5FF','#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4'];
+            const totalBars = this.topFormsData.length;
+
+            // Always use the strongest colors, starting from the end of the array
+            const colorIndex = Math.max(0, colors.length - totalBars) + index;
+
+            if (colorIndex < colors.length) {
+                return colors[colorIndex];
+            }
             return '#D5E2FF';
         },
 
