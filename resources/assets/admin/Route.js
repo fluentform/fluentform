@@ -106,6 +106,8 @@ class Route {
     formsReport = this.report + '/forms'
     formReport = this.formsReport + '/{param}'
     submissionsReport = this.report + '/submissions';
+    submissionsAnalysisReport = this.report + '/submissions-analysis';
+    netRevenueReport = this.report + '/net-revenue';
 
     //pro routes
     inventory ='inventory';

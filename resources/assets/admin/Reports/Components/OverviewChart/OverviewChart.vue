@@ -7,7 +7,6 @@
                 </div>
                 <div class="card-controls">
                     <el-radio-group
-                        v-if="hasPayment"
                         v-model="chartMode"
                         size="small"
                         class="mode-toggle-group"
@@ -86,7 +85,7 @@ export default {
         CardBody,
         CardHead
     },
-    props: ['overview_chart', 'forms_list', 'global_date_params', 'chart_view', 'selectedMetrics', 'hasPayment'],
+    props: ['overview_chart', 'forms_list', 'global_date_params', 'chart_view', 'selectedMetrics'],
     emits: ['form-change', 'chart-mode-change'],
     data() {
         return {

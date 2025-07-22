@@ -43,7 +43,6 @@
                         <el-col :span="24" :md="16" >
                             <div class="conversion-chart-section">
                                 <overview-chart
-                                    :has-payment="hasPayment"
                                     :overview_chart="overviewChartData"
                                     :forms_list="formsList"
                                     :global_date_params="globalDateParams"
