@@ -34,53 +34,81 @@
       <!-- Canvas Area -->
       <div class="canvas-container">
         <div class="canvas-wrapper" :style="`width: ${canvasWidth}px; margin: 20px;`">
-          <div 
-            class="pdf-canvas" 
-            :key="`canvas-${appearance?.paper_size}-${appearance?.orientation}`"
-            :style="canvasStyle"
+          <div
             ref="pdfCanvas"
+            class="pdf-canvas"
+            :class="{ 'drag-over': isDragOver }"
+            :style="canvasStyle"
+            @click="handleCanvasClick"
             @drop="handleDrop"
-            @dragover="handleDragOver"
-            @dragenter="handleDragEnter"
-            @dragleave="handleDragLeave"
-            @click="deselectElement"
+            @dragover.prevent
+            @dragenter.prevent="isDragOver = true"
+            @dragleave.prevent="isDragOver = false"
           >
-            <!-- Grid Background -->
+            <!-- Grid background -->
             <div class="grid-background" :style="gridStyle"></div>
             
-            <!-- Canvas Elements -->
+            <!-- PDF Elements -->
             <div
-              v-for="item in pdfLayout"
-              :key="item.i"
+              v-for="element in pdfLayout"
+              :key="element.i"
               class="canvas-element"
               :class="{ 
-                'selected': selectedElement && selectedElement.i === item.i,
-                'dragging': draggingElement === item.i 
+                'selected': selectedElement && selectedElement.i === element.i,
+                'dragging': draggingElement === element.i 
               }"
-              :style="getElementStyle(item)"
-              @mousedown="startDrag($event, item)"
-              @click.stop="selectElement(item)"
+              :style="getElementStyle(element)"
+              @click.stop="selectElement(element)"
+              @mousedown="startDrag($event, element)"
             >
-              <!-- Resize Handles -->
-              <div v-if="selectedElement && selectedElement.i === item.i" class="resize-handles">
-                <div class="resize-handle nw" @mousedown.stop="startResize($event, item, 'nw')"></div>
-                <div class="resize-handle ne" @mousedown.stop="startResize($event, item, 'ne')"></div>
-                <div class="resize-handle sw" @mousedown.stop="startResize($event, item, 'sw')"></div>
-                <div class="resize-handle se" @mousedown.stop="startResize($event, item, 'se')"></div>
-                <div class="resize-handle n" @mousedown.stop="startResize($event, item, 'n')"></div>
-                <div class="resize-handle s" @mousedown.stop="startResize($event, item, 's')"></div>
-                <div class="resize-handle w" @mousedown.stop="startResize($event, item, 'w')"></div>
-                <div class="resize-handle e" @mousedown.stop="startResize($event, item, 'e')"></div>
-              </div>
-
               <!-- Element Content -->
-              <div class="element-content">
-                <PdfElement 
-                  :element="item" 
-                  :formData="formData" 
-                  :formFields="formFields"
-                  @update="updateElement"
-                />
+              <div class="element-content" :style="getElementContentStyle(element)">
+                <!-- Text Element -->
+                <div v-if="element.type === 'text'" class="text-element" :style="textStyle(element)">
+                  {{ element.props.content || 'Sample Text' }}
+                </div>
+                
+                <!-- Image Element -->
+                <div v-else-if="element.type === 'image'" class="image-element">
+                  <div v-if="element.props.src" class="image-preview" :style="imagePreviewStyle(element)">
+                    <img 
+                      :src="element.props.src" 
+                      :alt="element.props.alt" 
+                      :style="imageElementStyle(element)"
+                    />
+                  </div>
+                  <div v-else class="image-placeholder">
+                    <i class="el-icon-picture"></i>
+                    <span>No image selected</span>
+                  </div>
+                </div>
+                
+                <!-- Line Element -->
+                <div v-else-if="element.type === 'line'" class="line-element" :style="lineStyle(element)">
+                </div>
+              </div>
+              
+              <!-- Resize handles -->
+              <div 
+                v-if="selectedElement && selectedElement.i === element.i" 
+                class="resize-handles"
+              >
+                <div 
+                  class="resize-handle resize-handle-nw"
+                  @mousedown.stop="startResize($event, element, 'nw')"
+                ></div>
+                <div 
+                  class="resize-handle resize-handle-ne"
+                  @mousedown.stop="startResize($event, element, 'ne')"
+                ></div>
+                <div 
+                  class="resize-handle resize-handle-sw"
+                  @mousedown.stop="startResize($event, element, 'sw')"
+                ></div>
+                <div 
+                  class="resize-handle resize-handle-se"
+                  @mousedown.stop="startResize($event, element, 'se')"
+                ></div>
               </div>
             </div>
           </div>
@@ -169,6 +197,7 @@
                   <input-popover 
                     v-model="selectedElement.props.content" 
                     fieldType="textarea"
+                    :rows="3"
                     :data="editorShortcodes"
                     :placeholder="$t('Enter text or select field')"
                     @input="updateElementProps"
@@ -211,25 +240,82 @@
                     show-alpha
                   />
                 </el-form-item>
-                <el-form-item :label="$t('Vertical Align')">
-                  <el-select v-model="selectedElement.props.verticalAlign" @change="updateElementProps">
-                    <el-option label="Top" value="top"></el-option>
-                    <el-option label="Middle" value="middle"></el-option>
-                    <el-option label="Bottom" value="bottom"></el-option>
-                  </el-select>
-                </el-form-item>
               </template>
 
-              <template v-if="selectedElement.type === 'field'">
-                <el-form-item :label="$t('Field Name')">
-                  <el-select v-model="selectedElement.props.fieldName" @change="updateElementProps">
-                    <el-option 
-                      v-for="field in formFields" 
-                      :key="field.name" 
-                      :label="field.label || field.name" 
-                      :value="field.name"
-                    />
+              <template v-if="selectedElement.type === 'image'">
+                <el-form-item :label="$t('Image')">
+                  <div class="image-upload-section">
+                    <el-button @click="openMediaLibrary" type="primary" size="small" icon="el-icon-upload">
+                      {{ selectedElement.props.src ? $t('Change Image') : $t('Upload Image') }}
+                    </el-button>
+                    <el-button 
+                      v-if="selectedElement.props.src" 
+                      @click="removeImage" 
+                      type="danger" 
+                      size="small" 
+                      icon="el-icon-delete"
+                    >
+                      {{ $t('Remove') }}
+                    </el-button>
+                  </div>
+                  <div v-if="selectedElement.props.src" class="image-preview-small">
+                    <img :src="selectedElement.props.src" style="max-width: 150px; max-height: 100px; object-fit: contain;" />
+                  </div>
+                </el-form-item>
+                
+                <el-form-item :label="$t('Alt Text')">
+                  <el-input 
+                    v-model="selectedElement.props.alt" 
+                    :placeholder="$t('Image description')"
+                    @input="updateElementProps"
+                  />
+                </el-form-item>
+                
+                <el-form-item :label="$t('Object Fit')">
+                  <el-select v-model="selectedElement.props.objectFit" @change="updateElementProps">
+                    <el-option label="Contain" value="contain"></el-option>
+                    <el-option label="Cover" value="cover"></el-option>
+                    <el-option label="Fill" value="fill"></el-option>
+                    <el-option label="Scale Down" value="scale-down"></el-option>
                   </el-select>
+                </el-form-item>
+                
+                <el-form-item :label="$t('Border Radius')">
+                  <el-input-number 
+                    v-model="selectedElement.props.borderRadius" 
+                    :min="0" 
+                    :max="50"
+                    @change="updateElementProps"
+                  />
+                  <span style="margin-left: 5px;">px</span>
+                </el-form-item>
+                
+                <el-form-item :label="$t('Border')">
+                  <el-row :gutter="10">
+                    <el-col :span="8">
+                      <el-input-number 
+                        v-model="selectedElement.props.borderWidth" 
+                        :min="0" 
+                        :max="10"
+                        size="mini"
+                        @change="updateElementProps"
+                      />
+                      <label>Width</label>
+                    </el-col>
+                    <el-col :span="8">
+                      <el-select v-model="selectedElement.props.borderStyle" size="mini" @change="updateElementProps">
+                        <el-option label="None" value="none"></el-option>
+                        <el-option label="Solid" value="solid"></el-option>
+                        <el-option label="Dashed" value="dashed"></el-option>
+                        <el-option label="Dotted" value="dotted"></el-option>
+                      </el-select>
+                      <label>Style</label>
+                    </el-col>
+                    <el-col :span="8">
+                      <el-color-picker v-model="selectedElement.props.borderColor" size="mini" @change="updateElementProps" />
+                      <label>Color</label>
+                    </el-col>
+                  </el-row>
                 </el-form-item>
               </template>
             </el-form>
@@ -241,13 +327,11 @@
 </template>
 
 <script>
-import PdfElement from './PdfElement.vue';
 import inputPopover from '../input-popover.vue';
 
 export default {
   name: 'PdfBuilder',
   components: {
-    PdfElement,
     inputPopover
   },
   props: {
@@ -291,6 +375,7 @@ export default {
         email: 'john@example.com',
         phone: '123-456-7890'
       },
+      gridSize: 10,
       availableElements: [
         {
           type: 'text',
@@ -308,24 +393,17 @@ export default {
           }
         },
         {
-          type: 'field',
-          label: 'Form Field',
-          icon: 'el-icon-tickets',
-          defaultProps: {
-            fieldName: '',
-            label: true,
-            fontSize: 12
-          }
-        },
-        {
           type: 'image',
           label: 'Image',
           icon: 'el-icon-picture',
           defaultProps: {
             src: '',
             alt: 'Image',
-            width: 100,
-            height: 100
+            objectFit: 'contain',
+            borderRadius: 0,
+            borderWidth: 0,
+            borderStyle: 'none',
+            borderColor: '#000000'
           }
         },
         {
@@ -339,10 +417,14 @@ export default {
           }
         }
       ],
-      gridSize: 10,
     };
   },
   computed: {
+    formData() {
+      // Use sample data for preview purposes
+      return this.sampleFormData;
+    },
+    
     canvasWidth() {
       const paperSize = this.appearance?.paper_size || 'A4';
       const orientation = this.appearance?.orientation || 'P';
@@ -503,12 +585,13 @@ export default {
       return {
         width: Math.round(this.canvasWidth) + 'px',
         height: Math.round(this.canvasHeight) + 'px',
-        position: 'relative',
+        position: 'relative', // This is crucial for absolute positioning of children
         backgroundColor: '#ffffff',
         border: '1px solid #ddd',
         margin: '20px auto',
         minHeight: '400px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        overflow: 'hidden' // Prevent elements from going outside canvas
       };
     },
 
@@ -570,6 +653,11 @@ export default {
     },
 
     addElementToCanvas(elementData, event) {
+      if (!this.$refs.pdfCanvas) {
+        console.error('Canvas element not found');
+        return;
+      }
+      
       const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
       
       // Calculate drop position relative to canvas
@@ -583,15 +671,16 @@ export default {
       const constrainedX = Math.max(0, Math.min(dropX, this.canvasWidth - defaultWidth));
       const constrainedY = Math.max(0, Math.min(dropY, this.canvasHeight - defaultHeight));
 
-      // Always use findNonOverlappingPosition to prevent overlaps
-      const position = this.findNonOverlappingPosition(constrainedX, constrainedY, defaultWidth, defaultHeight);
+      this.addElement(elementData, constrainedX, constrainedY);
+    },
 
+    addElement(elementData, x, y) {
       const newElement = {
         i: `element_${++this.elementCounter}`,
-        x: position.x,
-        y: position.y,
-        w: defaultWidth,
-        h: defaultHeight,
+        x: x,
+        y: y,
+        w: elementData.w || this.getDefaultWidth(elementData.type),
+        h: elementData.h || this.getDefaultHeight(elementData.type),
         type: elementData.type,
         z: 1,
         props: { ...elementData.defaultProps }
@@ -687,6 +776,11 @@ export default {
       this.selectElement(element);
       this.draggingElement = element.i;
       
+      if (!this.$refs.pdfCanvas) {
+        console.error('Canvas ref not found');
+        return;
+      }
+      
       const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
       
       const mouseScreenX = event.clientX - canvasRect.left;
@@ -710,7 +804,7 @@ export default {
     },
 
     handleDragMove(event) {
-      if (this.draggingElement !== null) {
+      if (this.draggingElement !== null && this.$refs.pdfCanvas) {
         const elementIndex = this.pdfLayout.findIndex(el => el.i === this.draggingElement);
         
         if (elementIndex !== -1) {
@@ -736,10 +830,10 @@ export default {
             w: element.w,
             h: element.h
           };
-          
+
           if (!this.wouldOverlap(testPosition, element.i)) {
-            this.$set(this.pdfLayout[elementIndex], 'x', newX);
-            this.$set(this.pdfLayout[elementIndex], 'y', newY);
+            element.x = newX;
+            element.y = newY;
           }
         }
       }
@@ -765,6 +859,11 @@ export default {
       this.resizing = true;
       this.resizeHandle = handle;
       this.selectElement(element);
+      
+      if (!this.$refs.pdfCanvas) {
+        console.error('Canvas ref not found for resize');
+        return;
+      }
       
       const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
       
@@ -860,8 +959,121 @@ export default {
         top: item.y + 'px',
         width: item.w + 'px',
         height: item.h + 'px',
-        zIndex: item.z || 1
+        zIndex: item.z || 1,
+        cursor: 'move',
+        border: this.selectedElement && this.selectedElement.i === item.i ? '2px solid #409EFF' : '1px dashed transparent',
+        boxSizing: 'border-box'
       };
+    },
+
+    getElementContentStyle(element) {
+      return {
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        pointerEvents: 'none'
+      };
+    },
+
+    textStyle(element) {
+      const textAlign = element.props.textAlign || 'left';
+      const verticalAlign = element.props.verticalAlign || 'middle';
+      
+      let justifyContent = 'flex-start';
+      if (textAlign === 'center') {
+        justifyContent = 'center';
+      } else if (textAlign === 'right') {
+        justifyContent = 'flex-end';
+      }
+      
+      let alignItems = 'center';
+      if (verticalAlign === 'top') {
+        alignItems = 'flex-start';
+      } else if (verticalAlign === 'bottom') {
+        alignItems = 'flex-end';
+      }
+      
+      return {
+        fontSize: (element.props.fontSize || 14) + 'px',
+        fontWeight: element.props.fontWeight || 'normal',
+        fontStyle: element.props.fontStyle || 'normal',
+        color: element.props.color || '#000000',
+        backgroundColor: element.props.backgroundColor || 'transparent',
+        lineHeight: '1.2',
+        wordWrap: 'break-word',
+        padding: '4px',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: alignItems,
+        justifyContent: justifyContent,
+        textAlign: textAlign
+      };
+    },
+
+    imagePreviewStyle(element) {
+      return {
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      };
+    },
+
+    imageElementStyle(element) {
+      const styles = [
+        'width: 100%',
+        'height: 100%',
+        'max-width: 100%',
+        'max-height: 100%',
+        `object-fit: ${element.props.objectFit || 'contain'}`,
+        'display: block'
+      ];
+      
+      if (element.props.borderRadius > 0) {
+        styles.push(`border-radius: ${element.props.borderRadius}px`);
+      }
+      
+      if (element.props.borderWidth > 0 && element.props.borderStyle !== 'none') {
+        styles.push(`border: ${element.props.borderWidth}px ${element.props.borderStyle} ${element.props.borderColor}`);
+        styles.push('box-sizing: border-box');
+      }
+      
+      return styles.join('; ');
+    },
+
+    fieldStyle(element) {
+      return {
+        fontSize: (element.props.fontSize || 12) + 'px',
+        lineHeight: '1.2',
+        wordWrap: 'break-word',
+        padding: '4px'
+      };
+    },
+
+    lineStyle(element) {
+      return {
+        height: (element.props.thickness || 1) + 'px',
+        backgroundColor: element.props.color || '#000000',
+        width: '100%'
+      };
+    },
+
+    getFieldLabel(fieldName) {
+      const field = this.formFields.find(f => f.name === fieldName);
+      return field ? (field.label || field.name) : fieldName;
+    },
+
+    getFieldValue(fieldName) {
+      return this.formData[fieldName] || '';
+    },
+
+    handleCanvasClick(event) {
+      if (event.target === event.currentTarget || event.target.classList.contains('grid-background')) {
+        this.selectedElement = null;
+      }
     },
 
     getDefaultWidth(type) {
@@ -931,11 +1143,27 @@ export default {
     },
 
     savePdf() {
-      this.pages[this.currentPageIndex].layout = [...this.pdfLayout];
+      // Normalize data before saving
+      const normalizedLayout = this.pdfLayout.map(element => ({
+        ...element,
+        x: parseInt(element.x) || 0,
+        y: parseInt(element.y) || 0,
+        w: parseInt(element.w) || 150,
+        h: parseInt(element.h) || 40,
+        z: parseInt(element.z) || 1,
+        props: {
+          ...element.props,
+          fontSize: parseInt(element.props.fontSize) || 14
+        }
+      }));
+      
+      this.pages[this.currentPageIndex].layout = normalizedLayout;
       
       const templateData = {
-        pages: this.pages
+        pages: this.pages,
+        appearance: this.appearance
       };
+      
       this.$emit('save', templateData);
     },
 
@@ -943,8 +1171,6 @@ export default {
       switch (item.type) {
         case 'text':
           return item.props.content || 'Text Element';
-        case 'field':
-          return `{${item.props.fieldName || 'field_name'}}`;
         case 'image':
           return '[Image]';
         case 'line':
@@ -966,14 +1192,26 @@ export default {
       this.$forceUpdate();
     },
 
-    updateElementPosition() {
-      // Trigger reactivity
-      this.$forceUpdate();
+    updateElementPosition(elementId, field, value) {
+      console.log('PdfBuilder: Updating element position:', elementId, field, value);
+      const element = this.pdfLayout.find(el => el.i === elementId);
+      if (element) {
+        const oldValue = element[field];
+        element[field] = parseInt(value);
+        console.log('Position updated from', oldValue, 'to', element[field]);
+        this.$forceUpdate(); // Force reactivity update
+      }
     },
 
-    updateElementSize() {
-      // Trigger reactivity
-      this.$forceUpdate();
+    updateElementSize(elementId, field, value) {
+      console.log('PdfBuilder: Updating element size:', elementId, field, value);
+      const element = this.pdfLayout.find(el => el.i === elementId);
+      if (element) {
+        const oldValue = element[field];
+        element[field] = parseInt(value);
+        console.log('Size updated from', oldValue, 'to', element[field]);
+        this.$forceUpdate(); // Force reactivity update
+      }
     },
 
     adjustElementsToCanvas() {
@@ -1063,17 +1301,64 @@ export default {
           sidebarWrapper.style.display = 'none';
         }
       }
+    },
+    openMediaLibrary() {
+      if (!this.selectedElement || this.selectedElement.type !== 'image') {
+        return;
+      }
+      
+      const that = this;
+      const send_attachment_bkp = wp.media.editor.send.attachment;
+      
+      wp.media.editor.send.attachment = function (props, attachment) {
+        that.selectedElement.props.src = attachment.url;
+        if (!that.selectedElement.props.alt) {
+          that.selectedElement.props.alt = attachment.alt || attachment.filename || 'Image';
+        }
+        that.updateElementProps();
+        wp.media.editor.send.attachment = send_attachment_bkp;
+      };
+      
+      wp.media.editor.open();
+    },
+    removeImage() {
+      if (this.selectedElement && this.selectedElement.type === 'image') {
+        this.selectedElement.props.src = '';
+        this.selectedElement.props.alt = 'Image';
+        this.updateElementProps();
+      }
     }
   },
   watch: {
     templateData: {
       handler(newTemplateData) {
+        console.log('Loading template data:', newTemplateData);
+        
         if (newTemplateData && newTemplateData.pages && newTemplateData.pages.length > 0) {
-          // Load the layout from the first page
-          this.pdfLayout = [...(newTemplateData.pages[0].layout || [])];
-          this.pages = [...newTemplateData.pages];
+          this.pages = JSON.parse(JSON.stringify(newTemplateData.pages));
           
-          // Update element counter to avoid ID conflicts
+          const layout = newTemplateData.pages[0].layout || [];
+          console.log('Raw layout from template:', layout);
+          
+          this.pdfLayout = layout.map(element => {
+            const normalized = {
+              ...element,
+              x: parseInt(element.x) || 0,
+              y: parseInt(element.y) || 0,
+              w: parseInt(element.w) || 150,
+              h: parseInt(element.h) || 40,
+              z: parseInt(element.z) || 1,
+              props: {
+                ...element.props,
+                fontSize: parseInt(element.props.fontSize) || 14
+              }
+            };
+            console.log('Normalized element:', normalized);
+            return normalized;
+          });
+          
+          console.log('Final pdfLayout:', this.pdfLayout);
+          
           if (this.pdfLayout.length > 0) {
             const maxId = Math.max(...this.pdfLayout.map(el => {
               const match = el.i.match(/element_(\d+)/);
@@ -1112,10 +1397,20 @@ export default {
   },
   mounted() {
     // Load template data on mount if available
-    if (this.templateData && this.templateData.pages && this.templateData.pages.length > 0) {
-      this.pdfLayout = [...(this.templateData.pages[0].layout || [])];
-      this.pages = [...this.templateData.pages];
-    }
+    // if (this.templateData && this.templateData.pages && this.templateData.pages.length > 0) {
+    //   this.pages = JSON.parse(JSON.stringify(this.templateData.pages));
+    //   this.pdfLayout = JSON.parse(JSON.stringify(this.templateData.pages[0].layout || []));
+    //  
+    //   // Update element counter
+    //   if (this.pdfLayout.length > 0) {
+    //     const maxId = Math.max(...this.pdfLayout.map(el => {
+    //       const match = el.i.match(/element_(\d+)/);
+    //       return match ? parseInt(match[1]) : 0;
+    //     }));
+    //     this.elementCounter = maxId;
+    //   }
+    // }
+      console.log(this.pdfLayout)
     
     this.handleKeyboardDelete = (event) => {
       if (event.key === 'Delete' || event.key === 'Backspace') {
@@ -1209,11 +1504,17 @@ export default {
 }
 
 .pdf-canvas {
+  display: table;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  height: 100%;
   position: relative;
-  overflow: visible;
-  background: white;
+  background-color: #ffffff;
   border: 1px solid #ddd;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
 .pdf-canvas.drag-over {
@@ -1233,11 +1534,14 @@ export default {
 }
 
 .canvas-element {
-  position: absolute;
+  display: table-cell;
+  position: absolute !important;
   border: 1px solid transparent;
   cursor: move;
   transition: border-color 0.2s ease;
   z-index: 1;
+  vertical-align: top;
+  text-align: left;
 }
 
 .canvas-element:hover {
@@ -1268,14 +1572,57 @@ export default {
   border-radius: 1px;
 }
 
-.resize-handle.nw { top: 0; left: 0; cursor: nw-resize; }
-.resize-handle.ne { top: 0; right: 0; cursor: ne-resize; }
-.resize-handle.sw { bottom: 0; left: 0; cursor: sw-resize; }
-.resize-handle.se { bottom: 0; right: 0; cursor: se-resize; }
-.resize-handle.n { top: 0; left: 50%; transform: translateX(-50%); cursor: n-resize; }
-.resize-handle.s { bottom: 0; left: 50%; transform: translateX(-50%); cursor: s-resize; }
-.resize-handle.w { left: 0; top: 50%; transform: translateY(-50%); cursor: w-resize; }
-.resize-handle.e { right: 0; top: 50%; transform: translateY(-50%); cursor: e-resize; }
+.resize-handle-nw {
+  top: 0;
+  left: 0;
+  cursor: nw-resize;
+}
+
+.resize-handle-ne {
+  top: 0;
+  right: 0;
+  cursor: ne-resize;
+}
+
+.resize-handle-sw {
+  bottom: 0;
+  left: 0;
+  cursor: sw-resize;
+}
+
+.resize-handle-se {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+
+.resize-handle-n {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: n-resize;
+}
+
+.resize-handle-s {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: s-resize;
+}
+
+.resize-handle-w {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: w-resize;
+}
+
+.resize-handle-e {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: e-resize;
+}
 
 .properties-panel {
   width: 300px;
@@ -1318,16 +1665,94 @@ export default {
 }
 
 .element-content {
+  display: table;
+  width: 100%;
+  height: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.text-element {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: left;
+  padding: 4px;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+.field-element {
+  display: table-cell;
+  vertical-align: top;
+  padding: 4px;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+.field-label {
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.field-value {
+  color: #666;
+}
+
+.image-element {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.image-preview {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px;
-  font-size: 12px;
-  color: #666;
-  background: rgba(64, 158, 255, 0.1);
-  border-radius: 2px;
+  overflow: hidden;
+}
+
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #999;
+  font-style: italic;
+  background-color: #f9f9f9;
+  border: 1px dashed #ccc;
+}
+
+.image-placeholder i {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.image-upload-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.image-preview-small {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.image-preview-small img {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.line-element {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
 }
 
 .element-properties .el-form-item {
