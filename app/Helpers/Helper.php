@@ -1234,4 +1234,60 @@ class Helper
     {
         return home_url($args);
     }
+
+    public static function getCountryCodeFromHeaders()
+    {
+        $headers = [
+            // Cloudflare (most common)
+            'HTTP_CF_IPCOUNTRY',
+            'CF-IPCountry',
+
+            // AWS CloudFront (widely used)
+            'HTTP_CLOUDFRONT_VIEWER_COUNTRY',
+            'CloudFront-Viewer-Country',
+
+            // Common standard headers
+            'HTTP_X_COUNTRY_CODE',
+            'X-Country-Code',
+            'HTTP_X_FORWARDED_COUNTRY',
+            'X-Forwarded-Country',
+
+            // GeoIP (used by many systems)
+            'HTTP_GEOIP_COUNTRY_CODE',
+            'GEOIP_COUNTRY_CODE',
+            'HTTP_X_GEOIP_COUNTRY',
+            'X-GeoIP-Country',
+
+            // General purpose country headers
+            'HTTP_X_COUNTRY',
+            'X-Country',
+            'HTTP_X_COUNTRY_ISO',
+            'X-Country-ISO'
+        ];
+
+        foreach ($headers as $header) {
+            // Try directly from $_SERVER
+            if (isset($_SERVER[$header])) {
+                $code = trim($_SERVER[$header]);
+            }
+            // Try with HTTP_ prefix if not already present
+            elseif (strpos($header, 'HTTP_') !== 0) {
+                $httpHeader = 'HTTP_' . str_replace('-', '_', strtoupper($header));
+                if (isset($_SERVER[$httpHeader])) {
+                    $code = trim($_SERVER[$httpHeader]);
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+
+            // Basic validation - should be 2-letter country code
+            if (!empty($code) && is_string($code) && strlen($code) === 2 && ctype_alpha($code) && $code !== 'XX') {
+                return strtoupper($code);
+            }
+        }
+
+        return null;
+    }
 }

@@ -7,24 +7,25 @@
                         <span class="week-label">Viewing Week:</span>
                         <span class="week-dates">{{ formatCurrentWeek() }}</span>
                     </div>
-                <el-button
-                    size="mini"
-                    icon="el-icon-arrow-left"
-                    @click="navigateDates('prev')"
-                    :disabled="isPrevDisabled"
-                ></el-button>
-                <el-button
-                    size="mini"
-                    icon="el-icon-arrow-right"
-                    @click="navigateDates('next')"
-                    :disabled="isNextDisabled"
-                ></el-button>
             </div>
         </card-head>
         <card-body>
             <div class="heatmap-container" v-loading="loading">
                 <div class="heatmap-header">
-                    <div class="date-column-header"></div>
+                    <div class="date-column-header">
+                        <el-button
+                            size="mini"
+                            icon="el-icon-arrow-left"
+                            @click="navigateDates('prev')"
+                            :disabled="isPrevDisabled"
+                        ></el-button>
+                        <el-button
+                            size="mini"
+                            icon="el-icon-arrow-right"
+                            @click="navigateDates('next')"
+                            :disabled="isNextDisabled"
+                        ></el-button>
+                    </div>
                     <div
                         v-for="(timeSlot, index) in timeSlots"
                         :key="'header-' + index"
