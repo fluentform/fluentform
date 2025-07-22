@@ -1367,9 +1367,10 @@ class ReportHelper
         }
 
         $formattedResults = [];
+        $countryNames = getFluentFormCountryList();
         foreach ($results->items() as $row) {
             $formattedResults[] = [
-                'country' => $row->country ?: 'Unknown',
+                'country' => $row->country ? Arr::get($countryNames, $row->country, $row->country) : 'Unknown',
                 'total_submissions' => (int)$row->total_submissions,
                 'read_submissions' => (int)$row->read_submissions,
                 'unread_submissions' => (int)$row->unread_submissions,
