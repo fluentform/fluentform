@@ -48,6 +48,7 @@
                                     :global_date_params="globalDateParams"
                                     :chart_view="chartMode"
                                     :selected-metrics="selectedChartMetrics"
+                                    :has-payment="hasPayment"
                                     @form-change="handleFormChange"
                                     @chart-mode-change="handleViewChange"
                                 />

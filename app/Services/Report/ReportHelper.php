@@ -309,14 +309,17 @@ class ReportHelper
 
         $completeSubmissions = $completeQuery->count();
 
-        $incompleteQuery = wpFluent()->table('fluentform_draft_submissions')
-            ->whereBetween('created_at', [$startDate, $endDate]);
+        $incompleteSubmissions = 0;
+        if (Helper::hasPro()) {
+            $incompleteQuery = wpFluent()->table('fluentform_draft_submissions')
+                ->whereBetween('created_at', [$startDate, $endDate]);
 
-        if ($formId) {
-            $incompleteQuery->where('form_id', $formId);
+            if ($formId) {
+                $incompleteQuery->where('form_id', $formId);
+            }
+
+            $incompleteSubmissions = $incompleteQuery->count();
         }
-
-        $incompleteSubmissions = $incompleteQuery->count();
 
         // Calculate totals - total_submissions should be complete submissions only
         // Total attempts = complete + incomplete (drafts)
@@ -370,9 +373,9 @@ class ReportHelper
             })
             ->groupBy('status')
             ->pluck('count', 'status');
-        $unreadSubmissions = +$statusCounts['unread'] ?? 0;
-        $readSubmissions = +$statusCounts['read'] ?? 0;
-        $periodSpamSubmissions = +$statusCounts['spam'] ?? 0;
+        $unreadSubmissions = intval(Arr::get($statusCounts, 'unread', 0));
+        $readSubmissions = intval(Arr::get($statusCounts, 'read', 0));
+        $periodSpamSubmissions = intval(Arr::get($statusCounts, 'spam', 0));
 
         $previousStatusCounts = Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->selectRaw('status, COUNT(*) as count')
@@ -1361,9 +1364,10 @@ class ReportHelper
         }
 
         $formattedResults = [];
+        $countryNames = getFluentFormCountryList();
         foreach ($results->items() as $row) {
             $formattedResults[] = [
-                'country' => $row->country ?: 'Unknown',
+                'country' => $row->country ? Arr::get($countryNames, $row->country, $row->country) : 'Unknown',
                 'total_submissions' => (int)$row->total_submissions,
                 'read_submissions' => (int)$row->read_submissions,
                 'unread_submissions' => (int)$row->unread_submissions,

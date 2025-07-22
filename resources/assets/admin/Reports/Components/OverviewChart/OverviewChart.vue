@@ -13,7 +13,7 @@
                         style="margin-right: 12px;"
                     >
                         <el-radio-button label="activity">Activity</el-radio-button>
-                        <el-radio-button label="revenue">Revenue</el-radio-button>
+                        <el-radio-button v-if="hasPayment" label="revenue">Revenue</el-radio-button>
                     </el-radio-group>
                     <div class="form-selector">
                         <el-select
@@ -85,7 +85,7 @@ export default {
         CardBody,
         CardHead
     },
-    props: ['overview_chart', 'forms_list', 'global_date_params', 'chart_view', 'selectedMetrics'],
+    props: ['overview_chart', 'forms_list', 'global_date_params', 'chart_view', 'selectedMetrics', 'hasPayment'],
     emits: ['form-change', 'chart-mode-change'],
     data() {
         return {
