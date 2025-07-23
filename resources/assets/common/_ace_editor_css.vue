@@ -28,6 +28,11 @@
                 if (status && !this.editor) {
                     this.initEditor();
                 }
+            },
+            value(newValue) {
+                if (this.editor && this.editor.getSession().getValue() !== newValue) {
+                    this.editor.getSession().setValue(newValue);
+                }
             }
         },
         methods: {

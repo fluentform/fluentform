@@ -9,6 +9,12 @@
                     <el-skeleton :loading="fetching" animated :rows="6">
                         <div class="all_payforms_wrapper payform_section">
                             <div class="payform_section_body">
+                                <!-- AI Form Styler Component -->
+                                <ai-form-styler
+                                    :form_id="form_id"
+                                    @styles-applied="onStylesApplied"
+                                />
+
                                 <div class="wpf_settings_section mb-6">
                                     <div class="sub_section_header">
                                         <h6 class="mb-2">{{ $t('Custom CSS') }}</h6>
@@ -80,10 +86,10 @@
             </card-body>
         </card>
 
-        <el-button v-loading="saving" 
-            @click="saveSettings()" 
-            class="payform_action" 
-            type="primary" 
+        <el-button v-loading="saving"
+            @click="saveSettings()"
+            class="payform_action"
+            type="primary"
             icon="el-icon-success">
             {{ $t( 'Save CSS & JS' ) }}
         </el-button>
@@ -96,6 +102,7 @@
     import Card from '@/admin/components/Card/Card.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
+    import AiFormStyler from './AiFormStyler.vue';
 
     export default {
         name: 'custom_css_js',
@@ -104,7 +111,8 @@
             AceEditorJs,
             Card,
             CardHead,
-            CardBody
+            CardBody,
+            AiFormStyler
         },
         props: ['form_id'],
         data() {
@@ -159,11 +167,22 @@
                         this.saving = false;
                     });
             },
+            onStylesApplied(css) {
+                // When AI styles are applied, refresh the custom CSS to show the new styles
+                this.custom_css = css;
+
+                // Force refresh of the page to show the applied styles
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+
+                this.$success(this.$t('AI styles have been applied! The page will refresh to show the changes.'));
+            },
             initAce() {
-                if (typeof ace == 'undefined') { 
+                if (typeof ace == 'undefined') {
                     jQuery.get(this.ace_path + '/ace.min.js', () => {
                         this.aceLoaded = true;
-                    }); 
+                    });
                 } else {
                     this.aceLoaded = true;
                 }

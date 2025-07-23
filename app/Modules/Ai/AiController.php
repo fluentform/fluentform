@@ -13,5 +13,6 @@ class AiController
     public function boot()
     {
         new AiFormBuilder();
+        new AiFormStyler();
     }
 }
