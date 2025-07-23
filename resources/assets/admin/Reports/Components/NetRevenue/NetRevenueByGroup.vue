@@ -10,7 +10,7 @@
                         <el-select
                             v-model="selectedGroupBy"
                             placeholder="Group By"
-                            size="small"
+                            size="mini"
                             @change="handleGroupByChange"
                             style="width: 150px; margin-right: 12px;"
                         >
@@ -362,7 +362,7 @@ export default {
             this.fetchRevenueData();
         },
         getDynamicTitle() {
-            const baseTitle = 'Revenue Analysis';
+            const baseTitle = 'Payment Analysis';
             if (this.selectedGroupBy && this.groupByOptions[this.selectedGroupBy]) {
                 return `${baseTitle} by ${this.groupByOptions[this.selectedGroupBy]}`;
             }

@@ -3,7 +3,7 @@
         <card>
             <card-head class="form-stats-header">
                 <h3>Form Stats</h3>
-                <el-select v-model="statsRange" @change="handleStatsRangeChange">
+                <el-select  v-model="statsRange" @change="handleStatsRangeChange">
                     <el-option label="Today" value="today"></el-option>
                     <el-option label="Last Week" value="week"></el-option>
                     <el-option label="Last Month" value="month"></el-option>

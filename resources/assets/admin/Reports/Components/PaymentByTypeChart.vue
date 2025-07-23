@@ -4,7 +4,7 @@
             <h3>Transaction</h3>
 
             <div class="card-controls">
-                <el-radio-group v-model="paymentType" size="small">
+                <el-radio-group v-model="paymentType" size="mini">
                     <el-radio-button label="subscription">Recurring</el-radio-button>
                     <el-radio-button label="onetime">One Time</el-radio-button>
                 </el-radio-group>

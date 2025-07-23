@@ -5,7 +5,7 @@
             <div class="card-controls">
                 <el-radio-group
                     v-model="selectedMetric"
-                    size="small"
+                    size="mini"
                     @change="handleMetricChange"
                     class="metric-radio-group"
                 >

@@ -119,18 +119,18 @@
                     </el-row>
 
                 </el-tab-pane>
-                <el-tab-pane label="Revenue" name="revenue" v-if="hasPayment">
+                <el-tab-pane label="Payments" name="revenue" v-if="hasPayment">
                     <!-- Revenue Header -->
                     <div class="reports-header">
                         <div>
-                            <h1 class="reports-title">Revenue</h1>
-                            <p class="reports-description">A brief look at net revenue performance</p>
+                            <h1 class="reports-title">{{ $t('Payments') }}</h1>
+                            <p class="reports-description">A brief look at all payments</p>
                         </div>
                         <div class="reports-controls">
                             <el-select
                                 v-model="selectedGlobalFormId"
                                 placeholder="Select Form"
-                                size="small"
+                                size="medium"
                                 clearable
                                 filterable
                                 @change="fetchReportsData"
@@ -172,7 +172,7 @@
                     <!-- Revenue Logs Chart -->
                     <line-chart
                         :data="reports.revenue_chart"
-                        title="Revenue"
+                        title="Payments"
                         type="revenue"
                     />
 
@@ -217,7 +217,7 @@
                             <el-select
                                 v-model="selectedGlobalFormId"
                                 placeholder="Select Form"
-                                size="small"
+                                size="medium"
                                 clearable
                                 filterable
                                 @change="fetchReportsData"

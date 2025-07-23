@@ -39,35 +39,6 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                .el-radio-group {
-                    margin-right: 0 !important;
-                    height: 32px;
-                    padding: 4px;
-                    background: #F5F7FA;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                    border-radius: 8px;
-                    .el-radio-button__inner {
-                        border: none;
-                        height: 24px;
-                        border-radius: 6px;
-                        padding: 4px;
-                        background: transparent;
-                        color: #99A0AE;
-                        font-size: 12px;
-                        font-weight: 500;
-                        line-height: 16px;
-                        transition: all 0.2s ease;
-                    }
-                    .el-radio-button.is-active {
-                        .el-radio-button__inner {
-                            color: $report-primary;
-                            background: #FFFFFF;
-                            box-shadow: 0 2px 4px 0 #0E121B08;
-                        }
-                    }
-                }
             }
             .chart-controls {
                 display: flex;

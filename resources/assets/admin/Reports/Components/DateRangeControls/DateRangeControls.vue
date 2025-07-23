@@ -8,7 +8,7 @@
                 placeholder="Select date range"
                 @visible-change="(state) => isDateQuickSelectOpen = state"
                 size="medium"
-                style="margin-right: 10px; width: 130px;"
+                style="margin-right: 10px; width: 140px;"
             >
                 <el-option label="Today" value="today"></el-option>
                 <el-option label="Yesterday" value="yesterday"></el-option>
@@ -64,7 +64,9 @@ export default {
     },
     methods: {
         disableFutureDates(date) {
-            return date > new Date();
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+            return date > today;
         }
     },
     computed: {

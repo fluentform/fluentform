@@ -59,7 +59,7 @@ export default {
                 read: { name: 'Read', color: '#335CFF' },
                 unread: { name: 'Unread', color: '#F6B51E' },
                 spam: { name: 'Spam', color: '#FB3748' },
-                trashed: { name: 'Trashed', color: '#FB4BA3' },
+                trashed: { name: 'Trashed', color: '#A0AEC0' },
                 revenue: {
                     payments: { name: 'Total Revenue', color: '#7D52F4' },
                     paid: { name: 'Paid', color: '#23A682' },

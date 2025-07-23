@@ -1,7 +1,7 @@
 <template>
     <card>
         <card-head>
-            <h3>Entries Grouped By</h3>
+            <h3>{{$t('Submission Timeline')}}</h3>
             <div class="heatmap-navigation">
                     <div class="week-item">
                         <span class="week-label">Viewing Week:</span>

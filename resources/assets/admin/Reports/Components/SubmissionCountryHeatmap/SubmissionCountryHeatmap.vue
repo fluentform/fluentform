@@ -7,7 +7,7 @@
                     <el-select
                         v-model="selectedFormId"
                         placeholder="Select Form"
-                        size="medium"
+                        size="mini"
                         clearable
                         filterable
                         @change="handleFormChange"
@@ -25,7 +25,7 @@
                     </el-select>
                 </div>
             </card-head>
-    
+
             <card-body class="chart-container" v-loading="loading">
                 <div v-if="!loading && (!countryData || countryData.length === 0)" class="no-data">
                     <div class="no-data-icon">
@@ -33,7 +33,7 @@
                     </div>
                     <p>No submission data available for the selected date range</p>
                 </div>
-    
+
                 <div v-else-if="!loading" class="chart-wrapper">
                     <!-- World Map Controls -->
                     <div class="map-controls">
@@ -43,7 +43,7 @@
                             <el-button size="mini" @click="resetChart" icon="el-icon-refresh-left"></el-button>
                         </el-button-group>
                     </div>
-    
+
                     <div ref="chartRef" class="chart-element"></div>
                 </div>
             </card-body>
@@ -112,7 +112,7 @@ export default {
         handleFormChange() {
             this.$emit('country-heatmap-form-change', this.selectedFormId);
         },
-        
+
         loadWorldMap() {
             try {
                 echarts.registerMap("world", worldMapJson);

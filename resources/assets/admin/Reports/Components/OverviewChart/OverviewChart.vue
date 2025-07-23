@@ -3,24 +3,24 @@
         <card-head>
             <div class="overview-chart-header">
                 <div class="chart-title-section">
-                    <h3>Conversion Chart</h3>
+                    <h3>{{$t('Overview Chart')}}</h3>
                 </div>
                 <div class="card-controls">
                     <el-radio-group
                         v-model="chartMode"
-                        size="small"
+                        size="mini"
                         class="mode-toggle-group"
                         style="margin-right: 12px;"
                     >
-                        <el-radio-button label="activity">Activity</el-radio-button>
-                        <el-radio-button v-if="hasPayment" label="revenue">Revenue</el-radio-button>
+                        <el-radio-button label="activity">{{ $t('Submissions') }}</el-radio-button>
+                        <el-radio-button v-if="hasPayment" label="revenue">{{ $t('Payments') }}</el-radio-button>
                     </el-radio-group>
                     <div class="form-selector">
                         <el-select
                             popper-class="report-form-select-popper"
                             v-model="selectedFormId"
                             placeholder="Select Form"
-                            size="small"
+                            size="mini"
                             clearable
                             filterable
                             @change="handleFormChange"
@@ -422,11 +422,11 @@ export default {
                     type: this.chartType,
                     data: this.chartData.trashed,
                     itemStyle: {
-                        color: '#FB4BA3',
+                        color: '#A0AEC0',
                         ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
                     },
                     ...(isLineChart ? {
-                        lineStyle: { color: '#10b981', width: 3 },
+                        lineStyle: { color: '#A0AEC0', width: 3 },
                         symbol: 'circle',
                         symbolSize: 6,
                         smooth: true
@@ -437,11 +437,11 @@ export default {
                     type: this.chartType,
                     data: this.chartData.payments,
                     itemStyle: {
-                        color: '#059669',
+                        color: '#10b981',
                         ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
                     },
                     ...(isLineChart ? {
-                        lineStyle: { color: '#059669', width: 3 },
+                        lineStyle: { color: '#10b981', width: 3 },
                         symbol: 'circle',
                         symbolSize: 6,
                         smooth: true
@@ -452,11 +452,11 @@ export default {
                     type: this.chartType,
                     data: this.chartData.paid,
                     itemStyle: {
-                        color: '#10b981',
+                        color: '#63B3ED',
                         ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
                     },
                     ...(isLineChart ? {
-                        lineStyle: { color: '#10b981', width: 3 },
+                        lineStyle: { color: '#63B3ED', width: 3 },
                         symbol: 'circle',
                         symbolSize: 6,
                         smooth: true

@@ -11,7 +11,7 @@
                         <el-select
                             v-model="selectedGroupBy"
                             placeholder="Group By"
-                            size="small"
+                            size="mini"
                             @change="handleGroupByChange"
                             style="width: 180px; margin-right: 12px;"
                         >
@@ -184,7 +184,7 @@
                 </div>
             </card-body>
         </card>
-        <div class="ff_pagination_wrap text-right pagination-container mt-4">
+        <div v-if="totalItems > pageSize" class="ff_pagination_wrap text-right pagination-container mt-4">
             <el-pagination
                 class="ff_pagination"
                 background

@@ -1,7 +1,7 @@
 <template>
     <card>
         <card-head>
-            <h4>Completion Rates</h4>
+            <h4>{{$t(' Completion Rates')}}</h4>
         </card-head>
 
         <card-body>
@@ -10,7 +10,7 @@
                     popper-class="report-form-select-popper"
                     v-model="selectedFormId"
                     placeholder="Select Form"
-                    size="medium"
+                    size="mini"
                     clearable
                     filterable
                     style="width: 100%;"
