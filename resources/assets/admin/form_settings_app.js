@@ -10,6 +10,7 @@ import notifier from './notifier';
 
 import {
     Alert,
+    Divider,
     Button,
     Row,
     Col,
@@ -57,6 +58,7 @@ global.ffSettingsEvents = new Vue();
 locale.use(lang);
 Vue.use(Router);
 
+Vue.use(Divider);
 Vue.use(Alert);
 Vue.use(CollapseItem);
 Vue.use(DropdownMenu);

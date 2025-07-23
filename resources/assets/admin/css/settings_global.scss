@@ -356,6 +356,11 @@
       background-color: transparent;
       box-shadow: none;
     }
+    .ff-pdf-settings .el-tabs__content {
+      .ff-pdf-custom-builder-tab {
+        margin: -15px;
+      }
+    }
   }
   &_top{
     &_50 {

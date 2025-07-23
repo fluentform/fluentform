@@ -1,6 +1,6 @@
 <template>
     <div v-loading="loading" class="ff_feed_editor ff_full_width_feed">
-        <el-tabs type="border-card" v-model="activeTab">
+        <el-tabs class="ff-pdf-settings" type="border-card" v-model="activeTab">
             <el-tab-pane :label="$t('PDF Content')" name="content">
                 <el-form v-if="feed.settings" label-position="top">
                     <field-mapper
@@ -41,7 +41,7 @@
             </el-tab-pane>
 
             <!-- Custom Builder Tab - Only show for custom builder template -->
-            <el-tab-pane v-if="isCustomBuilderTemplate" :label="$t('Custom Builder')" name="builder">
+            <el-tab-pane class="ff-pdf-custom-builder-tab" v-if="isCustomBuilderTemplate" :label="$t('Custom Builder')" name="builder">
                 <pdf-builder
                     :form-fields="processedFormFields"
                     :template-data="feed.custom_layout || {}"

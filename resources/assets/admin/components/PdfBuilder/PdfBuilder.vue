@@ -29,37 +29,147 @@
             <span>{{ element.label }}</span>
           </div>
         </div>
+
+        <!-- Header/Footer Settings -->
+        <div v-if="pages && pages.length > 0" class="header-footer-settings">
+          <h4>{{ $t('Page Layout') }}</h4>
+
+          <!-- Header Settings -->
+          <div class="setting-group">
+            <el-checkbox :value="headerSettings.enabled" @input="updateHeaderEnabled">
+              {{ $t('Enable Header') }}
+            </el-checkbox>
+            <div v-if="headerSettings.enabled" class="setting-details">
+              <el-form label-position="top" size="small">
+                <el-form-item label="Height">
+                  <el-input-number :value="headerSettings.height" @input="updateHeaderHeight" :min="20" :max="200" size="mini" />
+                </el-form-item>
+                <el-form-item label="Content">
+                  <el-input :value="headerSettings.content" @input="updateHeaderContent" size="mini" />
+                </el-form-item>
+              </el-form>
+            </div>
+          </div>
+
+          <!-- Footer Settings -->
+          <div class="setting-group">
+            <el-checkbox :value="footerSettings.enabled" @input="updateFooterEnabled">
+              {{ $t('Enable Footer') }}
+            </el-checkbox>
+            <div v-if="footerSettings.enabled" class="setting-details">
+              <el-form label-position="top" size="small">
+                <el-form-item label="Height">
+                  <el-input-number :value="footerSettings.height" @input="updateFooterHeight" :min="20" :max="200" size="mini" />
+                </el-form-item>
+                <el-form-item label="Content">
+                  <el-input :value="footerSettings.content" @input="updateFooterContent" size="mini" />
+                </el-form-item>
+              </el-form>
+            </div>
+          </div>
+
+          <!-- Page Actions -->
+          <div v-if="pages && pages.length > 0" class="page-actions">
+            <h4>{{ $t('Pages') }} ({{ pages.length }})</h4>
+
+            <!-- Page Navigation -->
+            <div class="page-navigation">
+              <el-select v-model="currentPageIndex" size="mini" @change="switchPage">
+                <el-option
+                  v-for="(page, index) in pages"
+                  :key="page.id"
+                  :label="`Page ${index + 1}`"
+                  :value="index"
+                />
+              </el-select>
+            </div>
+
+            <!-- Page Actions -->
+            <el-button
+              type="success"
+              size="mini"
+              icon="el-icon-plus"
+              @click="addNewPage"
+            >
+              {{ $t('Add Page') }}
+            </el-button>
+
+            <el-button
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              @click="confirmDeleteCurrentPage"
+              :disabled="pages.length <= 1"
+            >
+              {{ $t('Delete Page') }}
+            </el-button>
+
+            <el-button
+              type="primary"
+              size="mini"
+              icon="el-icon-refresh"
+              @click="clearCurrentPage"
+            >
+              {{ $t('Clear Page') }}
+            </el-button>
+          </div>
+        </div>
       </div>
 
       <!-- Canvas Area -->
       <div class="canvas-container">
         <div class="canvas-wrapper" :style="`width: ${canvasWidth}px; margin: 20px;`">
-          <div
+          <!-- Header Section (Outside drag/drop area) -->
+          <div v-if="headerSettings && headerSettings.enabled"
+               class="pdf-header"
+               :class="{ selected: selectedElement && selectedElement.type === 'header' }"
+               :style="getHeaderStyle()"
+               @click.stop="selectHeaderFooter('header')">
+            <div class="header-content" :style="getHeaderContentStyle()">
+              {{ (headerSettings && headerSettings.content) || 'Click to edit header' }}
+            </div>
+          </div>
+
+          <!-- Table-based Canvas (Background Grid) -->
+          <table
             ref="pdfCanvas"
-            class="pdf-canvas"
-            :class="{ 'drag-over': isDragOver }"
-            :style="canvasStyle"
-            @click="handleCanvasClick"
-            @drop="handleDrop"
-            @dragover.prevent
-            @dragenter.prevent="isDragOver = true"
-            @dragleave.prevent="isDragOver = false"
+            class="pdf-canvas-table background-grid"
+            :style="canvasTableStyle"
           >
-            <!-- Grid background -->
-            <div class="grid-background" :style="gridStyle"></div>
-            
-            <!-- PDF Elements -->
+            <tbody>
+              <tr v-for="row in canvasRows" :key="row" class="canvas-row">
+                <td v-for="col in canvasCols" :key="col"
+                    class="canvas-cell background-cell"
+                    :style="canvasCellStyle"
+                    :data-row="row"
+                    :data-col="col">
+                  <!-- Background grid cell (no content, just visual grid) -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Interactive Layer for Elements and Drag/Drop -->
+          <div
+            class="interactive-canvas-layer"
+            :style="interactiveLayerStyle"
+            @click="handleCanvasClick"
+            @drop="handleCanvasDrop"
+            @dragover.prevent="handleCanvasDragOver"
+            @dragenter.prevent="handleCanvasDragEnter"
+            @dragleave.prevent="handleCanvasDragLeave"
+          >
+            <!-- Main Canvas Elements (non-table) -->
             <div
-              v-for="element in pdfLayout"
+              v-for="element in mainCanvasElements"
               :key="element.i"
               class="canvas-element"
-              :class="{ 
+              :class="{
                 'selected': selectedElement && selectedElement.i === element.i,
-                'dragging': draggingElement === element.i 
+                'dragging': draggingElement === element.i
               }"
               :style="getElementStyle(element)"
               @click.stop="selectElement(element)"
-              @mousedown="startDrag($event, element)"
             >
               <!-- Element Content -->
               <div class="element-content" :style="getElementContentStyle(element)">
@@ -67,56 +177,157 @@
                 <div v-if="element.type === 'text'" class="text-element" :style="textStyle(element)">
                   {{ element.props.content || 'Sample Text' }}
                 </div>
-                
+
+                <!-- Field Element -->
+                <div v-else-if="element.type === 'field'" class="field-element" :style="fieldStyle(element)">
+                  {{ getFieldLabel(element.props.fieldName) }}: {{ getFieldValue(element.props.fieldName) }}
+                </div>
+
                 <!-- Image Element -->
-                <div v-else-if="element.type === 'image'" class="image-element">
-                  <div v-if="element.props.src" class="image-preview" :style="imagePreviewStyle(element)">
-                    <img 
-                      :src="element.props.src" 
-                      :alt="element.props.alt" 
-                      :style="imageElementStyle(element)"
-                    />
-                  </div>
-                  <div v-else class="image-placeholder">
-                    <i class="el-icon-picture"></i>
-                    <span>No image selected</span>
-                  </div>
-                </div>
-                
+                <img v-else-if="element.type === 'image'"
+                     :src="element.props.src || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1zaXplPSIxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlPC90ZXh0Pjwvc3ZnPg=='"
+                     :alt="element.props.alt || 'Image'"
+                     :style="imageElementStyle(element)" />
+
                 <!-- Line Element -->
-                <div v-else-if="element.type === 'line'" class="line-element" :style="lineStyle(element)">
-                </div>
+                <div v-else-if="element.type === 'line'" class="line-element" :style="lineStyle(element)"></div>
+
+                <!-- Table Container Elements -->
+                <table v-else-if="element.type === 'table'"
+                       class="nested-table-element interactive-table"
+                       :style="nestedTableStyle(element)"
+                       @click.stop>
+                  <thead v-if="element.props.showHeaders">
+                    <tr>
+                      <th v-for="col in element.props.cols" :key="'header-' + col"
+                          :style="nestedTableHeaderStyle(element)">
+                        Header {{ col }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="row in element.props.rows" :key="'row-' + row">
+                      <td v-for="col in element.props.cols"
+                          :key="'cell-' + row + '-' + col"
+                          v-if="!isCellHidden(element, row, col)"
+                          :style="getTableCellStyle(element, row, col)"
+                          :colspan="getCellColspan(element, row, col)"
+                          :rowspan="getCellRowspan(element, row, col)"
+                          :data-cell="`${row}-${col}`"
+                          :data-table-id="element.i"
+                          class="table-cell-container table-cell-canvas interactive-cell"
+                          :class="{
+                            'cell-drag-over': isDragOverCell === `${element.i}-${row}-${col}`,
+                            'cell-selected': selectedTableCell === `${element.i}-${row}-${col}`
+                          }"
+                          @click.stop="selectTableCell(element, row, col)"
+                          @dblclick.stop="editTableCell(element, row, col)"
+                          @drop.stop="handleTableCellDrop($event, element, row, col)"
+                          @dragover.stop.prevent="handleTableCellDragOver($event, element, row, col)"
+                          @dragenter.stop.prevent="handleTableCellDragEnter($event, element, row, col)"
+                          @dragleave.stop.prevent="handleTableCellDragLeave($event, element, row, col)">
+
+                        <!-- Cell Canvas Area (Container-like) -->
+                        <div class="cell-canvas-area cell-fields-list"
+                             :style="getCellCanvasStyle(element)"
+                             @click.stop="handleCellCanvasClick($event, element, row, col)">
+
+                          <!-- Cell Elements in list format (like container fields) -->
+                          <div v-for="(cellElement, cellIndex) in getCellElements(element, row, col)"
+                               :key="`${element.i}-${row}-${col}-${cellElement.i || cellElement.uniqElKey}`"
+                               class="cell-element-item"
+                               :class="{
+                                 'selected': selectedElement && (selectedElement.i === cellElement.i || selectedElement.uniqElKey === cellElement.uniqElKey),
+                                 'dragging': draggingElement === cellElement.i
+                               }"
+                               @click.stop="selectElement(cellElement)"
+                               draggable="true"
+                               @dragstart="handleCellElementDragStart($event, cellElement, element, row, col, cellIndex)"
+                               @dragend="handleCellElementDragEnd">
+
+                            <!-- Element Actions (like container fields) -->
+                            <div class="cell-element-actions">
+                              <div class="action-item drag-handle" title="Drag to move">
+                                <i class="el-icon-rank"></i>
+                              </div>
+                              <div class="action-item edit-btn" @click.stop="selectElement(cellElement)" title="Edit">
+                                <i class="el-icon-edit"></i>
+                              </div>
+                              <div class="action-item delete-btn" @click.stop="deleteCellElement(cellElement, element, row, col, cellIndex)" title="Delete">
+                                <i class="el-icon-delete"></i>
+                              </div>
+                            </div>
+
+                            <!-- Cell Element Content -->
+                            <div class="cell-element-content">
+                              <div v-if="cellElement.type === 'text'" class="text-element-preview">
+                                <strong>Text:</strong> {{ cellElement.props.content || 'Sample Text' }}
+                              </div>
+                              <div v-else-if="cellElement.type === 'field'" class="field-element-preview">
+                                <strong>Field:</strong> {{ getFieldLabel(cellElement.props.fieldName) }}
+                              </div>
+                              <div v-else-if="cellElement.type === 'image'" class="image-element-preview">
+                                <strong>Image:</strong> {{ cellElement.props.alt || 'Image Element' }}
+                              </div>
+                              <div v-else-if="cellElement.type === 'line'" class="line-element-preview">
+                                <strong>Line:</strong> Horizontal Line
+                              </div>
+                              <div v-else class="element-preview">
+                                <strong>{{ cellElement.type }}:</strong> Element
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Cell Placeholder when empty -->
+                          <div v-if="getCellElements(element, row, col).length === 0" class="cell-placeholder">
+                            <i class="el-icon-plus"></i>
+                            <span>Drop elements here</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              
-              <!-- Resize handles -->
-              <div 
-                v-if="selectedElement && selectedElement.i === element.i" 
-                class="resize-handles"
+
+              <!-- Drag Handle Icon -->
+              <div
+                class="element-drag-handle"
+                @mousedown="startDrag($event, element)"
+                title="Drag to move element"
               >
-                <div 
-                  class="resize-handle resize-handle-nw"
-                  @mousedown.stop="startResize($event, element, 'nw')"
-                ></div>
-                <div 
-                  class="resize-handle resize-handle-ne"
-                  @mousedown.stop="startResize($event, element, 'ne')"
-                ></div>
-                <div 
-                  class="resize-handle resize-handle-sw"
-                  @mousedown.stop="startResize($event, element, 'sw')"
-                ></div>
-                <div 
-                  class="resize-handle resize-handle-se"
-                  @mousedown.stop="startResize($event, element, 'se')"
-                ></div>
+                <i class="el-icon-rank"></i>
               </div>
+
+              <!-- Resize handles for selected element -->
+              <div v-if="selectedElement && selectedElement.i === element.i" class="resize-handles">
+                <div class="resize-handle resize-handle-nw" @mousedown.stop="startResize($event, element, 'nw')"></div>
+                <div class="resize-handle resize-handle-ne" @mousedown.stop="startResize($event, element, 'ne')"></div>
+                <div class="resize-handle resize-handle-sw" @mousedown.stop="startResize($event, element, 'sw')"></div>
+                <div class="resize-handle resize-handle-se" @mousedown.stop="startResize($event, element, 'se')"></div>
+                <div class="resize-handle resize-handle-n" @mousedown.stop="startResize($event, element, 'n')"></div>
+                <div class="resize-handle resize-handle-s" @mousedown.stop="startResize($event, element, 's')"></div>
+                <div class="resize-handle resize-handle-w" @mousedown.stop="startResize($event, element, 'w')"></div>
+                <div class="resize-handle resize-handle-e" @mousedown.stop="startResize($event, element, 'e')"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Section (Outside drag/drop area) -->
+          <div v-if="footerSettings && footerSettings.enabled"
+               class="pdf-footer"
+               :class="{ selected: selectedElement && selectedElement.type === 'footer' }"
+               :style="getFooterStyle()"
+               @click.stop="selectHeaderFooter('footer')">
+            <div class="footer-content" :style="getFooterContentStyle()">
+              {{ (footerSettings && footerSettings.content) || 'Click to edit footer' }}
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Properties Panel -->
-      <div class="properties-panel">
+      <!-- Properties Panel (only show when element selected) -->
+      <div v-if="selectedElement" class="properties-panel">
         <div class="panel-header">
           <h3>{{ $t('Properties') }}</h3>
           <el-button 
@@ -136,30 +347,96 @@
           </div>
           
           <div v-if="selectedElement" class="element-properties">
-            <el-form label-position="top" size="small">
+            <!-- Header/Footer Properties -->
+            <div v-if="selectedElement.isHeaderFooter" class="header-footer-properties">
+              <h4>{{ selectedElement.type === 'header' ? $t('Header Settings') : $t('Footer Settings') }}</h4>
+
+              <el-form label-position="top" size="small">
+                <el-form-item :label="$t('Content')">
+                  <el-popover
+                    placement="right"
+                    width="300"
+                    trigger="click">
+                    <el-input
+                      v-model="selectedElement.settings.content"
+                      type="textarea"
+                      :rows="4"
+                      placeholder="Enter header/footer content..."
+                      @change="updateHeaderFooter"
+                    />
+                    <el-button slot="reference" size="mini" type="primary">
+                      {{ $t('Edit Content') }}
+                    </el-button>
+                  </el-popover>
+                </el-form-item>
+
+                <el-form-item :label="$t('Height')">
+                  <el-input-number
+                    v-model="selectedElement.settings.height"
+                    :min="20"
+                    :max="200"
+                    size="mini"
+                    @change="updateHeaderFooter"
+                  />
+                </el-form-item>
+
+                <el-form-item :label="$t('Font Size')">
+                  <el-input-number
+                    v-model="selectedElement.settings.fontSize"
+                    :min="8"
+                    :max="24"
+                    size="mini"
+                    @change="updateHeaderFooter"
+                  />
+                </el-form-item>
+
+                <el-form-item :label="$t('Text Align')">
+                  <el-select v-model="selectedElement.settings.textAlign" size="mini" @change="updateHeaderFooter">
+                    <el-option label="Left" value="left"></el-option>
+                    <el-option label="Center" value="center"></el-option>
+                    <el-option label="Right" value="right"></el-option>
+                  </el-select>
+                </el-form-item>
+
+                <el-form-item :label="$t('Text Color')">
+                  <el-color-picker v-model="selectedElement.settings.color" @change="updateHeaderFooter" />
+                </el-form-item>
+
+                <el-form-item :label="$t('Background Color')">
+                  <el-color-picker v-model="selectedElement.settings.backgroundColor" @change="updateHeaderFooter" />
+                </el-form-item>
+              </el-form>
+            </div>
+
+            <!-- Regular Element Properties -->
+            <el-form v-else label-position="top" size="small">
               <el-form-item :label="$t('Position')">
                 <el-row :gutter="10">
                   <el-col :span="12">
-                    <el-input-number 
-                      v-model="selectedElement.x" 
-                      :min="0" 
-                      :max="canvasWidth - selectedElement.w"
+                    <el-input-number
+                      v-model="selectedElement.x"
+                      :min="0"
+                      :max="maxElementX"
+                      :step="0.1"
+                      :precision="1"
                       size="mini"
                       controls-position="right"
                       @change="updateElementPosition"
                     />
-                    <label>X</label>
+                    <label>X (%)</label>
                   </el-col>
                   <el-col :span="12">
-                    <el-input-number 
-                      v-model="selectedElement.y" 
-                      :min="0" 
-                      :max="canvasHeight - selectedElement.h"
+                    <el-input-number
+                      v-model="selectedElement.y"
+                      :min="0"
+                      :max="maxElementY"
+                      :step="0.1"
+                      :precision="1"
                       size="mini"
                       controls-position="right"
                       @change="updateElementPosition"
                     />
-                    <label>Y</label>
+                    <label>Y (%)</label>
                   </el-col>
                 </el-row>
               </el-form-item>
@@ -167,26 +444,30 @@
               <el-form-item :label="$t('Size')">
                 <el-row :gutter="10">
                   <el-col :span="12">
-                    <el-input-number 
-                      v-model="selectedElement.w" 
-                      :min="20" 
-                      :max="canvasWidth"
+                    <el-input-number
+                      v-model="selectedElement.w"
+                      :min="1"
+                      :max="maxElementWidth"
+                      :step="0.1"
+                      :precision="1"
                       size="mini"
                       controls-position="right"
                       @change="updateElementSize"
                     />
-                    <label>W</label>
+                    <label>W (%)</label>
                   </el-col>
                   <el-col :span="12">
-                    <el-input-number 
-                      v-model="selectedElement.h" 
-                      :min="20" 
-                      :max="canvasHeight"
+                    <el-input-number
+                      v-model="selectedElement.h"
+                      :min="1"
+                      :max="maxElementHeight"
+                      :step="0.1"
+                      :precision="1"
                       size="mini"
                       controls-position="right"
                       @change="updateElementSize"
                     />
-                    <label>H</label>
+                    <label>H (%)</label>
                   </el-col>
                 </el-row>
               </el-form-item>
@@ -259,7 +540,7 @@
                     </el-button>
                   </div>
                   <div v-if="selectedElement.props.src" class="image-preview-small">
-                    <img :src="selectedElement.props.src" style="max-width: 150px; max-height: 100px; object-fit: contain;" />
+                    <img :src="selectedElement.props.src" style="max-width: 150px; max-height: 100px; object-fit: contain;" alt="image"/>
                   </div>
                 </el-form-item>
                 
@@ -318,6 +599,105 @@
                   </el-row>
                 </el-form-item>
               </template>
+
+              <!-- Add table row/column controls in properties panel -->
+              <template v-if="selectedElement && selectedElement.type === 'table'">
+                <el-form-item :label="$t('Table Structure')">
+                  <el-row :gutter="10">
+                    <el-col :span="12">
+                      <label>Rows</label>
+                      <el-input-number
+                        v-model="selectedElement.props.rows"
+                        :min="1"
+                        :max="20"
+                        size="mini"
+                        controls-position="right"
+                        @change="updateTableRows"
+                      />
+                    </el-col>
+                    <el-col :span="12">
+                      <label>Columns</label>
+                      <el-input-number
+                        v-model="selectedElement.props.cols"
+                        :min="1"
+                        :max="20"
+                        size="mini"
+                        controls-position="right"
+                        @change="updateTableCols"
+                      />
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+
+                <el-form-item :label="$t('Show Headers')">
+                  <el-switch v-model="selectedElement.props.showHeaders" @change="updateElementProps"></el-switch>
+                </el-form-item>
+
+                <el-form-item :label="$t('Border Width')">
+                  <el-input-number 
+                    v-model="selectedElement.props.borderWidth" 
+                    :min="0" 
+                    :max="10"
+                    @change="updateElementProps"
+                  />
+                </el-form-item>
+
+                <el-form-item :label="$t('Border Color')">
+                  <el-color-picker v-model="selectedElement.props.borderColor" @change="updateElementProps"></el-color-picker>
+                </el-form-item>
+
+                <el-form-item :label="$t('Cell Padding')">
+                  <el-input-number
+                    v-model="selectedElement.props.cellPadding"
+                    :min="0"
+                    :max="20"
+                    @change="updateElementProps"
+                  />
+                </el-form-item>
+              </template>
+
+              <!-- Table Cell Controls (when a cell is selected) -->
+              <template v-if="selectedTableCell">
+                <el-divider>{{ $t('Cell Properties') }}</el-divider>
+
+                <el-form-item :label="$t('Cell Background Color')">
+                  <el-color-picker
+                    :value="getCellBackgroundColor()"
+                    @change="updateCellBackgroundColor"
+                    show-alpha
+                  ></el-color-picker>
+                </el-form-item>
+
+                <el-form-item :label="$t('Column Span')">
+                  <el-input-number
+                    :value="getCurrentCellColspan()"
+                    @change="updateCellColspan"
+                    :min="1"
+                    :max="getMaxColspan()"
+                    size="mini"
+                  />
+                </el-form-item>
+
+                <el-form-item :label="$t('Row Span')">
+                  <el-input-number
+                    :value="getCurrentCellRowspan()"
+                    @change="updateCellRowspan"
+                    :min="1"
+                    :max="getMaxRowspan()"
+                    size="mini"
+                  />
+                </el-form-item>
+
+                <el-form-item>
+                  <el-button
+                    size="mini"
+                    @click="resetCellSpan()"
+                    type="text"
+                  >
+                    {{ $t('Reset Cell Span') }}
+                  </el-button>
+                </el-form-item>
+              </template>
             </el-form>
           </div>
         </div>
@@ -356,11 +736,41 @@ export default {
     return {
       pdfLayout: [],
       selectedElement: null,
+
+      // Multi-page support
+      pages: [
+        {
+          id: 'page_1',
+          elements: [],
+          headerSettings: {
+            enabled: false,
+            height: 60,
+            content: '',
+            backgroundColor: 'transparent',
+            fontSize: 12,
+            textAlign: 'center',
+            color: '#000000'
+          },
+          footerSettings: {
+            enabled: false,
+            height: 60,
+            content: '',
+            backgroundColor: 'transparent',
+            fontSize: 12,
+            textAlign: 'center',
+            color: '#000000'
+          }
+        }
+      ],
+      currentPageIndex: 0,
       draggingElement: null,
       resizing: false,
       resizeHandle: null,
       elementCounter: 0,
       isDragOver: false,
+      isDragOverCell: null,
+      isDragOverTableCell: false,
+      dragOverTimeout: null,
       pages: [
         {
           id: 1,
@@ -415,8 +825,31 @@ export default {
             thickness: 1,
             style: 'solid'
           }
+        },
+        {
+          type: 'table',
+          label: 'Table',
+          icon: 'el-icon-s-grid',
+          defaultProps: {
+            rows: 2,
+            cols: 2,
+            borderColor: '#ddd',
+            borderWidth: 1,
+            cellPadding: 8,
+            backgroundColor: 'transparent',
+            headerBgColor: '#f5f5f5',
+            showHeaders: false,
+            // Container-like structure for cells
+            cellFields: {}, // Store fields for each cell like {row-col: [fields]}
+            // Cell styling and spanning options
+            cellStyles: {}, // Store cell-specific styles like {row-col: {backgroundColor: '#fff', colspan: 1, rowspan: 1}}
+            cellSpans: {} // Store colspan/rowspan data like {row-col: {colspan: 1, rowspan: 1}}
+          }
         }
       ],
+      selectedTableCell: null,
+      draggedElement: null,
+      draggedFromCell: null
     };
   },
   computed: {
@@ -426,159 +859,11 @@ export default {
     },
     
     canvasWidth() {
-      const paperSize = this.appearance?.paper_size || 'A4';
-      const orientation = this.appearance?.orientation || 'P';
-      
-      // Convert mm to pixels at 96 DPI (1mm = 3.78 pixels)
-      const mmToPx = (mm) => Math.round(mm * 3.78);
-      
-      const paperSizes = {
-        // A Series
-        'A0': { w: mmToPx(841), h: mmToPx(1189) },
-        'A1': { w: mmToPx(594), h: mmToPx(841) },
-        'A2': { w: mmToPx(420), h: mmToPx(594) },
-        'A3': { w: mmToPx(297), h: mmToPx(420) },
-        'A4': { w: mmToPx(210), h: mmToPx(297) },
-        'A5': { w: mmToPx(148), h: mmToPx(210) },
-        'A6': { w: mmToPx(105), h: mmToPx(148) },
-        'A7': { w: mmToPx(74), h: mmToPx(105) },
-        'A8': { w: mmToPx(52), h: mmToPx(74) },
-        'A9': { w: mmToPx(37), h: mmToPx(52) },
-        'A10': { w: mmToPx(26), h: mmToPx(37) },
-        
-        // B Series
-        'B0': { w: mmToPx(1414), h: mmToPx(1000) },
-        'B1': { w: mmToPx(1000), h: mmToPx(707) },
-        'B2': { w: mmToPx(707), h: mmToPx(500) },
-        'B3': { w: mmToPx(500), h: mmToPx(353) },
-        'B4': { w: mmToPx(353), h: mmToPx(250) },
-        'B5': { w: mmToPx(250), h: mmToPx(176) },
-        'B6': { w: mmToPx(176), h: mmToPx(125) },
-        'B7': { w: mmToPx(125), h: mmToPx(88) },
-        'B8': { w: mmToPx(88), h: mmToPx(62) },
-        'B9': { w: mmToPx(62), h: mmToPx(44) },
-        'B10': { w: mmToPx(44), h: mmToPx(31) },
-        
-        // C Series
-        'C0': { w: mmToPx(1297), h: mmToPx(917) },
-        'C1': { w: mmToPx(917), h: mmToPx(648) },
-        'C2': { w: mmToPx(648), h: mmToPx(458) },
-        'C3': { w: mmToPx(458), h: mmToPx(324) },
-        'C4': { w: mmToPx(324), h: mmToPx(229) },
-        'C5': { w: mmToPx(229), h: mmToPx(162) },
-        'C6': { w: mmToPx(162), h: mmToPx(114) },
-        'C7': { w: mmToPx(114), h: mmToPx(81) },
-        'C8': { w: mmToPx(81), h: mmToPx(57) },
-        'C9': { w: mmToPx(57), h: mmToPx(40) },
-        'C10': { w: mmToPx(40), h: mmToPx(28) },
-        
-        // RA Series
-        'RA0': { w: mmToPx(860), h: mmToPx(1220) },
-        'RA1': { w: mmToPx(610), h: mmToPx(860) },
-        'RA2': { w: mmToPx(430), h: mmToPx(610) },
-        'RA3': { w: mmToPx(305), h: mmToPx(430) },
-        'RA4': { w: mmToPx(215), h: mmToPx(305) },
-        
-        // SRA Series
-        'SRA0': { w: mmToPx(900), h: mmToPx(1280) },
-        'SRA1': { w: mmToPx(640), h: mmToPx(900) },
-        'SRA2': { w: mmToPx(450), h: mmToPx(640) },
-        'SRA3': { w: mmToPx(320), h: mmToPx(450) },
-        'SRA4': { w: mmToPx(225), h: mmToPx(320) },
-        
-        // US/Imperial sizes (convert inches to pixels at 96 DPI)
-        'Letter': { w: 816, h: 1056 }, // 8.5 x 11 inches
-        'Legal': { w: 816, h: 1344 }, // 8.5 x 14 inches
-        'ledger': { w: 1056, h: 1632 }, // 11 x 17 inches (Tabloid)
-        'Executive': { w: 672, h: 960 }, // 7 x 10 inches
-        
-        // Other formats
-        'B': { w: mmToPx(128), h: mmToPx(198) },
-        'A': { w: mmToPx(111), h: mmToPx(178) },
-        'DEMY': { w: mmToPx(135), h: mmToPx(216) },
-        'ROYAL': { w: mmToPx(135), h: mmToPx(216) }
-      };
-      
-      const size = paperSizes[paperSize] || paperSizes['A4'];
-      return orientation === 'L' ? size.h : size.w;
+      return this.calculateCanvasWidth();
     },
-    
+
     canvasHeight() {
-      const paperSize = this.appearance?.paper_size || 'A4';
-      const orientation = this.appearance?.orientation || 'P';
-      
-      // Convert mm to pixels at 96 DPI (1mm = 3.78 pixels)
-      const mmToPx = (mm) => Math.round(mm * 3.78);
-      
-      const paperSizes = {
-        // A Series
-        'A0': { w: mmToPx(841), h: mmToPx(1189) },
-        'A1': { w: mmToPx(594), h: mmToPx(841) },
-        'A2': { w: mmToPx(420), h: mmToPx(594) },
-        'A3': { w: mmToPx(297), h: mmToPx(420) },
-        'A4': { w: mmToPx(210), h: mmToPx(297) },
-        'A5': { w: mmToPx(148), h: mmToPx(210) },
-        'A6': { w: mmToPx(105), h: mmToPx(148) },
-        'A7': { w: mmToPx(74), h: mmToPx(105) },
-        'A8': { w: mmToPx(52), h: mmToPx(74) },
-        'A9': { w: mmToPx(37), h: mmToPx(52) },
-        'A10': { w: mmToPx(26), h: mmToPx(37) },
-        
-        // B Series
-        'B0': { w: mmToPx(1414), h: mmToPx(1000) },
-        'B1': { w: mmToPx(1000), h: mmToPx(707) },
-        'B2': { w: mmToPx(707), h: mmToPx(500) },
-        'B3': { w: mmToPx(500), h: mmToPx(353) },
-        'B4': { w: mmToPx(353), h: mmToPx(250) },
-        'B5': { w: mmToPx(250), h: mmToPx(176) },
-        'B6': { w: mmToPx(176), h: mmToPx(125) },
-        'B7': { w: mmToPx(125), h: mmToPx(88) },
-        'B8': { w: mmToPx(88), h: mmToPx(62) },
-        'B9': { w: mmToPx(62), h: mmToPx(44) },
-        'B10': { w: mmToPx(44), h: mmToPx(31) },
-        
-        // C Series
-        'C0': { w: mmToPx(1297), h: mmToPx(917) },
-        'C1': { w: mmToPx(917), h: mmToPx(648) },
-        'C2': { w: mmToPx(648), h: mmToPx(458) },
-        'C3': { w: mmToPx(458), h: mmToPx(324) },
-        'C4': { w: mmToPx(324), h: mmToPx(229) },
-        'C5': { w: mmToPx(229), h: mmToPx(162) },
-        'C6': { w: mmToPx(162), h: mmToPx(114) },
-        'C7': { w: mmToPx(114), h: mmToPx(81) },
-        'C8': { w: mmToPx(81), h: mmToPx(57) },
-        'C9': { w: mmToPx(57), h: mmToPx(40) },
-        'C10': { w: mmToPx(40), h: mmToPx(28) },
-        
-        // RA Series
-        'RA0': { w: mmToPx(860), h: mmToPx(1220) },
-        'RA1': { w: mmToPx(610), h: mmToPx(860) },
-        'RA2': { w: mmToPx(430), h: mmToPx(610) },
-        'RA3': { w: mmToPx(305), h: mmToPx(430) },
-        'RA4': { w: mmToPx(215), h: mmToPx(305) },
-        
-        // SRA Series
-        'SRA0': { w: mmToPx(900), h: mmToPx(1280) },
-        'SRA1': { w: mmToPx(640), h: mmToPx(900) },
-        'SRA2': { w: mmToPx(450), h: mmToPx(640) },
-        'SRA3': { w: mmToPx(320), h: mmToPx(450) },
-        'SRA4': { w: mmToPx(225), h: mmToPx(320) },
-        
-        // US/Imperial sizes
-        'Letter': { w: 816, h: 1056 },
-        'Legal': { w: 816, h: 1344 },
-        'ledger': { w: 1056, h: 1632 },
-        'Executive': { w: 672, h: 960 },
-        
-        // Other formats
-        'B': { w: mmToPx(128), h: mmToPx(198) },
-        'A': { w: mmToPx(111), h: mmToPx(178) },
-        'DEMY': { w: mmToPx(135), h: mmToPx(216) },
-        'ROYAL': { w: mmToPx(135), h: mmToPx(216) }
-      };
-      
-      const size = paperSizes[paperSize] || paperSizes['A4'];
-      return orientation === 'L' ? size.w : size.h;
+      return this.calculateCanvasHeight();
     },
 
     canvasStyle() {
@@ -614,8 +899,316 @@ export default {
         pointerEvents: 'none'
       };
     },
+    canvasRows() {
+      // Create grid based on canvas height and cell size
+      return Math.ceil(this.canvasHeight / this.gridSize);
+    },
+    
+    canvasCols() {
+      // Create grid based on canvas width and cell size
+      return Math.ceil(this.canvasWidth / this.gridSize);
+    },
+
+    canvasTableStyle() {
+      return {
+        width: Math.round(this.canvasWidth) + 'px',
+        height: Math.round(this.canvasHeight) + 'px',
+        backgroundColor: '#ffffff',
+        border: '1px solid #ddd',
+        borderCollapse: 'collapse',
+        tableLayout: 'fixed',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        position: 'relative'
+      };
+    },
+
+    canvasCellStyle() {
+      return {
+        width: this.gridSize + 'px',
+        height: this.gridSize + 'px',
+        border: '1px solid #f0f0f0',
+        padding: '0',
+        margin: '0',
+        verticalAlign: 'top',
+        position: 'relative'
+      };
+    },
+
+    // Interactive layer style (positioned over background grid)
+    interactiveLayerStyle() {
+      return {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: Math.round(this.canvasWidth) + 'px',
+        height: Math.round(this.canvasHeight) + 'px',
+        pointerEvents: 'auto',
+        zIndex: 10
+      };
+    },
+
+    // Filter elements for main canvas (non-cell elements)
+    mainCanvasElements() {
+      const mainElements = this.pdfLayout.filter(element =>
+        !element.parentCell &&
+        !element.cellKey &&
+        !element.parentTable &&
+        element.type !== 'cell_element' // Extra safety check
+      );
+
+      // Ensure no duplicates by ID
+      const seenIds = new Set();
+      return mainElements.filter(element => {
+        if (seenIds.has(element.i)) {
+          return false; // Remove duplicate
+        }
+        seenIds.add(element.i);
+        return true;
+      });
+    },
+
+    // Canvas bounds for input validation
+    maxElementWidth() {
+      if (!this.selectedElement) return 100;
+      return 100 - parseFloat(this.selectedElement.x || 0);
+    },
+
+    maxElementHeight() {
+      if (!this.selectedElement) return 100;
+      return 100 - parseFloat(this.selectedElement.y || 0);
+    },
+
+    maxElementX() {
+      if (!this.selectedElement) return 100;
+      return 100 - parseFloat(this.selectedElement.w || 0);
+    },
+
+    maxElementY() {
+      if (!this.selectedElement) return 100;
+      return 100 - parseFloat(this.selectedElement.h || 0);
+    },
+
+    // Check if page has any elements
+    hasElements() {
+      return this.pdfLayout && this.pdfLayout.length > 0;
+    },
+
+    // Current page data
+    currentPage() {
+      return this.pages[this.currentPageIndex] || this.pages[0] || null;
+    },
+
+    headerSettings() {
+      return this.currentPage?.headerSettings || {
+        enabled: false,
+        height: 60,
+        content: '',
+        backgroundColor: 'transparent',
+        fontSize: 12,
+        textAlign: 'center',
+        color: '#000000'
+      };
+    },
+
+    footerSettings() {
+      return this.currentPage?.footerSettings || {
+        enabled: false,
+        height: 60,
+        content: '',
+        backgroundColor: 'transparent',
+        fontSize: 12,
+        textAlign: 'center',
+        color: '#000000'
+      };
+    }
+  },
+  watch: {
+    // Watch for changes in pdfLayout and ensure no duplicates
+    pdfLayout: {
+      handler(newLayout) {
+        // Update current page elements
+        if (this.currentPage && newLayout) {
+          this.currentPage.elements = [...newLayout];
+        }
+
+        this.$nextTick(() => {
+          this.validateLayoutIntegrity();
+        });
+      },
+      deep: true
+    },
+
+    value: {
+      handler(newValue) {
+        this.pdfLayout = newValue || [];
+      },
+      immediate: true
+    }
+  },
+  mounted() {
+    this.initializeFromTemplateData();
+    this.ensurePagesInitialized();
   },
   methods: {
+    // Initialize component with saved template data
+    initializeFromTemplateData() {
+      if (this.templateData && this.templateData.pages && this.templateData.pages.length > 0) {
+        // Load the first page data
+        const firstPage = this.templateData.pages[0];
+        if (firstPage.layout && firstPage.layout.length > 0) {
+          this.pdfLayout = firstPage.layout;
+
+          // Clean up duplicate cell elements that are stored both in cellFields and main layout
+          this.cleanupDuplicateCellElements();
+
+          // Ensure all table elements have proper cellFields structure
+          this.ensureTableCellFieldsStructure();
+        }
+
+        // Update pages data
+        this.pages = this.templateData.pages;
+        this.currentPageIndex = 0;
+      }
+    },
+
+    // Ensure pages array is properly initialized
+    ensurePagesInitialized() {
+      // If pages array is empty or doesn't exist, create default page
+      if (!this.pages || this.pages.length === 0) {
+        this.pages = [
+          {
+            id: 'page_1',
+            elements: [],
+            headerSettings: {
+              enabled: false,
+              height: 60,
+              content: '',
+              backgroundColor: 'transparent',
+              fontSize: 12,
+              textAlign: 'center',
+              color: '#000000'
+            },
+            footerSettings: {
+              enabled: false,
+              height: 60,
+              content: '',
+              backgroundColor: 'transparent',
+              fontSize: 12,
+              textAlign: 'center',
+              color: '#000000'
+            }
+          }
+        ];
+        this.currentPageIndex = 0;
+      }
+
+      // Ensure current page index is valid
+      if (this.currentPageIndex >= this.pages.length) {
+        this.currentPageIndex = 0;
+      }
+
+      // Ensure each page has proper header/footer settings structure
+      this.pages.forEach(page => {
+        if (!page.headerSettings) {
+          page.headerSettings = {
+            enabled: false,
+            height: 60,
+            content: '',
+            backgroundColor: 'transparent',
+            fontSize: 12,
+            textAlign: 'center',
+            color: '#000000'
+          };
+        }
+
+        if (!page.footerSettings) {
+          page.footerSettings = {
+            enabled: false,
+            height: 60,
+            content: '',
+            backgroundColor: 'transparent',
+            fontSize: 12,
+            textAlign: 'center',
+            color: '#000000'
+          };
+        }
+
+        if (!page.elements) {
+          page.elements = [];
+        }
+      });
+
+      console.log('Pages initialized:', this.pages.length, 'pages');
+    },
+
+    // Remove duplicate cell elements from main layout that are already in cellFields
+    cleanupDuplicateCellElements() {
+      // More aggressive cleanup: remove ALL elements that have cell-related properties
+      this.pdfLayout = this.pdfLayout.filter(element => {
+        // Keep only main elements (tables and non-cell elements)
+        const isMainElement = element.type === 'table' ||
+                             (!element.parentCell && !element.cellKey && !element.parentTable);
+        return isMainElement;
+      });
+
+      // Also clean up any remaining duplicates by ID
+      const seenIds = new Set();
+      this.pdfLayout = this.pdfLayout.filter(element => {
+        if (seenIds.has(element.i)) {
+          return false; // Remove duplicate
+        }
+        seenIds.add(element.i);
+        return true;
+      });
+    },
+
+    // Ensure all table elements have proper cellFields structure
+    ensureTableCellFieldsStructure() {
+      this.pdfLayout.forEach(element => {
+        if (element.type === 'table') {
+          // Initialize cellFields if not exists
+          if (!element.props.cellFields) {
+            this.$set(element.props, 'cellFields', {});
+          }
+
+          // Convert string numbers to integers for rows/cols
+          if (typeof element.props.rows === 'string') {
+            element.props.rows = parseInt(element.props.rows);
+          }
+          if (typeof element.props.cols === 'string') {
+            element.props.cols = parseInt(element.props.cols);
+          }
+
+          // Convert string numbers to floats for percentage-based position/size
+          if (typeof element.x === 'string') element.x = parseFloat(element.x);
+          if (typeof element.y === 'string') element.y = parseFloat(element.y);
+          if (typeof element.w === 'string') element.w = parseFloat(element.w);
+          if (typeof element.h === 'string') element.h = parseFloat(element.h);
+          if (typeof element.z === 'string') element.z = parseInt(element.z);
+        }
+      });
+    },
+    calculateCanvasWidth() {
+      // Calculate based on paper size and orientation
+      const paperSize = this.appearance.paper_size || 'A4';
+      const orientation = this.appearance.orientation || 'P';
+
+      // A4 dimensions in pixels (at 96 DPI) - increased for better table support
+      if (paperSize === 'A4') {
+        return orientation === 'P' ? 800 : 1200; // Increased width to support more columns
+      }
+      return 800; // Default increased width
+    },
+
+    calculateCanvasHeight() {
+      const paperSize = this.appearance.paper_size || 'A4';
+      const orientation = this.appearance.orientation || 'P';
+      
+      if (paperSize === 'A4') {
+        return orientation === 'P' ? 842 : 595;
+      }
+      return 842; // Default A4 portrait
+    },
     // Drag and Drop Handlers
     handleDragStart(event, element) {
       event.dataTransfer.setData('text/plain', JSON.stringify(element));
@@ -638,10 +1231,24 @@ export default {
       }
     },
 
-    handleDrop(event) {
+    handleCanvasDrop(event) {
       event.preventDefault();
+
+      // Check if the drop target is actually within a table cell
+      const dropTarget = event.target;
+      const tableCellContainer = dropTarget.closest('.table-cell-canvas');
+      const interactiveTable = dropTarget.closest('.interactive-table');
+
+      // Only let table cell handle the drop if we're actually dropping ON a table cell
+      if (tableCellContainer && interactiveTable) {
+        // This is a table cell drop - let the table cell handler deal with it
+        return;
+      }
+
+      // This is a canvas drop (outside any table cells)
       this.isDragOver = false;
-      
+      this.clearTableDragStates();
+
       try {
         const elementData = JSON.parse(event.dataTransfer.getData('text/plain'));
         if (elementData) {
@@ -660,16 +1267,20 @@ export default {
       
       const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
       
-      // Calculate drop position relative to canvas
-      const dropX = Math.round((event.clientX - canvasRect.left) / this.gridSize) * this.gridSize;
-      const dropY = Math.round((event.clientY - canvasRect.top) / this.gridSize) * this.gridSize;
+      // Calculate drop position as percentage of canvas
+      const dropXPercent = ((event.clientX - canvasRect.left) / canvasRect.width) * 100;
+      const dropYPercent = ((event.clientY - canvasRect.top) / canvasRect.height) * 100;
 
-      const defaultWidth = this.getDefaultWidth(elementData.type);
-      const defaultHeight = this.getDefaultHeight(elementData.type);
+      // Snap to percentage grid (0.5% increments)
+      const dropX = Math.round(dropXPercent * 2) / 2;
+      const dropY = Math.round(dropYPercent * 2) / 2;
 
-      // Ensure the position is within canvas bounds
-      const constrainedX = Math.max(0, Math.min(dropX, this.canvasWidth - defaultWidth));
-      const constrainedY = Math.max(0, Math.min(dropY, this.canvasHeight - defaultHeight));
+      const defaultWidth = this.getDefaultWidthPercent(elementData.type);
+      const defaultHeight = this.getDefaultHeightPercent(elementData.type);
+
+      // Ensure the position is within canvas bounds (percentage)
+      const constrainedX = Math.max(0, Math.min(dropX, 100 - defaultWidth));
+      const constrainedY = Math.max(0, Math.min(dropY, 100 - defaultHeight));
 
       this.addElement(elementData, constrainedX, constrainedY);
     },
@@ -679,15 +1290,25 @@ export default {
         i: `element_${++this.elementCounter}`,
         x: x,
         y: y,
-        w: elementData.w || this.getDefaultWidth(elementData.type),
-        h: elementData.h || this.getDefaultHeight(elementData.type),
+        w: elementData.w || this.getDefaultWidthPercent(elementData.type),
+        h: elementData.h || this.getDefaultHeightPercent(elementData.type),
         type: elementData.type,
         z: 1,
         props: { ...elementData.defaultProps }
       };
 
-      this.pdfLayout.push(newElement);
-      this.selectedElement = newElement;
+      // Ensure no duplicate IDs before adding
+      const existingIndex = this.pdfLayout.findIndex(el => el.i === newElement.i);
+      if (existingIndex === -1) {
+        this.pdfLayout.push(newElement);
+        this.selectedElement = newElement;
+      } else {
+        console.warn('Attempted to add duplicate element ID:', newElement.i);
+        // Generate a new unique ID and try again
+        newElement.i = `element_${++this.elementCounter}_${Date.now()}`;
+        this.pdfLayout.push(newElement);
+        this.selectedElement = newElement;
+      }
     },
 
     // Page Settings
@@ -730,6 +1351,15 @@ export default {
     // Element Management
     selectElement(element) {
       this.selectedElement = element;
+      this.selectedTableCell = null;
+      
+      // If it's a cell element, also highlight the parent table
+      if (element.parentTable) {
+        const parentTable = this.pdfLayout.find(el => el.i === element.parentTable);
+        if (parentTable) {
+          // Could add visual indication of parent table
+        }
+      }
     },
 
     updateElement(elementId, updatedProps) {
@@ -769,9 +1399,8 @@ export default {
 
     // Drag Movement
     startDrag(event, element) {
-      if (event.target.classList.contains('resize-handle')) {
-        return;
-      }
+      event.preventDefault();
+      event.stopPropagation();
       
       this.selectElement(element);
       this.draggingElement = element.i;
@@ -782,13 +1411,16 @@ export default {
       }
       
       const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
-      
       const mouseScreenX = event.clientX - canvasRect.left;
       const mouseScreenY = event.clientY - canvasRect.top;
       
+      // Convert element percentage position to pixels for drag offset calculation
+      const elementPixelX = (element.x / 100) * canvasRect.width;
+      const elementPixelY = (element.y / 100) * canvasRect.height;
+
       this._dragStartPos = {
-        x: mouseScreenX - element.x,
-        y: mouseScreenY - element.y
+        x: mouseScreenX - elementPixelX,
+        y: mouseScreenY - elementPixelY
       };
 
       const boundHandleDragMove = this.handleDragMove.bind(this);
@@ -799,8 +1431,6 @@ export default {
       
       this._boundHandleDragMove = boundHandleDragMove;
       this._boundHandleDragEnd = boundHandleDragEnd;
-      
-      event.preventDefault();
     },
 
     handleDragMove(event) {
@@ -814,14 +1444,17 @@ export default {
           const mouseScreenX = event.clientX - canvasRect.left;
           const mouseScreenY = event.clientY - canvasRect.top;
           
-          let newX = (mouseScreenX - this._dragStartPos.x);
-          let newY = (mouseScreenY - this._dragStartPos.y);
-          
-          newX = Math.round(newX / this.gridSize) * this.gridSize;
-          newY = Math.round(newY / this.gridSize) * this.gridSize;
-          
-          newX = Math.max(0, Math.min(newX, this.canvasWidth - element.w));
-          newY = Math.max(0, Math.min(newY, this.canvasHeight - element.h));
+          // Convert pixel position to percentage
+          let newX = ((mouseScreenX - this._dragStartPos.x) / canvasRect.width) * 100;
+          let newY = ((mouseScreenY - this._dragStartPos.y) / canvasRect.height) * 100;
+
+          // Snap to percentage grid (0.5% increments)
+          newX = Math.round(newX * 2) / 2;
+          newY = Math.round(newY * 2) / 2;
+
+          // Constrain to canvas bounds (percentage)
+          newX = Math.max(0, Math.min(newX, 100 - element.w));
+          newY = Math.max(0, Math.min(newY, 100 - element.h));
           
           // Check for overlap before updating position
           const testPosition = {
@@ -843,6 +1476,8 @@ export default {
       this.draggingElement = null;
       this.resizing = false;
       this.resizeHandle = null;
+      this.isDragOverTableCell = false;
+      this.isDragOverCell = null;
       
       if (this._boundHandleDragMove) {
         document.removeEventListener('mousemove', this._boundHandleDragMove);
@@ -854,117 +1489,22 @@ export default {
       }
     },
 
-    // Resize handlers
-    startResize(event, element, handle) {
-      this.resizing = true;
-      this.resizeHandle = handle;
-      this.selectElement(element);
-      
-      if (!this.$refs.pdfCanvas) {
-        console.error('Canvas ref not found for resize');
-        return;
-      }
-      
-      const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
-      
-      this._resizeStartPos = {
-        x: event.clientX,
-        y: event.clientY,
-        elementX: element.x,
-        elementY: element.y,
-        elementW: element.w,
-        elementH: element.h
-      };
-
-      const boundHandleResize = this.handleResize.bind(this);
-      const boundHandleDragEnd = this.handleDragEnd.bind(this);
-      
-      document.addEventListener('mousemove', boundHandleResize);
-      document.addEventListener('mouseup', boundHandleDragEnd);
-      
-      this._boundHandleResize = boundHandleResize;
-      this._boundHandleDragEnd = boundHandleDragEnd;
-      
-      event.preventDefault();
-      event.stopPropagation();
-    },
-
-    handleResize(event) {
-      if (!this.resizing || !this.selectedElement) return;
-
-      const element = this.selectedElement;
-      
-      const deltaX = event.clientX - this._resizeStartPos.x;
-      const deltaY = event.clientY - this._resizeStartPos.y;
-
-      let newX = this._resizeStartPos.elementX;
-      let newY = this._resizeStartPos.elementY;
-      let newW = this._resizeStartPos.elementW;
-      let newH = this._resizeStartPos.elementH;
-
-      // Handle different resize handles
-      if (this.resizeHandle.includes('n')) {
-        newY = this._resizeStartPos.elementY + deltaY;
-        newH = this._resizeStartPos.elementH - deltaY;
-      }
-      if (this.resizeHandle.includes('s')) {
-        newH = this._resizeStartPos.elementH + deltaY;
-      }
-      if (this.resizeHandle.includes('w')) {
-        newX = this._resizeStartPos.elementX + deltaX;
-        newW = this._resizeStartPos.elementW - deltaX;
-      }
-      if (this.resizeHandle.includes('e')) {
-        newW = this._resizeStartPos.elementW + deltaX;
-      }
-
-      // Constrain to minimum size
-      newW = Math.max(20, newW);
-      newH = Math.max(20, newH);
-
-      // Constrain to canvas bounds
-      newX = Math.max(0, Math.min(newX, this.canvasWidth - newW));
-      newY = Math.max(0, Math.min(newY, this.canvasHeight - newH));
-      newW = Math.min(newW, this.canvasWidth - newX);
-      newH = Math.min(newH, this.canvasHeight - newY);
-
-      // Snap to grid
-      newX = Math.round(newX / this.gridSize) * this.gridSize;
-      newY = Math.round(newY / this.gridSize) * this.gridSize;
-      newW = Math.round(newW / this.gridSize) * this.gridSize;
-      newH = Math.round(newH / this.gridSize) * this.gridSize;
-
-      // Check for overlap with other elements
-      const testPosition = {
-        x: newX,
-        y: newY,
-        w: newW,
-        h: newH
-      };
-      
-      // Only update if no overlap with other elements
-      if (!this.wouldOverlap(testPosition, element.i)) {
-        element.x = newX;
-        element.y = newY;
-        element.w = newW;
-        element.h = newH;
-      }
-    },
-
     // Helper methods
     getElementStyle(item) {
       return {
         position: 'absolute',
-        left: item.x + 'px',
-        top: item.y + 'px',
-        width: item.w + 'px',
-        height: item.h + 'px',
+        left: item.x + '%',
+        top: item.y + '%',
+        width: item.w + '%',
+        height: item.h + '%',
         zIndex: item.z || 1,
         cursor: 'move',
         border: this.selectedElement && this.selectedElement.i === item.i ? '2px solid #409EFF' : '1px dashed transparent',
         boxSizing: 'border-box'
       };
     },
+
+
 
     getElementContentStyle(element) {
       return {
@@ -1071,7 +1611,7 @@ export default {
     },
 
     handleCanvasClick(event) {
-      if (event.target === event.currentTarget || event.target.classList.contains('grid-background')) {
+      if (event.target === event.currentTarget || event.target.classList.contains('canvas-cell')) {
         this.selectedElement = null;
       }
     },
@@ -1093,9 +1633,32 @@ export default {
         field: 40,
         image: 100,
         table: 120,
-        line: 2
+        line: 5
       };
-      return heights[type] || 40;
+      return heights[type] || 30;
+    },
+
+    // Percentage-based default sizes
+    getDefaultWidthPercent(type) {
+      const widths = {
+        text: 25,    // 25% of canvas width
+        field: 20,   // 20% of canvas width
+        image: 20,   // 20% of canvas width
+        table: 40,   // 40% of canvas width
+        line: 25     // 25% of canvas width
+      };
+      return widths[type] || 20;
+    },
+
+    getDefaultHeightPercent(type) {
+      const heights = {
+        text: 4,     // 4% of canvas height
+        field: 5,    // 5% of canvas height
+        image: 12,   // 12% of canvas height
+        table: 15,   // 15% of canvas height
+        line: 0.5    // 0.5% of canvas height
+      };
+      return heights[type] || 4;
     },
 
     findNonOverlappingPosition(preferredX, preferredY, width, height) {
@@ -1143,27 +1706,62 @@ export default {
     },
 
     savePdf() {
-      // Normalize data before saving
-      const normalizedLayout = this.pdfLayout.map(element => ({
-        ...element,
-        x: parseInt(element.x) || 0,
-        y: parseInt(element.y) || 0,
-        w: parseInt(element.w) || 150,
-        h: parseInt(element.h) || 40,
-        z: parseInt(element.z) || 1,
-        props: {
-          ...element.props,
-          fontSize: parseInt(element.props.fontSize) || 14
+      // Create a clean layout without duplicating cell elements
+      const cleanLayout = [];
+
+      this.pdfLayout.forEach(element => {
+        // Always include main elements (non-cell elements)
+        if (!element.parentCell && !element.cellKey) {
+          const normalizedElement = {
+            ...element,
+            x: parseFloat(element.x) || 0,
+            y: parseFloat(element.y) || 0,
+            w: parseFloat(element.w) || 20,
+            h: parseFloat(element.h) || 4,
+            z: parseInt(element.z) || 1,
+            props: {
+              ...element.props
+            }
+          };
+
+          // Normalize table element properties
+          if (element.type === 'table') {
+            normalizedElement.props.rows = parseInt(element.props.rows) || 2;
+            normalizedElement.props.cols = parseInt(element.props.cols) || 2;
+            normalizedElement.props.borderWidth = parseInt(element.props.borderWidth) ?? 1;
+            normalizedElement.props.cellPadding = parseInt(element.props.cellPadding) || 8;
+
+            // Ensure cellFields structure is preserved
+            if (element.props.cellFields) {
+              normalizedElement.props.cellFields = {};
+              Object.keys(element.props.cellFields).forEach(cellKey => {
+                normalizedElement.props.cellFields[cellKey] = element.props.cellFields[cellKey].map(cellElement => ({
+                  ...cellElement,
+                  props: {
+                    ...cellElement.props,
+                    fontSize: parseInt(cellElement.props.fontSize) || 14
+                  }
+                }));
+              });
+            }
+          } else {
+            // Normalize other element properties
+            if (element.props.fontSize) {
+              normalizedElement.props.fontSize = parseInt(element.props.fontSize) || 14;
+            }
+          }
+
+          cleanLayout.push(normalizedElement);
         }
-      }));
-      
-      this.pages[this.currentPageIndex].layout = normalizedLayout;
-      
+      });
+
+      this.pages[this.currentPageIndex].layout = cleanLayout;
+
       const templateData = {
         pages: this.pages,
         appearance: this.appearance
       };
-      
+
       this.$emit('save', templateData);
     },
 
@@ -1192,26 +1790,307 @@ export default {
       this.$forceUpdate();
     },
 
-    updateElementPosition(elementId, field, value) {
-      console.log('PdfBuilder: Updating element position:', elementId, field, value);
-      const element = this.pdfLayout.find(el => el.i === elementId);
-      if (element) {
-        const oldValue = element[field];
-        element[field] = parseInt(value);
-        console.log('Position updated from', oldValue, 'to', element[field]);
-        this.$forceUpdate(); // Force reactivity update
+    // Header/Footer methods
+    getHeaderStyle() {
+      const settings = this.headerSettings || {};
+      return {
+        width: '100%',
+        height: (settings.height || 60) + 'px',
+        backgroundColor: settings.backgroundColor || 'transparent',
+        borderBottom: '1px solid #ddd',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: settings.textAlign || 'center',
+        cursor: 'pointer',
+        boxSizing: 'border-box'
+      };
+    },
+
+    getHeaderContentStyle() {
+      const settings = this.headerSettings || {};
+      return {
+        fontSize: (settings.fontSize || 12) + 'px',
+        color: settings.color || '#000000',
+        textAlign: settings.textAlign || 'center',
+        width: '100%',
+        padding: '0 10px'
+      };
+    },
+
+    getFooterStyle() {
+      const settings = this.footerSettings || {};
+      return {
+        width: '100%',
+        height: (settings.height || 60) + 'px',
+        backgroundColor: settings.backgroundColor || 'transparent',
+        borderTop: '1px solid #ddd',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: settings.textAlign || 'center',
+        cursor: 'pointer',
+        boxSizing: 'border-box'
+      };
+    },
+
+    getFooterContentStyle() {
+      const settings = this.footerSettings || {};
+      return {
+        fontSize: (settings.fontSize || 12) + 'px',
+        color: settings.color || '#000000',
+        textAlign: settings.textAlign || 'center',
+        width: '100%',
+        padding: '0 10px'
+      };
+    },
+
+    selectHeaderFooter(type) {
+      if (!this.currentPage) return;
+
+      this.selectedElement = {
+        type: type,
+        isHeaderFooter: true,
+        settings: type === 'header' ? this.currentPage.headerSettings : this.currentPage.footerSettings
+      };
+    },
+
+    updateHeaderFooter() {
+      // Update current page's header/footer settings
+      if (this.currentPage && this.headerSettings && this.footerSettings) {
+        this.currentPage.headerSettings = { ...this.headerSettings };
+        this.currentPage.footerSettings = { ...this.footerSettings };
+
+        // Emit changes to parent component
+        this.$emit('update:pages', this.pages);
       }
     },
 
-    updateElementSize(elementId, field, value) {
-      console.log('PdfBuilder: Updating element size:', elementId, field, value);
-      const element = this.pdfLayout.find(el => el.i === elementId);
-      if (element) {
-        const oldValue = element[field];
-        element[field] = parseInt(value);
-        console.log('Size updated from', oldValue, 'to', element[field]);
-        this.$forceUpdate(); // Force reactivity update
+    // Individual header/footer update methods
+    updateHeaderEnabled(value) {
+      if (this.currentPage && this.currentPage.headerSettings) {
+        this.currentPage.headerSettings.enabled = value;
+        this.$emit('update:pages', this.pages);
+      } else {
+        console.warn('Cannot update header enabled: currentPage or headerSettings is undefined');
       }
+    },
+
+    updateHeaderHeight(value) {
+      if (this.currentPage && this.currentPage.headerSettings) {
+        this.currentPage.headerSettings.height = value;
+        this.$emit('update:pages', this.pages);
+      } else {
+        console.warn('Cannot update header height: currentPage or headerSettings is undefined');
+      }
+    },
+
+    updateHeaderContent(value) {
+      if (this.currentPage && this.currentPage.headerSettings) {
+        this.currentPage.headerSettings.content = value;
+        this.$emit('update:pages', this.pages);
+      } else {
+        console.warn('Cannot update header content: currentPage or headerSettings is undefined');
+      }
+    },
+
+    updateFooterEnabled(value) {
+      if (this.currentPage && this.currentPage.footerSettings) {
+        this.currentPage.footerSettings.enabled = value;
+        this.$emit('update:pages', this.pages);
+      } else {
+        console.warn('Cannot update footer enabled: currentPage or footerSettings is undefined');
+      }
+    },
+
+    updateFooterHeight(value) {
+      if (this.currentPage && this.currentPage.footerSettings) {
+        this.currentPage.footerSettings.height = value;
+        this.$emit('update:pages', this.pages);
+      } else {
+        console.warn('Cannot update footer height: currentPage or footerSettings is undefined');
+      }
+    },
+
+    updateFooterContent(value) {
+      if (this.currentPage && this.currentPage.footerSettings) {
+        this.currentPage.footerSettings.content = value;
+        this.$emit('update:pages', this.pages);
+      } else {
+        console.warn('Cannot update footer content: currentPage or footerSettings is undefined');
+      }
+    },
+
+    // Multi-page management methods
+    addNewPage() {
+      // Save current page elements before adding new page
+      if (this.currentPage && this.pdfLayout) {
+        this.currentPage.elements = [...this.pdfLayout];
+      }
+
+      const newPageId = 'page_' + (Date.now());
+      const newPage = {
+        id: newPageId,
+        elements: [],
+        headerSettings: {
+          enabled: false,
+          height: 60,
+          content: '',
+          backgroundColor: 'transparent',
+          fontSize: 12,
+          textAlign: 'center',
+          color: '#000000'
+        },
+        footerSettings: {
+          enabled: false,
+          height: 60,
+          content: '',
+          backgroundColor: 'transparent',
+          fontSize: 12,
+          textAlign: 'center',
+          color: '#000000'
+        }
+      };
+
+      this.pages.push(newPage);
+      this.currentPageIndex = this.pages.length - 1;
+
+      // Clear selections to prevent form injection errors
+      this.selectedElement = null;
+      this.selectedTableCell = null;
+
+      // Update pdfLayout to new empty page
+      this.pdfLayout = [];
+
+      // Use nextTick to ensure DOM is updated
+      this.$nextTick(() => {
+        this.$emit('input', this.pdfLayout);
+        this.$emit('update:pages', this.pages);
+        this.$message.success(this.$t('New page added successfully'));
+      });
+    },
+
+    switchPage(pageIndex) {
+      // Validate page index
+      if (pageIndex < 0 || pageIndex >= this.pages.length) {
+        console.warn('Invalid page index:', pageIndex);
+        return;
+      }
+
+      // Save current page elements if current page exists
+      if (this.currentPage && this.pdfLayout) {
+        this.currentPage.elements = [...this.pdfLayout];
+      }
+
+      // Switch to new page
+      this.currentPageIndex = pageIndex;
+
+      // Load new page elements safely
+      const newPage = this.pages[pageIndex];
+      if (newPage && newPage.elements) {
+        this.pdfLayout = [...newPage.elements];
+      } else {
+        this.pdfLayout = [];
+      }
+
+      // Clear selections to prevent form injection errors
+      this.selectedElement = null;
+      this.selectedTableCell = null;
+
+      // Force Vue to re-render components
+      this.$nextTick(() => {
+        this.$emit('input', this.pdfLayout);
+        this.$emit('update:pages', this.pages);
+      });
+    },
+
+    confirmDeleteCurrentPage() {
+      if (this.pages.length <= 1) {
+        this.$message.warning(this.$t('Cannot delete the last page'));
+        return;
+      }
+
+      this.$confirm(
+        this.$t('This will permanently delete the current page and all its content. Continue?'),
+        this.$t('Delete Page'),
+        {
+          confirmButtonText: this.$t('Delete'),
+          cancelButtonText: this.$t('Cancel'),
+          type: 'warning'
+        }
+      ).then(() => {
+        this.deleteCurrentPage();
+      }).catch(() => {
+        // User cancelled
+      });
+    },
+
+    deleteCurrentPage() {
+      if (this.pages.length <= 1) return;
+
+      // Remove current page
+      this.pages.splice(this.currentPageIndex, 1);
+
+      // Adjust current page index
+      if (this.currentPageIndex >= this.pages.length) {
+        this.currentPageIndex = this.pages.length - 1;
+      }
+
+      // Load new current page
+      this.pdfLayout = [...this.currentPage.elements];
+      this.selectedElement = null;
+      this.selectedTableCell = null;
+
+      this.$emit('input', this.pdfLayout);
+      this.$emit('update:pages', this.pages);
+      this.$message.success(this.$t('Page deleted successfully'));
+    },
+
+    clearCurrentPage() {
+      this.$confirm(
+        this.$t('This will clear all elements but keep header/footer settings. Continue?'),
+        this.$t('Clear Page'),
+        {
+          confirmButtonText: this.$t('Clear'),
+          cancelButtonText: this.$t('Cancel'),
+          type: 'warning'
+        }
+      ).then(() => {
+        // Clear only elements, keep header/footer
+        this.pdfLayout = [];
+        this.currentPage.elements = [];
+        this.selectedElement = null;
+        this.selectedTableCell = null;
+
+        this.$emit('input', this.pdfLayout);
+        this.$emit('update:pages', this.pages);
+        this.$message.success(this.$t('Page cleared successfully'));
+      }).catch(() => {
+        // User cancelled
+      });
+    },
+
+    // Methods for direct property panel updates with validation
+    updateElementPosition() {
+      if (this.selectedElement) {
+        // Ensure position doesn't go out of canvas bounds
+        const maxX = 100 - parseFloat(this.selectedElement.w || 0);
+        const maxY = 100 - parseFloat(this.selectedElement.h || 0);
+
+        this.selectedElement.x = Math.max(0, Math.min(maxX, parseFloat(this.selectedElement.x || 0)));
+        this.selectedElement.y = Math.max(0, Math.min(maxY, parseFloat(this.selectedElement.y || 0)));
+      }
+      this.updateElementProps();
+    },
+
+    updateElementSize() {
+      if (this.selectedElement) {
+        // Ensure size doesn't make element go out of canvas bounds
+        const maxW = 100 - parseFloat(this.selectedElement.x || 0);
+        const maxH = 100 - parseFloat(this.selectedElement.y || 0);
+
+        this.selectedElement.w = Math.max(1, Math.min(maxW, parseFloat(this.selectedElement.w || 0)));
+        this.selectedElement.h = Math.max(1, Math.min(maxH, parseFloat(this.selectedElement.h || 0)));
+      }
+      this.updateElementProps();
     },
 
     adjustElementsToCanvas() {
@@ -1327,112 +2206,1490 @@ export default {
         this.selectedElement.props.alt = 'Image';
         this.updateElementProps();
       }
-    }
-  },
-  watch: {
-    templateData: {
-      handler(newTemplateData) {
-        console.log('Loading template data:', newTemplateData);
-        
-        if (newTemplateData && newTemplateData.pages && newTemplateData.pages.length > 0) {
-          this.pages = JSON.parse(JSON.stringify(newTemplateData.pages));
-          
-          const layout = newTemplateData.pages[0].layout || [];
-          console.log('Raw layout from template:', layout);
-          
-          this.pdfLayout = layout.map(element => {
-            const normalized = {
-              ...element,
-              x: parseInt(element.x) || 0,
-              y: parseInt(element.y) || 0,
-              w: parseInt(element.w) || 150,
-              h: parseInt(element.h) || 40,
-              z: parseInt(element.z) || 1,
-              props: {
-                ...element.props,
-                fontSize: parseInt(element.props.fontSize) || 14
-              }
-            };
-            console.log('Normalized element:', normalized);
-            return normalized;
-          });
-          
-          console.log('Final pdfLayout:', this.pdfLayout);
-          
-          if (this.pdfLayout.length > 0) {
-            const maxId = Math.max(...this.pdfLayout.map(el => {
-              const match = el.i.match(/element_(\d+)/);
-              return match ? parseInt(match[1]) : 0;
-            }));
-            this.elementCounter = maxId;
+    },
+    getElementsInCell(row, col) {
+      // Calculate which elements belong to this cell
+      const cellX = (col - 1) * this.gridSize;
+      const cellY = (row - 1) * this.gridSize;
+      
+      return this.pdfLayout.filter(element => {
+        const elementCellX = Math.floor(element.x / this.gridSize) * this.gridSize;
+        const elementCellY = Math.floor(element.y / this.gridSize) * this.gridSize;
+        return elementCellX === cellX && elementCellY === cellY;
+      });
+    },
+    getTableElementStyle(element) {
+      // Position element within its cell
+      const cellX = Math.floor(element.x / this.gridSize) * this.gridSize;
+      const cellY = Math.floor(element.y / this.gridSize) * this.gridSize;
+      const offsetX = element.x - cellX;
+      const offsetY = element.y - cellY;
+      
+      return {
+        position: 'absolute',
+        left: offsetX + 'px',
+        top: offsetY + 'px',
+        width: element.w + 'px',
+        height: element.h + 'px',
+        zIndex: element.z || 1,
+        cursor: 'move',
+        border: this.selectedElement && this.selectedElement.i === element.i ? '2px solid #409EFF' : '1px dashed transparent',
+        boxSizing: 'border-box'
+      };
+    },
+    nestedTableStyle(element) {
+      // Handle borderWidth: 0 case for table border collapse
+      const borderWidth = element.props.borderWidth ?? 1;
+      const borderCollapse = borderWidth > 0 ? 'collapse' : 'separate';
+
+      return {
+        width: '100%',
+        height: '100%',
+        borderCollapse: borderCollapse,
+        backgroundColor: element.props.backgroundColor || 'transparent',
+        tableLayout: 'fixed', // Fixed layout for consistent column widths
+        minWidth: '100%' // Ensure table takes full width
+      };
+    },
+    nestedTableCellStyle(element) {
+      // Calculate responsive cell width based on number of columns
+      const cellWidth = `${100 / element.props.cols}%`;
+
+      // Handle borderWidth: 0 case
+      const borderWidth = element.props.borderWidth ?? 0;
+      const borderStyle = borderWidth > 0
+        ? `${borderWidth}px solid ${element.props.borderColor || '#ddd'}`
+        : 'none';
+
+      return {
+        border: borderStyle,
+        padding: `${element.props.cellPadding || 4}px`,
+        verticalAlign: 'top',
+        fontSize: '12px',
+        width: cellWidth,
+        maxWidth: cellWidth,
+        minWidth: '50px', // Minimum width to prevent too narrow cells
+        wordWrap: 'break-word',
+        overflow: 'hidden'
+      };
+    },
+    nestedTableHeaderStyle(element) {
+      // Handle borderWidth: 0 case for headers too
+      const borderWidth = element.props.borderWidth ?? 1;
+      const borderStyle = borderWidth > 0
+        ? `${borderWidth}px solid ${element.props.borderColor || '#ddd'}`
+        : 'none';
+
+      return {
+        border: borderStyle,
+        padding: `${element.props.cellPadding || 8}px`,
+        backgroundColor: element.props.headerBgColor || '#f5f5f5',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: '12px'
+      };
+    },
+    selectTableCell(element, row, col) {
+      this.selectedTableCell = `${element.i}-${row}-${col}`;
+      this.selectedElement = element;
+    },
+    editTableCell(element, row, col) {
+      const cellKey = `${row}-${col}`;
+      const currentContent = element.props.cellData[cellKey] || '';
+      
+      this.$prompt('Edit cell content:', 'Cell Editor', {
+        inputValue: currentContent,
+        inputType: 'textarea'
+      }).then(({ value }) => {
+        if (!element.props.cellData) {
+          this.$set(element.props, 'cellData', {});
+        }
+        this.$set(element.props.cellData, cellKey, value);
+      }).catch(() => {
+        // User cancelled
+      });
+    },
+    getCellContent(element, row, col) {
+      const cellKey = `${row}-${col}`;
+      return element.props.cellData && element.props.cellData[cellKey] || '';
+    },
+
+
+    // Container-like methods for table cells (adapted from NestedHandler)
+    getCellFieldsList(tableElement, row, col) {
+      const cellKey = `${row}-${col}`;
+
+      // Initialize cell fields if not exists
+      if (!tableElement.props.cellFields) {
+        this.$set(tableElement.props, 'cellFields', {});
+      }
+
+      if (!tableElement.props.cellFields[cellKey]) {
+        this.$set(tableElement.props.cellFields, cellKey, []);
+      }
+
+      return tableElement.props.cellFields[cellKey];
+    },
+
+    // Handle drop into table cell (container-like)
+    handleCellDropElement(droppedItem, targetCellFields, tableElement, row, col) {
+      // Check if element can be dropped in cell (prevent table nesting)
+      if (!this.canDropInCell(droppedItem, tableElement)) {
+        return;
+      }
+
+      // Create a new element for the cell
+      const newElement = this.createCellElement(droppedItem, tableElement, row, col);
+
+      // Add to cell fields list only (container-like approach)
+      targetCellFields.push(newElement);
+
+      this.selectedElement = newElement;
+      this.updateElementProps();
+    },
+
+    // Handle moving element from one cell to another
+    handleCellElementMoved(movedData, tableElement) {
+      const { index, list, element } = movedData;
+
+      // Remove from source list only (container-like approach)
+      if (list && index > -1) {
+        list.splice(index, 1);
+      }
+    },
+
+    // Create element for cell (similar to container fields)
+    createCellElement(elementData, tableElement, row, col) {
+      const cellKey = `${row}-${col}`;
+
+      const newElement = {
+        i: `cell_element_${++this.elementCounter}`,
+        type: elementData.type,
+        parentCell: `${tableElement.i}-${row}-${col}`, // For compatibility
+        parentTable: tableElement.i,
+        cellRow: row,
+        cellCol: col,
+        cellKey: cellKey,
+        // Container-like properties
+        uniqElKey: `cell_element_${this.elementCounter}_${Date.now()}`,
+        element: elementData.type,
+        // Position within cell (list-based, not absolute)
+        cellPosition: 'relative',
+        // Default dimensions
+        w: this.getDefaultWidth(elementData.type),
+        h: this.getDefaultHeight(elementData.type),
+        x: 0, // Not used in container mode
+        y: 0, // Not used in container mode
+        z: 1,
+        props: { ...elementData.defaultProps },
+        // Editor options for compatibility
+        editor_options: {
+          template: elementData.type
+        },
+        attributes: {
+          name: `${elementData.type}_${this.elementCounter}`,
+          class: ''
+        },
+        settings: {}
+      };
+
+      return newElement;
+    },
+    getCellElementStyle(element) {
+      return {
+        position: 'relative',
+        margin: '2px 0',
+        padding: '2px',
+        border: '1px dashed #ccc',
+        borderRadius: '2px'
+      };
+    },
+    getCellElementComponent(element) {
+      // Return appropriate component for rendering cell elements
+      const componentMap = {
+        text: 'div',
+        field: 'div',
+        image: 'img',
+        line: 'hr'
+      };
+      return componentMap[element.type] || 'div';
+    },
+
+    addElementToTableCell(elementData, tableElement, row, col, dropX = 10, dropY = 10) {
+      const cellKey = `${tableElement.i}-${row}-${col}`;
+      
+      // Get cell dimensions for constraint checking
+      const cellWidth = Math.floor((tableElement.w - (tableElement.props.cols * 2)) / tableElement.props.cols);
+      const cellHeight = Math.floor((tableElement.h - (tableElement.props.rows * 2)) / tableElement.props.rows);
+      
+      // Default element sizes for cells
+      const defaultWidth = Math.min(this.getDefaultWidth(elementData.type) * 0.6, cellWidth - 20);
+      const defaultHeight = Math.min(this.getDefaultHeight(elementData.type), cellHeight - 20);
+      
+      // Constrain drop position within cell bounds
+      const constrainedX = Math.max(5, Math.min(dropX, cellWidth - defaultWidth - 5));
+      const constrainedY = Math.max(5, Math.min(dropY, cellHeight - defaultHeight - 5));
+      
+      const newElement = {
+        i: `cell_element_${++this.elementCounter}`,
+        type: elementData.type,
+        parentCell: cellKey,
+        parentTable: tableElement.i,
+        cellRow: row,
+        cellCol: col,
+        // Cell-relative positioning
+        cellX: constrainedX,
+        cellY: constrainedY,
+        cellW: defaultWidth,
+        cellH: defaultHeight,
+        // Keep main canvas positioning for compatibility
+        x: 0,
+        y: 0,
+        w: defaultWidth,
+        h: defaultHeight,
+        z: 1,
+        props: { ...elementData.defaultProps }
+      };
+
+      this.pdfLayout.push(newElement);
+      this.selectedElement = newElement;
+      this.selectedTableCell = cellKey;
+      this.updateElementProps();
+    },
+    // Enhanced table creation with container-like functionality
+    createTableContainer(rows = 2, cols = 2) {
+      const tableElement = {
+        i: `table_${++this.elementCounter}`,
+        type: 'table',
+        x: 50,
+        y: 50,
+        w: 400,
+        h: 200,
+        z: 1,
+        props: {
+          rows: rows,
+          cols: cols,
+          borderColor: '#ddd',
+          borderWidth: 1,
+          cellPadding: 8,
+          backgroundColor: 'transparent',
+          showHeaders: false,
+          cellData: {},
+          // Container-like properties
+          allowNestedElements: true,
+          cellMinHeight: 50
+        }
+      };
+
+      this.pdfLayout.push(tableElement);
+      this.selectedElement = tableElement;
+      return tableElement;
+    },
+    // Method to convert table to container-like structure
+    getTableAsContainer(element) {
+      if (element.type !== 'table') return null;
+      
+      const container = {
+        element: 'container',
+        columns: []
+      };
+
+      // Create columns based on table structure
+      for (let col = 1; col <= element.props.cols; col++) {
+        const column = {
+          width: Math.round(100 / element.props.cols),
+          fields: []
+        };
+
+        // Get all elements in this column across all rows
+        for (let row = 1; row <= element.props.rows; row++) {
+          const cellElements = this.getCellElements(element, row, col);
+          column.fields.push(...cellElements);
+        }
+
+        container.columns.push(column);
+      }
+
+      return container;
+    },
+    // Update table dimensions
+    updateTableDimensions(element, rows, cols) {
+      if (element.type !== 'table') return;
+      
+      element.props.rows = rows;
+      element.props.cols = cols;
+      
+      // Redistribute existing cell elements if needed
+      this.redistributeTableElements(element);
+    },
+    redistributeTableElements(tableElement) {
+      const cellElements = this.pdfLayout.filter(el => 
+        el.parentTable === tableElement.i
+      );
+
+      // Remove elements that are outside new table bounds
+      cellElements.forEach(el => {
+        if (el.cellRow > tableElement.props.rows || el.cellCol > tableElement.props.cols) {
+          const index = this.pdfLayout.indexOf(el);
+          if (index > -1) {
+            this.pdfLayout.splice(index, 1);
           }
         }
-      },
-      immediate: true,
-      deep: true
+      });
     },
-    
-    appearance: {
-      handler(newAppearance, oldAppearance) {
-        this.$nextTick(() => {
-          this.constrainElementsToCanvas();
-          this.$forceUpdate();
+    // Fix cell drop handling
+    handleCellDragOver(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    },
+
+    handleCellDragEnter(event) {
+      event.preventDefault();
+      const cell = event.currentTarget;
+      const cellId = cell.dataset.cell;
+      const tableId = this.selectedElement ? this.selectedElement.i : null;
+      this.isDragOverCell = `${tableId}-${cellId}`;
+    },
+
+    handleCellDragLeave(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      if (this.dragOverTimeout) {
+        clearTimeout(this.dragOverTimeout);
+      }
+      
+      this.dragOverTimeout = setTimeout(() => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          this.isDragOverCell = null;
+          this.isDragOverTableCell = false;
+        }
+      }, 50);
+    },
+    // Fix resize functionality
+    startResize(event, element, handle) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      this.resizing = true;
+      this.resizeHandle = handle;
+      this.selectElement(element);
+      
+      if (!this.$refs.pdfCanvas) {
+        console.error('Canvas ref not found for resize');
+        return;
+      }
+      
+      this._resizeStartPos = {
+        x: event.clientX,
+        y: event.clientY,
+        elementX: element.x,
+        elementY: element.y,
+        elementW: element.w,
+        elementH: element.h
+      };
+
+      const boundHandleResize = this.handleResize.bind(this);
+      const boundHandleResizeEnd = this.handleResizeEnd.bind(this);
+      
+      document.addEventListener('mousemove', boundHandleResize);
+      document.addEventListener('mouseup', boundHandleResizeEnd);
+      
+      this._boundHandleResize = boundHandleResize;
+      this._boundHandleResizeEnd = boundHandleResizeEnd;
+    },
+
+    handleResize(event) {
+      if (!this.resizing || !this.selectedElement) return;
+
+      const element = this.selectedElement;
+      const canvasRect = this.$refs.pdfCanvas.getBoundingClientRect();
+
+      // Convert pixel deltas to percentage deltas
+      const deltaX = ((event.clientX - this._resizeStartPos.x) / canvasRect.width) * 100;
+      const deltaY = ((event.clientY - this._resizeStartPos.y) / canvasRect.height) * 100;
+
+      let newX = this._resizeStartPos.elementX;
+      let newY = this._resizeStartPos.elementY;
+      let newW = this._resizeStartPos.elementW;
+      let newH = this._resizeStartPos.elementH;
+
+      // Handle different resize handles
+      if (this.resizeHandle.includes('n')) {
+        newY = this._resizeStartPos.elementY + deltaY;
+        newH = this._resizeStartPos.elementH - deltaY;
+      }
+      if (this.resizeHandle.includes('s')) {
+        newH = this._resizeStartPos.elementH + deltaY;
+      }
+      if (this.resizeHandle.includes('w')) {
+        newX = this._resizeStartPos.elementX + deltaX;
+        newW = this._resizeStartPos.elementW - deltaX;
+      }
+      if (this.resizeHandle.includes('e')) {
+        newW = this._resizeStartPos.elementW + deltaX;
+      }
+
+      // Constrain to minimum size (percentage)
+      newW = Math.max(1, newW); // 1% minimum width
+      newH = Math.max(1, newH); // 1% minimum height
+
+      // Debug logging for Y-axis resize issues
+      if (this.resizeHandle.includes('n') || this.resizeHandle.includes('s')) {
+        console.log('Y-axis resize:', {
+          handle: this.resizeHandle,
+          deltaY: deltaY,
+          originalH: this._resizeStartPos.elementH,
+          newH: newH,
+          canvasHeight: canvasRect.height
         });
-      },
-      deep: true,
-      immediate: true
+      }
+
+      // Check if this is a cell element or main canvas element
+      if (element.parentCell) {
+        // This is a cell element - use cell bounds
+        const tableElement = this.pdfLayout.find(el => el.i === element.parentTable);
+        if (tableElement) {
+          // For cell elements, we still use the existing logic since they're in a different coordinate system
+          // This would need more complex conversion, keeping existing for now
+          const cellWidth = Math.floor((tableElement.w - (tableElement.props.cols * 2)) / tableElement.props.cols) - 10;
+          const cellHeight = Math.floor((tableElement.h - (tableElement.props.rows * 2)) / tableElement.props.rows) - 10;
+
+          // Convert back to pixels for cell elements (they use pixel-based positioning within cells)
+          const pixelDeltaX = (deltaX / 100) * canvasRect.width;
+          const pixelDeltaY = (deltaY / 100) * canvasRect.height;
+
+          let cellNewX = this._resizeStartPos.elementX;
+          let cellNewY = this._resizeStartPos.elementY;
+          let cellNewW = this._resizeStartPos.elementW;
+          let cellNewH = this._resizeStartPos.elementH;
+
+          if (this.resizeHandle.includes('n')) {
+            cellNewY = this._resizeStartPos.elementY + pixelDeltaY;
+            cellNewH = this._resizeStartPos.elementH - pixelDeltaY;
+          }
+          if (this.resizeHandle.includes('s')) {
+            cellNewH = this._resizeStartPos.elementH + pixelDeltaY;
+          }
+          if (this.resizeHandle.includes('w')) {
+            cellNewX = this._resizeStartPos.elementX + pixelDeltaX;
+            cellNewW = this._resizeStartPos.elementW - pixelDeltaX;
+          }
+          if (this.resizeHandle.includes('e')) {
+            cellNewW = this._resizeStartPos.elementW + pixelDeltaX;
+          }
+
+          // Constrain to minimum size for cell elements
+          cellNewW = Math.max(1, cellNewW); // 1px minimum width
+          cellNewH = Math.max(1, cellNewH); // 1px minimum height
+
+          // Constrain to cell bounds
+          cellNewX = Math.max(2, Math.min(cellNewX, cellWidth - cellNewW));
+          cellNewY = Math.max(2, Math.min(cellNewY, cellHeight - cellNewH));
+          cellNewW = Math.min(cellNewW, cellWidth - cellNewX);
+          cellNewH = Math.min(cellNewH, cellHeight - cellNewY);
+
+          element.cellX = cellNewX;
+          element.cellY = cellNewY;
+          element.cellW = cellNewW;
+          element.cellH = cellNewH;
+        }
+      } else {
+        // This is a main canvas element - use percentage bounds
+        // Debug logging for bounds checking
+        if (this.resizeHandle.includes('n') || this.resizeHandle.includes('s')) {
+          console.log('Before bounds check:', { newX, newY, newW, newH });
+        }
+
+        // Ensure position doesn't go negative
+        newX = Math.max(0, newX);
+        newY = Math.max(0, newY);
+
+        // Ensure element doesn't go outside canvas bounds
+        // But don't artificially limit the size - only adjust position if needed
+        if (newX + newW > 100) {
+          if (this.resizeHandle.includes('w')) {
+            // When resizing from west, adjust position to keep element in bounds
+            newX = 100 - newW;
+          } else {
+            // When resizing from east, limit width to stay in bounds
+            newW = 100 - newX;
+          }
+        }
+
+        if (newY + newH > 100) {
+          if (this.resizeHandle.includes('n')) {
+            // When resizing from north, adjust position to keep element in bounds
+            newY = 100 - newH;
+          } else {
+            // When resizing from south, limit height to stay in bounds
+            newH = 100 - newY;
+          }
+        }
+
+        if (this.resizeHandle.includes('n') || this.resizeHandle.includes('s')) {
+          console.log('After bounds check:', { newX, newY, newW, newH });
+        }
+
+        // Snap to percentage grid (0.5% increments)
+        newX = Math.round(newX * 2) / 2;
+        newY = Math.round(newY * 2) / 2;
+        newW = Math.round(newW * 2) / 2;
+        newH = Math.round(newH * 2) / 2;
+
+        element.x = newX;
+        element.y = newY;
+        element.w = newW;
+        element.h = newH;
+      }
     },
-    
-    canvasWidth() {
-      this.$nextTick(() => {
-        this.constrainElementsToCanvas();
-      });
+
+    handleCellElementDragEnd() {
+      this.draggingElement = null;
+      this._cellDragStartPos = null;
+      
+      if (this._boundHandleCellDragMove) {
+        document.removeEventListener('mousemove', this._boundHandleCellDragMove);
+        this._boundHandleCellDragMove = null;
+      }
+      if (this._boundHandleCellDragEnd) {
+        document.removeEventListener('mouseup', this._boundHandleCellDragEnd);
+        this._boundHandleCellDragEnd = null;
+      }
     },
-    
-    canvasHeight() {
-      this.$nextTick(() => {
-        this.constrainElementsToCanvas();
-      });
-    }
-  },
-  mounted() {
-    // Load template data on mount if available
-    // if (this.templateData && this.templateData.pages && this.templateData.pages.length > 0) {
-    //   this.pages = JSON.parse(JSON.stringify(this.templateData.pages));
-    //   this.pdfLayout = JSON.parse(JSON.stringify(this.templateData.pages[0].layout || []));
-    //  
-    //   // Update element counter
-    //   if (this.pdfLayout.length > 0) {
-    //     const maxId = Math.max(...this.pdfLayout.map(el => {
-    //       const match = el.i.match(/element_(\d+)/);
-    //       return match ? parseInt(match[1]) : 0;
-    //     }));
-    //     this.elementCounter = maxId;
-    //   }
-    // }
-      console.log(this.pdfLayout)
-    
-    this.handleKeyboardDelete = (event) => {
-      if (event.key === 'Delete' || event.key === 'Backspace') {
-        if (this.selectedElement && !event.target.matches('input, textarea')) {
-          event.preventDefault();
-          this.deleteElement(this.selectedElement.i);
+
+    // Cell element resize handling
+    startCellElementResize(event, cellElement, tableElement, handle) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      this.resizing = true;
+      this.resizeHandle = handle;
+      this.selectElement(cellElement);
+      
+      this._cellResizeStartPos = {
+        x: event.clientX,
+        y: event.clientY,
+        elementX: cellElement.cellX || 0,
+        elementY: cellElement.cellY || 0,
+        elementW: cellElement.cellW || 80,
+        elementH: cellElement.cellH || 30,
+        tableElement: tableElement
+      };
+
+      const boundHandleCellResize = this.handleCellElementResize.bind(this);
+      const boundHandleCellResizeEnd = this.handleCellElementResizeEnd.bind(this);
+      
+      document.addEventListener('mousemove', boundHandleCellResize);
+      document.addEventListener('mouseup', boundHandleCellResizeEnd);
+      
+      this._boundHandleCellResize = boundHandleCellResize;
+      this._boundHandleCellResizeEnd = boundHandleCellResizeEnd;
+    },
+
+    handleCellElementResize(event) {
+      if (!this.resizing || !this.selectedElement || !this._cellResizeStartPos) return;
+
+      const element = this.selectedElement;
+      const deltaX = event.clientX - this._cellResizeStartPos.x;
+      const deltaY = event.clientY - this._cellResizeStartPos.y;
+
+      let newX = this._cellResizeStartPos.elementX;
+      let newY = this._cellResizeStartPos.elementY;
+      let newW = this._cellResizeStartPos.elementW;
+      let newH = this._cellResizeStartPos.elementH;
+
+      // Handle different resize handles
+      if (this.resizeHandle.includes('n')) {
+        newY = this._cellResizeStartPos.elementY + deltaY;
+        newH = this._cellResizeStartPos.elementH - deltaY;
+      }
+      if (this.resizeHandle.includes('s')) {
+        newH = this._cellResizeStartPos.elementH + deltaY;
+      }
+      if (this.resizeHandle.includes('w')) {
+        newX = this._cellResizeStartPos.elementX + deltaX;
+        newW = this._cellResizeStartPos.elementW - deltaX;
+      }
+      if (this.resizeHandle.includes('e')) {
+        newW = this._cellResizeStartPos.elementW + deltaX;
+      }
+
+      // Constrain to minimum size
+      newW = Math.max(1, newW);
+      newH = Math.max(1, newH);
+
+      // Get cell bounds (approximate)
+      const tableElement = this._cellResizeStartPos.tableElement;
+      const cellWidth = Math.floor((tableElement.w - (tableElement.props.cols * 2)) / tableElement.props.cols) - 10;
+      const cellHeight = Math.floor((tableElement.h - (tableElement.props.rows * 2)) / tableElement.props.rows) - 10;
+
+      // Constrain to cell bounds
+      newX = Math.max(2, Math.min(newX, cellWidth - newW));
+      newY = Math.max(2, Math.min(newY, cellHeight - newH));
+      newW = Math.min(newW, cellWidth - newX);
+      newH = Math.min(newH, cellHeight - newY);
+
+      // Snap to mini-grid
+      const cellGridSize = 5;
+      newX = Math.round(newX / cellGridSize) * cellGridSize;
+      newY = Math.round(newY / cellGridSize) * cellGridSize;
+      newW = Math.round(newW / cellGridSize) * cellGridSize;
+      newH = Math.round(newH / cellGridSize) * cellGridSize;
+
+      element.cellX = newX;
+      element.cellY = newY;
+      element.cellW = newW;
+      element.cellH = newH;
+    },
+
+    handleCellElementResizeEnd() {
+      this.resizing = false;
+      this.resizeHandle = null;
+      this._cellResizeStartPos = null;
+
+      if (this._boundHandleCellResize) {
+        document.removeEventListener('mousemove', this._boundHandleCellResize);
+        this._boundHandleCellResize = null;
+      }
+      if (this._boundHandleCellResizeEnd) {
+        document.removeEventListener('mouseup', this._boundHandleCellResizeEnd);
+        this._boundHandleCellResizeEnd = null;
+      }
+    },
+
+    // Main canvas drag handlers
+    handleCanvasDragOver(event) {
+      // Check if we're actually over a table cell
+      const dropTarget = event.target;
+      const tableCellContainer = dropTarget.closest('.table-cell-canvas');
+      const interactiveTable = dropTarget.closest('.interactive-table');
+
+      // Only skip if we're actually over a table cell
+      if (tableCellContainer && interactiveTable) {
+        return;
+      }
+
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+      this.isDragOver = true;
+      // Clear table cell drag states when dragging over main canvas
+      this.clearTableDragStates();
+    },
+
+    handleCanvasDragEnter(event) {
+      // Check if we're actually over a table cell
+      const dropTarget = event.target;
+      const tableCellContainer = dropTarget.closest('.table-cell-canvas');
+      const interactiveTable = dropTarget.closest('.interactive-table');
+
+      // Only skip if we're actually over a table cell
+      if (tableCellContainer && interactiveTable) {
+        return;
+      }
+
+      event.preventDefault();
+      this.isDragOver = true;
+      // Clear table cell drag states when entering main canvas
+      this.clearTableDragStates();
+    },
+
+    // Helper method to clear all table-related drag states
+    clearTableDragStates() {
+      this.isDragOverTableCell = false;
+      this.isDragOverCell = null;
+    },
+
+    handleCanvasDragLeave(event) {
+      // Only clear if we're actually leaving the canvas and not entering a table cell
+      // Add null checks to prevent errors
+      if (this.$refs.pdfCanvas && event.relatedTarget && !this.$refs.pdfCanvas.contains(event.relatedTarget)) {
+        this.isDragOver = false;
+        this.isDragOverTableCell = false;
+      } else if (!event.relatedTarget) {
+        // If relatedTarget is null, we're leaving the canvas entirely
+        this.isDragOver = false;
+        this.isDragOverTableCell = false;
+      }
+    },
+
+    // Main resize end handler
+    handleResizeEnd() {
+      this.resizing = false;
+      this.resizeHandle = null;
+      this._resizeStartPos = null;
+
+      if (this._boundHandleResize) {
+        document.removeEventListener('mousemove', this._boundHandleResize);
+        this._boundHandleResize = null;
+      }
+      if (this._boundHandleResizeEnd) {
+        document.removeEventListener('mouseup', this._boundHandleResizeEnd);
+        this._boundHandleResizeEnd = null;
+      }
+    },
+
+    // Table cell drag and drop handlers (container-like)
+    handleTableCellDrop(event, tableElement, row, col) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Clear dragover states
+      this.isDragOverCell = null;
+      this.isDragOverTableCell = false;
+      this.isDragOver = false;
+
+      try {
+        const elementData = JSON.parse(event.dataTransfer.getData('text/plain'));
+        if (elementData) {
+          // Get target cell fields list
+          const targetCellFields = this.getCellFieldsList(tableElement, row, col);
+
+          // Handle drop using container-like approach
+          this.handleCellDropElement(elementData, targetCellFields, tableElement, row, col);
+        }
+      } catch (error) {
+        console.error('Error parsing dropped element data:', error);
+      }
+    },
+
+    handleTableCellDragOver(event, tableElement, row, col) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.dataTransfer.dropEffect = 'copy';
+
+      // Set table cell drag states
+      this.isDragOverTableCell = true;
+      this.isDragOverCell = `${tableElement.i}-${row}-${col}`;
+
+      // Clear main canvas drag state
+      this.isDragOver = false;
+    },
+
+    handleTableCellDragEnter(event, tableElement, row, col) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Set table cell drag states
+      this.isDragOverTableCell = true;
+      this.isDragOverCell = `${tableElement.i}-${row}-${col}`;
+
+      // Clear main canvas drag state
+      this.isDragOver = false;
+    },
+
+    handleTableCellDragLeave(event, tableElement, row, col) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Clear any existing timeout
+      if (this.dragOverTimeout) {
+        clearTimeout(this.dragOverTimeout);
+      }
+
+      // Use timeout to prevent flickering when moving between child elements
+      this.dragOverTimeout = setTimeout(() => {
+        const currentTarget = event.currentTarget;
+        const relatedTarget = event.relatedTarget;
+
+        // Only clear if we're actually leaving the cell (not moving to a child element)
+        // Add null checks to prevent errors
+        if (currentTarget && relatedTarget && !currentTarget.contains(relatedTarget)) {
+          this.isDragOverCell = null;
+          this.isDragOverTableCell = false;
+        } else if (!relatedTarget) {
+          // If relatedTarget is null, we're leaving the element entirely
+          this.isDragOverCell = null;
+          this.isDragOverTableCell = false;
+        }
+      }, 50);
+    },
+
+    // Cell element drag handling
+    startCellElementDrag(event, cellElement, tableElement, row, col) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.selectElement(cellElement);
+      this.draggingElement = cellElement.i;
+
+      const cellRect = event.currentTarget.getBoundingClientRect();
+      const mouseX = event.clientX - cellRect.left;
+      const mouseY = event.clientY - cellRect.top;
+
+      this._cellDragStartPos = {
+        x: mouseX - (cellElement.cellX || 0),
+        y: mouseY - (cellElement.cellY || 0),
+        tableElement: tableElement,
+        row: row,
+        col: col
+      };
+
+      const boundHandleCellDragMove = this.handleCellElementDragMove.bind(this);
+      const boundHandleCellDragEnd = this.handleCellElementDragEnd.bind(this);
+
+      document.addEventListener('mousemove', boundHandleCellDragMove);
+      document.addEventListener('mouseup', boundHandleCellDragEnd);
+
+      this._boundHandleCellDragMove = boundHandleCellDragMove;
+      this._boundHandleCellDragEnd = boundHandleCellDragEnd;
+    },
+
+    handleCellElementDragMove(event) {
+      if (this.draggingElement !== null && this._cellDragStartPos) {
+        const elementIndex = this.pdfLayout.findIndex(el => el.i === this.draggingElement);
+
+        if (elementIndex !== -1) {
+          const element = this.pdfLayout[elementIndex];
+          const tableElement = this._cellDragStartPos.tableElement;
+
+          // Get the actual cell element to calculate relative position
+          const cellElement = document.querySelector(`[data-table-id="${tableElement.i}"][data-cell="${this._cellDragStartPos.row}-${this._cellDragStartPos.col}"] .cell-canvas-area`);
+
+          if (cellElement) {
+            const cellRect = cellElement.getBoundingClientRect();
+
+            // Calculate new position relative to cell canvas
+            let newX = event.clientX - cellRect.left - this._cellDragStartPos.x;
+            let newY = event.clientY - cellRect.top - this._cellDragStartPos.y;
+
+            // Get cell dimensions
+            const cellWidth = cellRect.width - 8; // Account for padding
+            const cellHeight = cellRect.height - 8;
+
+            // Constrain to cell bounds
+            newX = Math.max(2, Math.min(newX, cellWidth - (element.cellW || 80) - 2));
+            newY = Math.max(2, Math.min(newY, cellHeight - (element.cellH || 30) - 2));
+
+            // Snap to mini-grid
+            const cellGridSize = 5;
+            newX = Math.round(newX / cellGridSize) * cellGridSize;
+            newY = Math.round(newY / cellGridSize) * cellGridSize;
+
+            element.cellX = newX;
+            element.cellY = newY;
+          }
         }
       }
-    };
+    },
 
-    document.addEventListener('keydown', this.handleKeyboardDelete);
-  },
-  beforeDestroy() {
-    document.removeEventListener('keydown', this.handleKeyboardDelete);
-    if (this._boundHandleDragMove) {
-      document.removeEventListener('mousemove', this._boundHandleDragMove);
-    }
-    if (this._boundHandleDragEnd) {
-      document.removeEventListener('mouseup', this._boundHandleDragEnd);
-    }
+    // Cell canvas click handler
+    handleCellCanvasClick(event, tableElement, row, col) {
+      event.stopPropagation();
+      this.selectedTableCell = `${tableElement.i}-${row}-${col}`;
+    },
+
+    // Cell styling helpers
+
+    getCellGridStyle() {
+      return {
+        backgroundImage: `
+          linear-gradient(to right, #f0f0f0 1px, transparent 1px),
+          linear-gradient(to bottom, #f0f0f0 1px, transparent 1px)
+        `,
+        backgroundSize: '5px 5px',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        pointerEvents: 'none'
+      };
+    },
+
+    getCellElementAbsoluteStyle(cellElement, tableElement) {
+      return {
+        position: 'absolute',
+        left: (cellElement.cellX || 0) + 'px',
+        top: (cellElement.cellY || 0) + 'px',
+        width: (cellElement.cellW || 80) + 'px',
+        height: (cellElement.cellH || 30) + 'px',
+        zIndex: cellElement.z || 1,
+        cursor: 'move',
+        border: this.selectedElement && this.selectedElement.i === cellElement.i ? '2px solid #67c23a' : '1px solid transparent',
+        boxSizing: 'border-box',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        borderRadius: '2px'
+      };
+    },
+
+    // Table structure management with input numbers
+    updateTableRows(newRows) {
+      if (!this.selectedElement || this.selectedElement.type !== 'table') return;
+
+      const tableElement = this.selectedElement;
+      const oldRows = tableElement.props.rows;
+
+      // Ensure valid range
+      newRows = Math.max(1, Math.min(20, parseInt(newRows) || 1));
+
+      if (newRows < oldRows) {
+        // Removing rows - check if any elements would be lost
+        const elementsInRemovedRows = [];
+
+        // Check cellFields for elements in removed rows
+        if (tableElement.props.cellFields) {
+          for (let row = newRows + 1; row <= oldRows; row++) {
+            for (let col = 1; col <= tableElement.props.cols; col++) {
+              const cellKey = `${row}-${col}`;
+              if (tableElement.props.cellFields[cellKey] && tableElement.props.cellFields[cellKey].length > 0) {
+                elementsInRemovedRows.push(...tableElement.props.cellFields[cellKey]);
+              }
+            }
+          }
+        }
+
+        if (elementsInRemovedRows.length > 0) {
+          this.$confirm(
+            `This will remove ${elementsInRemovedRows.length} elements in the deleted rows. Continue?`,
+            'Remove Table Rows',
+            {
+              confirmButtonText: 'Remove',
+              cancelButtonText: 'Cancel',
+              type: 'warning'
+            }
+          ).then(() => {
+            // Remove elements in deleted rows from cellFields
+            for (let row = newRows + 1; row <= oldRows; row++) {
+              for (let col = 1; col <= tableElement.props.cols; col++) {
+                const cellKey = `${row}-${col}`;
+                if (tableElement.props.cellFields[cellKey]) {
+                  delete tableElement.props.cellFields[cellKey];
+                }
+              }
+            }
+
+            tableElement.props.rows = newRows;
+            this.updateElementProps();
+          }).catch(() => {
+            // User cancelled - revert the input value
+            this.$nextTick(() => {
+              tableElement.props.rows = oldRows;
+            });
+          });
+        } else {
+          tableElement.props.rows = newRows;
+          this.updateElementProps();
+        }
+      } else {
+        // Adding rows
+        tableElement.props.rows = newRows;
+        this.updateElementProps();
+      }
+    },
+
+    updateTableCols(newCols) {
+      if (!this.selectedElement || this.selectedElement.type !== 'table') return;
+
+      const tableElement = this.selectedElement;
+      const oldCols = tableElement.props.cols;
+
+      // Ensure valid range
+      newCols = Math.max(1, Math.min(20, parseInt(newCols) || 1));
+
+      if (newCols < oldCols) {
+        // Removing columns - check if any elements would be lost
+        const elementsInRemovedCols = [];
+
+        // Check cellFields for elements in removed columns
+        if (tableElement.props.cellFields) {
+          for (let row = 1; row <= tableElement.props.rows; row++) {
+            for (let col = newCols + 1; col <= oldCols; col++) {
+              const cellKey = `${row}-${col}`;
+              if (tableElement.props.cellFields[cellKey] && tableElement.props.cellFields[cellKey].length > 0) {
+                elementsInRemovedCols.push(...tableElement.props.cellFields[cellKey]);
+              }
+            }
+          }
+        }
+
+        if (elementsInRemovedCols.length > 0) {
+          this.$confirm(
+            `This will remove ${elementsInRemovedCols.length} elements in the deleted columns. Continue?`,
+            'Remove Table Columns',
+            {
+              confirmButtonText: 'Remove',
+              cancelButtonText: 'Cancel',
+              type: 'warning'
+            }
+          ).then(() => {
+            // Remove elements in deleted columns from cellFields
+            for (let row = 1; row <= tableElement.props.rows; row++) {
+              for (let col = newCols + 1; col <= oldCols; col++) {
+                const cellKey = `${row}-${col}`;
+                if (tableElement.props.cellFields[cellKey]) {
+                  delete tableElement.props.cellFields[cellKey];
+                }
+              }
+            }
+
+            tableElement.props.cols = newCols;
+            this.updateElementProps();
+          }).catch(() => {
+            // User cancelled - revert the input value
+            this.$nextTick(() => {
+              tableElement.props.cols = oldCols;
+            });
+          });
+        } else {
+          tableElement.props.cols = newCols;
+          this.updateElementProps();
+        }
+      } else {
+        // Adding columns
+        tableElement.props.cols = newCols;
+        this.updateElementProps();
+      }
+    },
+
+    // Table structure management (legacy button methods - keeping for compatibility)
+    changeTableRows(tableElement, delta) {
+      const newRows = Math.max(1, tableElement.props.rows + delta);
+
+      if (delta < 0) {
+        // Removing rows - check if any elements would be lost
+        const elementsInRemovedRows = this.pdfLayout.filter(el =>
+          el.parentTable === tableElement.i && el.cellRow > newRows
+        );
+
+        if (elementsInRemovedRows.length > 0) {
+          this.$confirm(
+            `This will remove ${elementsInRemovedRows.length} elements in the deleted rows. Continue?`,
+            'Remove Table Rows',
+            {
+              confirmButtonText: 'Remove',
+              cancelButtonText: 'Cancel',
+              type: 'warning'
+            }
+          ).then(() => {
+            // Remove elements in deleted rows
+            elementsInRemovedRows.forEach(el => {
+              const index = this.pdfLayout.indexOf(el);
+              if (index > -1) {
+                this.pdfLayout.splice(index, 1);
+              }
+            });
+
+            tableElement.props.rows = newRows;
+            this.updateElementProps();
+          }).catch(() => {
+            // User cancelled
+          });
+        } else {
+          tableElement.props.rows = newRows;
+          this.updateElementProps();
+        }
+      } else {
+        // Adding rows
+        tableElement.props.rows = newRows;
+        this.updateElementProps();
+      }
+    },
+
+    changeTableCols(tableElement, delta) {
+      const newCols = Math.max(1, tableElement.props.cols + delta);
+
+      if (delta < 0) {
+        // Removing columns - check if any elements would be lost
+        const elementsInRemovedCols = this.pdfLayout.filter(el =>
+          el.parentTable === tableElement.i && el.cellCol > newCols
+        );
+
+        if (elementsInRemovedCols.length > 0) {
+          this.$confirm(
+            `This will remove ${elementsInRemovedCols.length} elements in the deleted columns. Continue?`,
+            'Remove Table Columns',
+            {
+              confirmButtonText: 'Remove',
+              cancelButtonText: 'Cancel',
+              type: 'warning'
+            }
+          ).then(() => {
+            // Remove elements in deleted columns
+            elementsInRemovedCols.forEach(el => {
+              const index = this.pdfLayout.indexOf(el);
+              if (index > -1) {
+                this.pdfLayout.splice(index, 1);
+              }
+            });
+
+            tableElement.props.cols = newCols;
+            this.updateElementProps();
+          }).catch(() => {
+            // User cancelled
+          });
+        } else {
+          tableElement.props.cols = newCols;
+          this.updateElementProps();
+        }
+      } else {
+        // Adding columns
+        tableElement.props.cols = newCols;
+        this.updateElementProps();
+      }
+    },
+
+    // Container-like drag handlers for cell elements
+    handleCellElementDragStart(event, cellElement, tableElement, row, col, cellIndex) {
+      event.stopPropagation();
+
+      this.draggedElement = cellElement;
+      this.draggedFromCell = { tableElement, row, col, cellIndex };
+
+      // Set drag data
+      event.dataTransfer.setData('text/plain', JSON.stringify({
+        type: 'existing-cell-element',
+        element: cellElement,
+        sourceCell: { tableElement: tableElement.i, row, col, cellIndex }
+      }));
+      event.dataTransfer.effectAllowed = 'move';
+    },
+
+    // Delete cell element
+    deleteCellElement(cellElement, tableElement, row, col, cellIndex) {
+      this.$confirm(
+        'Are you sure you want to delete this element?',
+        'Delete Element',
+        {
+          confirmButtonText: 'Delete',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }
+      ).then(() => {
+        // Remove from cell fields list only (container-like approach)
+        const cellFields = this.getCellFieldsList(tableElement, row, col);
+        if (cellIndex > -1 && cellIndex < cellFields.length) {
+          cellFields.splice(cellIndex, 1);
+        }
+
+        // Clear selection if this element was selected
+        if (this.selectedElement &&
+            (this.selectedElement.i === cellElement.i || this.selectedElement.uniqElKey === cellElement.uniqElKey)) {
+          this.selectedElement = null;
+        }
+
+        this.updateElementProps();
+      }).catch(() => {
+        // User cancelled
+      });
+    },
+
+    // Enhanced cell canvas style for list-based layout
+    getCellCanvasStyle(tableElement) {
+      return {
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        minHeight: '80px',
+        padding: '8px',
+        backgroundColor: '#fafafa',
+        border: '1px solid #e0e0e0',
+        borderRadius: '4px',
+        overflow: 'auto'
+      };
+    },
+
+    // Get cell elements using table-based approach only
+    getCellElements(element, row, col) {
+      const cellKey = `${row}-${col}`;
+
+      // Initialize cellFields if not exists
+      if (!element.props.cellFields) {
+        this.$set(element.props, 'cellFields', {});
+      }
+
+      if (!element.props.cellFields[cellKey]) {
+        this.$set(element.props.cellFields, cellKey, []);
+      }
+
+      // Return elements with proper structure
+      return element.props.cellFields[cellKey].map(cellElement => {
+        // Convert string numbers to integers if needed
+        if (typeof cellElement.props?.fontSize === 'string') {
+          cellElement.props.fontSize = parseInt(cellElement.props.fontSize);
+        }
+        return cellElement;
+      });
+    },
+
+    // Table cell styling and spanning methods
+    getTableCellStyle(tableElement, row, col) {
+      const cellKey = `${row}-${col}`;
+      const baseStyleObj = this.nestedTableCellStyle(tableElement);
+
+      // Get cell-specific styles
+      const cellStyles = tableElement.props.cellStyles || {};
+      const cellStyle = cellStyles[cellKey] || {};
+
+      // Convert style object to CSS string
+      let cssString = Object.entries(baseStyleObj).map(([key, value]) => {
+        // Convert camelCase to kebab-case
+        const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+        return `${cssKey}: ${value}`;
+      }).join('; ');
+
+      // Apply cell background color if set
+      if (cellStyle.backgroundColor) {
+        cssString += `; background-color: ${cellStyle.backgroundColor}`;
+      }
+
+      return cssString;
+    },
+
+    getCellColspan(tableElement, row, col) {
+      const cellKey = `${row}-${col}`;
+      const cellSpans = tableElement.props.cellSpans || {};
+      return cellSpans[cellKey]?.colspan || 1;
+    },
+
+    getCellRowspan(tableElement, row, col) {
+      const cellKey = `${row}-${col}`;
+      const cellSpans = tableElement.props.cellSpans || {};
+      return cellSpans[cellKey]?.rowspan || 1;
+    },
+
+    isCellHidden(tableElement, row, col) {
+      // Check if this cell is hidden due to being covered by a colspan/rowspan
+      const cellSpans = tableElement.props.cellSpans || {};
+
+      for (let r = 1; r <= tableElement.props.rows; r++) {
+        for (let c = 1; c <= tableElement.props.cols; c++) {
+          const spanKey = `${r}-${c}`;
+          const span = cellSpans[spanKey];
+
+          if (span && (span.colspan > 1 || span.rowspan > 1)) {
+            // Check if current cell is within the span range
+            if (r <= row && row < r + (span.rowspan || 1) &&
+                c <= col && col < c + (span.colspan || 1) &&
+                !(r === row && c === col)) {
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    },
+
+    setCellColspan(tableElement, row, col, colspan) {
+      const cellKey = `${row}-${col}`;
+
+      if (!tableElement.props.cellSpans) {
+        this.$set(tableElement.props, 'cellSpans', {});
+      }
+
+      if (!tableElement.props.cellSpans[cellKey]) {
+        this.$set(tableElement.props.cellSpans, cellKey, {});
+      }
+
+      this.$set(tableElement.props.cellSpans[cellKey], 'colspan', Math.max(1, Math.min(colspan, tableElement.props.cols - col + 1)));
+      this.updateElementProps();
+    },
+
+    setCellRowspan(tableElement, row, col, rowspan) {
+      const cellKey = `${row}-${col}`;
+
+      if (!tableElement.props.cellSpans) {
+        this.$set(tableElement.props, 'cellSpans', {});
+      }
+
+      if (!tableElement.props.cellSpans[cellKey]) {
+        this.$set(tableElement.props.cellSpans, cellKey, {});
+      }
+
+      this.$set(tableElement.props.cellSpans[cellKey], 'rowspan', Math.max(1, Math.min(rowspan, tableElement.props.rows - row + 1)));
+      this.updateElementProps();
+    },
+
+    setCellBackgroundColor(tableElement, row, col, backgroundColor) {
+      const cellKey = `${row}-${col}`;
+
+      if (!tableElement.props.cellStyles) {
+        this.$set(tableElement.props, 'cellStyles', {});
+      }
+
+      if (!tableElement.props.cellStyles[cellKey]) {
+        this.$set(tableElement.props.cellStyles, cellKey, {});
+      }
+
+      this.$set(tableElement.props.cellStyles[cellKey], 'backgroundColor', backgroundColor);
+      this.updateElementProps();
+    },
+
+    // Prevent table nesting
+    canDropInCell(elementData, tableElement) {
+      // Prevent dropping table elements inside table cells
+      if (elementData.type === 'table') {
+        this.$message.warning('Tables cannot be nested inside other tables');
+        return false;
+      }
+      return true;
+    },
+
+    // Cell property management methods
+    getCellBackgroundColor() {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return '';
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return '';
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        const cellKey = `${row}-${col}`;
+        const cellStyles = tableElement.props.cellStyles || {};
+        return cellStyles[cellKey]?.backgroundColor || '';
+      }
+
+      return '';
+    },
+
+    updateCellBackgroundColor(color) {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return;
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return;
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        this.setCellBackgroundColor(tableElement, parseInt(row), parseInt(col), color);
+      }
+    },
+
+    getCurrentCellColspan() {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return 1;
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return 1;
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        return this.getCellColspan(tableElement, parseInt(row), parseInt(col));
+      }
+
+      return 1;
+    },
+
+    getCurrentCellRowspan() {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return 1;
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return 1;
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        return this.getCellRowspan(tableElement, parseInt(row), parseInt(col));
+      }
+
+      return 1;
+    },
+
+    updateCellColspan(colspan) {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return;
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return;
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        this.setCellColspan(tableElement, parseInt(row), parseInt(col), colspan);
+      }
+    },
+
+    updateCellRowspan(rowspan) {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return;
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return;
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        this.setCellRowspan(tableElement, parseInt(row), parseInt(col), rowspan);
+      }
+    },
+
+    getMaxColspan() {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return 1;
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return 1;
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        return tableElement.props.cols - parseInt(col) + 1;
+      }
+
+      return 1;
+    },
+
+    getMaxRowspan() {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return 1;
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return 1;
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        return tableElement.props.rows - parseInt(row) + 1;
+      }
+
+      return 1;
+    },
+
+    resetCellSpan() {
+      if (!this.selectedTableCell || typeof this.selectedTableCell !== 'string') return;
+
+      const parts = this.selectedTableCell.split('-');
+      if (parts.length !== 3) return;
+
+      const [tableId, row, col] = parts;
+      const tableElement = this.pdfLayout.find(el => el.i === tableId);
+
+      if (tableElement) {
+        this.setCellColspan(tableElement, parseInt(row), parseInt(col), 1);
+        this.setCellRowspan(tableElement, parseInt(row), parseInt(col), 1);
+      }
+    },
+
+    // Validate layout integrity to prevent duplicate keys
+    validateLayoutIntegrity() {
+      const seenIds = new Set();
+      const duplicateIds = [];
+
+      // Check for duplicate IDs in main layout
+      this.pdfLayout.forEach((element, index) => {
+        if (seenIds.has(element.i)) {
+          duplicateIds.push(element.i);
+        } else {
+          seenIds.add(element.i);
+        }
+      });
+
+      // If duplicates found, clean them up
+      if (duplicateIds.length > 0) {
+        console.warn('Duplicate element IDs detected:', duplicateIds);
+        this.cleanupDuplicateCellElements();
+      }
+    },
+
+
   }
-};
+}
 </script>
 
 <style scoped>
@@ -1472,11 +3729,22 @@ export default {
 }
 
 .element-palette {
-  width: 250px;
+  width: 100px;
   border-right: 1px solid #e4e7ed;
-  padding: 15px;
+  padding: 10px;
   overflow-y: auto;
   transition: width 0.3s ease;
+}
+
+.element-palette h4 {
+  font-size: 13px;
+  border-bottom: 1px solid #eee;
+  padding: 6px 0;
+}
+
+.element-palette .element-item {
+  margin: 4px 0 8px;
+  padding: 6px 8px;
 }
 
 .element-palette.hidden {
@@ -1484,6 +3752,18 @@ export default {
   padding: 0;
   overflow: hidden;
   border: none;
+}
+
+.element-palette .palette-list {
+    margin: 4px 0;
+}
+
+.palette-list .palette-item {
+    padding: 8px 4px;
+    margin: 8px 0;
+    border-radius: 4px;
+    background-color: #eee;
+    text-align: center;
 }
 
 .canvas-container {
@@ -1494,13 +3774,300 @@ export default {
   justify-content: flex-start; /* Allow scrolling to leftmost */
   align-items: flex-start;
   min-height: 0;
+  transition: all 0.3s ease;
 }
 
 .canvas-wrapper {
-  display: block; /* Change from flex to block */
+  display: block;
   width: 100%;
-  min-width: max-content; /* Ensure wrapper is at least as wide as canvas */
-  text-align: center; /* Center the canvas horizontally */
+  min-width: max-content;
+  text-align: center;
+  position: relative; /* Important for layering */
+}
+
+/* Background Grid Layer */
+.pdf-canvas-table.background-grid {
+  border-collapse: collapse;
+  table-layout: fixed;
+  position: relative;
+  z-index: 1;
+  pointer-events: none; /* Don't interfere with drag/drop */
+}
+
+.canvas-cell.background-cell {
+  border: 1px solid #f0f0f0;
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
+  position: relative;
+  pointer-events: none; /* Don't interfere with drag/drop */
+}
+
+/* Interactive Layer */
+.interactive-canvas-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+  z-index: 10;
+
+  &.drag-over {
+    background: rgba(64, 158, 255, 0.05);
+  }
+}
+
+.canvas-element {
+  position: absolute;
+  
+  &.selected {
+    border: 2px solid #409EFF !important;
+  }
+  
+  &.dragging {
+    opacity: 0.8;
+    z-index: 1000;
+  }
+}
+
+/* Interactive Table Elements */
+.nested-table-element.interactive-table {
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  z-index: 15;
+  table-layout: fixed; /* Fixed layout for consistent column widths */
+
+  td, th {
+    border: 1px solid #ddd;
+    padding: 4px;
+    vertical-align: top;
+    font-size: 12px;
+    position: relative;
+    pointer-events: auto;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+/* Interactive Table Cells */
+.table-cell-container.interactive-cell {
+  min-height: 50px;
+  position: relative;
+  pointer-events: auto;
+  z-index: 20;
+
+  &:hover {
+    background-color: #f9f9f9;
+  }
+
+  &.cell-drag-over {
+    background-color: #e6f7ff !important;
+    border: 2px dashed #409eff !important;
+    box-shadow: inset 0 0 10px rgba(64, 158, 255, 0.2);
+  }
+
+  &.cell-selected {
+    background-color: #f0f9ff;
+    border: 2px solid #409eff;
+  }
+}
+
+.table-cell-container {
+  min-height: 50px;
+  position: relative;
+  
+  &:hover {
+    background-color: #f9f9f9;
+  }
+  
+  &.cell-drag-over {
+    background-color: #e6f7ff !important;
+    border: 2px dashed #409eff !important;
+  }
+}
+
+.cell-content-area {
+  min-height: 40px;
+  width: 100%;
+  position: relative;
+  padding: 4px;
+}
+
+.cell-placeholder {
+  color: #999;
+  font-style: italic;
+  font-size: 11px;
+  text-align: center;
+  padding: 15px 10px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #409eff;
+    background-color: #f0f9ff;
+  }
+}
+
+.cell-element {
+  margin: 2px 0;
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  position: relative;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #67c23a;
+    background-color: rgba(103, 194, 58, 0.1);
+  }
+  
+  &.selected {
+    border-color: #67c23a;
+    background-color: rgba(103, 194, 58, 0.2);
+    box-shadow: 0 0 5px rgba(103, 194, 58, 0.3);
+  }
+}
+
+/* Element drag handle */
+.element-drag-handle {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 20px;
+  height: 20px;
+  background: #409eff;
+  color: white;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: move;
+  font-size: 12px;
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  
+  &:hover {
+    background: #337ecc;
+  }
+}
+
+.canvas-element:hover .element-drag-handle,
+.canvas-element.selected .element-drag-handle {
+  opacity: 1;
+}
+
+/* Cell element drag handle */
+.cell-element-drag-handle {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 16px;
+  height: 16px;
+  background: #67c23a;
+  color: white;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: move;
+  font-size: 10px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  
+  &:hover {
+    background: #529b2e;
+  }
+}
+
+.cell-element:hover .cell-element-drag-handle,
+.cell-element.selected .cell-element-drag-handle {
+  opacity: 1;
+}
+
+/* Enhanced table cell styling */
+.table-cell-container {
+  min-height: 50px;
+  position: relative;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #f9f9f9;
+  }
+  
+  &.cell-drag-over {
+    background-color: #e6f7ff !important;
+    border: 2px dashed #409eff !important;
+    box-shadow: inset 0 0 10px rgba(64, 158, 255, 0.2);
+  }
+}
+
+/* Canvas drag over state - only when not over table cell */
+.pdf-canvas-table.drag-over {
+  border-color: #409eff;
+  background: #ecf5ff;
+}
+
+/* Prevent canvas drag over when over table cell */
+.pdf-canvas-table.drag-over.table-cell-active {
+  border-color: #ddd;
+  background: #ffffff;
+}
+
+/* Resize handles styling */
+.resize-handles {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  pointer-events: none;
+}
+
+.resize-handle {
+  position: absolute;
+  background: #409eff;
+  border: 1px solid #fff;
+  pointer-events: all;
+  z-index: 10;
+  border-radius: 1px;
+}
+
+.resize-handle-nw { top: -4px; left: -4px; width: 8px; height: 8px; cursor: nw-resize; }
+.resize-handle-ne { top: -4px; right: -4px; width: 8px; height: 8px; cursor: ne-resize; }
+.resize-handle-sw { bottom: -4px; left: -4px; width: 8px; height: 8px; cursor: sw-resize; }
+.resize-handle-se { bottom: -4px; right: -4px; width: 8px; height: 8px; cursor: se-resize; }
+.resize-handle-n { top: -4px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; cursor: n-resize; }
+.resize-handle-s { bottom: -4px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; cursor: s-resize; }
+.resize-handle-w { top: 50%; left: -4px; transform: translateY(-50%); width: 8px; height: 8px; cursor: w-resize; }
+.resize-handle-e { top: 50%; right: -4px; transform: translateY(-50%); width: 8px; height: 8px; cursor: e-resize; }
+
+.canvas-container {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-height: 0;
+}
+
+.canvas-wrapper {
+  display: block;
+  width: 100%;
+  min-width: max-content;
+  text-align: center;
 }
 
 .pdf-canvas {
@@ -1625,30 +4192,49 @@ export default {
 }
 
 .properties-panel {
-  width: 300px;
+  width: 280px;
   border-left: 1px solid #e4e7ed;
   background: #fafafa;
   display: flex;
   flex-direction: column;
 }
 
+.properties-panel h3 {
+  font-size: 12px;
+  margin: 0 0 8px 0;
+  color: #666;
+}
+
+.properties-panel .el-form-item {
+    margin-bottom: 16px;
+}
+
+.properties-panel .el-row {
+  margin-bottom: 0;
+}
+
+.properties-panel .el-row .el-col {
+  margin-bottom: 0;
+  padding: 0 4px;
+}
+
 .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  padding: 10px 12px;
   border-bottom: 1px solid #e4e7ed;
 }
 
 .panel-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 13px;
   color: #303133;
 }
 
 .panel-content {
   flex: 1;
-  padding: 15px;
+  padding: 12px;
   overflow-y: auto;
 }
 
@@ -1755,8 +4341,21 @@ export default {
   width: 100%;
 }
 
-.element-properties .el-form-item {
-  margin-bottom: 15px;
+.element-properties .el-form-item__label {
+  font-size: 11px;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  padding-bottom: 0;
+}
+
+.element-properties .el-input-number {
+  width: 100%;
+}
+
+.element-properties .el-input-number .el-input__inner {
+  padding: 4px 8px;
+  height: 28px;
+  font-size: 11px;
 }
 
 .element-properties label {
@@ -1765,5 +4364,266 @@ export default {
   display: block;
   text-align: center;
   margin-top: 2px;
+}
+
+/* Table cell canvas styling */
+.table-cell-canvas {
+  position: relative;
+  min-height: 80px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #409eff;
+    background-color: #f8f9fa;
+  }
+  
+  &.cell-selected {
+    border-color: #409eff;
+    background-color: #f0f9ff;
+    box-shadow: inset 0 0 5px rgba(64, 158, 255, 0.2);
+  }
+  
+  &.cell-drag-over {
+    border-color: #67c23a !important;
+    background-color: #f0f9ff !important;
+    box-shadow: inset 0 0 10px rgba(103, 194, 58, 0.3) !important;
+  }
+}
+
+.cell-canvas-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 80px;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.cell-grid-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Container-like cell elements */
+.cell-fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  min-height: 80px;
+}
+
+.cell-element-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    border-color: #409eff;
+    box-shadow: 0 2px 8px rgba(64, 158, 255, 0.1);
+  }
+
+  &.selected {
+    border-color: #409eff;
+    background-color: #f0f9ff;
+    box-shadow: 0 2px 12px rgba(64, 158, 255, 0.2);
+  }
+
+  &.dragging {
+    opacity: 0.6;
+    transform: rotate(1deg);
+    z-index: 1000;
+  }
+}
+
+.cell-element-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cell-element-item:hover .cell-element-actions {
+  opacity: 1;
+}
+
+.cell-element-actions .action-item {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+
+  &.drag-handle {
+    background: #409eff;
+    color: white;
+    cursor: move;
+
+    &:hover {
+      background: #337ecc;
+    }
+  }
+
+  &.edit-btn {
+    background: #67c23a;
+    color: white;
+
+    &:hover {
+      background: #529b2e;
+    }
+  }
+
+  &.delete-btn {
+    background: #f56c6c;
+    color: white;
+
+    &:hover {
+      background: #dd6161;
+    }
+  }
+}
+
+.cell-element-content {
+  flex: 1;
+  font-size: 12px;
+  color: #606266;
+
+  strong {
+    color: #303133;
+    margin-right: 4px;
+  }
+}
+
+.text-element-preview,
+.field-element-preview,
+.image-element-preview,
+.line-element-preview,
+.element-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Legacy absolute positioned cell elements */
+.cell-element.canvas-element {
+  position: absolute !important;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
+
+  &:hover {
+    border-color: #67c23a;
+    box-shadow: 0 2px 8px rgba(103, 194, 58, 0.2);
+  }
+
+  &.selected {
+    border-color: #67c23a !important;
+    box-shadow: 0 2px 12px rgba(103, 194, 58, 0.3);
+    background: rgba(255, 255, 255, 1);
+  }
+
+  &.dragging {
+    opacity: 0.8;
+    z-index: 1000;
+    transform: rotate(2deg);
+  }
+}
+
+/* Header/Footer Settings */
+.header-footer-settings {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e4e7ed;
+}
+
+.header-footer-settings h4 {
+  font-size: 12px;
+  margin: 0 0 10px 0;
+  color: #666;
+}
+
+.setting-group {
+  margin-bottom: 15px;
+}
+
+.setting-details {
+  margin-top: 8px;
+  padding-left: 20px;
+}
+
+.setting-details .el-form-item {
+  margin-bottom: 8px;
+}
+
+/* Page Actions */
+.page-actions {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e4e7ed;
+}
+
+.page-actions h4 {
+  font-size: 12px;
+  margin: 0 0 10px 0;
+  color: #666;
+}
+
+.page-actions .el-button {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.page-navigation {
+  margin-bottom: 10px;
+}
+
+.page-navigation .el-select {
+  width: 100%;
+}
+
+/* Header/Footer Sections */
+.pdf-header, .pdf-footer {
+  border: 2px dashed transparent;
+  transition: border-color 0.2s ease;
+}
+
+.pdf-header:hover, .pdf-footer:hover {
+  border-color: #409EFF;
+}
+
+.pdf-header.selected, .pdf-footer.selected {
+  border-color: #409EFF;
+  background-color: rgba(64, 158, 255, 0.1);
+}
+
+.header-content, .footer-content {
+  min-height: 20px;
+}
+
+/* Header/Footer Properties */
+.header-footer-properties h4 {
+  font-size: 13px;
+  margin: 0 0 15px 0;
+  color: #303133;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e4e7ed;
 }
 </style>
