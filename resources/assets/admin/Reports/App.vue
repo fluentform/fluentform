@@ -119,19 +119,6 @@
                         </el-col>
                     </el-row>
 
-
-                    <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
-                        <div>
-                            <h6 class="title">{{ $t('More Reports') }}</h6>
-                            <p class="text">{{ $t('Upgrade to pro to unlock more reports.') }}</p>
-                        </div>
-                        <a target="_blank"
-                           href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-                           class="el-button el-button--info el-button--small mt-2">
-                            {{ $t('Upgrade to Pro') }}
-                        </a>
-                    </notice>
-
                 </el-tab-pane>
                 <el-tab-pane :label="$t('Payments')" name="revenue" v-if="hasPayment">
                     <!-- Revenue Header -->
