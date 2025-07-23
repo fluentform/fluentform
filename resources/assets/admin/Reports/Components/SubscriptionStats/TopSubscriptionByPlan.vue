@@ -1,12 +1,12 @@
 <template>
     <card>
         <card-head>
-            <h3>Subscription</h3>
+            <h3>{{ $t('Subscription') }}</h3>
         </card-head>
 
         <card-body>
-            <div class="subscription-amount">
-                <p>Recurring</p>
+            <div class="subscription-amount" v-if="hasSubscriptionData">
+                <p>{{ $t('Recurring') }}</p>
                 <div class="subscription-total">
                     <span class="total-amount">{{ getCurrencySymbol() }}{{ formatNumber(totalAmount) }}</span>
                     <span
@@ -23,11 +23,11 @@
             <div class="subscription-chart">
                 <div v-if="isLoading" class="loading-chart">
                     <i class="el-icon-loading "></i>
-                    <span>Loading subscription data...</span>
+                    <span>{{ $t('Loading subscription data...') }}</span>
                 </div>
                 <div v-else-if="!hasSubscriptionData" class="no-data">
                     <i class="el-icon-data-analysis  no-data-icon"></i>
-                    <span>No subscription data available for the selected period</span>
+                    <span>{{ $t('No subscription data available for the selected period') }}</span>
                 </div>
                 <v-chart
                     v-else
@@ -101,7 +101,7 @@ export default {
             if (!this.hasSubscriptionData) {
                 return {
                     title: {
-                        text: 'No Data Available',
+                        text: this.$t('No Data Available'),
                         left: 'center',
                         top: 'middle',
                         textStyle: {

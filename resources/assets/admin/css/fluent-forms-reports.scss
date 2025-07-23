@@ -650,7 +650,19 @@
 // Completion Rates Gauge Section
 .completion-rates-gauge-section {
     height: 450px;
-
+    .ff_card_body {
+        position: relative;
+        .update-info-notice {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            z-index: 100;
+            opacity: 0.9;
+            border-left-color: transparent;
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
     .gauge-container {
         display: flex;
         align-items: center;
@@ -1199,6 +1211,13 @@
     }
     .payment-chart-section {
         min-height: 230px;
+        &.no-data{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100%;
+        }
     }
     .loading-chart, .no-data {
         display: flex;
@@ -1292,6 +1311,9 @@
             background: #ffffff;
             border-radius: 8px;
             overflow: hidden;
+            .no-data {
+                height: 250px;
+            }
         }
 
 

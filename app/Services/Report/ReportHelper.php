@@ -478,6 +478,9 @@ class ReportHelper
 
     public static function getSubmissionHeatmap($startDate, $endDate)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         // Process and fix date ranges if needed
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
@@ -573,6 +576,9 @@ class ReportHelper
 
     public static function getApiLogs($startDate, $endDate)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         // Process date range
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
@@ -744,6 +750,9 @@ class ReportHelper
 
     public static function getSubscriptions($startDate, $endDate, $formId = null)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if (!$paymentSettings || !Arr::get($paymentSettings, 'status')) {
             return []; // Return empty if payment module is disabled
@@ -2215,6 +2224,9 @@ class ReportHelper
      */
     public static function getPaymentsByType($startDate, $endDate, $paymentType = 'subscription', $formId = null)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
             return []; // Return empty if payment module is disabled

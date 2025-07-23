@@ -19,14 +19,14 @@
                         <el-select
                             popper-class="report-form-select-popper"
                             v-model="selectedFormId"
-                            placeholder="Select Form"
+                            :placeholder="$t('Select Form')"
                             size="mini"
                             clearable
                             filterable
                             @change="handleFormChange"
                             style="width: 200px;"
                         >
-                            <el-option label="All Forms" :value="null"></el-option>
+                            <el-option :label="$t('All Forms')" :value="null"></el-option>
                             <el-option
                                 v-for="form in forms_list"
                                 :key="form.id"
@@ -44,8 +44,8 @@
             <div class="chart-wrapper">
                 <!-- Show message when in revenue mode but no payment data -->
                 <div v-if="chartMode === 'revenue' && !hasPaymentData" class="no-payment-data">
-                    <h4>No Payment Data Available</h4>
-                    <p>Payment data will appear here once you have forms with payment fields and received payments.</p>
+                    <h4>{{ $t('No Payment Data Available') }}</h4>
+                    <p>{{ $t('Payment data will appear here once you have forms with payment fields and received payments.') }}</p>
                 </div>
 
                 <!-- Chart -->
@@ -59,11 +59,11 @@
                 <div class="chart-footer-info">
                     <div class="">
                         <i class="el-icon-top"></i>
-                        <span v-if="isRevenueMode">Total Amount</span>
-                        <span v-else>Total Counts</span>
+                        <span v-if="isRevenueMode">{{ $t('Total Amount') }}</span>
+                        <span v-else>{{ $t('Total Counts') }}</span>
                     </div>
                     <div class="">
-                        <span> Time Line</span>
+                        <span>{{ $t('Time Line') }}</span>
                         <i class="el-icon-right"></i>
                     </div>
                 </div>
@@ -343,7 +343,7 @@ export default {
             // Define available series configurations
             const availableSeries = {
                 submissions: {
-                    name: 'Submissions',
+                    name: this.$t('Submissions'),
                     type: this.chartType,
                     data: this.chartData.submissions,
                     itemStyle: {
@@ -358,7 +358,7 @@ export default {
                     } : {})
                 },
                 views: {
-                    name: 'Views',
+                    name: this.$t('Views'),
                     type: this.chartType,
                     data: this.chartData.views,
                     itemStyle: {
@@ -373,7 +373,7 @@ export default {
                     } : {})
                 },
                 spam: {
-                    name: 'Spam',
+                    name: this.$t('Spam'),
                     type: this.chartType,
                     data: this.chartData.spam,
                     itemStyle: {
@@ -388,7 +388,7 @@ export default {
                     } : {})
                 },
                 unread: {
-                    name: 'Unread',
+                    name: this.$t('Unread'),
                     type: this.chartType,
                     data: this.chartData.unread,
                     itemStyle: {
@@ -403,7 +403,7 @@ export default {
                     } : {})
                 },
                 read: {
-                    name: 'Read',
+                    name: this.$t('Read'),
                     type: this.chartType,
                     data: this.chartData.read,
                     itemStyle: {
@@ -418,7 +418,7 @@ export default {
                     } : {})
                 },
                 trashed: {
-                    name: 'Trashed',
+                    name: this.$t('Trashed'),
                     type: this.chartType,
                     data: this.chartData.trashed,
                     itemStyle: {
@@ -433,7 +433,7 @@ export default {
                     } : {})
                 },
                 payments: {
-                    name: 'Total Revenue',
+                    name: this.$t('Total Revenue'),
                     type: this.chartType,
                     data: this.chartData.payments,
                     itemStyle: {
@@ -448,7 +448,7 @@ export default {
                     } : {})
                 },
                 paid: {
-                    name: 'Paid',
+                    name: this.$t('Paid'),
                     type: this.chartType,
                     data: this.chartData.paid,
                     itemStyle: {
@@ -463,7 +463,7 @@ export default {
                     } : {})
                 },
                 pending: {
-                    name: 'Pending',
+                    name: this.$t('Pending'),
                     type: this.chartType,
                     data: this.chartData.pending,
                     itemStyle: {
@@ -478,7 +478,7 @@ export default {
                     } : {})
                 },
                 refunded: {
-                    name: 'Refunded',
+                    name: this.$t('Refunded'),
                     type: this.chartType,
                     data: this.chartData.refunded,
                     itemStyle: {

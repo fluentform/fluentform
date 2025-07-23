@@ -9,8 +9,8 @@
                     @change="handleMetricChange"
                     class="metric-radio-group"
                 >
-                    <el-radio-button label="entries">Submissions</el-radio-button>
-                    <el-radio-button label="payments" v-if="hasPayment">Payments</el-radio-button>
+                    <el-radio-button label="entries">{{ $t('Submissions') }}</el-radio-button>
+                    <el-radio-button label="payments" v-if="hasPayment">{{ $t('Payments') }}</el-radio-button>
                 </el-radio-group>
             </div>
         </card-head>
@@ -19,14 +19,14 @@
             <div class="top-forms-loading" v-if="loading">
                 <div class="loading-spinner">
                     <i class="el-icon-loading"></i>
-                    <span>Loading top performing forms...</span>
+                    <span>{{ $t('Loading top performing forms...') }}</span>
                 </div>
             </div>
 
             <div class="top-forms-chart" v-else>
                 <div v-if="!topFormsData || topFormsData.length === 0" class="no-data">
                     <i class="el-icon-s-order no-data-icon"></i>
-                    <span>No form data available for the selected period</span>
+                    <span>{{ $t('No form data available for the selected period') }}</span>
                 </div>
                 <div v-else class="chart-wrapper">
                     <v-chart
@@ -85,10 +85,10 @@ export default {
     computed: {
         metricLabel() {
             const labels = {
-                entries: 'Submissions',
-                payments: 'Total Payments'
+                entries: this.$t('Submissions'),
+                payments: this.$t('Total Payments')
             };
-            return labels[this.selectedMetric] || 'Submissions';
+            return labels[this.selectedMetric] || this.$t('Submissions');
         },
         chartOptions() {
             if (!this.topFormsData || this.topFormsData.length === 0) {
@@ -214,7 +214,7 @@ export default {
         },
 
         truncateTitle(title, maxLength = 25) {
-            if (!title) return 'Untitled Form';
+            if (!title) return this.$t('Untitled Form');
             return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
         },
 
@@ -263,7 +263,7 @@ export default {
         getEmptyChartOptions() {
             return {
                 title: {
-                    text: 'No Data Available',
+                    text: this.$t('No Data Available'),
                     left: 'center',
                     top: 'middle',
                     textStyle: {

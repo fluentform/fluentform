@@ -33,7 +33,7 @@
 
                 <div v-else-if="submissionData.length === 0" class="no-data-state">
                     <i class="el-icon-data-analysis no-data-icon"></i>
-                    <p>No submission data found for the selected criteria and date range.</p>
+                    <p>{{ $t('No submission data found for the selected criteria and date range.') }}</p>
                 </div>
 
                 <div v-else class="submission-table-container">
@@ -47,7 +47,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'forms'"
                             prop="form_title"
-                            label="Form"
+                            :label="$t('Form')"
                             min-width="200"
                             sortable
                         >
@@ -62,7 +62,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'submission_source'"
                             prop="source_url"
-                            label="Submission Source"
+                            :label="$t('Submission Source')"
                             min-width="250"
                             sortable
                         >
@@ -71,7 +71,7 @@
                                 <span class="source-url" :title="row.source_url">
                                     {{ formatSourceUrl(row.source_url) }}
                                 </span>
-                                    <span class="source-count">{{ row.total_submissions }} submissions</span>
+                                    <span class="source-count">{{ row.total_submissions }} {{ $t('submissions') }}</span>
                                 </div>
                             </template>
                         </el-table-column>
@@ -79,7 +79,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'email'"
                             prop="email"
-                            label="Email"
+                            :label="$t('Email')"
                             min-width="200"
                             sortable
                         >
@@ -93,13 +93,13 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'country'"
                             prop="country"
-                            label="Country"
+                            :label="$t('Country')"
                             min-width="150"
                             sortable
                         >
                             <template #default="{ row }">
                                 <div class="country-info">
-                                    <span class="country-name">{{ row.country || 'Unknown' }}</span>
+                                    <span class="country-name">{{ row.country || $t('Unknown') }}</span>
                                     <span class="country-flag" v-if="row.country">{{ getCountryFlag(row.country) }}</span>
                                 </div>
                             </template>
@@ -108,7 +108,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'submission_date'"
                             prop="submission_date"
-                            label="Date"
+                            :label="$t('Date')"
                             min-width="120"
                             sortable
                         >
@@ -121,7 +121,7 @@
 
                         <el-table-column
                             prop="total_submissions"
-                            label="Total Submissions"
+                            :label="$t('Total Submissions')"
                             min-width="140"
                             sortable
                             align="right"
@@ -133,7 +133,7 @@
 
                         <el-table-column
                             prop="read_submissions"
-                            label="Read"
+                            :label="$t('Read')"
                             min-width="100"
                             sortable
                             align="right"
@@ -145,7 +145,7 @@
 
                         <el-table-column
                             prop="unread_submissions"
-                            label="Unread"
+                            :label="$t('Unread')"
                             min-width="100"
                             sortable
                             align="right"
@@ -157,7 +157,7 @@
 
                         <el-table-column
                             prop="spam_submissions"
-                            label="Spam"
+                            :label="$t('Spam')"
                             min-width="100"
                             sortable
                             align="right"
@@ -169,7 +169,7 @@
 
                         <el-table-column
                             prop="conversion_rate"
-                            label="Read Rate"
+                            :label="$t('Read Rate')"
                             min-width="120"
                             sortable
                             align="right"
@@ -231,11 +231,11 @@ export default {
             submissionData: [],
             selectedGroupBy: 'forms',
             groupByOptions: {
-                'forms': 'Forms',
-                'submission_source': 'Submission Source',
-                'email': 'Email',
-                'country': 'Country',
-                'submission_date': 'Submission Date'
+                'forms': this.$t('Forms'),
+                'submission_source': this.$t('Submission Source'),
+                'email': this.$t('Email'),
+                'country': this.$t('Country'),
+                'submission_date': this.$t('Submission Date')
             },
             currentPage: 1,
             pageSize: localStorage.getItem('ffReportSubmissionAnalysisPerPage') || 5,
@@ -357,7 +357,7 @@ export default {
         },
 
         formatSourceUrl(url) {
-            if (!url) return 'Direct Access';
+            if (!url) return this.$t('Direct Access');
             try {
                 const urlObj = new URL(url);
                 return urlObj.hostname + urlObj.pathname;
@@ -367,7 +367,7 @@ export default {
         },
 
         formatSubmissionDate(date) {
-            if (!date) return 'Unknown';
+            if (!date) return this.$t('Unknown');
             const dateObj = new Date(date);
             return dateObj.toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -445,9 +445,9 @@ export default {
             return date.toLocaleDateString('en-US', options);
         },
         getDynamicTitle() {
-            const baseTitle = 'Submission Analysis';
+            const baseTitle = this.$t('Submission Analysis');
             if (this.selectedGroupBy && this.groupByOptions[this.selectedGroupBy]) {
-                return `${baseTitle} by ${this.groupByOptions[this.selectedGroupBy]}`;
+                return `${baseTitle} ${this.$t('by')} ${this.groupByOptions[this.selectedGroupBy]}`;
             }
             return baseTitle;
         }

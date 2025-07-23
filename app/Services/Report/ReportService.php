@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Report;
 
 use Exception;
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
@@ -105,6 +106,9 @@ class ReportService
 
         if (in_array('top_performing_forms', $components)) {
             $metric = Arr::get($data, 'metric', 'entries');
+            if (!in_array($metric, ['entries', 'payments'])) {
+                $metric = 'entries';
+            }
             $reports['reports']['top_performing_forms'] = ReportHelper::getTopPerformingForms($startDate, $endDate, $metric);
         }
 
@@ -147,6 +151,18 @@ class ReportService
      */
     public function netRevenue($data)
     {
+        if (!Helper::hasPro()) {
+            return [
+                'data' => [],
+                'totals' => [],
+                'total' => 0,
+                'group_by' => 'forms',
+                'date_range' => [
+                    'start' => '',
+                    'end' => ''
+                ]
+            ];
+        }
         $data = Sanitizer::sanitize($data, [
             'start_date' => 'sanitizeTextField',
             'end_date' => 'sanitizeTextField',
@@ -197,6 +213,18 @@ class ReportService
 
     public function submissionsAnalysis($data)
     {
+        if (!Helper::hasPro()) {
+            return [
+                'data' => [],
+                'total' => 0,
+                'totals' => [],
+                'group_by' => 'forms',
+                'date_range' => [
+                    'start' => '',
+                    'end' => ''
+                ]
+            ];
+        }
         $data = Sanitizer::sanitize($data, [
             'group_by' => 'sanitizeTextField',
             'start_date' => 'sanitizeTextField',

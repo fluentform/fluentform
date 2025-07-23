@@ -6,10 +6,8 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-use FluentForm\App\Models\Form;
-use FluentForm\App\Models\FormAnalytics;
-use FluentForm\App\Models\Submission;
-use FluentForm\App\Models\Log;
+use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Modules\Registerer\TranslationString;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 
@@ -36,9 +34,11 @@ class ReportHandler
         }
 
         wp_localize_script('fluentform_reports', 'FluentFormApp', [
-            'has_payment' => $hasPayment,
+            'has_payment'      => $hasPayment,
+            'has_pro'          => Helper::hasPro(),
+            'reports_i18n'     => TranslationString::getReportsI18n(),
             'payment_statuses' => PaymentHelper::getPaymentStatuses(),
-            'payment_methods' => apply_filters('fluentform/available_payment_methods', [])
+            'payment_methods'  => apply_filters('fluentform/available_payment_methods', [])
         ]);
 
         $this->app->view->render('admin.reports.index', [

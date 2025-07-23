@@ -4,7 +4,7 @@
             <h3>{{$t('Submission Timeline')}}</h3>
             <div class="heatmap-navigation">
                     <div class="week-item">
-                        <span class="week-label">Viewing Week:</span>
+                        <span class="week-label">{{ $t('Viewing Week:') }}</span>
                         <span class="week-dates">{{ formatCurrentWeek() }}</span>
                     </div>
             </div>
