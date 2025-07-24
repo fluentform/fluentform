@@ -454,7 +454,12 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     add_filter('fluentform/editor_init_element_address', function ($item) {
         // Initialize autocomplete provider settings
         if (!isset($item['settings']['autocomplete_provider'])) {
-            $item['settings']['autocomplete_provider'] = 'none'; // none, google, html5
+            // If google autocomplete setting is enabled, set provider to google
+            if (ArrayHelper::get($item, 'settings.enable_g_autocomplete') === 'yes') {
+                $item['settings']['autocomplete_provider'] = 'google';
+            } else {
+                $item['settings']['autocomplete_provider'] = 'none';
+            }
         }
         if (!isset($item['settings']['enable_auto_locate'])) {
             $item['settings']['enable_auto_locate'] = 'on_click'; // on_load, on_click, no

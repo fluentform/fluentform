@@ -32,9 +32,9 @@ class Address extends BaseComponent
         $data['attributes']['class'] = trim($data['attributes']['class']);
 
 
-        $provider = ArrayHelper::get($data, 'settings.autocomplete_provider', null);
+        $provider = ArrayHelper::get($data, 'settings.autocomplete_provider');
         $legacyGoogle = ArrayHelper::get($data, 'settings.enable_g_autocomplete', 'no') === 'yes';
-        $isLegacyProvider = !$provider || $provider === 'none';
+        $isLegacyProvider = !ArrayHelper::has($data, 'settings.autocomplete_provider');
         // Render coordinate fields if Pro is active and coordinate saving is enabled
         if (defined('FLUENTFORMPRO') && 'yes' == ArrayHelper::get($data, 'settings.save_coordinates')) {
 
