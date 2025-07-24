@@ -384,13 +384,17 @@ class Extractor
 			$isAddressOrNameField = in_array(Arr::get($this->field, 'element'), ['address', 'input_name']);
 			
 			$isRepeatField = Arr::get($this->field, 'element') === 'input_repeat' || Arr::get($this->field, 'element') == 'repeater_field';
+
+            // Allow plugins to modify custom fields before processing
+            $customFields = apply_filters('fluentform/extractor_parser_custom_fields', $customFields, $this->field);
 			
 			foreach ($customFields as $index => $customField) {
 				// If the current field is in fact `address` || `name` field
 				// then we have to only keep the enabled child fields
 				// by the user from the form editor settings.
 				if ($isAddressOrNameField) {
-					if (!Arr::get($customField, 'settings.visible', false)) {
+                    $subFieldName = Arr::get($customField, 'attributes.name');
+					if (!Arr::get($customField, 'settings.visible', false) && !in_array($subFieldName, ['latitude', 'longitude'])) {
 						unset($customFields[$index]);
 						continue;
 					}
@@ -421,7 +425,7 @@ class Extractor
 		
 		return $this;
 	}
-	
+
 	/**
 	 * Set the raw field of the form field.
 	 *

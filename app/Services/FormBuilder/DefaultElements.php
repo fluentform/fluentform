@@ -363,6 +363,8 @@ $defaultElements = [
             'settings' => [
                 'label'                 => __('Address', 'fluentform'),
                 'enable_g_autocomplete' => 'no',
+                'autocomplete_provider' => 'none',
+                'enable_auto_locate'    => 'on_click',
                 'admin_field_label'     => 'Address',
                 'field_order'           => [
                     ['id' => 1, 'value' => 'address_line_1'],
@@ -1837,7 +1839,7 @@ if (defined('FLUENTFORMPRO')) {
         ],
         'settings' => [
             'label'   => 'Latitude',
-            'visible' => false, // Hidden by default, only for shortcodes
+            'visible' => false,
         ],
     ];
     $defaultElements['general']['address']['fields']['longitude'] = [
@@ -1849,7 +1851,7 @@ if (defined('FLUENTFORMPRO')) {
         ],
         'settings' => [
             'label'   => 'Longitude',
-            'visible' => false, // Hidden by default, only for shortcodes
+            'visible' => false,
         ],
     ];
 }
