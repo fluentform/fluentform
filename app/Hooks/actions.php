@@ -453,6 +453,22 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_address', function ($item) {
+        // Initialize autocomplete provider settings
+        if (!isset($item['settings']['autocomplete_provider'])) {
+            // If google autocomplete setting is enabled, set provider to google
+            if (ArrayHelper::get($item, 'settings.enable_g_autocomplete') === 'yes') {
+                $item['settings']['autocomplete_provider'] = 'google';
+            } else {
+                $item['settings']['autocomplete_provider'] = 'none';
+            }
+        }
+        if (!isset($item['settings']['enable_auto_locate'])) {
+            $item['settings']['enable_auto_locate'] = 'on_click'; // on_load, on_click, no
+        }
+        if (!isset($item['settings']['save_coordinates'])) {
+            $item['settings']['save_coordinates'] = 'no';
+        }
+
         foreach ($item['fields'] as &$addressField) {
             if (
                 !isset($addressField['settings']['label_placement']) &&
