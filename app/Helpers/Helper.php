@@ -787,8 +787,11 @@ class Helper
         if (!$girdData || !$field) {
             return '';
         }
-        $girdRows = ArrayHelper::get($field, 'raw.settings.grid_rows', '');
-        $girdCols = ArrayHelper::get($field, 'raw.settings.grid_columns', '');
+        $girdRows = ArrayHelper::get($field, 'raw.settings.grid_rows', []);
+        $girdRows = fluentFormSanitizer($girdRows);
+        $girdCols = ArrayHelper::get($field, 'raw.settings.grid_columns', []);
+        $girdCols = fluentFormSanitizer($girdCols);
+
         $value = '';
         $lastRow = key(array_slice($girdData, -1, 1, true));
         foreach ($girdData as $row => $column) {
@@ -962,8 +965,10 @@ class Helper
                 $options = array_flip(ArrayHelper::get($rawField, 'options', []));
             } elseif ('ratings' == $fieldType) {
                 $options = array_keys(ArrayHelper::get($rawField, 'options', []));
-            } elseif ('gdpr_agreement' == $fieldType || 'terms_and_condition' == $fieldType) {
+            } elseif ('gdpr_agreement' == $fieldType) {
                 $options = ['on'];
+            } elseif ('terms_and_condition' == $fieldType) {
+                $options = ['on', 'off'];
             } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
                 if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
@@ -1043,8 +1048,10 @@ class Helper
                     break;
                 case 'tabular_grid':
                     $rows = array_keys(ArrayHelper::get($rawField, 'settings.grid_rows', []));
-                    $rows = array_map('trim', $rows);
-    
+                    $rows = array_map(function ($row) {
+                        return trim(sanitize_text_field($row));
+                    }, $rows);
+
                     $submittedRows = array_keys(ArrayHelper::get($formData, $fieldName, []));
                     $submittedRows = array_map('trim', $submittedRows);
     
@@ -1053,7 +1060,9 @@ class Helper
                     $isValid = empty($rowDiff);
                     if ($isValid) {
                         $columns = array_keys(ArrayHelper::get($rawField, 'settings.grid_columns', []));
-                        $columns = array_map('trim', $columns);
+                        $columns = array_map(function ($column) {
+                            return trim(sanitize_text_field($column));
+                        }, $columns);
                         $submittedCols = ArrayHelper::flatten(ArrayHelper::get($formData, $fieldName, []));
                         $submittedCols = array_map('trim', $submittedCols);
                         $colDiff = array_diff($submittedCols, $columns);

@@ -143,6 +143,13 @@ jQuery(document).ready(function () {
                     try {
                         var $inputs = $theForm
                             .find(':input').filter(function (i, el) {
+                                // Ignore repeater container
+                                if ($(el).attr('data-type') === 'repeater_container') {
+                                    if ($(this).closest('.has-conditions').hasClass('ff_excluded')) {
+                                        $(this).val('');
+                                    }
+                                    return true;
+                                }
                                 return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                             });
 
@@ -153,7 +160,7 @@ jQuery(document).ready(function () {
                         // data names array
                         var inputsDataNames = inputsData.map(item => item.name);
 
-                        // Ignore chekbox and radio which one inside table like checkable-grid, net-promoter-score etc
+                        // Ignore checkbox and radio which one inside table like checkable-grid, net-promoter-score etc
                         $inputs = $inputs.filter(function () {
                             return !$(this).closest('.ff-el-input--content').find('table').length;
                         });
@@ -545,6 +552,26 @@ jQuery(document).ready(function () {
 
                     $(document).on('reset', formSelector, function (e) {
                         formResetHandler($(this))
+                    });
+
+                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+
+                            // For radio buttons, just check it
+                            if ($(this).attr('type') === 'radio') {
+                                $(this).prop('checked', true);
+                            }
+                            // For checkboxes, toggle the checked state
+                            else if ($(this).attr('type') === 'checkbox') {
+                                $(this).prop('checked', !$(this).prop('checked'));
+                            }
+
+                            // Trigger change event for both types
+                            $(this).trigger('change');
+                            e.stopPropagation();
+                            return false;
+                        }
                     });
                 };
 
@@ -1522,16 +1549,17 @@ jQuery(document).ready(function () {
                         return true;
                     }
 
-                    if (typeof window.intlTelInputGlobals == 'undefined') {
-                        return true;
-                    }
-
                     if (!el || !el[0]) {
                         return;
                     }
 
+                    let iti;
+                    if (typeof window.intlTelInputGlobals !== 'undefined') {
+                        iti = window.intlTelInputGlobals.getInstance(el[0]);
+                    } else {
+                        iti = el.data('iti');
+                    }
 
-                    var iti = window.intlTelInputGlobals.getInstance(el[0]);
                     if (!iti) {
                         return true;
                     }
@@ -1621,8 +1649,4 @@ jQuery(document).ready(function () {
             .html('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
             .insertAfter(jQuery(this));
     });
-});
-
-jQuery(document.body).on('fluentform_init', function (e, $theForm) {
-
 });

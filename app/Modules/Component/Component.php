@@ -621,31 +621,30 @@ class Component
         );
 
         $stepText = apply_filters('fluentform/step_string', $stepText);
-        
+
         $data = [
-            'ajaxUrl'               => admin_url('admin-ajax.php'),
-            'forms'                 => [],
-            'step_text'             => $stepText,
-            'is_rtl'                => is_rtl(),
-            'date_i18n'             => self::getDatei18n(),
-            'pro_version'           => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,
-            'fluentform_version'    => FLUENTFORM_VERSION,
-            'force_init'            => false,
-            'stepAnimationDuration' => 350,
-            'upload_completed_txt'  => __('100% Completed', 'fluentform'),
-            'upload_start_txt'      => __('0% Completed', 'fluentform'),
-            'uploading_txt'         => __('Uploading', 'fluentform'),
-            'choice_js_vars'        => [
+            'ajaxUrl'                       => admin_url('admin-ajax.php'),
+            'forms'                         => [],
+            'step_text'                     => $stepText,
+            'is_rtl'                        => is_rtl(),
+            'date_i18n'                     => self::getDatei18n(),
+            'pro_version'                   => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,
+            'fluentform_version'            => FLUENTFORM_VERSION,
+            'force_init'                    => false,
+            'stepAnimationDuration'         => 350,
+            'upload_completed_txt'          => __('100% Completed', 'fluentform'),
+            'upload_start_txt'              => __('0% Completed', 'fluentform'),
+            'uploading_txt'                 => __('Uploading', 'fluentform'),
+            'choice_js_vars'                => [
                 'noResultsText'  => __('No results found', 'fluentform'),
                 'loadingText'    => __('Loading...', 'fluentform'),
                 'noChoicesText'  => __('No choices to choose from', 'fluentform'),
                 'itemSelectText' => __('Press to select', 'fluentform'),
                 'maxItemText'    => __('Only %%maxItemCount%% options can be added', 'fluentform'),
             ],
-            'input_mask_vars'       => [
+            'input_mask_vars'               => [
                 'clearIfNotMatch' => false,
             ],
-            
             'nonce'                         => wp_create_nonce(),
             'form_id'                       => $form_id,
             'step_change_focus'             => true,
@@ -966,7 +965,7 @@ class Component
         $count = $query->count();
 
         if ($count >= $maxAllowedEntries) {
-            $isRenderable['message'] = apply_filters('fluentform/entry_limit_reached_message', $restrictions['limitReachedMsg'], $form);
+            $isRenderable['message'] = $restrictions['limitReachedMsg'];
             return false;
         }
 
@@ -991,12 +990,12 @@ class Component
         $end = strtotime($restrictions['end']);
 
         if ($time < $start) {
-            $isRenderable['message'] = apply_filters('fluentform/schedule_form_pending_message', $restrictions['pendingMsg'], $form->id);
+            $isRenderable['message'] = $restrictions['pendingMsg'];
             return false;
         }
 
         if ($time >= $end) {
-            $isRenderable['message'] = apply_filters('fluentform/schedule_form_expired_message', $restrictions['expiredMsg'], $form->id);
+            $isRenderable['message'] = $restrictions['expiredMsg'];
 
             return false;
         }
@@ -1005,7 +1004,7 @@ class Component
         $selectedWeekDays = ArrayHelper::get($restrictions, 'selectedDays');
         //skip if it was not set initially and $selectedWeekDays is null
         if ($selectedWeekDays && is_array($selectedWeekDays) && !in_array($weekDayToday, $selectedWeekDays)) {
-            $isRenderable['message'] = apply_filters('fluentform/schedule_form_expired_message', $restrictions['expiredMsg'], $form);
+            $isRenderable['message'] = $restrictions['expiredMsg'];
             return false;
         }
 
@@ -1026,7 +1025,7 @@ class Component
         }
 
         if (!($isLoggedIn = is_user_logged_in())) {
-            $isRenderable['message'] = apply_filters('fluentform/form_requires_login_message', $restrictions['requireLoginMsg'], $form);
+            $isRenderable['message'] = $restrictions['requireLoginMsg'];
         }
 
         return $isLoggedIn;
@@ -1195,6 +1194,8 @@ class Component
             'net_promoter_score',
             'featured_image',
         ];
+        $advancedFields = apply_filters('fluentform/fields_requiring_advanced_script', $advancedFields);
+        
         if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
             wp_enqueue_script('fluentform-advanced');
         }

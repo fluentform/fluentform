@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 6.0.4
+Stable tag: 6.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,7 @@ Get a fast contact form plugin. Create advanced forms using drag and drop form b
 
 [youtube https://www.youtube.com/watch?v=s4RJS3GrmTI]
 
-[Demo](https://fluentforms.com/form-templates/) | [User Guide](https://wpmanageninja.com/docs/fluent-form/) | [Youtube Video Tutorials](https://www.youtube.com/playlist?list=PLXpD0vT4thWEY6CbwMISKDiXOd5KPC6wo) | [Get Support](https://wpmanageninja.com/support-tickets/) | [Youtube Video Tutorials](https://www.youtube.com/playlist?list=PLXpD0vT4thWEY6CbwMISKDiXOd5KPC6wo) | [Official Facebook Community](https://www.facebook.com/groups/fluentforms/)
+[Demo](https://fluentforms.com/form-templates/) | [User Guide](https://wpmanageninja.com/docs/fluent-form/) | [Youtube Video Tutorials](https://www.youtube.com/playlist?list=PLXpD0vT4thWEY6CbwMISKDiXOd5KPC6wo) | [Get Support](https://wpmanageninja.com/support-tickets/) | [Official Facebook Community](https://www.facebook.com/groups/fluentforms/)
 
 Anything from a simple contact form to a more advanced payment, quiz, or calculator form, Fluent Forms can meet virtually all your needs.
 
@@ -442,18 +442,44 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 6.0.5 (Date: July 8, 2025) =
+- Adds Fluent Forms Report module
+- Adds close button to payment summary items
+- Improves IP detection accepting client IP explicitly
+- Improves consistency of settings deletion notifications
+- Fixes form API empty title retrieval issue
+- Fixes WPForm Migrator with empty forms
+- Fixes radio field customization UI default value selection
+- Fixes video playback in Support section
+- Fixes CleanTalk/Akismet protection spam submitting forms twice
+- Fixes integrations page sidebar menu selection indication on reload
+- Fixes conversational forms GDPR checkbox implementation
+- Fixes captcha conflict when global and form-specific settings differ
+- Fixes client IP detection for Cloudflare and Nginx proxies
+- Fixes hide after submission option setting for conversational forms
+- Fixes Terms & Conditions field validation error messages for not Accepted
+- Removes non-functional Reset Form button from conversational forms
+- Fixes payment method 'Test' Instead 'Offline' in payments shortcode
+- Fixes multiple address field autocomplete in conversational forms
+- Fixes submission on Enter key press with selected radio/checkbox using keyboard
+- Fixes entries chart date range filtering
+- Fixes database creation errors in WordPress Studio environments
+- Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
 
-= 6.0.4 (Date: May 28, 2025) =
+= 6.0.4 (Date: May 29, 2025) =
+- Fixes the net promoter score field's zero (0) value in the visual report
+- Fixes the multi-select values in the submission including commas
+- Fixes tooltip/help message
+- Fixes conversational form address field default value meta smart code
+- Fixes conversational form section break image layout position
+- Fixes email attachment missing for WordPress subdirectory
+- Fixes conversational form name and address fields prefilled using URL params
+- Fixes keyword-based restriction if IPInfo access key is provided
+- Fixes conversational form invisible turnstile autoload
+- Fixes email notification/integration sending after payment status change to paid
+- Fixes turnstile with WP Rocket compatibility
 - Improve honeypot condition check
-- Fix the net promoter score field's zero (0) value in the visual report
-- Fix the multi-select values in the submission including commas
-- Fix tooltip/help message
-- Fix conversational form address field meta smartcode
-- Fix conversational form section break image layout position
-- Fix email attachment missing for WordPress sub-directory
-- Fix conversational form name and address fields prefilled using URL params
-- Fix keyword-based restriction if IPInfo access key is provided
-- Fix email notification/integration sending after payment status change to paid
+- Adds support for WPML translation with the `Multilingual Forms for Fluent Forms with WPML` addon
 
 = 6.0.3 (Date: April 16, 2025) =
 - Adds filter hooks for disable captcha validation

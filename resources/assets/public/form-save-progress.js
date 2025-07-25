@@ -113,6 +113,14 @@ import formSlider from "./Pro/slider";
                         )
                         inputGroup.fadeIn();
 
+                        // Add Enter key handler for saved state link input
+                        inputGroup.find('input.ff-el-form-control').on('keypress', function(e) {
+                            if (e.which === 13 || e.keyCode === 13) {
+                                e.preventDefault();
+                                $(this).siblings('.ff_input-group-append').find('.ff_btn_copy_link').click();
+                            }
+                        });
+
                         //Show Email Input
                         const emailPlaceholderStr = window.form_state_save_vars.email_placeholder_str || 'Your Email Here';
                         const emailIcon = window.form_state_save_vars.email_button || 'Email';
@@ -120,7 +128,7 @@ import formSlider from "./Pro/slider";
                             let emailDiv =
                                 `<div class="ff-el-input--content">
                                     <div class="ff_input-group">
-                                        <input type="email" class="ff-el-form-control" placeholder="${emailPlaceholderStr}" class="ff-el-form-control">
+                                        <input type="email" class="ff-el-form-control" placeholder="${emailPlaceholderStr}">
                                         <div class="ff_input-group-append">
                                             <button class="ff-btn ff-btn-md ff_btn_style ff_btn_is_email ff_input-group-text">${emailIcon}</button>
                                         </div>
@@ -132,6 +140,14 @@ import formSlider from "./Pro/slider";
                                 emailGroup
                             )
                             emailGroup.fadeIn();
+
+                            // Add Enter key handler for email input
+                            emailGroup.find('input.ff-el-form-control').on('keypress', function(e) {
+                                if (e.which === 13 || e.keyCode === 13) {
+                                    e.preventDefault();
+                                    $(this).siblings('.ff_input-group-append').find('.ff_btn_is_email').click();
+                                }
+                            });
                         }
                     }
                 }).fail(error => {

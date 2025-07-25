@@ -364,6 +364,7 @@ class Form
                         $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
                         if ('terms_and_condition' == $element) {
                             $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
+                            $existingSettings['hide_disagree'] = false;
                         }
                         $field['settings'] = $existingSettings;
                     }
@@ -416,9 +417,7 @@ class Form
                         echo "</script>\n";
                     }
                     $src = $jsScript->src;
-                    if (strpos($src, 'www.paypal.com/sdk/js') === false) {
-                        $src = add_query_arg('ver', $jsScript->ver, $src);
-                    }
+                    $src = add_query_arg('ver', $jsScript->ver, $src);
                     echo "<script type='text/javascript' id='" . esc_attr($handle) . "' src='" . esc_url($src) . "'></script>\n";
                 }
             }, 1);
@@ -550,7 +549,7 @@ class Form
         $varName = 'fluent_forms_global_var_' . $instanceId;
         wp_localize_script('fluent_forms_conversational_form', $varName, [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-            'ajaxurl'                  => Helper::getAjaxUrl(),
+            'ajaxurl'                  => admin_url('admin-ajax.php'),
             'nonce'                    => wp_create_nonce(),
             'form'                     => $this->getLocalizedForm($form),
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
@@ -602,7 +601,7 @@ class Form
 
     public function maybeAlterPlacement($placements, $form)
     {
-        if (!Helper::isConversionForm($form->id) || empty($placements['terms_and_condition'])) {
+        if (!Helper::isConversionForm($form->id) || empty($placements['terms_and_condition']) || empty($placements['gdpr_agreement'])) {
             return $placements;
         }
 
@@ -622,6 +621,22 @@ class Form
             'tc_dis_agree_text' => [
                 'template' => 'inputText',
                 'label'    => 'Disagree Button Text',
+            ],
+            'hide_disagree' => [
+                'template' => 'inputCheckbox',
+                'options'  => [
+                    [
+                        'value' => false,
+                        'label' => __('Hide Disagree Button', 'fluentform'),
+                    ],
+                ],
+            ],
+        ];
+
+        $placements['gdpr_agreement']['generalExtras'] = [
+            'tc_agree_text'     => [
+                'template' => 'inputText',
+                'label'    => 'Agree Option Text',
             ],
         ];
 
@@ -723,7 +738,7 @@ class Form
 
         wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-            'ajaxurl'                  => Helper::getAjaxUrl(),
+            'ajaxurl'                  => admin_url('admin-ajax.php'),
             'nonce'                    => wp_create_nonce(),
             'form'                     => $this->getLocalizedForm($form),
             'form_id'                  => $form->id,
@@ -871,8 +886,6 @@ class Form
                 ],
             ];
 
-            $paymentConfig = apply_filters('fluentform/payment_config', $paymentConfig, $form->id);
-
             $paymentConfig['currency_settings']['currency_symbol'] = \html_entity_decode($paymentConfig['currency_settings']['currency_sign']);
         }
 
@@ -917,7 +930,7 @@ class Form
             'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
             'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
             'has_save_link'             => $form->save_state?? false,
-            'has_save_and_resume_button'=> $form->hasSaveAndRusemeButton ?? false,
+            'has_save_and_resume_button'=> $form->hasSaveAndResumeButton ?? false,
             'step_completed'            => $form->stepCompleted ?? 0
         ];
     }

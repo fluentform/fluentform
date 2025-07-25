@@ -38,6 +38,7 @@ import paymentMethodHolder from './templates/paymentMethodHolder.vue'
 import inputMultiPayment from './templates/inputMultiPayment.vue';
 import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
 import inputCalendar from './templates/inputCalendar.vue';
+import CustomEditorField from './editor-field-settings/templates/CustomSettingsField.vue';
 
 import { Splitpanes, Pane } from 'splitpanes'
 import ActionBtn from "@/admin/components/ActionBtn/ActionBtn";
@@ -100,6 +101,7 @@ export default {
         ff_inputSubscriptionPayment: inputSubscriptionPayment,
         ff_fieldsRepeatSettings: repeatFields,
         ff_inputCalendar: inputCalendar,
+        ff_CustomEditorField: CustomEditorField,
         ActionBtn, ActionBtnRemove, ActionBtnAdd,
         Splitpanes, Pane
     },
@@ -313,6 +315,15 @@ export default {
             if (jQuery(e.target).closest('.splitpanes__pane').length) {
                 let selectedPane = jQuery(e.target).closest('.splitpanes__pane')[0];
                 selectedPane.style.overflow = this.contextMenuIndex[index] ? 'visible' : 'hidden';
+            }
+        },
+
+        /**
+         * Handle keyboard delete event for selected item
+         */
+        handleKeyboardDelete(selectedItem) {
+            if (this.item.uniqElKey === selectedItem.uniqElKey) {
+                this.askRemoveConfirm(this.index);
             }
         }
     }

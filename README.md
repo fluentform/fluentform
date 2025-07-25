@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.0.4
+**Stable tag:** 6.0.5
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,17 +159,43 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.0.4 (Date: May 28, 2025) =
+### 6.0.5 (Date: July 8, 2025) =
+- Adds Fluent Forms Report module
+- Adds close button to payment summary items
+- Improves IP detection accepting client IP explicitly
+- Improves consistency of settings deletion notifications
+- Fixes form API empty title retrieval issue
+- Fixes WPForm Migrator with empty forms
+- Fixes radio field customization UI default value selection
+- Fixes video playback in Support section
+- Fixes CleanTalk/Akismet protection spam submitting forms twice
+- Fixes integrations page sidebar menu selection indication on reload
+- Fixes conversational forms GDPR checkbox implementation
+- Fixes captcha conflict when global and form-specific settings differ
+- Fixes client IP detection for Cloudflare and Nginx proxies
+- Fixes hide after submission option setting for conversational forms
+- Fixes Terms & Conditions field validation error messages for not Accepted
+- Removes non-functional Reset Form button from conversational forms
+- Fixes payment method 'Test' Instead 'Offline' in payments shortcode
+- Fixes multiple address field autocomplete in conversational forms
+- Fixes submission on Enter key press with selected radio/checkbox using keyboard
+- Fixes entries chart date range filtering
+- Fixes database creation errors in WordPress Studio environments
+- Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
+
+### 6.0.4 (Date: May 29, 2025) =
 - Improve honeypot condition check
 - Fix the net promoter score field's zero (0) value in the visual report
 - Fix the multi-select values in the submission including commas
 - Fix tooltip/help message
 - Fix conversational form address field meta smartcode
 - Fix conversational form section break image layout position
-- Fix email attachment missing for WordPress sub-directory
+- Fix email attachment missing for WordPress subdirectory
 - Fix conversational form name and address fields prefilled using URL params
 - Fix keyword-based restriction if IPInfo access key is provided
+- Fix conversational form invisible turnstile autoload
 - Fix email notification/integration sending after payment status change to paid
+- Fix turnstile with WP Rocket compatibility
 
 ### 6.0.3 (Date: April 16, 2025) =
 - Adds hooks for disable captcha validation
@@ -196,12 +222,6 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes "customer_name" issue for Stripe
 - Fixes conditional {dynamic.} shortcode in Custom HTML fields
 - Fixes front end facing site_url with home_url
-
-### 5.2.12 (Date: February 18, 2025)
-- Adds token-based spam protection for enhanced form security
-- Adds Italian Language Translation
-- Improve Honeypot Security for better bot detection
-- Improve Turnstile appearance option names for clarity
 
 [View complete changelog history](https://fluentforms.com/docs/changelog/)
 
