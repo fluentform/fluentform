@@ -1,5 +1,5 @@
 <template>
-  <div v-if="value === null || value === undefined" class="stats-card" :class="type">
+  <div v-if="value === null || value === undefined || loading" class="stats-card" :class="type">
     <div class="stats-icon" style="background-color: #f5f5f5;">
       <el-skeleton-item variant="circle" :style="{ width: type === 'overview' ? '30px' : '20px', height: type === 'overview' ? '30px' : '20px' }" />
     </div>
@@ -61,6 +61,10 @@ export default {
         type: {
               type: String,
               default: ''
+        },
+        loading: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {

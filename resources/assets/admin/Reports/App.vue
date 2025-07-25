@@ -34,6 +34,7 @@
                                 :bgColor="stat.bgColor"
                                 :cardClass="stat.class || ''"
                                 type="overview"
+                                :loading="loading"
                             />
                         </div>
                     </div>
@@ -167,6 +168,7 @@
                                 :change-type="stat.changeType"
                                 :icon="stat.icon"
                                 :bgColor="stat.bgColor"
+                                :loading="loading"
                             />
                         </div>
                     </div>
@@ -266,6 +268,7 @@
                                 :change-type="stat.changeType"
                                 :icon="stat.icon"
                                 :bgColor="stat.bgColor"
+                                :loading="loading"
                             />
                         </div>
                     </div>
@@ -621,6 +624,7 @@ export default {
         },
 
         fetchReportsData() {
+            this.loading = true;
             const data = {
                 component: "form_stats,overview_chart,revenue_chart,subscriptions,payment_types",
                 start_date: this.globalDateParams.startDate,
@@ -650,6 +654,7 @@ export default {
                     console.error("Error fetching overview chart data:", error);
                 })
                 .finally(() => {
+                    this.loading = false;
                 });
         },
 
