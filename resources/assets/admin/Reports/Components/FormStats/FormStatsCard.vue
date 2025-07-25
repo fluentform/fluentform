@@ -10,10 +10,9 @@
       <div class="stats-value" style="margin: 4px 0;">
         <el-skeleton-item variant="text" style="width: 60px; height: 24px;" />
       </div>
-
     </div>
   </div>
-  <div class="stats-card" :class="type" v-else>
+  <div class="stats-card" :class="[type, cardClass]" v-else>
         <div class="stats-icon" :style="{ backgroundColor: bgColor }">
             <span v-if="icon" v-html="icon"></span>
         </div>
@@ -54,6 +53,10 @@ export default {
         bgColor: {
             type: String,
             default: '#F2F5F8'
+        },
+        cardClass: {
+            type: String,
+            default: ''
         },
         type: {
               type: String,

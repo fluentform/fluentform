@@ -411,12 +411,13 @@ class ReportHelper
         $spamPercentage = 0;
         if ($previousSpamSubmissions > 0) {
             $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100, 1);
-        } elseif ($periodSpamSubmissions > 0) {
-            $spamPercentage = 100;
         }
 
-        $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
-        $spamType = $spamPercentage > 0 ? 'down' : ($spamPercentage < 0 ? 'up' : 'neutral');
+        $spamText = $spamType = '';
+        if ($spamPercentage !== 0) {
+            $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
+            $spamType = $spamPercentage > 0 ? 'up' : 'down';
+        }
 
         // Active forms
         $periodActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$startDate, $endDate])->count();

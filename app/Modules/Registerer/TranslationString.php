@@ -2054,6 +2054,8 @@ class TranslationString
             'Submission Date'    => __('Submission Date', 'fluentform'),
             'Direct Access'    => __('Direct Access', 'fluentform'),
             'Submission Analysis'    => __('Submission Analysis', 'fluentform'),
+            'Less'    => __('Less', 'fluentform'),
+            'More'    => __('More', 'fluentform'),
         );
         return apply_filters('fluentform/reports_i18n', $i18n);
     }

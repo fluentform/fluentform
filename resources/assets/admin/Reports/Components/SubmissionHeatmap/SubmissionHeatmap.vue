@@ -57,13 +57,23 @@
                             @mouseenter="highlightCell($event, colIndex, day)"
                             @mouseleave="removeHighlight()"
                         >
-                            <span class="cell-value">{{ getValueForCell(colIndex, day) }}</span>
                         </div>
                     </div>
                 </div>
 
                 <div v-if="tooltip.visible" :class="['tooltip', tooltip.class]"  :style="tooltip.style">
                     {{ tooltip.text }}
+                </div>
+
+                <div class="heatmap-color-scale">
+                    <span>{{ $t('Less') }}</span>
+                    <span class="heatmap-color-scale-item level-0"></span>
+                    <span class="heatmap-color-scale-item level-1"></span>
+                    <span class="heatmap-color-scale-item level-2"></span>
+                    <span class="heatmap-color-scale-item level-3"></span>
+                    <span class="heatmap-color-scale-item level-4"></span>
+                    <span class="heatmap-color-scale-item level-5"></span>
+                    <span>{{ $t('More') }}</span>
                 </div>
             </div>
         </card-body>

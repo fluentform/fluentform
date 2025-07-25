@@ -32,6 +32,7 @@
                                 :change-type="stat.changeType"
                                 :icon="stat.icon"
                                 :bgColor="stat.bgColor"
+                                :cardClass="stat.class || ''"
                                 type="overview"
                             />
                         </div>
@@ -405,6 +406,7 @@ export default {
                 },
                 {
                     key: "spam_submissions",
+                    class: 'spam',
                     title: this.$t('Spam Submissions'),
                     value: stats.spam_submissions?.value,
                     change: stats.spam_submissions?.change,
