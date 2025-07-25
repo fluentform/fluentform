@@ -4,13 +4,13 @@
             <card-head>
                 <div class="net-revenue-header">
                     <div class="title-section">
-                        <h3>Revenue Analysis </h3>
+                        <h3>{{ getDynamicTitle() }}</h3>
                     </div>
                     <div class="controls-section">
                         <el-select
                             v-model="selectedGroupBy"
-                            placeholder="Group By"
-                            size="small"
+                            :placeholder="$t('Group By')"
+                            size="mini"
                             @change="handleGroupByChange"
                             style="width: 150px; margin-right: 12px;"
                         >
@@ -31,9 +31,8 @@
                 </div>
 
                 <div v-else-if="revenueData.length === 0" class="no-data-state">
-                    <div class="no-data-icon">💰</div>
-                    <h4>No Revenue Data Available</h4>
-                    <p>No revenue data found for the selected criteria and date range.</p>
+                    <i class="el-icon-money no-data-icon"></i>
+                    <span>{{ $t('No revenue data found for the selected date range.') }}</span>
                 </div>
 
                 <div v-else class="revenue-table-container">
@@ -47,13 +46,19 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'forms'"
                             prop="form_title"
-                            label="Form"
+                            :label="$t('Form')"
                             min-width="200"
                             sortable
                         >
                             <template #default="{ row }">
                                 <div class="form-info">
-                                    <span class="form-title">{{ row.form_title }}</span>
+                                    <a
+                                        :href="getFormPreviewUrl(row.form_id)"
+                                        target="_blank"
+                                        class="form-title-link"
+                                    >
+                                        <span class="form-title">{{ row.form_title }}</span>
+                                    </a>
                                     <span class="form-id">#{{ row.form_id }}</span>
                                 </div>
                             </template>
@@ -62,7 +67,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'payment_method'"
                             prop="payment_method_name"
-                            label="Payment Method"
+                            :label="$t('Payment Method')"
                             min-width="150"
                             sortable
                         >
@@ -77,7 +82,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'payment_type'"
                             prop="payment_type_name"
-                            label="Payment Type"
+                            :label="$t('Payment Type')"
                             min-width="150"
                             sortable
                         />
@@ -96,7 +101,7 @@
 
                         <el-table-column
                             prop="pending_amount"
-                            label="Pending"
+                            :label="$t('Pending')"
                             min-width="120"
                             sortable
                             align="right"
@@ -108,7 +113,7 @@
 
                         <el-table-column
                             prop="refunded_amount"
-                            label="Refunded"
+                            :label="$t('Refunded')"
                             min-width="120"
                             sortable
                             align="right"
@@ -120,7 +125,7 @@
 
                         <el-table-column
                             prop="net_revenue"
-                            label="Net Revenue"
+                            :label="$t('Net Revenue')"
                             min-width="140"
                             sortable
                             align="right"
@@ -135,7 +140,7 @@
                         <el-table-column
                             v-if="selectedGroupBy !== 'forms'"
                             prop="transaction_count"
-                            label="Count"
+                            :label="$t('Count')"
                             min-width="100"
                             sortable
                             align="center"
@@ -150,7 +155,7 @@
                 </div>
             </card-body>
         </card>
-        <div class="ff_pagination_wrap text-right pagination-container mt-4">
+        <div v-if="totalItems > pageSize" class="ff_pagination_wrap text-right pagination-container mt-4">
             <el-pagination
                 class="ff_pagination"
                 background
@@ -201,9 +206,9 @@ export default {
             revenueData: [],
             selectedGroupBy: 'forms',
             groupByOptions: {
-                'forms': 'Forms',
-                'payment_method': 'Payment Method',
-                'payment_type': 'Payment Type'
+                'forms': this.$t('Forms'),
+                'payment_method': this.$t('Payment Method'),
+                'payment_type': this.$t('Payment Type')
             },
             currentPage: 1,
             pageSize: localStorage.getItem('ffReportNetRevenuePerPage') || 5,
@@ -277,11 +282,6 @@ export default {
             this.fetchRevenueData();
         },
 
-        handleFormChange() {
-            this.currentPage = 1;
-            this.fetchRevenueData();
-        },
-
         formatCurrency(amount) {
             if (amount === null || amount === undefined) {
                 return this.decodedCurrency + '0.00';
@@ -302,50 +302,6 @@ export default {
             return textarea.value;
         },
 
-        formatCurrentDateRange() {
-            if (!this.globalDateParams.startDate || !this.globalDateParams.endDate) {
-                return 'No date range selected';
-            }
-
-            const startDate = new Date(this.globalDateParams.startDate);
-            const endDate = new Date(this.globalDateParams.endDate);
-
-            // Check if it's the same day
-            if (this.isSameDay(startDate, endDate)) {
-                return this.formatDate(startDate);
-            }
-
-            // Check if it's the same month
-            if (startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
-                return `${this.formatDateShort(startDate)} - ${this.formatDate(endDate)}`;
-            }
-
-            // Different months or years
-            return `${this.formatDate(startDate)} - ${this.formatDate(endDate)}`;
-        },
-
-        isSameDay(date1, date2) {
-            return date1.getDate() === date2.getDate() &&
-                   date1.getMonth() === date2.getMonth() &&
-                   date1.getFullYear() === date2.getFullYear();
-        },
-
-        formatDate(date) {
-            const options = {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            };
-            return date.toLocaleDateString('en-US', options);
-        },
-
-        formatDateShort(date) {
-            const options = {
-                month: 'short',
-                day: 'numeric'
-            };
-            return date.toLocaleDateString('en-US', options);
-        },
         handleSizeChange(newSize) {
             this.pageSize = newSize;
             localStorage.setItem('ffReportNetRevenuePerPage', newSize);
@@ -355,6 +311,16 @@ export default {
         handleCurrentChange(newPage) {
             this.currentPage = newPage;
             this.fetchRevenueData();
+        },
+        getDynamicTitle() {
+            const baseTitle = this.$t('Payment Analysis');
+            if (this.selectedGroupBy && this.groupByOptions[this.selectedGroupBy]) {
+                return `${baseTitle} ${this.$t('by')} ${this.groupByOptions[this.selectedGroupBy]}`;
+            }
+            return baseTitle;
+        },
+        getFormPreviewUrl(formId) {
+            return `${window.location.origin}/?fluent_forms_pages=1&design_mode=1&preview_id=${formId}#ff_preview`;
         }
     }
 };
@@ -464,5 +430,9 @@ export default {
     font-size: 12px;
     color: #9ca3af;
     text-transform: lowercase;
+}
+
+.form-title-link:hover {
+    text-decoration: underline;
 }
 </style>

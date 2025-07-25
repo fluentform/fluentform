@@ -2,18 +2,18 @@
     <card>
         <div class="submission-country-heatmap">
             <card-head class="card-header">
-                <h3>Submissions By Country</h3>
+                <h3>{{ $t('Submissions By Country') }}</h3>
                 <div class="form-selector">
                     <el-select
                         v-model="selectedFormId"
-                        placeholder="Select Form"
-                        size="medium"
+                        :placeholder="$t('Select Form')"
+                        size="mini"
                         clearable
                         filterable
                         @change="handleFormChange"
                     >
                         <el-option
-                            label="All Forms"
+                            :label="$t('All Forms')"
                             :value="null"
                         ></el-option>
                         <el-option
@@ -25,15 +25,15 @@
                     </el-select>
                 </div>
             </card-head>
-    
+
             <card-body class="chart-container" v-loading="loading">
                 <div v-if="!loading && (!countryData || countryData.length === 0)" class="no-data">
                     <div class="no-data-icon">
                         <i class="el-icon-location-outline"></i>
                     </div>
-                    <p>No submission data available for the selected date range</p>
+                    <p>{{ $t('No submission data available for the selected date range') }}</p>
                 </div>
-    
+
                 <div v-else-if="!loading" class="chart-wrapper">
                     <!-- World Map Controls -->
                     <div class="map-controls">
@@ -43,7 +43,7 @@
                             <el-button size="mini" @click="resetChart" icon="el-icon-refresh-left"></el-button>
                         </el-button-group>
                     </div>
-    
+
                     <div ref="chartRef" class="chart-element"></div>
                 </div>
             </card-body>
@@ -75,7 +75,6 @@ export default {
             default: () => []
         },
     },
-    emits: ['country-heatmap-form-change'],
     data() {
         return {
             loading: false,
@@ -112,7 +111,7 @@ export default {
         handleFormChange() {
             this.$emit('country-heatmap-form-change', this.selectedFormId);
         },
-        
+
         loadWorldMap() {
             try {
                 echarts.registerMap("world", worldMapJson);
@@ -138,7 +137,7 @@ export default {
                     trigger: "item",
                     formatter: (params) => {
                         const value = params.value || 0;
-                        return `<strong>${params.name}</strong><br/>Submissions: ${value}`;
+                        return `<strong>${params.name}</strong><br/>${this.$t('Submissions:')} ${value}`;
                     },
                     borderRadius: 8,
                     backgroundColor: "#ffffff",
@@ -165,7 +164,7 @@ export default {
                 },
                 series: [
                     {
-                        name: "Submissions",
+                        name: this.$t('Submissions'),
                         type: "map",
                         map: "world",
                         roam: true,
@@ -257,7 +256,7 @@ export default {
                 this.chartInstance.destroy();
                 this.chartInstance.setOption({
                     title: {
-                        text: 'No data available for selected form',
+                        text: this.$t('No data available for selected form'),
                         left: 'center',
                         top: 'middle',
                         textStyle: {
@@ -305,31 +304,6 @@ export default {
 
             const cleanName = countryName.replace(/\s*\([A-Z]{2,3}\)\s*$/, '').trim();
             return countryMapping[cleanName] || cleanName;
-        },
-
-        onChartClick(params) {
-            if (params.data && params.data.value) {
-                this.$message({
-                    message: `${params.name}: ${params.data.value} submissions`,
-                    type: 'info'
-                });
-            }
-        },
-
-        refreshData() {
-            this.$emit('country-heatmap-form-change', this.selectedFormId);
-        },
-
-        forceChartRefresh() {
-            if (this.chartInstance) {
-                this.chartInstance.dispose();
-                this.chartInstance = null;
-            }
-            this.$nextTick(() => {
-                setTimeout(() => {
-                    this.initChart();
-                }, 100);
-            });
         }
     },
     watch: {
@@ -346,6 +320,10 @@ export default {
                         this.chartInstance.clear();
                         this.updateChart();
                     }
+                } else {
+                   if (this.chartInstance) {
+                        this.chartInstance = null;
+                   }
                 }
             },
             deep: true,

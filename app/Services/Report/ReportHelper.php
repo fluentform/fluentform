@@ -373,9 +373,11 @@ class ReportHelper
             })
             ->groupBy('status')
             ->pluck('count', 'status');
+
         $unreadSubmissions = intval(Arr::get($statusCounts, 'unread', 0));
         $readSubmissions = intval(Arr::get($statusCounts, 'read', 0));
         $periodSpamSubmissions = intval(Arr::get($statusCounts, 'spam', 0));
+
 
         $previousStatusCounts = Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->selectRaw('status, COUNT(*) as count')
@@ -384,7 +386,8 @@ class ReportHelper
             })
             ->groupBy('status')
             ->pluck('count', 'status');
-        $previousSpamSubmissions = $previousStatusCounts['spam'] ?? 0;
+
+        $previousSpamSubmissions = intval(Arr::get($previousStatusCounts, 'spam', 0));
 
         // Get active integrations count from wp_options
         $modulesStatus = get_option('fluentform_global_modules_status');
@@ -408,12 +411,13 @@ class ReportHelper
         $spamPercentage = 0;
         if ($previousSpamSubmissions > 0) {
             $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100, 1);
-        } elseif ($periodSpamSubmissions > 0) {
-            $spamPercentage = 100;
         }
 
-        $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
-        $spamType = $spamPercentage > 0 ? 'down' : ($spamPercentage < 0 ? 'up' : 'neutral');
+        $spamText = $spamType = '';
+        if ($spamPercentage !== 0) {
+            $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
+            $spamType = $spamPercentage > 0 ? 'up' : 'down';
+        }
 
         // Active forms
         $periodActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$startDate, $endDate])->count();
@@ -475,6 +479,9 @@ class ReportHelper
 
     public static function getSubmissionHeatmap($startDate, $endDate)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         // Process and fix date ranges if needed
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
@@ -570,6 +577,9 @@ class ReportHelper
 
     public static function getApiLogs($startDate, $endDate)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         // Process date range
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
@@ -741,6 +751,9 @@ class ReportHelper
 
     public static function getSubscriptions($startDate, $endDate, $formId = null)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if (!$paymentSettings || !Arr::get($paymentSettings, 'status')) {
             return []; // Return empty if payment module is disabled
@@ -1224,7 +1237,7 @@ class ReportHelper
         global $wpdb;
         $prefix = $wpdb->prefix;
         // Create a subquery with the email expression to handle the grouping properly
-        $subQuery = "SELECT 
+        $subQuery = "SELECT
             COALESCE(
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),
@@ -1838,7 +1851,7 @@ class ReportHelper
             }
 
             $results = $query->orderBy('date_group')->get();
-            $total = $read = $unread = $spam = [];
+            $total = $read = $unread = $spam = $trashed = [];
             foreach ($results as $result) {
                 if ($result->status === 'read') {
                     $read[$result->date_group] = $result->count;
@@ -1849,6 +1862,9 @@ class ReportHelper
                 if ($result->status === 'spam') {
                     $spam[$result->date_group] = $result->count;
                 }
+                if ($result->status === 'trashed') {
+                    $trashed[$result->date_group] = $result->count;
+                }
                 $total[$result->date_group] = isset($total[$result->date_group]) ? $total[$result->date_group] + $result->count : $result->count;
             }
             // Return all four datasets
@@ -1857,6 +1873,7 @@ class ReportHelper
                 'read' => $read,
                 'unread' => $unread,
                 'spam' => $spam,
+                'trashed' => $trashed
             ];
         }
     }
@@ -2013,6 +2030,7 @@ class ReportHelper
                     'read'        => array_values(self::fillMissingData($dates, $data['read'])),
                     'unread'      => array_values(self::fillMissingData($dates, $data['unread'])),
                     'spam'        => array_values(self::fillMissingData($dates, $data['spam'])),
+                    'trashed'     => array_values(self::fillMissingData($dates, $data['trashed']))
                 ]
             ];
         }
@@ -2207,6 +2225,9 @@ class ReportHelper
      */
     public static function getPaymentsByType($startDate, $endDate, $paymentType = 'subscription', $formId = null)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
             return []; // Return empty if payment module is disabled

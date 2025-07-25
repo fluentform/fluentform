@@ -115,7 +115,7 @@ Vue.component('v-chart', ECharts);
 Vue.mixin({
     methods: {
         $t(string) {
-            let transString = window.fluent_forms_global_var.admin_i18n[string] || string
+            let transString = window.FluentFormApp?.reports_i18n[string] || string
             return _$t(transString, ...arguments);
         },
         $_n(singular, plural, count) {

@@ -4,14 +4,14 @@
             <card-head>
                 <div class="submission-analysis-header">
                     <div class="title-section">
-                        <h3>Submission Analysis</h3>
+                        <h3>{{ getDynamicTitle() }}</h3>
                     </div>
                     <div class="controls-section">
 
                         <el-select
                             v-model="selectedGroupBy"
                             placeholder="Group By"
-                            size="small"
+                            size="mini"
                             @change="handleGroupByChange"
                             style="width: 180px; margin-right: 12px;"
                         >
@@ -32,9 +32,8 @@
                 </div>
 
                 <div v-else-if="submissionData.length === 0" class="no-data-state">
-                    <div class="no-data-icon">📊</div>
-                    <h4>No Submission Data Available</h4>
-                    <p>No submission data found for the selected criteria and date range.</p>
+                    <i class="el-icon-data-analysis no-data-icon"></i>
+                    <p>{{ $t('No submission data found for the selected criteria and date range.') }}</p>
                 </div>
 
                 <div v-else class="submission-table-container">
@@ -48,7 +47,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'forms'"
                             prop="form_title"
-                            label="Form"
+                            :label="$t('Form')"
                             min-width="200"
                             sortable
                         >
@@ -63,7 +62,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'submission_source'"
                             prop="source_url"
-                            label="Submission Source"
+                            :label="$t('Submission Source')"
                             min-width="250"
                             sortable
                         >
@@ -72,7 +71,7 @@
                                 <span class="source-url" :title="row.source_url">
                                     {{ formatSourceUrl(row.source_url) }}
                                 </span>
-                                    <span class="source-count">{{ row.total_submissions }} submissions</span>
+                                    <span class="source-count">{{ row.total_submissions }} {{ $t('submissions') }}</span>
                                 </div>
                             </template>
                         </el-table-column>
@@ -80,7 +79,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'email'"
                             prop="email"
-                            label="Email"
+                            :label="$t('Email')"
                             min-width="200"
                             sortable
                         >
@@ -94,13 +93,13 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'country'"
                             prop="country"
-                            label="Country"
+                            :label="$t('Country')"
                             min-width="150"
                             sortable
                         >
                             <template #default="{ row }">
                                 <div class="country-info">
-                                    <span class="country-name">{{ row.country || 'Unknown' }}</span>
+                                    <span class="country-name">{{ row.country || $t('Unknown') }}</span>
                                     <span class="country-flag" v-if="row.country">{{ getCountryFlag(row.country) }}</span>
                                 </div>
                             </template>
@@ -109,7 +108,7 @@
                         <el-table-column
                             v-if="selectedGroupBy === 'submission_date'"
                             prop="submission_date"
-                            label="Date"
+                            :label="$t('Date')"
                             min-width="120"
                             sortable
                         >
@@ -122,7 +121,7 @@
 
                         <el-table-column
                             prop="total_submissions"
-                            label="Total Submissions"
+                            :label="$t('Total Submissions')"
                             min-width="140"
                             sortable
                             align="right"
@@ -134,7 +133,7 @@
 
                         <el-table-column
                             prop="read_submissions"
-                            label="Read"
+                            :label="$t('Read')"
                             min-width="100"
                             sortable
                             align="right"
@@ -146,7 +145,7 @@
 
                         <el-table-column
                             prop="unread_submissions"
-                            label="Unread"
+                            :label="$t('Unread')"
                             min-width="100"
                             sortable
                             align="right"
@@ -158,7 +157,7 @@
 
                         <el-table-column
                             prop="spam_submissions"
-                            label="Spam"
+                            :label="$t('Spam')"
                             min-width="100"
                             sortable
                             align="right"
@@ -170,7 +169,7 @@
 
                         <el-table-column
                             prop="conversion_rate"
-                            label="Read Rate"
+                            :label="$t('Read Rate')"
                             min-width="120"
                             sortable
                             align="right"
@@ -185,7 +184,7 @@
                 </div>
             </card-body>
         </card>
-        <div class="ff_pagination_wrap text-right pagination-container mt-4">
+        <div v-if="totalItems > pageSize" class="ff_pagination_wrap text-right pagination-container mt-4">
             <el-pagination
                 class="ff_pagination"
                 background
@@ -232,21 +231,21 @@ export default {
             submissionData: [],
             selectedGroupBy: 'forms',
             groupByOptions: {
-                'forms': 'Forms',
-                'submission_source': 'Submission Source',
-                'email': 'Email',
-                'country': 'Country',
-                'submission_date': 'Submission Date'
+                'forms': this.$t('Forms'),
+                'submission_source': this.$t('Submission Source'),
+                'email': this.$t('Email'),
+                'country': this.$t('Country'),
+                'submission_date': this.$t('Submission Date')
             },
             currentPage: 1,
             pageSize: localStorage.getItem('ffReportSubmissionAnalysisPerPage') || 5,
             totalItems: 0,
-            totals: { 
-                total: 0, 
-                read: 0, 
-                unread: 0, 
-                spam: 0, 
-                readRate: 0 
+            totals: {
+                total: 0,
+                read: 0,
+                unread: 0,
+                spam: 0,
+                readRate: 0
             }
         };
     },
@@ -285,33 +284,33 @@ export default {
                         this.totalItems = response.total || 0;
                         this.currentPage = parseInt(response.current_page || this.currentPage);
                         this.totals = response.totals || {
-                            total: 0, 
-                            read: 0, 
-                            unread: 0, 
-                            spam: 0, 
-                            readRate: 0 
+                            total: 0,
+                            read: 0,
+                            unread: 0,
+                            spam: 0,
+                            readRate: 0
                         };
                     } else {
                         this.submissionData = [];
                         this.totalItems = 0;
-                        this.totals = { 
-                            total: 0, 
-                            read: 0, 
-                            unread: 0, 
-                            spam: 0, 
-                            readRate: 0 
+                        this.totals = {
+                            total: 0,
+                            read: 0,
+                            unread: 0,
+                            spam: 0,
+                            readRate: 0
                         };
                     }
                 })
                 .catch(error => {
                     this.submissionData = [];
                     this.totalItems = 0;
-                    this.totals = { 
-                        total: 0, 
-                        read: 0, 
-                        unread: 0, 
-                        spam: 0, 
-                        readRate: 0 
+                    this.totals = {
+                        total: 0,
+                        read: 0,
+                        unread: 0,
+                        spam: 0,
+                        readRate: 0
                     };
                     this.$message.error('Failed to load submission analysis data');
                 })
@@ -337,7 +336,7 @@ export default {
             this.currentPage = 1;
             this.fetchSubmissionData();
         },
-        
+
         handleCurrentChange(newPage) {
             this.currentPage = newPage;
             this.fetchSubmissionData();
@@ -358,7 +357,7 @@ export default {
         },
 
         formatSourceUrl(url) {
-            if (!url) return 'Direct Access';
+            if (!url) return this.$t('Direct Access');
             try {
                 const urlObj = new URL(url);
                 return urlObj.hostname + urlObj.pathname;
@@ -368,7 +367,7 @@ export default {
         },
 
         formatSubmissionDate(date) {
-            if (!date) return 'Unknown';
+            if (!date) return this.$t('Unknown');
             const dateObj = new Date(date);
             return dateObj.toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -444,6 +443,13 @@ export default {
                 day: 'numeric'
             };
             return date.toLocaleDateString('en-US', options);
+        },
+        getDynamicTitle() {
+            const baseTitle = this.$t('Submission Analysis');
+            if (this.selectedGroupBy && this.groupByOptions[this.selectedGroupBy]) {
+                return `${baseTitle} ${this.$t('by')} ${this.groupByOptions[this.selectedGroupBy]}`;
+            }
+            return baseTitle;
         }
     }
 };

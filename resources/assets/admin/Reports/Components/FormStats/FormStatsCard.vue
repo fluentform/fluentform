@@ -1,6 +1,18 @@
 <template>
-  <el-skeleton v-if="value === null || value === undefined" :rows="3" animated/>
-  <div class="stats-card" :class="type" v-else>
+  <div v-if="value === null || value === undefined" class="stats-card" :class="type">
+    <div class="stats-icon" style="background-color: #f5f5f5;">
+      <el-skeleton-item variant="circle" :style="{ width: type === 'overview' ? '30px' : '20px', height: type === 'overview' ? '30px' : '20px' }" />
+    </div>
+    <div class="stats-content">
+      <div class="stats-title">
+        <el-skeleton-item variant="text" style="width: 65%; height: 14px;" />
+      </div>
+      <div class="stats-value" style="margin: 4px 0;">
+        <el-skeleton-item variant="text" style="width: 60px; height: 24px;" />
+      </div>
+    </div>
+  </div>
+  <div class="stats-card" :class="[type, cardClass]" v-else>
         <div class="stats-icon" :style="{ backgroundColor: bgColor }">
             <span v-if="icon" v-html="icon"></span>
         </div>
@@ -41,6 +53,10 @@ export default {
         bgColor: {
             type: String,
             default: '#F2F5F8'
+        },
+        cardClass: {
+            type: String,
+            default: ''
         },
         type: {
               type: String,

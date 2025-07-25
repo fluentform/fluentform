@@ -3,30 +3,30 @@
         <card-head>
             <div class="overview-chart-header">
                 <div class="chart-title-section">
-                    <h3>Conversion Chart</h3>
+                    <h3>{{$t('Overview Chart')}}</h3>
                 </div>
                 <div class="card-controls">
                     <el-radio-group
                         v-model="chartMode"
-                        size="small"
+                        size="mini"
                         class="mode-toggle-group"
                         style="margin-right: 12px;"
                     >
-                        <el-radio-button label="activity">Activity</el-radio-button>
-                        <el-radio-button v-if="hasPayment" label="revenue">Revenue</el-radio-button>
+                        <el-radio-button label="activity">{{ $t('Submissions') }}</el-radio-button>
+                        <el-radio-button v-if="hasPayment" label="revenue">{{ $t('Payments') }}</el-radio-button>
                     </el-radio-group>
                     <div class="form-selector">
                         <el-select
                             popper-class="report-form-select-popper"
                             v-model="selectedFormId"
-                            placeholder="Select Form"
-                            size="small"
+                            :placeholder="$t('Select Form')"
+                            size="mini"
                             clearable
                             filterable
                             @change="handleFormChange"
                             style="width: 200px;"
                         >
-                            <el-option label="All Forms" :value="null"></el-option>
+                            <el-option :label="$t('All Forms')" :value="null"></el-option>
                             <el-option
                                 v-for="form in forms_list"
                                 :key="form.id"
@@ -44,9 +44,8 @@
             <div class="chart-wrapper">
                 <!-- Show message when in revenue mode but no payment data -->
                 <div v-if="chartMode === 'revenue' && !hasPaymentData" class="no-payment-data">
-                    <div class="no-data-icon">💰</div>
-                    <h4>No Payment Data Available</h4>
-                    <p>Payment data will appear here once you have forms with payment fields and received payments.</p>
+                    <h4>{{ $t('No Payment Data Available') }}</h4>
+                    <p>{{ $t('Payment data will appear here once you have forms with payment fields and received payments.') }}</p>
                 </div>
 
                 <!-- Chart -->
@@ -60,11 +59,11 @@
                 <div class="chart-footer-info">
                     <div class="">
                         <i class="el-icon-top"></i>
-                        <span v-if="isRevenueMode">Total Amount</span>
-                        <span v-else>Total Counts</span>
+                        <span v-if="isRevenueMode">{{ $t('Total Amount') }}</span>
+                        <span v-else>{{ $t('Total Counts') }}</span>
                     </div>
                     <div class="">
-                        <span> Time Line</span>
+                        <span>{{ $t('Time Line') }}</span>
                         <i class="el-icon-right"></i>
                     </div>
                 </div>
@@ -103,7 +102,8 @@ export default {
                 refunded: [],
                 spam: [],
                 unread: [],
-                read: []
+                read: [],
+                trashed: []
             }
         };
     },
@@ -130,10 +130,7 @@ export default {
                  (this.overview_chart.payment_values && this.overview_chart.payment_values.length > 0) ||
                  (this.overview_chart.values && typeof this.overview_chart.values === 'object' &&
                   (this.overview_chart.values.paid || this.overview_chart.values.pending || this.overview_chart.values.refunded)));
-
-            const hasData = hasPaymentArray || hasPaidData || hasPendingData || hasRefundedData || hasPaymentInOverview;
-
-            return hasData;
+            return hasPaymentArray || hasPaidData || hasPendingData || hasRefundedData || hasPaymentInOverview;
         },
 
         // Get current metrics based on chart mode
@@ -231,7 +228,8 @@ export default {
                 refunded: [],
                 spam: [],
                 unread: [],
-                read: []
+                read: [],
+                trashed: []
             };
             // Handle different data structures based on the view type
             // Handle payment data types
@@ -247,6 +245,7 @@ export default {
             this.chartData.spam = data.values.spam || [];
             this.chartData.unread = data.values.unread || [];
             this.chartData.read = data.values.read || [];
+            this.chartData.trashed = data.values.trashed || [];
         },
 
         // Generate chart options for both chart types
@@ -344,7 +343,7 @@ export default {
             // Define available series configurations
             const availableSeries = {
                 submissions: {
-                    name: 'Submissions',
+                    name: this.$t('Submissions'),
                     type: this.chartType,
                     data: this.chartData.submissions,
                     itemStyle: {
@@ -359,7 +358,7 @@ export default {
                     } : {})
                 },
                 views: {
-                    name: 'Views',
+                    name: this.$t('Views'),
                     type: this.chartType,
                     data: this.chartData.views,
                     itemStyle: {
@@ -374,7 +373,7 @@ export default {
                     } : {})
                 },
                 spam: {
-                    name: 'Spam',
+                    name: this.$t('Spam'),
                     type: this.chartType,
                     data: this.chartData.spam,
                     itemStyle: {
@@ -389,7 +388,7 @@ export default {
                     } : {})
                 },
                 unread: {
-                    name: 'Unread',
+                    name: this.$t('Unread'),
                     type: this.chartType,
                     data: this.chartData.unread,
                     itemStyle: {
@@ -404,7 +403,7 @@ export default {
                     } : {})
                 },
                 read: {
-                    name: 'Read',
+                    name: this.$t('Read'),
                     type: this.chartType,
                     data: this.chartData.read,
                     itemStyle: {
@@ -418,25 +417,25 @@ export default {
                         smooth: true
                     } : {})
                 },
-                payments: {
-                    name: 'Total Revenue',
+                trashed: {
+                    name: this.$t('Trashed'),
                     type: this.chartType,
-                    data: this.chartData.payments,
+                    data: this.chartData.trashed,
                     itemStyle: {
-                        color: '#059669',
+                        color: '#A0AEC0',
                         ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
                     },
                     ...(isLineChart ? {
-                        lineStyle: { color: '#059669', width: 3 },
+                        lineStyle: { color: '#A0AEC0', width: 3 },
                         symbol: 'circle',
                         symbolSize: 6,
                         smooth: true
                     } : {})
                 },
-                paid: {
-                    name: 'Paid',
+                payments: {
+                    name: this.$t('Total Revenue'),
                     type: this.chartType,
-                    data: this.chartData.paid,
+                    data: this.chartData.payments,
                     itemStyle: {
                         color: '#10b981',
                         ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
@@ -448,8 +447,23 @@ export default {
                         smooth: true
                     } : {})
                 },
+                paid: {
+                    name: this.$t('Paid'),
+                    type: this.chartType,
+                    data: this.chartData.paid,
+                    itemStyle: {
+                        color: '#63B3ED',
+                        ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
+                    },
+                    ...(isLineChart ? {
+                        lineStyle: { color: '#63B3ED', width: 3 },
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        smooth: true
+                    } : {})
+                },
                 pending: {
-                    name: 'Pending',
+                    name: this.$t('Pending'),
                     type: this.chartType,
                     data: this.chartData.pending,
                     itemStyle: {
@@ -464,7 +478,7 @@ export default {
                     } : {})
                 },
                 refunded: {
-                    name: 'Refunded',
+                    name: this.$t('Refunded'),
                     type: this.chartType,
                     data: this.chartData.refunded,
                     itemStyle: {

@@ -39,35 +39,6 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                .el-radio-group {
-                    margin-right: 0 !important;
-                    height: 32px;
-                    padding: 4px;
-                    background: #F5F7FA;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                    border-radius: 8px;
-                    .el-radio-button__inner {
-                        border: none;
-                        height: 24px;
-                        border-radius: 6px;
-                        padding: 4px;
-                        background: transparent;
-                        color: #99A0AE;
-                        font-size: 12px;
-                        font-weight: 500;
-                        line-height: 16px;
-                        transition: all 0.2s ease;
-                    }
-                    .el-radio-button.is-active {
-                        .el-radio-button__inner {
-                            color: $report-primary;
-                            background: #FFFFFF;
-                            box-shadow: 0 2px 4px 0 #0E121B08;
-                        }
-                    }
-                }
             }
             .chart-controls {
                 display: flex;
@@ -489,8 +460,6 @@
         gap: 16px;
 
         &.overview {
-            flex-direction: row;
-            align-items: center;
             .stat-icon {
                 width: 42px;
                 height: 42px;
@@ -556,6 +525,18 @@
 
                 i {
                     font-size: 10px;
+                }
+            }
+        }
+
+        &.spam {
+            .stats-content {
+                .stats-change.stats-change--up {
+                    color: #ef4444;
+                }
+
+                .stats-change.stats-change--down {
+                    color: #10b981;
                 }
             }
         }
@@ -679,12 +660,25 @@
 // Completion Rates Gauge Section
 .completion-rates-gauge-section {
     height: 450px;
-
+    .ff_card_body {
+        position: relative;
+        .update-info-notice {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            z-index: 100;
+            opacity: 0.9;
+            border-left-color: transparent;
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
     .gauge-container {
         display: flex;
         align-items: center;
         justify-content: center;
         height: 180px;
+        overflow: hidden;
 
         .gauge-wrapper {
             position: relative;
@@ -861,6 +855,7 @@
         }
         .ff_card_body {
             padding-top: 0;
+            padding-bottom: 0;
         }
     }
 
@@ -868,6 +863,24 @@
     .heatmap-container {
         padding-bottom: 20px;
         overflow-x: auto;
+        .heatmap-color-scale {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 24px;
+            &-item {
+                width: 20px;
+                height: 20px;
+                border-radius: 2px;
+                display: inline-block;
+                &.level-0 { background-color: #f3f4f6; }
+                &.level-1 { background-color: #bfdbfe; }
+                &.level-2 { background-color: #93c5fd; }
+                &.level-3 { background-color: #60a5fa; }
+                &.level-4 { background-color: #3b82f6; }
+                &.level-5 { background-color: #1d4ed8; }
+            }
+        }
 
         @media (max-width: 768px) {
             .heatmap-header,
@@ -1003,40 +1016,28 @@
         position: relative;
         margin: 6px 0;
 
-        .cell-value {
-            font-size: 13px;
-            font-weight: 600;
-            color: white;
-        }
-
         &.level-0 {
             background-color: #f3f4f6;
-            .cell-value { color: #6b7280; }
         }
 
         &.level-1 {
             background-color: #bfdbfe;
-            .cell-value { color: #1e40af; }
         }
 
         &.level-2 {
             background-color: #93c5fd;
-            .cell-value { color: white; }
         }
 
         &.level-3 {
             background-color: #60a5fa;
-            .cell-value { color: white; }
         }
 
         &.level-4 {
             background-color: #3b82f6;
-            .cell-value { color: white; }
         }
 
         &.level-5 {
             background-color: #1d4ed8;
-            .cell-value { color: white; }
         }
 
         &:hover {
@@ -1046,7 +1047,6 @@
 
         @media (max-width: 768px) {
             height: 36px;
-            .cell-value { font-size: 12px; }
         }
     }
 }
@@ -1203,21 +1203,6 @@
 
     .subscription-chart {
         margin-top: 20px;
-
-        .loading-chart, .no-data {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 280px;
-            color: #9ca3af;
-            text-align: center;
-            gap: 12px;
-
-            i {
-                font-size: 24px;
-            }
-        }
     }
 }
 
@@ -1243,6 +1228,13 @@
     }
     .payment-chart-section {
         min-height: 230px;
+        &.no-data{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100%;
+        }
     }
     .loading-chart, .no-data {
         display: flex;
@@ -1336,27 +1328,11 @@
             background: #ffffff;
             border-radius: 8px;
             overflow: hidden;
-        }
-
-        .no-data {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 250px;
-            color: #909399;
-
-            .no-data-icon {
-                font-size: 48px;
-                margin-bottom: 16px;
-                opacity: 0.5;
-            }
-
-            p {
-                margin: 0;
-                font-size: 14px;
+            .no-data {
+                height: 250px;
             }
         }
+
 
         .chart-wrapper {
             position: relative;
@@ -1523,4 +1499,27 @@
             color: $report-primary;
         }
     }
+}
+
+// Global no-data styling for all charts
+.loading-chart, .no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 280px;
+    color: #9ca3af;
+    text-align: center;
+    gap: 12px;
+
+    .no-data-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.6;
+    }
+
+    i {
+        font-size: 48px;
+    }
+
 }

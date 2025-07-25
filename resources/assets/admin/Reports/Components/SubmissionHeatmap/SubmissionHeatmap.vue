@@ -1,10 +1,10 @@
 <template>
     <card>
         <card-head>
-            <h3>Entries Grouped By</h3>
+            <h3>{{$t('Submission Timeline')}}</h3>
             <div class="heatmap-navigation">
                     <div class="week-item">
-                        <span class="week-label">Viewing Week:</span>
+                        <span class="week-label">{{ $t('Viewing Week:') }}</span>
                         <span class="week-dates">{{ formatCurrentWeek() }}</span>
                     </div>
             </div>
@@ -57,13 +57,23 @@
                             @mouseenter="highlightCell($event, colIndex, day)"
                             @mouseleave="removeHighlight()"
                         >
-                            <span class="cell-value">{{ getValueForCell(colIndex, day) }}</span>
                         </div>
                     </div>
                 </div>
 
                 <div v-if="tooltip.visible" :class="['tooltip', tooltip.class]"  :style="tooltip.style">
                     {{ tooltip.text }}
+                </div>
+
+                <div class="heatmap-color-scale">
+                    <span>{{ $t('Less') }}</span>
+                    <span class="heatmap-color-scale-item level-0"></span>
+                    <span class="heatmap-color-scale-item level-1"></span>
+                    <span class="heatmap-color-scale-item level-2"></span>
+                    <span class="heatmap-color-scale-item level-3"></span>
+                    <span class="heatmap-color-scale-item level-4"></span>
+                    <span class="heatmap-color-scale-item level-5"></span>
+                    <span>{{ $t('More') }}</span>
                 </div>
             </div>
         </card-body>

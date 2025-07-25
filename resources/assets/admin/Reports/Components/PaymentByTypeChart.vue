@@ -1,28 +1,28 @@
 <template>
     <card>
         <card-head>
-            <h3>Transaction</h3>
+            <h3>{{ $t('Transaction') }}</h3>
 
             <div class="card-controls">
-                <el-radio-group v-model="paymentType" size="small">
-                    <el-radio-button label="subscription">Recurring</el-radio-button>
-                    <el-radio-button label="onetime">One Time</el-radio-button>
+                <el-radio-group v-model="paymentType" size="mini">
+                    <el-radio-button label="subscription">{{ $t('Recurring') }}</el-radio-button>
+                    <el-radio-button label="onetime">{{ $t('One Time') }}</el-radio-button>
                 </el-radio-group>
             </div>
         </card-head>
 
         <card-body>
-            <div class="payment-amount-section">
+            <div class="payment-amount-section" v-if="hasPaymentData">
                 <div class="total-amount-section">
-                    <p class="amount-label">Total Amount</p>
+                    <p class="amount-label">{{ $t('Total Amount') }}</p>
                     <div class="amount-value">{{ currencySymbol }}{{ formatNumber(totalAmount) }}</div>
                 </div>
             </div>
 
-            <div class="payment-chart-section">
-                <div v-if="!hasPaymentData" class="no-data">
-                    <i class="el-icon-data-analysis"></i>
-                    <span>No payment data available for the selected period</span>
+            <div class="payment-chart-section" :class="{ 'no-data': !hasPaymentData }">
+                <div v-if="!hasPaymentData"  class="no-data">
+                    <i class="el-icon-data-analysis  no-data-icon"></i>
+                    <span>{{ $t('No payment data available for the selected period') }}</span>
                 </div>
                 <div v-else class="payment-bar-chart">
                     <div class="payment-bars">
@@ -54,8 +54,8 @@
                 </div>
             </div>
 
-            <div class="weekly-average">
-                Weekly average paid ${{ formatNumber(weeklyAverage) }}
+            <div v-if="hasPaymentData" class="weekly-average">
+                {{ $t('Weekly average paid') }} {{ currencySymbol }}{{ formatNumber(weeklyAverage) }}
             </div>
         </card-body>
     </card>
@@ -87,12 +87,12 @@ export default {
     computed: {
         statuses() {
             let statuses ={
-                paid: { label: 'Paid', color: '#23A682' },
-                pending: { label: 'Pending', color: '#F6B51E' },
-                refunded: { label: 'Refunded', color: '#FB4BA3' },
-                revenue: { label: 'Revenue', color: '#7D52F4' },
-                cancelled: { label: 'Cancelled', color: '#FB3748' },
-                failed: { label: 'Failed', color: '#FB3748' },
+                paid: { label: this.$t('Paid'), color: '#23A682' },
+                pending: { label: this.$t('Pending'), color: '#F6B51E' },
+                refunded: { label: this.$t('Refunded'), color: '#FB4BA3' },
+                revenue: { label: this.$t('Revenue'), color: '#7D52F4' },
+                cancelled: { label: this.$t('Cancelled'), color: '#FB3748' },
+                failed: { label: this.$t('Failed'), color: '#FB3748' },
             };
             if (this.paymentType === 'onetime') {
                 delete statuses.cancelled;

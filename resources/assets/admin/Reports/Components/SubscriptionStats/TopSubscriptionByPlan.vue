@@ -1,12 +1,12 @@
 <template>
     <card>
         <card-head>
-            <h3>Subscription</h3>
+            <h3>{{ $t('Subscription') }}</h3>
         </card-head>
 
         <card-body>
-            <div class="subscription-amount">
-                <p>Recurring</p>
+            <div class="subscription-amount" v-if="hasSubscriptionData">
+                <p>{{ $t('Recurring') }}</p>
                 <div class="subscription-total">
                     <span class="total-amount">{{ getCurrencySymbol() }}{{ formatNumber(totalAmount) }}</span>
                     <span
@@ -22,12 +22,12 @@
 
             <div class="subscription-chart">
                 <div v-if="isLoading" class="loading-chart">
-                    <i class="el-icon-loading"></i>
-                    <span>Loading subscription data...</span>
+                    <i class="el-icon-loading "></i>
+                    <span>{{ $t('Loading subscription data...') }}</span>
                 </div>
                 <div v-else-if="!hasSubscriptionData" class="no-data">
-                    <i class="el-icon-data-analysis"></i>
-                    <span>No subscription data available for the selected period</span>
+                    <i class="el-icon-data-analysis  no-data-icon"></i>
+                    <span>{{ $t('No subscription data available for the selected period') }}</span>
                 </div>
                 <v-chart
                     v-else
@@ -101,7 +101,7 @@ export default {
             if (!this.hasSubscriptionData) {
                 return {
                     title: {
-                        text: 'No Data Available',
+                        text: this.$t('No Data Available'),
                         left: 'center',
                         top: 'middle',
                         textStyle: {
@@ -218,11 +218,17 @@ export default {
     },
     methods: {
         getBarColor(index) {
+            // Colors ordered from lightest to strongest (bottom to top bars)
             const colors = ['#DCD5FF','#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4'];
-            if (index < colors.length) {
-                return colors[index];
+            const totalBars = this.chartData.length;
+
+            // Always use the strongest colors, starting from the end of the array
+            const colorIndex = Math.max(0, colors.length - totalBars) + index;
+
+            if (colorIndex < colors.length) {
+                return colors[colorIndex];
             }
-            return '#A897FF';
+            return '#D5E2FF';
         },
         getCurrencySymbol() {
             const textarea = document.createElement('textarea');

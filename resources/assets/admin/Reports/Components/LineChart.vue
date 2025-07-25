@@ -8,7 +8,7 @@
                 <div v-if="loading" class="loading-overlay">
                     <div class="loading-spinner">
                         <i class="el-icon-loading"></i>
-                        <span>Loading data...</span>
+                        <span>{{ $t('Loading data...') }}</span>
                     </div>
                 </div>
                 <div class="chart-wrapper">
@@ -22,11 +22,11 @@
                     <div class="chart-footer-info">
                         <div class="">
                             <i class="el-icon-top"></i>
-                            <span v-if="type === 'revenue'">Total Amount</span>
-                            <span v-else>Total Counts</span>
+                            <span v-if="type === 'revenue'">{{ $t('Total Amount') }}</span>
+                            <span v-else>{{ $t('Total Counts') }}</span>
                         </div>
                         <div class="">
-                            <span> Time Line</span>
+                            <span>{{ $t('Time Line') }}</span>
                             <i class="el-icon-right"></i>
                         </div>
                     </div>
@@ -53,17 +53,18 @@ export default {
         return {
             loading: false,
             statuses: {
-                success: { name: 'Success', color: '#1FC16B' },
-                pending: { name: 'Processing', color: '#335CFF' },
-                failed: { name: 'Failed', color: '#FB3748' },
-                read: { name: 'Read', color: '#335CFF' },
-                unread: { name: 'Unread', color: '#F6B51E' },
-                spam: { name: 'Spam', color: '#FB3748' },
+                success: { name: this.$t('Success'), color: '#1FC16B' },
+                pending: { name: this.$t('Processing'), color: '#335CFF' },
+                failed: { name: this.$t('Failed'), color: '#FB3748' },
+                read: { name: this.$t('Read'), color: '#335CFF' },
+                unread: { name: this.$t('Unread'), color: '#F6B51E' },
+                spam: { name: this.$t('Spam'), color: '#FB3748' },
+                trashed: { name: this.$t('Trashed'), color: '#A0AEC0' },
                 revenue: {
-                    payments: { name: 'Total Revenue', color: '#F6B51E' },
-                    paid: { name: 'Paid', color: '#1FC16B' },
-                    pending: { name: 'Pending', color: '#7D52F4' },
-                    refunded: { name: 'Refunded', color: '#335CFF' }
+                    payments: { name: this.$t('Total Revenue'), color: '#7D52F4' },
+                    paid: { name: this.$t('Paid'), color: '#23A682' },
+                    pending: { name: this.$t('Pending'), color: '#F6B51E' },
+                    refunded: { name: this.$t('Refunded'), color: '#FB4BA3' }
                 }
             },
         };
@@ -159,7 +160,7 @@ export default {
                 },
                 xAxis: {
                     type: 'category',
-                    data: this.dates || ['No data'],
+                    data: this.dates || [this.$t('No data')],
                     axisTick: {
                         show: false
                     },

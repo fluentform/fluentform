@@ -5,18 +5,18 @@
             <el-select
                 popper-class="report-date-quick-select-popper"
                 v-model="modalSelectedRange"
-                placeholder="Select date range"
+                :placeholder="$t('Select date range')"
                 @visible-change="(state) => isDateQuickSelectOpen = state"
                 size="medium"
-                style="margin-right: 10px; width: 130px;"
+                style="margin-right: 10px; width: 140px;"
             >
-                <el-option label="Today" value="today"></el-option>
-                <el-option label="Yesterday" value="yesterday"></el-option>
-                <el-option label="Last 7 days" value="week"></el-option>
-                <el-option label="Last month" value="month"></el-option>
-                <el-option label="Last 3 months" value="3_months"></el-option>
-                <el-option label="Last 6 months" value="6_months"></el-option>
-                <el-option label="Last Year" value="year"></el-option>
+                <el-option :label="$t('Today')" value="today"></el-option>
+                <el-option :label="$t('Yesterday')" value="yesterday"></el-option>
+                <el-option :label="$t('Last 7 days')" value="week"></el-option>
+                <el-option :label="$t('Last month')" value="month"></el-option>
+                <el-option :label="$t('Last 3 months')" value="3_months"></el-option>
+                <el-option :label="$t('Last 6 months')" value="6_months"></el-option>
+                <el-option :label="$t('Last Year')" value="year"></el-option>
             </el-select>
             <!-- Overlay the custom arrow on top of the default one -->
             <div class="report-date-quick-select-arrow" :class="{ 'is-reverse': isDateQuickSelectOpen }">
@@ -32,8 +32,8 @@
             v-model="modalDateRange"
             type="daterange"
             range-separator="-"
-            start-placeholder="Start date"
-            end-placeholder="End date"
+            :start-placeholder="$t('Start date')"
+            :end-placeholder="$t('End date')"
             :default-time="['00:00:00', '23:59:59']"
             value-format="MMM d, yyyy"
             format="MMM d, yyyy"
@@ -64,7 +64,9 @@ export default {
     },
     methods: {
         disableFutureDates(date) {
-            return date > new Date();
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+            return date > today;
         }
     },
     computed: {
