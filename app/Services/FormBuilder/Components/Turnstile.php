@@ -42,9 +42,16 @@ class Turnstile extends BaseComponent
         });
 
         if (!wp_script_is('turnstile')) {
+            $apiUrl = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+
+            $locale = apply_filters('fluentform/turnstile_lang', '');
+            if ($locale) {
+                $apiUrl .= '&language=' . $locale;
+            }
+
             wp_enqueue_script(
                 'turnstile',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                $apiUrl,
                 [],
                 FLUENTFORM_VERSION,
                 true
