@@ -280,19 +280,16 @@ class ReportHelper
 
         // Determine grouping mode based on date range
         $groupingMode = self::getGroupingMode($daysInterval);
-
-        // Get data based on the view type
-        if ($view === 'conversion') {
-            $chartData = self::getFormViewsAndConversions($startDate, $endDate, $groupingMode, $formId);
-        } else {
-            $data = self::getAggregatedData($startDate, $endDate, $groupingMode, $view, $formId);
-            // Get date labels based on grouping mode
-            $dateLabels = self::getDateLabels($startDateTime, $endDateTime, $groupingMode);
-
-            // Format the data for the chart
-            $chartData = self::formatDataForChart($dateLabels, $data, $formId);
+        $data = self::getAggregatedData($startDate, $endDate, $groupingMode, $view, $formId);
+        // Get date labels based on grouping mode
+        $dateLabels = self::getDateLabels($startDateTime, $endDateTime, $groupingMode);
+        // Format the data for the chart
+        $chartData = self::formatDataForChart($dateLabels, $data, $formId);
+        // Get views data based on the ip
+        $views = self::getFormViews($startDate, $endDate, $groupingMode, $formId);
+        if ($views) {
+            $chartData['values']['views'] = array_values(self::fillMissingData($dateLabels['dates'], $views));
         }
-
         return $chartData;
     }
 
@@ -477,7 +474,7 @@ class ReportHelper
         return $stats;
     }
 
-    public static function getSubmissionHeatmap($startDate, $endDate)
+    public static function getSubmissionHeatmap($startDate, $endDate, $formId = null)
     {
         if (!Helper::hasPro()) {
             return [];
@@ -505,6 +502,9 @@ class ReportHelper
 
         // Query submissions using Eloquent-like syntax
         $results = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
             ->selectRaw('DATE(created_at) as submission_date')
             ->selectRaw('HOUR(created_at) as submission_hour')
             ->selectRaw('COUNT(*) as count')
@@ -575,7 +575,7 @@ class ReportHelper
         ];
     }
 
-    public static function getApiLogs($startDate, $endDate)
+    public static function getApiLogs($startDate, $endDate, $formId = null)
     {
         if (!Helper::hasPro()) {
             return [];
@@ -624,6 +624,10 @@ class ReportHelper
             $query->whereNull('component')
                 ->orWhereNotIn('component', $excludedComponents);
         });
+
+        if ($formId) {
+            $logsQuery->where('parent_source_id', $formId);
+        }
 
         $results = $logsQuery->selectRaw($dateFormat . ' as log_date')
             ->selectRaw('status')
@@ -1478,27 +1482,13 @@ class ReportHelper
 
 
     /**
-     * Get form views and conversions by date chunks
+     * Get form views date chunks
      */
-    private static function getFormViewsAndConversions($startDate, $endDate, $groupingMode, $formId)
+    private static function getFormViews($startDate, $endDate, $groupingMode, $formId)
     {
         if (apply_filters('fluentform/disabled_analytics', false)) {
             return [];
         }
-
-        // Convert to DateTime objects
-        $startDateTime = new \DateTime($startDate);
-        $endDateTime = new \DateTime($endDate);
-
-        // Get date labels for X-axis
-        $dateLabels = self::getDateLabels($startDateTime, $endDateTime, $groupingMode);
-        $dates = $dateLabels['dates'];
-        $labels = $dateLabels['labels'];
-
-        // Initialize data arrays
-        $viewsData = array_fill_keys($dates, 0);
-        $submissionsData = array_fill_keys($dates, 0);
-        $formCountData = array_fill_keys($dates, 0);
 
         // 1. Get UNIQUE VIEWS by IP address
         $viewsQuery = FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
@@ -1537,125 +1527,12 @@ class ReportHelper
             $viewsQuery->groupBy('date_group');
         }
 
-        $viewsResults = $viewsQuery->get();
-
-        // Map views results to our date keys
-        foreach ($viewsResults as $result) {
-            $dateKey = $result->date_group;
-            if (isset($viewsData[$dateKey])) {
-                $viewsData[$dateKey] = $result->unique_count;
-            }
+        $results = $viewsQuery->orderBy('date_group')->get();
+        $views = [];
+        foreach ($results as $result) {
+            $views[$result->date_group] = $result->unique_count;
         }
-
-        // 2. Get UNIQUE SUBMISSIONS by IP address
-        $submissionQuery = Submission::whereBetween('created_at', [$startDate, $endDate])
-            ->whereNotNull('ip');
-
-        if ($formId) {
-            $submissionQuery->where('form_id', $formId);
-        }
-
-        $minDateRecord = null;
-        // Group by date and IP to count unique submitters
-        if ($groupingMode === 'day') {
-            $submissionQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count');
-        } elseif ($groupingMode === '3days') {
-            // Get min date for reference
-            $minDateRecord = Submission::whereBetween('created_at', [$startDate, $endDate])
-                ->selectRaw('MIN(DATE(created_at)) as min_date')
-                ->first();
-
-            if ($minDateRecord && $minDateRecord->min_date) {
-                $minDate = $minDateRecord->min_date;
-                $submissionQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
-                    ->selectRaw('MIN(DATE(created_at)) as date_group')
-                    ->selectRaw('COUNT(DISTINCT ip) as unique_count')
-                    ->groupBy('group_num');
-            } else {
-                $submissionQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count')
-                    ->groupBy('date_group');
-            }
-        } elseif ($groupingMode === 'week') {
-            $submissionQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group, COUNT(DISTINCT ip) as unique_count");
-        } else { // month
-            $submissionQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group, COUNT(DISTINCT ip) as unique_count");
-        }
-
-        if ($groupingMode !== '3days' || !($minDateRecord && $minDateRecord->min_date)) {
-            $submissionQuery->groupBy('date_group');
-        }
-
-        $submissionResults = $submissionQuery->get();
-
-        // Map submission results to our date keys
-        foreach ($submissionResults as $result) {
-            $dateKey = $result->date_group;
-            if (isset($submissionsData[$dateKey])) {
-                $submissionsData[$dateKey] = $result->unique_count;
-            }
-        }
-
-        // 3. Count forms created in each time period
-        $formQuery = Form::whereBetween('created_at', [$startDate, $endDate]);
-
-        // Group forms by date
-        if ($groupingMode === 'day') {
-            $formQuery->selectRaw('DATE(created_at) as date_group, COUNT(*) as count');
-        } elseif ($groupingMode === '3days') {
-            // Get min date for reference
-            $minDateRecord = Form::whereBetween('created_at', [$startDate, $endDate])
-                ->selectRaw('MIN(DATE(created_at)) as min_date')
-                ->first();
-
-            if ($minDateRecord && $minDateRecord->min_date) {
-                $minDate = $minDateRecord->min_date;
-                $formQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
-                    ->selectRaw('MIN(DATE(created_at)) as date_group')
-                    ->selectRaw('COUNT(*) as count')
-                    ->groupBy('group_num');
-            } else {
-                $formQuery->selectRaw('DATE(created_at) as date_group, COUNT(*) as count')
-                    ->groupBy('date_group');
-            }
-        } elseif ($groupingMode === 'week') {
-            $formQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group, COUNT(*) as count");
-        } else { // month
-            $formQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group, COUNT(*) as count");
-        }
-
-        if ($groupingMode !== '3days' || !($minDateRecord && $minDateRecord->min_date)) {
-            $formQuery->groupBy('date_group');
-        }
-
-        $formResults = $formQuery->get();
-
-        // Map form results to our date keys
-        foreach ($formResults as $result) {
-            $dateKey = $result->date_group;
-            if (isset($formCountData[$dateKey])) {
-                $formCountData[$dateKey] = $result->count;
-            }
-        }
-
-        // Calculate conversion rates
-        $conversionRates = [];
-        foreach ($dates as $date) {
-            $views = $viewsData[$date];
-            $submissions = $submissionsData[$date];
-
-            // Calculate conversion rate (avoid division by zero)
-            $conversionRate = $views > 0 ? round(($submissions / $views) * 100, 2) : 0;
-            $conversionRates[$date] = $conversionRate;
-        }
-
-        // Format for chart display
-        return [
-            'dates'            => $labels,
-            'views'            => array_values($viewsData),
-            'submissions'      => array_values($submissionsData),
-            'conversion_rates' => array_values($conversionRates),
-            'form_counts'      => array_values($formCountData)
-        ];
+        return $views;
     }
 
     /**

@@ -472,7 +472,6 @@
         }
 
         &:hover {
-            transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
@@ -677,7 +676,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 180px;
+        height: 230px;
         overflow: hidden;
 
         .gauge-wrapper {
@@ -711,7 +710,7 @@
         }
     }
 
-    .stats-bar-horizintal {
+    .stats-bar-horizontal {
         padding: 1px;
         width: 100%;
         background-color: #F2F2F2;

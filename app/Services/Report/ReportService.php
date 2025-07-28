@@ -93,7 +93,7 @@ class ReportService
         }
 
         if (in_array('heatmap_data', $components)) {
-            $reports['reports']['heatmap_data'] = ReportHelper::getSubmissionHeatmap($startDate, $endDate);
+            $reports['reports']['heatmap_data'] = ReportHelper::getSubmissionHeatmap($startDate, $endDate, $formId);
         }
 
         if (in_array('country_heatmap', $components)) {
@@ -101,7 +101,7 @@ class ReportService
         }
 
         if (in_array('api_logs', $components)) {
-            $reports['reports']['api_logs'] = ReportHelper::getApiLogs($startDate, $endDate);
+            $reports['reports']['api_logs'] = ReportHelper::getApiLogs($startDate, $endDate, $formId);
         }
 
         if (in_array('top_performing_forms', $components)) {
@@ -129,9 +129,9 @@ class ReportService
                 'revenue_chart'         => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue'),
                 'form_stats'            => ReportHelper::getFormStats($startDate, $endDate, $formId),
                 'completion_rate'       => ReportHelper::getCompletionRateData($startDate, $endDate, $formId),
-                'heatmap_data'          => ReportHelper::getSubmissionHeatmap($startDate, $endDate),
+                'heatmap_data'          => ReportHelper::getSubmissionHeatmap($startDate, $endDate), $formId,
                 'country_heatmap'       => ReportHelper::getSubmissionsByCountry($startDate, $endDate, $formId),
-                'api_logs'              => ReportHelper::getApiLogs($startDate, $endDate),
+                'api_logs'              => ReportHelper::getApiLogs($startDate, $endDate, $formId),
                 'top_performing_forms'  => ReportHelper::getTopPerformingForms($startDate, $endDate, 'entries'),
                 'subscriptions'         => ReportHelper::getSubscriptions($startDate, $endDate, $formId),
                 'payment_types' => [

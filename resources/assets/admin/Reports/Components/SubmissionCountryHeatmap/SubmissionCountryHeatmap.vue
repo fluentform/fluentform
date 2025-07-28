@@ -3,27 +3,6 @@
         <div class="submission-country-heatmap">
             <card-head class="card-header">
                 <h3>{{ $t('Submissions By Country') }}</h3>
-                <div class="form-selector">
-                    <el-select
-                        v-model="selectedFormId"
-                        :placeholder="$t('Select Form')"
-                        size="mini"
-                        clearable
-                        filterable
-                        @change="handleFormChange"
-                    >
-                        <el-option
-                            :label="$t('All Forms')"
-                            :value="null"
-                        ></el-option>
-                        <el-option
-                            v-for="form in forms_list"
-                            :key="form.id"
-                            :label="`#${form.id} - ${form.title}`"
-                            :value="form.id"
-                        ></el-option>
-                    </el-select>
-                </div>
             </card-head>
 
             <card-body class="chart-container" v-loading="loading">
@@ -65,15 +44,7 @@ export default {
         countryHeatmap: {
             type: Object,
             default: () => ({})
-        },
-        globalDateParams: {
-            type: Object,
-            required: true
-        },
-        forms_list: {
-            type: Array,
-            default: () => []
-        },
+        }
     },
     data() {
         return {
@@ -84,7 +55,7 @@ export default {
             maxZoom: 20,
             zoomInterval: 0.5,
             maxValue: 50,
-            selectedFormId: null,
+            currentVisualMapRange: [0, 50]
         };
     },
     computed: {
@@ -94,11 +65,19 @@ export default {
         coloredData() {
             const result = (this.countryData || []).map((item) => {
                 const normalizedName = this.normalizeCountryName(item.name);
+                const value = item.value || 0;
+                
+                // Filter based on current visual map range
+                const [minRange, maxRange] = this.currentVisualMapRange;
+                const isInRange = value >= Math.round(minRange) && value <= Math.round(maxRange);
+                
                 return {
                     ...item,
                     name: normalizedName,
-                    value: item.value || 0,
-                    itemStyle: {color: this.getColor(item.value || 0)},
+                    value: value,
+                    itemStyle: {
+                        color: isInRange ? this.getColor(value) : '#eeeeee'
+                    },
                     emphasis: {
                         itemStyle: {shadowBlur: 10, shadowColor: "rgba(0, 0, 0, 0.5)"},
                     },
@@ -108,10 +87,6 @@ export default {
         }
     },
     methods: {
-        handleFormChange() {
-            this.$emit('country-heatmap-form-change', this.selectedFormId);
-        },
-
         loadWorldMap() {
             try {
                 echarts.registerMap("world", worldMapJson);
@@ -155,6 +130,7 @@ export default {
                     text: ["High", "Low"],
                     orient: "horizontal",
                     calculable: true,
+                    range: this.currentVisualMapRange,
                     inRange: {
                         color: ["#e6f3ff", "#1890ff"],
                     },
@@ -217,9 +193,17 @@ export default {
             this.chartInstance = echarts.init(element);
 
             if (this.countryData && this.countryData.length > 0) {
+                this.maxValue = Math.max(...this.countryData.map((item) => item.value || 0));
+                this.currentVisualMapRange = [0, this.maxValue];
                 const option = this.getMapOption();
                 this.chartInstance.setOption(option);
             }
+
+            // Listen for visual map range changes
+            this.chartInstance.on("datarangeselected", (params) => {
+                this.currentVisualMapRange = params.selected;
+                this.updateChart();
+            });
 
             this.chartInstance.on("georoam", () => {
                 const option = this.chartInstance.getOption();
@@ -244,27 +228,10 @@ export default {
             if (!this.chartInstance) {
                 return;
             }
-
             if (this.countryData && this.countryData.length > 0) {
-                this.maxValue = Math.max(...this.countryData.map((item) => item.value || 0));
-
                 const option = this.getMapOption();
-
                 this.chartInstance.clear();
                 this.chartInstance.setOption(option, {notMerge: true});
-            } else {
-                this.chartInstance.destroy();
-                this.chartInstance.setOption({
-                    title: {
-                        text: this.$t('No data available for selected form'),
-                        left: 'center',
-                        top: 'middle',
-                        textStyle: {
-                            color: '#999',
-                            fontSize: 16
-                        }
-                    }
-                });
             }
         },
 
@@ -310,6 +277,8 @@ export default {
         countryHeatmap: {
             handler(newVal, oldVal) {
                 if (newVal.country_data && newVal.country_data.length > 0) {
+                    this.maxValue = Math.max(...newVal.country_data.map((item) => item.value || 0));
+                    this.currentVisualMapRange = [0, this.maxValue];
                     if (!this.chartInstance) {
                         this.$nextTick(() => {
                             setTimeout(() => {

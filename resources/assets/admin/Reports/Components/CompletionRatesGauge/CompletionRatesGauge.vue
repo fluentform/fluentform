@@ -5,30 +5,6 @@
         </card-head>
 
         <card-body>
-            <div class="form-selector">
-                <el-select
-                    popper-class="report-form-select-popper"
-                    v-model="selectedFormId"
-                    :placeholder="$t('Select Form')"
-                    size="mini"
-                    clearable
-                    filterable
-                    style="width: 100%;"
-                    @change="handleFormChange"
-                >
-                    <el-option
-                        :label="$t('All Forms')"
-                        :value="null"
-                    ></el-option>
-                    <el-option
-                        v-for="form in forms_list"
-                        :key="form.id"
-                        :label="`#${form.id} - ${form.title}`"
-                        :value="form.id"
-                    ></el-option>
-                </el-select>
-            </div>
-
             <div class="gauge-container">
                 <div class="gauge-wrapper">
                     <div ref="gaugeChart" class="gauge-chart" style="width: 300px; height: 300px;"></div>
@@ -38,7 +14,7 @@
                     </div>
                 </div>
             </div>
-            <div class="stats-bar-horizintal"></div>
+            <div class="stats-bar-horizontal"></div>
             <div class="completion-stats">
                 <div class="stat-row">
                     <div class="stat-item">
@@ -95,10 +71,6 @@ export default {
         completionRate: {
             type: Number,
         },
-        forms_list: {
-            type: Array,
-            default: () => []
-        },
         incompleteSubmissions: {
             type: Number,
         },
@@ -110,10 +82,8 @@ export default {
             default: false
         }
     },
-    emits: ['completion-rate-form-change'],
     data() {
         return {
-            selectedFormId: null,
             gaugeChart: null
         };
     },
@@ -200,10 +170,6 @@ export default {
             if (this.gaugeChart) {
                 this.gaugeChart.resize();
             }
-        },
-
-        handleFormChange() {
-            this.$emit('completion-rate-form-change', this.selectedFormId);
         }
     }
 };

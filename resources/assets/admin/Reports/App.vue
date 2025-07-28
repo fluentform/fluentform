@@ -11,6 +11,23 @@
                             <p class="reports-description">{{ $t('A brief look at your overall form performance') }}</p>
                         </div>
                         <div class="reports-controls">
+                            <el-select
+                                v-model="selectedGlobalFormId"
+                                :placeholder="$t('Select Form')"
+                                size="medium"
+                                clearable
+                                filterable
+                                @change="fetchReportsData"
+                                style="width: 200px;"
+                            >
+                                <el-option :label="$t('All Forms')" :value="null" />
+                                <el-option
+                                    v-for="form in formsList"
+                                    :key="form.id"
+                                    :label="`#${form.id} - ${form.title}`"
+                                    :value="form.id"
+                                />
+                            </el-select>
                             <date-range-controls
                                 :selected-range="selectedRange"
                                 :date-range="dateRange"
@@ -28,6 +45,7 @@
                                 :key="stat.key"
                                 :title="stat.title"
                                 :value="stat.value"
+                                :tooltip="stat.tooltip || ''"
                                 :change="stat.change"
                                 :change-type="stat.changeType"
                                 :icon="stat.icon"
@@ -45,13 +63,10 @@
                         <el-col :span="24" :md="16" >
                             <div class="conversion-chart-section">
                                 <overview-chart
-                                    :overview_chart="overviewChartData"
-                                    :forms_list="formsList"
-                                    :global_date_params="globalDateParams"
-                                    :chart_view="chartMode"
+                                    :data="overviewChartData"
+                                    :chart-view="chartMode"
                                     :selected-metrics="selectedChartMetrics"
                                     :has-payment="hasPayment"
-                                    @form-change="handleFormChange"
                                     @chart-mode-change="handleViewChange"
                                 />
                             </div>
@@ -62,10 +77,8 @@
                                 <completion-rates-gauge
                                     :has-pro="hasPro"
                                     :completion-rate="completionRate"
-                                    :forms_list="formsList"
                                     :incomplete-submissions="incompleteSubmissions"
                                     :total-submissions="totalSubmissions"
-                                    @completion-rate-form-change="handleGaugeFormChange"
                                 />
                             </div>
                         </el-col>
@@ -91,9 +104,6 @@
                             <div class="country-heatmap-section">
                                 <submission-country-heatmap
                                     :country-heatmap="reports.country_heatmap"
-                                    :global-date-params="globalDateParams"
-                                    :forms_list="formsList"
-                                    @country-heatmap-form-change="handleCountryHeatmapFormChange"
                                 />
                             </div>
                         </el-col>
@@ -315,7 +325,6 @@ import LineChart from "./Components/LineChart.vue";
 import CompletionRatesGauge from "./Components/CompletionRatesGauge/CompletionRatesGauge.vue";
 import TopSubscriptionByPlan from "./Components/SubscriptionStats/TopSubscriptionByPlan.vue";
 import PaymentByTypeChart from "./Components/PaymentByTypeChart.vue";
-import ChartMetricsSelector from "./Components/ChartMetrics/ChartMetricsSelector.vue";
 import TopPerformingForms from "./Components/TopPerformingForms/TopPerformingForms.vue";
 import NetRevenueByGroup from "./Components/NetRevenue/NetRevenueByGroup.vue";
 import SubmissionAnalysis from "./Components/SubmissionAnalysis/SubmissionAnalysis.vue";
@@ -334,7 +343,6 @@ export default {
         CompletionRatesGauge,
         TopSubscriptionByPlan,
         PaymentByTypeChart,
-        ChartMetricsSelector,
         TopPerformingForms,
         NetRevenueByGroup,
         SubmissionAnalysis,
@@ -363,9 +371,6 @@ export default {
             statsLoading: false,
             transactionsLoading: false,
             countryHeatmapLoading: false,
-            selectedOverviewFormId: null,
-            selectedGaugeFormId: null,
-            selectedCountryHeatmapFormId: null,
             subscriptionsLoading: false,
             topFormsLoading: false,
             selectedTopFormsMetric: "entries",
@@ -374,14 +379,7 @@ export default {
             globalDateParams: {
                 startDate: this.formatDateForApi(thirtyDaysAgo, true),
                 endDate: this.formatDateForApi(now, false),
-                formId: null,
                 statsRange: "month"
-            },
-            isDateQuickSelectOpen: false,
-            transactionsParams: {
-                formId: null,
-                paymentStatus: null,
-                paymentMethod: null
             }
         };
     },
@@ -397,7 +395,7 @@ export default {
         },
         formOverviewStatsCards() {
             const stats = this.reports.form_stats || {};
-            return [
+            let cards = [
                 {
                     key: "total_submissions",
                     title: this.$t('Total Submissions'),
@@ -434,6 +432,26 @@ export default {
                     bgColor: "#EEFBF6"
                 }
             ];
+
+            if (this.selectedGlobalFormId) {
+                cards = cards.filter(card => card.key !== 'active_forms');
+                let totalViews = 0;
+                let tooltip = this.$t('Enable analytics to see the views data.');
+                if (this.reports?.overview_chart?.values?.views) {
+                    totalViews = this.reports.overview_chart.values.views.reduce((acc, val) => acc + val, 0);
+                    tooltip = '';
+                }
+                cards.push({
+                    key: "views",
+                    title: this.$t('Views'),
+                    value: totalViews,
+                    tooltip,
+                    icon: `<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.7 21H5.30002C5.06133 21 4.83241 20.9052 4.66363 20.7364C4.49485 20.5676 4.40002 20.3387 4.40002 20.1V3.9C4.40002 3.66131 4.49485 3.43239 4.66363 3.2636C4.83241 3.09482 5.06133 3 5.30002 3H19.7C19.9387 3 20.1676 3.09482 20.3364 3.2636C20.5052 3.43239 20.6 3.66131 20.6 3.9V20.1C20.6 20.3387 20.5052 20.5676 20.3364 20.7364C20.1676 20.9052 19.9387 21 19.7 21ZM18.8 19.2V4.8H6.20002V19.2H18.8ZM8.90002 7.5H16.1V9.3H8.90002V7.5ZM8.90002 11.1H16.1V12.9H8.90002V11.1ZM8.90002 14.7H13.4V16.5H8.90002V14.7Z" fill="#0E121B"/></svg>`,
+                    bgColor: "#EEFBF6"
+                });
+            }
+            
+            return cards;
         },
         formatSubmissionStatsCards() {
             const stats = this.reports.form_stats || {};
@@ -557,7 +575,7 @@ export default {
                 view: this.chartMode,
                 component: component,
                 stats_range: this.globalDateParams.statsRange,
-                form_id: ['submission', 'revenue'].includes(this.activeTab) ? this.selectedGlobalFormId : this.globalDateParams.formId
+                form_id: this.selectedGlobalFormId
             };
             const url = FluentFormsGlobal.$rest.route("report");
             FluentFormsGlobal.$rest.get(url, data)
@@ -596,37 +614,10 @@ export default {
             this.chartMode = view;
         },
 
-        handleFormChange(formId) {
-            this.selectedOverviewFormId = formId;
-
-            const data = {
-                component: "overview_chart",
-                start_date: this.globalDateParams.startDate,
-                end_date: this.globalDateParams.endDate,
-                form_id: formId
-            };
-
-            const url = FluentFormsGlobal.$rest.route("report");
-            FluentFormsGlobal.$rest.get(url, data)
-                .then(response => {
-                    if (response.reports && response.reports.overview_chart) {
-                        this.reports.overview_chart = response.reports.overview_chart;
-                    }
-                    if (response.reports && response.reports.revenue_chart) {
-                        this.reports.revenue_chart = response.reports.revenue_chart;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching overview chart data:", error);
-                })
-                .finally(() => {
-                });
-        },
-
         fetchReportsData() {
             this.loading = true;
             const data = {
-                component: "form_stats,overview_chart,revenue_chart,subscriptions,payment_types",
+                component: "form_stats,overview_chart,completion_rate,country_heatmap,revenue_chart,subscriptions,payment_types,heatmap_data,api_logs",
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
                 form_id: this.selectedGlobalFormId
@@ -634,20 +625,12 @@ export default {
             const url = FluentFormsGlobal.$rest.route("report");
             FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    if (response.reports && response.reports.form_stats) {
-                        this.reports.form_stats = response.reports.form_stats;
-                    }
-                    if (response.reports && response.reports.overview_chart) {
-                        this.reports.overview_chart = response.reports.overview_chart;
-                    }
-                    if (response.reports && response.reports.revenue_chart) {
-                        this.reports.revenue_chart = response.reports.revenue_chart;
-                    }
-                    if (response.reports && response.reports.subscriptions) {
-                        this.reports.subscriptions = response.reports.subscriptions;
-                    }
-                    if (response.reports && response.reports.payment_types) {
-                        this.reports.payment_types = response.reports.payment_types;
+                    if (response.reports && typeof response.reports.heatmap_data === "object") {
+                        for (const key in response.reports) {
+                            if (response.reports[key]) {
+                                this.reports[key] = response.reports[key];
+                            }
+                        }
                     }
                 })
                 .catch(error => {
@@ -655,56 +638,6 @@ export default {
                 })
                 .finally(() => {
                     this.loading = false;
-                });
-        },
-
-        handleGaugeFormChange(formId) {
-            this.selectedGaugeFormId = formId;
-            this.gaugeLoading = true;
-
-            const data = {
-                component: "completion_rate",
-                start_date: this.globalDateParams.startDate,
-                end_date: this.globalDateParams.endDate,
-                form_id: formId
-            };
-
-            const url = FluentFormsGlobal.$rest.route("report");
-            FluentFormsGlobal.$rest.get(url, data)
-                .then(response => {
-                    if (response && response.reports && response.reports.completion_rate) {
-                        this.reports.completion_rate = response.reports.completion_rate;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching completion rates data:", error);
-                })
-                .finally(() => {
-                    this.gaugeLoading = false;
-                });
-        },
-        handleCountryHeatmapFormChange(formId) {
-            this.selectedCountryHeatmapFormId = formId;
-            this.countryHeatmapLoading = true;
-
-            const data = {
-                component: "country_heatmap",
-                start_date: this.globalDateParams.startDate,
-                end_date: this.globalDateParams.endDate,
-                form_id: formId
-            };
-            const url = FluentFormsGlobal.$rest.route("report");
-            FluentFormsGlobal.$rest.get(url, data)
-                .then(response => {
-                    if (response && response.reports && response.reports.country_heatmap) {
-                        this.reports.country_heatmap = response.reports.country_heatmap;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching completion rates data:", error);
-                })
-                .finally(() => {
-                    this.gaugeLoading = false;
                 });
         },
 
@@ -761,15 +694,6 @@ export default {
             return `${ year }-${ month }-${ day } ${ time }`;
         },
 
-        disableFutureDates(date) {
-            return date > new Date();
-        },
-
-        handleMetricsChanged(selectedMetrics) {
-            this.selectedChartMetrics = selectedMetrics;
-            // The chart will automatically update due to the reactive prop binding
-        },
-
         handleTopFormsMetricChange(metric) {
             this.selectedTopFormsMetric = metric;
             this.topFormsLoading = true;
@@ -803,6 +727,17 @@ export default {
         formatDateForDisplay(date) {
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             return `${ months[date.getMonth()] } ${ date.getDate() }, ${ date.getFullYear() }`;
+        }
+    },
+    watch: {
+        activeTab() {
+            if (this.activeTab === "revenue" && this.selectedGlobalFormId) {
+                const isPaymentForm = this.paymentFormsList.find(form => form.id === this.selectedGlobalFormId);
+                if (!isPaymentForm) {
+                    this.selectedGlobalFormId = this.paymentFormsList[0]?.id || null;
+                    this.fetchReportsData();
+                }
+            }
         }
     },
     mounted() {

@@ -197,7 +197,7 @@ export default {
             default: '$'
         },
         selectedFormId: {
-            type: Number
+            type: [Number, String]
         }
     },
     data() {
@@ -205,11 +205,6 @@ export default {
             loading: false,
             revenueData: [],
             selectedGroupBy: 'forms',
-            groupByOptions: {
-                'forms': this.$t('Forms'),
-                'payment_method': this.$t('Payment Method'),
-                'payment_type': this.$t('Payment Type')
-            },
             currentPage: 1,
             pageSize: localStorage.getItem('ffReportNetRevenuePerPage') || 5,
             totalItems: 0,
@@ -224,7 +219,18 @@ export default {
     computed: {
         decodedCurrency() {
             return this.decodeHtmlEntities(this.paymentCurrency);
-        }
+        },
+        groupByOptions() {
+            const options = {
+                'forms': this.$t('Forms'),
+                'payment_method': this.$t('Payment Method'),
+                'payment_type': this.$t('Payment Type')
+            };
+            if (this.selectedFormId) {
+                delete options.forms;
+            }
+            return options;
+        },
     },
     watch: {
         globalDateParams: {
@@ -234,6 +240,11 @@ export default {
             deep: true
         },
         selectedFormId() {
+            if (this.selectedFormId) {
+                this.selectedGroupBy = 'payment_method';
+            } else {
+                this.selectedGroupBy = 'forms';
+            }
             this.fetchRevenueData();
         }
     },

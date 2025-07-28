@@ -106,14 +106,14 @@ export default {
             isSlideRight: false,
             isSlideLeft: false,
             timeSlots: [
-                "12AM-3AM",
-                "3AM-6AM",
-                "6AM-9AM",
-                "9AM-12PM",
-                "12PM-3PM",
-                "3PM-6PM",
-                "6PM-9PM",
-                "9PM-12AM"
+                "12 AM - 3 AM",
+                "3 AM - 6 AM",
+                "6 AM - 9 AM",
+                "9 AM - 12 PM",
+                "12 PM - 3 PM",
+                "3 PM - 6 PM",
+                "6 PM - 9 PM",
+                "9 PM - 12 AM"
             ],
             heatmapDataStore: {},
             isNavigating: false,
@@ -241,9 +241,6 @@ export default {
         }
     },
     methods: {
-        disableFutureDates(date) {
-            return date > new Date();
-        },
         processHeatmapData(data) {
             this.heatmapDataStore = {};
 
@@ -291,12 +288,6 @@ export default {
             this.initializeEmptyData();
         },
 
-        formatDateForApi(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day} 00:00:00`;
-        },
         formatDateKey(date) {
             return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         },
@@ -306,12 +297,6 @@ export default {
         formatDayName(date) {
             const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
             return days[date.getDay()];
-        },
-        formatDayHeader(date) {
-            const day = String(date.getDate()).padStart(2, '0');
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            const month = months[date.getMonth()];
-            return `${month} ${day}`;
         },
         getValueForCell(timeSlotIndex, date) {
             const dateKey = this.formatDateKey(date);
@@ -379,10 +364,6 @@ export default {
                 this.isNavigating = false;
             }, 300);
         },
-        formatDateForRange(date) {
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-        },
 
         highlightCell(event, timeSlotIndex, date) {
             const value = this.getValueForCell(timeSlotIndex, date);
@@ -442,22 +423,6 @@ export default {
             return date.toLocaleDateString(undefined, options);
         },
 
-        formatSelectedRange() {
-            if (!this.selectedRangeStart || !this.selectedRangeEnd) {
-                return 'No range selected';
-            }
-
-            const startFormatted = this.formatDateForDisplay(this.selectedRangeStart);
-            const endFormatted = this.formatDateForDisplay(this.selectedRangeEnd);
-
-            // If same date, show only once
-            if (startFormatted === endFormatted) {
-                return startFormatted;
-            }
-
-            return `${startFormatted} - ${endFormatted}`;
-        },
-
         formatCurrentWeek() {
             if (!this.visibleDays || this.visibleDays.length === 0) {
                 return 'No data';
@@ -477,8 +442,6 @@ export default {
 
             return `${startFormatted} - ${endFormatted}`;
         },
-
-
     }
 };
 </script>

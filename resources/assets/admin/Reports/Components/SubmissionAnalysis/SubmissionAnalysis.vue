@@ -222,7 +222,7 @@ export default {
             default: () => ({})
         },
         selectedFormId: {
-            type: Number
+            type: [Number, String]
         }
     },
     data() {
@@ -230,13 +230,6 @@ export default {
             loading: false,
             submissionData: [],
             selectedGroupBy: 'forms',
-            groupByOptions: {
-                'forms': this.$t('Forms'),
-                'submission_source': this.$t('Submission Source'),
-                'email': this.$t('Email'),
-                'country': this.$t('Country'),
-                'submission_date': this.$t('Submission Date')
-            },
             currentPage: 1,
             pageSize: localStorage.getItem('ffReportSubmissionAnalysisPerPage') || 5,
             totalItems: 0,
@@ -257,8 +250,28 @@ export default {
             deep: true
         },
         selectedFormId() {
+            if (this.selectedFormId) {
+                this.selectedGroupBy = 'submission_source';
+            } else {
+                this.selectedGroupBy = 'forms';
+            }
             this.fetchSubmissionData();
         }
+    },
+    computed: {
+        groupByOptions() {
+            let options = {
+                'forms': this.$t('Forms'),
+                'submission_source': this.$t('Submission Source'),
+                'email': this.$t('Email'),
+                'country': this.$t('Country'),
+                'submission_date': this.$t('Submission Date')
+            };
+            if (this.selectedFormId) {
+                delete options.forms;
+            }
+            return options;
+        },
     },
     mounted() {
         this.fetchSubmissionData();

@@ -15,26 +15,6 @@
                         <el-radio-button label="activity">{{ $t('Submissions') }}</el-radio-button>
                         <el-radio-button v-if="hasPayment" label="revenue">{{ $t('Payments') }}</el-radio-button>
                     </el-radio-group>
-                    <div class="form-selector">
-                        <el-select
-                            popper-class="report-form-select-popper"
-                            v-model="selectedFormId"
-                            :placeholder="$t('Select Form')"
-                            size="mini"
-                            clearable
-                            filterable
-                            @change="handleFormChange"
-                            style="width: 200px;"
-                        >
-                            <el-option :label="$t('All Forms')" :value="null"></el-option>
-                            <el-option
-                                v-for="form in forms_list"
-                                :key="form.id"
-                                :label="`#${form.id} - ${form.title}`"
-                                :value="form.id"
-                            ></el-option>
-                        </el-select>
-                    </div>
                 </div>
             </div>
         </card-head>
@@ -43,7 +23,7 @@
             <!-- Single Chart -->
             <div class="chart-wrapper">
                 <!-- Show message when in revenue mode but no payment data -->
-                <div v-if="chartMode === 'revenue' && !hasPaymentData" class="no-payment-data">
+                <div v-if="isRevenueMode && !hasPaymentData" class="no-payment-data">
                     <h4>{{ $t('No Payment Data Available') }}</h4>
                     <p>{{ $t('Payment data will appear here once you have forms with payment fields and received payments.') }}</p>
                 </div>
@@ -84,14 +64,12 @@ export default {
         CardBody,
         CardHead
     },
-    props: ['overview_chart', 'forms_list', 'global_date_params', 'chart_view', 'selectedMetrics', 'hasPayment'],
-    emits: ['form-change', 'chart-mode-change'],
+    props: ['data', 'chartView', 'selectedMetrics', 'hasPayment'],
+    emits: ['chart-mode-change'],
     data() {
         return {
-            selectedFormId: null,
-            chartType: 'bar', // Default to bar chart
+            chartType: 'bar',
             categories: [],
-            internalSelectedMetrics: ['submissions', 'views'],
             chartData: {
                 views: [],
                 submissions: [],
@@ -110,7 +88,7 @@ export default {
     computed: {
         chartMode: {
             get() {
-                return this.chart_view;
+                return this.chartView;
             },
             set(value) {
                 this.$emit('chart-mode-change', value);
@@ -119,52 +97,25 @@ export default {
 
         // Check if payment data exists
         hasPaymentData() {
-            // Check multiple sources for payment data
-            const hasPaymentArray = this.chartData.payments && this.chartData.payments.length > 0 && this.chartData.payments.some(val => val > 0);
-            const hasPaidData = this.chartData.paid && this.chartData.paid.length > 0 && this.chartData.paid.some(val => val > 0);
-            const hasPendingData = this.chartData.pending && this.chartData.pending.length > 0 && this.chartData.pending.some(val => val > 0);
-            const hasRefundedData = this.chartData.refunded && this.chartData.refunded.length > 0 && this.chartData.refunded.some(val => val > 0);
+            const hasPaymentRevenue = this.chartData.payments && this.chartData.payments.length > 0 && this.chartData.payments.some(val => val > 0);
+            if (hasPaymentRevenue) return true;
 
-            const hasPaymentInOverview = this.overview_chart &&
-                ((this.overview_chart.values && this.overview_chart.values.paid && this.overview_chart.values.paid.length > 0) ||
-                 (this.overview_chart.payment_values && this.overview_chart.payment_values.length > 0) ||
-                 (this.overview_chart.values && typeof this.overview_chart.values === 'object' &&
-                  (this.overview_chart.values.paid || this.overview_chart.values.pending || this.overview_chart.values.refunded)));
-            return hasPaymentArray || hasPaidData || hasPendingData || hasRefundedData || hasPaymentInOverview;
+            const hasPaidData = this.chartData.paid && this.chartData.paid.length > 0 && this.chartData.paid.some(val => val > 0);
+            if (hasPaidData) return true;
+
+            const hasPendingData = this.chartData.pending && this.chartData.pending.length > 0 && this.chartData.pending.some(val => val > 0);
+            if (hasPendingData) return true;
+
+            const hasRefundedData = this.chartData.refunded && this.chartData.refunded.length > 0 && this.chartData.refunded.some(val => val > 0);
+            if (hasRefundedData) return true;
         },
 
         // Get current metrics based on chart mode
         currentMetrics() {
             if (this.chartMode === 'revenue') {
-                // Filter selected metrics to only include payment-related ones
-                const paymentMetrics = this.internalSelectedMetrics.filter(metric =>
-                    ['payments', 'paid', 'pending', 'refunded'].includes(metric)
-                );
-
-                // If no payment metrics selected, default to available payment data
-                if (paymentMetrics.length === 0) {
-                    if (this.chartData.paid && this.chartData.paid.some(val => val > 0)) {
-                        const metrics = ['paid'];
-                        if (this.chartData.pending && this.chartData.pending.some(val => val > 0)) {
-                            metrics.push('pending');
-                        }
-                        if (this.chartData.refunded && this.chartData.refunded.some(val => val > 0)) {
-                            metrics.push('refunded');
-                        }
-                        if (this.chartData.payments && this.chartData.payments.some(val => val > 0)) {
-                            metrics.push('payments');
-                        }
-                        return metrics;
-                    }
-                    return ['payments'];
-                }
-                return paymentMetrics;
+                return ['paid', 'pending', 'refunded', 'payments'];
             }
-            // For activity mode, filter out payment metrics
-            const activityMetrics = this.internalSelectedMetrics.filter(metric =>
-                !['payments', 'paid', 'pending', 'refunded'].includes(metric)
-            );
-            return activityMetrics.length > 0 ? activityMetrics : ['submissions', 'views'];
+            return this.selectedMetrics.length > 0 ? this.selectedMetrics : ['submissions', 'views'];
         },
 
         // Check if current mode is revenue
@@ -178,43 +129,20 @@ export default {
         }
     },
     watch: {
-        global_date_params: {
-            handler(newParams) {
-                if (newParams) {
-                    this.selectedFormId = newParams.formId || null;
-                }
-            },
-            deep: true,
-            immediate: true
-        },
-        overview_chart: {
+        data: {
             handler() {
                 this.processChartData();
-            },
-            deep: true,
-            immediate: true
-        },
-        selectedMetrics: {
-            handler(newMetrics) {
-                if (newMetrics && newMetrics.length > 0) {
-                    this.internalSelectedMetrics = newMetrics;
-                }
             },
             deep: true,
             immediate: true
         }
     },
     methods: {
-        // Handle form selection
-        handleFormChange() {
-            this.$emit('form-change', this.selectedFormId);
-        },
-
         // Process chart data for ECharts
         processChartData() {
-            if (!this.overview_chart) return;
+            if (!this.data) return;
 
-            const data = this.overview_chart;
+            const data = this.data;
             this.categories = data.dates || [];
 
             // Reset chart data
@@ -362,11 +290,11 @@ export default {
                     type: this.chartType,
                     data: this.chartData.views,
                     itemStyle: {
-                        color: '#3b82f6',
+                        color: '#017EF3',
                         ...(isLineChart ? {} : { borderRadius: [4, 4, 0, 0] })
                     },
                     ...(isLineChart ? {
-                        lineStyle: { color: '#3b82f6', width: 3 },
+                        lineStyle: { color: '#017EF3', width: 3 },
                         symbol: 'circle',
                         symbolSize: 6,
                         smooth: true
@@ -504,11 +432,11 @@ export default {
             return series;
         },
         getCurrencySymbol() {
-            if (!this.overview_chart) {
+            if (!this.data) {
                 return '$';
             }
             const textarea = document.createElement('textarea');
-            textarea.innerHTML = this.overview_chart?.currency_sign || '$';
+            textarea.innerHTML = this.data?.currency_sign || '$';
             return textarea.value;
         }
     }
