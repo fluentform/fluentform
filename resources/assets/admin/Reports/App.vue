@@ -11,6 +11,15 @@
                             <p class="reports-description">{{ $t('A brief look at your overall form performance') }}</p>
                         </div>
                         <div class="reports-controls">
+                            <a
+                                v-if="hasPdf"
+                                :href="getPdfDownloadUrl()"
+                                target="_blank"
+                                class="el-button el-button--primary el-button--small"
+                            >
+                                <i class="el-icon-download mr-2"></i>
+                                {{ $t('Download PDF') }}
+                            </a>
                             <el-select
                                 v-model="selectedGlobalFormId"
                                 :placeholder="$t('Select Form')"
@@ -390,6 +399,9 @@ export default {
         hasPro() {
             return !!window.FluentFormApp.has_pro;
         },
+        hasPdf() {
+            return !!window.FluentFormApp.has_pdf;
+        },
         overviewChartData() {
             return this.chartMode === 'activity' ? this.reports.overview_chart : this.reports.revenue_chart;
         },
@@ -727,6 +739,23 @@ export default {
         formatDateForDisplay(date) {
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             return `${ months[date.getMonth()] } ${ date.getDate() }, ${ date.getFullYear() }`;
+        },
+
+        getPdfDownloadUrl() {
+            const params = {
+                action: 'fluentform_report_download_pdf',
+                start_date: this.globalDateParams.startDate,
+                end_date: this.globalDateParams.endDate,
+                form_id: this.selectedGlobalFormId || '',
+                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
+            };
+
+            // Build query string
+            const queryString = Object.keys(params)
+                .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+                .join('&');
+
+            return window.fluent_forms_global_var.ajaxurl + '?' + queryString;
         }
     },
     watch: {

@@ -36,6 +36,7 @@ class ReportHandler
         wp_localize_script('fluentform_reports', 'FluentFormApp', [
             'has_payment'      => $hasPayment,
             'has_pro'          => Helper::hasPro(),
+            'has_pdf'          => defined('FLUENTFORM_PDF_VERSION'),
             'reports_i18n'     => TranslationString::getReportsI18n(),
             'payment_statuses' => PaymentHelper::getPaymentStatuses(),
             'payment_methods'  => apply_filters('fluentform/available_payment_methods', [])
