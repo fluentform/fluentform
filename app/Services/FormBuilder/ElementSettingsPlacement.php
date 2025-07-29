@@ -229,6 +229,11 @@ return [
             'label_placement',
             'admin_field_label',
             'placeholder',
+            'show_strength_indicator',
+            'show_toggle_button',
+            'show_generate_button',
+            'require_strong_password',
+            'show_requirements_list',
             'validation_rules',
         ],
         'advanced' => [

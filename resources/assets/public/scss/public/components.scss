@@ -801,6 +801,288 @@
 
 }
 
+/*
+|----------------------------------------------------------------------------
+| PASSWORD FIELD COMPONENTS
+|----------------------------------------------------------------------------
+*/
+.fluentform {
+  .ff-password-wrapper {
+    position: relative;
+
+    .ff-password-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .ff-el-form-control {
+        flex: 1;
+        padding-right: 45px;
+
+        &.ff-password-invalid {
+          border-color: #dc3545;
+          box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        &.ff-password-valid {
+          border-color: #28a745;
+          box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+      }
+
+      .ff-password-toggle-btn {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        color: #6c757d;
+        font-size: 16px;
+        z-index: 2;
+        min-width: 28px;
+        min-height: 28px;
+        border-radius: 4px;
+
+        &:hover {
+          color: #495057;
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        &:focus {
+          outline: 2px solid #007cba;
+          outline-offset: 2px;
+        }
+
+        .ff-password-toggle-icon {
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+
+          &.ff-eye-icon::before {
+            content: "👁";
+            font-size: 16px;
+          }
+
+          &.ff-eye-slash-icon::before {
+            content: "🙈";
+            font-size: 16px;
+          }
+        }
+
+        // Mobile touch targets
+        @media (max-width: 768px) {
+          min-width: 44px;
+          min-height: 44px;
+          right: 5px;
+
+          .ff-password-toggle-icon {
+            width: 20px;
+            height: 20px;
+
+            &.ff-eye-icon::before,
+            &.ff-eye-slash-icon::before {
+              font-size: 18px;
+            }
+          }
+        }
+      }
+    }
+
+    .ff-password-generate-btn {
+      margin-top: 8px;
+      padding: 12px;
+      background-color: #007cba;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #005a87;
+      }
+
+      &:focus {
+        outline: 2px solid #007cba;
+        outline-offset: 2px;
+      }
+
+      &:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      // Mobile responsive
+      @media (max-width: 768px) {
+        max-width: 100%;
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+    }
+
+    .ff-password-strength-indicator {
+      margin-top: 8px;
+
+      .ff-password-strength-bar {
+        width: 100%;
+        height: 6px;
+        background-color: #e9ecef;
+        border-radius: 3px;
+        overflow: hidden;
+        position: relative;
+
+        .ff-password-strength-fill {
+          height: 100%;
+          width: 0%;
+          transition: width 0.3s ease, background-color 0.3s ease;
+          border-radius: 3px;
+          position: relative;
+
+          &.very-weak {
+            background-color: #dc3545;
+          }
+
+          &.weak {
+            background-color: #fd7e14;
+          }
+
+          &.fair {
+            background-color: #ffc107;
+          }
+
+          &.good {
+            background-color: #20c997;
+          }
+
+          &.strong {
+            background-color: #28a745;
+          }
+
+          // Add subtle animation
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+          }
+        }
+      }
+
+      .ff-password-strength-text {
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 4px;
+        text-align: center;
+        font-weight: 500;
+
+        // Color coding for strength text
+        &.very-weak { color: #dc3545; }
+        &.weak { color: #fd7e14; }
+        &.fair { color: #ffc107; }
+        &.good { color: #20c997; }
+        &.strong { color: #28a745; }
+      }
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .ff-password-requirements {
+      margin-top: 12px;
+      padding: 12px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      border: 1px solid #e9ecef;
+
+      .ff-password-requirements-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+      }
+
+      .ff-password-requirements-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        .ff-password-requirement {
+          font-size: 12px;
+          color: #6c757d;
+          margin-bottom: 4px;
+          padding-left: 20px;
+          position: relative;
+
+          &::before {
+            content: "○";
+            position: absolute;
+            left: 0;
+            color: #dee2e6;
+          }
+
+          &.ff-requirement-valid {
+            color: #28a745;
+
+            &::before {
+              content: "✓";
+              color: #28a745;
+            }
+          }
+
+          &.ff-requirement-invalid {
+            color: #dc3545;
+
+            &::before {
+              content: "✗";
+              color: #dc3545;
+            }
+          }
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+
+    .ff_input-group {
+      .ff-password-input-container {
+        flex: 1;
+
+        .ff-el-form-control {
+          border-radius: 0;
+          border-right: none;
+        }
+
+        .ff-password-toggle-btn {
+          right: 5px;
+        }
+      }
+
+      .ff_input-group-prepend + .ff-password-input-container .ff-el-form-control {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      .ff-password-input-container + .ff_input-group-append .ff_input-group-text {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+}
+
 .fluentform-step {
   float: left;
   height: 1px;

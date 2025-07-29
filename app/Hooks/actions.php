@@ -524,6 +524,39 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
 
         return $item;
     }, 10, 2);
+
+    add_filter('fluentform/editor_init_element_input_password', function ($element) {
+        if (!isset($element['settings']['require_strong_password'])) {
+            $element['settings']['require_strong_password'] = false;
+        }
+        if (!isset($element['settings']['show_strength_indicator'])) {
+            $element['settings']['show_strength_indicator'] = false;
+        }
+        if (!isset($element['settings']['show_toggle_button'])) {
+            $element['settings']['show_toggle_button'] = false;
+        }
+        if (!isset($element['settings']['show_generate_button'])) {
+            $element['settings']['show_generate_button'] = false;
+        }
+        if (!isset($element['settings']['show_requirements_list'])) {
+            $element['settings']['show_requirements_list'] = false;
+        }
+
+        // validation rules
+        $defaultGlobalMessages = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
+
+        if (!isset($element['settings']['validation_rules']['min_length'])) {
+            $element['settings']['validation_rules']['min_length'] = [
+                'value'   => '8',
+                'message' => $defaultGlobalMessages['min_length'],
+                'global_message' => $defaultGlobalMessages['min_length'],
+                'global'  => true,
+            ];
+        }
+
+        return $element;
+    }, 10, 2);
+    
 }, 10);
 
 $app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use ($app) {

@@ -257,6 +257,12 @@ $validation_rule_settings = [
             ],
         ],
     ],
+    'min_length' => [
+        'template'  => 'inputText',
+        'type'      => 'number',
+        'label'     => __('Minimum Length', 'fluentform'),
+        'help_text' => __('Minimum number of characters required', 'fluentform'),
+    ],
 ];
 
 $validation_rule_settings = apply_filters_deprecated(
