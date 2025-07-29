@@ -35,7 +35,7 @@ import * as echarts from 'echarts';
 import Card from "@/admin/components/Card/Card.vue";
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import CardBody from "@/admin/components/Card/CardBody.vue";
-import worldMapJson from "../../world.geo.json";
+import worldMapJson from "../world.geo.json";
 
 export default {
     name: 'SubmissionCountryHeatmap',

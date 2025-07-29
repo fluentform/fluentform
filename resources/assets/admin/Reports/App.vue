@@ -326,18 +326,18 @@
     </div>
 </template>
 <script type="text/babel">
-import OverviewChart from "./Components/OverviewChart/OverviewChart.vue";
-import FormStatsCard from "./Components/FormStats/FormStatsCard.vue";
-import SubmissionHeatmap from "@/admin/Reports/Components/SubmissionHeatmap/SubmissionHeatmap.vue";
-import SubmissionCountryHeatmap from "./Components/SubmissionCountryHeatmap/SubmissionCountryHeatmap.vue";
+import OverviewChart from "./Components/OverviewChart.vue";
+import FormStatsCard from "./Components/FormStatsCard.vue";
+import SubmissionHeatmap from "./Components/SubmissionHeatmap.vue";
+import SubmissionCountryHeatmap from "./Components/SubmissionCountryHeatmap.vue";
 import LineChart from "./Components/LineChart.vue";
-import CompletionRatesGauge from "./Components/CompletionRatesGauge/CompletionRatesGauge.vue";
-import TopSubscriptionByPlan from "./Components/SubscriptionStats/TopSubscriptionByPlan.vue";
+import CompletionRatesGauge from "./Components/CompletionRatesGauge.vue";
+import TopSubscriptionByPlan from "./Components/TopSubscriptionByPlan.vue";
 import PaymentByTypeChart from "./Components/PaymentByTypeChart.vue";
-import TopPerformingForms from "./Components/TopPerformingForms/TopPerformingForms.vue";
-import NetRevenueByGroup from "./Components/NetRevenue/NetRevenueByGroup.vue";
-import SubmissionAnalysis from "./Components/SubmissionAnalysis/SubmissionAnalysis.vue";
-import DateRangeControls from "./Components/DateRangeControls/DateRangeControls.vue";
+import TopPerformingForms from "./Components/TopPerformingForms.vue";
+import NetRevenueByGroup from "./Components/NetRevenueByGroup.vue";
+import SubmissionAnalysis from "./Components/SubmissionAnalysis.vue";
+import DateRangeControls from "./Components/DateRangeControls.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
