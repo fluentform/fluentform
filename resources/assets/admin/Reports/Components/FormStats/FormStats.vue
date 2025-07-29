@@ -24,6 +24,7 @@
                     icon="trash"
                     :change="stats?.spam_submissions?.change"
                     :change-type="stats?.spam_submissions?.change_type"
+                    card-class="spam"
                 />
                 <stat-card
                     title="Unread Submissions"

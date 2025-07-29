@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\Report;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\App\Models\Form;
 use FluentForm\Framework\Support\Sanitizer;
+use FluentFormPdf\Classes\Controller\AvailableOptions;
 
 class ReportPdfGenerator
 {
@@ -111,7 +112,7 @@ class ReportPdfGenerator
         
         // Header
         $html .= '<div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #007cba; padding-bottom: 20px;">';
-        $html .= '<h1 style="color: #007cba; margin: 0; font-size: 28px;">Fluent Forms Comprehensive Report</h1>';
+        $html .= '<h1 style="color: #007cba; margin: 0; font-size: 28px;">Fluent Forms Report</h1>';
         $html .= '<p style="color: #888; margin: 10px 0 0 0; font-size: 14px;">' . $startDateFormatted . ' - ' . $endDateFormatted . '</p>';
         if ($formId) {
             $form = Form::find($formId);
@@ -202,15 +203,25 @@ class ReportPdfGenerator
         // Get readable label
         $label = $this->getStatLabel($statKey);
         
-        // Format change with color
+        // Format change with color (special handling for spam submissions)
         $changeColor = '#666';
         $changeIcon = '';
         if ($changeType === 'up') {
-            $changeColor = '#28a745';
-            $changeIcon = '↗ ';
+            if ($statKey === 'spam_submissions') {
+                $changeColor = '#dc3545';
+                $changeIcon = '↗ ';
+            } else {
+                $changeColor = '#28a745';
+                $changeIcon = '↗ ';
+            }
         } elseif ($changeType === 'down') {
-            $changeColor = '#dc3545';
-            $changeIcon = '↘ ';
+            if ($statKey === 'spam_submissions') {
+                $changeColor = '#28a745';
+                $changeIcon = '↘ ';
+            } else {
+                $changeColor = '#dc3545';
+                $changeIcon = '↘ ';
+            }
         }
         
         $html = '<tr>';
@@ -639,18 +650,46 @@ class ReportPdfGenerator
             'language_direction' => 'ltr'
         ]);
 
-        // Allow filtering of mPDF configuration
-        $config = apply_filters('fluentform/report_pdf_mpdf_config', [
+        $this->ensureEssentialFontsExist();
+
+        $dirStructure = AvailableOptions::getDirStructure();
+        
+        $defaults = [
+            'fontDir' => [
+                $dirStructure['fontDir']
+            ],
+            'tempDir' => $dirStructure['tempDir'],
+            'curlCaCertificate' => ABSPATH . WPINC . '/certificates/ca-bundle.crt',
+            'curlFollowLocation' => true,
+            'allow_output_buffering' => true,
+            'autoLangToFont' => true,
+            'autoScriptToLang' => true,
+            'useSubstitutions' => true,
+            'ignore_invalid_utf8' => true,
+            'setAutoTopMargin' => 'stretch',
+            'setAutoBottomMargin' => 'stretch',
+            'enableImports' => true,
+            'use_kwt' => true,
+            'keepColumns' => true,
+            'biDirectional' => true,
+            'showWatermarkText' => true,
+            'showWatermarkImage' => true,
             'mode' => 'utf-8',
             'format' => Arr::get($globalSettings, 'paper_size', 'A4'),
             'orientation' => Arr::get($globalSettings, 'orientation', 'P'),
-        ], $globalSettings);
+            'default_font' => 'FreeSans',
+        ];
 
-        // Initialize mPDF
+        // Allow filtering of mPDF configuration
+        $config = apply_filters('fluentform/report_pdf_mpdf_config', $defaults, $globalSettings);
+
+        $config = apply_filters('fluentform/mpdf_config', $config);
+
+        // Initialize mPDF with proper font configuration (autoload already loaded in generatePdf)
         $mpdf = new \Mpdf\Mpdf($config);
 
         // Set document properties
-        $fileName = apply_filters('fluentform/report_pdf_filename', 'fluent-forms-comprehensive-report-' . date('Y-m-d'), $startDate, $endDate);
+        $fileName = apply_filters('fluentform/report_pdf_filename', 'fluent-forms-report-' . date('Y-m-d'), $startDate, $endDate);
         $title = apply_filters('fluentform/report_pdf_title', 'Fluent Forms Comprehensive Report');
         $author = apply_filters('fluentform/report_pdf_author', 'Fluent Forms');
 
@@ -728,5 +767,42 @@ class ReportPdfGenerator
                 font-weight: bold;
             }
         ");
+    }
+
+    /**
+     * Ensure essential fonts exist for PDF generation
+     *
+     * @return void
+     */
+    private function ensureEssentialFontsExist()
+    {
+        $fontManager = new \FluentFormPdf\Classes\Controller\FontManager();
+        $downloadableFiles = $fontManager->getDownloadableFonts();
+
+        // If no fonts need downloading, we're good
+        if (empty($downloadableFiles)) {
+            return;
+        }
+
+        // Essential fonts for basic PDF generation
+        $essentialFonts = [
+            'FreeSans.ttf',
+            'FreeSansBold.ttf',
+            'FreeSerif.ttf',
+            'FreeSerifBold.ttf',
+            'DejaVuSans.ttf',
+            'DejaVuSans-Bold.ttf'
+        ];
+
+        // Download essential fonts if they're missing
+        foreach ($downloadableFiles as $downloadableFont) {
+            if (in_array($downloadableFont['name'], $essentialFonts)) {
+                $result = $fontManager->download($downloadableFont['name']);
+                if (is_wp_error($result)) {
+                    // Log error but continue - font substitution should handle this
+                    error_log('FluentForms PDF: Failed to download font ' . $downloadableFont['name'] . ': ' . $result->get_error_message());
+                }
+            }
+        }
     }
 }
