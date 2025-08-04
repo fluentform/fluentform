@@ -17,7 +17,7 @@
         </template>
     </el-skeleton>
   <div class="stats-card" :class="[type, cardClass]" v-else>
-        <div class="stats-icon" :style="{ backgroundColor: bgColor }">
+        <div class="stats-icon">
             <span v-if="icon" v-html="icon"></span>
         </div>
         <div class="stats-content">
