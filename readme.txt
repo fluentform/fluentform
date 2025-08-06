@@ -445,6 +445,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 = 6.0.5 (Date: July 8, 2025) =
 - Adds Fluent Forms Report module
 - Adds close button to payment summary items
+- Adds shortcut for delete input field in the editor
 - Improves IP detection accepting client IP explicitly
 - Improves consistency of settings deletion notifications
 - Fixes form API empty title retrieval issue

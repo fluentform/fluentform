@@ -342,7 +342,8 @@ class EditorShortcodeParser
      */
     private static function parseIp($value, $form = null)
     {
-        $ip = wpFluentForm('request')->getIp();
+        $rawIp = wpFluentForm('request')->getIp();
+        $ip = sanitize_text_field($rawIp);
         return $ip ? esc_html($ip) : $value;
     }
 
