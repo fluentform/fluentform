@@ -408,13 +408,11 @@ class ReportHelper
         $spamPercentage = 0;
         if ($previousSpamSubmissions > 0) {
             $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100, 1);
+        } elseif ($periodSpamSubmissions > 0) {
+            $spamPercentage = 100;
         }
-
-        $spamText = $spamType = '';
-        if ($spamPercentage !== 0) {
-            $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
-            $spamType = $spamPercentage > 0 ? 'up' : 'down';
-        }
+        $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
+        $spamType = $spamPercentage > 0 ? 'down' : ($spamPercentage < 0 ? 'up' : 'neutral'); // Refunds going up is bad
 
         // Active forms
         $periodActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$startDate, $endDate])->count();
@@ -2053,6 +2051,18 @@ class ReportHelper
         $pendingGrowthText = $pendingGrowthPercentage > 0 ? '+' . $pendingGrowthPercentage . '%' : $pendingGrowthPercentage . '%';
         $pendingGrowthType = $pendingGrowthPercentage > 0 ? 'up' : ($pendingGrowthPercentage < 0 ? 'down' : 'neutral');
 
+        // Calculate revenue percentage
+        $totalRevenue = $currentPayments - $currentRefunds;
+        $previousRevenue = $previousPayments - $previousRefunds;
+        $revenuePercentage = 0;
+        if ($previousRevenue > 0) {
+            $revenuePercentage = round((($totalRevenue - $previousRevenue) / $previousRevenue) * 100, 1);
+        } elseif ($totalRevenue > 0) {
+            $revenuePercentage = 100;
+        }
+        $revenueText = $revenuePercentage > 0 ? '+' . $revenuePercentage . '%' : $revenuePercentage . '%';
+        $revenueType = $revenuePercentage > 0 ? 'up' : ($revenuePercentage < 0 ? 'down' : 'neutral');
+
         // Get default currency from payment settings
         $paymentSettings = PaymentHelper::getPaymentSettings();
         $currency = Arr::get($paymentSettings, 'currency', 'USD');
@@ -2084,8 +2094,10 @@ class ReportHelper
                 'change_type' => $refundGrowthType
             ],
             'total_revenue' => [
-                'value' => number_format($currentPayments - $currentRefunds, 2),
-                'raw_value' => $currentPayments - $currentRefunds,
+                'value' => number_format($totalRevenue, 2),
+                'raw_value' => $totalRevenue,
+                'change' => $revenueText,
+                'change_type' => $revenueType,
                 'currency' => $currency,
                 'currency_symbol' => $currencySymbol
             ]

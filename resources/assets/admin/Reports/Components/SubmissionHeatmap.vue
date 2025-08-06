@@ -66,14 +66,14 @@
                 </div>
 
                 <div class="heatmap-color-scale">
-                    <span>{{ $t('Less') }}</span>
+                    <span>{{ $t('Low') }}</span>
                     <span class="heatmap-color-scale-item level-0"></span>
                     <span class="heatmap-color-scale-item level-1"></span>
                     <span class="heatmap-color-scale-item level-2"></span>
                     <span class="heatmap-color-scale-item level-3"></span>
                     <span class="heatmap-color-scale-item level-4"></span>
                     <span class="heatmap-color-scale-item level-5"></span>
-                    <span>{{ $t('More') }}</span>
+                    <span>{{ $t('High') }}</span>
                 </div>
             </div>
         </card-body>
@@ -388,7 +388,7 @@ export default {
             const wouldOverflowRight = (cellCenterX + (tooltipWidth / 2)) > (viewportWidth - 20);
 
             // Set tooltip text
-            this.tooltip.text = `${dateStr} | ${timeSlot}: ${value} Submission${value !== 1 ? 's' : ''}`;
+            this.tooltip.text = `${dateStr}: ${value} ${value !== 1 ? this.$t('Submissions') : this.$t('Submission')}`;
 
             let leftPosition = cellCenterX;
             let tooltipClass = '';

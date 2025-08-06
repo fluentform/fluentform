@@ -22,10 +22,42 @@
         <card-body>
             <!-- Single Chart -->
             <div class="chart-wrapper">
-                <!-- Show message when in revenue mode but no payment data -->
-                <div v-if="isRevenueMode && !hasPaymentData" class="no-payment-data">
-                    <h4>{{ $t('No Payment Data Available') }}</h4>
-                    <p>{{ $t('Payment data will appear here once you have forms with payment fields and received payments.') }}</p>
+              <el-skeleton v-if="loading" animated >
+                <template #template>
+                  <div class="loading-skeleton-header">
+                    <el-skeleton-item  />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                  </div>
+                  <div class="loading-skeleton-body">
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                    <el-skeleton-item />
+                  </div>
+                  <div class="loading-skeleton-footer">
+                    <el-skeleton-item  />
+                    <el-skeleton-item />
+                  </div>
+                </template>
+              </el-skeleton>
+
+                <!-- Show message when no data -->
+                <div v-else-if="!hasData" class="no-data">
+                    <h4>{{ isRevenueMode ? $t('No Payment Data Available') : $t('No Submission Data Available') }}</h4>
+                    <p>{{ isRevenueMode ? $t('Payment data will appear here once you have forms with payment fields and received payments.') : $t('Submission data will appear here once you have forms and received submissions.') }}</p>
                 </div>
 
                 <!-- Chart -->
@@ -36,7 +68,7 @@
                     style="height: 350px; width: 100%;"
                     autoresize
                 />
-                <div class="chart-footer-info">
+                <div class="chart-footer-info" v-if="!loading && hasData">
                     <div class="">
                         <i class="el-icon-top"></i>
                         <span v-if="isRevenueMode">{{ $t('Total Amount') }}</span>
@@ -64,7 +96,7 @@ export default {
         CardBody,
         CardHead
     },
-    props: ['data', 'chartView', 'selectedMetrics', 'hasPayment'],
+    props: ['data', 'chartView', 'selectedMetrics', 'hasPayment', 'loading'],
     emits: ['chart-mode-change'],
     data() {
         return {
@@ -95,19 +127,19 @@ export default {
             }
         },
 
-        // Check if payment data exists
-        hasPaymentData() {
-            const hasPaymentRevenue = this.chartData.payments && this.chartData.payments.length > 0 && this.chartData.payments.some(val => val > 0);
-            if (hasPaymentRevenue) return true;
-
-            const hasPaidData = this.chartData.paid && this.chartData.paid.length > 0 && this.chartData.paid.some(val => val > 0);
-            if (hasPaidData) return true;
-
-            const hasPendingData = this.chartData.pending && this.chartData.pending.length > 0 && this.chartData.pending.some(val => val > 0);
-            if (hasPendingData) return true;
-
-            const hasRefundedData = this.chartData.refunded && this.chartData.refunded.length > 0 && this.chartData.refunded.some(val => val > 0);
-            if (hasRefundedData) return true;
+        hasData() {
+          let keys = Object.keys(this.chartData);
+          if (this.isRevenueMode) {
+              keys = ['payments', 'paid', 'pending', 'refunded'];
+          }
+          let status = false;
+          keys.forEach(key => {
+              if (this.chartData[key] && this.chartData[key].length > 0 && this.chartData[key].some(val => val > 0)) {
+                  status = true;
+                  return true;
+              }
+          });
+          return status;
         },
 
         // Get current metrics based on chart mode
@@ -481,7 +513,33 @@ export default {
     height: auto;
 }
 
-.no-payment-data {
+.loading-skeleton-header {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.loading-skeleton-body {
+  display: flex;
+  gap: 20px;
+  height: 280px;
+  margin: 20px;
+}
+
+.loading-skeleton-body > div {
+  height: 100%;
+}
+
+.loading-skeleton-footer {
+  display: flex;
+  margin-left: 20px;
+  gap: 10px;
+  max-width: 200px;
+}
+
+.no-data {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -491,20 +549,14 @@ export default {
     color: #6b7280;
 }
 
-.no-data-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    opacity: 0.6;
-}
-
-.no-payment-data h4 {
+.no-data h4 {
     margin: 0 0 8px 0;
     font-size: 18px;
     font-weight: 600;
     color: #374151;
 }
 
-.no-payment-data p {
+.no-data p {
     margin: 0;
     font-size: 14px;
     max-width: 300px;

@@ -60,8 +60,6 @@
                                 :change="stat.change"
                                 :change-type="stat.changeType"
                                 :icon="stat.icon"
-                                :bgColor="stat.bgColor"
-                                :cardClass="stat.class || ''"
                                 type="overview"
                                 :loading="loading"
                             />
@@ -74,6 +72,7 @@
                         <el-col :span="24" :md="16" >
                             <div class="conversion-chart-section">
                                 <overview-chart
+                                    :loading="loading"
                                     :data="overviewChartData"
                                     :chart-view="chartMode"
                                     :selected-metrics="selectedChartMetrics"
@@ -420,7 +419,6 @@ export default {
                 },
                 {
                     key: "spam_submissions",
-                    class: 'spam',
                     title: this.$t('Spam Submissions'),
                     value: stats.spam_submissions?.value,
                     change: stats.spam_submissions?.change,
@@ -469,6 +467,8 @@ export default {
                     key: "total_submissions",
                     title: this.$t('Total'),
                     value: stats.total_submissions?.value,
+	                change: stats.total_submissions?.change,
+	                changeType: stats.total_submissions?.change_type,
                     icon: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#ebf1ff"/><path d="M22 23.5H10C9.80109 23.5 9.61032 23.421 9.46967 23.2803C9.32902 23.1397 9.25 22.9489 9.25 22.75V9.25C9.25 9.05109 9.32902 8.86032 9.46967 8.71967C9.61032 8.57902 9.80109 8.5 10 8.5H22C22.1989 8.5 22.3897 8.57902 22.5303 8.71967C22.671 8.86032 22.75 9.05109 22.75 9.25V22.75C22.75 22.9489 22.671 23.1397 22.5303 23.2803C22.3897 23.421 22.1989 23.5 22 23.5ZM21.25 22V10H10.75V22H21.25ZM13 12.25H19V13.75H13V12.25ZM13 15.25H19V16.75H13V15.25ZM13 18.25H16.75V19.75H13V18.25Z" fill="#525866"/></svg>`,
                 },
                 {
@@ -487,6 +487,8 @@ export default {
                     key: "spam_submissions",
                     title: this.$t('Spam'),
                     value: stats.spam_submissions?.value,
+	                change: stats.spam_submissions?.change,
+	                changeType: stats.spam_submissions?.change_type,
                     icon: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#ebf1ff"/><path d="M20.125 8.875L24.25 16L20.125 23.125H11.875L7.75 16L11.875 8.875H20.125ZM19.2603 10.375H12.7397L9.48325 16L12.7397 21.625H19.2603L22.5167 16L19.2603 10.375ZM15.25 18.25H16.75V19.75H15.25V18.25ZM15.25 12.25H16.75V16.75H15.25V12.25Z" fill="#525866"/></svg>`,
                 },
                 {
@@ -503,24 +505,32 @@ export default {
                 {
                     key: "total_payments",
                     title: this.$t('Total Paid'),
+	                change: stats.total_payments?.change,
+	                changeType: stats.total_payments?.change_type,
                     value: (stats.total_payments?.currency_symbol || '') + (stats.total_payments?.value || ''),
                     icon: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#ebf1ff"/><path d="M20.5 12.25H22.75C22.9489 12.25 23.1397 12.329 23.2803 12.4697C23.421 12.6103 23.5 12.8011 23.5 13V22C23.5 22.1989 23.421 22.3897 23.2803 22.5303C23.1397 22.671 22.9489 22.75 22.75 22.75H9.25C9.05109 22.75 8.86032 22.671 8.71967 22.5303C8.57902 22.3897 8.5 22.1989 8.5 22V10C8.5 9.80109 8.57902 9.61032 8.71967 9.46967C8.86032 9.32902 9.05109 9.25 9.25 9.25H20.5V12.25ZM10 13.75V21.25H22V13.75H10ZM10 10.75V12.25H19V10.75H10ZM18.25 16.75H20.5V18.25H18.25V16.75Z" fill="#525866"/></svg>`,
                 },
                 {
                     key: 'pending_payments',
                     title: this.$t('Total Pending'),
+	                change: stats.pending_payments?.change,
+	                changeType: stats.pending_payments?.change_type,
                     value: (stats.pending_payments?.currency_symbol || '') + (stats.pending_payments?.value || ''),
                     icon: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#ebf1ff"/><path d="M12.25 11H11V9.75H21V11H19.75V12.25C19.75 13.2596 19.2399 14.0717 18.5976 14.7354C18.1582 15.1894 17.6237 15.6075 17.0818 16C17.6237 16.3925 18.1582 16.8106 18.5976 17.2646C19.2399 17.9283 19.75 18.7404 19.75 19.75V21H21V22.25H11V21H12.25V19.75C12.25 18.7404 12.7601 17.9283 13.4024 17.2646C13.8418 16.8106 14.3763 16.3925 14.9182 16C14.3763 15.6075 13.8418 15.1894 13.4024 14.7354C12.7601 14.0717 12.25 13.2596 12.25 12.25V11ZM13.5 11V12.25C13.5 12.8029 13.7712 13.3189 14.3007 13.8661C14.755 14.3356 15.3467 14.7749 16 15.2363C16.6533 14.7749 17.245 14.3356 17.6993 13.8661C18.2289 13.3189 18.5 12.8029 18.5 12.25V11H13.5ZM16 16.7637C15.3467 17.2251 14.755 17.6644 14.3007 18.1339C13.7712 18.6811 13.5 19.1971 13.5 19.75V21H18.5V19.75C18.5 19.1971 18.2289 18.6811 17.6993 18.1339C17.245 17.6644 16.6533 17.2251 16 16.7637Z" fill="#525866"/></svg>`,
                 },
                 {
                     key: "total_refunds",
                     title: this.$t('Total Refunded'),
+	                change: stats.total_refunds?.change,
+	                changeType: stats.total_refunds?.change_type,
                     value: (stats.total_refunds?.currency_symbol || '') + (stats.total_refunds?.value || ''),
                     icon: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#ebf1ff"/><path d="M21.5313 18.3264C22.0179 17.1701 22.1299 15.8904 21.8516 14.6672C21.5732 13.4439 20.9185 12.3387 19.9795 11.5068C19.0404 10.675 17.8643 10.1583 16.6164 10.0296C15.3685 9.90078 14.1117 10.1663 13.0225 10.7889L12.2785 9.48613C13.4168 8.8356 14.7057 8.49491 16.0167 8.49807C17.3277 8.50123 18.615 8.84812 19.75 9.50413C23.1175 11.4481 24.4075 15.6106 22.8378 19.0816L23.8443 19.6621L20.7205 21.3226L20.5968 17.7871L21.5313 18.3264ZM10.4688 13.6719C9.98214 14.8282 9.87012 16.1079 10.1485 17.3311C10.4268 18.5543 11.0815 19.6596 12.0206 20.4914C12.9596 21.3233 14.1358 21.8399 15.3837 21.9687C16.6315 22.0975 17.8884 21.8319 18.9775 21.2094L19.7215 22.5121C18.5833 23.1627 17.2944 23.5034 15.9834 23.5002C14.6724 23.497 13.3851 23.1502 12.25 22.4941C8.88253 20.5501 7.59253 16.3876 9.16228 12.9166L8.15503 12.3369L11.2788 10.6764L11.4025 14.2119L10.468 13.6726L10.4688 13.6719ZM13.375 17.4991H17.5C17.5995 17.4991 17.6949 17.4596 17.7652 17.3893C17.8355 17.319 17.875 17.2236 17.875 17.1241C17.875 17.0247 17.8355 16.9293 17.7652 16.859C17.6949 16.7886 17.5995 16.7491 17.5 16.7491H14.5C14.0027 16.7491 13.5258 16.5516 13.1742 16.2C12.8226 15.8483 12.625 15.3714 12.625 14.8741C12.625 14.3769 12.8226 13.8999 13.1742 13.5483C13.5258 13.1967 14.0027 12.9991 14.5 12.9991H15.25V12.2491H16.75V12.9991H18.625V14.4991H14.5C14.4006 14.4991 14.3052 14.5386 14.2349 14.609C14.1645 14.6793 14.125 14.7747 14.125 14.8741C14.125 14.9736 14.1645 15.069 14.2349 15.1393C14.3052 15.2096 14.4006 15.2491 14.5 15.2491H17.5C17.9973 15.2491 18.4742 15.4467 18.8259 15.7983C19.1775 16.1499 19.375 16.6269 19.375 17.1241C19.375 17.6214 19.1775 18.0983 18.8259 18.45C18.4742 18.8016 17.9973 18.9991 17.5 18.9991H16.75V19.7491H15.25V18.9991H13.375V17.4991Z" fill="#525866"/></svg>`,
                 },
                 {
                     key: "total_revenue",
                     title: this.$t('Total Revenue'),
+	                change: stats.total_revenue?.change,
+	                changeType: stats.total_revenue?.change_type,
                     value:  (stats.total_revenue?.currency_symbol || '') + (stats.total_revenue?.value || ''),
                     icon: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#ebf1ff"/><path d="M10.75 9.25V21.25H22.75V22.75H9.25V9.25H10.75ZM22.2197 11.7198L23.2803 12.7802L19 17.0605L16.75 14.8112L13.5302 18.0302L12.4698 16.9698L16.75 12.6895L19 14.9388L22.2197 11.7198Z" fill="#525866"/></svg>`,
                 }
