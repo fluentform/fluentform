@@ -102,9 +102,12 @@ class Route {
     resetFormAnalytics = this.analytics + '/{param}/reset/'
 
     report = 'report';
+    selectFormsForReport = this.report + '/select-forms';
     formsReport = this.report + '/forms'
     formReport = this.formsReport + '/{param}'
     submissionsReport = this.report + '/submissions';
+    submissionsAnalysisReport = this.report + '/submissions-analysis';
+    netRevenueReport = this.report + '/net-revenue';
 
     //pro routes
     inventory ='inventory';
