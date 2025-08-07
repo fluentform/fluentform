@@ -442,7 +442,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.0.5 (Date: July 8, 2025) =
+= 6.0.5 (Date: August 13, 2025) =
 - Adds Fluent Forms Report module
 - Adds close button to payment summary items
 - Improves IP detection accepting client IP explicitly
@@ -465,6 +465,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes entries chart date range filtering
 - Fixes database creation errors in WordPress Studio environments
 - Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
+- Fixes WP Text Editor sanitizer removing links in success messages with search parameters
 
 = 6.0.4 (Date: May 29, 2025) =
 - Fixes the net promoter score field's zero (0) value in the visual report
