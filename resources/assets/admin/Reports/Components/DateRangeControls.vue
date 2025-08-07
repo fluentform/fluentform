@@ -39,6 +39,7 @@
             format="MMM d, yyyy"
             :picker-options="pickerOptions"
             size="medium"
+            :clearable="false"
         />
     </div>
 </template>
@@ -62,7 +63,9 @@ export default {
             isDateQuickSelectOpen: false,
             pickerOptions: {
                 disabledDate(time) {
-                  return time.getTime() > Date.now();
+                  const today = new Date();
+                  today.setHours(23, 59, 59, 999);
+                  return time.getTime() > today.getTime();
                 }
             }
         };
