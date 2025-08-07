@@ -1547,26 +1547,6 @@ class ReportHelper
             $temp = $startDate;
             $startDate = $endDate;
             $endDate = $temp;
-
-            // Update datetime objects
-            $startDateTime = new \DateTime($startDate);
-            $endDateTime = new \DateTime($endDate);
-        }
-
-        // Check if range appears to be same day (possibly "Today" selection)
-        $interval = $startDateTime->diff($endDateTime);
-        if ($interval->days < 1) {
-            // If the date parameter explicitly requested "today" (has today's date)
-            $today = new \DateTime('today');
-            $isToday = $startDateTime->format('Y-m-d') === $today->format('Y-m-d');
-            // Or Yesterday
-            $yesterday = new \DateTime('yesterday');
-            $isYesterday = $startDateTime->format('Y-m-d') === $yesterday->format('Y-m-d');
-
-            if (!$isToday && !$isYesterday) {
-                $startDateTime->modify('-1 year');
-                $startDate = $startDateTime->format('Y-m-d H:i:s');
-            }
         }
 
         return [$startDate, $endDate];

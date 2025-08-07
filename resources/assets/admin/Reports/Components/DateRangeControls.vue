@@ -37,7 +37,7 @@
             :default-time="['00:00:00', '23:59:59']"
             value-format="MMM d, yyyy"
             format="MMM d, yyyy"
-            :disabled-date="disableFutureDates"
+            :picker-options="pickerOptions"
             size="medium"
         />
     </div>
@@ -59,15 +59,13 @@ export default {
     emits: ['range-select', 'date-range-change'],
     data() {
         return {
-            isDateQuickSelectOpen: false
+            isDateQuickSelectOpen: false,
+            pickerOptions: {
+                disabledDate(time) {
+                  return time.getTime() > Date.now();
+                }
+            }
         };
-    },
-    methods: {
-        disableFutureDates(date) {
-            const today = new Date();
-            today.setHours(23, 59, 59, 999);
-            return date > today;
-        }
     },
     computed: {
         modalSelectedRange : {
