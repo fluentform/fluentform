@@ -159,7 +159,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.0.5 (Date: July 8, 2025) =
+### 6.0.5 (Date: August 13, 2025) =
 - Adds Fluent Forms Report module
 - Adds close button to payment summary items
 - Improves IP detection accepting client IP explicitly
@@ -182,6 +182,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes entries chart date range filtering
 - Fixes database creation errors in WordPress Studio environments
 - Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
+- Fixes WP Text Editor sanitizer removing links in success messages with search parameters
 
 ### 6.0.4 (Date: May 29, 2025) =
 - Improve honeypot condition check
