@@ -2128,6 +2128,66 @@ class TranslationString
         return apply_filters('fluentform/reports_i18n', $i18n);
     }
 
+    public static function getDashboardI18n()
+    {
+        $i18n = array(
+            'Overview'      => __('Overview', 'fluentform'),
+            'Dashboard'     => __('Dashboard', 'fluentform'),
+            'All'           => __('All', 'fluentform'),
+            'Today'         => __('Today', 'fluentform'),
+            'This Week'     => __('This Week', 'fluentform'),
+            'This Month'    => __('This Month', 'fluentform'),
+            'Total Forms'   => __('Total Forms', 'fluentform'),
+            'Total Entries' => __('Total Entries', 'fluentform'),
+            'Active Integrations' => __('Active Integrations', 'fluentform'),
+            'Total Revenue' => __('Total Revenue', 'fluentform'),
+            'vs last period' => __('vs last period', 'fluentform'),
+            'no change'     => __('no change', 'fluentform'),
+            'Form Submission' => __('Form Submission', 'fluentform'),
+            'Entries'       => __('Entries', 'fluentform'),
+            'Trends'        => __('Trends', 'fluentform'),
+            'No data available' => __('No data available', 'fluentform'),
+            'Latest Entries' => __('Latest Entries', 'fluentform'),
+            'View all entries' => __('View all entries', 'fluentform'),
+            'Form'          => __('Form', 'fluentform'),
+            'Name'          => __('Name', 'fluentform'),
+            'Submitted'     => __('Submitted', 'fluentform'),
+            'Status'        => __('Status', 'fluentform'),
+            'Anonymous'     => __('Anonymous', 'fluentform'),
+            'No entries found' => __('No entries found', 'fluentform'),
+            'Read'          => __('Read', 'fluentform'),
+            'Unread'        => __('Unread', 'fluentform'),
+            'Approved'      => __('Approved', 'fluentform'),
+            'Pending'       => __('Pending', 'fluentform'),
+            'Declined'      => __('Declined', 'fluentform'),
+            'Confirmed'     => __('Confirmed', 'fluentform'),
+            'Unconfirmed'   => __('Unconfirmed', 'fluentform'),
+            '1 day ago'     => __('1 day ago', 'fluentform'),
+            '{days} days ago' => __('%d days ago', 'fluentform'),
+            'Api Logs'      => __('Api Logs', 'fluentform'),
+            'View all api logs' => __('View all api logs', 'fluentform'),
+            'ID'            => __('ID', 'fluentform'),
+            'Submission ID' => __('Submission ID', 'fluentform'),
+            'Component'     => __('Component', 'fluentform'),
+            'Expire Date'   => __('Expire Date', 'fluentform'),
+            'No API logs found' => __('No API logs found', 'fluentform'),
+            'Success'       => __('Success', 'fluentform'),
+            'Failed'        => __('Failed', 'fluentform'),
+            'Processing'    => __('Processing', 'fluentform'),
+            'Lifetime Log'  => __('Lifetime Log', 'fluentform'),
+            'You are currently using the free version of Fluent Forms.' => __('You are currently using the free version of Fluent Forms.', 'fluentform'),
+            'Upgrade Now'   => __('Upgrade Now', 'fluentform'),
+            'Form submission by Country' => __('Form submission by Country', 'fluentform'),
+            'United States' => __('United States', 'fluentform'),
+            'Notifications' => __('Notifications', 'fluentform'),
+            'No notifications' => __('No notifications', 'fluentform'),
+            'Send feedback' => __('Send feedback', 'fluentform'),
+            'Feedback feature coming soon!' => __('Feedback feature coming soon!', 'fluentform'),
+            'Failed to load dashboard data' => __('Failed to load dashboard data', 'fluentform')
+        );
+        return apply_filters('fluentform/dashboard_i18n', $i18n);
+    }
+
     protected static function getSettingsCommonI18n()
     {
         return [

@@ -76,6 +76,14 @@ class Route {
     getLogFilters = this.getLogs + '/filters';
     deleteLogs = this.getLogs;
 
+    // Dashboard routes
+    dashboard = 'dashboard';
+    getDashboardStats = this.dashboard + '/stats';
+    getLatestEntries = this.dashboard + '/latest-entries';
+    getApiLogs = this.dashboard + '/api-logs';
+    getNotifications = this.dashboard + '/notifications';
+    getChartData = this.dashboard + '/chart-data';
+
     integrations = 'integrations';
     getGlobalIntegration = this.integrations;
     updateGlobalIntegration = this.integrations;

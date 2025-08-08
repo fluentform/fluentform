@@ -153,6 +153,17 @@ $router->prefix('report')->withPolicy('ReportPolicy')->group(function ($router) 
     $router->get('/forms/{form_id}', 'ReportController@form');
 });
 /*
+* Dashboard
+*/
+$router->prefix('dashboard')->withPolicy('DashboardPolicy')->group(function ($router) {
+    $router->get('/', 'DashboardController@getDashboard');
+    $router->get('/stats', 'DashboardController@getStats');
+    $router->get('/latest-entries', 'DashboardController@getLatestEntries');
+    $router->get('/api-logs', 'DashboardController@getApiLogs');
+    $router->get('/notifications', 'DashboardController@getNotifications');
+    $router->get('/chart-data', 'DashboardController@getChartData');
+});
+/*
 * Review Query
 */
 $router->post('notice', 'AdminNoticeController@noticeActions')->withPolicy('FormPolicy');

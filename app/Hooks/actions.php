@@ -145,7 +145,8 @@ add_action('admin_init', function () {
         'fluent_forms_all_entries',
         'msformentries',
         'fluent_forms_payment_entries',
-        'fluent_forms_reports'
+        'fluent_forms_reports',
+        'fluent_forms_dashboard'
     ];
 
     $page = wpFluentForm('request')->get('page');
@@ -839,6 +840,7 @@ $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
     new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
     new \FluentForm\App\Modules\Report\ReportHandler($app);
+    new \FluentForm\App\Modules\Dashboard\DashboardHandler($app);
     // Load payment module
     if (Helper::isPaymentCompatible()) {
         (new FluentForm\App\Modules\Payments\PaymentHandler())->init();

@@ -59,6 +59,7 @@ class Menu
         $addOnsCss = fluentFormMix('css/add-ons.css');
         $adminDocCss = fluentFormMix('css/admin_docs.css');
         $reportsCss = fluentFormMix('css/fluent-forms-reports.css');
+        $dashboardCss = fluentFormMix('css/fluent-forms-dashboard.css');
         if (is_rtl()) {
             $settingsGlobalStyle = fluentFormMix('css/settings_global_rtl.css');
             $allFormsStyle = fluentFormMix('css/fluent-all-forms-rtl.css');
@@ -67,6 +68,7 @@ class Menu
             $addOnsCss = fluentFormMix('css/add-ons-rtl.css');
             $adminDocCss = fluentFormMix('css/admin_docs_rtl.css');
             $reportsCss = fluentFormMix('css/fluent-forms-reports-rtl.css');
+            $dashboardCss = fluentFormMix('css/fluent-forms-dashboard-rtl.css');
         }
 
         wp_register_style(
@@ -193,6 +195,22 @@ class Menu
         wp_register_style(
             'fluentform_reports',
             $reportsCss,
+            [],
+            FLUENTFORM_VERSION,
+            'all'
+        );
+
+        wp_register_script(
+            'fluentform_dashboard',
+            fluentFormMix('js/dashboard.js'),
+            ['jquery'],
+            FLUENTFORM_VERSION,
+            true
+        );
+
+        wp_register_style(
+            'fluentform_dashboard',
+            $dashboardCss,
             [],
             FLUENTFORM_VERSION,
             'all'
@@ -470,6 +488,16 @@ class Menu
                 $fromRole ? $settingsCapability : 'fluentform_entries_viewer',
                 'fluent_forms_all_entries',
                 [$this, 'renderAllEntriesAdminRoute']
+            );
+
+            // Register Dashboard sub menu page.
+            add_submenu_page(
+                'fluent_forms',
+                __('Dashboard', 'fluentform'),
+                __('Dashboard', 'fluentform'),
+                $fromRole ? $settingsCapability : 'fluentform_dashboard_access',
+                'fluent_forms_dashboard',
+                [$this, 'renderDashboard']
             );
 
             // Register Reports sub menu page.
@@ -1242,6 +1270,11 @@ class Menu
             'is_installed' => defined('FLUENTMAIL'),
             'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
         ]);
+    }
+
+    public function renderDashboard()
+    {
+        do_action('fluentform/render_dashboard');
     }
 
     public function renderReports()
