@@ -110,8 +110,17 @@ class ReportPdfGenerator
         
         $html = '<div style="font-family: Arial, sans-serif; color: #333;">';
         
-        // Header
+        // Header with logo
         $html .= '<div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #007cba; padding-bottom: 20px;">';
+
+        // Add FluentForm logo
+        $logoUrl = fluentformMix('img/fluentform-logo.svg');
+        if ($logoUrl) {
+            $html .= '<div style="margin-bottom: 20px;">';
+            $html .= '<img src="' . esc_url($logoUrl) . '" alt="FluentForm Logo" style="height: 40px; width: auto;" />';
+            $html .= '</div>';
+        }
+
         $html .= '<h1 style="color: #007cba; margin: 0; font-size: 28px;">Fluent Forms Report</h1>';
         $html .= '<p style="color: #888; margin: 10px 0 0 0; font-size: 14px;">' . $startDateFormatted . ' - ' . $endDateFormatted . '</p>';
         if ($formId) {
@@ -208,18 +217,18 @@ class ReportPdfGenerator
         $changeIcon = '';
         if ($changeType === 'up') {
             if ($statKey === 'spam_submissions') {
-                $changeColor = '#dc3545';
+                $changeColor = '#ef4444';
                 $changeIcon = '↗ ';
             } else {
-                $changeColor = '#28a745';
+                $changeColor = '#10b981';
                 $changeIcon = '↗ ';
             }
         } elseif ($changeType === 'down') {
             if ($statKey === 'spam_submissions') {
-                $changeColor = '#28a745';
+                $changeColor = '#10b981';
                 $changeIcon = '↘ ';
             } else {
-                $changeColor = '#dc3545';
+                $changeColor = '#ef4444';
                 $changeIcon = '↘ ';
             }
         }
