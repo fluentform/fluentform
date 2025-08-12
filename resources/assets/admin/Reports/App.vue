@@ -61,7 +61,7 @@
                                 :change-type="stat.changeType"
                                 :icon="stat.icon"
                                 type="overview"
-                                :loading="loading"
+                                :loading="isComponentLoading('formStats')"
                             />
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                         <el-col :span="24" :md="16" >
                             <div class="conversion-chart-section">
                                 <overview-chart
-                                    :loading="loading"
+                                    :loading="isComponentLoading('overviewChart') || isComponentLoading('revenueChart')"
                                     :data="overviewChartData"
                                     :chart-view="chartMode"
                                     :selected-metrics="selectedChartMetrics"
@@ -121,14 +121,14 @@
                     </el-row>
 
                     <!-- Entries Grouped By Section -->
-                    <div class="submission-heatmap-section" v-if="hasPro">
+                    <div class="submission-heatmap-section">
                         <submission-heatmap
                             :heatmap_data="reports.heatmap_data"
                             :global_date_params="globalDateParams"
                         />
                     </div>
 
-                    <el-row :gutter="24" v-if="hasPro">
+                    <el-row :gutter="24">
                         <el-col :span="24">
                             <!-- API Logs Section -->
                             <div class="api-logs-chart-section">
@@ -201,7 +201,7 @@
                     />
 
                     <!-- Subscription Plan and Payment by type -->
-                    <el-row :gutter="24" class="subscription-plan-payment-type-section" v-if="hasPro">
+                    <el-row :gutter="24" class="subscription-plan-payment-type-section">
                         <el-col :span="24" :md="12">
                             <div class="top-performing-subscription-plan-section">
                                 <top-subscription-by-plan
@@ -221,7 +221,7 @@
                     </el-row>
 
                     <!-- Net Revenue Analysis Section -->
-                    <div class="net-revenue-section" style="margin-bottom: 24px;" v-if="hasPro">
+                    <div class="net-revenue-section" style="margin-bottom: 24px;">
                         <net-revenue-by-group
                             :forms-list="paymentFormsList"
                             :global-date-params="globalDateParams"
@@ -229,18 +229,6 @@
                             :selected-form-id="selectedGlobalFormId"
                         />
                     </div>
-
-                    <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
-                        <div>
-                            <h6 class="title">{{ $t('More Reports') }}</h6>
-                            <p class="text">{{ $t('Upgrade to pro to unlock more reports.') }}</p>
-                        </div>
-                        <a target="_blank"
-                           href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-                           class="el-button el-button--info el-button--small mt-2">
-                            {{ $t('Upgrade to Pro') }}
-                        </a>
-                    </notice>
                 </el-tab-pane>
                 <el-tab-pane :label="$t('Submission')" name="submission">
                     <!-- Submission Header -->
@@ -302,25 +290,13 @@
                     </div>
 
                     <!-- Submission Analysis Section -->
-                    <div class="submission-analysis-section" style="margin-bottom: 24px;" v-if="hasPro">
+                    <div class="submission-analysis-section" style="margin-bottom: 24px;">
                         <submission-analysis
                             :forms-list="formsList"
                             :global-date-params="globalDateParams"
                             :selected-form-id="selectedGlobalFormId"
                         />
                     </div>
-
-                    <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
-                        <div>
-                            <h6 class="title">{{ $t('More Reports') }}</h6>
-                            <p class="text">{{ $t('Upgrade to pro to unlock more reports.') }}</p>
-                        </div>
-                        <a target="_blank"
-                           href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-                           class="el-button el-button--info el-button--small mt-2">
-                            {{ $t('Upgrade to Pro') }}
-                        </a>
-                    </notice>
                 </el-tab-pane>
             </el-tabs>
         </div>
@@ -339,12 +315,10 @@ import TopPerformingForms from "./Components/TopPerformingForms.vue";
 import NetRevenueByGroup from "./Components/NetRevenueByGroup.vue";
 import SubmissionAnalysis from "./Components/SubmissionAnalysis.vue";
 import DateRangeControls from "./Components/DateRangeControls.vue";
-import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
     name: "Reports",
     components: {
-        Notice,
         LineChart,
         SubmissionHeatmap,
         SubmissionCountryHeatmap,
@@ -366,13 +340,52 @@ export default {
         return {
             activeTab: "overview",
             loading: false,
-            reports: {},
+            reports: {
+                overview_chart: null,
+                revenue_chart: null,
+                completion_rate: null,
+                form_stats: null,
+                heatmap_data: null,
+                country_heatmap: null,
+                api_logs: null,
+                top_performing_forms: null,
+                subscriptions: null,
+                payment_types: null,
+                net_revenue: null,
+                submission_analysis: null
+            },
             formsList: [],
             selectedRange: "month",
             dateRange: [
                 this.formatDateForDisplay(thirtyDaysAgo),
                 this.formatDateForDisplay(now)
             ],
+            // Individual component loading states
+            componentLoading: {
+                overviewChart: false,
+                revenueChart: false,
+                completionRate: false,
+                formStats: false,
+                heatmapData: false,
+                countryHeatmap: false,
+                apiLogs: false,
+                topPerformingForms: false,
+                subscriptions: false,
+                paymentTypes: false
+            },
+            // Individual component error states
+            componentErrors: {
+                overviewChart: null,
+                revenueChart: null,
+                completionRate: null,
+                formStats: null,
+                heatmapData: null,
+                countryHeatmap: null,
+                apiLogs: null,
+                topPerformingForms: null,
+                subscriptions: null,
+                paymentTypes: null
+            },
             lastUsedSelector: "range",
             selectedFormId: null,
             selectedGlobalFormId: null,
@@ -404,7 +417,8 @@ export default {
             return !!window.FluentFormApp.has_pdf;
         },
         overviewChartData() {
-            return this.chartMode === 'activity' ? this.reports.overview_chart : this.reports.revenue_chart;
+            const data = this.chartMode === 'activity' ? this.reports.overview_chart : this.reports.revenue_chart;
+            return data || null;
         },
         formOverviewStatsCards() {
             const stats = this.reports.form_stats || {};
@@ -575,33 +589,113 @@ export default {
         }
     },
     methods: {
-        fetchReports() {
+        async fetchReports() {
             this.loading = true;
 
-            let component = '';
+            // Reset errors
+            Object.keys(this.componentErrors).forEach(key => {
+                this.componentErrors[key] = null;
+            });
+
+            // Define components to load based on Pro status
+            const componentsToLoad = this.hasPro
+                ? ['overviewChart', 'revenueChart', 'completionRate', 'formStats', 'heatmapData', 'countryHeatmap', 'apiLogs', 'topPerformingForms', 'subscriptions', 'paymentTypes']
+                : ['overviewChart', 'revenueChart', 'topPerformingForms', 'apiLogs', 'formStats', 'paymentTypes'];
+
+            // For free users, initialize pro components with demo data (no API calls)
             if (!this.hasPro) {
-                component = 'overview_chart,completion_rate,form_stats,country_heatmap,top_performing_forms';
+                // Set demo data for pro components
+                this.$set(this.reports, 'completion_rate', this.getDemoCompletionRate());
+                this.$set(this.reports, 'heatmap_data', this.getDemoHeatmapData());
+                this.$set(this.reports, 'payment_types', this.getDemoPaymentTypes());
+                this.$set(this.reports, 'subscriptions', this.getDemoSubscriptions());
+                this.$set(this.reports, 'country_heatmap', {
+                    country_data: [
+                        { name: "Sweden", value: 10 },
+                        { name: "United States (US)", value: 10 },
+                        { name: "Mexico", value: 4 },
+                        { name: "India", value: 10 },
+                        { name: "Australia", value: 10 }
+                    ]
+                });
             }
 
-            const data = {
+            // Create promises for all components
+            const promises = componentsToLoad.map(component => this.fetchComponent(component));
+
+            try {
+                // Wait for all components to complete (success or failure)
+                await Promise.allSettled(promises);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async fetchComponent(componentName) {
+            this.componentLoading[componentName] = true;
+
+            try {
+                const commonParams = this.getCommonParams();
+                let response;
+
+                switch (componentName) {
+                    case 'overviewChart':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportOverviewChart"), commonParams);
+                        this.$set(this.reports, 'overview_chart', response.overview_chart);
+                        break;
+                    case 'revenueChart':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportRevenueChart"), commonParams);
+                        this.$set(this.reports, 'revenue_chart', response.revenue_chart);
+                        break;
+                    case 'completionRate':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportCompletionRate"), commonParams);
+                        this.$set(this.reports, 'completion_rate', response.completion_rate);
+                        break;
+                    case 'formStats':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportFormStats"), commonParams);
+                        this.$set(this.reports, 'form_stats', response.form_stats);
+                        break;
+                    case 'heatmapData':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportHeatmapData"), commonParams);
+                        this.$set(this.reports, 'heatmap_data', response.heatmap_data);
+                        break;
+                    case 'countryHeatmap':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportCountryHeatmap"), commonParams);
+                        this.$set(this.reports, 'country_heatmap', response.country_heatmap);
+                        break;
+                    case 'apiLogs':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportApiLogs"), commonParams);
+                        this.$set(this.reports, 'api_logs', response.api_logs);
+                        break;
+                    case 'topPerformingForms':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportTopPerformingForms"), commonParams);
+                        this.$set(this.reports, 'top_performing_forms', response.top_performing_forms);
+                        break;
+                    case 'subscriptions':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportSubscriptions"), commonParams);
+                        this.$set(this.reports, 'subscriptions', response.subscriptions);
+                        break;
+                    case 'paymentTypes':
+                        response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportPaymentTypes"), commonParams);
+                        this.$set(this.reports, 'payment_types', response.payment_types);
+                        break;
+                }
+            } catch (error) {
+                console.error(`Error fetching ${componentName}:`, error);
+                this.componentErrors[componentName] = error;
+            } finally {
+                this.componentLoading[componentName] = false;
+            }
+        },
+
+        getCommonParams() {
+            return {
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
+                form_id: this.selectedGlobalFormId,
                 view: this.chartMode,
-                component: component,
-                stats_range: this.globalDateParams.statsRange,
-                form_id: this.selectedGlobalFormId
+                stats_range: this.globalDateParams.statsRange
             };
-            const url = FluentFormsGlobal.$rest.route("report");
-            FluentFormsGlobal.$rest.get(url, data)
-                .then(response => {
-                    this.reports = response.reports;
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-                .finally(() => {
-                    this.loading = false;
-                });
         },
 
         fetchFormsList() {
@@ -628,31 +722,210 @@ export default {
             this.chartMode = view;
         },
 
-        fetchReportsData() {
-            this.loading = true;
-            const data = {
-                component: "form_stats,overview_chart,completion_rate,country_heatmap,revenue_chart,subscriptions,payment_types,heatmap_data,api_logs",
-                start_date: this.globalDateParams.startDate,
-                end_date: this.globalDateParams.endDate,
-                form_id: this.selectedGlobalFormId
+        async fetchReportsData() {
+            // Use the same component-wise fetching approach
+            await this.fetchReports();
+        },
+
+        // Method to refresh individual components
+        async refreshComponent(componentName) {
+            await this.fetchComponent(componentName);
+        },
+
+        // Method to check if a component has an error
+        hasComponentError(componentName) {
+            return this.componentErrors[componentName] !== null;
+        },
+
+        // Method to check if a component is loading
+        isComponentLoading(componentName) {
+            return this.componentLoading[componentName];
+        },
+
+        // Demo data methods for free users
+        getDemoCompletionRate() {
+            return {
+                completion_rate: 99,
+                incomplete_submissions: 10,
+                total_submissions: 55,
+                total_attempts: 60
             };
-            const url = FluentFormsGlobal.$rest.route("report");
-            FluentFormsGlobal.$rest.get(url, data)
-                .then(response => {
-                    if (response.reports && typeof response.reports.heatmap_data === "object") {
-                        for (const key in response.reports) {
-                            if (response.reports[key]) {
-                                this.reports[key] = response.reports[key];
-                            }
+        },
+
+        getDemoHeatmapData() {
+            const demoData = {};
+
+            // Create demo data for the exact date range you provided
+            const dates = [
+                "2025-07-13", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-19", "2025-07-20",
+                "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-26", "2025-07-27", "2025-07-28",
+                "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-02", "2025-08-03", "2025-08-04", "2025-08-05",
+                "2025-08-06", "2025-08-07", "2025-08-08", "2025-08-09", "2025-08-10", "2025-08-11", "2025-08-12"
+            ];
+
+            dates.forEach(date => {
+                // Add some demo activity on specific days
+                if (date === "2025-07-25") {
+                    demoData[date] = [0, 0, 0, 4, 0, 6, 0, 0];
+                } else if (date === "2025-07-28") {
+                    demoData[date] = [0, 0, 0, 30, 0, 1, 0, 0];
+                } else if (date === "2025-07-30") {
+                    demoData[date] = [0, 0, 0, 0, 0, 6, 7, 0];
+                } else if (date === "2025-08-06") {
+                    demoData[date] = [0, 0, 0, 0, 1, 0, 0, 0];
+                } else {
+                    demoData[date] = [0, 0, 0, 0, 0, 0, 0, 0];
+                }
+            });
+
+            return {
+                heatmap_data: demoData,
+                start_date: "2025-07-13 00:00:00",
+                end_date: "2025-08-12 23:59:59"
+            };
+        },
+
+        getDemoPaymentTypes() {
+            return {
+                subscription: {
+                    currency_symbol: "&#36;",
+                    payment_statuses: {
+                        failed: {
+                            amount: 105,
+                            percentage: 14.58,
+                            count: "1"
+                        },
+                        paid: {
+                            amount: 410,
+                            percentage: 56.94,
+                            count: "4"
+                        },
+                        pending: {
+                            amount: 105,
+                            percentage: 14.58,
+                            count: "1"
+                        },
+                        cancelled: {
+                            amount: 100,
+                            percentage: 13.89,
+                            count: "1"
                         }
+                    },
+                    total_amount: 720,
+                    weekly_average: 93.18
+                },
+                onetime: {
+                    currency_symbol: "&#36;",
+                    payment_statuses: {
+                        paid: {
+                            amount: 100,
+                            percentage: 100,
+                            count: "1"
+                        }
+                    },
+                    total_amount: 100,
+                    weekly_average: 22.73
+                }
+            };
+        },
+
+        getDemoSubscriptions() {
+            return {
+                chart_data: [
+                    { name: "Basic Plan", value: 45, amount: 450 },
+                    { name: "Pro Plan", value: 30, amount: 900 },
+                    { name: "Enterprise Plan", value: 15, amount: 750 }
+                ],
+                total_recurring: 2100,
+                growth_percentage: 12.5,
+                total_subscriptions: 90
+            };
+        },
+
+        getDemoNetRevenue() {
+            return {
+                revenue_data: [
+                    {
+                        form_id: "287",
+                        form_title: "Blank Form (#287)",
+                        paid_amount: 380,
+                        pending_amount: 1540,
+                        refunded_amount: 0,
+                        net_revenue: 380
                     }
-                })
-                .catch(error => {
-                    console.error("Error fetching overview chart data:", error);
-                })
-                .finally(() => {
-                    this.loading = false;
-                });
+                ],
+                summary_totals: {
+                    paid: 380,
+                    pending: 1540,
+                    refunded: 0,
+                    net: 380
+                },
+                total_items: 1,
+                current_page: 1,
+                page_size: 5
+            };
+        },
+
+        getDemoSubmissionAnalysis() {
+            return {
+                submission_data: [
+                    {
+                        form_id: "287",
+                        form_title: "Blank Form (#287)",
+                        total_submissions: 124,
+                        read_submissions: 4,
+                        unread_submissions: 120,
+                        spam_submissions: 0,
+                        conversion_rate: 3.23
+                    },
+                    {
+                        form_id: "286",
+                        form_title: "Blank Form (#286)",
+                        total_submissions: 71,
+                        read_submissions: 1,
+                        unread_submissions: 70,
+                        spam_submissions: 0,
+                        conversion_rate: 1.41
+                    },
+                    {
+                        form_id: "290",
+                        form_title: "Blank Form (#290)",
+                        total_submissions: 10,
+                        read_submissions: 1,
+                        unread_submissions: 9,
+                        spam_submissions: 0,
+                        conversion_rate: 10
+                    },
+                    {
+                        form_id: "1",
+                        form_title: "Contact Form Demo",
+                        total_submissions: 9,
+                        read_submissions: 5,
+                        unread_submissions: 4,
+                        spam_submissions: 0,
+                        conversion_rate: 55.56
+                    },
+                    {
+                        form_id: "292",
+                        form_title: "Blank Form (#292)",
+                        total_submissions: 2,
+                        read_submissions: 0,
+                        unread_submissions: 2,
+                        spam_submissions: 0,
+                        conversion_rate: 0
+                    }
+                ],
+                totals: {
+                    total: 217,
+                    read: 11,
+                    unread: 206,
+                    spam: 0,
+                    readRate: 5.07
+                },
+                total_items: 6,
+                current_page: 1,
+                page_size: 5
+            };
         },
 
         updateGlobalDateParams() {
@@ -713,16 +986,15 @@ export default {
             this.topFormsLoading = true;
 
             const data = {
-                component: "top_performing_forms",
                 start_date: this.globalDateParams.startDate,
                 end_date: this.globalDateParams.endDate,
                 metric: metric
             };
-            const url = FluentFormsGlobal.$rest.route("report");
+            const url = FluentFormsGlobal.$rest.route("reportTopPerformingForms");
             FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    if (response && response.reports && response.reports.top_performing_forms) {
-                        this.reports.top_performing_forms = response.reports.top_performing_forms;
+                    if (response && response.top_performing_forms) {
+                        this.reports.top_performing_forms = response.top_performing_forms;
                     }
                 })
                 .catch(error => {

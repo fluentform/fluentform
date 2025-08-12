@@ -1,6 +1,6 @@
 <template>
     <div>
-        <card>
+        <card class="ff-pro-component">
             <card-head>
                 <div class="submission-analysis-header">
                     <div class="title-section">
@@ -182,6 +182,16 @@
                         </el-table-column>
                     </el-table>
                 </div>
+                <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
+                    <div>
+                        <h2 class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</h2>
+                    </div>
+                    <a target="_blank"
+                       href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
+                       class="el-button el-button--info el-button--small mt-2">
+                        {{ $t('Upgrade to Pro') }}
+                    </a>
+                </notice>
             </card-body>
         </card>
         <div v-if="totalItems > pageSize" class="ff_pagination_wrap text-right pagination-container mt-4">
@@ -204,13 +214,15 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
     name: 'SubmissionAnalysis',
     components: {
         Card,
         CardBody,
-        CardHead
+        CardHead,
+        Notice
     },
     props: {
         formsList: {
@@ -259,6 +271,10 @@ export default {
         }
     },
     computed: {
+        hasPro() {
+            return !!window.FluentFormApp.has_pro;
+        },
+
         groupByOptions() {
             let options = {
                 'forms': this.$t('Forms'),
@@ -279,6 +295,60 @@ export default {
     methods: {
         fetchSubmissionData() {
             this.loading = true;
+
+            if (!this.hasPro) {
+                // Show demo data for free users
+                setTimeout(() => {
+                    this.submissionData = [
+                        {
+                            form_id: "1",
+                            form_title: "Contact Form",
+                            total_submissions: 124,
+                            read_submissions: 4,
+                            unread_submissions: 120,
+                            spam_submissions: 0,
+                            conversion_rate: 3.23
+                        },
+                        {
+                            form_id: "2",
+                            form_title: "Registration Form",
+                            total_submissions: 71,
+                            read_submissions: 1,
+                            unread_submissions: 70,
+                            spam_submissions: 0,
+                            conversion_rate: 1.41
+                        },
+                        {
+                            form_id: "3",
+                            form_title: "Feedback Form",
+                            total_submissions: 10,
+                            read_submissions: 1,
+                            unread_submissions: 9,
+                            spam_submissions: 0,
+                            conversion_rate: 10
+                        },
+                        {
+                            form_id: "6",
+                            form_title: "Blank Form (#6)",
+                            total_submissions: 2,
+                            read_submissions: 0,
+                            unread_submissions: 2,
+                            spam_submissions: 0,
+                            conversion_rate: 0
+                        }
+                    ];
+                    this.totalItems = 6;
+                    this.totals = {
+                        total: 217,
+                        read: 11,
+                        unread: 206,
+                        spam: 0,
+                        readRate: 5.07
+                    };
+                    this.loading = false;
+                }, 500);
+                return;
+            }
 
             const data = {
                 group_by: this.selectedGroupBy,

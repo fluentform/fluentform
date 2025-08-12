@@ -1,5 +1,5 @@
 <template>
-    <card>
+    <card class="ff-pro-component">
         <card-head>
             <div class="overview-chart-header">
                 <div class="chart-title-section">
@@ -131,7 +131,11 @@ export default {
           let keys = Object.keys(this.chartData);
           if (this.isRevenueMode) {
               keys = ['payments', 'paid', 'pending', 'refunded'];
+          } else {
+              // For activity mode, check all available activity keys
+              keys = ['submissions', 'views', 'read', 'unread', 'spam', 'trashed'];
           }
+
           let status = false;
           keys.forEach(key => {
               if (this.chartData[key] && this.chartData[key].length > 0 && this.chartData[key].some(val => val > 0)) {

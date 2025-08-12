@@ -61,14 +61,66 @@ class ReportPdfGenerator
 
         // Allow filtering of report components to include
         $components = apply_filters('fluentform/report_pdf_components', 'form_stats,top_performing_forms,completion_rate,payment_types,api_logs', $data);
+        $componentsList = array_map('trim', explode(',', $components));
 
-        // Get comprehensive report data
-        $reportData = $reportService->getReports([
+        // Get comprehensive report data using component-specific methods
+        $reportData = ['reports' => []];
+        $commonParams = [
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'form_id' => $formId,
-            'component' => $components
-        ]);
+            'form_id' => $formId
+        ];
+
+        // Fetch each component individually
+        foreach ($componentsList as $component) {
+            try {
+                switch ($component) {
+                    case 'form_stats':
+                        $data = $reportService->getFormStats($commonParams);
+                        $reportData['reports']['form_stats'] = $data['form_stats'];
+                        break;
+                    case 'top_performing_forms':
+                        $data = $reportService->getTopPerformingForms($commonParams);
+                        $reportData['reports']['top_performing_forms'] = $data['top_performing_forms'];
+                        break;
+                    case 'completion_rate':
+                        $data = $reportService->getCompletionRate($commonParams);
+                        $reportData['reports']['completion_rate'] = $data['completion_rate'];
+                        break;
+                    case 'payment_types':
+                        $data = $reportService->getPaymentTypes($commonParams);
+                        $reportData['reports']['payment_types'] = $data['payment_types'];
+                        break;
+                    case 'api_logs':
+                        $data = $reportService->getApiLogs($commonParams);
+                        $reportData['reports']['api_logs'] = $data['api_logs'];
+                        break;
+                    case 'overview_chart':
+                        $data = $reportService->getOverviewChart($commonParams);
+                        $reportData['reports']['overview_chart'] = $data['overview_chart'];
+                        break;
+                    case 'revenue_chart':
+                        $data = $reportService->getRevenueChart($commonParams);
+                        $reportData['reports']['revenue_chart'] = $data['revenue_chart'];
+                        break;
+                    case 'heatmap_data':
+                        $data = $reportService->getHeatmapData($commonParams);
+                        $reportData['reports']['heatmap_data'] = $data['heatmap_data'];
+                        break;
+                    case 'country_heatmap':
+                        $data = $reportService->getCountryHeatmap($commonParams);
+                        $reportData['reports']['country_heatmap'] = $data['country_heatmap'];
+                        break;
+                    case 'subscriptions':
+                        $data = $reportService->getSubscriptions($commonParams);
+                        $reportData['reports']['subscriptions'] = $data['subscriptions'];
+                        break;
+                }
+            } catch (Exception $e) {
+                // Log error but continue with other components
+                error_log("PDF Report component '{$component}' failed: " . $e->getMessage());
+            }
+        }
 
         $reportData = apply_filters('fluentform/report_pdf_data', $reportData, $data);
 

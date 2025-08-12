@@ -1,6 +1,6 @@
 <template>
     <div>
-        <card>
+        <card class="ff-pro-component">
             <card-head>
                 <div class="net-revenue-header">
                     <div class="title-section">
@@ -153,6 +153,16 @@
                         </el-table-column>
                     </el-table>
                 </div>
+                <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
+                    <div>
+                        <h2 class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</h2>
+                    </div>
+                    <a target="_blank"
+                       href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
+                       class="el-button el-button--info el-button--small mt-2">
+                        {{ $t('Upgrade to Pro') }}
+                    </a>
+                </notice>
             </card-body>
         </card>
         <div v-if="totalItems > pageSize" class="ff_pagination_wrap text-right pagination-container mt-4">
@@ -175,13 +185,15 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
     name: 'NetRevenueByGroup',
     components: {
         Card,
         CardBody,
-        CardHead
+        CardHead,
+        Notice
     },
     props: {
         formsList: {
@@ -217,6 +229,10 @@ export default {
         };
     },
     computed: {
+        hasPro() {
+            return !!window.FluentFormApp.has_pro;
+        },
+
         decodedCurrency() {
             return this.decodeHtmlEntities(this.paymentCurrency);
         },
@@ -254,6 +270,39 @@ export default {
     methods: {
         fetchRevenueData() {
             this.loading = true;
+
+            if (!this.hasPro) {
+                // Show demo data for free users
+                setTimeout(() => {
+                    this.revenueData = [
+                        {
+                            form_id: "1",
+                            form_title: "Contact Form",
+                            paid_amount: 380,
+                            pending_amount: 1540,
+                            refunded_amount: 0,
+                            net_revenue: 380
+                        },
+                        {
+                            form_id: "3",
+                            form_title: "Feedback Form",
+                            paid_amount: 30,
+                            pending_amount: 2420,
+                            refunded_amount: 20,
+                            net_revenue: 380
+                        }
+                    ];
+                    this.totalItems = 1;
+                    this.summaryTotals = {
+                        paid: 380,
+                        pending: 1540,
+                        refunded: 0,
+                        net: 380
+                    };
+                    this.loading = false;
+                }, 100); // Simulate loading time
+                return;
+            }
 
             const data = {
                 group_by: this.selectedGroupBy,

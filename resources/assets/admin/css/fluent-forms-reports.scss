@@ -683,22 +683,32 @@
     }
 }
 
-// Completion Rates Gauge Section
-.completion-rates-gauge-section {
-    height: 450px;
+// Universal Pro Component Glass Overlay
+.ff-pro-component {
     .ff_card_body {
         position: relative;
+
         .update-info-notice {
             position: absolute;
             inset: 0;
             width: 100%;
             z-index: 100;
-            opacity: 0.9;
-            border-left-color: transparent;
             flex-direction: column;
             justify-content: center;
+
+            // Glass-like effect
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
     }
+}
+
+// Completion Rates Gauge Section
+.completion-rates-gauge-section {
+    height: 450px;
     .gauge-container {
         display: flex;
         align-items: center;

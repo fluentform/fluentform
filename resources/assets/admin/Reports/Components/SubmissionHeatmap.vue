@@ -1,5 +1,5 @@
 <template>
-    <card>
+    <card class="ff-pro-component">
         <card-head>
             <h3>{{$t('Submission Timeline')}}</h3>
             <div class="heatmap-navigation">
@@ -76,6 +76,16 @@
                     <span>{{ $t('High') }}</span>
                 </div>
             </div>
+            <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
+                <div>
+                    <h2 class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</h2>
+                </div>
+                <a target="_blank"
+                   href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
+                   class="el-button el-button--info el-button--small mt-2">
+                    {{ $t('Upgrade to Pro') }}
+                </a>
+            </notice>
         </card-body>
     </card>
 </template>
@@ -84,13 +94,15 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
     name: 'SubmissionHeatmap',
     components: {
         Card,
         CardBody,
-        CardHead
+        CardHead,
+        Notice
     },
     props: ['heatmap_data', 'global_date_params'],
     data() {
@@ -134,6 +146,10 @@ export default {
         };
     },
     computed: {
+        hasPro() {
+            return !!window.FluentFormApp.has_pro;
+        },
+
         visibleDays() {
             const days = [];
             const date = new Date(this.currentStartDate);

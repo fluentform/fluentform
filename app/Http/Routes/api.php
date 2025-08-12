@@ -145,7 +145,19 @@ $router->post('form-submit', 'SubmissionHandlerController@submit')->withPolicy('
 * Form Report
 */
 $router->prefix('report')->withPolicy('ReportPolicy')->group(function ($router) {
-    $router->get('/', 'ReportController@getReports');
+    // Component-specific endpoints
+    $router->get('/overview-chart', 'ReportController@getOverviewChart');
+    $router->get('/revenue-chart', 'ReportController@getRevenueChart');
+    $router->get('/completion-rate', 'ReportController@getCompletionRate');
+    $router->get('/form-stats', 'ReportController@getFormStats');
+    $router->get('/heatmap-data', 'ReportController@getHeatmapData');
+    $router->get('/country-heatmap', 'ReportController@getCountryHeatmap');
+    $router->get('/api-logs', 'ReportController@getApiLogs');
+    $router->get('/top-performing-forms', 'ReportController@getTopPerformingForms');
+    $router->get('/subscriptions', 'ReportController@getSubscriptions');
+    $router->get('/payment-types', 'ReportController@getPaymentTypes');
+
+    // Existing endpoints
     $router->get('/select-forms', 'ReportController@getFormsDropdown');
     $router->get('/net-revenue', 'ReportController@netRevenue');
     $router->get('/submissions-analysis', 'ReportController@submissionsAnalysis');

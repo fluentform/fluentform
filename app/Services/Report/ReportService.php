@@ -46,103 +46,7 @@ class ReportService
         }
     }
 
-    /**
-     * Get Reports Data
-     * 
-     * @param array $data
-     * @return array
-     */
-    public function getReports($data)
-    {
 
-        $data = Sanitizer::sanitize($data, [
-            'start_date' => 'sanitizeTextField',
-            'end_date' => 'sanitizeTextField',
-            'component' => 'sanitizeTextField',
-            'view' => 'sanitizeTextField',
-            'metric' => 'sanitizeTextField',
-            'stats_range' => 'sanitizeTextField'
-        ]);
-
-        $startDate = Arr::get($data, 'start_date');
-        $endDate = Arr::get($data, 'end_date');
-        $formId = intval(Arr::get($data, 'form_id'));
-        $components = array_map('trim', explode(',', Arr::get($data, 'component', '')));
-        // if no start or end date, then set default date range as last month
-        if (!$startDate || !$endDate) {
-            $now = new \DateTime();
-            $endDate = $now->format('Y-m-d 23:59:59');
-
-            $thirtyDaysAgo = new \DateTime();
-            $thirtyDaysAgo->modify('-30 days');
-            $startDate = $thirtyDaysAgo->format('Y-m-d 00:00:00');
-        }
-
-        $reports = ['reports' => []];
-        if (in_array('overview_chart', $components)) {
-            $reports['reports']['overview_chart'] = ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'activity');
-            $reports['reports']['revenue_chart'] = ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue');
-        }
-
-        if (in_array('completion_rate', $components)) {
-            $reports['reports']['completion_rate'] = ReportHelper::getCompletionRateData($startDate, $endDate, $formId);
-        }
-
-        if (in_array('form_stats', $components)) {
-            $reports['reports']['form_stats'] = ReportHelper::getFormStats($startDate, $endDate, $formId);
-        }
-
-        if (in_array('heatmap_data', $components)) {
-            $reports['reports']['heatmap_data'] = ReportHelper::getSubmissionHeatmap($startDate, $endDate, $formId);
-        }
-
-        if (in_array('country_heatmap', $components)) {
-            $reports['reports']['country_heatmap'] = ReportHelper::getSubmissionsByCountry($startDate, $endDate, $formId);
-        }
-
-        if (in_array('api_logs', $components)) {
-            $reports['reports']['api_logs'] = ReportHelper::getApiLogs($startDate, $endDate, $formId);
-        }
-
-        if (in_array('top_performing_forms', $components)) {
-            $metric = Arr::get($data, 'metric', 'entries');
-            if (!in_array($metric, ['entries', 'payments'])) {
-                $metric = 'entries';
-            }
-            $reports['reports']['top_performing_forms'] = ReportHelper::getTopPerformingForms($startDate, $endDate, $metric);
-        }
-
-        if (in_array('subscriptions', $components)) {
-            $reports['reports']['subscriptions'] = ReportHelper::getSubscriptions($startDate, $endDate, $formId);
-        }
-
-        if (in_array('payment_types', $components)) {
-            $reports['reports']['payment_types'] = [
-                'subscription' => ReportHelper::getPaymentsByType($startDate, $endDate, 'subscription', $formId),
-                'onetime' => ReportHelper::getPaymentsByType($startDate, $endDate, 'onetime', $formId)
-            ];
-        }
-
-        if (!$components || empty($reports['reports'])) {
-            $reports['reports'] = [
-                'overview_chart'        => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'activity'),
-                'revenue_chart'         => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue'),
-                'form_stats'            => ReportHelper::getFormStats($startDate, $endDate, $formId),
-                'completion_rate'       => ReportHelper::getCompletionRateData($startDate, $endDate, $formId),
-                'heatmap_data'          => ReportHelper::getSubmissionHeatmap($startDate, $endDate), $formId,
-                'country_heatmap'       => ReportHelper::getSubmissionsByCountry($startDate, $endDate, $formId),
-                'api_logs'              => ReportHelper::getApiLogs($startDate, $endDate, $formId),
-                'top_performing_forms'  => ReportHelper::getTopPerformingForms($startDate, $endDate, 'entries'),
-                'subscriptions'         => ReportHelper::getSubscriptions($startDate, $endDate, $formId),
-                'payment_types' => [
-                    'subscription' => ReportHelper::getPaymentsByType($startDate, $endDate, 'subscription', $formId),
-                    'onetime' => ReportHelper::getPaymentsByType($startDate, $endDate, 'onetime', $formId)
-                ],
-            ];
-        }
-
-        return $reports;
-    }
 
     /**
      * Get Net Revenue Data
@@ -151,18 +55,6 @@ class ReportService
      */
     public function netRevenue($data)
     {
-        if (!Helper::hasPro()) {
-            return [
-                'data' => [],
-                'totals' => [],
-                'total' => 0,
-                'group_by' => 'forms',
-                'date_range' => [
-                    'start' => '',
-                    'end' => ''
-                ]
-            ];
-        }
         $data = Sanitizer::sanitize($data, [
             'start_date' => 'sanitizeTextField',
             'end_date' => 'sanitizeTextField',
@@ -213,18 +105,6 @@ class ReportService
 
     public function submissionsAnalysis($data)
     {
-        if (!Helper::hasPro()) {
-            return [
-                'data' => [],
-                'total' => 0,
-                'totals' => [],
-                'group_by' => 'forms',
-                'date_range' => [
-                    'start' => '',
-                    'end' => ''
-                ]
-            ];
-        }
         $data = Sanitizer::sanitize($data, [
             'group_by' => 'sanitizeTextField',
             'start_date' => 'sanitizeTextField',
@@ -281,7 +161,7 @@ class ReportService
 
     /**
      * Get forms for dropdown
-     * 
+     *
      * @return array
      */
     public function getFormsDropdown()
@@ -292,6 +172,229 @@ class ReportService
 
         return [
             'forms' => $forms
+        ];
+    }
+
+    /**
+     * Get Overview Chart Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getOverviewChart($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'overview_chart' => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'activity')
+        ];
+    }
+
+    /**
+     * Get Revenue Chart Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getRevenueChart($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'revenue_chart' => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue')
+        ];
+    }
+
+    /**
+     * Get Completion Rate Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getCompletionRate($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'completion_rate' => ReportHelper::getCompletionRateData($startDate, $endDate, $formId)
+        ];
+    }
+
+    /**
+     * Get Form Stats Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getFormStats($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'form_stats' => ReportHelper::getFormStats($startDate, $endDate, $formId)
+        ];
+    }
+
+    /**
+     * Get Heatmap Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getHeatmapData($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'heatmap_data' => ReportHelper::getSubmissionHeatmap($startDate, $endDate, $formId)
+        ];
+    }
+
+    /**
+     * Get Country Heatmap Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getCountryHeatmap($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'country_heatmap' => ReportHelper::getSubmissionsByCountry($startDate, $endDate, $formId)
+        ];
+    }
+
+    /**
+     * Get API Logs Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getApiLogs($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'api_logs' => ReportHelper::getApiLogs($startDate, $endDate, $formId)
+        ];
+    }
+
+    /**
+     * Get Top Performing Forms Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getTopPerformingForms($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $metric = Arr::get($data, 'metric', 'entries');
+
+        if (!in_array($metric, ['entries', 'payments'])) {
+            $metric = 'entries';
+        }
+
+        return [
+            'top_performing_forms' => ReportHelper::getTopPerformingForms($startDate, $endDate, $metric)
+        ];
+    }
+
+    /**
+     * Get Subscriptions Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getSubscriptions($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'subscriptions' => ReportHelper::getSubscriptions($startDate, $endDate, $formId)
+        ];
+    }
+
+    /**
+     * Get Payment Types Data
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getPaymentTypes($data)
+    {
+        $data = $this->sanitizeCommonParams($data);
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+        $formId = $data['form_id'];
+
+        return [
+            'payment_types' => [
+                'subscription' => ReportHelper::getPaymentsByType($startDate, $endDate, 'subscription', $formId),
+                'onetime' => ReportHelper::getPaymentsByType($startDate, $endDate, 'onetime', $formId)
+            ]
+        ];
+    }
+
+    /**
+     * Sanitize and prepare common parameters
+     *
+     * @param array $data
+     * @return array
+     */
+    private function sanitizeCommonParams($data)
+    {
+        $data = Sanitizer::sanitize($data, [
+            'start_date' => 'sanitizeTextField',
+            'end_date' => 'sanitizeTextField',
+            'metric' => 'sanitizeTextField',
+        ]);
+
+        $startDate = Arr::get($data, 'start_date');
+        $endDate = Arr::get($data, 'end_date');
+        $formId = intval(Arr::get($data, 'form_id'));
+
+        // Set default date range if not provided
+        if (!$startDate || !$endDate) {
+            $now = new \DateTime();
+            $endDate = $now->format('Y-m-d 23:59:59');
+
+            $thirtyDaysAgo = new \DateTime();
+            $thirtyDaysAgo->modify('-30 days');
+            $startDate = $thirtyDaysAgo->format('Y-m-d 00:00:00');
+        }
+
+        return [
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'form_id' => $formId,
+            'metric' => Arr::get($data, 'metric', 'entries')
         ];
     }
 }
