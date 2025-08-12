@@ -59,9 +59,9 @@
 
             <!-- Sidebar -->
             <el-col :span="24" :md="8">
-                <!-- Lifetime Log -->
+                <!-- License Status -->
                 <div class="lifetime-log-section">
-                    <lifetime-log />
+                    <lifetime-log :license-status="licenseStatus" />
                 </div>
 
                 <!-- Country Map -->
@@ -97,13 +97,25 @@
             </el-col>
         </el-row>
 
-        <!-- Notifications Section -->
-        <div class="notifications-section">
-            <notifications-panel
-                :notifications="notifications"
-                :loading="loading"
-            />
-        </div>
+        <!-- Notifications and Support Section -->
+        <el-row :gutter="20" class="notifications-support-row">
+            <!-- Notifications Panel -->
+            <el-col :span="24" :md="12">
+                <div class="notifications-section">
+                    <notifications-panel
+                        :notifications="notifications"
+                        :loading="loading"
+                    />
+                </div>
+            </el-col>
+
+            <!-- Fluent Support Ticket -->
+            <el-col :span="24" :md="12">
+                <div class="support-section">
+                    <fluent-support-ticket />
+                </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -115,6 +127,7 @@ import CountryMap from './Components/CountryMap.vue';
 import LatestEntriesTable from './Components/LatestEntriesTable.vue';
 import ApiLogsTable from './Components/ApiLogsTable.vue';
 import NotificationsPanel from './Components/NotificationsPanel.vue';
+import FluentSupportTicket from './Components/FluentSupportTicket.vue';
 
 export default {
     name: 'DashboardApp',
@@ -125,7 +138,8 @@ export default {
         CountryMap,
         LatestEntriesTable,
         ApiLogsTable,
-        NotificationsPanel
+        NotificationsPanel,
+        FluentSupportTicket
     },
     data() {
         return {
@@ -140,7 +154,12 @@ export default {
             latestEntries: [],
             apiLogs: [],
             notifications: [],
-            countryHeatmap: {}
+            countryHeatmap: {},
+            licenseStatus: {
+                is_pro: false,
+                status: 'free',
+                message: 'You are currently using the free version of Fluent Forms.'
+            }
         };
     },
     computed: {
@@ -150,8 +169,8 @@ export default {
                     key: 'total_forms',
                     title: this.$t('Total Forms'),
                     value: this.stats.total_forms?.current || 0,
-                    change: this.stats.total_forms?.change || 0,
-                    changeType: this.stats.total_forms?.change_type || 'neutral',
+                    change: this.formatChangeValue(this.stats.total_forms?.change || 0),
+                    changeType: this.mapChangeType(this.stats.total_forms?.change_type || 'neutral'),
                     icon: 'el-icon-document',
                     color: '#409EFF'
                 },
@@ -159,8 +178,8 @@ export default {
                     key: 'total_entries',
                     title: this.$t('Total Entries'),
                     value: this.stats.total_entries?.current || 0,
-                    change: this.stats.total_entries?.change || 0,
-                    changeType: this.stats.total_entries?.change_type || 'neutral',
+                    change: this.formatChangeValue(this.stats.total_entries?.change || 0),
+                    changeType: this.mapChangeType(this.stats.total_entries?.change_type || 'neutral'),
                     icon: 'el-icon-edit-outline',
                     color: '#67C23A'
                 },
@@ -168,8 +187,8 @@ export default {
                     key: 'active_integrations',
                     title: this.$t('Active Integrations'),
                     value: this.stats.active_integrations?.current || 0,
-                    change: this.stats.active_integrations?.change || 0,
-                    changeType: this.stats.active_integrations?.change_type || 'neutral',
+                    change: this.formatChangeValue(this.stats.active_integrations?.change || 0),
+                    changeType: this.mapChangeType(this.stats.active_integrations?.change_type || 'neutral'),
                     icon: 'el-icon-connection',
                     color: '#E6A23C'
                 },
@@ -177,8 +196,8 @@ export default {
                     key: 'total_revenue',
                     title: this.$t('Total Revenue'),
                     value: this.formatCurrency(this.stats.total_revenue?.current || 0),
-                    change: this.stats.total_revenue?.change || 0,
-                    changeType: this.stats.total_revenue?.change_type || 'neutral',
+                    change: this.formatChangeValue(this.stats.total_revenue?.change || 0),
+                    changeType: this.mapChangeType(this.stats.total_revenue?.change_type || 'neutral'),
                     icon: 'el-icon-money',
                     color: '#F56C6C'
                 }
@@ -209,6 +228,7 @@ export default {
                     this.apiLogs = response.api_logs || [];
                     this.notifications = response.notifications || [];
                     this.countryHeatmap = response.country_heatmap || {};
+                    this.licenseStatus = response.license_status || this.licenseStatus;
 
                     // Set hasPayment based on global app data
                     this.hasPayment = window.FluentFormApp?.has_payment || false;
@@ -277,9 +297,84 @@ export default {
                 style: 'currency',
                 currency: 'USD'
             }).format(amount);
+        },
+
+        formatChangeValue(change) {
+            // Convert number to string with percentage
+            if (change === 0) {
+                return '';
+            }
+            const absChange = Math.abs(change);
+            return `${absChange}%`;
+        },
+
+        mapChangeType(changeType) {
+            // Map Dashboard change types to Reports change types
+            switch (changeType) {
+                case 'increase':
+                    return 'up';
+                case 'decrease':
+                    return 'down';
+                case 'neutral':
+                default:
+                    return 'neutral';
+            }
         }
     }
 };
 </script>
 
+<style lang="scss" scoped>
+.dashboard-app {
+    padding: 20px;
+    background-color: #f9fafb;
+    min-height: 100vh;
+
+    .stats-row,
+    .chart-lifetime-row,
+    .tables-row,
+    .notifications-support-row {
+        margin-bottom: 20px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .stats-section,
+    .chart-section,
+    .lifetime-log-section,
+    .country-map-section,
+    .latest-entries-section,
+    .api-logs-section,
+    .notifications-section,
+    .support-section {
+        height: 100%;
+    }
+
+    // Ensure equal height columns
+    .notifications-support-row {
+        .el-col {
+            display: flex;
+
+            > div {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-app {
+        padding: 16px;
+
+        .stats-row,
+        .chart-lifetime-row,
+        .tables-row,
+        .notifications-support-row {
+            margin-bottom: 16px;
+        }
+    }
+}
+</style>
 

@@ -3,7 +3,7 @@
         <card-head>
             <div class="overview-chart-header">
                 <div class="chart-title-section">
-                    <h3>{{$t('Overview Chart')}}</h3>
+                    <h4>{{$t('Overview Chart')}}</h4>
                 </div>
                 <div class="card-controls">
                     <el-radio-group
@@ -412,7 +412,6 @@ export default {
             :deep(.el-radio-button__inner) {
                 padding: 8px 16px;
                 font-size: 12px;
-                border-radius: 4px;
             }
         }
     }

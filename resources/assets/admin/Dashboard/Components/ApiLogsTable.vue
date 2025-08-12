@@ -1,17 +1,17 @@
 <template>
-    <div class="api-logs-table">
-        <div class="table-header">
-            <h3 class="table-title">{{ $t('Api Logs') }}</h3>
-            <el-button 
-                type="text" 
+    <card>
+        <card-head>
+            <h4>{{ $t('Api Logs') }}</h4>
+            <el-button
+                type="text"
                 size="small"
                 @click="viewAllLogs"
             >
                 {{ $t('View all api logs') }}
             </el-button>
-        </div>
-        
-        <div class="table-content">
+        </card-head>
+
+        <card-body>
             <el-table
                 :data="logs"
                 v-loading="loading"
@@ -40,12 +40,15 @@
                 </el-table-column>
                 
                 <el-table-column
-                    prop="form_id"
+                    prop="form_title"
                     :label="$t('Form')"
-                    width="80"
+                    min-width="150"
                 >
                     <template slot-scope="scope">
-                        <span class="form-id">{{ scope.row.form_id }}</span>
+                        <div class="form-info">
+                            <span class="form-title">{{ scope.row.form_title || 'Unknown Form' }}</span>
+                            <small class="form-id-small">(ID: {{ scope.row.form_id }})</small>
+                        </div>
                     </template>
                 </el-table-column>
                 
@@ -89,13 +92,22 @@
                 <i class="el-icon-connection empty-icon"></i>
                 <p class="empty-text">{{ $t('No API logs found') }}</p>
             </div>
-        </div>
-    </div>
+        </card-body>
+    </card>
 </template>
 
 <script>
+import Card from '@/admin/components/Card/Card.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
+import CardHead from "@/admin/components/Card/CardHead.vue";
+
 export default {
     name: 'ApiLogsTable',
+    components: {
+        Card,
+        CardBody,
+        CardHead
+    },
     props: {
         logs: {
             type: Array,
@@ -109,7 +121,25 @@ export default {
     methods: {
         formatDate(dateString) {
             if (!dateString) return '';
-            const date = new Date(dateString);
+
+            // Handle case where dateString might still be an object
+            let dateValue = dateString;
+            if (typeof dateString === 'object' && dateString !== null) {
+                if (dateString.date) {
+                    dateValue = dateString.date;
+                } else {
+                    // Convert object to string as fallback
+                    dateValue = dateString.toString();
+                }
+            }
+
+            const date = new Date(dateValue);
+
+            // Check if date is valid
+            if (isNaN(date.getTime())) {
+                return 'Invalid date';
+            }
+
             return date.toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',
@@ -144,5 +174,4 @@ export default {
     }
 };
 </script>
-
 

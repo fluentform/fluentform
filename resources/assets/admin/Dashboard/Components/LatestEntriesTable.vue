@@ -1,17 +1,17 @@
 <template>
-    <div class="latest-entries-table">
-        <div class="table-header">
-            <h3 class="table-title">{{ $t('Latest Entries') }}</h3>
-            <el-button 
-                type="text" 
+    <card>
+        <card-head>
+            <h4>{{ $t('Latest Entries') }}</h4>
+            <el-button
+                type="text"
                 size="small"
                 @click="viewAllEntries"
             >
                 {{ $t('View all entries') }}
             </el-button>
-        </div>
-        
-        <div class="table-content">
+        </card-head>
+
+        <card-body>
             <el-table
                 :data="entries"
                 v-loading="loading"
@@ -28,16 +28,6 @@
                         <div class="form-info">
                             <span class="form-title">{{ scope.row.form_title }}</span>
                         </div>
-                    </template>
-                </el-table-column>
-                
-                <el-table-column
-                    prop="name"
-                    :label="$t('Name')"
-                    min-width="120"
-                >
-                    <template slot-scope="scope">
-                        <span class="entry-name">{{ scope.row.name || $t('Anonymous') }}</span>
                     </template>
                 </el-table-column>
                 
@@ -71,13 +61,22 @@
                 <i class="el-icon-document-copy empty-icon"></i>
                 <p class="empty-text">{{ $t('No entries found') }}</p>
             </div>
-        </div>
-    </div>
+        </card-body>
+    </card>
 </template>
 
 <script>
+import Card from '@/admin/components/Card/Card.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
+import CardHead from "@/admin/components/Card/CardHead.vue";
+
 export default {
     name: 'LatestEntriesTable',
+    components: {
+        Card,
+        CardBody,
+        CardHead
+    },
     props: {
         entries: {
             type: Array,
@@ -91,20 +90,31 @@ export default {
     methods: {
         formatDate(dateString) {
             if (!dateString) return '';
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays === 1) {
-                return this.$t('1 day ago');
-            } else if (diffDays < 7) {
-                return this.$t('{days} days ago', { days: diffDays });
-            } else {
-                return date.toLocaleDateString();
+
+            // Handle case where dateString might still be an object
+            let dateValue = dateString;
+            if (typeof dateString === 'object' && dateString !== null) {
+                if (dateString.date) {
+                    dateValue = dateString.date;
+                } else {
+                    // Convert object to string as fallback
+                    dateValue = dateString.toString();
+                }
             }
+
+            const date = new Date(dateValue);
+
+            // Check if date is valid
+            if (isNaN(date.getTime())) {
+                return 'Invalid date';
+            }
+
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
         },
-        
         getStatusType(status) {
             const statusMap = {
                 'read': 'success',

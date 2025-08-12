@@ -41,7 +41,9 @@ import {
     Card,
     Tag,
     Tooltip,
-    Badge
+    Badge,
+    Form,
+    FormItem
 } from 'element-ui';
 
 Vue.use(Loading.directive);
@@ -68,6 +70,8 @@ Vue.use(Card);
 Vue.use(Tag);
 Vue.use(Tooltip);
 Vue.use(Badge);
+Vue.use(Form);
+Vue.use(FormItem);
 
 import App from './App.vue';
 import globalSearch from '../global_search';

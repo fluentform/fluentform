@@ -442,22 +442,10 @@ class DashboardHelper
         
         $formattedEntries = [];
         foreach ($entries as $entry) {
-            $response = json_decode($entry->response, true);
-            $name = '';
-            
-            // Try to get name from common field names
-            foreach (['name', 'full_name', 'first_name', 'your_name'] as $fieldName) {
-                if (isset($response[$fieldName])) {
-                    $name = $response[$fieldName];
-                    break;
-                }
-            }
-            
             $formattedEntries[] = [
                 'id' => $entry->id,
-                'form_title' => $entry->form ? $entry->form->title : 'Unknown Form',
-                'name' => $name ?: 'Anonymous',
-                'submitted_at' => $entry->created_at,
+                'form_title' => $entry->form->title,
+                'submitted_at' => (string) $entry->created_at,
                 'status' => $entry->status
             ];
         }
@@ -484,15 +472,36 @@ class DashboardHelper
         $logs = $query->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get();
-        
+
         $formattedLogs = [];
         foreach ($logs as $log) {
+            $formTitle = '';
+            $formId = null;
+
+            // If parent_source_id exists (submission ID), get form info from submission
+            if ($log->parent_source_id) {
+                try {
+                    $submission = Submission::with('form')->find($log->parent_source_id);
+                    if ($submission && $submission->form) {
+                        $formTitle = $submission->form->title;
+                        $formId = $submission->form_id;
+                    }
+                } catch (\Exception $e) {
+                    // If submission not found, leave form info empty
+                    $formTitle = '';
+                    $formId = null;
+                }
+            }
+
             $formattedLogs[] = [
                 'id' => $log->id,
                 'submission_id' => $log->parent_source_id,
-                'form_id' => $log->form_id,
-                'component' => $log->source_type,
-                'expire_date' => $log->created_at,
+                'form_id' => $formId,
+                'form_title' => $formTitle,
+                'component' => $log->component,
+                'title' => $log->title ?? '',
+                'description' => $log->description ?? '',
+                'expire_date' => (string) $log->created_at,
                 'status' => $log->status
             ];
         }

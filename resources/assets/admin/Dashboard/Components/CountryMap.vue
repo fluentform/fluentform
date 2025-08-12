@@ -1,10 +1,10 @@
 <template>
-    <div class="country-map">
-        <div class="map-header">
-            <h3 class="map-title">{{ $t('Form submission by Country') }}</h3>
-        </div>
+    <card>
+        <card-head>
+            <h4>{{ $t('Form submission by Country') }}</h4>
+        </card-head>
 
-        <div class="map-content" v-loading="loading">
+        <card-body v-loading="loading">
             <div v-if="!loading && (!countryData || countryData.length === 0)" class="no-data">
                 <div class="no-data-icon">
                     <i class="el-icon-location-outline"></i>
@@ -25,15 +25,24 @@
                 <div ref="chartRef" class="chart-element"></div>
             </div>
         </div>
-    </div>
+    </card-body>
+</card>
 </template>
 
 <script>
 import * as echarts from 'echarts';
 import worldMapJson from "../../Reports/world.geo.json";
+import Card from '@/admin/components/Card/Card.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
+import CardHead from "@/admin/components/Card/CardHead.vue";
 
 export default {
     name: 'CountryMap',
+    components: {
+        Card,
+        CardBody,
+        CardHead
+    },
     props: {
         countryHeatmap: {
             type: Object,
@@ -309,81 +318,58 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.country-map {
-    padding: 20px;
+.no-data {
+    text-align: center;
+    padding: 60px 20px;
+    color: #9ca3af;
 
-    .map-header {
+    .no-data-icon {
+        font-size: 48px;
         margin-bottom: 16px;
+        color: #d1d5db;
 
-        .map-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1f2937;
-            margin: 0;
+        i {
+            font-size: 48px;
         }
     }
 
-    .map-content {
-        .no-data {
-            text-align: center;
-            padding: 60px 20px;
-            color: #9ca3af;
+    p {
+        font-size: 16px;
+        margin: 0;
+    }
+}
 
-            .no-data-icon {
-                font-size: 48px;
-                margin-bottom: 16px;
-                color: #d1d5db;
+.chart-wrapper {
+    .map-controls {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 16px;
 
-                i {
-                    font-size: 48px;
+        .el-button-group {
+            .el-button {
+                padding: 8px 12px;
+
+                &:hover {
+                    background-color: #f0f9ff;
+                    border-color: #3b82f6;
+                    color: #3b82f6;
                 }
             }
-
-            p {
-                font-size: 16px;
-                margin: 0;
-            }
         }
+    }
 
-        .chart-wrapper {
-            .map-controls {
-                display: flex;
-                justify-content: flex-end;
-                margin-bottom: 16px;
-
-                .el-button-group {
-                    .el-button {
-                        padding: 8px 12px;
-
-                        &:hover {
-                            background-color: #f0f9ff;
-                            border-color: #3b82f6;
-                            color: #3b82f6;
-                        }
-                    }
-                }
-            }
-
-            .chart-element {
-                width: 100%;
-                height: 400px;
-                border-radius: 8px;
-                overflow: hidden;
-            }
-        }
+    .chart-element {
+        width: 100%;
+        height: 400px;
+        border-radius: 8px;
+        overflow: hidden;
     }
 }
 
 @media (max-width: 768px) {
-    .country-map {
-        padding: 16px;
-
-        .map-content {
-            .chart-wrapper {
-                .chart-element {
-                    height: 300px;
-                }
-            }
+    .chart-wrapper {
+        .chart-element {
+            height: 300px;
         }
     }
 }

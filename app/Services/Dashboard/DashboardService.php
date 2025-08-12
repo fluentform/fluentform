@@ -48,6 +48,7 @@ class DashboardService
             'api_logs' => $this->getApiLogs(['limit' => 5, 'dateRange' => $dateRange]),
             'notifications' => $this->getNotifications(['limit' => 5]),
             'country_heatmap' => $this->getCountryHeatmap(['dateRange' => $dateRange]),
+            'license_status' => $this->getLicenseStatus(),
             'date_range' => $dateRange
         ];
     }
@@ -135,5 +136,67 @@ class DashboardService
         $dateRange = Arr::get($data, 'dateRange');
 
         return DashboardHelper::getCountryHeatmap($dateRange);
+    }
+
+    /**
+     * Get License Status
+     *
+     * @return array
+     */
+    public function getLicenseStatus()
+    {
+        // Check if FluentForm Pro is active
+        if (!defined('FLUENTFORMPRO')) {
+            return [
+                'is_pro' => false,
+                'status' => 'free',
+                'message' => 'You are currently using the free version of Fluent Forms.'
+            ];
+        }
+
+        // Get the license checker instance
+        if (class_exists('FluentFormAddOnChecker')) {
+            $instance = \FluentFormAddOnChecker::getInstance();
+
+            if ($instance) {
+                // Use reflection to access the private getSavedLicenseStatus method
+                $reflection = new \ReflectionClass($instance);
+                $method = $reflection->getMethod('getSavedLicenseStatus');
+                $method->setAccessible(true);
+                $licenseStatus = $method->invoke($instance);
+
+                if ($licenseStatus === 'valid') {
+                    return [
+                        'is_pro' => true,
+                        'status' => 'valid',
+                        'message' => 'Your Fluent Forms Pro license is active.'
+                    ];
+                } elseif ($licenseStatus === 'expired') {
+                    return [
+                        'is_pro' => true,
+                        'status' => 'expired',
+                        'message' => 'Your Fluent Forms Pro license has expired. Please renew to continue receiving updates.'
+                    ];
+                } elseif ($licenseStatus === 'invalid') {
+                    return [
+                        'is_pro' => true,
+                        'status' => 'invalid',
+                        'message' => 'Your Fluent Forms Pro license is invalid. Please check your license key.'
+                    ];
+                } else {
+                    return [
+                        'is_pro' => true,
+                        'status' => 'inactive',
+                        'message' => 'Fluent Forms Pro is installed but license is not activated.'
+                    ];
+                }
+            }
+        }
+
+        return [
+            'is_pro' => false,
+            'status' => 'free',
+            'message' => 'You are currently using the free version of Fluent Forms.'
+        ];
     }
 }
