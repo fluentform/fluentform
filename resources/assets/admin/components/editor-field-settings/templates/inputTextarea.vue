@@ -8,7 +8,7 @@
                 :content="listItem.help_text"
                 placement="top"
             >
-                <i class="tooltip-icon el-icon-info"></i>
+                <el-icon class="tooltip-icon"><InfoFilled /></el-icon>
             </el-tooltip>
         </template>
         <el-input
@@ -25,10 +25,16 @@
 </template>
 
 <script type="text/babel">
+import { InfoFilled } from '@element-plus/icons-vue';
+import { ElIcon } from 'element-plus';
 import DOMPurify from 'dompurify';
 
 export default {
     name: 'inputTextarea',
+    components: {
+        InfoFilled,
+        ElIcon,
+    },
     props: ['listItem', 'modelValue'],
     watch: {
         model() {

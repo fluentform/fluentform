@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-label :label="item.settings.label"></el-label>
+        <ff-label :label="item.settings.label"></ff-label>
         <el-input></el-input>
     </div>
 </template>
@@ -10,7 +10,7 @@ import elLabel from '../includes/el-label';
 
 export default {
     name: 'learning',
-    components: { elLabel },
+    components: { 'ff-label': elLabel },
     props: ['item'],
     computed: {
         required() {

@@ -5,7 +5,7 @@
                 <div class="pull-right">
                     <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
                 </div>
-                <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+                <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
             </div>
         </template>
 
@@ -66,7 +66,7 @@ export default {
     name: 'gridRowCols',
     props: ['editItem', 'listItem', 'value', 'prop', 'valuesAlwaysVisible'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
         ActionBtn,
         ActionBtnAdd,
         ActionBtnRemove,

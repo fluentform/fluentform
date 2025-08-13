@@ -2,10 +2,10 @@
     <div class="ff_style_pref">
         <el-form-item class="ff-form-item">
             <template #label>
-                <el-label
+                <ff-label
                     :label="$t('Layout Type')"
                     :helpText="$t('Select the layout that you want to show for this input')"
-                ></el-label>
+                ></ff-label>
             </template>
             <el-radio-group class="ff_iconed_radios" v-model="pref.layout">
                 <el-radio v-for="(layout, layoutName) in layouts" :key="layoutName" :value="$t(layoutName)">
@@ -16,29 +16,29 @@
         <template v-if="pref.layout !== 'default' && pref.layout !== 'media_raw_html'">
             <el-form-item class="ff-form-item">
                 <template #label>
-                    <el-label
+                    <ff-label
                         :label="$t('Media')"
                         :helpText="$t('Set the media image that you want to set for this input')"
-                    ></el-label>
+                    ></ff-label>
                 </template>
                 <photo-widget enable_clear="yes" design_mode="horizontal" v-model="pref.media" />
             </el-form-item>
             <el-form-item class="ff-form-item">
                 <template #label>
-                    <el-label
+                    <ff-label
                         :label="$t('Media Brightness')"
                         :helpText="$t('Brightness of your selected media')"
-                    ></el-label>
+                    ></ff-label>
                 </template>
                 <el-slider :min="-100" input-size="small" :max="100" v-model="pref.brightness" show-input></el-slider>
             </el-form-item>
             <template v-if="pref.layout === 'media_right_full' || pref.layout === 'media_left_full'">
                 <el-form-item class="ff-form-item">
                     <template #label>
-                        <el-label
+                        <ff-label
                             :label="$t('Media Horizontal Position')"
                             :helpText="$t('Horizontal (X) Position of the media')"
-                        ></el-label>
+                        ></ff-label>
                     </template>
                     <el-slider
                         :min="0"
@@ -50,10 +50,10 @@
                 </el-form-item>
                 <el-form-item class="ff-form-item">
                     <template #label>
-                        <el-label
+                        <ff-label
                             :label="$t('Media Vertical Position')"
                             :helpText="$t('Vertical (Y) Position of the media')"
-                        ></el-label>
+                        ></ff-label>
                     </template>
                     <el-slider
                         :min="0"
@@ -67,14 +67,14 @@
 
             <el-form-item class="ff-form-item">
                 <template #label>
-                    <el-label
+                    <ff-label
                         :label="$t('Media Alt Text')"
                         :helpText="
                             $t(
                                 'Alt text is a short description of an image that will help people with visual impairment. This label is not visible in your frontend'
                             )
                         "
-                    ></el-label>
+                    ></ff-label>
                 </template>
                 <el-input type="textarea" v-model="pref.alt_text" show-input></el-input>
             </el-form-item>
@@ -82,10 +82,10 @@
         <template v-else-if="pref.layout === 'media_raw_html'">
             <el-form-item class="ff-form-item">
                 <template #label>
-                    <el-label
+                    <ff-label
                         :label="$t('HTML to Show')"
                         :helpText="$t('Please provide your raw html that you want to show at the side of the form')"
-                    ></el-label>
+                    ></ff-label>
                 </template>
                 <el-input :rows="8" type="textarea" v-model="pref.raw_html" show-input></el-input>
             </el-form-item>
@@ -101,7 +101,7 @@ export default {
     name: 'ConversionStylePref',
     props: ['pref'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
         PhotoWidget,
     },
     data() {

@@ -47,7 +47,7 @@ export default {
     },
     components: {
         ff_inputRadio: inputRadio,
-        elLabel,
+        'ff-label': elLabel,
     },
 };
 </script>

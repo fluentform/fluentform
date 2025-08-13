@@ -8,7 +8,7 @@
                 :content="listItem.help_text"
                 placement="top"
             >
-                <i class="tooltip-icon el-icon-info"></i>
+                <el-icon class="tooltip-icon"><InfoFilled /></el-icon>
             </el-tooltip>
         </template>
         <el-radio-group v-model="model">
@@ -18,8 +18,15 @@
 </template>
 
 <script>
+import { InfoFilled } from '@element-plus/icons-vue';
+import { ElIcon } from 'element-plus';
+
 export default {
     name: 'inputRadio',
+    components: {
+        InfoFilled,
+        ElIcon,
+    },
     props: ['listItem', 'modelValue'],
     data() {
         return {

@@ -1,52 +1,56 @@
 import '../helpers';
-import Vue from 'vue';
+import { createApp } from 'vue';
 
 import {
-    ColorPicker,
-    Form,
-    Input,
-    Row,
-    Col,
-    FormItem,
-    Select,
-    OptionGroup,
-    Option,
-    Slider,
-    Button,
-    Loading,
-    Message,
-    Switch,
-    Notification,
-} from 'element-ui';
+    ElColorPicker as ColorPicker,
+    ElForm as Form,
+    ElInput as Input,
+    ElRow as Row,
+    ElCol as Col,
+    ElFormItem as FormItem,
+    ElSelect as Select,
+    ElOptionGroup as OptionGroup,
+    ElOption as Option,
+    ElSlider as Slider,
+    ElButton as Button,
+    ElLoading as Loading,
+    ElMessage as Message,
+    ElSwitch as Switch,
+    ElNotification as Notification,
+} from 'element-plus';
 
-Vue.use(Form);
-Vue.use(Input);
-Vue.use(Row);
-Vue.use(Col);
-Vue.use(FormItem);
-Vue.use(ColorPicker);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(OptionGroup);
-Vue.use(Slider);
-Vue.use(Switch);
-Vue.use(Button);
+// Element Plus components are auto-imported via Vite plugin
+// No need for Vue.use() in Vue 3 with Element Plus auto-import
 
-Vue.use(Loading.directive)
-Vue.prototype.$loading = Loading.service
-Vue.prototype.$notify = Notification
-Vue.prototype.$message = Message;
-
-import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
-// configure language
-locale.use(lang);
+import lang from 'element-plus/es/locale/lang/en'
+import { ElConfigProvider } from 'element-plus'
+// configure language - Element Plus uses different approach
+// locale.use(lang); // This will be handled by ElConfigProvider in the app
 
 import DesignSkeleton from './Parts/Skeleton.vue';
 import notifier from '@/admin/notifier'
 import globalSearch from '../global_search';
 
-Vue.mixin({
+// Vue 3 doesn't use mixins the same way, we'll add methods directly to the app
+
+const app = createApp({
+    data() {
+        return {};
+    },
+    components: {
+        DesignSkeleton: DesignSkeleton,
+        globalSearch
+    },
+    beforeCreate() {
+        // Vue 3 doesn't have $on/$emit on instances
+        // Handle title change directly
+        jQuery('title').text('Conversational Form Design - FluentForm');
+    },
+    mounted() {
+        (new ClipboardJS('.copy')).on('success', (e) => {
+            this.$copy();
+        });
+    },
     methods: {
         $t(str) {
             let transString = window.fluent_forms_global_var.admin_i18n[str];
@@ -55,35 +59,20 @@ Vue.mixin({
             }
             return str;
         },
-        
-        ...notifier
-    },
-    filters: {
-        ucFirst(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        $copy() {
+            notifier.success('Copied to clipboard');
         },
-        _startCase(string) {
-            return _ff.startCase(string);
-        }
+        ...notifier
     }
 });
 
-new Vue({
-    el: '#ff_conversation_form_design_app',
-    data: {},
-    components: {
-        DesignSkeleton: DesignSkeleton,
-        globalSearch
-    },
-    beforeCreate() {
-        this.$on('change-title', (module) => {
-            jQuery('title').text(`${module} - FluentForm`);
-        });
-        this.$emit('change-title', 'Conversational Form Design');
-    },
-    mounted() {
-        (new ClipboardJS('.copy')).on('success', (e) => {
-            this.$copy();
-        });
-    }
-});
+// Add global properties for filters (Vue 3 doesn't have filters)
+app.config.globalProperties.ucFirst = function(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+app.config.globalProperties._startCase = function(string) {
+    return _ff.startCase(string);
+};
+
+app.mount('#ff_conversation_form_design_app');

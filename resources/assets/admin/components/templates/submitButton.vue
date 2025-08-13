@@ -8,7 +8,7 @@
     >
         <div @click="editSelected(submitButton)" class="item-actions-wrapper hover-action-middle">
             <div class="item-actions">
-                <i @click="editSelected(submitButton)" class="el-icon el-icon-edit"></i>
+                <el-icon @click="editSelected(submitButton)"><Edit /></el-icon>
             </div>
         </div>
         <!-- ADDED IN v1.2.6 -->
@@ -36,8 +36,15 @@
 </template>
 
 <script>
+import { Edit } from '@element-plus/icons-vue';
+import { ElIcon } from 'element-plus';
+
 export default {
     name: 'buttonSubmit',
+    components: {
+        Edit,
+        ElIcon,
+    },
     props: ['submitButton', 'editSelected', 'editItem'],
     computed: {
         btnStyles() {

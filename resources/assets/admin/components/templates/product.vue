@@ -2,13 +2,13 @@
     <div>
         <p>
             <strong>
-                <el-label :label="item.settings.label"></el-label>
+                <ff-label :label="item.settings.label"></ff-label>
             </strong>
         </p>
 
         <template v-if="fieldType === 'single'">
             <p>
-                <el-label :label="$t('Price: $') + item.settings.product_price"></el-label>
+                <ff-label :label="$t('Price: $') + item.settings.product_price"></ff-label>
                 <el-input type="text" value="" v-if="!isQuantityDisabled"></el-input>
             </p>
         </template>
@@ -30,7 +30,7 @@
         </template>
 
         <p>
-            <el-label :label="item.settings.description"></el-label>
+            <ff-label :label="item.settings.description"></ff-label>
         </p>
     </div>
 </template>
@@ -40,7 +40,7 @@ import elLabel from '../includes/el-label.vue';
 
 export default {
     name: 'product',
-    components: { elLabel },
+    components: { 'ff-label': elLabel },
     props: ['item'],
     computed: {
         radioOptions() {

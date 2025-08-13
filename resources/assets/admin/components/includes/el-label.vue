@@ -5,19 +5,21 @@
             <template #content>
                 <div v-html="helpText"></div>
             </template>
-            <i class="tooltip-icon" :class="iconClass"></i>
+            <el-icon class="tooltip-icon"><InfoFilled /></el-icon>
         </el-tooltip>
     </span>
 </template>
 
 <script>
+import { InfoFilled } from '@element-plus/icons-vue';
+import { ElIcon } from 'element-plus';
+
 export default {
-    name: 'el-label-slot',
-    props: ['label', 'helpText', 'icon'],
-    computed: {
-        iconClass() {
-            return `el-icon-${this.icon || 'info'}`;
-        },
+    name: 'ff-label',
+    components: {
+        InfoFilled,
+        ElIcon,
     },
+    props: ['label', 'helpText', 'icon'],
 };
 </script>

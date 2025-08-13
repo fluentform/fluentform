@@ -5,7 +5,7 @@
         </p>
 
         <div class="address-field-option" v-for="(field, i) in editItem.fields" :key="i">
-            <i @click="toggleAddressFieldInputs" class="el-icon-caret-bottom el-icon-clickable pull-right"></i>
+            <el-icon @click="toggleAddressFieldInputs" class="el-icon-clickable pull-right"><CaretBottom /></el-icon>
 
             <el-checkbox v-model="field.settings.visible" :disabled="field.settings.disabled">
                 {{ field.settings.label }}
@@ -21,12 +21,16 @@
 </template>
 
 <script>
+import { CaretBottom } from '@element-plus/icons-vue';
+import { ElIcon } from 'element-plus';
 import fieldOptionSettings from './fieldOptionSettings.vue';
 
 export default {
     name: 'nameFields',
     props: ['listItem', 'editItem'],
     components: {
+        CaretBottom,
+        ElIcon,
         fieldOptionSettings,
     },
     methods: {

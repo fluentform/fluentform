@@ -6,7 +6,7 @@
                 <div class="ff-repeater-header">
                     <div class="ff-repeater-title" @click="toggleAddressFieldInputs">{{ field.settings.label }}</div>
                     <div class="ff-repeater-action">
-                        <i @click="toggleAddressFieldInputs" class="repeater-toggle mr-2 icon el-icon-caret-bottom"></i>
+                        <el-icon @click="toggleAddressFieldInputs" class="repeater-toggle mr-2 icon"><CaretBottom /></el-icon>
                         <action-btn>
                             <action-btn-add @click="increase(i)" size="small"></action-btn-add>
                             <action-btn-remove @click="decrease(i)" size="small"></action-btn-remove>
@@ -53,6 +53,8 @@
 </template>
 
 <script type="text/babel">
+import { CaretBottom } from '@element-plus/icons-vue';
+import { ElIcon } from 'element-plus';
 import elLabel from '../../includes/el-label.vue';
 import fieldOptionSettings from './fieldOptionSettings.vue';
 import validationRules from './validationRules.vue';
@@ -64,9 +66,11 @@ export default {
     name: 'customRepeaterFields',
     props: ['listItem', 'editItem'],
     components: {
+        CaretBottom,
+        ElIcon,
         fieldOptionSettings,
         validationRules,
-        elLabel,
+        'ff-label': elLabel,
         ActionBtn,
         ActionBtnAdd,
         ActionBtnRemove,

@@ -12,7 +12,7 @@ export default {
         editItem: Object
     },
     components: {
-        elLabel,
+        'ff-label': elLabel,
         validationRules
     }
 }

@@ -3,7 +3,7 @@
         <template #label>
             <div class="ff_advanced_options">
                 <div>
-                    <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+                    <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
                 </div>
                 <div class="top-check-action">
                     <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
@@ -164,7 +164,7 @@ export default {
         },
     },
     components: {
-        elLabel,
+        'ff-label': elLabel,
         PhotoWidget,
         ActionBtn,
         ActionBtnAdd,

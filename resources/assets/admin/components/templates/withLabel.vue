@@ -6,7 +6,7 @@
         }"
     >
         <template #label>
-            <el-label :label="item.settings.label"></el-label>
+            <ff-label :label="item.settings.label"></ff-label>
         </template>
         <slot></slot>
     </el-form-item>
@@ -19,7 +19,7 @@ export default {
     name: 'withLabel',
     props: ['item'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
     },
     computed: {
         required() {

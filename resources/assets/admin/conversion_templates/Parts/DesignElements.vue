@@ -86,7 +86,7 @@
 </template>
 
 <script type="text/babel">
-import PhotoUploader from '../../../common/PhotoUploader';
+import PhotoUploader from '../../../common/PhotoUploader.vue';
 
 export default {
     name: 'DesignElement',

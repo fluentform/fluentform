@@ -2,7 +2,7 @@
     <div class="button_styler">
         <el-form-item>
             <template #label>
-                <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+                <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
             </template>
             <el-select size="small" v-model="model">
                 <el-option v-for="(item, key) in btnStyles" :key="key" :label="item.name" :value="key"></el-option>
@@ -32,7 +32,7 @@ export default {
     name: 'selectBtnStyle',
     props: ['listItem', 'editItem', 'modelValue'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
         ButtonStyler,
     },
     data() {
@@ -111,7 +111,7 @@ export default {
         }
         this.editItem.settings.current_state = this.activeName;
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.editItem.settings.current_state = 'normal_styles';
     },
 };

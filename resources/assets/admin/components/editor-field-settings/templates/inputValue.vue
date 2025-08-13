@@ -23,7 +23,7 @@ export default {
     name: 'wpuf_inputValue',
     props: ['listItem', 'modelValue', 'editItem'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
         inputPopover,
     },
     data() {

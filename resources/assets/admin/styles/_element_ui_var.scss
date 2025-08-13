@@ -1,5 +1,6 @@
 @use "sass:math";
-/* Element Chalk Variables */
+@use "sass:color";
+/* Element Plus Variables - FluentForm Customized */
 
 // Special comment for theme configurator
 // type|skipAutoTranslation|Category|Order
@@ -14,7 +15,7 @@ $--md-fade-transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 3
 $--border-transition-base: border-color .2s cubic-bezier(.645,.045,.355,1) !default;
 $--color-transition-base: color .2s cubic-bezier(.645,.045,.355,1) !default;
 
-/* Color
+/* Color - FluentForm Brand Colors
 -------------------------- */
 /// color|1|Brand Color|0
 $--color-primary: #1A7EFB !default;
@@ -22,16 +23,16 @@ $--color-primary: #1A7EFB !default;
 $--color-white: #FFFFFF !default;
 /// color|1|Background Color|4
 $--color-black: #000000 !default;
-$--color-primary-light-1: mix($--color-white, $--color-primary, 10%) !default; /* 53a8ff */
-$--color-primary-light-2: mix($--color-white, $--color-primary, 20%) !default; /* 66b1ff */
-$--color-primary-light-3: mix($--color-white, $--color-primary, 30%) !default; /* 79bbff */
-$--color-primary-light-4: mix($--color-white, $--color-primary, 40%) !default; /* 8cc5ff */
-$--color-primary-light-5: mix($--color-white, $--color-primary, 50%) !default; /* a0cfff */
-$--color-primary-light-6: mix($--color-white, $--color-primary, 60%) !default; /* b3d8ff */
-$--color-primary-light-7: mix($--color-white, $--color-primary, 70%) !default; /* c6e2ff */
-$--color-primary-light-8: mix($--color-white, $--color-primary, 80%) !default; /* d9ecff */
-$--color-primary-light-9: mix($--color-white, $--color-primary, 90%) !default; /* ecf5ff */
-/// color|1|Functional Color|1
+$--color-primary-light-1: color.mix($--color-white, $--color-primary, 10%) !default; /* 53a8ff */
+$--color-primary-light-2: color.mix($--color-white, $--color-primary, 20%) !default; /* 66b1ff */
+$--color-primary-light-3: color.mix($--color-white, $--color-primary, 30%) !default; /* 79bbff */
+$--color-primary-light-4: color.mix($--color-white, $--color-primary, 40%) !default; /* 8cc5ff */
+$--color-primary-light-5: color.mix($--color-white, $--color-primary, 50%) !default; /* a0cfff */
+$--color-primary-light-6: color.mix($--color-white, $--color-primary, 60%) !default; /* b3d8ff */
+$--color-primary-light-7: color.mix($--color-white, $--color-primary, 70%) !default; /* c6e2ff */
+$--color-primary-light-8: color.mix($--color-white, $--color-primary, 80%) !default; /* d9ecff */
+$--color-primary-light-9: color.mix($--color-white, $--color-primary, 90%) !default; /* ecf5ff */
+/// color|1|Functional Color|1 - FluentForm Custom Colors
 $--color-success: #00B27F !default;
 /// color|1|Functional Color|1
 $--color-warning: #FCBE2D !default;
@@ -46,18 +47,18 @@ $--color-dark: #1e1f21 !default;
 
 $--color-blue: #3b5998 !default;
 
-$--color-success-light: mix($--color-white, $--color-success, 80%) !default;
-$--color-warning-light: mix($--color-white, $--color-warning, 80%) !default;
-$--color-danger-light: mix($--color-white, $--color-danger, 80%) !default;
-$--color-info-light: mix($--color-white, $--color-info, 80%) !default;
+$--color-success-light: color.mix($--color-white, $--color-success, 80%) !default;
+$--color-warning-light: color.mix($--color-white, $--color-warning, 80%) !default;
+$--color-danger-light: color.mix($--color-white, $--color-danger, 80%) !default;
+$--color-info-light: color.mix($--color-white, $--color-info, 80%) !default;
 
 $--color-success-lighter: #e6ffeb !default;
-$--color-warning-lighter: mix($--color-white, $--color-warning, 90%) !default;
-$--color-danger-lighter: mix($--color-white, $--color-danger, 90%) !default;
-$--color-info-lighter: mix($--color-white, $--color-info, 90%) !default;
-$--color-cyan-lighter: mix($--color-white, $--color-cyan, 90%) !default;
-$--color-dark-lighter: mix($--color-white, $--color-dark, 90%) !default;
-$--color-blue-lighter: mix($--color-white, $--color-blue, 90%) !default;
+$--color-warning-lighter: color.mix($--color-white, $--color-warning, 90%) !default;
+$--color-danger-lighter: color.mix($--color-white, $--color-danger, 90%) !default;
+$--color-info-lighter: color.mix($--color-white, $--color-info, 90%) !default;
+$--color-cyan-lighter: color.mix($--color-white, $--color-cyan, 90%) !default;
+$--color-dark-lighter: color.mix($--color-white, $--color-dark, 90%) !default;
+$--color-blue-lighter: color.mix($--color-white, $--color-blue, 90%) !default;
 
 /// color|1|Font Color|2
 $--color-text-primary: #303133 !default;
@@ -770,7 +771,7 @@ $--card-padding: 20px !default;
 $--slider-main-background-color: $--color-primary !default;
 /// color||Color|0
 $--slider-runway-background-color: $--border-color-light !default;
-$--slider-button-hover-color: mix($--color-primary, black, 97%) !default;
+$--slider-button-hover-color: color.mix($--color-primary, black, 97%) !default;
 $--slider-stop-background-color: $--color-white !default;
 $--slider-disable-color: $--color-text-placeholder !default;
 $--slider-margin: 16px 0 !default;

@@ -131,8 +131,7 @@ export default {
         },
 
         ...notifier,
-    },
-    filters: {
+        // Converted filters to methods for Vue 3 compatibility
         ucFirst(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         },

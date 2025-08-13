@@ -6,7 +6,7 @@
                     <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
                 </div>
                 <div>
-                    <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+                    <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
                 </div>
             </div>
         </template>
@@ -106,7 +106,7 @@ export default {
     name: 'selectOptions',
     props: ['editItem', 'listItem'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
         ActionBtn,
         ActionBtnAdd,
         ActionBtnRemove,

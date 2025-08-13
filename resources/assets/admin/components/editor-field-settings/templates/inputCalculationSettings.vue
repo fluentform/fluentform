@@ -2,13 +2,13 @@
     <div class="calculation_item">
         <el-form-item>
             <template #label>
-                <el-label :label="listItem.label" :helpText="listItem.status_tips"></el-label>
+                <ff-label :label="listItem.label" :helpText="listItem.status_tips"></ff-label>
             </template>
             <el-checkbox v-model="value.status">{{ listItem.status_label }}</el-checkbox>
         </el-form-item>
         <el-form-item v-if="value.status">
             <template #label>
-                <el-label :label="listItem.formula_label" :helpText="listItem.formula_tips"></el-label>
+                <ff-label :label="listItem.formula_label" :helpText="listItem.formula_tips"></ff-label>
             </template>
             <inputPopover
                 class="calc_pop_over"
@@ -40,7 +40,7 @@ export default {
     name: 'inputText',
     props: ['listItem', 'modelValue', 'form_items', 'editItem'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
         inputPopover,
     },
     watch: {

@@ -7,7 +7,7 @@
         </el-form-item>
 
         <el-form-item v-if="editItem.settings.product_type === 'single'">
-            <el-label :label="$t('Price')" />
+            <ff-label :label="$t('Price')" />
             <el-input v-model="editItem.settings.product_price" type="text" class="el-form-item" />
             <el-checkbox v-model="editItem.settings.disable_quantity_field">
                 {{ $t('Disable Quantity') }}
@@ -34,7 +34,7 @@ import gridRowCols from './gridRowCols.vue';
 export default {
     name: 'productFieldTypes',
     props: ['editItem', 'listItem'],
-    components: { elLabel, gridRowCols },
+    components: { 'ff-label': elLabel, gridRowCols },
     methods: {
         handleOptions(options) {
             this.editItem.settings.grid_columns = options;

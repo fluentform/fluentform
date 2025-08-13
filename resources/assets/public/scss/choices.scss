@@ -1,7 +1,8 @@
+@use 'sass:math';
+
 /*===============================
 =            Choices            =
 ===============================*/
-@use 'sass:math';
 
 $choices-selector: 'choices' !default;
 $choices-font-size-lg: 16px !default;

@@ -7,7 +7,7 @@
         }"
     >
         <template #label>
-            <el-label :label="item.settings.label"></el-label>
+            <ff-label :label="item.settings.label"></ff-label>
         </template>
         <div class="repeat-field--item">
             <el-form-item
@@ -16,7 +16,7 @@
                 :class="{ 'is-required': field.settings.validation_rules.required.value }"
             >
                 <template #label>
-                    <elLabel v-if="isMultiCol" :label="field.settings.label"></elLabel>
+                    <ff-label v-if="isMultiCol" :label="field.settings.label"></ff-label>
                 </template>
                 <el-input
                     v-if="field.element !== 'select'"
@@ -47,7 +47,7 @@ export default {
     name: 'repeat_fields',
     props: ['item'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
         ActionBtn,
         ActionBtnAdd,
         ActionBtnRemove,

@@ -5,7 +5,7 @@
                 <el-col :span="24">
                     <el-form-item>
                         <template #label>
-                            <el-label :label="$t('Form')" :help-text="$t('Choose a form from the list.')"></el-label>
+                            <ff-label :label="$t('Form')" :help-text="$t('Choose a form from the list.')"></ff-label>
                         </template>
                         <el-select
                             class="el-fluid"
@@ -26,7 +26,7 @@
                 <el-col :span="24">
                     <el-form-item>
                         <template #label>
-                            <el-label :label="$t('Form Field')" :help-text="$t('Select form field')"></el-label>
+                            <ff-label :label="$t('Form Field')" :help-text="$t('Select form field')"></ff-label>
                         </template>
                         <el-select class="el-fluid" :placeholder="$t('Select Field')" v-model="model.form_field">
                             <el-option
@@ -45,7 +45,7 @@
                 <el-col :span="24">
                     <el-form-item>
                         <template #label>
-                            <el-label :label="$t('User Role')" :help-text="$t('Chose a role')"></el-label>
+                            <ff-label :label="$t('User Role')" :help-text="$t('Chose a role')"></ff-label>
                         </template>
                         <el-select class="el-fluid" :placeholder="$t('Select Role')" v-model="model.role_name">
                             <el-option
@@ -91,7 +91,7 @@ export default {
         },
     },
     components: {
-        elLabel,
+        'ff-label': elLabel,
     },
     methods: {
         getFormFields(formId) {

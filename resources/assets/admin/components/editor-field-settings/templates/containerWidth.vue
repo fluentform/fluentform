@@ -3,7 +3,7 @@
         <template v-if="editItem.columns.length > 1">
             <el-form-item>
                 <template #label>
-                    <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+                    <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
                 </template>
             </el-form-item>
 
@@ -23,7 +23,7 @@
 
            <el-form-item>
                <template #label>
-                <el-label :label="$t('Auto Width')" :helpText="$t('Enable automatic width calculation for columns')"></el-label>
+                <ff-label :label="$t('Auto Width')" :helpText="$t('Enable automatic width calculation for columns')"></ff-label>
                </template>
                 <el-radio v-model="editItem.settings.is_width_auto_calc" :value="true">{{ $t('Yes') }}</el-radio>
                 <el-radio v-model="editItem.settings.is_width_auto_calc" :value="false">{{ $t('No') }}</el-radio>

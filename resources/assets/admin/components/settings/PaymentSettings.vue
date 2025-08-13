@@ -164,13 +164,13 @@
                                 <h4>
                                     {{ $t('Please provide your ') }}
                                     <span class="text-danger">
-                                        {{ settings.stripe_custom_config.payment_mode | ucFirst }} {{ $t(' API keys') }}
+                                        {{ ucFirst(settings.stripe_custom_config.payment_mode) }} {{ $t(' API keys') }}
                                     </span>
                                 </h4>
 
                                 <el-form-item class="ff-form-item" :label="$t('Publishable key')">
                                     <template #label>
-                                        {{ settings.stripe_custom_config.payment_mode | ucFirst }}
+                                        {{ ucFirst(settings.stripe_custom_config.payment_mode) }}
                                         {{ $t(' Publishable key') }}
                                     </template>
                                     <el-input
@@ -181,7 +181,7 @@
 
                                 <el-form-item class="ff-form-item" label="">
                                     <template #label>
-                                        {{ settings.stripe_custom_config.payment_mode | ucFirst }} {{
+                                        {{ ucFirst(settings.stripe_custom_config.payment_mode) }} {{
                                             $t(' Secret key')
                                         }}
                                     </template>

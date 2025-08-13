@@ -2,7 +2,7 @@
     <div class="ff_payment_item_wrapper">
         <el-form-item>
             <template #label>
-                <el-label
+                <ff-label
                     :label="$t('Product Display Type')"
                     :helpText="
                         $t('Select which display type you want for your payment item. Please provide valid number only')
@@ -21,7 +21,7 @@
         <div v-if="editItem.attributes.type === 'single'">
             <el-form-item>
                 <template #label>
-                    <el-label
+                    <ff-label
                         :label="$t('Payment Amount')"
                         :helpText="$t('Please Provide the payment amount. Max 2 decimal point is excepted')"
                     />
@@ -31,7 +31,7 @@
 
             <el-form-item>
                 <template #label>
-                    <el-label
+                    <ff-label
                         :label="$t('Amount Label')"
                         :helpText="$t('Please Provide the Amount Label')"
                     />
@@ -48,7 +48,7 @@
                         >Photo
                         </el-checkbox>
                     </div>
-                    <el-label :label="listItem.label" :helpText="listItem.help_text"/>
+                    <ff-label :label="listItem.label" :helpText="listItem.help_text"/>
                 </div>
             </template>
 
@@ -132,7 +132,7 @@ export default {
     name: 'pricing-options',
     props: ['editItem', 'listItem'],
     components: {
-        elLabel,
+        'ff-label': elLabel,
         PhotoWidget,
         ActionBtn,
         ActionBtnAdd,
