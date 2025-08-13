@@ -6,11 +6,22 @@
                     <h3>{{$t('Overview Chart')}}</h3>
                 </div>
                 <div class="card-controls">
+                    <div class="chart-type-toggle" style="margin-right: 12px;">
+                        <el-radio-group v-model="chartType" size="mini">
+                            <el-radio-button label="line">
+                                <i class="el-icon-connection"></i>
+                                {{ $t('Line Chart') }}
+                            </el-radio-button>
+                            <el-radio-button label="bar">
+                                <i class="el-icon-s-data"></i>
+                                {{ $t('Bar Chart') }}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </div>
                     <el-radio-group
                         v-model="chartMode"
                         size="mini"
                         class="mode-toggle-group"
-                        style="margin-right: 12px;"
                     >
                         <el-radio-button label="activity">{{ $t('Submissions') }}</el-radio-button>
                         <el-radio-button v-if="hasPayment" label="revenue">{{ $t('Payments') }}</el-radio-button>
@@ -171,6 +182,15 @@ export default {
             },
             deep: true,
             immediate: true
+        },
+        chartType() {
+            // Chart will automatically update due to reactive chartOptions
+            this.$nextTick(() => {
+                // Force chart resize after type change
+                if (this.$refs.chart) {
+                    this.$refs.chart.resize();
+                }
+            });
         }
     },
     methods: {
@@ -317,9 +337,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#8b5cf6', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 views: {
                     name: this.$t('Views'),
@@ -332,9 +354,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#017EF3', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 spam: {
                     name: this.$t('Spam'),
@@ -347,9 +371,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#ef4444', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 unread: {
                     name: this.$t('Unread'),
@@ -362,9 +388,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#f59e0b', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 read: {
                     name: this.$t('Read'),
@@ -377,9 +405,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#10b981', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 trashed: {
                     name: this.$t('Trashed'),
@@ -392,9 +422,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#A0AEC0', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 payments: {
                     name: this.$t('Total Revenue'),
@@ -407,9 +439,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#10b981', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 paid: {
                     name: this.$t('Paid'),
@@ -422,9 +456,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#63B3ED', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 pending: {
                     name: this.$t('Pending'),
@@ -437,9 +473,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#f59e0b', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 },
                 refunded: {
                     name: this.$t('Refunded'),
@@ -452,9 +490,11 @@ export default {
                     ...(isLineChart ? {
                         lineStyle: { color: '#ef4444', width: 3 },
                         symbol: 'circle',
-                        symbolSize: 6,
+                        symbolSize: 5,
                         smooth: true
-                    } : {})
+                    } : {
+                        barWidth: '20%'
+                    })
                 }
             };
 
@@ -479,3 +519,47 @@ export default {
 };
 </script>
 
+<style scoped>
+.overview-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.card-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chart-type-toggle .el-radio-group {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.chart-type-toggle .el-radio-button__inner {
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.chart-type-toggle .el-radio-button__inner:hover {
+    background: #e9ecef;
+}
+
+.chart-type-toggle .el-radio-button.is-active .el-radio-button__inner {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.chart-type-toggle .el-radio-button__inner i {
+    margin-right: 4px;
+    font-size: 12px;
+}
+</style>
