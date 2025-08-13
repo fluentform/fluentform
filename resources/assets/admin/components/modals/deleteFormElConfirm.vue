@@ -19,7 +19,7 @@
                 {{ dataLostMsg }}
             </p>
             <p class="ff-tip-text text-xs text-muted mb-3" >
-                You can also press <kbd>Del</kbd> or <kbd>⌫</kbd> to delete a selected field. Undo with <kbd>Ctrl+Z</kbd> or <kbd>⌘Z</kbd>.
+                You can also press <kbd>Del</kbd> to delete a selected field. Undo with <kbd>⌘/Ctrl+Z</kbd></kbd>.
             </p>
         </div>
 

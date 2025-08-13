@@ -235,9 +235,10 @@ class FormValidationService
 
             $interval = date('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
 
+            $clientIp = sanitize_text_field($this->app->request->getIp());
             $submissionCount = wpFluent()->table('fluentform_submissions')
                 ->where('status', '!=', 'trashed')
-                ->where('ip', $this->app->request->getIp())
+                ->where('ip', $clientIp ?: '0.0.0.0')
                 ->where('created_at', '>=', $interval)
                 ->count();
 
@@ -350,11 +351,14 @@ class FormValidationService
             return;
         }
 
-        $ip = $this->app->request->getIp();
-        if (is_array($ip)) {
-            $ip = Arr::get($ip, '0');
+        $rawIp = $this->app->request->getIp();
+        if (is_array($rawIp)) {
+            $rawIp = Arr::get($rawIp, '0');
         }
-        $this->checkIpRestriction($settings, $ip);
+        $ip = sanitize_text_field($rawIp);
+        if ($ip) {
+            $this->checkIpRestriction($settings, $ip);
+        }
 
         $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
         if ($isCountryRestrictionEnabled) {
@@ -583,7 +587,6 @@ class FormValidationService
         if ($this->shouldSkipCaptchaValidation('hcaptcha')) {
             return;
         }
-
         $hasAutoHcap = apply_filters_deprecated(
             'ff_has_auto_hcaptcha',
             [
@@ -860,8 +863,13 @@ class FormValidationService
     }
 
     /**
-     * Check if captcha validation should be skipped when autoload captcha is enabled
+     * Check if captcha validation should be skipped based on autoload captcha settings
      *
+     * When autoload captcha is enabled, only the selected captcha type should be validated.
+     * This method returns true if the current captcha type is NOT the selected autoload type,
+     * preventing unnecessary validation of multiple captcha types on the same form.
+     *
+     * @param string $captchaType The captcha type to check ('recaptcha', 'hcaptcha', 'turnstile')
      * @return bool True if validation should be skipped, false otherwise
      */
     private function shouldSkipCaptchaValidation($captchaType)
@@ -876,12 +884,11 @@ class FormValidationService
 
         $selectedCaptchaType = Arr::get($globalSettings, 'misc.captcha_type');
 
-        // If the current captcha type is the selected autoload type, don't skip validation
+        // If the current captcha type matches the selected autoload type, proceed with validation
         if ($captchaType === $selectedCaptchaType) {
             return false;
         }
 
-        // If autoload_captcha is enabled and this is not the selected type, skip validation
-        return true;
+        return true; // Skip validation for non-selected captcha types
     }
 }
