@@ -46,7 +46,6 @@ class ReportService
     }
 
 
-
     /**
      * Get Net Revenue Data
      *
