@@ -289,9 +289,7 @@ $inner-border-color: #ced4da;
     // Mobile-specific improvements for dropdown container
     @media (max-width: 768px) {
       touch-action: pan-y;
-      -webkit-overflow-scrolling: auto;
-      isolation: isolate;
-      will-change: transform;
+      -webkit-overflow-scrolling: touch;
       max-height: 300px;
       overflow-y: auto;
     }
@@ -438,55 +436,25 @@ $inner-border-color: #ced4da;
 
 @media (min-width: 769px) {
   .choices__list--dropdown.is-active {
-    overflow: visible !important;
-    // Height will be set dynamically by JavaScript
-
     .choices__list[role="listbox"],
     > .choices__list:not(.choices__list--dropdown) {
-      -webkit-overflow-scrolling: auto;
-      touch-action: auto;
-      overflow-y: auto !important;
+      overflow-y: auto;
       overflow-x: hidden;
-      padding: 0;
-      position: relative;
-      box-sizing: border-box !important; // Ensure proper sizing
+      max-height: 300px;
     }
   }
 }
 
-// Target mobile devices and small tablets (JavaScript handles device detection)
+// Target mobile devices and small tablets
 @media (max-width: 768px) {
   .choices__list--dropdown.is-active {
-    overflow: visible !important;
-
-    .choices__list[role="listbox"] {
-      -webkit-overflow-scrolling: touch;
-      overflow-y: auto;
-      overflow-x: hidden;
-      touch-action: pan-y;
-      position: relative;
-      padding: 5px 0;
-      box-sizing: border-box;
-      margin-top: -5px;
-    }
-
+    .choices__list[role="listbox"],
     > .choices__list:not(.choices__list--dropdown) {
       -webkit-overflow-scrolling: touch;
       overflow-y: auto;
       overflow-x: hidden;
       touch-action: pan-y;
-      position: relative;
-      padding: 5px 0;
-      box-sizing: border-box;
-      margin-top: -5px;
-    }
-  }
-
-  .choices__list--dropdown {
-    padding: 2px;
-
-    &.is-active {
-      position: relative;
+      max-height: 300px;
     }
   }
 
@@ -496,25 +464,6 @@ $inner-border-color: #ced4da;
       touch-action: manipulation;
       min-height: 44px;
       padding: 8px 12px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .choices__list--dropdown.is-active {
-      padding-top: 5px;
-
-      .choices__input--cloned {
-        margin: 3px 8px 8px 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: #fff;
-      }
-
-      .choices__list[role="listbox"],
-      .choices__list:not(.choices__list--dropdown) {
-        padding-top: 0;
-        overflow-y: auto;
-      }
     }
   }
 }

@@ -1634,255 +1634,47 @@ jQuery(document).ready(function () {
 
         fluentFormCommonActions.init();
 
-        const isMobile =
-            // First check for explicit mobile user agents
-            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-            // Detect iPad in desktop mode (iOS 13+)
-            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
-            // Only use width check if it's likely a mobile device (has touch support)
-            (window.innerWidth <= 768 && ('ontouchstart' in window || navigator.maxTouchPoints > 0));
+        // Choices.js dropdown handling
+        function initChoicesDropdownHandling() {
+            // Only target elements that actually have Choices.js
+            $('.ff_has_multi_select').each(function() {
+                const choicesInstance = $(this).data('choicesjs');
+                if (!choicesInstance || !choicesInstance.passedElement) return;
 
-        // Function to set dynamic dropdown height based on number of options
-        function setDynamicDropdownHeight(dropdown, scrollableList) {
-            const options = scrollableList.querySelectorAll('.choices__item');
-            const optionCount = options.length;
+                // Use Choices.js built-in events instead of global listeners
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                    const choicesContainer = this.closest('.choices');
+                    if (!choicesContainer) return;
 
-            if (optionCount === 0) return;
+                    const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+                    if (!dropdown) return;
 
-            // Check if this is a single select with search input
-            const searchInput = dropdown.querySelector('.choices__input--cloned');
-            const isSearchableSelect = searchInput !== null;
+                    // Apply dropdown styles
+                    dropdown.style.maxHeight = '300px';
+                    dropdown.style.overflowY = 'auto';
 
-            // Calculate height based on first option
-            const firstOption = options[0];
-            const optionHeight = firstOption.offsetHeight || 44;
-
-            // Calculate search input height if present
-            let searchInputHeight = 0;
-            let searchInputMargins = 0;
-            if (isSearchableSelect && searchInput) {
-                searchInputHeight = searchInput.offsetHeight || 44;
-                searchInputMargins = 12;
-            }
-
-            // Determine optimal height
-            let maxVisibleOptions = 4;
-            let containerHeight, listHeight;
-
-            if (optionCount <= maxVisibleOptions) {
-                if (isSearchableSelect) {
-                    containerHeight = (optionCount * optionHeight) + searchInputHeight + searchInputMargins + 20;
-                    listHeight = (optionCount * optionHeight) + 10;
-                } else {
-                    containerHeight = (optionCount * optionHeight) + 20;
-                    listHeight = containerHeight - 10;
-                }
-            } else {
-                // Show maxVisibleOptions with scrolling
-                if (isSearchableSelect) {
-                    containerHeight = (maxVisibleOptions * optionHeight) + searchInputHeight + searchInputMargins + 20;
-                    listHeight = (maxVisibleOptions * optionHeight) + 10;
-                } else {
-                    containerHeight = (maxVisibleOptions * optionHeight) + 20;
-                    listHeight = containerHeight - 10;
-                }
-            }
-
-            const minHeight = isSearchableSelect ? 140 : 100;
-            const maxHeight = isSearchableSelect ? 380 : 320;
-
-            containerHeight = Math.max(minHeight, Math.min(containerHeight, maxHeight));
-
-            if (isSearchableSelect) {
-                listHeight = containerHeight - searchInputHeight - searchInputMargins - 10;
-            } else {
-                listHeight = containerHeight - 10;
-            }
-
-            // Set the heights
-            dropdown.style.maxHeight = containerHeight + 'px';
-            dropdown.style.height = 'auto';
-            scrollableList.style.maxHeight = listHeight + 'px';
-            scrollableList.style.height = 'auto';
-        }
-
-        // Global handler for all dropdown openings
-        document.addEventListener('click', function(e) {
-            // Small delay to ensure dropdown is fully rendered
-            setTimeout(function() {
-                const activeDropdowns = document.querySelectorAll('.choices__list--dropdown.is-active');
-                activeDropdowns.forEach(function(dropdown) {
-                    let scrollableList = dropdown.querySelector('.choices__list[role="listbox"]');
-                    if (!scrollableList) {
-                        const allLists = dropdown.querySelectorAll('.choices__list');
-                        for (let list of allLists) {
-                            if (!list.classList.contains('choices__list--dropdown')) {
-                                scrollableList = list;
-                                break;
-                            }
-                        }
-                    }
+                    // Find and style the scrollable list
+                    const scrollableList = 
+                        dropdown.querySelector('.choices__list[role="listbox"]') ||
+                        dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
                     if (scrollableList) {
-                        setDynamicDropdownHeight(dropdown, scrollableList);
+                        scrollableList.style.maxHeight = '280px';
+                        scrollableList.style.overflowY = 'auto';
+                        scrollableList.style.webkitOverflowScrolling = 'touch';
+                        scrollableList.style.touchAction = 'pan-y';
                     }
-                });
-            }, 50);
-        });
-
-        if (isMobile) {
-            let touchStartY = 0;
-            let isScrollingChoices = false;
-            let activeDropdown = null;
-            let lastTouchTarget = null;
-
-            if (!('ontouchstart' in window) && navigator.maxTouchPoints === 0) {
-                return;
-            }
-
-            function updateActiveDropdown() {
-                const dropdowns = document.querySelectorAll('.choices__list--dropdown.is-active');
-                if (dropdowns.length > 0) {
-                    activeDropdown = dropdowns[dropdowns.length - 1]; // Get the last active one
-                } else {
-                    activeDropdown = null;
-                }
-            }
-
-            // Monitor dropdown state changes
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        updateActiveDropdown();
-                    }
-                });
-            });
-
-            // Observe all choices containers for class changes
-            document.querySelectorAll('.choices').forEach(function(choicesContainer) {
-                observer.observe(choicesContainer.querySelector('.choices__list--dropdown'), {
-                    attributes: true,
-                    attributeFilter: ['class']
-                });
-            });
-
-            document.addEventListener('touchstart', function(e) {
-                touchStartY = e.touches[0].clientY;
-                lastTouchTarget = e.target;
-
-                // First try to find dropdown from touch target
-                let dropdown = e.target.closest('.choices__list--dropdown.is-active');
-
-                // If not found but we have an active dropdown, use that
-                if (!dropdown && activeDropdown && activeDropdown.classList.contains('is-active')) {
-                    dropdown = activeDropdown;
-                }
-
-                // Update active dropdown
-                updateActiveDropdown();
-
-                let activeDropdownType;
-                if (dropdown) {
-                    let scrollableList = dropdown.querySelector(".choices__list[role=\"listbox\"]");
-                    if (!scrollableList) {
-                        const allLists = dropdown.querySelectorAll(".choices__list");
-                        for (let list of allLists) {
-                            if (!list.classList.contains("choices__list--dropdown")) {
-                                scrollableList = list;
-                                break;
-                            }
-                        }
-                    }
-
-                    // Set dynamic height based on number of options
-                    if (scrollableList) {
-                        setDynamicDropdownHeight(dropdown, scrollableList);
-                    }
-
-                    const choicesItem = e.target.closest(".choices__item");
-                    const choicesInput = e.target.closest(".choices__input");
-
-                    if (choicesInput && e.target.tagName === "INPUT") {
-                        isScrollingChoices = false;
-                    } else if (scrollableList && (scrollableList.contains(e.target) || choicesItem || dropdown.contains(e.target))) {
-                        isScrollingChoices = true;
-                    } else {
-                        isScrollingChoices = false;
-                    }
-                } else {
-                    isScrollingChoices = false;
-                    activeDropdownType = null;
-                }
-            }, { passive: true, capture: true });
-
-            document.addEventListener('touchmove', function(e) {
-                // First try to find dropdown from touch target
-                let dropdown = e.target.closest('.choices__list--dropdown.is-active');
-
-                // If not found but we have an active dropdown and were scrolling choices, use that
-                if (!dropdown && activeDropdown && activeDropdown.classList.contains('is-active') && isScrollingChoices) {
-                    dropdown = activeDropdown;
-                }
-
-                if (dropdown) {
-                    const choicesInput = e.target.closest('.choices__input');
-                    const isInputElement = e.target.tagName === 'INPUT';
-
-                    if (choicesInput && isInputElement) {
-                        return;
-                    }
-
-                    if (isScrollingChoices) {
-                        e.stopPropagation();
-
-                        let scrollableList = dropdown.querySelector('.choices__list[role="listbox"]');
-                        if (!scrollableList) {
-                            const allLists = dropdown.querySelectorAll('.choices__list');
-                            for (let list of allLists) {
-                                if (!list.classList.contains('choices__list--dropdown')) {
-                                    scrollableList = list;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (scrollableList) {
-                            const touch = e.touches[0];
-                            const rect = scrollableList.getBoundingClientRect();
-
-                            const expandedTop = rect.top - 10;
-                            const expandedBottom = rect.bottom + 10;
-
-                            if (touch.clientY >= expandedTop && touch.clientY <= expandedBottom) {
-                                return;
-                            }
-                        }
-                    } else {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-                }
-            }, { passive: false, capture: true });
-
-            document.addEventListener('touchend', function(e) {
-                // Don't immediately reset if we still have an active dropdown
-                if (!activeDropdown || !activeDropdown.classList.contains('is-active')) {
-                    isScrollingChoices = false;
-                    activeDropdown = null;
-                }
-            }, { passive: true, capture: true });
-
-            // Handle dropdown closing
-            document.addEventListener('click', function(e) {
-                // Small delay to check if dropdown is still active
-                setTimeout(function() {
-                    updateActiveDropdown();
-                    if (!activeDropdown) {
-                        isScrollingChoices = false;
-                    }
-                }, 100);
+                }, { passive: true });
             });
         }
 
+        // Initialize with proper timing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initChoicesDropdownHandling, 100);
+            });
+        } else {
+            setTimeout(initChoicesDropdownHandling, 100);
+        }
     })(window.fluentFormVars, jQuery);
 
     jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
