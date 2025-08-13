@@ -1,5 +1,5 @@
 <template>
-    <card>
+    <card class="ff-pro-component">
         <card-head>
             <h3>{{ $t('Subscription') }}</h3>
         </card-head>
@@ -37,6 +37,16 @@
                     autoresize
                 />
             </div>
+            <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
+                <div>
+                    <p class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</p>
+                </div>
+                <a target="_blank"
+                   href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
+                   class="el-button el-button--info el-button--small mt-2">
+                    {{ $t('Upgrade to Pro') }}
+                </a>
+            </notice>
         </card-body>
     </card>
 </template>
@@ -45,13 +55,15 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
     name: 'TopSubscriptionByPlan',
     components: {
         Card,
         CardBody,
-        CardHead
+        CardHead,
+        Notice
     },
     emits: ['subscription-filter-change'],
     props: {
@@ -73,6 +85,10 @@ export default {
         };
     },
     computed: {
+        hasPro() {
+            return !!window.FluentFormApp.has_pro;
+        },
+
         hasSubscriptionData() {
             return this.subscriptionData &&
                 this.subscriptionData.chart_data &&

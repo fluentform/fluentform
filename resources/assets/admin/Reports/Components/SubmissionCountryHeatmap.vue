@@ -1,5 +1,5 @@
 <template>
-    <card>
+    <card class="ff-pro-component">
         <div class="submission-country-heatmap">
             <card-head class="card-header">
                 <h3>{{ $t('Submissions By Country') }}</h3>
@@ -25,6 +25,16 @@
 
                     <div ref="chartRef" class="chart-element"></div>
                 </div>
+                <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
+                    <div>
+                        <h2 class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</h2>
+                    </div>
+                    <a target="_blank"
+                       href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
+                       class="el-button el-button--info el-button--small mt-2">
+                        {{ $t('Upgrade to Pro') }}
+                    </a>
+                </notice>
             </card-body>
         </div>
     </card>
@@ -36,10 +46,11 @@ import Card from "@/admin/components/Card/Card.vue";
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import CardBody from "@/admin/components/Card/CardBody.vue";
 import worldMapJson from "../world.geo.json";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
     name: 'SubmissionCountryHeatmap',
-    components: {CardBody, CardHead, Card},
+    components: {Notice, CardBody, CardHead, Card},
     props: {
         countryHeatmap: {
             type: Object,
@@ -59,6 +70,9 @@ export default {
         };
     },
     computed: {
+        hasPro() {
+            return !!window.FluentFormApp.has_pro;
+        },
         countryData() {
             return this.countryHeatmap?.country_data || [];
         },
@@ -276,7 +290,7 @@ export default {
     watch: {
         countryHeatmap: {
             handler(newVal, oldVal) {
-                if (newVal.country_data && newVal.country_data.length > 0) {
+                if (newVal && newVal.country_data && newVal.country_data.length > 0) {
                     this.maxValue = Math.max(...newVal.country_data.map((item) => item.value || 0));
                     this.currentVisualMapRange = [0, this.maxValue];
                     if (!this.chartInstance) {

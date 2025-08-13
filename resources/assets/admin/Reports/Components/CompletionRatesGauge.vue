@@ -1,5 +1,5 @@
 <template>
-    <card>
+    <card class="ff-pro-component">
         <card-head>
             <h4>{{$t('Completion Rates')}}</h4>
         </card-head>
@@ -40,7 +40,7 @@
             </div>
             <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
                 <div>
-                    <p class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</p>
+                    <h2 class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</h2>
                 </div>
                 <a target="_blank"
                    href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"

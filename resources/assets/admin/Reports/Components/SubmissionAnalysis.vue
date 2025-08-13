@@ -1,6 +1,6 @@
 <template>
     <div>
-        <card>
+        <card class="ff-pro-component">
             <card-head>
                 <div class="submission-analysis-header">
                     <div class="title-section">
@@ -182,6 +182,16 @@
                         </el-table-column>
                     </el-table>
                 </div>
+                <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
+                    <div>
+                        <h2 class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</h2>
+                    </div>
+                    <a target="_blank"
+                       href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
+                       class="el-button el-button--info el-button--small mt-2">
+                        {{ $t('Upgrade to Pro') }}
+                    </a>
+                </notice>
             </card-body>
         </card>
         <div v-if="totalItems > pageSize" class="ff_pagination_wrap text-right pagination-container mt-4">
@@ -204,13 +214,15 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
     name: 'SubmissionAnalysis',
     components: {
         Card,
         CardBody,
-        CardHead
+        CardHead,
+        Notice
     },
     props: {
         formsList: {
@@ -259,6 +271,10 @@ export default {
         }
     },
     computed: {
+        hasPro() {
+            return !!window.FluentFormApp.has_pro;
+        },
+
         groupByOptions() {
             let options = {
                 'forms': this.$t('Forms'),
@@ -279,6 +295,60 @@ export default {
     methods: {
         fetchSubmissionData() {
             this.loading = true;
+
+            if (!this.hasPro) {
+                // Show demo data for free users
+                setTimeout(() => {
+                    this.submissionData = [
+                        {
+                            form_id: "1",
+                            form_title: "Contact Form",
+                            total_submissions: 124,
+                            read_submissions: 4,
+                            unread_submissions: 120,
+                            spam_submissions: 0,
+                            conversion_rate: 3.23
+                        },
+                        {
+                            form_id: "2",
+                            form_title: "Registration Form",
+                            total_submissions: 71,
+                            read_submissions: 1,
+                            unread_submissions: 70,
+                            spam_submissions: 0,
+                            conversion_rate: 1.41
+                        },
+                        {
+                            form_id: "3",
+                            form_title: "Feedback Form",
+                            total_submissions: 10,
+                            read_submissions: 1,
+                            unread_submissions: 9,
+                            spam_submissions: 0,
+                            conversion_rate: 10
+                        },
+                        {
+                            form_id: "6",
+                            form_title: "Blank Form (#6)",
+                            total_submissions: 2,
+                            read_submissions: 0,
+                            unread_submissions: 2,
+                            spam_submissions: 0,
+                            conversion_rate: 0
+                        }
+                    ];
+                    this.totalItems = 6;
+                    this.totals = {
+                        total: 217,
+                        read: 11,
+                        unread: 206,
+                        spam: 0,
+                        readRate: 5.07
+                    };
+                    this.loading = false;
+                }, 500);
+                return;
+            }
 
             const data = {
                 group_by: this.selectedGroupBy,
@@ -467,139 +537,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-/* Add pagination styling */
-.pagination-container {
-    margin-top: 16px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.submission-analysis-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    gap: 20px;
-}
-
-.title-section {
-    flex: 1;
-}
-
-.title-section h3 {
-    margin: 0 0 4px 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #374151;
-}
-.controls-section {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-shrink: 0;
-}
-
-.loading-state {
-    padding: 20px;
-}
-
-.no-data-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    text-align: center;
-    color: #6b7280;
-}
-
-.no-data-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    opacity: 0.6;
-}
-
-.no-data-state h4 {
-    margin: 0 0 8px 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.no-data-state p {
-    margin: 0;
-    font-size: 14px;
-    max-width: 300px;
-    line-height: 1.5;
-}
-
-.submission-table-container {
-    margin-top: 16px;
-}
-
-.form-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.form-title {
-    font-weight: 500;
-    color: #374151;
-}
-
-.form-id {
-    font-size: 12px;
-    color: #9ca3af;
-}
-
-.source-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.source-url {
-    font-weight: 500;
-    color: #374151;
-    word-break: break-all;
-}
-
-.source-count {
-    font-size: 12px;
-    color: #9ca3af;
-}
-
-.email-info .email-address {
-    font-weight: 500;
-    color: #374151;
-    word-break: break-all;
-}
-
-.country-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.country-name {
-    font-weight: 500;
-    color: #374151;
-}
-
-.country-flag {
-    font-size: 16px;
-}
-
-.date-info .date-value {
-    font-weight: 500;
-    color: #374151;
-}
-
-.summary-item .value {
-    font-size: 18px;
-    font-weight: 700;
-}
-</style>

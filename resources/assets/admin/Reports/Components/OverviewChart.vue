@@ -1,5 +1,5 @@
 <template>
-    <card>
+    <card class="ff-pro-component">
         <card-head>
             <div class="overview-chart-header">
                 <div class="chart-title-section">
@@ -131,7 +131,11 @@ export default {
           let keys = Object.keys(this.chartData);
           if (this.isRevenueMode) {
               keys = ['payments', 'paid', 'pending', 'refunded'];
+          } else {
+              // For activity mode, check all available activity keys
+              keys = ['submissions', 'views', 'read', 'unread', 'spam', 'trashed'];
           }
+
           let status = false;
           keys.forEach(key => {
               if (this.chartData[key] && this.chartData[key].length > 0 && this.chartData[key].some(val => val > 0)) {
@@ -474,93 +478,4 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-/* Overview Chart Header Styles */
-.overview-chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    gap: 20px;
-}
-
-.chart-title-section {
-    flex: 1;
-    min-width: 0;
-}
-
-.chart-title-section h3 {
-    margin: 0 0 8px 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.card-controls {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-.chart-wrapper {
-    position: relative;
-    margin-top: 16px;
-    width: 100%;
-    overflow: visible;
-    min-height: 450px;
-    height: auto;
-}
-
-.loading-skeleton-header {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.loading-skeleton-body {
-  display: flex;
-  gap: 20px;
-  height: 280px;
-  margin: 20px;
-}
-
-.loading-skeleton-body > div {
-  height: 100%;
-}
-
-.loading-skeleton-footer {
-  display: flex;
-  margin-left: 20px;
-  gap: 10px;
-  max-width: 200px;
-}
-
-.no-data {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 400px;
-    text-align: center;
-    color: #6b7280;
-}
-
-.no-data h4 {
-    margin: 0 0 8px 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.no-data p {
-    margin: 0;
-    font-size: 14px;
-    max-width: 300px;
-    line-height: 1.5;
-}
-</style>
 

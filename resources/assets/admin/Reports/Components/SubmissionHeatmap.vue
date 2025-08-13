@@ -1,5 +1,5 @@
 <template>
-    <card>
+    <card class="ff-pro-component">
         <card-head>
             <h3>{{$t('Submission Timeline')}}</h3>
             <div class="heatmap-navigation">
@@ -76,6 +76,16 @@
                     <span>{{ $t('High') }}</span>
                 </div>
             </div>
+            <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
+                <div>
+                    <h2 class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</h2>
+                </div>
+                <a target="_blank"
+                   href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
+                   class="el-button el-button--info el-button--small mt-2">
+                    {{ $t('Upgrade to Pro') }}
+                </a>
+            </notice>
         </card-body>
     </card>
 </template>
@@ -84,13 +94,15 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
     name: 'SubmissionHeatmap',
     components: {
         Card,
         CardBody,
-        CardHead
+        CardHead,
+        Notice
     },
     props: ['heatmap_data', 'global_date_params'],
     data() {
@@ -134,6 +146,10 @@ export default {
         };
     },
     computed: {
+        hasPro() {
+            return !!window.FluentFormApp.has_pro;
+        },
+
         visibleDays() {
             const days = [];
             const date = new Date(this.currentStartDate);
@@ -445,65 +461,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-.week-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    line-height: 1.4;
-    padding: 4px 0;
-}
-
-.week-label {
-    font-weight: 500;
-    color: #9ca3af;
-    min-width: 90px;
-    opacity: 0.9;
-    font-size: 12px;
-}
-
-.week-dates {
-    font-weight: 500;
-    color: #4b5563;
-    background: #f8fafc;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-    font-size: 12px;
-    letter-spacing: 0.025em;
-    transition: all 0.2s ease;
-}
-
-.week-dates:hover {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-}
-
-.heatmap-navigation {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-@media (max-width: 768px) {
-    .week-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-        padding: 2px 0;
-    }
-
-    .week-label {
-        min-width: auto;
-        font-size: 11px;
-    }
-
-    .week-dates {
-        font-size: 11px;
-        padding: 3px 8px;
-    }
-}
-</style>
