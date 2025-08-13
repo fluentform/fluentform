@@ -3,7 +3,6 @@
 namespace FluentForm\App\Services\Report;
 
 use Exception;
-use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
