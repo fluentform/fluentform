@@ -1050,35 +1050,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Ensure equal heights for completion rates row */
-.completion-rates-row {
-    display: flex;
-    align-items: stretch;
-}
-
-.completion-rates-row .el-col {
-    display: flex;
-}
-
-.completion-rates-gauge-section,
-.top-performing-forms-section {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.completion-rates-gauge-section .card,
-.top-performing-forms-section .card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.completion-rates-gauge-section .card-body,
-.top-performing-forms-section .card-body {
-    flex: 1;
-}
-</style>
-
 
