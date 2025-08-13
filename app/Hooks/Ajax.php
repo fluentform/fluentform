@@ -384,10 +384,3 @@ add_action('wp_ajax_fluentform_select_group_ajax_data', function () {
     $ajaxList = apply_filters('fluentform/select_group_component_ajax_options', [], $requestData);
     wp_send_json_success($ajaxList);
 });
-
-// Report PDF Download endpoint
-$app->addAction('wp_ajax_fluentform_report_download_pdf', function () use ($app) {
-    Acl::verify('fluentform_entries_viewer');
-    $pdfGenerator = new \FluentForm\App\Services\Report\ReportPdfGenerator();
-    $pdfGenerator->generatePdf($app->request->all());
-});

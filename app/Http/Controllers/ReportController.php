@@ -37,22 +37,7 @@ class ReportController extends Controller
         }
     }
 
-    /**
-     * Get Reports Data
-     * @return \WP_REST_Response
-     */
-    public function getReports(ReportService $reportService)
-    {
-        try {
-            return $this->sendSuccess(
-                $reportService->getReports($this->request->all())
-            );
-        } catch (Exception $e) {
-            return $this->sendError([
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
+
 
     /**
      * Get Forms for Dropdown
@@ -97,6 +82,176 @@ class ReportController extends Controller
         try {
             return $this->sendSuccess(
                 $reportService->submissionsAnalysis($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Overview Chart Data
+     * @return \WP_REST_Response
+     */
+    public function getOverviewChart(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getOverviewChart($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Revenue Chart Data
+     * @return \WP_REST_Response
+     */
+    public function getRevenueChart(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getRevenueChart($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Completion Rate Data
+     * @return \WP_REST_Response
+     */
+    public function getCompletionRate(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getCompletionRate($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Form Stats Data
+     * @return \WP_REST_Response
+     */
+    public function getFormStats(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getFormStats($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Heatmap Data
+     * @return \WP_REST_Response
+     */
+    public function getHeatmapData(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getHeatmapData($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Country Heatmap Data
+     * @return \WP_REST_Response
+     */
+    public function getCountryHeatmap(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getCountryHeatmap($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get API Logs Data
+     * @return \WP_REST_Response
+     */
+    public function getApiLogs(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getApiLogs($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Top Performing Forms Data
+     * @return \WP_REST_Response
+     */
+    public function getTopPerformingForms(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getTopPerformingForms($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Subscriptions Data
+     * @return \WP_REST_Response
+     */
+    public function getSubscriptions(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getSubscriptions($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get Payment Types Data
+     * @return \WP_REST_Response
+     */
+    public function getPaymentTypes(ReportService $reportService)
+    {
+        try {
+            return $this->sendSuccess(
+                $reportService->getPaymentTypes($this->request->all())
             );
         } catch (Exception $e) {
             return $this->sendError([

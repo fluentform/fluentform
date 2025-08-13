@@ -1,8 +1,20 @@
 <template>
     <div class="report-line-chart">
         <card>
-            <card-head class="line-chart-header">
+            <card-head>
                 <h3>{{ title }}</h3>
+                <div class="chart-type-toggle">
+                    <el-radio-group v-model="chartType" size="small">
+                        <el-radio-button label="line">
+                            <i class="el-icon-connection"></i>
+                            {{ $t('Line Chart') }}
+                        </el-radio-button>
+                        <el-radio-button label="bar">
+                            <i class="el-icon-s-data"></i>
+                            {{ $t('Bar Chart') }}
+                        </el-radio-button>
+                    </el-radio-group>
+                </div>
             </card-head>
             <card-body class="line-chart-body">
                 <div v-if="loading" class="loading-overlay">
@@ -52,6 +64,7 @@ export default {
     data() {
         return {
             loading: false,
+            chartType: 'line', // Default to line chart
             statuses: {
                 success: { name: this.$t('Success'), color: '#1FC16B' },
                 pending: { name: this.$t('Processing'), color: '#335CFF' },
@@ -201,27 +214,49 @@ export default {
                 series: this.series.map(s => {
                     const data = {
                         name: s.name,
-                        type: "line",
+                        type: this.chartType,
                         data: s.data,
-                        smooth: true,
-                        lineStyle: {
-                            width: 3
-                        },
                         itemStyle: {
                             color: s.color
-                        },
-                        symbol: "circle",
-                        symbolSize: 5
+                        }
                     };
 
-                    if (this.type === 'api_logs') {
-                        data.areaStyle = {
-                            opacity: 0.1
+                    // Line chart specific properties
+                    if (this.chartType === 'line') {
+                        data.smooth = true;
+                        data.lineStyle = {
+                            width: 3
                         };
+                        data.symbol = "circle";
+                        data.symbolSize = 5;
+
+                        if (this.type === 'api_logs') {
+                            data.areaStyle = {
+                                opacity: 0.1
+                            };
+                        }
                     }
+
+                    // Bar chart specific properties
+                    if (this.chartType === 'bar') {
+                        data.barWidth = '20%';
+                        data.itemStyle.borderRadius = [4, 4, 0, 0];
+                    }
+
                     return data;
                 })
             };
+        }
+    },
+    watch: {
+        chartType() {
+            // Chart will automatically update due to reactive chartOptions
+            this.$nextTick(() => {
+                // Force chart resize after type change
+                if (this.$refs.chart) {
+                    this.$refs.chart.resize();
+                }
+            });
         }
     },
     methods: {

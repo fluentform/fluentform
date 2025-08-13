@@ -129,7 +129,7 @@ class SubmissionHandlerService
         );
         $this->formData = apply_filters('fluentform/insert_response_data', $formData, $formId, $inputConfigs);
         
-        $ipAddress = $this->app->request->getIp();
+        $ipAddress = sanitize_text_field($this->app->request->getIp());
 
         $disableIpLog = apply_filters_deprecated(
             'fluentform_disable_ip_logging',

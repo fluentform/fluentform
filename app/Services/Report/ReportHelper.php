@@ -38,7 +38,7 @@ class ReportHelper
             return [
                 'report_items'  => (object)[],
                 'total_entries' => static::getEntryCounts($form->id, $statuses),
-                'browsers'      => static::getbrowserCounts($form->id, $statuses),
+                'browsers'      => static::getBrowserCounts($form->id, $statuses),
                 'devices'       => static::getDeviceCounts($form->id, $statuses),
             ];
         }
@@ -67,7 +67,7 @@ class ReportHelper
         return [
             'report_items'  => $reports,
             'total_entries' => static::getEntryCounts($form->id, $statuses),
-            'browsers'      => static::getbrowserCounts($form->id, $statuses),
+            'browsers'      => static::getBrowserCounts($form->id, $statuses),
             'devices'       => static::getDeviceCounts($form->id, $statuses),
         ];
     }
@@ -485,9 +485,12 @@ class ReportHelper
      */
     public static function getSubmissionHeatmap($startDate, $endDate, $formId = null)
     {
+
         if (!Helper::hasPro()) {
             return [];
         }
+
+
 
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
@@ -595,47 +598,36 @@ class ReportHelper
     {
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
-        $query = Submission::whereBetween('created_at', [$startDate, $endDate]);
+        $query = Submission::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('UPPER(country) as country_code, COUNT(*) as count')
+            ->whereNotNull('country')
+            ->where('country', '!=', '')
+            ->groupBy('country_code')
+            ->orderBy('count', 'DESC');
 
         if ($formId) {
             $query->where('form_id', $formId);
         }
 
-        $submissions = $query->select(['id', 'country'])
-            ->get();
-
-        $countryData = [];
+        $results = $query->get();
         $countryNames = getFluentFormCountryList();
 
-        foreach ($submissions as $submission) {
-            $country = $submission->country;
-
-            if (!empty($country)) {
-                $countryCode = strtoupper($country);
-                if (!isset($countryData[$countryCode])) {
-                    $countryData[$countryCode] = [
-                        'name' => isset($countryNames[$countryCode]) ? $countryNames[$countryCode] : $countryCode,
-                        'value' => 0
-                    ];
-                }
-                $countryData[$countryCode]['value']++;
-            }
+        $countryData = [];
+        foreach ($results as $result) {
+            $countryCode = $result->country_code;
+            $countryData[] = [
+                'name' => $countryNames[$countryCode] ?? $countryCode,
+                'value' => (int)$result->count
+            ];
         }
 
-        uasort($countryData, function($a, $b) {
-            return $b['value'] - $a['value'];
-        });
-
         return [
-            'country_data' => array_values($countryData)
+            'country_data' => $countryData
         ];
     }
 
     public static function getApiLogs($startDate, $endDate, $formId = null)
     {
-        if (!Helper::hasPro()) {
-            return [];
-        }
         // Process date range
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
@@ -811,9 +803,6 @@ class ReportHelper
 
     public static function getSubscriptions($startDate, $endDate, $formId = null)
     {
-        if (!Helper::hasPro()) {
-            return [];
-        }
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if (!$paymentSettings || !Arr::get($paymentSettings, 'status')) {
             return []; // Return empty if payment module is disabled
@@ -1296,23 +1285,38 @@ class ReportHelper
     {
         global $wpdb;
         $prefix = $wpdb->prefix;
-        // Create a subquery with the email expression to handle the grouping properly
-        $subQuery = "SELECT
+        // Use wpFluent query builder for better security
+        $subQueryBuilder = wpFluent()
+            ->table('fluentform_submissions')
+            ->selectRaw("
+                COALESCE(
+                    NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
+                    NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),
+                    NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.user_email')), ''),
+                    'No Email'
+                ) as email,
+                COUNT(*) as total_submissions,
+                SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+                SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+                SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions,
+                ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+            ")
+            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
+
+        if ($formId) {
+            $subQueryBuilder->where('fluentform_submissions.form_id', $formId);
+        }
+
+        $subQueryBuilder->groupByRaw("
             COALESCE(
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.user_email')), ''),
                 'No Email'
-            ) as email,
-            COUNT(*) as total_submissions,
-            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
-            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
-            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions,
-            ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
-        FROM {$prefix}fluentform_submissions
-        WHERE {$prefix}fluentform_submissions.created_at BETWEEN '{$startDate}' AND '{$endDate}'
-        " . ($formId ? " AND {$prefix}fluentform_submissions.form_id = {$formId}" : "") . "
-        GROUP BY email";
+            )
+        ");
+
+        $subQuery = $subQueryBuilder->toSql();
 
         $query = wpFluent()
             ->table(wpFluent()->raw("({$subQuery}) as email_stats"))
@@ -1565,7 +1569,7 @@ class ReportHelper
 
             if ($minDateRecord && $minDateRecord->min_date) {
                 $minDate = $minDateRecord->min_date;
-                $viewsQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                $viewsQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), ?) / 3) as group_num", [$minDate])
                     ->selectRaw('MIN(DATE(created_at)) as date_group')
                     ->selectRaw('COUNT(DISTINCT ip) as unique_count')
                     ->groupBy('group_num');
@@ -1596,6 +1600,11 @@ class ReportHelper
      */
     public static function processDateRange($startDate, $endDate)
     {
+        // Validate date formats
+        if (!strtotime($startDate) || !strtotime($endDate)) {
+            return [];
+        }
+
         // Sanity check - ensure start date is before end date
         $startDateTime = new \DateTime($startDate);
         $endDateTime = new \DateTime($endDate);
@@ -1676,15 +1685,15 @@ class ReportHelper
                     $minDate = $minDateRecord->min_date;
 
                     $paidQuery->selectRaw("MIN(DATE(created_at)) as date_group")
-                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), ?) / 3) as group_num", [$minDate])
                         ->groupBy('group_num');
 
                     $pendingQuery->selectRaw("MIN(DATE(created_at)) as date_group")
-                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), ?) / 3) as group_num", [$minDate])
                         ->groupBy('group_num');
 
                     $refundedQuery->selectRaw("MIN(DATE(created_at)) as date_group")
-                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), ?) / 3) as group_num", [$minDate])
                         ->groupBy('group_num');
                 } else {
                     $paidQuery->selectRaw('DATE(created_at) as date_group')->groupBy('date_group');
@@ -1959,22 +1968,27 @@ class ReportHelper
     {
         $result = [];
 
-        for ($i = 0; $i < count($allDates); $i++) {
-            $startDate = new \DateTime($allDates[$i]);
+        // Pre-convert dates to timestamps for faster comparison
+        $dataTimestamps = [];
+        foreach ($data as $date => $value) {
+            $dataTimestamps[strtotime($date)] = $value;
+        }
 
-            // Calculate end date of interval (exclusive)
-            // Next interval start date, or use a 3-day interval for the last one
-            $endDate = isset($allDates[$i + 1]) ? new \DateTime($allDates[$i + 1]) : (clone $startDate)->modify('+3 days');
+        $allDatesCount = count($allDates);
+        for ($i = 0; $i < $allDatesCount; $i++) {
+            $startTimestamp = strtotime($allDates[$i]);
+
+            // Calculate end timestamp of interval (exclusive)
+            $endTimestamp = isset($allDates[$i + 1])
+                ? strtotime($allDates[$i + 1])
+                : $startTimestamp + (3 * 24 * 60 * 60); // 3 days in seconds
 
             $sum = 0;
             $hasData = false;
 
-            // Check each date in the data array
-            foreach ($data as $date => $value) {
-                $checkDate = new \DateTime($date);
-
-                // If date is within current interval
-                if ($checkDate >= $startDate && $checkDate < $endDate) {
+            // Check each timestamp in the data array
+            foreach ($dataTimestamps as $timestamp => $value) {
+                if ($timestamp >= $startTimestamp && $timestamp < $endTimestamp) {
                     $sum += $value;
                     $hasData = true;
                 }
@@ -2152,9 +2166,6 @@ class ReportHelper
      */
     public static function getPaymentsByType($startDate, $endDate, $paymentType = 'subscription', $formId = null)
     {
-        if (!Helper::hasPro()) {
-            return [];
-        }
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
             return []; // Return empty if payment module is disabled
