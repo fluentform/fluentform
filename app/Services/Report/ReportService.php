@@ -129,7 +129,7 @@ class ReportService
                 'revenue_chart'         => ReportHelper::getOverviewChartData($startDate, $endDate, $formId, 'revenue'),
                 'form_stats'            => ReportHelper::getFormStats($startDate, $endDate, $formId),
                 'completion_rate'       => ReportHelper::getCompletionRateData($startDate, $endDate, $formId),
-                'heatmap_data'          => ReportHelper::getSubmissionHeatmap($startDate, $endDate), $formId,
+                'heatmap_data'          => ReportHelper::getSubmissionHeatmap($startDate, $endDate, $formId),
                 'country_heatmap'       => ReportHelper::getSubmissionsByCountry($startDate, $endDate, $formId),
                 'api_logs'              => ReportHelper::getApiLogs($startDate, $endDate, $formId),
                 'top_performing_forms'  => ReportHelper::getTopPerformingForms($startDate, $endDate, 'entries'),

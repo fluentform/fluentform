@@ -472,66 +472,124 @@ class ReportHelper
         return $stats;
     }
 
+    /**
+     * Get submission heatmap data aggregated by recurring time periods
+     *
+     * This method returns cumulative submissions aggregated by 1-hour time slots within recurring periods.
+     * (e.g., all Mondays combined, all Tuesdays combined, etc.) .
+     *
+     * @param string $startDate
+     * @param string $endDate
+     * @param int|null $formId Optional form ID to filter by
+     * @return array Heatmap data with aggregated submissions by recurring time periods
+     */
     public static function getSubmissionHeatmap($startDate, $endDate, $formId = null)
     {
         if (!Helper::hasPro()) {
             return [];
         }
-        // Process and fix date ranges if needed
+
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
-        // Create DateTime objects for iteration
+        // Create cache key based on parameters
+        $cacheKey = 'ff_heatmap_' . md5($startDate . $endDate . ($formId ?? 'all'));
+
+        // Try to get from cache first (cache for 5 minutes)
+        $cached = get_transient($cacheKey);
+        if ($cached !== false) {
+            return $cached;
+        }
+
+        // Calculate date difference to determine aggregation type
         $startDateTime = new \DateTime($startDate);
         $endDateTime = new \DateTime($endDate);
+        $interval = $startDateTime->diff($endDateTime);
+        $daysInterval = $interval->days + 1;
 
-        // Generate all dates in the range
-        $allDates = [];
-        $current = clone $startDateTime;
-        while ($current <= $endDateTime) {
-            $allDates[] = $current->format('Y-m-d');
-            $current->modify('+1 day');
-        }
+        $aggregationType = 'day_of_week';
 
-        // Initialize heatmap data with zeros for all dates and time slots
-        $heatmapData = [];
-        foreach ($allDates as $date) {
-            $heatmapData[$date] = array_fill(0, 8, 0); // 8 time slots, all initialized to 0
-        }
+        $heatmapData = self::initializeHeatmapData($aggregationType);
 
-        // Query submissions using Eloquent-like syntax
-        $results = Submission::whereBetween('created_at', [$startDate, $endDate])
-            ->when($formId, function ($q) use ($formId) {
-                return $q->where('form_id', $formId);
-            })
-            ->selectRaw('DATE(created_at) as submission_date')
-            ->selectRaw('HOUR(created_at) as submission_hour')
-            ->selectRaw('COUNT(*) as count')
-            ->groupBy('submission_date', 'submission_hour')
-            ->orderBy('submission_date')
-            ->orderBy('submission_hour')
-            ->get();
+        $results = self::getHeatmapSubmissionData($startDate, $endDate, $formId, $aggregationType);
 
         // Fill in actual submission data
         foreach ($results as $row) {
-            $date = $row->submission_date;
-            $hour = (int)$row->submission_hour;
+            $timeSlotIndex = (int)$row->submission_hour; // 1-hour intervals (0-23)
             $count = (int)$row->count;
 
-            // Calculate time slot index (0-7) for 3-hour intervals
-            $timeSlotIndex = floor($hour / 3);
+            if ($aggregationType === 'day_of_week') {
+                // Convert MySQL DAYOFWEEK (1=Sunday, 7=Saturday) to our format (0=Sunday, 6=Saturday)
+                $dayOfWeek = ((int)$row->day_of_week - 1) % 7;
+                $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                $dayKey = $dayNames[$dayOfWeek];
 
-            // Add count to the appropriate time slot (date should already exist)
-            if (isset($heatmapData[$date])) {
-                $heatmapData[$date][$timeSlotIndex] += $count;
+                if (isset($heatmapData[$dayKey])) {
+                    $heatmapData[$dayKey][$timeSlotIndex] += $count;
+                }
             }
         }
 
-        return [
+        $result = [
             'heatmap_data' => $heatmapData,
-            'start_date'   => $startDate,
-            'end_date'     => $endDate
+            'aggregation_type' => $aggregationType,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'days_in_range' => $daysInterval
         ];
+
+        // Cache the result for 5 minutes (300 seconds)
+        set_transient($cacheKey, $result, 300);
+
+        return $result;
     }
+    
+
+    /**
+     * Initialize heatmap data structure based on aggregation type
+     */
+    private static function initializeHeatmapData($aggregationType)
+    {
+        if ($aggregationType === 'day_of_week') {
+            $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            $heatmapData = [];
+            foreach ($dayNames as $day) {
+                $heatmapData[$day] = array_fill(0, 24, 0); // 24 time slots (0-23 hours), all initialized to 0
+            }
+            return $heatmapData;
+        }
+
+        // Default fallback
+        return [];
+    }
+
+    /**
+     * Get submission data for heatmap with appropriate grouping
+     * Optimized version with better query performance
+     */
+    private static function getHeatmapSubmissionData($startDate, $endDate, $formId, $aggregationType)
+    {
+        if ($aggregationType === 'day_of_week') {
+            // Use optimized single query
+            $query = Submission::selectRaw('
+                DAYOFWEEK(created_at) as day_of_week,
+                HOUR(created_at) as submission_hour,
+                COUNT(*) as count
+            ')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($formId, function ($q) use ($formId) {
+                return $q->where('form_id', $formId);
+            })
+            ->whereNotIn('status', ['trashed', 'spam'])
+            ->groupBy('day_of_week', 'submission_hour')
+            ->orderBy('day_of_week')
+            ->orderBy('submission_hour');
+
+            return $query->get();
+        }
+
+        return collect([]);
+    }
+
 
     public static function getSubmissionsByCountry($startDate, $endDate, $formId = null)
     {
@@ -2101,7 +2159,6 @@ class ReportHelper
         if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
             return []; // Return empty if payment module is disabled
         }
-        // Process date range
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
 
         // Base query for transactions

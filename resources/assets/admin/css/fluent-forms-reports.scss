@@ -896,32 +896,20 @@
             align-items: center;
             margin-top: 24px;
             padding-left: 20px;
-            &-item {
-                width: 20px;
-                height: 20px;
-                border-radius: 2px;
-                display: inline-block;
-                &.level-0 { background-color: #f3f4f6; }
-                &.level-1 { background-color: #bfdbfe; }
-                &.level-2 { background-color: #93c5fd; }
-                &.level-3 { background-color: #60a5fa; }
-                &.level-4 { background-color: #3b82f6; }
-                &.level-5 { background-color: #1d4ed8; }
-            }
         }
 
         @media (max-width: 768px) {
             .heatmap-header,
             .heatmap-row {
-                min-width: 600px;
+                min-width: 500px;
             }
         }
     }
 
     .heatmap-header {
         display: grid;
-        grid-template-columns: 80px repeat(8, 1fr);
-        gap: 16px;
+        grid-template-columns: 80px repeat(12, 1fr);
+        gap: 8px;
         border-bottom: 1px solid $report-border-color;
         border-top: 1px solid $report-border-color;
         .date-column-header {
@@ -992,8 +980,8 @@
 
     .heatmap-row {
         display: grid;
-        grid-template-columns: 80px repeat(8, 1fr);
-        gap: 12px;
+        grid-template-columns: 80px repeat(12, 1fr);
+        gap: 6px;
         align-items: center;
     }
 
@@ -1050,23 +1038,23 @@
         }
 
         &.level-1 {
-            background-color: #bfdbfe;
+            background-color: #E6F0FF;
         }
 
         &.level-2 {
-            background-color: #93c5fd;
+            background-color: #A3C8FF;
         }
 
         &.level-3 {
-            background-color: #60a5fa;
+            background-color: #5FA8FF;
         }
 
         &.level-4 {
-            background-color: #3b82f6;
+            background-color: #2F7BFF;
         }
 
         &.level-5 {
-            background-color: #1d4ed8;
+            background-color: #0056E0;
         }
 
         &:hover {
