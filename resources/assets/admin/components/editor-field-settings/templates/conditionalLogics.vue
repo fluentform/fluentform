@@ -3,7 +3,7 @@
         <!-- ADDITIONAL OPTIONS : CONDITIONAL LOGIC -->
         <el-form-item>
             <template #label>
-                <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+                <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
             </template>
             <el-radio v-model="conditional_logics.status" :value="true">{{ $t('Yes') }}</el-radio>
             <el-radio v-model="conditional_logics.status" :value="false">{{ $t('No') }}</el-radio>
@@ -12,14 +12,14 @@
         <div class="ff_conditions_warp" v-if="conditional_logics.status">
             <el-form-item>
                 <template #label>
-                    <ff-label
+                    <el-label
                         :label="$t('Condition Match')"
                         :helpText="
                             $t(
                                 'Select to match whether all rules are required or any. if the match is successful then the field will be shown'
                             )
                         "
-                    ></ff-label>
+                    ></el-label>
                 </template>
                 <el-radio v-model="conditional_logics.type" valye="any">{{ $t('Any') }}</el-radio>
                 <el-radio v-model="conditional_logics.type" value="all">{{ $t('All') }}</el-radio>
@@ -121,7 +121,7 @@ export default {
     inject: ['eventBus'],
     props: ['listItem', 'editItem', 'form_items'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
         ActionBtn,
         ActionBtnAdd,
         ActionBtnRemove,

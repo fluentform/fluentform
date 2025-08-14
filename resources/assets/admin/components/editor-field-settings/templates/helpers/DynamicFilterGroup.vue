@@ -52,9 +52,8 @@
                             <el-button
                                 :type="isCustom ? 'primary' : ''"
                                 @click="toggleCustom"
-                            >
-                                <el-icon><Edit /></el-icon>
-                            </el-button>
+                                icon="el-icon-edit"
+                            ></el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -84,8 +83,6 @@ import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
 import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
 import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 import debounce from 'lodash/debounce';
-import { Edit } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
 
 export default {
     name: 'DynamicFilterGroup',
@@ -112,8 +109,6 @@ export default {
         ActionBtn,
         ActionBtnAdd,
         ActionBtnRemove,
-        Edit,
-        ElIcon,
     },
     methods: {
         getDebounceFormFields: debounce(function () {

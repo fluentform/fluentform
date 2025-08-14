@@ -9,7 +9,7 @@
     >
         <div style="padding: 20px">
             <div class="ff-input-wrap">
-                <el-icon class="search-icon"><Search /></el-icon>
+                <span class="el-icon el-icon-search"></span>
                 <input
                     autocomplete="off"
                     type="text"
@@ -61,8 +61,6 @@
 
 <script>
 import listItems from './el-list-items.vue';
-import { Search } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
 
 export default {
     name: 'editor-inserter',
@@ -70,8 +68,6 @@ export default {
     emits: ['update:visible'],
     components: {
         listItems,
-        Search,
-        ElIcon,
     },
     props: {
         visible: {

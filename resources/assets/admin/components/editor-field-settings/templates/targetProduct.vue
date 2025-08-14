@@ -1,7 +1,7 @@
 <template>
     <el-form-item>
         <template #label>
-            <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
         <el-select v-model="model" size="small">
             <el-option
@@ -22,7 +22,7 @@ export default {
     name: 'targetProduct',
     props: ['listItem', 'modelValue', 'form_items'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
     },
     computed: {
         available_products() {

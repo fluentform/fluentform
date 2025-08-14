@@ -11,7 +11,7 @@
                         :placeholder="$t(placeholder)"
                         autocomplete="off"
                     >
-                    <span class="el-input__prefix"><el-icon class="el-input__icon"><Search /></el-icon></span>
+                    <span class="el-input__prefix"><i class="el-input__icon el-icon-search"></i></span>
                 </div>
 
                 <ul class="search-result">
@@ -37,8 +37,8 @@
                     <li>{{ $t('Esc to close') }}</li>
                     <li>
                         {{ $t('Navigate') }}
-                        <el-icon><ArrowDown /></el-icon>
-                        <el-icon><ArrowUp /></el-icon>
+                        <i class="el-icon-bottom"></i>
+                        <i class="el-icon-top"></i>
                     </li>
                     <li>{{ $t('Tab to focus search') }}</li>
                     <li>{{ $t('Enter to Select') }}</li>
@@ -50,17 +50,9 @@
 
 <script>
 import Fuse from 'fuse.js';
-import { Search, ArrowDown, ArrowUp } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
 
 export default {
     name: 'global-search',
-    components: {
-        Search,
-        ArrowDown,
-        ArrowUp,
-        ElIcon,
-    },
     data() {
         return {
             showSearch: false,
@@ -231,7 +223,7 @@ export default {
             });
         }
     },
-    beforeUnmount() {
+    beforeDestroy() {
         document.removeEventListener('keydown', this.listener);
     },
 };

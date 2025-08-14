@@ -3,19 +3,19 @@
         <div class="styler_row">
             <el-form-item>
                 <template #label>
-                    <ff-label :label="$t('Background Color')" :helpText="$t('Button Background Color')"></ff-label>
+                    <el-label :label="$t('Background Color')" :helpText="$t('Button Background Color')"></el-label>
                 </template>
                 <ninja-color-picker v-model="model.backgroundColor"></ninja-color-picker>
             </el-form-item>
             <el-form-item>
                 <template #label>
-                    <ff-label :label="$t('Text Color')" :helpText="$t('Button Text Color')"></ff-label>
+                    <el-label :label="$t('Text Color')" :helpText="$t('Button Text Color')"></el-label>
                 </template>
                 <ninja-color-picker v-model="model.color"></ninja-color-picker>
             </el-form-item>
             <el-form-item>
                 <template #label>
-                    <ff-label :label="$t('Border Color')" :helpText="$t('Button Border Color')"></ff-label>
+                    <el-label :label="$t('Border Color')" :helpText="$t('Button Border Color')"></el-label>
                 </template>
                 <ninja-color-picker v-model="model.borderColor"></ninja-color-picker>
             </el-form-item>
@@ -23,16 +23,16 @@
         <div class="styler_row">
             <el-form-item>
                 <template #label>
-                    <ff-label :label="$t('Border Radius (px)')" :helpText="$t('Button Border Radius')"></ff-label>
+                    <el-label :label="$t('Border Radius (px)')" :helpText="$t('Button Border Radius')"></el-label>
                 </template>
                 <input class="w-100" :placeholder="$t('ex: 4')" type="number" v-model="model.borderRadius" />
             </el-form-item>
             <el-form-item>
                 <template #label>
-                    <ff-label
+                    <el-label
                         :label="$t('Min-Width')"
                         :helpText="$t('Button Min-Width (Keep blank/0 for auto)')"
-                    ></ff-label>
+                    ></el-label>
                 </template>
                 <input class="w-100" :placeholder="$t('ex: 100%')" type="text" v-model="model.minWidth" />
             </el-form-item>
@@ -58,7 +58,7 @@ export default {
         },
     },
     components: {
-        'ff-label': elLabel,
+        elLabel,
         ninjaColorPicker,
     },
 };

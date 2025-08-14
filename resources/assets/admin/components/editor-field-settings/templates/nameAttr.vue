@@ -2,7 +2,7 @@
     <div>
         <el-form-item>
             <template #label>
-                <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+                <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
             </template>
 
             <el-input
@@ -16,10 +16,9 @@
                     <el-button
                         v-if="shouldShowButton"
                         type="warning"
+                        icon="el-icon-edit"
                         @click="isDisabled = !isDisabled"
-                    >
-                        <el-icon><Edit /></el-icon>
-                    </el-button>
+                    ></el-button>
                 </template>
             </el-input>
         </el-form-item>
@@ -27,7 +26,7 @@
         <el-form-item v-if="!isDisabled && maybeDisableEdit()">
             <notice type="danger">
                 <div class="ff_alert_group">
-                    <el-icon class="ff_alert_icon"><Warning /></el-icon>
+                    <i class="ff_alert_icon el-icon-warning"></i>
                     <div class="ff_alert_content">
                         <span>
                             {{
@@ -42,8 +41,6 @@
 </template>
 
 <script>
-import { Edit, Warning } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
 import elLabel from '../../includes/el-label.vue';
 import Notice from '../../Notice/Notice.vue';
 
@@ -58,10 +55,7 @@ export default {
         };
     },
     components: {
-        Edit,
-        Warning,
-        ElIcon,
-        'ff-label': elLabel,
+        elLabel,
         Notice,
     },
     methods: {

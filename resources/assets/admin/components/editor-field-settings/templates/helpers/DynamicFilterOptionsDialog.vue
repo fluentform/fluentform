@@ -29,7 +29,7 @@
                                             :content="$t('Check if you want to be used value as the default value.')"
                                             placement="top"
                                         >
-                                            <el-icon class="ff-icon"><InfoFilled /></el-icon>
+                                            <i class="ff-icon el-icon-info"></i>
                                         </el-tooltip>
                                     </span>
                                 </template>
@@ -47,7 +47,7 @@
                                             "
                                             placement="top"
                                         >
-                                            <el-icon class="ff-icon"><InfoFilled /></el-icon>
+                                            <i class="ff-icon el-icon-info"></i>
                                         </el-tooltip>
                                     </span>
                                 </template>
@@ -73,15 +73,8 @@
 </template>
 
 <script type="text/babel">
-import { InfoFilled } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
-
 export default {
     name: 'DynamicFilterOptionsDialog',
-    components: {
-        InfoFilled,
-        ElIcon,
-    },
     props: ['visible', 'options', 'dynamic', 'type', 'value'],
     data() {
         return {

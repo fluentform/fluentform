@@ -2,7 +2,7 @@
     <el-form-item v-if="editItem.settings.progress_indicator !== ''">
         <template #label>
             <b>
-                <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+                <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
             </b>
         </template>
         <hr class="mb-3" />
@@ -22,7 +22,7 @@ import elLabel from '../../includes/el-label.vue';
 export default {
     name: 'customStepTitles',
     components: {
-        'ff-label': elLabel,
+        elLabel,
     },
     props: ['listItem', 'editItem', 'form_items'],
     computed: {

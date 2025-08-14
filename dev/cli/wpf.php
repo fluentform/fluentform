@@ -89,7 +89,7 @@ if ($args) {
 			// Make the plugin active during the testing
 			$p = substr($cwd, strrpos($cwd, '/') + 1);
 			$GLOBALS['wp_tests_options'] = [
-				'active_plugins' => [$p.'/fluentform.php']
+				'active_plugins' => [$p.'/plugin.php']
 			];
 			// Run the test suite
 			chdir($cwd.'/dev');

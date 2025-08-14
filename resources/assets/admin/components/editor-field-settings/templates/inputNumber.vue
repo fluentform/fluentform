@@ -1,7 +1,7 @@
 <template>
     <el-form-item v-if="isSingleInventoryStockField">
         <template #label>
-            <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
         <el-input v-model="model" type="number"></el-input>
     </el-form-item>
@@ -14,7 +14,7 @@ export default {
     name: 'inputText',
     props: ['listItem', 'editItem', 'modelValue'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
     },
     watch: {
         model() {

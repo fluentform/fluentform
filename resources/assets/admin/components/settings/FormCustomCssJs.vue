@@ -59,7 +59,7 @@
 
         <el-button v-loading="saving" @click="saveSettings()" class="ff_action" type="primary" size="large">
             <template #icon>
-                <el-icon><Check /></el-icon>
+                <i class="el-icon-success"></i>
             </template>
             {{ $t('Save CSS & JS') }}
         </el-button>
@@ -73,8 +73,6 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import { VAceEditor } from 'vue3-ace-editor';
-import { Check } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
 import 'ace-builds/src-noconflict/mode-css';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/theme-monokai';
@@ -87,17 +85,15 @@ export default {
         Card,
         CardHead,
         CardBody,
-        VAceEditor,
-        Check,
-        ElIcon
+        VAceEditor
     },
     props: ['form_id'],
     data() {
         return {
             fetching: false,
             saving: false,
-            custom_css: '', // Initialize as empty string to prevent VAceEditor prop validation errors
-            custom_js: '', // Initialize as empty string to prevent VAceEditor prop validation errors
+            custom_css: '',
+            custom_js: '',
             is_conversion_form: !!window.FluentFormApp.is_conversion_form,
         }
     },
@@ -107,9 +103,8 @@ export default {
             const url = FluentFormsGlobal.$rest.route('getFormSettingsCustomizer', this.form_id);
             FluentFormsGlobal.$rest.get(url)
                 .then(response => {
-                    // Ensure values are always strings to prevent VAceEditor prop validation errors
-                    this.custom_css = response.css || '';
-                    this.custom_js = response.js || '';
+                    this.custom_css = response.css;
+                    this.custom_js = response.js;
                 })
                 .catch(error => {
 

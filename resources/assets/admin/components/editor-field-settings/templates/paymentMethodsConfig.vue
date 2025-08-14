@@ -1,7 +1,7 @@
 <template>
     <el-form-item>
         <template #label>
-            <ff-label :label="listItem.label" :helpText="listItem.help_text" />
+            <el-label :label="listItem.label" :helpText="listItem.help_text" />
         </template>
         <div v-if="isEmpty(value)">
             {{ $t('No Active Payment Method Found.Please configure from Fluent Forms Settings') }}
@@ -9,7 +9,7 @@
 
         <div class="ff_payment_settings_wrapper">
             <div class="address-field-option" v-for="(paymentMethod, methodName) in value" :key="methodName">
-                <el-icon @click="toggleAddressFieldInputs" class="el-icon-clickable pull-right"><CaretBottom /></el-icon>
+                <i @click="toggleAddressFieldInputs" class="el-icon-caret-bottom el-icon-clickable pull-right" />
 
                 <el-checkbox true-value="yes" false-value="no" v-model="paymentMethod.enabled">
                     <span v-html="paymentMethod.title"></span>
@@ -54,8 +54,6 @@
 </template>
 
 <script type="text/babel">
-import { CaretBottom } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
 import elLabel from '../../includes/el-label.vue';
 import isEmpty from 'lodash/isEmpty';
 import inputText from './inputText.vue';
@@ -66,11 +64,9 @@ export default {
     name: 'paymentMethodConfig',
     props: ['listItem', 'value'],
     components: {
-        CaretBottom,
-        ElIcon,
         InputRadio,
         InputYesNoCheckBox,
-        'ff-label': elLabel,
+        elLabel,
         inputText,
     },
     computed: {

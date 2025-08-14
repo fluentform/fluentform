@@ -8,7 +8,7 @@
                 <card border>
                     <h5 class="mb-2">{{ $t('Share Via Direct URL') }}</h5>
                     <p>{{ $t('Get the link or share on social sites') }}</p>
-                    <el-input :value="share_url" :readonly="true">
+                    <el-input v-model="share_url" :readonly="true">
                         <template #append>
                             <el-button
                                 @click="copyText()"

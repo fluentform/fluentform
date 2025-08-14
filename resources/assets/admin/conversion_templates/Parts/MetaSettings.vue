@@ -104,7 +104,7 @@
 </template>
 
 <script type="text/babel">
-    import PhotoUploader from '@/common/PhotoUploader.vue';
+    import PhotoUploader from '@/common/PhotoUploader';
     import Card from '@/admin/components/Card/Card.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';

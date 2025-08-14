@@ -1,7 +1,7 @@
 <template>
     <el-form-item>
         <template #label>
-            <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
         <el-input type="number" v-model.number="sizeInput" class="input-with-select">
             <template #prepend>
@@ -20,7 +20,7 @@ export default {
     name: 'maxFileSize',
     props: ['listItem', 'editItem'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
     },
     data() {
         return {

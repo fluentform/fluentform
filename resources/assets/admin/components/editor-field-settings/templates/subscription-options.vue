@@ -2,7 +2,7 @@
     <div class="ff_payment_item_wrapper">
         <el-form-item>
             <template #label>
-                <ff-label :label="$t('Subscription Type')" :helpText="$t('Select your subscription plan type')" />
+                <el-label :label="$t('Subscription Type')" :helpText="$t('Select your subscription plan type')" />
             </template>
 
             <el-radio-group size="small" @change="checkPricingPlans()" v-model="editItem.attributes.type">
@@ -18,7 +18,7 @@
 
         <el-form-item v-if="editItem.attributes.type === 'multiple'">
             <template #label>
-                <ff-label
+                <el-label
                     :label="$t('Plan Display Type')"
                     :helpText="$t('Select how you want to display the plan options')"
                 />
@@ -75,7 +75,7 @@
             <div class="plan_body">
                 <el-form-item>
                     <template #label>
-                        <ff-label :label="$t('Plan Name')" />
+                        <el-label :label="$t('Plan Name')" />
                     </template>
 
                     <el-input size="small" type="text" v-model="item.name" :placeholder="$t('Plan Name')" />
@@ -104,7 +104,7 @@
                     <el-col :span="12">
                         <el-form-item>
                             <template #label>
-                                <ff-label :label="$t('Billing Interval')" />
+                                <el-label :label="$t('Billing Interval')" />
                             </template>
 
                             <el-select size="small" :placeholder="$t('Select')" v-model="item.billing_interval">
@@ -123,7 +123,7 @@
                 <template v-if="item.user_input === 'yes'">
                     <el-form-item>
                         <template #label>
-                            <ff-label :label="$t('User Input Amount label')" />
+                            <el-label :label="$t('User Input Amount label')" />
                         </template>
 
                         <el-input
@@ -137,7 +137,7 @@
                         <el-col :span="12">
                             <el-form-item>
                                 <template #label>
-                                    <ff-label :label="$t('Minimum Amount')" />
+                                    <el-label :label="$t('Minimum Amount')" />
                                 </template>
 
                                 <el-input-number size="small" v-model="item.user_input_min_value" />
@@ -146,7 +146,7 @@
                         <el-col :span="12">
                             <el-form-item>
                                 <template #label>
-                                    <ff-label :label="$t('Default Amount')" />
+                                    <el-label :label="$t('Default Amount')" />
                                 </template>
 
                                 <el-input-number size="small" v-model="item.user_input_default_value" />
@@ -159,7 +159,7 @@
                     <el-col :span="12">
                         <el-form-item>
                             <template #label>
-                                <ff-label :label="$t('Has Signup Fee?')" />
+                                <el-label :label="$t('Has Signup Fee?')" />
                             </template>
 
                             <el-switch
@@ -181,7 +181,7 @@
                     <el-col :span="12">
                         <el-form-item>
                             <template #label>
-                                <ff-label :label="$t('Has Trial Days? (in days)')" />
+                                <el-label :label="$t('Has Trial Days? (in days)')" />
                             </template>
 
                             <el-switch
@@ -204,7 +204,7 @@
 
                 <el-form-item>
                     <template #label>
-                        <ff-label :label="$t('Total Billing times')" />
+                        <el-label :label="$t('Total Billing times')" />
                     </template>
 
                     <el-input-number :min="0" size="small" v-model="item.bill_times" :placeholder="$t('times')" />
@@ -236,7 +236,7 @@ export default {
     name: 'subscription-options',
     props: ['editItem', 'listItem'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
     },
     data() {
         return {

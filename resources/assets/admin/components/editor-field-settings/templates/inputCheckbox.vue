@@ -1,7 +1,7 @@
 <template>
     <el-form-item>
         <template #label>
-            <ff-label v-if="listItem.label" :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+            <el-label v-if="listItem.label" :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
 
         <el-checkbox-group class="el-fluid el-checkbox-horizontal" v-model="model">
@@ -16,7 +16,7 @@ import elLabel from '../../includes/el-label.vue';
 export default {
     name: 'inputCheckbox',
     props: ['listItem', 'modelValue'],
-    components: { 'ff-label': elLabel },
+    components: { elLabel },
     watch: {
         model() {
             this.$emit('update:modelValue', this.model);

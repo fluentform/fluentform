@@ -1,7 +1,7 @@
 <template>
     <el-form-item v-if="show">
         <template #label>
-            <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
         <el-radio-group class="el-radio-button-group" size="small" v-model="model">
             <el-radio-button v-for="(opt, index) in listItem.options" :value="opt.value" :key="index"
@@ -17,7 +17,7 @@ import elLabel from '../../includes/el-label.vue';
 export default {
     name: 'radioButton',
     props: ['listItem', 'modelValue'],
-    components: { 'ff-label': elLabel },
+    components: { elLabel },
     data() {
         return {
             show: true,

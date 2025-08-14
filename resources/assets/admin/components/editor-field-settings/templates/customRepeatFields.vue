@@ -44,7 +44,7 @@ export default {
     name: 'customRepeatFields',
     props: ['listItem', 'editItem'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
         inputText,
         inputDefaultValue,
         validationRules,

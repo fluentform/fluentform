@@ -104,7 +104,7 @@ export default {
         },
     },
     components: {
-        'ff-label': elLabel,
+        elLabel,
         ff_select: select,
         ff_inputText: inputText,
         ff_inputRadio: inputRadio,

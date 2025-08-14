@@ -1,7 +1,7 @@
 <template>
     <el-form-item>
         <template #label>
-            <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
         <el-input v-model="model" :type="listItem.type"></el-input>
     </el-form-item>
@@ -14,7 +14,7 @@ export default {
     name: 'inputText',
     props: ['listItem', 'modelValue'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
     },
     data() {
         return {

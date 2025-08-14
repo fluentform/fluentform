@@ -1,7 +1,7 @@
 <template>
     <el-form-item>
         <template #label>
-            <ff-label :label="listItem.label" :helpText="listItem.help_text"></ff-label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
 
         <el-color-picker v-model="model" size="small"></el-color-picker>
@@ -15,7 +15,7 @@ export default {
     name: 'inputColor',
     props: ['listItem', 'modelValue'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
     },
     watch: {
         model() {

@@ -2,14 +2,14 @@
     <!--Advance Filters -->
     <el-form-item>
         <template #label>
-            <ff-label
+            <el-label
                 :label="$t('Filters')"
                 :help-text="
                     $t(
                         'Refine search results by specifying database query filters. Utilize logical operators like AND/OR to group multiple filters, ensuring more precise filtering.'
                     )
                 "
-            ></ff-label>
+            ></el-label>
         </template>
         <div v-if="model.length" class="ff-dynamic-filter-wrap">
             <div v-for="(groups, groupsIndex) in model" :key="'groups_' + groupsIndex">
@@ -38,9 +38,8 @@
             </div>
         </div>
         <div>
-            <el-button @click="addFilterGroup" type="primary" size="small">
-                <el-icon><Plus /></el-icon>
-                {{ $t('Add Filter Group') }}
+            <el-button @click="addFilterGroup" type="primary" size="small" icon="el-icon-plus"
+                >{{ $t('Add Filter Group') }}
             </el-button>
         </div>
     </el-form-item>
@@ -49,17 +48,13 @@
 <script type="text/babel">
 import elLabel from '@/admin/components/includes/el-label.vue';
 import dynamicFilterGroup from './DynamicFilterGroup.vue';
-import { Plus } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
 
 export default {
     name: 'DynamicAdvanceFilter',
     props: ['listItem', 'filterColumns', 'filter_value_options', 'value'],
     components: {
-        'ff-label': elLabel,
+        elLabel,
         dynamicFilterGroup,
-        Plus,
-        ElIcon,
     },
     data() {
         return {};

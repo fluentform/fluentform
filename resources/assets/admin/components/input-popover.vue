@@ -9,7 +9,7 @@
             popper-class="el-dropdown-list-wrapper"
         >
             <template #reference>
-                <el-icon class="ff_el_popover_textarea_icon"><Tickets /></el-icon>
+                <i class="ff_el_popover_textarea_icon el-icon el-icon-tickets"></i>
             </template>
             <template #default>
                 <ul class="el-dropdown-menu el-dropdown-list">
@@ -58,7 +58,7 @@
                     popper-class="el-dropdown-list-wrapper"
                 >
                     <template #reference>
-                        <el-icon class="ff_el_popover_text_icon"><More /></el-icon>
+                        <i class="ff_el_popover_text_icon el-icon el-icon-more"></i>
                     </template>
 
                     <template #default>
@@ -85,16 +85,8 @@
 </template>
 
 <script>
-import { Tickets, More } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
-
 export default {
     name: 'InputPopover',
-    components: {
-        Tickets,
-        More,
-        ElIcon,
-    },
     emits: ['update:modelValue'],
     props: {
         modelValue: {

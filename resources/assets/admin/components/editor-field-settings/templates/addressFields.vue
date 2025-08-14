@@ -17,10 +17,10 @@
                     <div class="vddl-nodrag nodrag-address-fields">
                         <div class="vddl-handle handle"></div>
                         <div class="address-field-option">
-                            <el-icon
+                            <i
                                 @click="toggleAddressFieldInputs"
-                                class="el-icon-clickable pull-right"
-                            ><CaretBottom /></el-icon>
+                                class="el-icon-caret-bottom el-icon-clickable pull-right"
+                            ></i>
 
                             <el-checkbox v-model="editItem.fields[field.value].settings.visible">
                                 {{ editItem.fields[field.value].settings.label }}
@@ -97,7 +97,7 @@
                     "
                     placement="top"
                 >
-                    <el-icon class="tooltip-icon"><InfoFilled /></el-icon>
+                    <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
             </template>
 
@@ -117,8 +117,6 @@
 </template>
 
 <script>
-import { CaretBottom, InfoFilled } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
 import fieldOptionSettings from './fieldOptionSettings.vue';
 import customCountryList from './customCountryList.vue';
 import validationRules from './validationRules.vue';
@@ -128,9 +126,6 @@ export default {
     name: 'customAddressFields',
     props: ['listItem', 'editItem'],
     components: {
-        CaretBottom,
-        InfoFilled,
-        ElIcon,
         wpuf_customCountryList: customCountryList,
         fieldOptionSettings,
         validationRules,

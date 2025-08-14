@@ -1,19 +1,19 @@
 <template>
     <div>
-        <ff-label
+        <el-label
             v-if="listItem.label"
             :label="listItem.label"
             :helpText="listItem.help_text"
             class="el-form-item__label"
-        ></ff-label>
+        ></el-label>
         <div class="ff-dynamic-warp">
             <!-- Source -->
             <el-form-item>
                 <template #label>
-                    <ff-label
+                    <el-label
                         :label="$t('Source')"
                         :help-text="$t('Choose the source to populate dynamically')"
-                    ></ff-label>
+                    ></el-label>
                 </template>
                 <el-select filterable class="el-fluid" v-model="model.source">
                     <el-option
@@ -28,7 +28,7 @@
             <template v-if="isDynamicCsv">
                 <el-form-item>
                     <template #label>
-                        <ff-label :label="$t('Url')" :help-text="$t('The google sheet csv url')"></ff-label>
+                        <el-label :label="$t('Url')" :help-text="$t('The google sheet csv url')"></el-label>
                     </template>
                     <el-row :gutter="20">
                         <el-col :span="24">
@@ -85,7 +85,7 @@
             <!-- Result Limits -->
             <el-form-item>
                 <template #label>
-                    <ff-label :label="$t('Result Limits')" :help-text="$t('Specify the result limits')"></ff-label>
+                    <el-label :label="$t('Result Limits')" :help-text="$t('Specify the result limits')"></el-label>
                 </template>
                 <el-row :gutter="20">
                     <el-col :span="24">
@@ -266,7 +266,7 @@ export default {
     props: ['editItem', 'listItem', 'modelValue'],
     components: {
         DynamicFilterOptionsDialog,
-        'ff-label': elLabel,
+        elLabel,
         inputYesNoCheckbox,
         dynamicFilterGroup,
         DynamicBasicFilter,

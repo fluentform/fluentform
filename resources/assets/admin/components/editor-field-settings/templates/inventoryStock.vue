@@ -100,7 +100,7 @@ export default {
         };
     },
     components: {
-        'ff-label': elLabel,
+        elLabel,
     },
     methods: {
         createOptionsToRender() {
