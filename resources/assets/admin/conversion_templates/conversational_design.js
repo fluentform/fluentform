@@ -1,52 +1,77 @@
 import '../helpers';
-import Vue from 'vue';
+import { createApp } from 'vue';
+import en from 'element-plus/es/locale/lang/en';
 
 import {
-    ColorPicker,
-    Form,
-    Input,
-    Row,
-    Col,
-    FormItem,
-    Select,
-    OptionGroup,
-    Option,
-    Slider,
-    Button,
-    Loading,
-    Message,
-    Switch,
-    Notification,
-} from 'element-ui';
+    ElColorPicker,
+    ElForm,
+    ElInput,
+    ElRow,
+    ElCol,
+    ElFormItem,
+    ElSelect,
+    ElOptionGroup,
+    ElOption,
+    ElSlider,
+    ElButton,
+    ElLoading,
+    ElMessage,
+    ElSwitch,
+    ElNotification,
+} from 'element-plus';
 
-Vue.use(Form);
-Vue.use(Input);
-Vue.use(Row);
-Vue.use(Col);
-Vue.use(FormItem);
-Vue.use(ColorPicker);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(OptionGroup);
-Vue.use(Slider);
-Vue.use(Switch);
-Vue.use(Button);
-
-Vue.use(Loading.directive)
-Vue.prototype.$loading = Loading.service
-Vue.prototype.$notify = Notification
-Vue.prototype.$message = Message;
-
-import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
-// configure language
-locale.use(lang);
+const components = [
+    ElForm,
+    ElInput,
+    ElRow,
+    ElCol,
+    ElFormItem,
+    ElColorPicker,
+    ElSelect,
+    ElOption,
+    ElOptionGroup,
+    ElSlider,
+    ElSwitch,
+    ElButton
+];
 
 import DesignSkeleton from './Parts/Skeleton.vue';
 import notifier from '@/admin/notifier'
 import globalSearch from '../global_search';
 
-Vue.mixin({
+const app = createApp({
+    components: {
+        DesignSkeleton: DesignSkeleton,
+        globalSearch
+    },
+    data() {
+        return {};
+    },
+    beforeCreate() {
+        // Note: $on and $emit are removed in Vue 3, using mitt or custom event handling if needed
+        // this.$on('change-title', (module) => {
+        //     jQuery('title').text(`${module} - FluentForm`);
+        // });
+        // this.$emit('change-title', 'Conversational Form Design');
+        jQuery('title').text('Conversational Form Design - FluentForm');
+    },
+    mounted() {
+        (new ClipboardJS('.copy')).on('success', (e) => {
+            this.$copy();
+        });
+    }
+});
+
+components.forEach(component => {
+    app.use(component);
+});
+
+app.config.globalProperties.$loading = ElLoading.service;
+app.config.globalProperties.$notify = ElNotification;
+app.config.globalProperties.$message = ElMessage;
+app.config.globalProperties.$ELEMENT = {locale: en};
+
+app.mixin({
     methods: {
         $t(str) {
             let transString = window.fluent_forms_global_var.admin_i18n[str];
@@ -55,10 +80,10 @@ Vue.mixin({
             }
             return str;
         },
-        
-        ...notifier
-    },
-    filters: {
+
+        ...notifier,
+
+        // Vue 3 doesn't have filters, convert to methods
         ucFirst(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         },
@@ -68,22 +93,4 @@ Vue.mixin({
     }
 });
 
-new Vue({
-    el: '#ff_conversation_form_design_app',
-    data: {},
-    components: {
-        DesignSkeleton: DesignSkeleton,
-        globalSearch
-    },
-    beforeCreate() {
-        this.$on('change-title', (module) => {
-            jQuery('title').text(`${module} - FluentForm`);
-        });
-        this.$emit('change-title', 'Conversational Form Design');
-    },
-    mounted() {
-        (new ClipboardJS('.copy')).on('success', (e) => {
-            this.$copy();
-        });
-    }
-});
+app.mount('#ff_conversation_form_design_app');

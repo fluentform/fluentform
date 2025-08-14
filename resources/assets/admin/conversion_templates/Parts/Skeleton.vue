@@ -43,10 +43,10 @@
 </template>
 
 <script type="text/babel">
-import DesignPreview from './DesignPreview';
-import DesignElements from './DesignElements';
-import MetaSettingView from './MetaSettings';
-import SharingView from './SharingView';
+import DesignPreview from './DesignPreview.vue';
+import DesignElements from './DesignElements.vue';
+import MetaSettingView from './MetaSettings.vue';
+import SharingView from './SharingView.vue';
 import Tab from '@/admin/components/Tab/Tab.vue';
 import TabItem from '@/admin/components/Tab/TabItem.vue';
 import Card from '@/admin/components/Card/Card.vue';
