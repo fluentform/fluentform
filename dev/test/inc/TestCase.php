@@ -28,7 +28,7 @@ class TestCase extends PHPUnit_Framework_TestCase
 
         $this->server = $wp_rest_server = new WP_REST_Server;
 
-        $this->plugin = include realpath(__DIR__ . '/../../../plugin.php');
+        $this->plugin = include realpath(__DIR__ . '/../../../fluentform.php');
         
         $this->router = $this->plugin->router;
 

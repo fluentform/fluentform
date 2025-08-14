@@ -30,7 +30,7 @@ if ( ! file_exists( "{$_tests_dir}/includes/functions.php" ) ) {
 require_once "{$_tests_dir}/includes/functions.php";
 
 tests_add_filter('muplugins_loaded', function() {
-	require dirname(realpath(__DIR__.'/../../')) . '/plugin.php';
+	require dirname(realpath(__DIR__.'/../../')) . '/fluentform.php';
 });
 
 // Start up the WP testing environment.
