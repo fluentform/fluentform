@@ -4,7 +4,7 @@
             <h3>{{$t('Submission Timeline')}}</h3>
             <div class="heatmap-navigation">
                     <div class="week-item">
-                        <span class="week-label">{{ $t('Viewing') }}</span>
+                        <span class="week-label">{{ $t('Viewing:') }}</span>
                         <span class="week-dates">{{ formatCurrentRange() }}</span>
                     </div>
                     <div class="time-period-toggle">
@@ -28,9 +28,7 @@
             </div>
         </card-head>
         <card-body>
-            <chart-loader v-if="loading" :rows="8" />
-
-            <div v-else class="heatmap-container">
+            <div class="heatmap-container" v-loading="loading">
                 <div class="heatmap-header">
                     <div class="date-column-header">
                         <span class="header-label">{{ $t('Day') }}</span>
@@ -107,7 +105,6 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
-import { COLORS, formatNumber, ChartLoader, NoData } from './shared/simple-utils.js';
 
 export default {
     name: 'SubmissionHeatmap',
@@ -115,9 +112,7 @@ export default {
         Card,
         CardBody,
         CardHead,
-        Notice,
-        ChartLoader,
-        NoData
+        Notice
     },
     props: ['heatmap_data', 'global_date_params'],
     data() {
@@ -162,7 +157,7 @@ export default {
                 }
                 return this.$t('Cumulative Data by Day of Week');
             };
-
+            
          },
 
         hasPro() {
@@ -176,15 +171,6 @@ export default {
     watch: {
         heatmap_data: {
             handler(newData) {
-                if (!this.hasPro) {
-                    // Always use demo data for non-pro users
-                    this.generateDemoData();
-                    setTimeout(() => {
-                        this.loading = false;
-                    }, 300);
-                    return;
-                }
-
                 if (newData && newData.heatmap_data) {
                     this.processHeatmapData(newData.heatmap_data);
                     this.aggregationType = newData.aggregation_type || 'day_of_week';
@@ -238,10 +224,7 @@ export default {
         }
     },
     mounted() {
-        if (!this.hasPro) {
-            // Always show demo data for non-pro users
-            this.generateDemoData();
-        } else if (!this.heatmap_data || !this.heatmap_data.heatmap_data) {
+        if (!this.heatmap_data || !this.heatmap_data.heatmap_data) {
             this.generateSampleData();
         }
     },
@@ -281,40 +264,7 @@ export default {
         },
 
         generateSampleData() {
-            if (!this.hasPro) {
-                // Generate realistic demo data for non-pro users
-                this.generateDemoData();
-            } else {
-                this.initializeEmptyData();
-            }
-        },
-
-        generateDemoData() {
-            this.heatmapDataStore = {};
-
-            // Demo data patterns - realistic submission patterns
-            const demoPatterns = {
-                'Monday': [0, 0, 0, 0, 0, 0, 1, 3, 8, 12, 15, 18, 22, 25, 20, 18, 15, 12, 8, 5, 3, 1, 0, 0],
-                'Tuesday': [0, 0, 0, 0, 0, 0, 2, 4, 10, 15, 18, 22, 25, 28, 24, 20, 16, 14, 10, 6, 4, 2, 1, 0],
-                'Wednesday': [0, 0, 0, 0, 0, 1, 2, 5, 12, 18, 22, 25, 28, 30, 26, 22, 18, 15, 11, 7, 4, 2, 1, 0],
-                'Thursday': [0, 0, 0, 0, 0, 0, 1, 4, 9, 14, 19, 24, 27, 29, 25, 21, 17, 13, 9, 6, 3, 2, 0, 0],
-                'Friday': [0, 0, 0, 0, 0, 0, 2, 3, 7, 11, 16, 20, 24, 26, 23, 19, 15, 11, 8, 5, 3, 1, 0, 0],
-                'Saturday': [0, 0, 0, 0, 0, 0, 0, 1, 3, 6, 9, 12, 15, 18, 16, 14, 11, 8, 5, 3, 2, 1, 0, 0],
-                'Sunday': [0, 0, 0, 0, 0, 0, 0, 1, 2, 4, 7, 10, 13, 15, 14, 12, 9, 6, 4, 2, 1, 0, 0, 0]
-            };
-
-            // Apply demo patterns with some randomization
-            this.dayNames.forEach(dayName => {
-                this.heatmapDataStore[dayName] = {};
-                const pattern = demoPatterns[dayName] || demoPatterns['Monday'];
-
-                for (let i = 0; i < 24; i++) {
-                    // Add some randomization
-                    const baseValue = pattern[i] || 0;
-                    const randomVariation = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
-                    this.heatmapDataStore[dayName][i] = Math.max(0, baseValue + randomVariation);
-                }
-            });
+            this.initializeEmptyData();
         },
 
         switchTimePeriod(period) {

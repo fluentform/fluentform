@@ -132,7 +132,7 @@
                         <el-col :span="24">
                             <!-- API Logs Section -->
                             <div class="api-logs-chart-section">
-                                <line-chart
+                                <chart-display
                                     :data="reports.api_logs"
                                     :title="$t('API Logs')"
                                     type="api_logs"
@@ -194,7 +194,7 @@
                     </div>
 
                     <!-- Revenue Logs Chart -->
-                    <line-chart
+                    <chart-display
                         :data="reports.revenue_chart"
                         :title="$t('Payments')"
                         type="revenue"
@@ -230,7 +230,7 @@
                         />
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :label="$t('Submission')" name="submission">
+                <el-tab-pane :label="$t('Submissions')" name="submission">
                     <!-- Submission Header -->
                     <div class="reports-header">
                         <div>
@@ -283,9 +283,9 @@
 
                     <!-- Submission Chart Section -->
                     <div class="submission-chart-section">
-                        <line-chart
+                        <chart-display
                             :data="reports.overview_chart"
-                            :title="$t('Submission')"
+                            :title="$t('Submissions')"
                         />
                     </div>
 
@@ -307,7 +307,7 @@ import OverviewChart from "./Components/OverviewChart.vue";
 import FormStatsCard from "./Components/FormStatsCard.vue";
 import SubmissionHeatmap from "./Components/SubmissionHeatmap.vue";
 import SubmissionCountryHeatmap from "./Components/SubmissionCountryHeatmap.vue";
-import LineChart from "./Components/LineChart.vue";
+import ChartDisplay from "./Components/ChartDisplay.vue";
 import CompletionRatesGauge from "./Components/CompletionRatesGauge.vue";
 import TopSubscriptionByPlan from "./Components/TopSubscriptionByPlan.vue";
 import PaymentByTypeChart from "./Components/PaymentByTypeChart.vue";
@@ -319,7 +319,7 @@ import DateRangeControls from "./Components/DateRangeControls.vue";
 export default {
     name: "Reports",
     components: {
-        LineChart,
+        ChartDisplay,
         SubmissionHeatmap,
         SubmissionCountryHeatmap,
         OverviewChart,
@@ -429,7 +429,7 @@ export default {
                     value: stats.total_submissions?.value,
                     change: stats.total_submissions?.change,
                     changeType: stats.total_submissions?.change_type,
-                    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.2072 9.2905C17.5977 9.68103 17.5977 10.3142 17.2072 10.7047C16.8167 11.0952 16.1835 11.0952 15.793 10.7047L13.002 7.91371V15C13.002 15.5523 12.5543 16 12.002 16C11.4497 16 11.002 15.5523 11.002 15V7.91374L8.20906 10.7067C7.81854 11.0972 7.18537 11.0972 6.79485 10.7067C6.40432 10.3161 6.40432 9.68298 6.79485 9.29245L11.2949 4.79241C11.4824 4.60487 11.7368 4.49951 12.002 4.49951C12.2672 4.49951 12.5216 4.60487 12.7091 4.79241L17.2072 9.2905Z" fill="#525866" /><path fill-rule="evenodd" clip-rule="evenodd" d="M4 14C4.55228 14 5 14.4477 5 15V17C5 17.5523 5.44772 18 6 18H18C18.5523 18 19 17.5523 19 17V15C19 14.4477 19.4477 14 20 14C20.5523 14 21 14.4477 21 15V17C21 18.6569 19.6569 20 18 20H6C4.34315 20 3 18.6569 3 17V15C3 14.4477 3.44772 14 4 14Z" fill="#525866" /></svg>`,
+                    icon: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#ebf1ff"/><path d="M22 23.5H10C9.80109 23.5 9.61032 23.421 9.46967 23.2803C9.32902 23.1397 9.25 22.9489 9.25 22.75V9.25C9.25 9.05109 9.32902 8.86032 9.46967 8.71967C9.61032 8.57902 9.80109 8.5 10 8.5H22C22.1989 8.5 22.3897 8.57902 22.5303 8.71967C22.671 8.86032 22.75 9.05109 22.75 9.25V22.75C22.75 22.9489 22.671 23.1397 22.5303 23.2803C22.3897 23.421 22.1989 23.5 22 23.5ZM21.25 22V10H10.75V22H21.25ZM13 12.25H19V13.75H13V12.25ZM13 15.25H19V16.75H13V15.25ZM13 18.25H16.75V19.75H13V18.25Z" fill="#525866"/></svg>`,
                 },
                 {
                     key: "spam_submissions",
@@ -449,7 +449,7 @@ export default {
                 },
                 {
                     key: "active_forms",
-                    title: this.$t('Active Forms'),
+                    title: this.$t('Created Forms'),
                     value: stats.active_forms?.value,
                     icon: `<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.7 21H5.30002C5.06133 21 4.83241 20.9052 4.66363 20.7364C4.49485 20.5676 4.40002 20.3387 4.40002 20.1V3.9C4.40002 3.66131 4.49485 3.43239 4.66363 3.2636C4.83241 3.09482 5.06133 3 5.30002 3H19.7C19.9387 3 20.1676 3.09482 20.3364 3.2636C20.5052 3.43239 20.6 3.66131 20.6 3.9V20.1C20.6 20.3387 20.5052 20.5676 20.3364 20.7364C20.1676 20.9052 19.9387 21 19.7 21ZM18.8 19.2V4.8H6.20002V19.2H18.8ZM8.90002 7.5H16.1V9.3H8.90002V7.5ZM8.90002 11.1H16.1V12.9H8.90002V11.1ZM8.90002 14.7H13.4V16.5H8.90002V14.7Z" fill="#525866"/></svg>`,
                 }
@@ -471,7 +471,7 @@ export default {
                     icon: `<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.7 21H5.30002C5.06133 21 4.83241 20.9052 4.66363 20.7364C4.49485 20.5676 4.40002 20.3387 4.40002 20.1V3.9C4.40002 3.66131 4.49485 3.43239 4.66363 3.2636C4.83241 3.09482 5.06133 3 5.30002 3H19.7C19.9387 3 20.1676 3.09482 20.3364 3.2636C20.5052 3.43239 20.6 3.66131 20.6 3.9V20.1C20.6 20.3387 20.5052 20.5676 20.3364 20.7364C20.1676 20.9052 19.9387 21 19.7 21ZM18.8 19.2V4.8H6.20002V19.2H18.8ZM8.90002 7.5H16.1V9.3H8.90002V7.5ZM8.90002 11.1H16.1V12.9H8.90002V11.1ZM8.90002 14.7H13.4V16.5H8.90002V14.7Z" fill="#525866"/></svg>`,
                 });
             }
-            
+
             return cards;
         },
         formatSubmissionStatsCards() {
@@ -606,9 +606,9 @@ export default {
             if (!this.hasPro) {
                 // Set demo data for pro components
                 this.$set(this.reports, 'completion_rate', this.getDemoCompletionRate());
-                this.$set(this.reports, 'heatmap_data', this.getDemoHeatmapData());
-                this.$set(this.reports, 'payment_types', this.getDemoPaymentTypes());
-                this.$set(this.reports, 'subscriptions', this.getDemoSubscriptions());
+                this.$set(this.reports, 'heatmap_data', null);
+                this.$set(this.reports, 'payment_types', null);
+                this.$set(this.reports, 'subscriptions', null);
                 this.$set(this.reports, 'country_heatmap', {
                     country_data: [
                         { name: "Sweden", value: 10 },
@@ -633,6 +633,7 @@ export default {
 
         async fetchComponent(componentName) {
             this.componentLoading[componentName] = true;
+            console.log('componentName',componentName)
 
             try {
                 const commonParams = this.getCommonParams();
@@ -752,181 +753,6 @@ export default {
             };
         },
 
-        getDemoHeatmapData() {
-            const demoData = {};
-
-            // Create demo data for the exact date range you provided
-            const dates = [
-                "2025-07-13", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-19", "2025-07-20",
-                "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-26", "2025-07-27", "2025-07-28",
-                "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-02", "2025-08-03", "2025-08-04", "2025-08-05",
-                "2025-08-06", "2025-08-07", "2025-08-08", "2025-08-09", "2025-08-10", "2025-08-11", "2025-08-12"
-            ];
-
-            dates.forEach(date => {
-                // Add some demo activity on specific days
-                if (date === "2025-07-25") {
-                    demoData[date] = [0, 0, 0, 4, 0, 6, 0, 0];
-                } else if (date === "2025-07-28") {
-                    demoData[date] = [0, 0, 0, 30, 0, 1, 0, 0];
-                } else if (date === "2025-07-30") {
-                    demoData[date] = [0, 0, 0, 0, 0, 6, 7, 0];
-                } else if (date === "2025-08-06") {
-                    demoData[date] = [0, 0, 0, 0, 1, 0, 0, 0];
-                } else {
-                    demoData[date] = [0, 0, 0, 0, 0, 0, 0, 0];
-                }
-            });
-
-            return {
-                heatmap_data: demoData,
-                start_date: "2025-07-13 00:00:00",
-                end_date: "2025-08-12 23:59:59"
-            };
-        },
-
-        getDemoPaymentTypes() {
-            return {
-                subscription: {
-                    currency_symbol: "&#36;",
-                    payment_statuses: {
-                        failed: {
-                            amount: 105,
-                            percentage: 14.58,
-                            count: "1"
-                        },
-                        paid: {
-                            amount: 410,
-                            percentage: 56.94,
-                            count: "4"
-                        },
-                        pending: {
-                            amount: 105,
-                            percentage: 14.58,
-                            count: "1"
-                        },
-                        cancelled: {
-                            amount: 100,
-                            percentage: 13.89,
-                            count: "1"
-                        }
-                    },
-                    total_amount: 720,
-                    weekly_average: 93.18
-                },
-                onetime: {
-                    currency_symbol: "&#36;",
-                    payment_statuses: {
-                        paid: {
-                            amount: 100,
-                            percentage: 100,
-                            count: "1"
-                        }
-                    },
-                    total_amount: 100,
-                    weekly_average: 22.73
-                }
-            };
-        },
-
-        getDemoSubscriptions() {
-            return {
-                chart_data: [
-                    { name: "Basic Plan", value: 45, amount: 450 },
-                    { name: "Pro Plan", value: 30, amount: 900 },
-                    { name: "Enterprise Plan", value: 15, amount: 750 }
-                ],
-                total_recurring: 2100,
-                growth_percentage: 12.5,
-                total_subscriptions: 90
-            };
-        },
-
-        getDemoNetRevenue() {
-            return {
-                revenue_data: [
-                    {
-                        form_id: "287",
-                        form_title: "Blank Form (#287)",
-                        paid_amount: 380,
-                        pending_amount: 1540,
-                        refunded_amount: 0,
-                        net_revenue: 380
-                    }
-                ],
-                summary_totals: {
-                    paid: 380,
-                    pending: 1540,
-                    refunded: 0,
-                    net: 380
-                },
-                total_items: 1,
-                current_page: 1,
-                page_size: 5
-            };
-        },
-
-        getDemoSubmissionAnalysis() {
-            return {
-                submission_data: [
-                    {
-                        form_id: "287",
-                        form_title: "Blank Form (#287)",
-                        total_submissions: 124,
-                        read_submissions: 4,
-                        unread_submissions: 120,
-                        spam_submissions: 0,
-                        conversion_rate: 3.23
-                    },
-                    {
-                        form_id: "286",
-                        form_title: "Blank Form (#286)",
-                        total_submissions: 71,
-                        read_submissions: 1,
-                        unread_submissions: 70,
-                        spam_submissions: 0,
-                        conversion_rate: 1.41
-                    },
-                    {
-                        form_id: "290",
-                        form_title: "Blank Form (#290)",
-                        total_submissions: 10,
-                        read_submissions: 1,
-                        unread_submissions: 9,
-                        spam_submissions: 0,
-                        conversion_rate: 10
-                    },
-                    {
-                        form_id: "1",
-                        form_title: "Contact Form Demo",
-                        total_submissions: 9,
-                        read_submissions: 5,
-                        unread_submissions: 4,
-                        spam_submissions: 0,
-                        conversion_rate: 55.56
-                    },
-                    {
-                        form_id: "292",
-                        form_title: "Blank Form (#292)",
-                        total_submissions: 2,
-                        read_submissions: 0,
-                        unread_submissions: 2,
-                        spam_submissions: 0,
-                        conversion_rate: 0
-                    }
-                ],
-                totals: {
-                    total: 217,
-                    read: 11,
-                    unread: 206,
-                    spam: 0,
-                    readRate: 5.07
-                },
-                total_items: 6,
-                current_page: 1,
-                page_size: 5
-            };
-        },
 
         updateGlobalDateParams() {
             const today = new Date();

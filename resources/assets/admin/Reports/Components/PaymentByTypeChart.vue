@@ -54,9 +54,6 @@
                 </div>
             </div>
 
-            <div v-if="hasPaymentData" class="weekly-average">
-                {{ $t('Weekly average paid') }} {{ currencySymbol }}{{ formatNumber(weeklyAverage) }}
-            </div>
         </card-body>
     </card>
 </template>
@@ -65,6 +62,7 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import { COLORS, formatNumber, formatCurrency, getCurrencySymbol } from './shared/simple-utils.js';
 
 export default {
     name: 'PaymentByTypeChart',
@@ -87,12 +85,12 @@ export default {
     computed: {
         statuses() {
             let statuses ={
-                paid: { label: this.$t('Paid'), color: '#23A682' },
-                pending: { label: this.$t('Pending'), color: '#F6B51E' },
-                refunded: { label: this.$t('Refunded'), color: '#FB4BA3' },
-                revenue: { label: this.$t('Revenue'), color: '#7D52F4' },
-                cancelled: { label: this.$t('Cancelled'), color: '#FB3748' },
-                failed: { label: this.$t('Failed'), color: '#FB3748' },
+                paid: { label: this.$t('Paid'), color: COLORS.paid },
+                pending: { label: this.$t('Pending'), color: COLORS.pending },
+                refunded: { label: this.$t('Refunded'), color: COLORS.refunded },
+                revenue: { label: this.$t('Revenue'), color: COLORS.revenue },
+                cancelled: { label: this.$t('Cancelled'), color: COLORS.cancelled },
+                failed: { label: this.$t('Failed'), color: COLORS.failed },
             };
             if (this.paymentType === 'onetime') {
                 delete statuses.cancelled;
@@ -129,20 +127,12 @@ export default {
         totalAmount() {
             return this.paymentData && this.paymentData[this.paymentType] ? this.paymentData[this.paymentType].total_amount : 0;
         },
-        weeklyAverage() {
-            return this.paymentData && this.paymentData[this.paymentType] ? this.paymentData[this.paymentType].weekly_average : 0;
-        },
         currencySymbol() {
-            return this.paymentData?.currency_symbol || '$';
+            return getCurrencySymbol(this.paymentData?.currency_symbol || '$');
         }
     },
     methods: {
-        formatNumber(num) {
-            return parseFloat(num).toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
+        formatNumber
     }
 };
 </script>

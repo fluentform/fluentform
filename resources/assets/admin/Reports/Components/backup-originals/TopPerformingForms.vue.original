@@ -16,13 +16,18 @@
         </card-head>
 
         <card-body>
-            <chart-loader v-if="loading" :rows="6" />
+            <div class="top-forms-loading" v-if="loading">
+                <div class="loading-spinner">
+                    <i class="el-icon-loading"></i>
+                    <span>{{ $t('Loading top performing forms...') }}</span>
+                </div>
+            </div>
 
             <div class="top-forms-chart" v-else>
-                <no-data
-                    v-if="!topFormsData || topFormsData.length === 0"
-                    :message="$t('No form data available for the selected period')"
-                />
+                <div v-if="!topFormsData || topFormsData.length === 0" class="no-data">
+                    <i class="el-icon-s-order no-data-icon"></i>
+                    <span>{{ $t('No form data available for the selected period') }}</span>
+                </div>
                 <div v-else class="chart-wrapper">
                     <v-chart
                         ref="chart"
@@ -41,16 +46,13 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
-import { COLORS, formatCurrency, formatNumber, ChartLoader, NoData } from './shared/simple-utils.js';
 
 export default {
     name: 'TopPerformingForms',
     components: {
         Card,
         CardBody,
-        CardHead,
-        ChartLoader,
-        NoData
+        CardHead
     },
     props: {
         topFormsData: {
@@ -136,9 +138,9 @@ export default {
                         formatter: (value) => {
                             if (this.selectedMetric === 'payments') {
                                 const currency = this.decodeHtmlEntities(this.paymentCurrency);
-                                return `${currency}${formatNumber(value)}`;
+                                return `${currency}${this.formatNumber(value)}`;
                             }
-                            return formatNumber(value);
+                            return this.formatNumber(value);
                         }
                     },
                     splitLine: {
@@ -217,7 +219,7 @@ export default {
         },
 
         getBarColor(index) {
-            const colors = [COLORS.submissions, '#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4'];
+            const colors = ['#DCD5FF','#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4'];
             const totalBars = this.topFormsData.length;
 
             // Always use the strongest colors, starting from the end of the array
@@ -231,9 +233,25 @@ export default {
 
         formatValue(value) {
             if (this.selectedMetric === 'payments') {
-                return formatCurrency(value, this.decodeHtmlEntities(this.paymentCurrency));
+                return this.formatCurrency(value);
             }
-            return formatNumber(value);
+            return this.formatNumber(value);
+        },
+
+        formatNumber(value) {
+            if (value >= 1000000) {
+                return (value / 1000000).toFixed(1) + 'M';
+            } else if (value >= 1000) {
+                return (value / 1000).toFixed(1) + 'K';
+            }
+            return value.toFixed(0).toString();
+        },
+
+        formatCurrency(value) {
+            const formatted = this.formatNumber(value);
+            // Decode HTML entities like &#36; to $
+            const currency = this.decodeHtmlEntities(this.paymentCurrency);
+            return `${currency}${formatted}`;
         },
 
         decodeHtmlEntities(text) {

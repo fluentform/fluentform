@@ -1,7 +1,7 @@
 <template>
     <card class="ff-pro-component">
         <card-head>
-            <h4>{{$t('Completion Rates')}}</h4>
+            <h4>{{$t('Completion Rates (Partial Entry Forms)')}}</h4>
         </card-head>
 
         <card-body>

@@ -5,15 +5,15 @@
                 <h3>{{ $t('Submissions By Country') }}</h3>
             </card-head>
 
-            <card-body class="chart-container">
-                <chart-loader v-if="loading" :rows="8" />
+            <card-body class="chart-container" v-loading="loading">
+                <div v-if="!loading && (!countryData || countryData.length === 0)" class="no-data">
+                    <div class="no-data-icon">
+                        <i class="el-icon-location-outline"></i>
+                    </div>
+                    <p>{{ $t('No submission data available for the selected date range') }}</p>
+                </div>
 
-                <no-data
-                    v-else-if="!countryData || countryData.length === 0"
-                    :message="$t('No submission data available for the selected date range')"
-                />
-
-                <div v-else class="chart-wrapper">
+                <div v-else-if="!loading" class="chart-wrapper">
                     <!-- World Map Controls -->
                     <div class="map-controls">
                         <el-button-group size="mini">
@@ -47,11 +47,10 @@ import CardHead from "@/admin/components/Card/CardHead.vue";
 import CardBody from "@/admin/components/Card/CardBody.vue";
 import worldMapJson from "../world.geo.json";
 import Notice from "@/admin/components/Notice/Notice.vue";
-import { COLORS, formatNumber, ChartLoader, NoData } from './shared/simple-utils.js';
 
 export default {
     name: 'SubmissionCountryHeatmap',
-    components: {Notice, CardBody, CardHead, Card, ChartLoader, NoData},
+    components: {Notice, CardBody, CardHead, Card},
     props: {
         countryHeatmap: {
             type: Object,
@@ -81,11 +80,11 @@ export default {
             const result = (this.countryData || []).map((item) => {
                 const normalizedName = this.normalizeCountryName(item.name);
                 const value = item.value || 0;
-
+                
                 // Filter based on current visual map range
                 const [minRange, maxRange] = this.currentVisualMapRange;
                 const isInRange = value >= Math.round(minRange) && value <= Math.round(maxRange);
-
+                
                 return {
                     ...item,
                     name: normalizedName,
@@ -147,7 +146,7 @@ export default {
                     calculable: true,
                     range: this.currentVisualMapRange,
                     inRange: {
-                        color: ["#e6f3ff", COLORS.views],
+                        color: ["#e6f3ff", "#1890ff"],
                     },
                     textStyle: {
                         color: "#666",
@@ -162,13 +161,13 @@ export default {
                         zoom: this.zoomLevel,
                         label: {
                             show: false,
-                        },
-                        emphasis: {
-                            label: {
+                            emphasis: {
                                 show: true,
                                 color: "#333",
                                 fontWeight: "bold",
                             },
+                        },
+                        emphasis: {
                             itemStyle: {
                                 areaColor: "#40a9ff",
                                 shadowBlur: 10,

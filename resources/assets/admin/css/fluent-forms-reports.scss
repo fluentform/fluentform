@@ -61,6 +61,10 @@
         }
     }
 
+    .svg-icons .el-radio-button__inner {
+        padding: 5px 15px;
+    }
+
     // Advanced Filter Component (Shared)
     .advanced-filter-section {
         position: absolute;
@@ -1673,6 +1677,8 @@
         }
     }
 
+
+
     @media (max-width: 768px) {
         .card-header-content {
             flex-direction: column;
@@ -1942,27 +1948,12 @@
 .week-label {
     font-weight: 500;
     color: #9ca3af;
-    min-width: 90px;
-    opacity: 0.9;
     font-size: 12px;
 }
 
 .week-dates {
     font-weight: 500;
     color: #4b5563;
-    background: #f8fafc;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-    font-size: 12px;
-    letter-spacing: 0.025em;
-    transition: all 0.2s ease;
-
-    &:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
-    }
 }
 
 .heatmap-navigation {
@@ -2014,5 +2005,25 @@
         .card-body {
             flex: 1;
         }
+    }
+}
+
+#ff_reports {
+    .no-data-center,
+    .no-data-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+        width: 100%;
+        text-align: center;
+        flex-direction: column;
+    }
+
+    .header-label {
+        text-align: center;
+        width: 100%;
+        font-weight: 600;
+        color: #374151;
     }
 }

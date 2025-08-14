@@ -16,10 +16,11 @@
                             style="width: 180px; margin-right: 12px;"
                         >
                             <el-option
-                                v-for="(label, value) in groupByOptions"
+                                v-for="(option, value) in groupByOptionsWithDisabled"
                                 :key="value"
-                                :label="label"
+                                :label="option.label"
                                 :value="value"
+                                :disabled="option.disabled"
                             />
                         </el-select>
                     </div>
@@ -288,6 +289,35 @@ export default {
             }
             return options;
         },
+
+        groupByOptionsWithDisabled() {
+            let options = {};
+
+            if (!this.hasPro) {
+                // For non-pro users: only 'forms' is selectable, others are disabled
+                options = {
+                    'forms': { label: this.$t('Forms'), disabled: false },
+                    'submission_source': { label: this.$t('Submission Source'), disabled: true },
+                    'email': { label: this.$t('Email'), disabled: true },
+                    'country': { label: this.$t('Country'), disabled: true },
+                    'submission_date': { label: this.$t('Submission Date'), disabled: true }
+                };
+            } else {
+                // For pro users: all options are selectable
+                Object.keys(this.groupByOptions).forEach(key => {
+                    options[key] = { label: this.groupByOptions[key], disabled: false };
+                });
+            }
+
+            if (this.selectedFormId) {
+                delete options.forms;
+                // If a form is selected, make submission_source the only selectable option
+                if (options.submission_source) {
+                    options.submission_source.disabled = false;
+                }
+            }
+            return options;
+        },
     },
     mounted() {
         this.fetchSubmissionData();
@@ -297,7 +327,7 @@ export default {
             this.loading = true;
 
             if (!this.hasPro) {
-                // Show demo data for free users
+                // Show demo data
                 setTimeout(() => {
                     this.submissionData = [
                         {
@@ -337,7 +367,7 @@ export default {
                             conversion_rate: 0
                         }
                     ];
-                    this.totalItems = 6;
+                    this.totalItems = 4;
                     this.totals = {
                         total: 217,
                         read: 11,
