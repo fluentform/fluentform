@@ -597,12 +597,12 @@ export default {
                 this.componentErrors[key] = null;
             });
 
-            // Define components to load based on Pro status
-            const componentsToLoad = this.hasPro
+            // Define all components to load based on Pro status
+            const allComponents = this.hasPro
                 ? ['overviewChart', 'revenueChart', 'completionRate', 'formStats', 'heatmapData', 'countryHeatmap', 'apiLogs', 'topPerformingForms', 'subscriptions', 'paymentTypes']
-                : ['overviewChart', 'revenueChart', 'topPerformingForms', 'apiLogs', 'formStats', 'paymentTypes'];
+                : ['overviewChart', 'revenueChart', 'topPerformingForms', 'apiLogs', 'formStats'];
 
-            // For free users, initialize pro components with demo data (no API calls)
+            //  initialize pro components with demo data (no API calls)
             if (!this.hasPro) {
                 // Set demo data for pro components
                 this.$set(this.reports, 'completion_rate', this.getDemoCompletionRate());
@@ -620,20 +620,24 @@ export default {
                 });
             }
 
-            // Create promises for all components
-            const promises = componentsToLoad.map(component => this.fetchComponent(component));
+            const primary = ['overviewChart', 'formStats'].filter(name => allComponents.includes(name));
+            const background = allComponents.filter(name => !primary.includes(name));
 
-            try {
-                // Wait for all components to complete (success or failure)
-                await Promise.allSettled(promises);
-            } finally {
-                this.loading = false;
-            }
+            await Promise.allSettled(primary.map(c => this.fetchComponent(c)));
+            this.loading = false;
+
+            background.forEach(c => this.fetchComponent(c));
         },
 
         async fetchComponent(componentName) {
             this.componentLoading[componentName] = true;
-            console.log('componentName',componentName)
+            console.log('componentName',componentName);
+
+            // Skip API requests for pro-only components when Pro is not available
+            if (!this.hasPro && ['completionRate', 'heatmapData', 'countryHeatmap', 'subscriptions', 'paymentTypes'].includes(componentName)) {
+                this.componentLoading[componentName] = false;
+                return;
+            }
 
             try {
                 const commonParams = this.getCommonParams();
@@ -743,7 +747,7 @@ export default {
             return this.componentLoading[componentName];
         },
 
-        // Demo data methods for free users
+        // Demo data 
         getDemoCompletionRate() {
             return {
                 completion_rate: 99,
