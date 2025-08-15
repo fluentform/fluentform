@@ -177,7 +177,6 @@ export default {
         heatmap_data: {
             handler(newData) {
                 if (!this.hasPro) {
-                    // Always use demo data for non-pro users
                     this.generateDemoData();
                     setTimeout(() => {
                         this.loading = false;

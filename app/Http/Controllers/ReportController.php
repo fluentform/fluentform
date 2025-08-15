@@ -62,9 +62,9 @@ class ReportController extends Controller
     public function netRevenue(ReportService $reportService)
     {
         try {
-            return $this->sendSuccess(
-                $reportService->netRevenue($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/revenue_analysis', [], $this->request->all());
+            return $this->sendSuccess($data);
+            
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
