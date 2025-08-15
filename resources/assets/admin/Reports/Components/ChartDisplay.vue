@@ -27,12 +27,7 @@
                 </div>
             </card-head>
             <card-body class="line-chart-body">
-                <div v-if="loading" class="loading-overlay">
-                    <div class="loading-spinner">
-                        <i class="el-icon-loading"></i>
-                        <span>{{ $t('Loading data...') }}</span>
-                    </div>
-                </div>
+                <chart-loader v-if="loading" :rows="12" />
                 <div class="chart-wrapper">
                     <v-chart
                         v-if="!loading"
@@ -62,14 +57,16 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import { ChartLoader } from './shared/simple-utils.js';
 
 export default {
     name: "ChartDisplay",
-    props: ['data', 'title', 'type'],
+    props: ['data', 'title', 'type', 'loading'],
     components: {
         Card,
         CardBody,
         CardHead,
+        ChartLoader
     },
     data() {
         return {

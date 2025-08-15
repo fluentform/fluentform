@@ -136,6 +136,7 @@
                                     :data="reports.api_logs"
                                     :title="$t('API Logs')"
                                     type="api_logs"
+                                    :loading="isComponentLoading('apiLogs')"
                                 />
                             </div>
                         </el-col>
@@ -198,6 +199,7 @@
                         :data="reports.revenue_chart"
                         :title="$t('Payments')"
                         type="revenue"
+                        :loading="isComponentLoading('revenueChart')"
                     />
 
                     <!-- Subscription Plan and Payment by type -->
@@ -286,6 +288,7 @@
                         <chart-display
                             :data="reports.overview_chart"
                             :title="$t('Submissions')"
+                            :loading="isComponentLoading('overviewChart')"
                         />
                     </div>
 
@@ -631,7 +634,6 @@ export default {
 
         async fetchComponent(componentName) {
             this.componentLoading[componentName] = true;
-            console.log('componentName',componentName);
 
             // Skip API requests for pro-only components when Pro is not available
             if (!this.hasPro && ['completionRate', 'heatmapData', 'countryHeatmap', 'subscriptions', 'paymentTypes'].includes(componentName)) {
@@ -747,7 +749,7 @@ export default {
             return this.componentLoading[componentName];
         },
 
-        // Demo data 
+        // Demo data
         getDemoCompletionRate() {
             return {
                 completion_rate: 99,

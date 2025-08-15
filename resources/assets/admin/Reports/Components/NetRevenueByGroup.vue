@@ -27,9 +27,7 @@
             </card-head>
 
             <card-body>
-                <div v-if="loading" class="loading-state">
-                    <el-skeleton :rows="12" animated />
-                </div>
+                <chart-loader v-if="loading" :rows="12" />
 
                 <div v-else-if="revenueData.length === 0" class="no-data-state">
                     <i class="el-icon-money no-data-icon"></i>
@@ -187,6 +185,7 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
+import { ChartLoader } from './shared/simple-utils.js';
 
 export default {
     name: 'NetRevenueByGroup',
@@ -194,7 +193,8 @@ export default {
         Card,
         CardBody,
         CardHead,
-        Notice
+        Notice,
+        ChartLoader
     },
     props: {
         formsList: {
