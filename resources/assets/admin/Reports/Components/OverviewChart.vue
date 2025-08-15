@@ -510,46 +510,4 @@ export default {
 </script>
 
 <style scoped>
-.overview-chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.card-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.chart-type-toggle .el-radio-group {
-    background: #f8f9fa;
-    border-radius: 6px;
-    padding: 2px;
-}
-
-.chart-type-toggle .el-radio-button__inner {
-    border: none;
-    background: transparent;
-    padding: 6px 12px;
-    font-size: 12px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-}
-
-.chart-type-toggle .el-radio-button__inner:hover {
-    background: #e9ecef;
-}
-
-.chart-type-toggle .el-radio-button.is-active .el-radio-button__inner {
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    color: #333;
-}
-
-.chart-type-toggle .el-radio-button__inner i {
-    margin-right: 4px;
-    font-size: 12px;
-}
 </style>
