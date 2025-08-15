@@ -98,8 +98,8 @@
                         >
                             <template #default="{ row }">
                                 <div class="country-info">
-                                    <span v-if="row.country_code" class="iti" >
-                                        <span style="display:block;" :class="['iti__flag', `iti__${row.country_code}`]"></span>
+                                    <span v-if="row.country_code" class="iti" style="display:inline-block; margin-right:6px;">
+                                        <span :class="['iti__flag', `iti__${row.country_code}`]"></span>
                                     </span>
                                     <span v-else class="country-flag-emoji">{{ getCountryFlag(row.country || '') }}</span>
                                     <span class="country-name">{{ row.country || $t('Unknown') }}</span>

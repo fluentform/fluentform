@@ -28,7 +28,7 @@ class ReportHandler
         wp_enqueue_style('fluentform_reports');
 
 
-        // maybe load intl-tel-input flags
+        // Maybe load intl-tel-input flags 
         if (\FluentForm\App\Helpers\Helper::hasPro()) {
             $cssSource = '';
             if (defined('FLUENTFORMPRO_DIR_URL')) {
@@ -37,6 +37,7 @@ class ReportHandler
                     $cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput-rtl.min.css';
                 }
             }
+        
             if ($cssSource) {
                 wp_enqueue_style('intlTelInput', $cssSource, [], '24.2.0');
             }

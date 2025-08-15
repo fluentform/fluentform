@@ -19,7 +19,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Submission Report
      * @return \WP_REST_Response
@@ -36,9 +36,8 @@ class ReportController extends Controller
             ]);
         }
     }
-
-
-
+    
+    
     /**
      * Get Forms for Dropdown
      * @return \WP_REST_Response
@@ -55,7 +54,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get payment revenue grouped by different criteria
      * @return \WP_REST_Response
@@ -72,7 +71,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get submission analysis grouped by different criteria
      * @return \WP_REST_Response
@@ -88,7 +87,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Overview Chart Data
      * @return \WP_REST_Response
@@ -105,7 +104,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Revenue Chart Data
      * @return \WP_REST_Response
@@ -122,7 +121,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Completion Rate Data
      * @return \WP_REST_Response
@@ -138,7 +137,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Form Stats Data
      * @return \WP_REST_Response
@@ -155,7 +154,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Heatmap Data
      * @return \WP_REST_Response
@@ -171,7 +170,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Country Heatmap Data
      * @return \WP_REST_Response
@@ -187,7 +186,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get API Logs Data
      * @return \WP_REST_Response
@@ -204,7 +203,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Top Performing Forms Data
      * @return \WP_REST_Response
@@ -221,7 +220,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Subscriptions Data
      * @return \WP_REST_Response
@@ -237,16 +236,17 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Payment Types Data
      * @return \WP_REST_Response
      */
-    public function getPaymentTypes()
+    public function getPaymentTypes(ReportService $reportService)
     {
         try {
-            $data = apply_filters('fluentform/reports/payment_types', [], $this->request->all());
-            return $this->sendSuccess($data);
+            return $this->sendSuccess(
+                $reportService->getPaymentTypes($this->request->all())
+            );
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),

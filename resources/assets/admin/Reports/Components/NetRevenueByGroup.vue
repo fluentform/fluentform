@@ -73,6 +73,7 @@
                             <template #default="{ row }">
                                 <div class="payment-method">
                                     <span class="method-name">{{ row.payment_method_name }}</span>
+                                    <span class="method-code">({{ row.payment_method }})</span>
                                 </div>
                             </template>
                         </el-table-column>

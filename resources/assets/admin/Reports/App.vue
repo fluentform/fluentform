@@ -603,7 +603,7 @@ export default {
             // Define all components to load based on Pro status
             const allComponents = this.hasPro
                 ? ['overviewChart', 'revenueChart', 'completionRate', 'formStats', 'heatmapData', 'countryHeatmap', 'apiLogs', 'topPerformingForms', 'subscriptions', 'paymentTypes']
-                : ['overviewChart', 'revenueChart', 'topPerformingForms', 'apiLogs', 'formStats'];
+                : ['overviewChart', 'revenueChart', 'topPerformingForms', 'apiLogs', 'formStats','paymentTypes'];
 
             //  initialize pro components with demo data (no API calls)
             if (!this.hasPro) {
@@ -636,7 +636,7 @@ export default {
             this.componentLoading[componentName] = true;
 
             // Skip API requests for pro-only components when Pro is not available
-            if (!this.hasPro && ['completionRate', 'heatmapData', 'countryHeatmap', 'subscriptions', 'paymentTypes'].includes(componentName)) {
+            if (!this.hasPro && ['completionRate', 'heatmapData', 'countryHeatmap', 'subscriptions'].includes(componentName)) {
                 this.componentLoading[componentName] = false;
                 return;
             }

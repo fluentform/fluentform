@@ -1260,12 +1260,13 @@ class ReportHelper
             if ($row->country && strlen($row->country) === 2 && ctype_alpha($row->country)) {
                 $upper = strtoupper($row->country);
                 if (isset($countryNames[$upper])) {
+                    // Stored as ISO2 code
                     $countryCode = strtolower($upper);
                 }
             }
             $formattedResults[] = [
                 'country'            => $row->country ? Arr::get($countryNames, strtoupper($row->country), $row->country) : 'Unknown',
-                'country_code'       => $countryCode, // ISO2 lower-case
+                'country_code'       => $countryCode, // ISO2 lower-case (e.g., 'us', 'gb') for flags
                 'total_submissions'  => (int)$row->total_submissions,
                 'read_submissions'   => (int)$row->read_submissions,
                 'unread_submissions' => (int)$row->unread_submissions,
@@ -1724,7 +1725,78 @@ class ReportHelper
 
         return ['dates' => $dates, 'labels' => $labels];
     }
-
+    
+    public static function getPaymentsByType($startDate, $endDate, $type, $formId = 0)
+    {
+        $paymentSettings = get_option('__fluentform_payment_module_settings');
+        if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
+            return []; // Return empty if payment module is disabled
+        }
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+        
+        // Base query for transactions
+        $query = wpFluent()->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+        
+        // Filter by transaction type if specified
+        if ($type === 'subscription') {
+            $query->whereIn('transaction_type', ['subscription', 'subscription_signup_fee']);
+        } elseif ($type === 'onetime') {
+            $query->where('transaction_type', 'onetime');
+        }
+        
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+        
+        // Get payments grouped by status
+        $payments = $query->select('status')
+            ->selectRaw('SUM(payment_total) as total_amount')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('status')
+            ->get();
+        
+        // Get the total payment amount
+        $totalAmount = 0;
+        foreach ($payments as $payment) {
+            $totalAmount += $payment->total_amount;
+        }
+        
+        $formattedData = [];
+        foreach ($payments as $payment) {
+            $status = strtolower($payment->status);
+            $amount = $payment->total_amount / 100; // Convert from cents to dollars
+            $percentage = $totalAmount > 0 ? round(($payment->total_amount / $totalAmount) * 100, 2) : 0;
+            
+            $formattedData[$status] = [
+                'amount' => $amount,
+                'percentage' => $percentage,
+                'count' => $payment->count
+            ];
+        }
+        
+        // Calculate weekly average paid amount
+        $daysInRange = self::getDateDifference($startDate, $endDate);
+        $weeksInRange = max(1, round($daysInRange / 7, 1));
+        
+        $paidAmount = 0;
+        foreach ($formattedData as $status => $data) {
+            if ($status === 'paid') {
+                $paidAmount = $data['amount'];
+                break;
+            }
+        }
+        
+        $weeklyAverage = $paidAmount / $weeksInRange;
+        
+        return [
+            'currency_symbol' => Arr::get(PaymentHelper::getCurrencyConfig($formId), 'currency_sign', '$'),
+            'payment_statuses' => $formattedData,
+            'total_amount'     => $totalAmount / 100, // Convert from cents to dollars
+            'weekly_average'   => round($weeklyAverage, 2)
+        ];
+    }
+    
     /**
      * Format payment method name for display
      */
@@ -1985,7 +2057,7 @@ class ReportHelper
         ];
     }
 
-
+    
     protected static function getDateDifference($startDate, $endDate)
     {
         $start = new \DateTime($startDate);
