@@ -203,6 +203,7 @@ export default {
         },
         global_date_params: {
             handler(newParams) {
+                if (!this.hasPro) { return ;}
                 if (newParams && newParams.startDate && newParams.endDate) {
                     const globalStartDate = new Date(newParams.startDate.split(' ')[0]); // Remove time part
                     const globalEndDate = new Date(newParams.endDate.split(' ')[0]); // Remove time part
@@ -308,10 +309,7 @@ export default {
                 const pattern = demoPatterns[dayName] || demoPatterns['Monday'];
 
                 for (let i = 0; i < 24; i++) {
-                    // Add some randomization
-                    const baseValue = pattern[i] || 0;
-                    const randomVariation = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
-                    this.heatmapDataStore[dayName][i] = Math.max(0, baseValue + randomVariation);
+                    this.heatmapDataStore[dayName][i] = pattern[i] || 0;
                 }
             });
         },
