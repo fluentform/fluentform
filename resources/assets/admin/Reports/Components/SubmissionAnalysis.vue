@@ -98,8 +98,11 @@
                         >
                             <template #default="{ row }">
                                 <div class="country-info">
+                                    <span v-if="row.country_code" class="iti" >
+                                        <span style="display:block;" :class="['iti__flag', `iti__${row.country_code}`]"></span>
+                                    </span>
+                                    <span v-else class="country-flag-emoji">{{ getCountryFlag(row.country || '') }}</span>
                                     <span class="country-name">{{ row.country || $t('Unknown') }}</span>
-                                    <span class="country-flag" v-if="row.country">{{ getCountryFlag(row.country) }}</span>
                                 </div>
                             </template>
                         </el-table-column>
@@ -490,20 +493,9 @@ export default {
         },
 
         getCountryFlag(country) {
-            // Simple country to flag emoji mapping
-            const countryFlags = {
-                'United States': '🇺🇸',
-                'Canada': '🇨🇦',
-                'United Kingdom': '🇬🇧',
-                'Germany': '🇩🇪',
-                'France': '🇫🇷',
-                'Australia': '🇦🇺',
-                'Japan': '🇯🇵',
-                'India': '🇮🇳',
-                'Brazil': '🇧🇷',
-                'China': '🇨🇳'
-            };
-            return countryFlags[country] || '🌍';
+            // Fallback emoji if no country_code is present
+            if (!country) return '🌍';
+            return '🌍';
         },
 
         getReadRateClass(rate) {

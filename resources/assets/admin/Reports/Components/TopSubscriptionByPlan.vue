@@ -256,7 +256,7 @@ export default {
     methods: {
         getBarColor(index) {
             // Colors ordered from lightest to strongest (bottom to top bars)
-            const colors = [COLORS.submissions,'#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4'];
+            const colors = ['#DCD5FF','#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4'];
             const totalBars = this.chartData.length;
 
             // Always use the strongest colors, starting from the end of the array

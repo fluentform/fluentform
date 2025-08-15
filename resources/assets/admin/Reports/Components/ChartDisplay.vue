@@ -31,8 +31,9 @@
                 <div class="chart-wrapper">
                     <v-chart
                         v-if="!loading"
+                        ref="chart"
                         :option="chartOptions"
-                        style="height: 440px;"
+                        style="height: 440px; width: 100%;"
                         autoresize
                     />
 
@@ -70,7 +71,6 @@ export default {
     },
     data() {
         return {
-            loading: false,
             chartType: 'line', // Default to line chart
             statuses: {
                 success: { name: this.$t('Success'), color: '#1FC16B' },

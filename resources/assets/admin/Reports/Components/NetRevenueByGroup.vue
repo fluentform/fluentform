@@ -11,7 +11,7 @@
                             v-model="selectedGroupBy"
                             :placeholder="$t('Group By')"
                             size="mini"
-                            @change="hasPro ? handleGroupByChange : null"
+                            @change="hasPro ? handleGroupByChange() : null"
                             style="width: 150px; margin-right: 12px;"
                         >
                             <el-option
@@ -73,7 +73,6 @@
                             <template #default="{ row }">
                                 <div class="payment-method">
                                     <span class="method-name">{{ row.payment_method_name }}</span>
-                                    <span class="method-code">({{ row.payment_method }})</span>
                                 </div>
                             </template>
                         </el-table-column>

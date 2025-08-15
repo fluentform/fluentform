@@ -77,7 +77,7 @@ class ReportController extends Controller
      * Get submission analysis grouped by different criteria
      * @return \WP_REST_Response
      */
-    public function submissionsAnalysis(ReportService $reportService)
+    public function submissionsAnalysis()
     {
         try {
             $data = apply_filters('fluentform/reports/submissions_analysis', [], $this->request->all());
@@ -226,7 +226,7 @@ class ReportController extends Controller
      * Get Subscriptions Data
      * @return \WP_REST_Response
      */
-    public function getSubscriptions(ReportService $reportService)
+    public function getSubscriptions()
     {
         try {
             $data = apply_filters('fluentform/reports/subscriptions', [], $this->request->all());
@@ -242,7 +242,7 @@ class ReportController extends Controller
      * Get Payment Types Data
      * @return \WP_REST_Response
      */
-    public function getPaymentTypes(ReportService $reportService)
+    public function getPaymentTypes()
     {
         try {
             $data = apply_filters('fluentform/reports/payment_types', [], $this->request->all());
