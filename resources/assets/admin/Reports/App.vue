@@ -103,7 +103,7 @@
                                     :global-date-params="globalDateParams"
                                     :has-payment="hasPayment"
                                     :payment-currency="paymentCurrency"
-                                    :loading="topFormsLoading"
+                                    :loading="isComponentLoading('topPerformingForms')"
                                     @metric-change="handleTopFormsMetricChange"
                                 />
                             </div>
@@ -112,7 +112,9 @@
                         <el-col :span="24" :md="12">
                             <!-- Country Heatmap Section -->
                             <div class="country-heatmap-section">
+                                <el-skeleton v-if="isComponentLoading('countryHeatmap')" :rows="8" animated />
                                 <submission-country-heatmap
+                                    v-else
                                     :country-heatmap="reports.country_heatmap"
                                 />
                             </div>
@@ -206,7 +208,9 @@
                     <el-row :gutter="24" class="subscription-plan-payment-type-section">
                         <el-col :span="24" :md="12">
                             <div class="top-performing-subscription-plan-section">
+                                <el-skeleton v-if="isComponentLoading('subscriptions')" :rows="6" animated />
                                 <top-subscription-by-plan
+                                    v-else
                                     :subscription-data="reports.subscriptions"
                                     :global-date-params="globalDateParams"
                                 />
@@ -215,7 +219,9 @@
 
                         <el-col :span="24" :md="12">
                             <div class="payment-by-type-section">
+                                <el-skeleton v-if="isComponentLoading('paymentTypes')" :rows="6" animated />
                                 <payment-by-type-chart
+                                    v-else
                                     :payment-data="reports.payment_types"
                                 />
                             </div>
@@ -372,7 +378,7 @@ export default {
                 heatmapData: false,
                 countryHeatmap: false,
                 apiLogs: false,
-                topPerformingForms: false,
+                topPerformingForms: true,
                 subscriptions: false,
                 paymentTypes: false
             },
