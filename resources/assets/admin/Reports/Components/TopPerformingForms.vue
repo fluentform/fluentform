@@ -10,6 +10,7 @@
                     class="metric-radio-group"
                 >
                     <el-radio-button label="entries">{{ $t('Submissions') }}</el-radio-button>
+                    <el-radio-button label="views">{{ $t('Views') }}</el-radio-button>
                     <el-radio-button label="payments" v-if="hasPayment">{{ $t('Payments') }}</el-radio-button>
                 </el-radio-group>
             </div>
@@ -84,6 +85,7 @@ export default {
         metricLabel() {
             const labels = {
                 entries: this.$t('Submissions'),
+                views: this.$t('Views'),
                 payments: this.$t('Total Payments')
             };
             return labels[this.selectedMetric] || this.$t('Submissions');
@@ -138,6 +140,7 @@ export default {
                                 const currency = this.decodeHtmlEntities(this.paymentCurrency);
                                 return `${currency}${formatNumber(value)}`;
                             }
+                            // views and entries are plain numbers
                             return formatNumber(value);
                         }
                     },
@@ -233,6 +236,7 @@ export default {
             if (this.selectedMetric === 'payments') {
                 return formatCurrency(value, this.decodeHtmlEntities(this.paymentCurrency));
             }
+            // views and entries are plain numbers
             return formatNumber(value);
         },
 

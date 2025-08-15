@@ -312,7 +312,7 @@ class ReportService
         $endDate = $data['end_date'];
         $metric = Arr::get($data, 'metric', 'entries');
 
-        if (!in_array($metric, ['entries', 'payments'])) {
+        if (!in_array($metric, ['entries', 'payments', 'views'])) {
             $metric = 'entries';
         }
 
@@ -366,7 +366,7 @@ class ReportService
      * @param array $data
      * @return array
      */
-    private function sanitizeCommonParams($data)
+    public function sanitizeCommonParams($data)
     {
         $data = Sanitizer::sanitize($data, [
             'start_date' => 'sanitizeTextField',

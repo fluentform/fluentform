@@ -80,9 +80,8 @@ class ReportController extends Controller
     public function submissionsAnalysis(ReportService $reportService)
     {
         try {
-            return $this->sendSuccess(
-                $reportService->submissionsAnalysis($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/submissions_analysis', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
@@ -128,12 +127,11 @@ class ReportController extends Controller
      * Get Completion Rate Data
      * @return \WP_REST_Response
      */
-    public function getCompletionRate(ReportService $reportService)
+    public function getCompletionRate()
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getCompletionRate($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/completion_rate', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
@@ -162,12 +160,11 @@ class ReportController extends Controller
      * Get Heatmap Data
      * @return \WP_REST_Response
      */
-    public function getHeatmapData(ReportService $reportService)
+    public function getHeatmapData()
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getHeatmapData($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/heatmap_data', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
@@ -182,9 +179,8 @@ class ReportController extends Controller
     public function getCountryHeatmap(ReportService $reportService)
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getCountryHeatmap($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/country_heatmap', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
@@ -233,9 +229,8 @@ class ReportController extends Controller
     public function getSubscriptions(ReportService $reportService)
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getSubscriptions($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/subscriptions', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
@@ -250,9 +245,8 @@ class ReportController extends Controller
     public function getPaymentTypes(ReportService $reportService)
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getPaymentTypes($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/payment_types', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
