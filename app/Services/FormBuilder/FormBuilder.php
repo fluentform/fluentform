@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services\FormBuilder;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 class FormBuilder
 {
@@ -75,7 +75,7 @@ class FormBuilder
             $formClass .= ' ' . $extraFormClass;
         }
 
-        $themeStyle = Arr::get($atts, 'theme');
+        $themeStyle = ArrayHelper::get($atts, 'theme');
 
         if (!$themeStyle) {
             $selectedStyle = Helper::getFormMeta($form->id, '_ff_selected_style');
@@ -141,7 +141,7 @@ class FormBuilder
         $formAtts = $this->buildAttributes($formAttributes);
       
 
-        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . Arr::get($atts, 'css_classes'));
+        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . ArrayHelper::get($atts, 'css_classes'));
 
         if ($themeStyle === 'ffs_inherit_theme') {
             $wrapperClasses = str_replace("ff-default", "ff-inherit-theme-style", $wrapperClasses);
@@ -302,7 +302,7 @@ class FormBuilder
         if ($hasStepWrapper) {
             $startElement = $form->fields['stepsWrapper']['stepStart'];
 
-            $steps = Arr::get($startElement, 'settings.step_titles');
+            $steps = ArrayHelper::get($startElement, 'settings.step_titles');
 
             // check if $stepCounter == count()
             if ($stepCounter > count($steps)) {
@@ -383,7 +383,7 @@ class FormBuilder
      */
     protected function extractValidationRules($item)
     {
-        if (isset($item['columns'])) {
+        if (isset($item['columns']) && 'repeater_container' !== $item['element']) {
             foreach ($item['columns'] as $column) {
                 foreach ($column['fields'] as $field) {
                     $this->extractValidationRules($field);
@@ -412,6 +412,7 @@ class FormBuilder
             $gridRows = $item['settings']['grid_rows'];
             $gridType = $item['settings']['tabular_field_type'];
             foreach ($gridRows as $rowKey => $rowValue) {
+                $rowKey = trim(sanitize_text_field($rowKey));
                 if ('radio' == $gridType) {
                     $item['attributes']['name'] = $gridName . '[' . $rowKey . ']';
                     $this->extractValidationRule($item);
@@ -426,6 +427,18 @@ class FormBuilder
                 $item['attributes']['name'] = $chainedSelectName . '[' . $select . ']';
                 $this->extractValidationRule($item);
             }
+        } elseif ('repeater_container' == $item['element']) {
+            $rootName = $item['attributes']['name'];
+            $ruleIndex = 0;
+            foreach ($item['columns'] as $key => $innerItem) {
+                foreach ($innerItem['fields'] as &$innerField) {
+                    $innerField['attributes']['name'] = $rootName . '[' . $key . ']';
+                    $rules = ArrayHelper::get($innerField, 'settings.validation_rules', []);
+                    $innerField['settings']['validation_rules'] = $rules;
+                    $this->extractValidationRule($innerField, $rootName . '[' . $ruleIndex . ']');
+                    $ruleIndex++;
+                }
+            }
         } else {
             $this->extractValidationRule($item);
         }
@@ -438,7 +451,7 @@ class FormBuilder
      *
      * @return void
      */
-    protected function extractValidationRule($item)
+    protected function extractValidationRule($item, $name = '')
     {
         if (isset($item['settings']['validation_rules'])) {
             $rules = $item['settings']['validation_rules'];
@@ -448,7 +461,7 @@ class FormBuilder
                         $rule['message'] = apply_filters('fluentform/get_global_message_' . $ruleName, $rule['message']);
                     }
                     // Shortcode parse on validation message
-                    $rule['message'] = Helper::shortCodeParseOnValidationMessage($rule['message'], $this->form, Arr::get($item, 'attributes.name'));
+                    $rule['message'] = Helper::shortCodeParseOnValidationMessage($rule['message'], $this->form, ArrayHelper::get($item, 'attributes.name'));
                     $rules[$ruleName]['message'] = apply_filters_deprecated(
                         'fluentform_validation_message_' . $ruleName,
                         [
@@ -475,7 +488,7 @@ class FormBuilder
                 }
             }
     
-            $rules= apply_filters_deprecated(
+            $rules = apply_filters_deprecated(
                 'fluentform_item_rules_' . $item['element'],
                 [
                     $rules,
@@ -487,7 +500,10 @@ class FormBuilder
             );
 
             $rules = apply_filters('fluentform/item_rules_' . $item['element'], $rules, $item);
-            $this->validationRules[$item['attributes']['name']] = $rules;
+            if (!$name) {
+                $name = $item['attributes']['name'];
+            }
+            $this->validationRules[$name] = $rules;
         }
     }
 
@@ -498,7 +514,7 @@ class FormBuilder
      *
      * @return void
      */
-    protected function extractConditionalLogic($item)
+    protected function extractConditionalLogic($item, $itemName = '')
     {
         // If container like element, then recurse
         if (isset($item['columns'])) {
@@ -512,31 +528,41 @@ class FormBuilder
                     }
                 }
             }
+            $parentName = ArrayHelper::get($item, 'attributes.name');
+            $isRepeaterContainer = ArrayHelper::get($item, 'element') === 'repeater_container';
 
-            foreach ($item['columns'] as $column) {
-                foreach ($column['fields'] as $field) {
+            foreach ($item['columns'] as $colIndex => $column) {
+                foreach ($column['fields'] as $fieldIndex => $field) {
                     if ($containerConditions) {
                         $field['container_conditions'] = $containerConditions;
                     }
-                    $this->extractConditionalLogic($field);
+                    if ($isRepeaterContainer) {
+                        $conditionName = $parentName . '_condition_' . $colIndex . '_' . $fieldIndex;
+                        $this->extractConditionalLogic($field, $conditionName);
+                    } else {
+                        $this->extractConditionalLogic($field);
+                    }
                 }
             }
         } elseif (isset($item['settings']['conditional_logics'])) {
             $conditionals = $item['settings']['conditional_logics'];
+            if (!$itemName) {
+                $itemName = $item['attributes']['data-name'];
+            }
             if (isset($conditionals['status'])) {
                 if ($conditionals['status'] && $conditionals['conditions']) {
-                    $this->conditions[$item['attributes']['data-name']] = $item['settings']['conditional_logics'];
+                    $this->conditions[$itemName] = $item['settings']['conditional_logics'];
                 }
             }
             if (isset($item['container_conditions'])) {
                 if (! isset($this->conditions[$item['attributes']['data-name']])) {
-                    $this->conditions[$item['attributes']['data-name']] = [
+                    $this->conditions[$itemName] = [
                         'conditions' => [],
                         'status'     => false,
                         'type'       => 'any',
                     ];
                 }
-                $this->conditions[$item['attributes']['data-name']]['container_condition'] = $item['container_conditions'];
+                $this->conditions[$itemName]['container_condition'] = $item['container_conditions'];
             }
         }
     }

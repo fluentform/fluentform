@@ -1,7 +1,7 @@
 <template>
     <card class="ff_managers_settings">
         <card-head>
-            <h5 class="title">{{ $t('Managers') }}</h5>
+            <h5 class="title">{{ $t('Permissions') }}</h5>
         </card-head>
         <card-body>
             <privacy/>

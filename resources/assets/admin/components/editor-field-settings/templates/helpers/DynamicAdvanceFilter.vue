@@ -61,17 +61,14 @@ export default {
     },
     methods: {
         addFilterGroup() {
-            this.model = [
-                ...this.model,
-                [
-                    {
-                        column: '',
-                        custom: false,
-                        operator: '',
-                        value: '',
-                    },
-                ],
-            ];
+            this.model = [...this.model, [
+                {
+                    column: '',
+                    custom: false,
+                    operator: '',
+                    value: ''
+                }
+            ]];
         },
 
         removeFilter(groupsIndex, index) {

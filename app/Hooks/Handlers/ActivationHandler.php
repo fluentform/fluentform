@@ -67,7 +67,7 @@ class ActivationHandler
     private function setDefaultGlobalSettings()
     {
         if (!get_option('_fluentform_global_form_settings')) {
-            update_option('__fluentform_global_form_settings', [
+            update_option('_fluentform_global_form_settings', [
                 'layout' => [
                     'labelPlacement'        => 'top',
                     'asteriskPlacement'     => 'asterisk-right',
@@ -75,6 +75,14 @@ class ActivationHandler
                     'errorMessagePlacement' => 'inline',
                     'cssClassName'          => '',
                 ],
+                'misc'   => [
+                    'isIpLogingDisabled'      => false,
+                    'isAnalyticsDisabled'      => true,
+                    'file_upload_locations'    => '',
+                    'admin_top_nav_status'    => 'yes',
+                    'default_admin_date_time' => 'time_diff',
+                ],
+                
             ], 'no');
         }
     }
@@ -201,6 +209,5 @@ class ActivationHandler
         if (!wp_next_scheduled($emailReportHookName)) {
             wp_schedule_event(time(), 'daily', $emailReportHookName);
         }
-
     }
 }

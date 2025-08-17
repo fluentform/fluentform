@@ -68,16 +68,10 @@
                                 </el-option>
                             </el-select>
 
-                            <!-- Simple Inventory -->
-                            <el-input
-                                v-else
-                                :min="1"
-                                class="el-fluid"
-                                type="number"
-                                style="width: 30%"
-                                v-model.number="editItem.settings.single_inventory_stock"
-                            ></el-input>
-                        </template>
+		                    <!-- Simple Inventory -->
+		                    <el-input v-else :min="1" class="el-fluid" type="number" style="width: 30%"
+		                              v-model.number="editItem.settings.single_inventory_stock"></el-input>
+	                    </template>
                     </div>
                 </div>
             </div>
@@ -115,8 +109,11 @@ export default {
                 return 'advanced_options';
             }
         },
-        isSingleInput() {
-            return this.editItem.element === 'multi_payment_component' && this.editItem.attributes.type === 'single';
+        isSingleInput(){
+            if (this.editItem.element == 'multi_payment_component' && this.editItem.attributes.type == 'single'){
+                return true;
+            }
+            return  false;
         },
         isInventoryEnabled() {
             return ['simple', 'global'].includes(this.editItem.settings.inventory_type);
@@ -129,10 +126,10 @@ export default {
         let items = this.editItem.settings[this.getOptionsKey];
         items.forEach((item, i) => {
             if (item.quantity === undefined) {
-                this.$set(this.editItem.settings[this.getOptionsKey][i], 'quantity', 1);
+                this.$set(this.editItem.settings[this.getOptionsKey][i], 'quantity', 1)
             }
-            this.editItem.settings[this.getOptionsKey][i].quantity = parseInt(item.quantity);
-        });
+            this.editItem.settings[this.getOptionsKey][i].quantity = parseInt(item.quantity)
+        })
         this.createOptionsToRender();
     },
 };

@@ -6,7 +6,7 @@
     <meta http-equiv="Imagetoolbar" content="No"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo esc_html($meta['title']); ?></title>
-    <meta name="description" content="<?php echo strip_tags($meta['description']) ?>">
+    <meta name="description" content="<?php echo esc_attr(strip_tags($meta['description'])) ?>">
 
     <?php if (!empty($meta['featured_image'])): ?>
         <meta property="og:image" content="<?php echo esc_url($meta['featured_image']); ?>"/>
@@ -14,7 +14,7 @@
 
     <meta property="og:title" content="<?php echo esc_html($meta['title']); ?>"/>
 
-    <meta property="og:description" content="<?php echo strip_tags($meta['description']) ?>"/>
+    <meta property="og:description" content="<?php echo esc_attr(strip_tags($meta['description'])) ?>"/>
 
     <?php if (!empty($meta['google_font_href'])): ?>
 

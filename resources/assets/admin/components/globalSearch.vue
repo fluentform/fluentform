@@ -133,98 +133,90 @@ export default {
             if ((oldFormId || newFormId) && oldFormId !== newFormId) {
                 return false;
             }
-
-            if ((oldRoute || newRoute) && oldRoute === newRoute) {
-                return true;
-            }
-            if ((oldComponent || newComponent) && oldComponent === newComponent) {
-                return true;
-            }
-            if (!oldComponent && !newComponent && (oldHash || newHash) && oldHash !== newHash) {
-                return true;
-            }
-            return false;
-        },
-        listener(e) {
-            const isMac = window?.navigator.userAgent?.toUpperCase().includes('MAC');
-            if ((isMac ? e.metaKey : e.ctrlKey) && e.keyCode === 75) {
-                e.preventDefault && e.preventDefault();
-                if (!this.showSearch) {
-                    this.showSearch = true;
-                } else {
-                    this.reset();
-                    return;
-                }
-                setTimeout(() => {
-                    this.$refs.searchInput?.focus();
-                }, 500);
-                if (!this.links.length) {
-                    this.getSearchData();
-                }
-            }
-            if (this.showSearch) {
-                if (e.keyCode === 27) {
-                    // close on ESC button press
-                    e.preventDefault();
-                    this.reset();
-                } else if (e.keyCode === 38 || e.keyCode === 40) {
-                    e.preventDefault();
-                    this.handleUpDownArrow(e);
-                } else if (e.keyCode === 9) {
-                    // Tab key for focus input el
-                    e.preventDefault();
-                    this.$refs.searchInput?.focus();
-                    this.linkFocusIndex = 0;
-                } else if (e.keyCode === 13) {
-                    // Enter press
-                    if (this.filteredLinks.length) {
-                        const link = this.filteredLinks[this.linkFocusIndex];
-                        if (link) {
-                            this.goToSlug(undefined, link.item || link);
-                        }
-                    }
-                }
-            }
-        },
-        handleUpDownArrow(e) {
-            if (this.$refs.links && Array.isArray(this.$refs.links)) {
-                if (e.keyCode === 38) {
-                    this.linkFocusIndex -= 1;
-                } else {
-                    this.linkFocusIndex += 1;
-                }
-                if (this.linkFocusIndex >= this.filteredLinks.length || this.linkFocusIndex <= 0) {
-                    this.$refs.searchInput?.focus();
-                    this.$refs.searchBody?.scroll?.({ top: 0 });
-                    this.linkFocusIndex = 0;
-                    return;
-                }
-                let $link = this.$refs.links[this.linkFocusIndex - 1];
-                if ($link) {
-                    this.$nextTick(() => {
-                        $link.focus();
-                    });
-                }
-            }
-        },
-        $t(str) {
-            let transString = window.FluentFormApp?.form_editor_str[str];
-            if (transString) {
-                return transString;
-            }
-            return str;
-        },
-    },
-    created() {
-        if (window.fluent_forms_global_var?.global_search_active === 'yes') {
-            document.addEventListener('keydown', this.listener);
-            document.addEventListener('global-search-menu-button-click', e => {
-                this.listener({ ctrlKey: true, metaKey: true, keyCode: 75 });
-            });
-        }
-    },
-    beforeDestroy() {
-        document.removeEventListener('keydown', this.listener);
-    },
-};
+			if ((oldRoute || newRoute) && oldRoute === newRoute) {
+				return true;
+			}
+			if ((oldComponent || newComponent) && oldComponent === newComponent) {
+				return true;
+			}
+			if ((!oldComponent && !newComponent) && (oldHash || newHash) && oldHash !== newHash) {
+				return true;
+			}
+			return false;
+		},
+		listener(e) {
+			const isMac = window?.navigator.userAgent?.toUpperCase().includes('MAC');
+			if ((isMac ? e.metaKey : e.ctrlKey) && e.keyCode === 75) {
+				e.preventDefault && e.preventDefault();
+				if (!this.showSearch) {
+					this.showSearch = true;
+				} else {
+					this.reset()
+					return;
+				}
+				setTimeout(() => {
+					this.$refs.searchInput?.focus();
+				}, 500);
+				if (!this.links.length) {
+					this.getSearchData()
+				}
+			}
+			if (this.showSearch) {
+				if (e.keyCode === 27) {
+					// close on ESC button press
+					e.preventDefault()
+					this.reset()
+				} else if (e.keyCode === 38 || e.keyCode === 40) {
+					e.preventDefault();
+					this.handleUpDownArrow(e);
+				} else if (e.keyCode === 9) {
+					// Tab key for focus input el
+					e.preventDefault();
+					this.$refs.searchInput?.focus();
+					this.linkFocusIndex = 0;
+				} else if (e.keyCode === 13) {
+					// Enter press
+					if (this.filteredLinks.length) {
+						const link = this.filteredLinks[this.linkFocusIndex];
+						if (link) {
+							this.goToSlug(undefined, link.item || link);
+						}
+					}
+				}
+			}
+		},
+		handleUpDownArrow(e) {
+			if (this.$refs.links && Array.isArray(this.$refs.links)) {
+				if (e.keyCode === 38) {
+					this.linkFocusIndex -= 1;
+				} else {
+					this.linkFocusIndex += 1;
+				}
+				if (this.linkFocusIndex >= this.filteredLinks.length || this.linkFocusIndex <= 0) {
+					this.$refs.searchInput?.focus();
+					this.$refs.searchBody?.scroll?.({top:0});
+					this.linkFocusIndex = 0;
+					return;
+				}
+				let $link = this.$refs.links[this.linkFocusIndex -1];
+				if ($link) {
+					this.$nextTick(() => {
+						$link.focus();
+					});
+				}
+			}
+		}
+	},
+	created() {
+		if (window.fluent_forms_global_var?.global_search_active === 'yes') {
+			document.addEventListener('keydown', this.listener);
+			document.addEventListener('global-search-menu-button-click',  (e) => {
+				this.listener({ctrlKey: true, metaKey : true, keyCode: 75})
+			})
+		}
+	},
+	beforeDestroy() {
+		document.removeEventListener('keydown', this.listener);
+	}
+}
 </script>

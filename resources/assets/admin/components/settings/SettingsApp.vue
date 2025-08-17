@@ -12,127 +12,165 @@
                 @refetch-all-editor-shortcodes="fetchAllEditorShortcodes"
             ></router-view>
         </el-skeleton>
-        <global-search></global-search>
+	    <global-search/>
     </div>
 </template>
 
-<script>
-import {scrollTop, handleSidebarActiveLink} from '@/admin/helpers.js';
-import globalSearch from '../../global_search.js'
+<script type="text/babel">
+    import { scrollTop, handleSidebarActiveLink } from '@/admin/helpers';
+	import globalSearch from '../../global_search'
+    export default {
+        name: 'settings_app',
+	    components: {
+			globalSearch
+	    },
+        data() {
+            return {
+                app_ready: false,
+                form_id: window.FluentFormApp.form_id,
+                form: {
+                    id: window.FluentFormApp.form_id,
+                },
+                hasPro: !!window.FluentFormApp.hasPro,
+                hasPDF: !!window.FluentFormApp.hasPDF,
+                editorShortcodes: [],
+                inputs: {}
+            }
+        },
+        methods: {
+            fetchInputs() {
+                const url = FluentFormsGlobal.$rest.route('getFormFields', this.form_id);
 
-export default {
-    name: 'settings_app',
-    components: {
-        globalSearch
-    },
-    data() {
-        return {
-            app_ready: false,
-            form_id: window.FluentFormApp.form_id,
-            form: {
-                id: window.FluentFormApp.form_id,
+                FluentFormsGlobal.$rest.get(url)
+                    .then(response => {
+                        this.inputs = Object.assign({}, response);
+                        this.app_ready = true;
+                    })
+                    .catch(e => {
+                    });
             },
-            hasPro: !!window.FluentFormApp.hasPro,
-            hasPDF: !!window.FluentFormApp.hasPDF,
-            editorShortcodes: [],
-            inputs: {}
-        }
-    },
-    methods: {
-        fetchInputs() {
-            const url = FluentFormsGlobal.$rest.route('getFormFields', this.form_id);
+            fetchAllEditorShortcodes() {
+                const url = FluentFormsGlobal.$rest.route('getFormShortcodes', this.form_id);
 
-            FluentFormsGlobal.$rest.get(url)
-                .then(response => {
-                    this.inputs = Object.assign({}, response);
-                    this.app_ready = true;
-                })
-                .catch(e => {
+                FluentFormsGlobal.$rest.get(url, {input_only: true})
+                    .then(response => {
+                        let allShortCodes = response;
+                        if (allShortCodes[0] && allShortCodes[0]['shortcodes']) {
+                            delete allShortCodes[0]['shortcodes']['{all_data}'];
+                            delete allShortCodes[0]['shortcodes']['{all_data_without_hidden_fields}'];
+                        }
+
+                        this.editorShortcodes = allShortCodes;
+                        this.app_ready = true;
+                    })
+                    .catch(e => {
+                    });
+            },
+            scrollTo() {
+                let pageScrollLink = jQuery('.ff-page-scroll');
+                pageScrollLink.each(function(){
+                    jQuery(this).on("click", function(e){
+                        let targetHash = e.target.hash;
+                        e.preventDefault();
+
+                        jQuery(targetHash).addClass('highlight-border');
+
+                        const $settingsForm = jQuery('.ff_settings_form');
+                        if ($settingsForm.length) {
+	                        const ffMenuHeight = jQuery('.ff_form_wrap .form_internal_menu').first()?.outerHeight() || 0;
+	                        const wpAdminBarHeight = jQuery('#wpadminbar').outerHeight() || 0;
+                            const top = jQuery(targetHash).offset().top + $settingsForm.scrollTop() - (wpAdminBarHeight + ffMenuHeight + $settingsForm.position().top);
+                            scrollTop(top, 'fast', '.ff_settings_form').then((_) => {
+                                jQuery('head title').text( e.target.textContent.trim() + ' - Fluent Forms');
+                                if(targetHash.length) {
+                                    setTimeout(() => {
+                                        jQuery(targetHash).not(this).removeClass('highlight-border');
+                                    }, 500);
+                                }
+                            })
+                        }
+
+                    });
                 });
+            },
+            maybeSetRoute($el) {
+                // set root route if route not set yet
+                if ('/' === $el.data('route_key') && this.$route.path !== '/') {
+                    this.$router.push({ path: '/' })
+                }
+            }
         },
-        fetchAllEditorShortcodes() {
-            const url = FluentFormsGlobal.$rest.route('getFormShortcodes', this.form_id);
+        mounted() {
+            this.fetchInputs();
+            this.fetchAllEditorShortcodes();
 
-            FluentFormsGlobal.$rest.get(url, {input_only: true})
-                .then(response => {
-                    let allShortCodes = response;
-                    if (allShortCodes[0] && allShortCodes[0]['shortcodes']) {
-                        delete allShortCodes[0]['shortcodes']['{all_data}'];
-                        delete allShortCodes[0]['shortcodes']['{all_data_without_hidden_fields}'];
-                    }
+            const isIntegrationRoute = this.$route.path.startsWith('/all-integrations');
+            
+            // If we're on an integration route, find and activate the all-integrations menu item
+            if (isIntegrationRoute) {
+                const $integrationEl = jQuery('.ff_settings_list a[data-route_key="/all-integrations"]');
+                if ($integrationEl.length) {
+                    this.maybeSetRoute($integrationEl);
+                    handleSidebarActiveLink($integrationEl.parent(), true, true);
+                    return;
+                }
+            }
 
-                    this.editorShortcodes = allShortCodes;
-                    this.app_ready = true;
-                })
-                .catch(e => {
-                });
-        },
-        scrollTo() {
-            let pageScrollLink = jQuery('.ff-page-scroll');
-            pageScrollLink.each(function () {
-                jQuery(this).on("click", function (e) {
-                    let targetHash = e.target.hash;
+            // Original code for other routes
+            const $el = jQuery('.ff_settings_list a[data-route_key="' + this.$route.path + '"]');
+            if ($el.length) {
+                this.maybeSetRoute($el)
+                handleSidebarActiveLink($el.parent())
+            } else {
+                const $firstLink = jQuery('.ff_settings_list li:first-child').first();
+                const firstLoad  = true
+                handleSidebarActiveLink($firstLink,false ,firstLoad)
+            }
+
+            const that = this;
+            jQuery('.ff_settings_list a').on('click', function (e) {
+                const $el = jQuery(this);
+                if ($el.attr('href') === '#' || '/' === $el.data('route_key')){
                     e.preventDefault();
+                }
+                that.maybeSetRoute($el)
+                handleSidebarActiveLink($el.parent())
+            });
 
-                    jQuery(targetHash).addClass('highlight-border');
+            jQuery('head title').text('Settings & Integrations - Fluent Forms');
+            (new ClipboardJS('.copy')).on('success', (e) => {
+                this.$copy();
+            });
 
-                    const $settingsForm = jQuery('.ff_settings_form');
-                    if ($settingsForm.length) {
-                        const ffMenuHeight = jQuery('.ff_form_wrap .form_internal_menu').first()?.outerHeight() || 0;
-                        const wpAdminBarHeight = jQuery('#wpadminbar').outerHeight() || 0;
-                        const top = jQuery(targetHash).offset().top + $settingsForm.scrollTop() - (wpAdminBarHeight + ffMenuHeight + $settingsForm.position().top);
-                        scrollTop(top, 'fast', '.ff_settings_form').then((_) => {
-                            jQuery('head title').text(e.target.textContent.trim() + ' - Fluent Forms');
-                            if (targetHash.length) {
-                                setTimeout(() => {
-                                    jQuery(targetHash).not(this).removeClass('highlight-border');
-                                }, 500);
-                            }
-                        })
+            // init scrolling page
+            this.scrollTo();
+
+            // Add this to handle page reloads with integration routes
+            window.addEventListener('load', () => {
+                if (isIntegrationRoute) {
+                    const $integrationEl = jQuery('.ff_settings_list a[data-route_key="/all-integrations"]');
+                    if ($integrationEl.length) {
+                        handleSidebarActiveLink($integrationEl.parent(), true, true);
                     }
-
-                });
+                }
             });
         },
-        maybeSetRoute($el) {
-            // set root route if route not set yet
-            if ($el.data('route_key') === '/' && this.$route.path !== '/') {
-                this.$router.push({path: '/'})
+        watch: {
+            '$route'(to, from) {
+                // Check if navigating to an integration route
+                if (to.path.startsWith('/all-integrations')) {
+                    const $integrationEl = jQuery('.ff_settings_list a[data-route_key="/all-integrations"]');
+                    if ($integrationEl.length) {
+                        handleSidebarActiveLink($integrationEl.parent(), true, true);
+                    }
+                } else {
+                    // For non-integration routes, find the matching menu item
+                    const $el = jQuery('.ff_settings_list a[data-route_key="' + to.path + '"]');
+                    if ($el.length) {
+                        handleSidebarActiveLink($el.parent(), true, true);
+                    }
+                }
             }
         }
-    },
-    mounted() {
-        this.fetchInputs();
-        this.fetchAllEditorShortcodes();
-
-        const $el = jQuery('.ff_settings_list a[data-route_key="' + this.$route.path + '"]');
-        if ($el.length) {
-            this.maybeSetRoute($el);
-            handleSidebarActiveLink($el.parent());
-        } else {
-            const $firstLink = jQuery('.ff_settings_list li:first-child').first();
-            const firstLoad = true;
-            handleSidebarActiveLink($firstLink, false, firstLoad);
-        }
-
-        const that = this;
-        jQuery('.ff_settings_list a').on('click', function (e) {
-            const $el = jQuery(this);
-            if ($el.attr('href') === '#' || '/' === $el.data('route_key')) {
-                e.preventDefault();
-            }
-            that.maybeSetRoute($el)
-            handleSidebarActiveLink($el.parent())
-        });
-
-        jQuery('head title').text('Settings & Integrations - Fluent Forms');
-        (new ClipboardJS('.copy')).on('success', (e) => {
-            this.$copy();
-        });
-
-        // init scrolling page
-        this.scrollTo();
-
     }
-}
 </script>

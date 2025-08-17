@@ -113,14 +113,23 @@ export default {
 
             if (
                 items &&
-                (items['paymentElements'].indexOf(item.element) !== -1 ||
-                    (items.hasOwnProperty('customElements') && items['customElements'].indexOf(item.element) !== -1))
+                (
+                    items['paymentElements'].indexOf(item.element) !== -1 ||
+                    (
+                        items.hasOwnProperty('customElements') &&
+                        items['customElements'].indexOf(item.element) !== -1
+                    )
+                )
             ) {
                 return true;
             }
 
             return (
-                (item.element === 'select' || item.element === 'input_checkbox' || item.element === 'input_radio') &&
+                (
+                    item.element === 'select' ||
+                    item.element === 'input_checkbox' ||
+                    item.element === 'input_radio'
+                ) &&
                 item.settings.calc_value_status
             );
         },

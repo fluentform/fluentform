@@ -41,7 +41,7 @@ class AdminBar
                 'title'  => Arr::get($item, 'title'),
                 'href'   => Arr::get($item, 'url'),
             ];
-            if (Arr::get($item, 'meta')) {
+            if(Arr::get($item,'meta')) {
                 $arr['meta'] = [
                     'target' => '_blank',
                     'rel'    => 'noopener noreferrer',
@@ -172,23 +172,23 @@ class AdminBar
             }
         }
         $items['fluent_forms_community'] = [
-            'title'  => esc_html__('Community', 'wpforms-lite'),
+            'title' => esc_html__('Community', 'wpforms-lite'),
             'url'   => 'https://www.facebook.com/groups/fluentforms/',
-            'meta'   => true
+            'meta'  => true
         ];
         $items['fluent_forms_doc'] = [
             'title' => __('Docs', 'fluentform'),
-            'url' => 'https://wpmanageninja.com/docs/fluent-form/',
-            'meta'   => true
+            'url'   => 'https://wpmanageninja.com/docs/fluent-form/',
+            'meta'  => true
         ];
         $items['fluent_forms_doc'] = [
             'title' => __('Docs', 'fluentform'),
-            'url' => 'https://wpmanageninja.com/docs/fluent-form/',
+            'url'   => 'https://wpmanageninja.com/docs/fluent-form/',
         ];
         $items['fluent_forms_dev_doc'] = [
             'title' => __('Developer Docs', 'fluentform'),
-            'url' => 'https://developers.fluentforms.com/',
-            'meta'   => true
+            'url'   => 'https://developers.fluentforms.com/',
+            'meta'  => true
         ];
         return apply_filters('fluentform/admin_menu_bar_items', $items);
     }

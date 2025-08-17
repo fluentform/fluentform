@@ -1,14 +1,12 @@
-@import '../styles/base.scss';
-@import '../../admin/css/element-ui-css.scss';
 @import "../assets/icons/fluentform-icon.css";
 @import "../styles/variables";
 @import "../styles/navbar";
+@import "../styles/globals";
 @import "../styles/card";
 @import "../styles/table";
 @import "../styles/tab";
 @import "../styles/_el_customize";
 @import "../styles/subscription";
-@import "../styles/globals";
 
 @import "../styles/entries";
 @import "../conversion_templates/browser_frame";
@@ -711,10 +709,6 @@ table.ff_routing_table tr {
       color: $base-color;
       font-size: 13px;
       font-weight: 500;
-      .el-select__wrapper {
-        height: 32px;
-        width: 176px;
-      }
     }
     &.ff-type-full {
       flex-direction: column;
@@ -755,21 +749,6 @@ ul.fcc_inline_social {
   border-radius: $border-radius;
   padding: 20px;
   margin-bottom: 24px;
-  .el-input {
-    .el-input__wrapper {
-      padding: 6px;
-      .el-input__inner {
-        border: none;
-      }
-    }
-    .el-input-group__append {
-      right: 6px;
-      top: 6px;
-      width: 30px;
-      min-height: 30px;
-      box-shadow: none;
-    }
-  }
 }
 
 .copy_share.fc_copy_success {
@@ -1126,11 +1105,13 @@ body.ff_full_screen {
 }
 
 .el-tabs__item {
-  padding: 20px;
   height: auto;
   line-height: inherit;
+  padding-bottom: 15px;
   font-weight: 500;
   color: $base-text;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .ff_between_wrap {
@@ -1292,8 +1273,9 @@ span + .ff_payment_badge{
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 10;
   display: none;
+  background: #0000009c;
   &.active{
     display: block;
   }
@@ -1312,59 +1294,4 @@ span + .ff_payment_badge{
   }
 }
 
-.ff_quiz_settings_grade_system {
-  .el-input__wrapper {
-    height: 36px;
-    padding: 1px 7px;
-  }
-}
-
-.quiz-field-setting {
-  .el-checkbox {
-    margin-top: 16px;
-  }
-  .el-input {
-    height: 36px;
-  }
-  .el-input__wrapper {
-    padding: 1px 7px;
-  }
-  .el-select {
-    .el-select__wrapper {
-      height: 36px;
-      .el-select__selection {
-        width: 145px;
-      }
-    }
-  }
-  .el-input-number {
-    span {
-      padding: 8px;
-    }
-  }
-}
-
-.ff_filter_form_select {
-  .el-select__input-wrapper {
-    input {
-      border: none;
-    }
-  }
-}
-
-.ff_btn_group_item {
-  .el-select {
-    input {
-      padding: 0;
-      width: inherit !important;
-      border: none;
-    }
-  }
-}
-
-.fluentform-entry-container {
-  .el-row {
-    align-items: flex-start;
-  }
-}
 @import "../styles/responsive";

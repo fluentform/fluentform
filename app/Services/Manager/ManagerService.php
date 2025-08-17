@@ -28,6 +28,7 @@ class ManagerService
 
         foreach ($query->get_results() as $user) {
             $allowedForms = FormManagerService::getUserAllowedForms($user->ID);
+            $hasSpecificFormsPermission = FormManagerService::hasSpecificFormsPermission($user->ID);
             $managers[] = [
                 'id'          => $user->ID,
                 'first_name'  => $user->first_name,
@@ -35,7 +36,8 @@ class ManagerService
                 'email'       => $user->user_email,
                 'permissions' => Acl::getUserPermissions($user),
                 'forms'       => $allowedForms ? $allowedForms : false,
-                'roles'       => $this->getUserRoles($user->roles)
+                'roles'       => $this->getUserRoles($user->roles),
+                'has_specific_forms_permission'=> $hasSpecificFormsPermission ? 'yes' : 'no',
             ];
         }
 
@@ -72,9 +74,13 @@ class ManagerService
         
         update_user_meta($user->ID, '_fluent_forms_has_role', 1);
 
+        FormManagerService::updateHasSpecificFormsPermission($user->ID , Arr::get($manager, 'has_specific_forms_permission'));
+
         // Add allowed forms for user
-        FormManagerService::addUserAllowedForms(Arr::get($manager, 'forms', []), $user->ID);
-        
+        if ('yes' === Arr::get($manager, 'has_specific_forms_permission')) {
+            FormManagerService::addUserAllowedForms(Arr::get($manager, 'forms', []), $user->ID);
+        }
+
         $updatedUser = [
             'id'          => $user->ID,
             'first_name'  => $user->first_name,

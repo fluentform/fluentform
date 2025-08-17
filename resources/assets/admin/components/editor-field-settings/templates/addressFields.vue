@@ -39,9 +39,9 @@
                             >
                                 <div class="form-group">
                                     <div class="el-form-item">
-                                        <label class="el-form-item__label" for="">{{ $t('Label') }}</label>
+                                        <label class="el-form-item__label" for="">{{ $t("Label") }}</label>
 
-                                        <el-input v-model="editItem.fields[field.value].settings.label" size="small"/>
+                                        <el-input v-model="editItem.fields[field.value].settings.label" size="small" />
                                     </div>
                                 </div>
 
@@ -56,7 +56,7 @@
 
                                 <div class="form-group">
                                     <div class="el-form-item">
-                                        <label class="el-form-item__label" for="">{{ $t('Placeholder') }}</label>
+                                        <label class="el-form-item__label" for="">{{ $t("Placeholder") }}</label>
 
                                         <el-input
                                             v-model="editItem.fields[field.value].attributes.placeholder"
@@ -65,9 +65,9 @@
                                     </div>
                                 </div>
 
-                                <wpuf_customCountryList :listItem="listItem" :editItem="editItem.fields[field.value]"/>
+                                <wpuf_customCountryList :listItem="listItem" :editItem="editItem.fields[field.value]" />
 
-                                <validationRules labelPosition="left" :editItem="editItem.fields[field.value]"/>
+                                <validationRules labelPosition="left" :editItem="editItem.fields[field.value]" />
                             </div>
                         </div>
                     </div>
@@ -75,79 +75,108 @@
             </template>
         </draggable>
 
-        <el-form-item v-if="has_gmap_api" :label="$t('Autocomplete Feature')">
-            <el-checkbox true-value="yes" false-value="no" v-model="editItem.settings.enable_g_autocomplete"
-            >{{ $t('Enable Autocomplete(Google Map)') }}
-            </el-checkbox>
+        <!-- Autocomplete Provider Dropdown (manual) -->
+        <el-form-item :label="$t('Autocomplete Provider')" style="width: 100%;" class="ff-full-width-select">
+            <el-select v-model="editItem.settings.autocomplete_provider" placeholder="Select provider" style="width: 100%;">
+                <el-option label="None" value="none" />
+                <el-option label="Google Maps" value="google" :disabled="!has_gmap_api" />
+                <el-option label="Browser Geolocation (HTML5)" value="html5" :disabled="!has_pro" />
+            </el-select>
         </el-form-item>
-        <el-form-item v-if="has_gmap_api && editItem.settings.enable_g_autocomplete === 'yes'" :label="$t('Show Map')">
-            <el-checkbox true-value="yes" false-value="no" v-model="editItem.settings.enable_g_map">
+
+        <small v-if="!has_gmap_api && editItem.settings.autocomplete_provider === 'google'">
+            {{$t('Google Maps API key required. Configure in FluentForm Pro settings.')}}
+        </small>
+        <small v-if="!has_pro">
+            {{$t('Autocomplete with Coordinates is available in Fluent Forms Pro.')}}
+        </small>
+
+        <!-- HTML5 Locate Radio (manual) -->
+        <el-form-item v-if="editItem.settings.autocomplete_provider === 'html5'" :label="$t('HTML5 Locate')">
+            <el-radio-group size="small" v-model="editItem.settings.enable_auto_locate">
+                <el-radio-button label="on_load">{{ $t('On Page Load') }}</el-radio-button>
+                <el-radio-button label="on_click">{{ $t('On Click') }}</el-radio-button>
+                <el-radio-button label="no">{{ $t('Disable') }}</el-radio-button>
+            </el-radio-group>
+        </el-form-item>
+
+        <!-- Google Maps Options: Only show when provider is google and API key is present -->
+        <el-form-item v-if="has_gmap_api  && editItem.settings.autocomplete_provider =='google'" :label="$t('Show Map')">
+            <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_map">
                 {{ $t('Enable Map(Google Map)') }}
             </el-checkbox>
         </el-form-item>
-        <el-form-item v-if="has_gmap_api && editItem.settings.enable_g_autocomplete === 'yes'">
-            <template #label>
+
+        <el-form-item v-if="has_gmap_api && editItem.settings.autocomplete_provider =='google'">
+            <div slot="label">
                 {{ $t('Auto locate') }}
-                <el-tooltip
-                    poper-class="ff_tooltip_wrap"
-                    :content="
-                        $t(
-                            'When map is enabled Please enable Geocoding API if you want to populate address after map marker drag end'
-                        )
-                    "
-                    placement="top"
-                >
+                <el-tooltip poper-class="ff_tooltip_wrap" :content="$t('When map is enabled Please enable Geocoding API if you want to populate address after map marker drag end')" placement="top">
                     <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
-            </template>
-
-            <el-radio-group size="small" v-model="editItem.settings.enable_auto_locate">
-                <el-radio-button value="on_load">
+            </div>
+            <el-radio-group
+                size="small"
+                v-model="editItem.settings.enable_auto_locate"
+            >
+                <el-radio-button label="on_load">
                     {{ $t('Page Load') }}
                 </el-radio-button>
-                <el-radio-button value="on_click">
+                <el-radio-button label="on_click">
                     {{ $t('On Click') }}
                 </el-radio-button>
-                <el-radio-button value="no">
+                <el-radio-button label="no">
                     {{ $t('Disable') }}
                 </el-radio-button>
             </el-radio-group>
+        </el-form-item>
+
+        <el-form-item v-if="has_pro && ((editItem.settings.autocomplete_provider === 'google' && has_gmap_api) || editItem.settings.autocomplete_provider === 'html5')">
+            <div slot="label">
+                {{$t('Save Coordinates')}}
+                <el-tooltip poper-class="ff_tooltip_wrap" :content="$t('If enabled, the user\'s latitude and longitude will be saved with the address field.')" placement="top">
+                    <i class="tooltip-icon el-icon-info"></i>
+                </el-tooltip>
+            </div>
+            <el-checkbox  true-label="yes" false-label="no" v-model="editItem.settings.save_coordinates">
+                {{ $t('Save User Location (Latitude & Longitude)') }}
+            </el-checkbox>
         </el-form-item>
     </div>
 </template>
 
 <script>
-import fieldOptionSettings from './fieldOptionSettings.vue';
-import customCountryList from './customCountryList.vue';
-import validationRules from './validationRules.vue';
-import RadioButton from './radioButton.vue';
+import fieldOptionSettings from "./fieldOptionSettings.vue";
+import customCountryList from "./customCountryList.vue";
+import validationRules from "./validationRules.vue";
+import RadioButton from "./radioButton.vue";
 
 export default {
-    name: 'customAddressFields',
-    props: ['listItem', 'editItem'],
+    name: "customAddressFields",
+    props: ["listItem", "editItem"],
     components: {
         wpuf_customCountryList: customCountryList,
         fieldOptionSettings,
         validationRules,
-        RadioButton,
+        RadioButton
     },
     data() {
         return {
             has_gmap_api: !!window.FluentFormApp.has_address_gmap_api,
+            has_pro: !!window.FluentFormApp.hasPro
         };
     },
     methods: {
         toggleAddressFieldInputs(event) {
-            if (!jQuery(event.target).parent().find('.address-field-option__settings').hasClass('is-open')) {
-                jQuery(event.target).removeClass('el-icon-caret-bottom');
-                jQuery(event.target).addClass('el-icon-caret-top');
-                jQuery(event.target).parent().find('.address-field-option__settings').addClass('is-open');
-                jQuery(event.target).parent().find('.required-checkbox').addClass('is-open');
+            if (!jQuery(event.target).parent().find(".address-field-option__settings").hasClass("is-open")) {
+                jQuery(event.target).removeClass("el-icon-caret-bottom");
+                jQuery(event.target).addClass("el-icon-caret-top");
+                jQuery(event.target).parent().find(".address-field-option__settings").addClass("is-open");
+                jQuery(event.target).parent().find(".required-checkbox").addClass("is-open");
             } else {
-                jQuery(event.target).removeClass('el-icon-caret-top');
-                jQuery(event.target).addClass('el-icon-caret-bottom');
-                jQuery(event.target).parent().find('.address-field-option__settings').removeClass('is-open');
-                jQuery(event.target).parent().find('.required-checkbox').removeClass('is-open');
+                jQuery(event.target).removeClass("el-icon-caret-top");
+                jQuery(event.target).addClass("el-icon-caret-bottom");
+                jQuery(event.target).parent().find(".address-field-option__settings").removeClass("is-open");
+                jQuery(event.target).parent().find(".required-checkbox").removeClass("is-open");
             }
         },
         handleDrop(evt) {
@@ -169,38 +198,6 @@ export default {
                 this.editItem.settings.field_order = optionToRender;
             }
         },
-        updateFieldOrder() {
-            // Check if autocomplete is enabled or disabled
-            if (this.editItem.settings.enable_g_autocomplete === 'no') {
-                // Filter out latitude and longitude if autocomplete is disabled
-                this.editItem.settings.field_order = this.editItem.settings.field_order.filter(field => {
-                    return field.value !== 'latitude' && field.value !== 'longitude';
-                });
-            } else if (this.editItem.settings.enable_g_autocomplete === 'yes') {
-                // Ensure latitude and longitude are included if autocomplete is enabled
-                const fieldOrder = this.editItem.settings.field_order.map(field => field.value);
-
-                if (!fieldOrder.includes('latitude')) {
-                    this.editItem.settings.field_order.push({
-                        id: 7,
-                        value: 'latitude',
-                    });
-                }
-                if (!fieldOrder.includes('longitude')) {
-                    this.editItem.settings.field_order.push({
-                        id: 8,
-                        value: 'longitude',
-                    });
-                }
-            }
-        },
-    },
-    watch: {
-        'editItem.settings.enable_g_autocomplete': {
-            handler() {
-                this.updateFieldOrder();
-            },
-        },
     },
     computed: {
         labelPlacementOptions() {
@@ -209,18 +206,17 @@ export default {
         stageDragOptions() {
             return {
                 animation: 200,
-                ghostClass: 'vddl-placeholder',
-                dragClass: 'vddl-dragover',
+                ghostClass: "vddl-placeholder",
+                dragClass: "vddl-dragover",
                 bubbleScroll: false,
                 emptyInsertThreshold: 100,
-                handle: '.handle',
-                direction: 'horizontal'
+                handle: ".handle",
+                direction: "horizontal"
             };
-        },
+        }
     },
     mounted() {
         this.createDraggableList();
-        this.updateFieldOrder();
-    },
+    }
 };
 </script>

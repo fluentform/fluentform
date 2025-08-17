@@ -14,16 +14,16 @@
         <wp-editor :height="180" v-model="model" />
         <template v-if="listItem.hide_extra !== 'yes'">
             <template v-if="has_payment">
-                <p>{{ $t('You can use smart code for payment specific dynamic data:') }}</p>
-                <ul style="list-style: disc; margin-left: 24px; margin-top: 0">
-                    <li><code>{dynamic.payment_summary}</code>{{ $t(': to show the cart summary') }}</li>
-                    <li><code>{payment_total}</code>{{ $t(': to display total payment amount') }}</li>
+                <p>{{ $t("You can use smart code for payment specific dynamic data:") }}</p>
+                <ul style="list-style: disc;margin-left: 24px;margin-top: 0px;">
+                    <li v-html="$t('%s: to show the cart summary', `<code>{dynamic.payment_summary}</code>`)"></li>
+                    <li v-html="$t('%s: to display total payment amount', `<code>{payment_total}</code>`)"></li>
                 </ul>
             </template>
-            <div v-if="!isConversationalForm">
-                <p>{{ $t('Dynamic SmartCodes') }}</p>
-                <ul style="list-style: disc; margin-left: 24px; margin-top: 0">
-                    <li><code>{dynamic.YOUR_INPUT_NAME}</code>{{ $t(': to show data from any input') }}</li>
+            <div>
+                <p>{{ $t("Dynamic SmartCodes") }}</p>
+                <ul style="list-style: disc;margin-left: 24px;margin-top: 0px;">
+                    <li v-html="$t('%s: to show data from any input', `<code>{dynamic.YOUR_INPUT_NAME}</code>`)"></li>
                 </ul>
             </div>
         </template>
@@ -32,23 +32,23 @@
 </template>
 
 <script type="text/babel">
-import WpEditor from '../../../../common/_wp_editor.vue';
+import WpEditor from "../../../../common/_wp_editor.vue";
 
 export default {
-    name: 'inputTextarea',
-    props: ['listItem', 'modelValue'],
+    name: "inputTextarea",
+    props: ["listItem", "modelValue"],
     components: {
-        WpEditor,
+        WpEditor
     },
     watch: {
         model() {
-            this.$emit('update:modelValue', this.model);
-        },
+            this.$emit("update:modelValue", this.model);
+        }
     },
     data() {
         return {
             model: this.modelValue,
-            has_payment: window.FluentFormApp.form.has_payment === '1' || window.FluentFormApp.form.has_payment === 1,
+            has_payment: window.FluentFormApp.form.has_payment === "1" || window.FluentFormApp.form.has_payment === 1
         };
     },
     computed: {

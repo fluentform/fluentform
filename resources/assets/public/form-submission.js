@@ -1,23 +1,15 @@
 jQuery(document).ready(function () {
+
     // ios hack to keep the recaptcha on viewport on success
     window.fluentFormrecaptchaSuccessCallback = function (response) {
-        if (
-            window.innerWidth < 768 &&
-            /iPhone|iPod/.test(navigator.userAgent) &&
-            !window.MSStream
-        ) {
+        if (window.innerWidth < 768 && (/iPhone|iPod/.test(navigator.userAgent) && !window.MSStream)) {
             var el = jQuery('.g-recaptcha').filter(function (i, el) {
                 return grecaptcha.getResponse(i) == response;
             });
             if (el.length) {
-                jQuery('html, body').animate(
-                    {
-                        scrollTop:
-                            el.first().offset().top -
-                            jQuery(window).height() / 2,
-                    },
-                    0,
-                );
+                jQuery('html, body').animate({
+                    scrollTop: el.first().offset().top - (jQuery(window).height() / 2)
+                }, 0);
             }
         }
     };
@@ -46,24 +38,25 @@ jQuery(document).ready(function () {
                 return currency(value, formatConfig).format();
             }
             return value;
-        },
+        }
     };
 
     (function (fluentFormVars, $) {
+
         if (!fluentFormVars) {
             fluentFormVars = {};
         }
 
-        fluentFormVars.stepAnimationDuration = parseInt(
-            fluentFormVars.stepAnimationDuration,
-        );
+        fluentFormVars.stepAnimationDuration = parseInt(fluentFormVars.stepAnimationDuration);
 
         var fluentFormAppStore = {};
 
         window.fluentFormApp = function ($theForm) {
             var formInstanceSelector = $theForm.attr('data-form_instance');
-            var form = window['fluent_form_' + formInstanceSelector];
-
+            // Sanitize the selector - only allow alphanumeric, underscore and hyphen
+            formInstanceSelector = formInstanceSelector ? formInstanceSelector.replace(/[^a-zA-Z0-9_-]/g, '') : '';
+            var formObj = window['fluent_form_' + formInstanceSelector];
+            var form = (formObj && typeof formObj === 'object') ? formObj : null;
             if (!form) {
                 console.log('No Fluent form JS vars found!');
                 return false;
@@ -82,6 +75,7 @@ jQuery(document).ready(function () {
              * @return void
              */
             return (function (validator) {
+
                 var globalValidators = {};
 
                 var isSending = false;
@@ -94,9 +88,7 @@ jQuery(document).ready(function () {
                     registerFormSubmissionHandler();
                     maybeInlineForm();
                     initInlineErrorItems();
-                    $theForm
-                        .removeClass('ff-form-loading')
-                        .addClass('ff-form-loaded');
+                    $theForm.removeClass('ff-form-loading').addClass('ff-form-loaded');
 
                     $theForm.on('show_element_error', function (e, data) {
                         showErrorBelowElement(data.element, data.message);
@@ -109,52 +101,35 @@ jQuery(document).ready(function () {
 
                 var maybeInlineForm = function () {
                     if ($theForm.hasClass('ff-form-inline')) {
-                        $theForm
-                            .find('button.ff-btn-submit')
-                            .css('height', '50px');
+                        $theForm.find('button.ff-btn-submit').css('height', '50px');
                     }
                 };
 
-                var fireUpdateSlider = function (
-                    goBackToStep,
-                    animDuration,
-                    isScrollTop = true,
-                    actionType = 'next',
-                ) {
+                var fireUpdateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
                     $theForm.trigger('update_slider', {
                         goBackToStep: goBackToStep,
                         animDuration: animDuration,
                         isScrollTop: isScrollTop,
-                        actionType: actionType,
+                        actionType: actionType
                     });
                 };
 
-                var fireGlobalBeforeSendCallbacks = function (
-                    $theForm,
-                    formData,
-                ) {
+                var fireGlobalBeforeSendCallbacks = function ($theForm, formData) {
                     const processItemsDeferred = [];
                     const processFunctions = globalValidators;
 
                     if ($theForm.hasClass('ff_has_v3_recptcha')) {
-                        processFunctions.ff_v3_recptcha = function (
-                            $theForm,
-                            formData,
-                        ) {
+                        processFunctions.ff_v3_recptcha = function ($theForm, formData) {
                             var dfd = jQuery.Deferred();
                             let siteKey = $theForm.data('recptcha_key');
-                            grecaptcha
-                                .execute(siteKey, { action: 'submit' })
-                                .then(token => {
-                                    formData['data'] +=
-                                        '&' +
-                                        jQuery.param({
-                                            'g-recaptcha-response': token,
-                                        });
-                                    dfd.resolve();
+                            grecaptcha.execute(siteKey, {action: 'submit'}).then((token) => {
+                                formData['data'] += '&' + jQuery.param({
+                                    'g-recaptcha-response': token
                                 });
+                                dfd.resolve();
+                            });
                             return dfd.promise();
-                        };
+                        }
                     }
 
                     jQuery.each(processFunctions, (itemKey, item) => {
@@ -162,16 +137,20 @@ jQuery(document).ready(function () {
                     });
 
                     return jQuery.when.apply(jQuery, processItemsDeferred);
-                };
+                }
 
                 var submissionAjaxHandler = function ($theForm) {
                     try {
                         var $inputs = $theForm
-                            .find(':input')
-                            .filter(function (i, el) {
-                                return !$(el)
-                                    .closest('.has-conditions')
-                                    .hasClass('ff_excluded');
+                            .find(':input').filter(function (i, el) {
+                                // Ignore repeater container
+                                if ($(el).attr('data-type') === 'repeater_container') {
+                                    if ($(this).closest('.has-conditions').hasClass('ff_excluded')) {
+                                        $(this).val('');
+                                    }
+                                    return true;
+                                }
+                                return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                             });
 
                         validate($inputs);
@@ -181,30 +160,18 @@ jQuery(document).ready(function () {
                         // data names array
                         var inputsDataNames = inputsData.map(item => item.name);
 
-                        // Ignore chekbox and radio which one inside table like checkable-grid, net-promoter-score etc
+                        // Ignore checkbox and radio which one inside table like checkable-grid, net-promoter-score etc
                         $inputs = $inputs.filter(function () {
-                            return !$(this)
-                                .closest('.ff-el-input--content')
-                                .find('table').length;
+                            return !$(this).closest('.ff-el-input--content').find('table').length;
                         });
                         // Keep track of checkbox and radio groups that have been processed
                         var processedGroups = {};
                         // Add empty value for unchecked checkboxes and radio buttons
-                        $inputs.each(function () {
+                        $inputs.each(function() {
                             var name = $(this).attr('name');
                             if (!inputsDataNames.includes(name)) {
-                                if (
-                                    $(this).is(':checkbox') ||
-                                    $(this).is(':radio')
-                                ) {
-                                    if (
-                                        !processedGroups[name] &&
-                                        !$theForm.find(
-                                            'input[name="' +
-                                                name +
-                                                '"]:checked',
-                                        ).length
-                                    ) {
+                                if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                                    if (!processedGroups[name] && !$theForm.find('input[name="' + name + '"]:checked').length) {
                                         inputsData.push({ name, value: '' });
                                         processedGroups[name] = true;
                                     }
@@ -212,120 +179,84 @@ jQuery(document).ready(function () {
                             }
                         });
                         // Convert inputsData array to serialized string
-                        var serializedData = $.param(
-                            $.map(inputsData, function (input) {
-                                return { name: input.name, value: input.value };
-                            }),
-                        );
+                        var serializedData = $.param($.map(inputsData, function(input) {
+                            return { name: input.name, value: input.value };
+                        }));
                         var formData = {
                             data: serializedData,
                             action: 'fluentform_submit',
-                            form_id: $theForm.data('form_id'),
+                            form_id: $theForm.data('form_id')
                         };
 
                         let hasFiles = false;
-                        $.each(
-                            $theForm.find('[type=file]'),
-                            function (index, fileInput) {
-                                var params = {},
-                                    fileInputName = fileInput.name + '[]';
-                                params[fileInputName] = [];
+                        $.each($theForm.find('[type=file]'), function (index, fileInput) {
+                            var params = {}, fileInputName = fileInput.name + '[]';
+                            params[fileInputName] = [];
 
-                                $(fileInput)
-                                    .closest('div')
-                                    .find('.ff-uploaded-list')
-                                    .find('.ff-upload-preview[data-src]')
-                                    .each(function (i, div) {
-                                        params[fileInputName][i] =
-                                            $(this).data('src');
-                                    });
-
-                                $.each(params, function (k, v) {
-                                    if (v.length) {
-                                        var obj = {};
-                                        obj[k] = v;
-                                        formData['data'] += '&' + $.param(obj);
-                                        hasFiles = true;
-                                    }
+                            $(fileInput)
+                                .closest('div')
+                                .find('.ff-uploaded-list')
+                                .find('.ff-upload-preview[data-src]')
+                                .each(function (i, div) {
+                                    params[fileInputName][i] = $(this).data('src');
                                 });
-                            },
-                        );
+
+                            $.each(params, function (k, v) {
+                                if (v.length) {
+                                    var obj = {};
+                                    obj[k] = v;
+                                    formData['data'] += '&' + $.param(obj);
+                                    hasFiles = true;
+                                }
+                            });
+                        });
 
                         // check if file is uploading
                         if ($theForm.find('.ff_uploading').length) {
                             let errorHtml = $('<div/>', {
-                                class: 'error text-danger',
+                                'class': 'error text-danger'
                             });
 
                             let cross = $('<span/>', {
                                 class: 'error-clear',
                                 html: '&times;',
-                                click: e =>
-                                    $(formSelector + '_errors').html(''),
+                                click: (e) => $(formSelector + '_errors').html('')
                             });
 
                             let text = $('<span/>', {
                                 class: 'error-text',
-                                text: 'File upload in progress. Please wait...',
+                                text: 'File upload in progress. Please wait...'
                             });
-                            return $(formSelector + '_errors')
-                                .html(errorHtml.append(text, cross))
-                                .show();
+                            return $(formSelector + '_errors').html(errorHtml.append(text, cross)).show();
                         }
 
                         // Init reCaptcha if available.
-                        if (
-                            $theForm.find('.ff-el-recaptcha.g-recaptcha').length
-                        ) {
-                            const grecaptchaWidgetId = $theForm
-                                .find('.ff-el-recaptcha.g-recaptcha')
-                                .data('grecaptcha_widget_id');
-                            if (grecaptchaWidgetId) {
-                                formData['data'] +=
-                                    '&' +
-                                    $.param({
-                                        'g-recaptcha-response':
-                                            grecaptcha.getResponse(
-                                                grecaptchaWidgetId,
-                                            ),
-                                    });
+                        if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
+                            const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('g-recaptcha_widget_id');
+                            if (typeof grecaptchaWidgetId !== "undefined") {
+                                formData['data'] += '&' + $.param({
+                                    'g-recaptcha-response': grecaptcha.getResponse(grecaptchaWidgetId)
+                                });
                             }
                         }
 
                         // Init hCaptcha if available.
                         if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
-                            const hcaptchaWidgetId = $theForm
-                                .find('.ff-el-hcaptcha.h-captcha')
-                                .data('hcaptcha_widget_id');
-                            if (hcaptchaWidgetId) {
-                                formData['data'] +=
-                                    '&' +
-                                    $.param({
-                                        'h-captcha-response':
-                                            hcaptcha.getResponse(
-                                                hcaptchaWidgetId,
-                                            ),
-                                    });
+                            const hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('h-captcha_widget_id');
+                            if (typeof hcaptchaWidgetId !== "undefined") {
+                                formData['data'] += '&' + $.param({
+                                    'h-captcha-response': hcaptcha.getResponse(hcaptchaWidgetId)
+                                });
                             }
                         }
 
                         // Init turnstile if available.
-                        if (
-                            $theForm.find('.ff-el-turnstile.cf-turnstile')
-                                .length
-                        ) {
-                            const turnstileWidgetId = $theForm
-                                .find('.ff-el-turnstile.cf-turnstile')
-                                .data('turnstile_widget_id');
-                            if (turnstileWidgetId) {
-                                formData['data'] +=
-                                    '&' +
-                                    $.param({
-                                        'cf-turnstile-response':
-                                            turnstile.getResponse(
-                                                turnstileWidgetId,
-                                            ),
-                                    });
+                        if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
+                            const turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
+                            if (typeof turnstileWidgetId !== "undefined") {
+                                formData['data'] += '&' + $.param({
+                                    'cf-turnstile-response': turnstile.getResponse(turnstileWidgetId)
+                                });
                             }
                         }
 
@@ -334,12 +265,10 @@ jQuery(document).ready(function () {
                         $theForm.find('.error').html('');
                         $theForm.parent().find('.ff-errors-in-stack').hide();
 
-                        fireGlobalBeforeSendCallbacks($theForm, formData).then(
-                            () => {
-                                showFormSubmissionProgress($theForm);
-                                sendData($theForm, formData);
-                            },
-                        );
+                        fireGlobalBeforeSendCallbacks($theForm, formData).then(() => {
+                            showFormSubmissionProgress($theForm);
+                            sendData($theForm, formData);
+                        });
                     } catch (e) {
                         if (!(e instanceof ffValidationError)) {
                             throw e;
@@ -358,74 +287,65 @@ jQuery(document).ready(function () {
 
                     const ajaxRequestUrl = addParameterToURL('t=' + Date.now());
 
-                    if (isSending) {
+                    if (this.isSending) {
                         return;
                     }
 
                     var that = this;
+                    let responseData;
 
-                    isSending = true;
+
+                    this.isSending = true;
 
                     $.post(ajaxRequestUrl, formData)
                         .then(function (res) {
                             if (!res || !res.data || !res.data.result) {
                                 // This is an error
-                                $theForm.trigger(
-                                    'fluentform_submission_failed',
-                                    {
-                                        form: $theForm,
-                                        response: res,
-                                    },
-                                );
+                                $theForm.trigger('fluentform_submission_failed', {
+                                    form: $theForm,
+                                    response: res
+                                });
                                 showErrorMessages(res);
                                 return;
                             }
-
+                            responseData = res;
                             if (res.data.append_data) {
                                 addHiddenData(res.data.append_data);
                             }
 
                             if (res.data.nextAction) {
-                                $theForm.trigger(
-                                    'fluentform_next_action_' +
-                                        res.data.nextAction,
-                                    {
-                                        form: $theForm,
-                                        response: res,
-                                    },
-                                );
+                                $theForm.trigger('fluentform_next_action_' + res.data.nextAction, {
+                                    form: $theForm,
+                                    response: res
+                                });
                                 return;
                             }
 
-                            $theForm.triggerHandler(
-                                'fluentform_submission_success',
-                                {
-                                    form: $theForm,
-                                    config: form,
-                                    response: res,
-                                },
-                            );
+                            $theForm.triggerHandler('fluentform_submission_success', {
+                                form: $theForm,
+                                config: form,
+                                response: res
+                            });
 
-                            jQuery(document.body).trigger(
-                                'fluentform_submission_success',
-                                {
-                                    form: $theForm,
-                                    config: form,
-                                    response: res,
-                                },
-                            );
+                            jQuery(document.body).trigger('fluentform_submission_success', {
+                                form: $theForm,
+                                config: form,
+                                response: res
+                            });
 
                             if ('redirectUrl' in res.data.result) {
                                 if (res.data.result.message) {
                                     $('<div/>', {
-                                        id: formId + '_success',
-                                        class: 'ff-message-success',
+                                        'id': formId + '_success',
+                                        'class': 'ff-message-success',
+                                        'role': 'status',
+                                        'aria-live': 'polite'
                                     })
                                         .html(res.data.result.message)
-                                        .insertAfter($theForm);
-                                    $theForm
-                                        .find('.ff-el-is-error')
-                                        .removeClass('ff-el-is-error');
+                                        .insertAfter($theForm)
+                                        .focus()
+                                    ;
+                                    $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
 
                                 location.href = res.data.result.redirectUrl;
@@ -437,60 +357,47 @@ jQuery(document).ready(function () {
                                     $(successMsgSelector).slideUp('fast');
                                 }
                                 $('<div/>', {
-                                    id: successMsgId,
-                                    class: 'ff-message-success',
+                                    'id': successMsgId,
+                                    'class': 'ff-message-success',
+                                    'role': 'status',
+                                    'aria-live': 'polite'
                                 })
                                     .html(res.data.result.message)
-                                    .insertAfter($theForm);
+                                    .insertAfter($theForm)
+                                    .focus()
+                                ;
 
-                                $theForm
-                                    .find('.ff-el-is-error')
-                                    .removeClass('ff-el-is-error');
+                                $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
                                 if (res.data.result.action == 'hide_form') {
                                     $theForm.hide().addClass('ff_force_hide');
                                     $theForm[0].reset();
                                 } else {
-                                    jQuery(document.body).trigger(
-                                        'fluentform_reset',
-                                        [$theForm, form],
-                                    );
+                                    jQuery(document.body).trigger('fluentform_reset', [$theForm, form]);
                                     $theForm[0].reset();
                                 }
 
                                 // Scroll to success msg if not in viewport
                                 const successMsg = $(successMsgSelector);
-                                if (
-                                    successMsg.length &&
-                                    !isElementInViewport(successMsg[0])
-                                ) {
-                                    $('html, body').animate(
-                                        {
-                                            scrollTop:
-                                                successMsg.offset().top -
-                                                (!!$('#wpadminbar') ? 32 : 0) -
-                                                20,
-                                        },
-                                        fluentFormVars.stepAnimationDuration,
-                                    );
+                                if (successMsg.length && !isElementInViewport(successMsg[0])) {
+                                    $('html, body').animate({
+                                        scrollTop: successMsg.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20
+                                    }, fluentFormVars.stepAnimationDuration);
                                 }
                             }
                         })
                         .fail(function (res) {
+
                             $theForm.trigger('fluentform_submission_failed', {
                                 form: $theForm,
-                                response: res,
+                                response: res
                             });
 
-                            if (
-                                !res ||
-                                !res.responseJSON ||
-                                !res.responseJSON ||
-                                !res.responseJSON.errors
-                            ) {
+                            if (!res || !res.responseJSON || !res.responseJSON || !res.responseJSON.errors) {
                                 showErrorMessages(res.responseText);
                                 return;
                             }
+                            responseData = res;
 
                             if (res.responseJSON.append_data) {
                                 addHiddenData(res.responseJSON.append_data);
@@ -509,43 +416,41 @@ jQuery(document).ready(function () {
                                 if (step.length) {
                                     let goBackToStep = step.index();
                                     fireUpdateSlider(
-                                        goBackToStep,
-                                        fluentFormVars.stepAnimationDuration,
-                                        false,
+                                        goBackToStep, fluentFormVars.stepAnimationDuration, false
                                     );
                                 }
                             }
+
+                            hideFormSubmissionProgress($theForm);
                         })
                         .always(function (res) {
-                            isSending = false;
+                            that.isSending = false;
+
+                            if (responseData?.data?.result?.hasOwnProperty('redirectUrl')) {
+                                return;
+                            }
                             hideFormSubmissionProgress($theForm);
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
-                                const grecaptchaWidgetId = $theForm
-                                    .find('.ff-el-recaptcha.g-recaptcha')
-                                    .data('grecaptcha_widget_id');
-                                if (grecaptchaWidgetId) {
+                                const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('g-recaptcha_widget_id');
+                                if (typeof grecaptchaWidgetId !== "undefined") {
                                     grecaptcha.reset(grecaptchaWidgetId);
                                 }
                             }
                             if (window.hcaptcha) {
-                                let hcaptchaWidgetId = $theForm
-                                    .find('.ff-el-hcaptcha.h-captcha')
-                                    .data('hcaptcha_widget_id');
-                                if (hcaptchaWidgetId) {
-                                    hcaptcha.reset(hcaptchaWidgetId); //two recapthca on same page creates conflicts
+                                let hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('h-captcha_widget_id');
+                                if (typeof hcaptchaWidgetId !== "undefined") {
+                                    hcaptcha.reset(hcaptchaWidgetId);
                                 }
                             }
                             if (window.turnstile) {
-                                let turnstileWidgetId = $theForm
-                                    .find('.ff-el-turnstile.cf-turnstile')
-                                    .data('turnstile_widget_id');
-                                if (turnstileWidgetId) {
+                                let turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
+                                if (typeof turnstileWidgetId !== "undefined") {
                                     turnstile.reset(turnstileWidgetId);
                                 }
                             }
                         });
-                };
+                }
 
                 var showFormSubmissionProgress = function ($form) {
                     $form.addClass('ff_submitting');
@@ -564,15 +469,11 @@ jQuery(document).ready(function () {
                         .removeClass('ff-working')
                         .attr('disabled', false);
                     $theForm.parent().find('.ff_msg_temp').remove();
-                };
+                }
 
                 var formResetHandler = function ($this) {
                     if ($('.ff-step-body', $theForm).length) {
-                        fireUpdateSlider(
-                            0,
-                            fluentFormVars.stepAnimationDuration,
-                            false,
-                        );
+                        fireUpdateSlider(0, fluentFormVars.stepAnimationDuration, false);
                     }
                     $this.find('.ff-el-repeat .ff-t-cell').each(function () {
                         $(this).find('input').not(':first').remove();
@@ -585,31 +486,20 @@ jQuery(document).ready(function () {
                         .remove();
 
                     // reset image type checkbox and radio field
-                    let checkedTypeInputs = $this.find(
-                        'input[type=checkbox],input[type=radio]',
-                    );
+                    let checkedTypeInputs = $this.find('input[type=checkbox],input[type=radio]');
                     if (checkedTypeInputs.length) {
                         checkedTypeInputs.each((index, el) => {
                             el = $(el);
                             if (!el.prop('defaultChecked')) {
-                                el.closest(
-                                    '.ff-el-form-check.ff_item_selected',
-                                ).removeClass('ff_item_selected');
+                                el.closest('.ff-el-form-check.ff_item_selected').removeClass('ff_item_selected');
                             } else {
-                                el.closest('.ff-el-form-check').addClass(
-                                    'ff_item_selected',
-                                );
+                                el.closest('.ff-el-form-check').addClass('ff_item_selected');
                             }
-                        });
+                        })
                     }
 
-                    $this
-                        .find('input[type=file]')
-                        .closest('div')
-                        .find('.ff-uploaded-list')
-                        .html('')
-                        .end()
-                        .closest('div')
+                    $this.find('input[type=file]').closest('div').find('.ff-uploaded-list').html('')
+                        .end().closest('div')
                         .find('.ff-upload-progress')
                         .addClass('ff-hidden')
                         .find('.ff-el-progress-bar')
@@ -620,10 +510,8 @@ jQuery(document).ready(function () {
                         rangeSliders.each((index, rangeSlider) => {
                             rangeSlider = $(rangeSlider);
 
-                            rangeSlider
-                                .val(rangeSlider.data('calc_value'))
-                                .change();
-                        });
+                            rangeSlider.val(rangeSlider.data('calc_value')).change();
+                        })
                     }
 
                     $.each(form.conditionals, function (fieldName, field) {
@@ -639,6 +527,7 @@ jQuery(document).ready(function () {
                  * @return void
                  */
                 var registerFormSubmissionHandler = function () {
+
                     if ($theForm.attr('data-ff_reinit') == 'yes') {
                         return;
                     }
@@ -658,7 +547,27 @@ jQuery(document).ready(function () {
                     });
 
                     $(document).on('reset', formSelector, function (e) {
-                        formResetHandler($(this));
+                        formResetHandler($(this))
+                    });
+
+                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+
+                            // For radio buttons, just check it
+                            if ($(this).attr('type') === 'radio') {
+                                $(this).prop('checked', true);
+                            }
+                            // For checkboxes, toggle the checked state
+                            else if ($(this).attr('type') === 'checkbox') {
+                                $(this).prop('checked', !$(this).prop('checked'));
+                            }
+
+                            // Trigger change event for both types
+                            $(this).trigger('change');
+                            e.stopPropagation();
+                            return false;
+                        }
                     });
                 };
 
@@ -679,13 +588,10 @@ jQuery(document).ready(function () {
                     } else if (type.startsWith('select')) {
                         el.find('option').each(function (i, el) {
                             var $this = $(this);
-                            $this.prop(
-                                'selected',
-                                $this.prop('defaultSelected'),
-                            );
+                            $this.prop('selected', $this.prop('defaultSelected'));
                         });
                     } else {
-                        el.val(el.prop('defaultValue'));
+                        el.val(el.prop("defaultValue"));
                     }
                     el.trigger('change');
                 };
@@ -696,27 +602,13 @@ jQuery(document).ready(function () {
                  * @return void
                  */
                 var scrollToFirstError = function (animDuration) {
-                    var errorSetting =
-                        form['settings']['layout']['errorMessagePlacement'];
+                    var errorSetting = form['settings']['layout']['errorMessagePlacement'];
                     if (errorSetting && errorSetting != 'stackToBottom') {
-                        var firstError = $theForm
-                            .find('.ff-el-is-error')
-                            .first();
-                        if (
-                            firstError.length &&
-                            !isElementInViewport(firstError[0])
-                        ) {
-                            $('html, body')
-                                .delay(animDuration)
-                                .animate(
-                                    {
-                                        scrollTop:
-                                            firstError.offset().top -
-                                            (!!$('#wpadminbar') ? 32 : 0) -
-                                            20,
-                                    },
-                                    animDuration,
-                                );
+                        var firstError = $theForm.find('.ff-el-is-error').first();
+                        if (firstError.length && !isElementInViewport(firstError[0])) {
+                            $('html, body').delay(animDuration).animate({
+                                scrollTop: firstError.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20
+                            }, animDuration);
                         }
                     }
                 };
@@ -748,25 +640,17 @@ jQuery(document).ready(function () {
                  */
                 var validate = function (elements) {
                     if (!elements.length) {
-                        elements = $('.frm-fluent-form')
-                            .find(':input')
-                            .not(':button')
-                            .filter(function (i, el) {
-                                return !$(el)
-                                    .closest('.has-conditions')
-                                    .hasClass('ff_excluded');
-                            });
+                        elements = $('form.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
+                            return !$(el).closest('.has-conditions').hasClass('ff_excluded');
+                        });
                     }
 
                     elements.each((i, el) => {
-                        $(el)
-                            .closest('.ff-el-group')
-                            .removeClass('ff-el-is-error')
-                            .find('.error')
-                            .remove();
+                        $(el).closest('.ff-el-group').removeClass('ff-el-is-error').find('.error').remove();
                     });
 
                     validator().validate(elements, form.rules);
+
                 };
 
                 var addFieldValidationRule = function (elName, ruleName, rule) {
@@ -774,7 +658,7 @@ jQuery(document).ready(function () {
                         form.rules[elName] = {};
                     }
                     form.rules[elName][ruleName] = rule;
-                };
+                }
                 var removeFieldValidationRule = function (elName, ruleName) {
                     if (!(elName in form.rules)) {
                         return;
@@ -782,7 +666,7 @@ jQuery(document).ready(function () {
                     if (ruleName in form.rules[elName]) {
                         delete form.rules[elName][ruleName];
                     }
-                };
+                }
 
                 /**
                  * Show form validation errors
@@ -790,9 +674,7 @@ jQuery(document).ready(function () {
                  * @return void
                  */
                 var showErrorMessages = function (errors) {
-                    var errorStack = $theForm
-                        .parent()
-                        .find('.ff-errors-in-stack');
+                    var errorStack = $theForm.parent().find('.ff-errors-in-stack');
                     errorStack.empty();
 
                     if (!errors) {
@@ -800,12 +682,11 @@ jQuery(document).ready(function () {
                     }
 
                     if (typeof errors == 'string') {
-                        showErrorInStack({ error: [errors] });
+                        showErrorInStack({'error': [errors]});
                         return;
                     }
 
-                    var errorSetting =
-                        form['settings']['layout']['errorMessagePlacement'];
+                    var errorSetting = form['settings']['layout']['errorMessagePlacement'];
                     if (!errorSetting || errorSetting == 'stackToBottom') {
                         showErrorInStack(errors);
                         return false;
@@ -830,9 +711,7 @@ jQuery(document).ready(function () {
                  */
                 var showErrorInStack = function (errors) {
                     var $theForm = getTheForm();
-                    var errorStack = $theForm
-                        .parent()
-                        .find('.ff-errors-in-stack');
+                    var errorStack = $theForm.parent().find('.ff-errors-in-stack');
 
                     if (!errors) {
                         return;
@@ -848,28 +727,20 @@ jQuery(document).ready(function () {
                         }
                         $.each(errorObject, function (index, errorString) {
                             var errorHtml = $('<div/>', {
-                                class: 'error text-danger',
+                                'class': 'error text-danger'
                             });
                             var cross = $('<span/>', {
                                 class: 'error-clear',
-                                html: '&times;',
+                                html: '&times;'
                             });
                             var text = $('<span/>', {
                                 class: 'error-text',
-                                'data-name':
-                                    getElement(elementName).attr('name'),
-                                html: errorString,
+                                'data-name': getElement(elementName).attr('name'),
+                                html: errorString
                             });
                             errorHtml.attr('role', 'alert');
                             errorHtml.append(text, cross);
-                            $(document.body).trigger(
-                                'fluentform_error_in_stack',
-                                {
-                                    form: $theForm,
-                                    element: getElement(elementName),
-                                    message: text,
-                                },
-                            );
+                            $(document.body).trigger('fluentform_error_in_stack', {form: $theForm, element: getElement(elementName), message: text});
                             errorStack.append(errorHtml).show();
                         });
 
@@ -877,22 +748,17 @@ jQuery(document).ready(function () {
                         if (element) {
                             var name = element.attr('name');
                             element.attr('aria-invalid', 'true');
-                            var el = $("[name='" + name + "']").first();
+                            var el = $('[name=\'' + name + '\']').first();
                             if (el) {
-                                el.closest('.ff-el-group').addClass(
-                                    'ff-el-is-error',
-                                );
+                                el.closest('.ff-el-group').addClass('ff-el-is-error');
                             }
                         }
                     });
 
                     if (!isElementInViewport(errorStack[0])) {
-                        $('html, body').animate(
-                            {
-                                scrollTop: errorStack.offset().top - 100,
-                            },
-                            350,
-                        );
+                        $('html, body').animate({
+                            scrollTop: errorStack.offset().top - 100
+                        }, 350);
                     }
 
                     errorStack
@@ -901,17 +767,10 @@ jQuery(document).ready(function () {
                             errorStack.hide();
                         })
                         .on('click', '.error-text', function () {
-                            var el = $(
-                                `[name='${$(this).data('name')}']`,
-                            ).first();
-                            $('html, body').animate(
-                                {
-                                    scrollTop:
-                                        el.offset() && el.offset().top - 100,
-                                },
-                                350,
-                                _ => el.focus(),
-                            );
+                            var el = $(`[name='${$(this).data('name')}']`).first();
+                            $('html, body').animate({
+                                scrollTop: el.offset() && el.offset().top - 100
+                            }, 350, _ => el.focus());
                         });
                 };
 
@@ -929,24 +788,13 @@ jQuery(document).ready(function () {
                         return;
                     }
                     el.attr('aria-invalid', 'true');
-                    div = $('<div/>', { class: 'error text-danger' });
+                    div = $('<div/>', {class: 'error text-danger'});
                     div.attr('role', 'alert');
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     if (el.closest('.ff-el-input--content').length) {
-                        el.closest('.ff-el-input--content')
-                            .find('div.error')
-                            .remove();
-                        $(document.body).trigger(
-                            'fluentform_error_below_element',
-                            {
-                                form: $theForm,
-                                element: el,
-                                message: message,
-                            },
-                        );
-                        el.closest('.ff-el-input--content').append(
-                            div.html(message),
-                        );
+                        el.closest('.ff-el-input--content').find('div.error').remove();
+                        $(document.body).trigger('fluentform_error_below_element', {form: $theForm, element: el, message: message});
+                        el.closest('.ff-el-input--content').append(div.html(message));
                     } else {
                         el.find('div.error').remove();
                         el.append(div.text(message));
@@ -954,32 +802,21 @@ jQuery(document).ready(function () {
                 };
 
                 var initInlineErrorItems = function () {
-                    $theForm
-                        .find('.ff-el-group,.ff_repeater_table')
-                        .on('change', 'input,select,textarea', function () {
-                            if (window.ff_disable_error_clear) {
-                                return;
-                            }
+                    $theForm.find('.ff-el-group,.ff_repeater_table, .ff_repeater_container').on('change', 'input,select,textarea', function () {
+                        if (window.ff_disable_error_clear) {
+                            return;
+                        }
 
-                            $(this).attr('aria-invalid', 'false');
+                        $(this).attr('aria-invalid', 'false');
 
-                            var errorSetting =
-                                form['settings']['layout'][
-                                    'errorMessagePlacement'
-                                ];
-                            if (
-                                errorSetting ||
-                                errorSetting != 'stackToBottom'
-                            ) {
-                                var $parent = $(this).closest('.ff-el-group');
-                                if ($parent.hasClass('ff-el-is-error')) {
-                                    $parent
-                                        .removeClass('ff-el-is-error')
-                                        .find('.error.text-danger')
-                                        .remove();
-                                }
+                        var errorSetting = form['settings']['layout']['errorMessagePlacement'];
+                        if (errorSetting || errorSetting != 'stackToBottom') {
+                            var $parent = $(this).closest('.ff-el-group');
+                            if ($parent.hasClass('ff-el-is-error')) {
+                                $parent.removeClass('ff-el-is-error').find('.error.text-danger').remove();
                             }
-                        });
+                        }
+                    });
                 };
 
                 /**
@@ -992,203 +829,225 @@ jQuery(document).ready(function () {
                     var $theForm = getTheForm();
                     var el = $("[data-name='" + name + "']", $theForm);
                     el = el.length ? el : $("[name='" + name + "']", $theForm);
-                    return el.length
-                        ? el
-                        : $("[name='" + name + "[]']", $theForm);
+                    return el.length ? el : $("[name='" + name + "[]']", $theForm);
                 };
 
                 var reinitExtras = function () {
-                    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
+                    // reCAPTCHA
+                    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
                         window.grecaptcha.ready(function () {
-                            var $el = $theForm.find(
-                                '.ff-el-recaptcha.g-recaptcha',
-                            );
-                            var siteKey = $el.data('sitekey');
-                            var id = $el.attr('id');
-                            const grecaptchaWidgetId = grecaptcha.render(
-                                document.getElementById(id),
-                                {
-                                    sitekey: siteKey,
-                                },
-                            );
-                            $el.attr(
-                                'data-grecaptcha_widget_id',
-                                grecaptchaWidgetId,
-                            );
+                            $theForm.find('.ff-el-recaptcha.g-recaptcha').each(function() {
+                                var $el = $(this);
+                                if (!resetCaptcha('g-recaptcha', $el, grecaptcha.reset)) {
+                                    renderCaptcha('g-recaptcha', $el, grecaptcha.render);
+                                }
+                            });
                         });
                     }
 
-                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
+                    // Turnstile
+                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
                         window.turnstile.ready(function () {
-                            var $el = $theForm.find(
-                                '.ff-el-turnstile.cf-turnstile',
-                            );
-                            var siteKey = $el.data('sitekey');
-                            var id = $el.attr('id');
-                            const turnstileWidgetId = turnstile.render(
-                                document.getElementById(id),
-                                {
-                                    sitekey: siteKey,
-                                },
-                            );
-                            $el.attr(
-                                'data-turnstile_widget_id',
-                                turnstileWidgetId,
-                            );
+                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                                var $el = $(this);
+                                if (!resetCaptcha('cf-turnstile', $el, turnstile.reset)) {
+                                    renderCaptcha('cf-turnstile', $el, turnstile.render);
+                                }
+                            });
                         });
                     }
 
-                    if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
-                        var $el = $theForm.find('.ff-el-hcaptcha.h-captcha');
-                        var siteKey = $el.data('sitekey');
-                        var id = $el.attr('id');
-                        const hcaptchaWidgetId = hcaptcha.render(
-                            document.getElementById(id),
-                            {
-                                sitekey: siteKey,
-                            },
-                        );
-                        $el.attr('data-hcaptcha_widget_id', hcaptchaWidgetId);
+                    // hCaptcha
+                    if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
+                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function() {
+                            var $el = $(this);
+                            if (!resetCaptcha('h-captcha', $el, hcaptcha.reset)) {
+                                renderCaptcha('h-captcha', $el, hcaptcha.render);
+                            }
+                        });
                     }
                 };
 
                 var initTriggers = function () {
                     $theForm = getTheForm();
-                    jQuery(document.body).trigger('fluentform_init', [
-                        $theForm,
-                        form,
-                    ]);
-                    jQuery(document.body).trigger(
-                        'fluentform_init_' + form.id,
-                        [$theForm, form],
-                    );
+                    jQuery(document.body).trigger('fluentform_init', [$theForm, form]);
+                    jQuery(document.body).trigger('fluentform_init_' + form.id, [$theForm, form]);
                     $theForm.trigger('fluentform_init_single', [this, form]);
-                    $theForm
-                        .find('input.ff-el-form-control')
-                        .on('keypress', function (e) {
-                            return e.which !== 13;
-                        });
+                    $theForm.find('input.ff-el-form-control').on('keypress', function (e) {
+                        return e.which !== 13;
+                    });
                     $theForm.data('is_initialized', 'yes');
 
-                    $theForm
-                        .find('.ff-el-tooltip')
-                        .on('mouseenter', function (event) {
-                            const content = $(this).data('content');
-                            let $popContent = $('.ff-el-pop-content');
-                            if (!$popContent.length) {
-                                $('<div/>', {
-                                    class: 'ff-el-pop-content',
-                                }).appendTo(document.body);
-                                $popContent = $('.ff-el-pop-content');
-                            }
-                            $popContent.html(content);
-                            const formWidth = $theForm.innerWidth() - 20;
-                            $popContent.css('max-width', formWidth);
-
-                            const iconLeft = $(this).offset().left;
-                            const contentWidth = $popContent.outerWidth();
-                            const contentHeight = $popContent.outerHeight();
-
-                            let tipLeftPosition =
-                                iconLeft - contentWidth / 2 + 10;
-
-                            if (tipLeftPosition < 15) {
-                                tipLeftPosition = 15;
-                            }
-
-                            $popContent.css(
-                                'top',
-                                $(this).offset().top - contentHeight - 5,
-                            );
-                            $popContent.css('left', tipLeftPosition);
+                    $theForm.find('input.ff-read-only').each(function () {
+                        $(this).attr({
+                            'tabindex': '-1',
+                            'readonly': 'readonly'
                         });
-                    $theForm
-                        .find('.ff-el-tooltip')
-                        .on('mouseleave', function () {
-                            $('.ff-el-pop-content').remove();
-                        });
+                    });
+
+                    $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
+                        let content = $(this).data('content');
+                        let $popContent = $('.ff-el-pop-content');
+                        if (!$popContent.length) {
+                            $('<div/>', {
+                                class: 'ff-el-pop-content'
+                            }).appendTo(document.body);
+                            $popContent = $('.ff-el-pop-content');
+                        }
+                        // Remove dangerous tags and event handlers
+                        content = content.replace(/<script.*?>.*?<\/script>/gis, '')
+                            .replace(/<iframe.*?>.*?<\/iframe>/gis, '')
+                            .replace(/<.*?\bon\w+=["'][^"']*["']/gi, '')
+                            .replace(/javascript:/gi, '');
+                        $popContent.html(content);
+                        const formWidth = $theForm.innerWidth() - 20;
+                        $popContent.css('max-width', formWidth);
+
+                        const iconLeft = $(this).offset().left;
+                        const contentWidth = $popContent.outerWidth();
+                        const contentHeight = $popContent.outerHeight();
+
+                        let tipLeftPosition = iconLeft - (contentWidth / 2) + 10;
+
+
+                        if (tipLeftPosition < 15) {
+                            tipLeftPosition = 15;
+                        }
+
+                        $popContent.css('top', $(this).offset().top - contentHeight - 5);
+                        $popContent.css('left', tipLeftPosition);
+                    });
+                    $theForm.find('.ff-el-tooltip').on('mouseleave', function () {
+                        $('.ff-el-pop-content').remove();
+                    });
 
                     $(document).on('lity:open', function () {
                         window.turnstile?.remove();
-                        renderCaptchas();
+                        mayBeRenderCaptchas();
                     });
-                    renderCaptchas();
+
+                    $theForm.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                        $theForm.trigger('fluentform_first_interaction');
+                    });
+
+                    $theForm.on('fluentform_first_interaction', function() {
+                        mayBeRenderCaptchas();
+                    });
+
+                    $theForm.on('ff_to_next_page ff_to_prev_page', function(e) {
+                        mayBeRenderCaptchas();
+                    });
+
+                    mayBeRenderCaptchas();
                 };
 
-                let renderCaptchas = function () {
-                    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
+                let mayBeRenderCaptchas = function () {
+                    // reCAPTCHA
+                    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
                         window.grecaptcha.ready(function () {
-                            let $el = $theForm.find(
-                                '.ff-el-recaptcha.g-recaptcha',
-                            );
-                            let siteKey = $el.data('sitekey');
-                            let id = $el.attr('id');
-                            const grecaptchaWidgetId = grecaptcha.render(
-                                document.getElementById(id),
-                                {
-                                    sitekey: siteKey,
-                                },
-                            );
-                            $el.attr(
-                                'data-grecaptcha_widget_id',
-                                grecaptchaWidgetId,
-                            );
+                            $theForm.find('.ff-el-recaptcha.g-recaptcha').each(function () {
+                                renderCaptcha('g-recaptcha', $(this), grecaptcha.render);
+                            });
                         });
                     }
 
-                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                        let $el = $theForm.find(
-                            '.ff-el-turnstile.cf-turnstile',
-                        );
-                        let siteKey = $el.data('sitekey');
-                        let id = $el.attr('id');
-                        const turnstileWidgetId = window.turnstile?.render(
-                            document.getElementById(id),
-                            {
-                                sitekey: siteKey,
-                            },
-                        );
-                        $el.attr('data-turnstile_widget_id', turnstileWidgetId);
+                    // Turnstile
+                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
+                        window.turnstile.ready(function () {
+                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                                renderCaptcha('cf-turnstile', $(this), turnstile.render);
+                            });
+                        });
                     }
 
-                    if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
-                        let $el = $theForm.find('.ff-el-hcaptcha.h-captcha');
-                        let siteKey = $el.data('sitekey');
-                        let id = $el.attr('id');
-                        const hcaptchaWidgetId = hcaptcha.render(
-                            document.getElementById(id),
-                            {
-                                sitekey: siteKey,
-                            },
-                        );
-                        $el.attr('data-hcaptcha_widget_id', hcaptchaWidgetId);
+                    // hCaptcha
+                    if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
+                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function() {
+                            renderCaptcha('h-captcha', $(this), hcaptcha.render);
+                        });
                     }
-                };
+                }
+
+                let renderCaptcha = function (type, $el, renderFunction) {
+                    var siteKey = $el.data('sitekey');
+                    var id = $el.attr('id');
+                    var widgetIdAttr = `data-${type}_widget_id`;
+
+                    try {
+                        let widgetId = $el.attr(widgetIdAttr);
+                        
+                        if (type === 'g-recaptcha' || type === 'h-captcha') {
+                            if (widgetId && $el.find('iframe').length > 0) {
+                                return; // Already rendered properly
+                            }
+                        }
+                        else if (type === 'cf-turnstile') {
+                            let $responseInput = $el.find('input[name="cf-turnstile-response"]');
+
+                            if ($responseInput.length && $responseInput.val()) {
+                                return;
+                            }
+
+                            let widgetId = $el.attr(widgetIdAttr);
+                            if (widgetId && window.turnstile) {
+                                turnstile.remove(widgetId);
+                            }
+                        }
+
+                        // rendering captcha code
+                        let container = id;
+                        let options = {
+                            'sitekey': siteKey
+                        };
+
+                        // Special case for Turnstile
+                        if (type === 'cf-turnstile') {
+                            container = '#' + id;
+                        }
+
+                        // Render the captcha
+                        widgetId = renderFunction(container, options);
+                        $el.attr(widgetIdAttr, widgetId);
+                    } catch (error) {
+                        console.error(`Error rendering ${type}:`, error);
+                    }
+                }
+
+                let resetCaptcha = function (type, $el, resetFunction) {
+                    var widgetIdAttr = `data-${type}_widget_id`;
+                    var existingWidgetId = $el.attr(widgetIdAttr);
+                    if (existingWidgetId) {
+                        try {
+                            resetFunction(existingWidgetId);
+                            return true;
+                        } catch (error) {
+                            console.error(`Error resetting ${type}:`, error);
+                            $el.removeAttr(widgetIdAttr).removeData(`${type}-rendered`);
+                        }
+                    }
+                    return false;
+                }
 
                 var addGlobalValidator = function (key, callback) {
                     globalValidators[key] = callback;
-                };
+                }
 
                 var addHiddenData = function (items) {
                     jQuery.each(items, (itemName, itemValue) => {
                         if (itemValue) {
-                            const $itemDom = $theForm.find(
-                                'input[name=' + itemName + ']',
-                            );
+                            const $itemDom = $theForm.find('input[name=' + itemName + ']');
                             if ($itemDom.length) {
                                 $itemDom.attr('value', itemValue);
                             } else {
-                                $('<input>')
-                                    .attr({
-                                        type: 'hidden',
-                                        name: itemName,
-                                        value: itemValue,
-                                    })
-                                    .appendTo($theForm);
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: itemName,
+                                    value: itemValue
+                                }).appendTo($theForm);
                             }
                         }
                     });
-                };
+                }
 
                 var appInstance = {
                     initFormHandlers,
@@ -1207,8 +1066,8 @@ jQuery(document).ready(function () {
                     showFormSubmissionProgress,
                     addFieldValidationRule,
                     removeFieldValidationRule,
-                    hideFormSubmissionProgress,
-                };
+                    hideFormSubmissionProgress
+                }
 
                 fluentFormAppStore[formInstanceSelector] = appInstance;
 
@@ -1217,6 +1076,7 @@ jQuery(document).ready(function () {
         };
 
         const fluentFormCommonActions = {
+
             init: function () {
                 setTimeout(() => {
                     this.initMultiSelect();
@@ -1224,6 +1084,88 @@ jQuery(document).ready(function () {
                 this.initMask();
                 this.initNumericFormat();
                 this.initCheckableActive();
+                this.maybeInitSpamTokenProtection();
+                this.maybeHandleCleanTalkSubmitTime();
+            },
+
+            maybeInitSpamTokenProtection: function() {
+                const formContainers = jQuery('form.frm-fluent-form');
+
+                formContainers.each((index, formElement) => {
+                    const formContainer = jQuery(formElement);
+                    const spamProtectionField = formContainer.find('.fluent-form-token-field');
+
+                    // Skip if no protection field or already processing/processed
+                    if (spamProtectionField.length === 0 ||
+                        formContainer.hasClass('ff_tokenizing') ||
+                        formContainer.hasClass('ff_tokenized')) {
+                        return;
+                    }
+
+                    // Helper function to generate token
+                    const generateTokenIfNeeded = () => {
+                        if (!formContainer.hasClass('ff_tokenized') && !formContainer.hasClass('ff_tokenizing')) {
+                            formContainer.addClass('ff_tokenizing');
+                            this.generateAndSetToken(formContainer, spamProtectionField);
+                        }
+                    };
+
+                    // Maybe generate token on step form step change
+                    formContainer.one('ff_to_next_page ff_to_prev_page', function(e) {
+                        generateTokenIfNeeded();
+                    });
+
+                    // Generate token on first user interaction with form
+                    formContainer.on('fluentform_first_interaction', function() {
+                        generateTokenIfNeeded();
+                    });
+                });
+            },
+
+            generateAndSetToken: function(formContainer, spamProtectionField, retry = true) {
+                const form_id = formContainer.data('form_id');
+                const ajaxRequestUrl = fluentFormVars.ajaxUrl + '?t=' + Date.now();
+                const _this = this;
+                jQuery.post(ajaxRequestUrl, {
+                    action: 'fluentform_generate_protection_token',
+                    form_id: form_id,
+                    nonce: fluentFormVars?.token_nonce
+                })
+                    .done(function(response) {
+                        if (response.success && response.data.token) {
+                            spamProtectionField.val(response.data.token);
+                            formContainer.addClass('ff_tokenized');
+                        } else {
+                            spamProtectionField.val(null);
+                            console.error('Token generation failed for form ID:', form_id);
+                        }
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('Error generating token for form ID:', form_id, error);
+                        // Retry
+                        if (retry) {
+                            setTimeout(() => {
+                                _this.generateAndSetToken(formContainer, spamProtectionField, false);
+                            }, 1000);
+                        }
+                    })
+                    .always(function() {
+                        formContainer.removeClass('ff_tokenizing');
+                    });
+            },
+
+            maybeHandleCleanTalkSubmitTime: function() {
+                if (!!window.fluentFormVars?.has_cleantalk) {
+                    const formContainers = jQuery('form.frm-fluent-form');
+
+                    formContainers.each((index, formElement) => {
+                        const formContainer = jQuery(formElement);
+                        const formLoadTimeField = formContainer.find('.ff_ct_form_load_time');
+                        if (formLoadTimeField.length) {
+                            formLoadTimeField.val(Math.floor(Date.now() / 1000)); // Set timestamp in seconds
+                        }
+                    });
+                }
             },
 
             /**
@@ -1242,34 +1184,26 @@ jQuery(document).ready(function () {
                 }
 
                 $('.ff_has_multi_select').each(function (idx, el) {
+
                     const choiceArgs = {
                         removeItemButton: true,
                         silent: true,
                         shouldSort: false,
                         searchEnabled: true,
-                        searchResultLimit: 50,
+                        searchResultLimit: 50
                     };
 
-                    const args = {
-                        ...choiceArgs,
-                        ...window.fluentFormVars.choice_js_vars,
-                    };
 
-                    const maxSelection = $(el).attr(
-                        'data-max_selected_options',
-                    );
+                    const args = {...choiceArgs, ...window.fluentFormVars.choice_js_vars};
+
+                    const maxSelection = $(el).attr('data-max_selected_options');
                     if (parseInt(maxSelection)) {
                         args.maxItemCount = parseInt(maxSelection);
                         args.maxItemText = function (maxItemCount) {
-                            let message =
-                                window.fluentFormVars.choice_js_vars
-                                    .maxItemText;
-                            message = message.replace(
-                                '%%maxItemCount%%',
-                                maxItemCount,
-                            );
+                            let message = window.fluentFormVars.choice_js_vars.maxItemText;
+                            message = message.replace('%%maxItemCount%%', maxItemCount);
                             return message;
-                        };
+                        }
                     }
 
                     args.callbackOnCreateTemplates = function () {
@@ -1278,19 +1212,15 @@ jQuery(document).ready(function () {
                         return {
                             // Change default template for option.
                             option: function (item) {
-                                var opt =
-                                    Choices.defaults.templates.option.call(
-                                        this,
-                                        item,
-                                    );
+                                var opt = Choices.defaults.templates.option.call(this, item);
                                 if (item.customProperties) {
-                                    opt.dataset.calc_value =
-                                        item.customProperties;
+                                    opt.dataset.calc_value = item.customProperties;
                                 }
                                 return opt;
                             },
                         };
                     };
+
 
                     // Save choicesjs instance for future access.
                     $(el).data('choicesjs', new Choices(el, args));
@@ -1303,26 +1233,25 @@ jQuery(document).ready(function () {
              * @return void
              */
             initMask: function () {
+
                 if (jQuery.fn.mask == undefined) {
                     return;
                 }
 
                 const globalOptions = {
-                    clearIfNotMatch:
-                        window.fluentFormVars.input_mask_vars.clearIfNotMatch,
+                    clearIfNotMatch: window.fluentFormVars.input_mask_vars.clearIfNotMatch,
                     translation: {
-                        '*': { pattern: /[0-9a-zA-Z]/ },
-                        '0': { pattern: /\d/ },
-                        '9': { pattern: /\d/, optional: true },
-                        '#': { pattern: /\d/, recursive: true },
-                        A: { pattern: /[a-zA-Z0-9]/ },
-                        S: { pattern: /[a-zA-Z]/ },
+                        '*': {pattern: /[0-9a-zA-Z]/},
+                        '0': {pattern: /\d/},
+                        '9': {pattern: /\d/, optional: true},
+                        '#': {pattern: /\d/, recursive: true},
+                        'A': {pattern: /[a-zA-Z0-9]/},
+                        'S': {pattern: /[a-zA-Z]/}
                     },
                 };
 
                 jQuery('input[data-mask]').each(function (key, el) {
-                    var el = jQuery(el),
-                        mask = el.attr('data-mask');
+                    var el = jQuery(el), mask = el.attr('data-mask');
 
                     let options = globalOptions;
                     if (el.attr('data-mask-reverse')) {
@@ -1335,68 +1264,41 @@ jQuery(document).ready(function () {
                     if (mask) {
                         el.mask(mask, options);
                     }
-                });
+                })
             },
 
             initCheckableActive: function () {
-                $(document).on(
-                    'change',
-                    '.ff-el-form-check input[type=radio]',
-                    function () {
-                        if ($(this).is(':checked')) {
-                            $(this)
-                                .closest('.ff-el-input--content')
-                                .find('.ff-el-form-check')
-                                .removeClass('ff_item_selected');
-                            $(this)
-                                .closest('.ff-el-form-check')
-                                .addClass('ff_item_selected');
-                        }
-                    },
-                );
-                $(document).on(
-                    'change',
-                    '.ff-el-form-check input[type=checkbox]',
-                    function () {
-                        if ($(this).is(':checked')) {
-                            $(this)
-                                .closest('.ff-el-form-check')
-                                .addClass('ff_item_selected');
-                        } else {
-                            $(this)
-                                .closest('.ff-el-form-check')
-                                .removeClass('ff_item_selected');
-                        }
-                    },
-                );
+                $(document).on('change', '.ff-el-form-check input[type=radio]', function () {
+                    if ($(this).is(':checked')) {
+                        $(this).closest('.ff-el-input--content').find('.ff-el-form-check').removeClass('ff_item_selected');
+                        $(this).closest('.ff-el-form-check').addClass('ff_item_selected');
+                    }
+                });
+                $(document).on('change', '.ff-el-form-check input[type=checkbox]', function () {
+                    if ($(this).is(':checked')) {
+                        $(this).closest('.ff-el-form-check').addClass('ff_item_selected');
+                    } else {
+                        $(this).closest('.ff-el-form-check').removeClass('ff_item_selected');
+                    }
+                });
             },
 
             initNumericFormat: function () {
-                var numericFields = $('.frm-fluent-form .ff_numeric');
+                var numericFields = $('form.frm-fluent-form .ff_numeric');
                 $.each(numericFields, (index, field) => {
                     let $field = $(field);
-                    let formatConfig = JSON.parse(
-                        $field.attr('data-formatter'),
-                    );
+                    let formatConfig = JSON.parse($field.attr('data-formatter'));
 
                     if ($field.val()) {
-                        $field.val(
-                            window.ff_helper.formatCurrency(
-                                $field,
-                                $field.val(),
-                            ),
-                        );
+                        $field.val(window.ff_helper.formatCurrency($field, $field.val()));
                     }
 
                     $field.on('blur change', function () {
-                        let value = currency(
-                            $(this).val(),
-                            formatConfig,
-                        ).format();
+                        let value = currency($(this).val(), formatConfig).format();
                         $(this).val(value);
                     });
                 });
-            },
+            }
         };
 
         /**
@@ -1407,7 +1309,8 @@ jQuery(document).ready(function () {
             /**
              * Validator
              */
-            return new (function () {
+            return new function () {
+
                 /**
                  * Store validation errors
                  * @type {Object}
@@ -1422,15 +1325,12 @@ jQuery(document).ready(function () {
                  * @throws Error
                  */
                 this.validate = function (elements, rules) {
-                    var self = this,
-                        isValid = true,
-                        el,
-                        elName;
+                    var self = this, isValid = true, el, elName;
                     elements.each(function (index, element) {
                         el = $(element);
                         elName = el.prop('name').replace('[]', '');
 
-                        if (el.data('type') === 'repeater_item') {
+                        if (el.data('type') === 'repeater_item' || el.data('type') === 'repeater_container') {
                             elName = el.attr('data-name');
                             rules[elName] = rules[el.data('error_index')];
                         }
@@ -1443,8 +1343,7 @@ jQuery(document).ready(function () {
                                         if (!(elName in self.errors)) {
                                             self.errors[elName] = {};
                                         }
-                                        self.errors[elName][ruleName] =
-                                            rule.message;
+                                        self.errors[elName][ruleName] = rule.message;
                                     }
                                 } else {
                                     // throw new Error('Method [' + ruleName + '] doesn\'t exist in Validator.');
@@ -1452,6 +1351,7 @@ jQuery(document).ready(function () {
                             });
                         }
                     });
+
 
                     !isValid && this.throwValidationException();
                 };
@@ -1482,21 +1382,18 @@ jQuery(document).ready(function () {
                     if (type == 'checkbox' || type == 'radio') {
                         if (el.parents('.ff-el-group').attr('data-name')) {
                             if (!rule.per_row) {
-                                return el
-                                    .parents('.ff-el-group')
-                                    .find('input:checked').length;
+                                return el.parents('.ff-el-group').find('input:checked').length;
                             }
                         }
-                        return $('[name="' + el.prop('name') + '"]:checked')
-                            .length;
+                        return $('[name="' + el.prop('name') + '"]:checked').length;
                     } else if (type.startsWith('select')) {
                         var selected = el.find(':selected');
                         return !!(selected.length && selected.val().length);
                     } else if (type == 'file') {
-                        return el
-                            .closest('div')
+                        return el.closest('div')
                             .find('.ff-uploaded-list')
-                            .find('.ff-upload-preview[data-src]').length;
+                            .find('.ff-upload-preview[data-src]')
+                            .length;
                     } else {
                         //solution for range slider required
                         if (el.attr('is-changed') == 'false') {
@@ -1531,8 +1428,7 @@ jQuery(document).ready(function () {
 
                     if (!rule.value || !val.length) return true;
 
-                    var re =
-                        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
                     return re.test(val.toLowerCase());
                 };
@@ -1649,15 +1545,17 @@ jQuery(document).ready(function () {
                         return true;
                     }
 
-                    if (typeof window.intlTelInputGlobals == 'undefined') {
-                        return true;
-                    }
-
                     if (!el || !el[0]) {
                         return;
                     }
 
-                    var iti = window.intlTelInputGlobals.getInstance(el[0]);
+                    let iti;
+                    if (typeof window.intlTelInputGlobals !== 'undefined') {
+                        iti = window.intlTelInputGlobals.getInstance(el[0]);
+                    } else {
+                        iti = el.data('iti');
+                    }
+
                     if (!iti) {
                         return true;
                     }
@@ -1675,22 +1573,18 @@ jQuery(document).ready(function () {
                         let inputNumber = el.val();
                         if (!el.attr('data-original_val') && inputNumber) {
                             if (selectedCountry && selectedCountry.dialCode) {
-                                el.val(
-                                    '+' +
-                                        selectedCountry.dialCode +
-                                        inputNumber,
-                                );
+                                el.val('+' + selectedCountry.dialCode + inputNumber);
                                 el.attr('data-original_val', inputNumber);
                             }
                         }
                     }
 
                     return true;
-                };
-            })();
+                }
+            }();
         };
 
-        var $allForms = $('.frm-fluent-form');
+        var $allForms = $('form.frm-fluent-form');
 
         function initSingleForm($theForm) {
             var formInstance = fluentFormApp($theForm);
@@ -1739,19 +1633,57 @@ jQuery(document).ready(function () {
         });
 
         fluentFormCommonActions.init();
+
+        // Choices.js dropdown handling
+        function initChoicesDropdownHandling() {
+            // Only target elements that actually have Choices.js
+            $('.ff_has_multi_select').each(function() {
+                const choicesInstance = $(this).data('choicesjs');
+                if (!choicesInstance || !choicesInstance.passedElement) return;
+
+                // Use Choices.js built-in events instead of global listeners
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                    const choicesContainer = this.closest('.choices');
+                    if (!choicesContainer) return;
+
+                    const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+                    if (!dropdown) return;
+
+                    // Apply dropdown styles
+                    dropdown.style.maxHeight = '300px';
+                    dropdown.style.overflowY = 'auto';
+
+                    // Find and style the scrollable list
+                    const scrollableList = 
+                        dropdown.querySelector('.choices__list[role="listbox"]') ||
+                        dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
+                    if (scrollableList) {
+                        scrollableList.style.maxHeight = '280px';
+                        scrollableList.style.overflowY = 'auto';
+                        scrollableList.style.webkitOverflowScrolling = 'touch';
+                        scrollableList.style.touchAction = 'pan-y';
+                    }
+                }, { passive: true });
+            });
+        }
+
+        // Initialize with proper timing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initChoicesDropdownHandling, 100);
+            });
+        } else {
+            setTimeout(initChoicesDropdownHandling, 100);
+        }
     })(window.fluentFormVars, jQuery);
 
     jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
         e.preventDefault();
         jQuery(this).parent().find('.ff_msg_temp').remove();
         jQuery('<div/>', {
-            class: 'error text-danger ff_msg_temp',
+            'class': 'error text-danger ff_msg_temp'
         })
-            .html(
-                'Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again',
-            )
+            .html('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
             .insertAfter(jQuery(this));
     });
 });
-
-jQuery(document.body).on('fluentform_init', function (e, $theForm) {});

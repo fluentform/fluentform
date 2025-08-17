@@ -12,7 +12,12 @@
             :allow-create="listItem.creatable"
             :placeholder="listItem.placeholder"
         >
-            <el-option v-for="item in listItem.options" :key="item.value" :label="item.label" :value="item.value">
+            <el-option
+                v-for="item in listItem.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            >
             </el-option>
         </el-select>
     </el-form-item>

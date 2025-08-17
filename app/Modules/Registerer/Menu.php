@@ -7,6 +7,7 @@ use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\App\Utils\Enqueuer\Vite;
@@ -58,6 +59,7 @@ class Menu
         $fluentFormAdminCSS = fluentFormMix('css/fluent-forms-admin.css');
         $addOnsCss = fluentFormMix('css/add-ons.css');
         $adminDocCss = fluentFormMix('css/admin_docs.css');
+        $reportsCss = fluentFormMix('css/fluent-forms-reports.css');
         if (is_rtl()) {
             $settingsGlobalStyle = fluentFormMix('css/settings_global_rtl.css');
             $allFormsStyle = fluentFormMix('css/fluent-all-forms-rtl.css');
@@ -65,6 +67,7 @@ class Menu
             $fluentFormAdminCSS = fluentFormMix('css/fluent-forms-admin-rtl.css');
             $addOnsCss = fluentFormMix('css/add-ons-rtl.css');
             $adminDocCss = fluentFormMix('css/admin_docs_rtl.css');
+            $reportsCss = fluentFormMix('css/fluent-forms-reports-rtl.css');
         }
 
         Vite::registerStyle(
@@ -240,7 +243,7 @@ class Menu
         wp_enqueue_script('fluent_forms_global');
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-            'ajaxurl'                  => admin_url('admin-ajax.php'),
+            'ajaxurl'                  => Helper::getAjaxUrl(),
             'admin_i18n'               => TranslationString::getAdminI18n(),
             'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
             'payments_str'             => TranslationString::getPaymentsI18n(),
@@ -253,14 +256,17 @@ class Menu
                 'amex'                 => Vite::getAssetUrl('img/card-brand/amex.jpg')
             ],
             'payment_icons'            => [
-                'offline'              => Vite::getAssetUrl('img/payment/offline.png'),
-                'mollie'               => Vite::getAssetUrl('img/payment/mollie.png'),
-                'paypal'               => Vite::getAssetUrl('img/payment/paypal.png'),
-                'stripe'               => Vite::getAssetUrl('img/payment/stripe.png')
+                'offline'              => fluentformMix('img/payment/offline.png'),
+                'mollie'               => fluentformMix('img/payment/mollie.png'),
+                'paypal'               => fluentformMix('img/payment/paypal.png'),
+                'stripe'               => fluentformMix('img/payment/stripe.png')
             ],
             'forms'                    => $forms,
             'hasPro'                   => defined('FLUENTFORMPRO'),
             'has_entries_import'       => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.7', '>='),
+            'disable_time_diff'        => Helper::isDefaultWPDateEnabled(),
+            'wp_date_time_format'      => Helper::getDefaultDateTimeFormatForMoment(),
+            'server_time'              => current_time('mysql'),
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));
@@ -287,11 +293,15 @@ class Menu
                 } elseif ('editor' == $route) {
                     $this->enqueueEditorAssets();
                 }
+                do_action('fluentform/loading_settings_assets', $formId);
+                wp_enqueue_script('fluentform_form_settings');
+            } elseif ('editor' == $route) {
+                $this->enqueueEditorAssets();
             }
         } elseif ('fluent_forms' == $page) {
             wp_enqueue_script('fluent_all_forms');
             wp_enqueue_style('fluent_all_forms');
-        }elseif ('fluent_forms_transfer' == $page) {
+        } elseif ('fluent_forms_transfer' == $page) {
             wp_enqueue_style('fluentform_settings_global');
             wp_enqueue_script('fluentform-transfer-js');
         } elseif (
@@ -425,6 +435,16 @@ class Menu
                 [$this, 'renderAllEntriesAdminRoute']
             );
 
+            // Register Reports sub menu page.
+            add_submenu_page(
+                'fluent_forms',
+                __('Reports', 'fluentform'),
+                __('Reports', 'fluentform'),
+                $fromRole ?  $settingsCapability : 'fluentform_entries_viewer',
+                'fluent_forms_reports',
+                [$this, 'renderReports']
+            );
+
             $isShowPaymentSubmission = apply_filters_deprecated(
                 'fluentform_show_payment_entries',
                 [
@@ -515,6 +535,7 @@ class Menu
                 'editor'   => 'fluentform_forms_manager',
                 'settings' => 'fluentform_forms_manager',
                 'entries'  => 'fluentform_entries_viewer',
+                'reports'  => 'fluentform_entries_viewer',
             ]);
 
             $toVerifyPermission = Arr::get(
@@ -676,10 +697,13 @@ class Menu
 
         $currentRoute = sanitize_key($this->app->request->get('sub_route', ''));
 
+        $hasDoubleOptinEnable = 'yes' === Arr::get(get_option('_fluentform_double_optin_settings'), 'enabled');
+
         $this->app->view->render('admin.form.settings_wrapper', [
             'form_id'           => $form_id,
             'settings_menus'    => $settingsMenus,
             'current_sub_route' => $currentRoute,
+            'has_double_opt_in' => $hasDoubleOptinEnable
         ]);
     }
 
@@ -724,6 +748,7 @@ class Menu
             ],
             'countries'            => getFluentFormCountryList(),
             'getIpInfo'            => Helper::getIpinfo(),
+            'google_sheet_api' => apply_filters('fluentform/google_sheet_api_settings', []),
             'has_conv_form_save_and_resume' => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.12', '>=')
         ]);
 
@@ -747,7 +772,7 @@ class Menu
         $isDisabledAnalytics = apply_filters_deprecated(
             'fluentform-disabled_analytics',
             [
-                false
+                true
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/disabled_analytics',
@@ -763,7 +788,13 @@ class Menu
             'adminUrlWithoutPageHash' => admin_url('admin.php'),
             'isDisableAnalytics'      => $this->app->applyFilters('fluentform/disabled_analytics', $isDisabledAnalytics),
             'plugin_public_url'       => fluentformMix(),
+            'siteUrl'                 => site_url(),
         ];
+
+        if (defined('FLUENTFORMPRO')){
+            $data['landing_page_enabled_forms']= Helper::getLandingPageEnabledForms();
+        }
+     
 
         $data = apply_filters_deprecated(
             'fluent_all_forms_vars',
@@ -939,7 +970,7 @@ class Menu
             'element_search_tags'            => $searchTags,
             'element_settings_placement'     => $elementPlacements,
             'all_forms_url'                  => admin_url('admin.php?page=fluent_forms'),
-            'has_payment_features'           => !defined('FLUENTFORMPRO'),
+            'has_payment_features'           => true,
             'upgrade_url'                    => fluentform_upgrade_url(),
             'is_conversion_form'             => Helper::isConversionForm($formId),
             'is_autoload_captcha'            => Helper::isAutoloadCaptchaEnabled(),
@@ -957,6 +988,7 @@ class Menu
 				    'net_promoter_score',
 				    'rangeslider',
 				    'custom_payment_component',
+                    'item_quantity_component'
 			    ]
 		    ];
 	    }
@@ -1035,6 +1067,11 @@ class Menu
         $components['Turnstile'] = [
             'hash'  => 'turnstile',
             'title' => 'Turnstile',
+        ];
+
+        $components['CleanTalk'] = [
+            'hash'  => 'cleantalk',
+            'title' => 'CleanTalk',
         ];
 
         $customLinks = apply_filters('fluentform/global_settings_menu', []);
@@ -1120,14 +1157,11 @@ class Menu
 
     public function renderGlobalMenu()
     {
-        $showPayment = false;
-        if (defined('FLUENTFORMPRO')) {
-            $showPayment = !get_option('__fluentform_payment_module_settings');
-            if ($showPayment) {
-                $formCount = wpFluent()->table('fluentform_forms')
-                                ->count();
-                $showPayment = $formCount > 2;
-            }
+        $showPayment = !PaymentHelper::hasPaymentSettings();
+        if ($showPayment) {
+            $formCount = wpFluent()->table('fluentform_forms')
+                ->count();
+            $showPayment = $formCount > 2;
         }
         $showPaymentEntry = apply_filters_deprecated('fluentform_show_payment_entries', [
                 false
@@ -1168,6 +1202,11 @@ class Menu
             'is_installed' => defined('FLUENTMAIL'),
             'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
         ]);
+    }
+
+    public function renderReports()
+    {
+        do_action('fluentform/render_report');
     }
 
     private function usedNameAttributes($formId)

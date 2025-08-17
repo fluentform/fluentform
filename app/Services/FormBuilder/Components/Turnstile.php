@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Turnstile extends BaseComponent
 {
@@ -30,7 +30,7 @@ class Turnstile extends BaseComponent
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $turnstile = get_option('_fluentform_turnstile_details');
-        $siteKey = Arr::get($turnstile, 'siteKey');
+        $siteKey = ArrayHelper::get($turnstile, 'siteKey');
 
         if (! $siteKey) {
             return false;
@@ -49,17 +49,20 @@ class Turnstile extends BaseComponent
                 FLUENTFORM_VERSION,
                 true
             );
+
+            // for WP Rocket compatibility
+            wp_script_add_data('turnstile', 'data-cfasync', 'false');
         }
 
-        $appearance = esc_attr(Arr::get($turnstile, 'appearance', 'always'));
+        $appearance = esc_attr(ArrayHelper::get($turnstile, 'appearance', 'always'));
 
-        if ('yes' == Arr::get($turnstile, 'invisible')) {
+        if ('yes' == ArrayHelper::get($turnstile, 'invisible')) {
             $appearance = 'interaction-only';
         }
 
         $turnstileBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
-		data-theme='" . esc_attr(Arr::get($turnstile, 'theme', 'auto')) . "'
+		data-theme='" . esc_attr(ArrayHelper::get($turnstile, 'theme', 'auto')) . "'
 		id='fluentform-turnstile-{$form->id}-{$form->instance_index}'
 		class='ff-el-turnstile cf-turnstile'
 		data-appearance='" . $appearance . "'></div>";

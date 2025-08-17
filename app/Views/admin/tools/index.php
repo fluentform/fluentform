@@ -15,8 +15,10 @@ use FluentForm\App\Helpers\Helper;
 ?>
 
 <div class="ff_form_wrap ff_tools_wrap">
-    <div class="ff_admin_menu_wrapper ff_layout_section">
-        <?php
+    <div class="global-overlay" id="global-overlay"></div>
+    <div class="ff_form_wrap_area">
+        <div class="ff_admin_menu_wrapper ff_layout_section">
+            <?php
             do_action_deprecated(
                 'fluentform_before_export_import_wrapper',
                 [
@@ -28,8 +30,12 @@ use FluentForm\App\Helpers\Helper;
             do_action('fluentform/before_tools_wrapper');
         ?>
 
-        <div class="ff_admin_menu_sidebar ff_layout_section_sidebar">
-            <ul class="ff_admin_menu_list ff_list_button">
+            <div class="ff_settings_sidebar_wrap">
+                <span class="ff_sidebar_toggle" title="Toggle Setting">
+                    <i class="ff-icon ff-icon-arrow-right"></i>
+                </span>
+                <div class="ff_admin_menu_sidebar ff_layout_section_sidebar">
+                    <ul class="ff_admin_menu_list ff_list_button">
                 <li class="ff_list_button_item active">
                     <a class="ff_list_button_link" data-hash="exportforms"
                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_transfer', ['hash' => 'exportforms'])); ?>"
@@ -74,9 +80,9 @@ use FluentForm\App\Helpers\Helper;
                     </a>
                 </li>
             </ul>
-        </div>
-
-        <div class="ff_admin_menu_container ff_layout_section_container">
+                </div>
+            </div>
+            <div class="ff_admin_menu_container ff_layout_section_container">
             <?php
                 do_action_deprecated(
                     'fluentform_before_export_import_container',
@@ -104,7 +110,7 @@ use FluentForm\App\Helpers\Helper;
                 do_action('fluentform/after_tools_container');
             ?>
         </div>
-        <?php
+            <?php
             do_action_deprecated(
                 'fluentform_after_export_import_wrapper',
                 [
@@ -115,5 +121,6 @@ use FluentForm\App\Helpers\Helper;
             );
             do_action('fluentform/after_tools_wrapper');
         ?>
+        </div>
     </div>
 </div>

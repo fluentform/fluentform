@@ -11,7 +11,7 @@
                         :is="field.component">
                     </component>
                     <div v-else>
-                        <p>{{field.field.admin_label}} {{ $t('is Not Editable') }}</p>
+                        <p>{{ $t('%s is Not Editable', field.field.admin_label) }}</p>
                     </div>
                 </el-form-item>
             </template>

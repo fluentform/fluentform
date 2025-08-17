@@ -6,12 +6,12 @@
             <span v-if="itemConfig.help">
                 <el-tooltip class="item" effect="dark" placement="top-start">
                     <i class="el-icon el-icon-info"></i>
-                    <template #content v-html="itemConfig.help"></template>
+                    <span slot="content" v-html="itemConfig.help"></span>
                 </el-tooltip>
             </span>
         </td>
         <td style="width: 190px" class="fc_filter_operator">
-            <el-select :disabled="view_only" size="small" :placeholder="$t('Select Operator')"
+            <el-select :disabled="view_only" size="mini" :placeholder="$t('Select Operator')"
                        @visible-change="maybeOperatorSelected"
                        v-model="item.operator">
                 <el-option v-for="(optionLabel, option) in operators" :key="option" :value="option"
@@ -23,23 +23,23 @@
                 --
             </template>
             <template v-else>
-                <el-input size="small" v-if="isNumericType" type="number"
+                <el-input size="mini" v-if="isNumericType" type="number"
                           :placeholder="$t('Condition Value')"
                           v-model="item.value"/>
-                <template v-else-if="itemConfig.type === 'dates'">
+                <template v-else-if="itemConfig.type == 'dates'">
 	                <el-date-picker :type="dateType"
 	                                :disabled="view_only" value-format="yyyy-MM-dd HH:mm:ss"
-	                                size="small"
+	                                size="mini"
 	                                :range-separator="$t('To')"
 	                                :start-placeholder="$t('Start date')"
 	                                :end-placeholder="$t('End date')"
 	                                v-model="item.value"></el-date-picker>
                 </template>
-	            <template v-else-if="itemConfig.type === 'time'">
+	            <template v-else-if="itemConfig.type == 'time'">
 		            <el-time-picker
 			            :is-range="isTimeRange"
 			            v-model="item.value"
-			            size="small"
+			            size="mini"
 			            value-format="HH:mm:ss"
 			            :range-separator="$t('To')"
 			            :start-placeholder="$t('Start date')"
@@ -47,9 +47,9 @@
 		            >
 		            </el-time-picker>
                 </template>
-                <template v-else-if="itemConfig.type === 'selections'">
+                <template v-else-if="itemConfig.type == 'selections'">
                     <template v-if="itemConfig.options">
-                        <el-select :disabled="view_only" size="small" :multiple="itemConfig.is_multiple"
+                        <el-select :disabled="view_only" size="mini" :multiple="itemConfig.is_multiple"
                                    :placeholder="$t('Select Option')"
                                    v-model="item.value">
                             <el-option v-for="(optionLabel,option) in itemConfig.options" :key="option" :value="option"
@@ -62,17 +62,17 @@
                     </template>
                     <pre v-else>{{ itemConfig }}</pre>
                 </template>
-                <template v-else-if="itemConfig.type === 'single_assert_option' || itemConfig.type === 'straight_assert_option'">
-                    <el-select size="small" :placeholder="$t('Select Option')" :disabled="view_only"
+                <template v-else-if="itemConfig.type == 'single_assert_option' || itemConfig.type == 'straight_assert_option'">
+                    <el-select size="mini" :placeholder="$t('Select Option')" :disabled="view_only"
                                v-model="item.value">
                         <el-option v-for="(optionLabel,option) in itemConfig.options" :key="option" :value="option"
                                    :label="optionLabel"></el-option>
                     </el-select>
                 </template>
-                <template v-else-if="itemConfig.type === 'times_numeric'">
+                <template v-else-if="itemConfig.type == 'times_numeric'">
                     <item-times-selection :disabled="view_only" v-model="item.value" :field="itemConfig"/>
                 </template>
-                <div class="fc_composite_filters" v-else-if="itemConfig.type === 'composite_optioned_compare'">
+                <div class="fc_composite_filters" v-else-if="itemConfig.type == 'composite_optioned_compare'">
                     <div v-if="itemConfig.ajax_selector" class="fc_composite_filter">
                         <label>{{itemConfig.ajax_selector.label}}</label>
                         <div class="fc_composite_input">
@@ -82,11 +82,11 @@
                     <div class="fc_composite_filter">
                         <label>{{itemConfig.value_config.label}}</label>
                         <div class="fc_composite_input">
-                            <el-input size="small" v-model="item.value" :type="itemConfig.value_config.data_type" :placeholder="itemConfig.value_config.placeholder"></el-input>
+                            <el-input size="mini" v-model="item.value" :type="itemConfig.value_config.data_type" :placeholder="itemConfig.value_config.placeholder"></el-input>
                         </div>
                     </div>
                 </div>
-	            <el-input :disabled="view_only" size="small" v-else
+	            <el-input :disabled="view_only" size="mini" v-else
 	                      :placeholder="$t('Condition Value')"
 	                      type="text" v-model="item.value"/>
             </template>
@@ -94,13 +94,10 @@
         <td v-if="!view_only" style="width: 50px; text-align: right;">
             <el-button
                 plain
+                icon="el-icon-delete"
                 @click="removeItem()"
-                size="small"
-                type="danger"
-            >
-                <template #icon>
-                    <i class="el-icon-delete"></i>
-                </template>
+                size="mini"
+                type="danger">
             </el-button>
         </td>
     </tr>
@@ -108,14 +105,12 @@
 
 <script type="text/babel">
 import isArray from 'lodash/isArray';
-import ItemTimesSelection from "@/admin/views/EntryFilters/_ItemTimesSelection.vue";
 
 
 export default {
     name: 'RichFilterItem',
     props: ['item', 'filterLabels', 'view_only'],
     components: {
-        ItemTimesSelection
 
     },
     data() {

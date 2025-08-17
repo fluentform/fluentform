@@ -5,17 +5,18 @@
             @update:model-value="$emit('update:visibility', $event)"
             width="100%"
             top="50px"
+            @open="focusSearch"
             :before-close="close"
         >
             <template #header>
-                <h3 class="title">{{ $t('Predefined Form Templates') }}</h3>
-                <p class="text">{{ $t('Choose a pre-made form template to get started right away.') }}
+                <h3 class="title">{{ $t("Predefined Form Templates") }}</h3>
+                <p class="text">{{ $t("Choose a pre-made form template to get started right away.") }}
                 </p>
             </template>
 
             <div class="ff_predefined_options mt-6">
                 <div class="ff_predefined_sidebar">
-                    <h5 class="ff_predefined_title mb-3">{{ $t('Categories') }}</h5>
+                    <h5 class="ff_predefined_title mb-3">{{ $t("Categories") }}</h5>
                     <ul class="ff_list_button ff_list_button_s1">
                         <li
                             class="ff_list_button_item"
@@ -36,6 +37,7 @@
                 <div class="ff_predefined_main">
                     <div class="form_item_group form_item_group_search mb-5">
                         <el-input
+                            ref="searchInput"
                             v-model="search"
                             :placeholder="$t('Search a form template')"
                             class="el-input-search el-input-border"
@@ -69,12 +71,13 @@
                                             <div class="ff_form_card_overlap_inner">
                                                 <el-button>
                                                     <template v-if="creatingForm">
-                                                        <span>{{ $t('Creating Form...') }}</span>
+                                                        <span>{{ $t("Creating Form...") }}</span>
                                                     </template>
                                                     <template v-else>
                                                         <span
-                                                            v-if="form.is_pro && !has_pro">{{ $t('Unlock in Pro') }}</span>
-                                                        <span v-else>{{ $t('Create Form') }}</span>
+                                                            v-if="form.is_pro && !has_pro">{{ $t("Unlock in Pro")
+                                                            }}</span>
+                                                        <span v-else>{{ $t("Create Form") }}</span>
                                                     </template>
                                                 </el-button>
                                                 <p v-html="form.brief"></p>
@@ -92,10 +95,10 @@
 </template>
 
 <script>
-import each from 'lodash/each';
+import each from "lodash/each";
 
 export default {
-    name: 'ChooseTemplateModal',
+    name: "ChooseTemplateModal",
     props: {
         categories: Array,
         visibility: Boolean,
@@ -105,15 +108,15 @@ export default {
         return {
             creatingForm: false,
             // predefinedForms: {},
-            form_title: '',
-            category: '',
+            form_title: "",
+            category: "",
             // categories: [],
-            search: '',
+            search: "",
             has_pro: !!window.FluentFormApp.hasPro,
-            current: null,
-        }
+            current: null
+        };
     },
-    emits: ['update:visibility'],
+    emits: ["update:visibility"],
     computed: {
         filteredForms() {
             let items = {};
@@ -121,7 +124,7 @@ export default {
             if (this.search) {
                 let search = this.search.toLocaleLowerCase();
                 let allForms = {
-                    'Search Result': {}
+                    "Search Result": {}
                 };
 
                 each(this.predefinedForms, (forms, formCategory) => {
@@ -133,12 +136,12 @@ export default {
                         ]).toLowerCase();
 
                         if (formStrung.indexOf(search) != -1) {
-                            allForms['Search Result'][formName] = form;
+                            allForms["Search Result"][formName] = form;
                         }
                     });
                 });
 
-                this.category = '';
+                this.category = "";
 
                 return allForms;
             } else {
@@ -154,13 +157,13 @@ export default {
     },
     methods: {
         close() {
-            this.$emit('update:visibility', false);
+            this.$emit("update:visibility", false);
         },
         createForm(formType, form) {
-            let selectedFormType = 'form';
+            let selectedFormType = "form";
             if (form) {
                 if (form.is_pro && !window.FluentFormApp.hasPro) {
-                    return this.$fail(this.$t('This form required pro add-on of fluentform. Please install pro add-on'));
+                    return this.$fail(this.$t("This form required pro add-on of fluentform. Please install pro add-on"));
                 }
                 selectedFormType = form.type;
             }
@@ -170,13 +173,13 @@ export default {
             let data = {
                 type: selectedFormType,
                 predefined: formType,
-                action: 'fluentform-predefined-create'
+                action: "fluentform-predefined-create"
             };
 
-            return this.doCreateForm(data)
+            return this.doCreateForm(data);
         },
         doCreateForm(data) {
-            const url = FluentFormsGlobal.$rest.route('getForms');
+            const url = FluentFormsGlobal.$rest.route("getForms");
 
             FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
@@ -195,50 +198,33 @@ export default {
         },
         scrollTo(e) {
             let targetHash = e.target.hash;
-            let listItem = jQuery('.ff_list_button_item');
+            let listItem = jQuery(".ff_list_button_item");
 
-            listItem.addClass('active');
+            listItem.addClass("active");
 
             for (let i = 0; i < listItem.length; i++) {
                 if (e.target.parentElement != listItem[i]) {
-                    jQuery(listItem[i]).removeClass('active');
+                    jQuery(listItem[i]).removeClass("active");
                 }
+
+                jQuery(".ff_predefined_form_wrap").animate({
+                    scrollTop: jQuery(targetHash).offset().top - 54 - jQuery(".ff_predefined_form_wrap").position().top + jQuery(".ff_predefined_form_wrap").scrollTop()
+
+                }, "slow");
             }
-
-            jQuery('.ff_predefined_form_wrap').animate({
-                scrollTop: jQuery(targetHash).offset().top - 54 - jQuery('.ff_predefined_form_wrap').position().top + jQuery('.ff_predefined_form_wrap').scrollTop()
-
-            }, 'slow');
-
         },
         goToImportPage() {
             let path = window.location.href;
-            const index = path.lastIndexOf('fluent_forms#add=1');
+            const index = path.lastIndexOf("fluent_forms#add=1");
             path = path.substring(0, index);
-            path += 'fluent_forms_transfer#importforms';
+            path += "fluent_forms_transfer#importforms";
             window.location.href = path;
+        },
+        focusSearch() {
+            this.$nextTick(() => {
+                this.$refs.searchInput.focus();
+            });
         }
-        // stickyMenu(){
-        //     let stickyElem = jQuery('#sticky-menu');
-        //     let stickyTop = stickyElem.offset().top;
-
-        //     jQuery(window).on('scroll', function() {
-        //         let windowTop = jQuery(window).scrollTop();
-        //         if (stickyTop < windowTop) {
-        //             stickyElem.addClass('is-sticky');
-        //         } else {
-        //             stickyElem.removeClass("is-sticky");
-        //         }
-        //     });
-        // }
-
     },
-    mounted() {
-        // this.createForm();
-        // this.fetchPredefinedForms();
-        // this.forms = this.predefinedForms;
-        // this.categories = this.categories;
-
-    }
 };
 </script>

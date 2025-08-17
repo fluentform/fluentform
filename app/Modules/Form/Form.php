@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\Form;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Support\Arr;
 
@@ -190,7 +191,7 @@ class Form
         $defaultSettings = [
             'confirmation' => [
                 'redirectTo'           => 'samePage',
-                'messageToShow'        => __('Thank you for your message. We will get in touch with you shortly', 'fluentform'),
+                'messageToShow'        => __('Thank you for your message. We will get in touch with you shortly.', 'fluentform'),
                 'customPage'           => null,
                 'samePageFormBehavior' => 'hide_form',
                 'customUrl'            => null,
@@ -544,7 +545,7 @@ class Form
             ->delete();
 
         ob_start();
-        if (defined('FLUENTFORMPRO')) {
+        if (PaymentHelper::hasPaymentSettings()) {
             try {
                 wpFluent()->table('fluentform_order_items')
                     ->where('form_id', $formId)

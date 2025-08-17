@@ -11,6 +11,9 @@
                     <strong>{{ $t('Note:') }}</strong>
                     {{ dataLostMsg }}
                 </p>
+                <p class="ff-tip-text text-xs text-muted mb-3" >
+                    You can also press <kbd>Del</kbd> to delete a selected field. Undo with <kbd>⌘/Ctrl+Z</kbd>.
+                </p>
             </div>
             <btn-group class="ff_btn_group_half">
                 <btn-group-item>
@@ -61,7 +64,6 @@ export default {
     computed: {
         dataLostMsg() {
             let matched = [];
-
             if (this.editItem?.attributes && window.FluentFormApp.used_name_attributes) {
                 matched = window.FluentFormApp.used_name_attributes.filter(name => name.field_name === this.editItem?.attributes.name);
             }

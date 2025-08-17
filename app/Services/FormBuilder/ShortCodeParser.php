@@ -2,10 +2,11 @@
 
 namespace FluentForm\App\Services\FormBuilder;
 
+use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Helpers\Helper;
 
 class ShortCodeParser
@@ -111,6 +112,10 @@ class ShortCodeParser
 
     protected static function parseShortCodeFromString($parsable, $isUrl = false, $isHtml = false)
     {
+        if ('0' === $parsable) {
+            return $parsable;
+        }
+
         if (! $parsable) {
             return '';
         }
@@ -176,11 +181,11 @@ class ShortCodeParser
 
         if (strpos($key, '.value')) {
             $key = str_replace('.value', '', $key);
-            return Arr::get(static::$store['original_inputs'], $key);
+            return ArrayHelper::get(static::$store['original_inputs'], $key);
         }
 
         if (strpos($key, '.') && ! isset(static::$store['inputs'][$key])) {
-            return Arr::get(
+            return ArrayHelper::get(
                 static::$store['original_inputs'],
                 $key,
                 ''
@@ -188,7 +193,7 @@ class ShortCodeParser
         }
 
         if (! isset(static::$store['inputs'][$key])) {
-            static::$store['inputs'][$key] = Arr::get(
+            static::$store['inputs'][$key] = ArrayHelper::get(
                 static::$store['inputs'],
                 $key,
                 ''
@@ -202,14 +207,14 @@ class ShortCodeParser
             );
         }
 
-        $field = Arr::get(static::$formFields, $key, '');
+        $field = ArrayHelper::get(static::$formFields, $key, '');
 
         if (! $field) {
             return '';
         }
 
         if ($isHtml) {
-            $originalInput = static::$store['original_inputs'][$key];
+            $originalInput = ArrayHelper::get(static::$store['original_inputs'], $key, '');
             $originalInput = apply_filters_deprecated(
                 'fluentform_response_render_' . $field['element'],
                 [
@@ -230,7 +235,7 @@ class ShortCodeParser
                 $isHtml
             );
         }
-    
+
         static::$store['inputs'][$key] = apply_filters_deprecated(
             'fluentform_response_render_' . $field['element'],
             [
@@ -252,7 +257,7 @@ class ShortCodeParser
             $isHtml
         );
     }
-    
+
     protected static function getFormLabelData($key)
     {
         if (is_null(static::$formFields)) {
@@ -264,11 +269,11 @@ class ShortCodeParser
 
         // Resolve global validation messages {labels.current_field} shortcode.
         // Current field name attribute was setted as inputs data key 'current_field'.
-        if ('current_field' === $key && $currentFieldName = Arr::get(static::$store['inputs'], $key)) {
+        if ('current_field' === $key && $currentFieldName = ArrayHelper::get(static::$store['inputs'], $key)) {
             $currentFieldName = str_replace(['[', ']'], ['.', ''], $currentFieldName);
             $key = $currentFieldName;
         }
-        $inputLabel = Arr::get(Arr::get(static::$formFields, $key, []), 'label', '');
+        $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $key, []), 'label', '');
         $inputLabel = str_replace(['[', ']'], '', $inputLabel);
         $keys = explode(".", $key);
         if (count($keys) > 1) {
@@ -276,9 +281,14 @@ class ShortCodeParser
             $inputLabel = str_replace($parentKey, '', $inputLabel);
         }
         if(empty($inputLabel)){
-            $inputLabel = Arr::get(Arr::get(static::$formFields, $key, []), 'admin_label', '');
+            $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $key, []), 'admin_label', '');
         }
-        return $inputLabel;
+        if (empty($inputLabel) && isset($parentKey) && $parentKey) {
+            $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $parentKey, []), 'label', '');
+            $key = $parentKey;
+        }
+
+        return apply_filters('fluentform/input_label_shortcode', $inputLabel, $key, static::getForm());
     }
 
     protected static function getUserData($key)
@@ -366,6 +376,8 @@ class ShortCodeParser
         }
         if ('admin_view_url' == $key) {
             return admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry->form_id . '#/entries/' . $entry->id);
+        } elseif ('entry_uid_link' == $key) {
+            return static::getEntryUidLink($entry);
         } elseif (false !== strpos($key, 'meta.')) {
             $metaKey = substr($key, strlen('meta.'));
             $data = Helper::getSubmissionMeta($entry->id, $metaKey);
@@ -410,7 +422,7 @@ class ShortCodeParser
                 $passwords = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_password']);
                 if (is_array($passwords) && ! empty($passwords)) {
                     $user_inputs = $response->user_inputs;
-                    Arr::forget($user_inputs, array_keys($passwords));
+                    ArrayHelper::forget($user_inputs, array_keys($passwords));
                     $response->user_inputs = $user_inputs;
                 }
             }
@@ -431,14 +443,14 @@ class ShortCodeParser
             if ($skipHiddenFields) {
                 $hiddenFields = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_hidden']);
                 if (is_array($hiddenFields) && ! empty($hiddenFields)) {
-                    Arr::forget($response->user_inputs, array_keys($hiddenFields));
+                    ArrayHelper::forget($response->user_inputs, array_keys($hiddenFields));
                 }
             }
 
             $html = '<table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"><tbody>';
             foreach ($inputLabels as $inputKey => $label) {
-                if (array_key_exists($inputKey, $response->user_inputs) && '' !== Arr::get($response->user_inputs, $inputKey)) {
-                    $data = Arr::get($response->user_inputs, $inputKey);
+                if (array_key_exists($inputKey, $response->user_inputs) && '' !== ArrayHelper::get($response->user_inputs, $inputKey)) {
+                    $data = ArrayHelper::get($response->user_inputs, $inputKey);
                     if (is_array($data) || is_object($data)) {
                         continue;
                     }
@@ -493,7 +505,14 @@ class ShortCodeParser
                 $feedId = end($exploded);
                 $chatGPT = new \FluentFormPro\classes\Chat\ChatFieldController(wpFluentForm());
                 if ($chatGPT->api->isApiEnabled()) {
-                    return $chatGPT->chatGPTSubmissionMessageHandler($formId, $feedId, static::getInstance());
+                    $entry = static::getEntry();
+                    $lastResponse = SubmissionMeta::retrieve("chat_gpt_response_{$feedId}", $entry->id);
+                    if (!$lastResponse) {
+                        $response = $chatGPT->chatGPTSubmissionMessageHandler($formId, $feedId, static::getInstance());
+                        SubmissionMeta::persist($entry->id, "chat_gpt_response_{$feedId}", $response, $formId);
+                        return $response;
+                    }
+                    return $lastResponse;
                 }
             }
             return '';
@@ -598,6 +617,39 @@ class ShortCodeParser
     public static function getInputs()
     {
         return static::$store['original_inputs'];
+    }
+
+    /**
+     * Get the entry UID link for a submission
+     *
+     * @param object $entry
+     * @return string
+     */
+    protected static function getEntryUidLink($entry)
+    {
+        // Check if entry already has the entry_uid_link property
+        if (isset($entry->entry_uid_link)) {
+            return $entry->entry_uid_link;
+        }
+
+        // Check if front-end entry view is enabled for this form
+        $frontEndSettings = Helper::getFormMeta($entry->form_id, 'front_end_entry_view', []);
+        if (ArrayHelper::get($frontEndSettings, 'status') !== 'yes') {
+            return '';
+        }
+
+        // Get the UID hash from submission meta
+        $meta = wpFluent()->table('fluentform_submission_meta')
+            ->where('response_id', $entry->id)
+            ->where('meta_key', '_entry_uid_hash')
+            ->first();
+
+        if (!$meta || !$meta->value) {
+            return '';
+        }
+
+        // Generate the link
+        return site_url('?ff_entry=1&hash=' . $meta->value);
     }
 
     public static function resetData()

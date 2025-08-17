@@ -55,7 +55,6 @@ class Helper
     public static function makeMenuUrl($page = 'fluent_forms_settings', $component = null)
     {
         $baseUrl = admin_url('admin.php?page=' . $page);
-        
         $hash = Arr::get($component, 'hash', '');
         if ($hash) {
             $baseUrl = $baseUrl . '#' . $hash;
@@ -202,12 +201,19 @@ class Helper
         }
         return null;
     }
+
+    public static function setSubmissionMetaAsArrayPush($submissionId, $metaKey, $value, $formId = false)
+    {
+        if ($meta = SubmissionMeta::persistArray($submissionId, $metaKey, $value, $formId)) {
+            return $meta->id;
+        }
+        return null;
+    }
     
     public static function isEntryAutoDeleteEnabled($formId)
     {
         if (
-            'yes' == Arr::get(static::getFormMeta($formId, 'formSettings', []), 'delete_entry_on_submission',
-                '')
+            'yes' == Arr::get(static::getFormMeta($formId, 'formSettings', []), 'delete_entry_on_submission', '')
         ) {
             return true;
         }
@@ -266,7 +272,8 @@ class Helper
             'fluent_forms_add_ons',
             'fluent_forms_docs',
             'fluent_forms_payment_entries',
-            'fluent_forms_smtp'
+            'fluent_forms_smtp',
+            'fluent_forms_reports'
         ];
         
         $status = true;
@@ -645,10 +652,10 @@ class Helper
             $paramKey = 'fluent-form';
         }
         if ($key) {
-            return site_url('?' . $paramKey . '=' . $formId . '&form=' . $key);
+            return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId . '&form=' . $key);
         }
         
-        return site_url('?' . $paramKey . '=' . $formId);
+        return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId);
     }
     
     public static function fileUploadLocations()
@@ -778,8 +785,10 @@ class Helper
         if (!$girdData || !$field) {
             return '';
         }
-        $girdRows = Arr::get($field, 'raw.settings.grid_rows', '');
-        $girdCols = Arr::get($field, 'raw.settings.grid_columns', '');
+        $girdRows = Arr::get($field, 'raw.settings.grid_rows', []);
+        $girdRows = fluentFormSanitizer($girdRows);
+        $girdCols = Arr::get($field, 'raw.settings.grid_columns', []);
+        $girdCols = fluentFormSanitizer($girdCols);
         $value = '';
         $lastRow = key(array_slice($girdData, -1, 1, true));
         foreach ($girdData as $row => $column) {
@@ -953,8 +962,10 @@ class Helper
                 $options = array_flip(Arr::get($rawField, 'options', []));
             } elseif ('ratings' == $fieldType) {
                 $options = array_keys(Arr::get($rawField, 'options', []));
-            } elseif ('gdpr_agreement' == $fieldType || 'terms_and_condition' == $fieldType) {
+            } elseif ('gdpr_agreement' == $fieldType) {
                 $options = ['on'];
+            } elseif ('terms_and_condition' == $fieldType) {
+                $options = ['on', 'off'];
             } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
                 if (Arr::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
@@ -1022,6 +1033,7 @@ class Helper
                     $isValid = in_array($inputValue, $validCountries);
                     break;
                 case 'repeater_field':
+                case 'repeater_container':
                     foreach (Arr::get($rawField, 'fields', []) as $index => $repeaterField) {
                         $repeaterFieldValue = array_filter(array_column($inputValue, $index));
                         if ($repeaterFieldValue && $error = static::validateInput($repeaterField, $formData, $form,
@@ -1033,12 +1045,23 @@ class Helper
                     break;
                 case 'tabular_grid':
                     $rows = array_keys(Arr::get($rawField, 'settings.grid_rows', []));
+                    $rows = array_map(function ($row) {
+                        return trim(sanitize_text_field($row));
+                    }, $rows);
+
                     $submittedRows = array_keys(Arr::get($formData, $fieldName, []));
+                    $submittedRows = array_map('trim', $submittedRows);
+    
                     $rowDiff = array_diff($submittedRows, $rows);
+    
                     $isValid = empty($rowDiff);
                     if ($isValid) {
                         $columns = array_keys(Arr::get($rawField, 'settings.grid_columns', []));
+                        $columns = array_map(function ($column) {
+                            return trim(sanitize_text_field($column));
+                        }, $columns);
                         $submittedCols = Arr::flatten(Arr::get($formData, $fieldName, []));
+                        $submittedCols = array_map('trim', $submittedCols);
                         $colDiff = array_diff($submittedCols, $columns);
                         $isValid = empty($colDiff);
                     }
@@ -1066,7 +1089,9 @@ class Helper
             '__ff_all_applied_coupons',
             '__entry_intermediate_hash',
             '__square_payment_method_id',
-            '__square_verify_buyer_id'
+            '__square_verify_buyer_id',
+            'ct_bot_detector_event_token',
+            'ff_ct_form_load_time'
         ];
         
         return apply_filters('fluentform/white_listed_fields', $whiteListedFields, $formId);
@@ -1089,5 +1114,185 @@ class Helper
             ['current_field' => $fieldName],
             $form
         );
+    }
+
+    public static function getAjaxUrl()
+    {
+        return apply_filters('fluentform/ajax_url', admin_url('admin-ajax.php'));
+    }
+    
+    public static function getDefaultDateTimeFormatForMoment()
+    {
+        $phpFormat = get_option('date_format') . ' ' . get_option('time_format');
+    
+        $replacements = [
+            'A' => 'A',      // for the sake of escaping below
+            'a' => 'a',      // for the sake of escaping below
+            'B' => '',       // Swatch internet time (.beats), no equivalent
+            'c' => 'YYYY-MM-DD[T]HH:mm:ssZ', // ISO 8601
+            'D' => 'ddd',
+            'd' => 'DD',
+            'e' => 'zz',     // deprecated since version 1.6.0 of moment.js
+            'F' => 'MMMM',
+            'G' => 'H',
+            'g' => 'h',
+            'H' => 'HH',
+            'h' => 'hh',
+            'I' => '',       // Daylight Saving Time? => moment().isDST();
+            'i' => 'mm',
+            'j' => 'D',
+            'L' => '',       // Leap year? => moment().isLeapYear();
+            'l' => 'dddd',
+            'M' => 'MMM',
+            'm' => 'MM',
+            'N' => 'E',
+            'n' => 'M',
+            'O' => 'ZZ',
+            'o' => 'YYYY',
+            'P' => 'Z',
+            'r' => 'ddd, DD MMM YYYY HH:mm:ss ZZ', // RFC 2822
+            'S' => 'o',
+            's' => 'ss',
+            'T' => 'z',      // deprecated since version 1.6.0 of moment.js
+            't' => '',       // days in the month => moment().daysInMonth();
+            'U' => 'X',
+            'u' => 'SSSSSS', // microseconds
+            'v' => 'SSS',    // milliseconds (from PHP 7.0.0)
+            'W' => 'W',      // for the sake of escaping below
+            'w' => 'e',
+            'Y' => 'YYYY',
+            'y' => 'YY',
+            'Z' => '',       // time zone offset in minutes => moment().zone();
+            'z' => 'DDD',
+        ];
+    
+        // Converts escaped characters.
+        foreach ($replacements as $from => $to) {
+            $replacements['\\' . $from] = '[' . $from . ']';
+        }
+    
+        $format = strtr($phpFormat, $replacements);
+    
+        return apply_filters('fluentform/moment_date_time_format', $format);
+    }
+    
+    public static function isDefaultWPDateEnabled()
+    {
+        $globalSettings = get_option('_fluentform_global_form_settings');
+        return 'wp_default' === Arr::get($globalSettings, 'misc.default_admin_date_time');
+    }
+
+    public static function isPaymentCompatible()
+    {
+        if (!self::hasPro()) {
+            return true;
+        } else {
+            return version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '>=') ;
+        }
+    }
+
+    /**
+     * Determine pro payment script is compatible or not
+     * Script is compatible if pro version is greater than or equal to 6.0.4
+     *
+     * @return bool
+     */
+    public static function isProPaymentScriptCompatible()
+    {
+        if (self::hasPro()) {
+            return version_compare(FLUENTFORMPRO_VERSION, '6.0.4', '>=') ;
+        }
+        return false;
+    }
+
+    public static function hasPro()
+    {
+        return defined('FLUENTFORMPRO');
+    }
+
+    public static function getLandingPageEnabledForms()
+    {
+        if (class_exists(\FluentFormPro\classes\SharePage\SharePage::class)) {
+            if (method_exists(\FluentFormPro\classes\SharePage\SharePage::class, 'getLandingPageFormIds')) {
+                $sharePage = new \FluentFormPro\classes\SharePage\SharePage();
+                return $sharePage->getLandingPageFormIds();
+            }
+        }
+        return [];
+    }
+    
+    public static function sanitizeArrayKeysAndValues($values)
+    {
+        if (is_array($values)) {
+            $sanitized = [];
+            foreach ($values as $key => $value) {
+                $trimmedKey = sanitize_text_field(trim($key));
+                $trimmedValue = sanitize_text_field(trim($value));
+                $sanitized[$trimmedKey] = $trimmedValue;
+            }
+            return $sanitized;
+        }
+        return sanitize_text_field(trim($values));
+    }
+    
+    public static function getFrontendFacingUrl($args = '')
+    {
+        return home_url($args);
+    }
+
+    public static function getCountryCodeFromHeaders()
+    {
+        $headers = [
+            // Cloudflare (most common)
+            'HTTP_CF_IPCOUNTRY',
+            'CF-IPCountry',
+
+            // AWS CloudFront (widely used)
+            'HTTP_CLOUDFRONT_VIEWER_COUNTRY',
+            'CloudFront-Viewer-Country',
+
+            // Common standard headers
+            'HTTP_X_COUNTRY_CODE',
+            'X-Country-Code',
+            'HTTP_X_FORWARDED_COUNTRY',
+            'X-Forwarded-Country',
+
+            // GeoIP (used by many systems)
+            'HTTP_GEOIP_COUNTRY_CODE',
+            'GEOIP_COUNTRY_CODE',
+            'HTTP_X_GEOIP_COUNTRY',
+            'X-GeoIP-Country',
+
+            // General purpose country headers
+            'HTTP_X_COUNTRY',
+            'X-Country',
+            'HTTP_X_COUNTRY_ISO',
+            'X-Country-ISO'
+        ];
+
+        foreach ($headers as $header) {
+            // Try directly from $_SERVER
+            if (isset($_SERVER[$header])) {
+                $code = trim($_SERVER[$header]);
+            }
+            // Try with HTTP_ prefix if not already present
+            elseif (strpos($header, 'HTTP_') !== 0) {
+                $httpHeader = 'HTTP_' . str_replace('-', '_', strtoupper($header));
+                if (isset($_SERVER[$httpHeader])) {
+                    $code = trim($_SERVER[$httpHeader]);
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+
+            // Basic validation - should be 2-letter country code
+            if (!empty($code) && is_string($code) && strlen($code) === 2 && ctype_alpha($code) && $code !== 'XX') {
+                return strtoupper($code);
+            }
+        }
+
+        return null;
     }
 }

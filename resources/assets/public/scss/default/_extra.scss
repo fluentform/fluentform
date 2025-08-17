@@ -141,7 +141,7 @@
 select#{$el-prefix}-form-control {
   &:not([size]) {
     &:not([multiple]) {
-      height: 42px;
+      height: var(--fluentform-input-select-height, auto);
     }
   }
 }
@@ -206,4 +206,16 @@ select#{$el-prefix}-form-control {
 
 .pac-container {
   z-index: 99999 !important;
+}
+
+.ff-support-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

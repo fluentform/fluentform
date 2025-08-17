@@ -14,7 +14,7 @@
                             type="primary"
                             icon="ff-icon ff-icon-plus"
                             @click="showForm()"
-                            size="default"
+                            size="medium"
                     >
                         {{ $t('Add Inventory') }}
                     </el-button>
@@ -28,7 +28,7 @@
 
 
                             <el-table-column type="expand">
-                                <template #default="scope">
+                                <template slot-scope="scope">
                                     <el-table  v-if="scope.row.details" :data="formatTableData(scope.row.details)" border style="width: 100%">
                                         <el-table-column prop="name" label="Name"  />
                                         <el-table-column prop="used" label="Used" />
@@ -46,17 +46,17 @@
                             <el-table-column :label="$t('Quantity')" prop="quantity" width="80" />
 
                             <el-table-column :label="$t('Stock')" prop="remaining">
-		                        <template #default="scope">
+		                        <template slot-scope="scope">
 			                        <span v-html="stockFormatHtml(scope.row.remaining)"></span>
 		                        </template>
                             </el-table-column>
 
                             <el-table-column :label="$t('Items in Use')" width="150">
-                                <template #default="scope">
+                                <template slot-scope="scope">
                                     <span v-if="scope.row.details">
                                           <el-tag
                                                   type="info"
-                                                  size="small"
+                                                  size="mini"
                                                   v-for="(count, name) in scope.row.details"
                                                   :key="name"
                                                   class="mr-1"
@@ -68,11 +68,11 @@
                             </el-table-column>
 
                             <el-table-column :label="$t('Action')" width="160">
-                                <template #default="scope">
+                                <template slot-scope="scope">
 
                                     <el-button
                                             class="el-button--icon"
-                                            size="small"
+                                            size="mini"
                                             type="primary"
                                             icon="ff-icon ff-icon-edit"
                                             @click="edit(scope.row)"
@@ -80,24 +80,19 @@
                                     <confirm @on-confirm="remove(scope.row)">
                                         <el-button
                                                 class="el-button--icon"
-                                                size="small"
+                                                size="mini"
                                                 type="danger"
-                                        >
-                                            <template #icon>
-                                                <i class="ff-icon ff-icon-trash"></i>
-                                            </template>
-                                        </el-button>
+                                                icon="ff-icon ff-icon-trash"
+                                        />
                                     </confirm>
                                     <el-button
                                             v-if="scope.row.details"
                                             class="el-button--icon"
-                                            size="small"
-                                            type="primary"
+                                            size="mini"
+                                            type="default"
+                                            icon="el-icon-refresh-left"
                                             @click="resetConfirm(scope.row)"
                                     >
-                                        <template #icon>
-                                            <i class="el-icon-refresh-left"></i>
-                                        </template>
                                         Reset
                                     </el-button>
                                 </template>
@@ -127,17 +122,17 @@
                     width="36%"
                     class="ff_inventory_form"
             >
-                <template #header>
+                <div slot="title">
                     <h5>{{getModalTitle()}}</h5>
-                </template>
+                </div>
 
                 <el-form :data="inventory" label-position="top" class="mt-4">
                     <el-form-item>
-                        <template #label>
+                        <template slot="label">
                             <h6>{{$t('Inventory Name')}}</h6>
                         </template>
                         <el-input
-                                type="text"
+                                type="email"
                                 :placeholder="$t('Item Name')"
                                 v-model="inventory.name"
                         />
@@ -145,7 +140,7 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <template #label>
+                        <template slot="label">
                             <h6>{{$t('Total Quantity')}}</h6>
                         </template>
                         <el-input
@@ -159,7 +154,7 @@
                     </el-form-item>
                 </el-form>
 
-                <template #footer class="dialog-footer">
+                <div slot="footer" class="dialog-footer">
                     <btn-group class="ff_btn_group_half">
                         <btn-group-item>
                             <el-button @click="modal = false" type="info" class="el-button--soft">
@@ -172,22 +167,25 @@
                             </el-button>
                         </btn-group-item>
                     </btn-group>
-                </template>
+                </div>
             </el-dialog>
 
             <el-dialog
                     :title="$t('Reset used Inventory Item Quantity')"
-                    v-model="show_reset_form"
+                    :visible.sync="show_reset_form"
                     v-if="reset_item"
                     v-loading="reseting"
                     :append-to-body="true"
-                    width="50%"
-            >
+
+                    width="50%">
                 <p>{{ $t('You are about to reset this inventory used count to zero') }}</p>
-                <template #footer class="dialog-footer">
-                    <el-button type="primary" @click="this.show_reset_form=false">{{ $t('Close') }}</el-button>
-                    <el-button type="primary" @click="reset()"> {{ $t('Yes, Reset this Item') }}</el-button>
-                </template>
+                <div>
+
+                </div>
+                <span slot="footer" class="dialog-footer">
+                <el-button type="default" @click="this.show_reset_form=false">{{ $t('Close') }}</el-button>
+                <el-button type="primary" @click="reset()"> {{ $t('Yes, Reset this Item') }}</el-button>
+            </span>
             </el-dialog>
         </card-body>
     </card>

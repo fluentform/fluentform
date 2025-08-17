@@ -26,6 +26,13 @@ $page = sanitize_text_field($_GET['page']);
                 </a>
             <?php endif; ?>
         </li>
+        <li class="<?php echo ($page == 'fluent_forms_reports') ? 'active' : '' ?>">
+            <?php if (Acl::hasPermission('fluentform_entries_viewer')): ?>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_reports'));?>" class="ff_menu_link">
+                    <?php _e('Reports', 'fluentform'); ?>
+                </a>
+            <?php endif; ?>
+        </li>
         <li class="<?php echo ($page == 'fluent_forms_payment_entries') ? 'active' : '' ?>">
             <?php if ($show_payment_entries && Acl::hasPermission('fluentform_view_payments')): ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_payment_entries')); ?>" class="ff_menu_link">
@@ -52,7 +59,7 @@ $page = sanitize_text_field($_GET['page']);
         <?php endif; ?>
         <li>
             <?php if ($show_payment && Acl::hasPermission('fluentform_view_payments')): ?>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_settings&component=payment_settings')); ?>" class="ff_menu_link">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_settings#payments/general_settings')); ?>" class="ff_menu_link">
                     <?php _e('Payments', 'fluentform'); ?><span class="ff_new_badge">new</span>
                 </a>
             <?php endif; ?>

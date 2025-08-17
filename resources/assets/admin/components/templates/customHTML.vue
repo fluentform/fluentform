@@ -3,15 +3,14 @@
 </template>
 
 <script>
-import DOMPurify from 'dompurify';
-
+import  DOMPurify from 'dompurify';
 export default {
     name: 'customHTML',
     props: ['item'],
-    computed: {
-        html() {
-            return DOMPurify.sanitize(this.item.settings.html_codes);
-        },
-    },
-};
+	computed: {
+		html() {
+			return DOMPurify.sanitize(this.item.settings.html_codes);
+		}
+	}
+}
 </script>

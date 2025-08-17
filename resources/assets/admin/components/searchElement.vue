@@ -105,6 +105,12 @@ export default {
         },
     },
     methods: {
+        handleSearchFocus(e) {
+            if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+                e.preventDefault();
+                this.$refs.searchInput.focus();
+            }
+        },
         makeSearchString(field) {
             let searchStr = '';
             const { name, type } = field.attributes || {};
@@ -125,5 +131,11 @@ export default {
             this.$emit('update:modelValue', value);
         },
     },
-};
+    mounted() {
+        this.$refs.searchInput.focus()
+    },
+    beforeDestroy() {
+        document.removeEventListener('keydown', this.handleSearchFocus);
+    }
+}
 </script>

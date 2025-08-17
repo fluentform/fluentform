@@ -3,21 +3,19 @@
         <!--Limit Number of Entries-->
         <div class="el-form-item-wrap">
             <el-form-item class="ff-form-item ff-form-item-flex">
-                <template #label style="width: 390px;">
+                <div slot="label" style="width: 390px;">
                     {{ $t('Maximum Number of Entries') }}
 
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                        <template #content>
+                        <div slot="content">
                             <p>
-                                {{
-                                    $t('Enter a number in the input box below to limit the number of entries allowed for this form. The form will become inactive when that number is reached.')
-                                }}
+                                {{ $t('Enter a number in the input box below to limit the number of entries allowed for this form. The form will become inactive when that number is reached.')}}
                             </p>
-                        </template>
+                        </div>
 
                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                     </el-tooltip>
-                </template>
+                </div>
 
                 <el-switch class="el-switch-lg" v-model="form.limitNumberOfEntries.enabled"></el-switch>
             </el-form-item>
@@ -26,7 +24,7 @@
             <transition name="slide-down">
                 <div v-if="form.limitNumberOfEntries.enabled" class="conditional-items">
                     <el-form-item class="ff-form-item" :label="$t('Maximum Entries')">
-                        <el-row :gutter="12">
+                        <el-row :gutter="24">
                             <el-col :md="8">
                                 <el-input-number
                                     class="w-100"
@@ -35,39 +33,38 @@
                                 ></el-input-number>
                             </el-col>
                             <el-col :md="8">
-                                <el-select class="w-100" size="large"  v-model="form.limitNumberOfEntries.period">
+                                <el-select class="w-100" v-model="form.limitNumberOfEntries.period">
                                     <el-option v-for="(label, period) in entryPeriodOptions" :key="period"
-                                               :label="$t(label)" :value="period"
+                                            :label="$t(label)" :value="period"
                                     ></el-option>
                                 </el-select>
                             </el-col>
                         </el-row>
                     </el-form-item>
 
-                    <el-form-item class="ff-form-item" :label="$t('Message Shown on Reaching Max Entries')"
-                                  key="limit-reached-msg">
+                    <el-form-item class="ff-form-item" :label="$t('Message Shown on Reaching Max Entries')" key="limit-reached-msg">
                         <el-input v-model="form.limitNumberOfEntries.limitReachedMsg" type="textarea"></el-input>
                     </el-form-item>
                 </div>
             </transition>
         </div><!-- .el-form-item-wrap -->
 
-        <!--Schedule Form-->
+         <!--Schedule Form-->
         <div class="el-form-item-wrap">
             <el-form-item class="ff-form-item ff-form-item-flex">
-                <template #label style="width: 390px;">
+                <div slot="label" style="width: 390px;">
                     {{ $t('Form Scheduling') }}
 
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                        <template #content>
+                        <div slot="content">
                             <p>
                                 {{ $t('Schedule a time period the form is active.') }}
                             </p>
-                        </template>
+                        </div>
 
                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                     </el-tooltip>
-                </template>
+                </div>
 
                 <el-switch class="el-switch-lg" v-model="form.scheduleForm.enabled"></el-switch>
             </el-form-item>
@@ -86,18 +83,14 @@
                             </el-checkbox>
                         </div>
 
-                        <div>
-                            <el-checkbox-group v-model="selectedDays">
-                                <el-checkbox
-                                    v-for="weekday in weekdays"
-                                    :key="weekday"
-                                    @change="handleCheckedDayChange"
-                                    :value="weekday"
-                                >
-                                    {{ $t(weekday) }}
-                                </el-checkbox>
-                            </el-checkbox-group>
-                        </div>
+                        <el-checkbox-group v-model="selectedDays">
+                            <el-checkbox
+                                v-for="weekday in weekdays"
+                                :key="weekday"
+                                @change="handleCheckedDayChange"
+                                :label="$t(weekday)"
+                            ></el-checkbox>
+                        </el-checkbox-group>
                     </el-form-item>
 
                     <div class="el-form-item-wrap">
@@ -113,23 +106,23 @@
                                         v-model="form.scheduleForm.start"
                                         type="datetime"
                                         :placeholder="$t('Select date and time')"
-                                        size="large"
                                     >
                                     </el-date-picker>
                                 </el-form-item>
                             </el-col>
                             <el-col :md="12">
-                                <el-form-item class="ff-form-item" :label="$t('Submission Ends')">
-                                    <el-date-picker
-                                        class="w-100"
-                                        v-model="form.scheduleForm.end"
-                                        type="datetime"
-                                        :placeholder="$t('Select date and time')"
-                                        :picker-options="datePickerOptions"
-                                        size="large"
-                                    >
-                                    </el-date-picker>
-                                </el-form-item>
+                                <el-form>
+                                    <el-form-item class="ff-form-item" :label="$t('Submission Ends')">
+                                        <el-date-picker
+                                            class="w-100"
+                                            v-model="form.scheduleForm.end"
+                                            type="datetime"
+                                            :placeholder="$t('Select date and time')"
+                                            :picker-options="datePickerOptions"
+                                        >
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </el-form>
                             </el-col>
                         </el-row>
                     </div>
@@ -151,19 +144,19 @@
         <div class="el-form-item-wrap">
             <h5 class="mb-3">{{ $t('Login Requirement Settings') }}</h5>
             <el-form-item class="ff-form-item ff-form-item-flex">
-                <template #label style="width: 390px;">
+                <div slot="label" style="width: 390px;">
                     {{ $t('Require user to be logged in') }}
 
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                        <template #content>
+                        <div slot="content">
                             <p>
-                                {{ $t('Check this option to require a user to be logged in to view this form.') }}
+                                {{ $t('Check this option to require a user to be logged in to view this form.')}}
                             </p>
-                        </template>
+                        </div>
 
                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                     </el-tooltip>
-                </template>
+                </div>
 
                 <el-switch class="el-switch-lg" v-model="form.requireLogin.enabled"></el-switch>
             </el-form-item>
@@ -172,17 +165,15 @@
             <transition name="slide-down">
                 <div v-if="form.requireLogin.enabled" class="conditional-items">
                     <el-form-item class="ff-form-item">
-                        <template #label>
+                        <template slot="label">
                             {{ $t('Require Login Message') }}
 
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <template #content>
+                                <div slot="content">
                                     <p>
-                                        {{
-                                            $t('Enter a message to be displayed to users who are not logged in (shortcodes and HTML are supported).')
-                                        }}
+                                        {{ $t('Enter a message to be displayed to users who are not logged in (shortcodes and HTML are supported).') }}
                                     </p>
-                                </template>
+                                </div>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
@@ -199,21 +190,19 @@
         <div class="el-form-item-wrap">
             <h5 class="mb-3">{{ $t('Empty Submission Blocking') }}</h5>
             <el-form-item class="ff-form-item ff-form-item-flex">
-                <template #label style="width: 390px;">
+                <div slot="label" style="width: 390px;">
                     {{ $t('Deny empty submission') }}
 
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                        <template #content>
+                        <div slot="content">
                             <p>
-                                {{
-                                    $t('Enabling this won\'t allow users to submit empty forms when there are no required form fields.')
-                                }}
+                                {{ $t('Enabling this won\'t allow users to submit empty forms when there are no required form fields.') }}
                             </p>
-                        </template>
+                        </div>
 
                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                     </el-tooltip>
-                </template>
+                </div>
 
                 <el-switch class="el-switch-lg" v-model="form.denyEmptySubmission.enabled"></el-switch>
             </el-form-item>
@@ -222,17 +211,15 @@
             <transition name="slide-down">
                 <div v-if="form.denyEmptySubmission.enabled" class="conditional-items">
                     <el-form-item class="ff-form-item">
-                        <template #label>
+                        <template slot="label">
                             {{ $t('Message Shown Against on Empty Submission') }}
 
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <template #content>
+                                <div slot="content">
                                     <p>
-                                        {{
-                                            $t('Enter a message to be displayed to users when they try to submit an empty form.')
-                                        }}
+                                        {{ $t('Enter a message to be displayed to users when they try to submit an empty form.')}}
                                     </p>
-                                </template>
+                                </div>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
@@ -249,21 +236,19 @@
         <div class="el-form-item-wrap">
             <h5 class="mb-3">{{ $t('Restrict Form') }}</h5>
             <el-form-item class="ff-form-item ff-form-item-flex">
-                <template #label style="width: 390px;">
+                <div slot="label" style="width: 390px;">
                     {{ $t('Restrict Form Submission') }}
 
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                        <template #content>
+                        <div slot="content">
                             <p>
-                                {{
-                                    $t('Enable this restriction or allow users to submit forms depending on the selected condition.')
-                                }}
+                                {{ $t('Enable this restriction or allow users to submit forms depending on the selected condition.') }}
                             </p>
-                        </template>
+                        </div>
 
                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                     </el-tooltip>
-                </template>
+                </div>
 
                 <el-switch class="el-switch-lg" v-model="form.restrictForm.enabled"></el-switch>
             </el-form-item>
@@ -274,22 +259,18 @@
                         <el-checkbox v-model="form.restrictForm.fields.ip.status">
                             {{ $t('IP Based Restriction') }}
                         </el-checkbox>
-                        <div v-if="form.restrictForm.fields.ip.status && form.restrictForm.enabled"
-                             class="conditional-items mb-6">
-                            <div v-if="isIpInfoActive">
+                        <div v-if="form.restrictForm.fields.ip.status && form.restrictForm.enabled" class="conditional-items mb-6">
+                            <div>
                                 <el-form-item class="ff-form-item">
-                                    <template #label>
+                                    <template slot="label">
                                         {{ $t('Add IP Address') }}
 
-                                        <el-tooltip class="item" placement="bottom-start"
-                                                    popper-class="ff_tooltip_wrap">
-                                            <template #content>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
                                                 <p>
-                                                    {{
-                                                        $t('Add multiple IP address separated by comma to restrict submission.')
-                                                    }}
+                                                    {{ $t('Add multiple IP address separated by comma to restrict submission.') }}
                                                 </p>
-                                            </template>
+                                            </div>
 
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
@@ -299,16 +280,15 @@
                                 </el-form-item>
 
                                 <el-form-item class="ff-form-item">
-                                    <template #label>
+                                    <template slot="label">
                                         {{ $t('IP Address Restriction Error Message') }}
 
-                                        <el-tooltip class="item" placement="bottom-start"
-                                                    popper-class="ff_tooltip_wrap">
-                                            <template #content>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
                                                 <p>
                                                     {{ $t('Set error message when IP address is invalid.') }}
                                                 </p>
-                                            </template>
+                                            </div>
 
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
@@ -319,18 +299,10 @@
 
                                 <el-form-item class="ff-form-item">
                                     <el-radio-group class="mb-3" v-model="form.restrictForm.fields.ip.validation_type">
-                                        <el-radio value="fail_on_condition_met">
-                                            {{ $t('Fail the submission if match') }}
-                                        </el-radio>
-                                        <el-radio value="success_on_condition_met">
-                                            {{ $t('Allow the submission if match') }}
-                                        </el-radio>
+                                        <el-radio label="fail_on_condition_met">{{ $t('Fail the submission if match')}}</el-radio>
+                                        <el-radio label="success_on_condition_met">{{ $t('Allow the submission if match') }}</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
-                            </div>
-                            <div v-else>
-                                <p class="ff_tips_warning">
-                                    {{ $t('Please setup your geolocation IP token from global settings.') }}</p>
                             </div>
                         </div>
                     </div>
@@ -339,26 +311,23 @@
                         <el-checkbox v-model="form.restrictForm.fields.country.status">
                             {{ $t('Country Based Restriction') }}
                         </el-checkbox>
-                        <div v-if="form.restrictForm.fields.country.status && form.restrictForm.enabled"
-                             class="conditional-items mb-6">
-                            <div v-if="isIpInfoActive">
+                        <div v-if="form.restrictForm.fields.country.status && form.restrictForm.enabled" class="conditional-items mb-6">
+                            <div>
                                 <el-form-item class="ff-form-item">
-                                    <template #label>
+                                    <template slot="label">
                                         {{ $t('Select Country') }}
 
-                                        <el-tooltip class="item" placement="bottom-start"
-                                                    popper-class="ff_tooltip_wrap">
-                                            <template #content>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
                                                 <p>
-                                                    {{ $t('Select country to set restriction.') }}
+                                                    {{ $t('Select country to set restriction. If you give Ipinfo.io token in global settings, then country will get from Ipinfo.io, otherwise it will use geolocation.net') }}
                                                 </p>
-                                            </template>
+                                            </div>
 
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
                                     </template>
-                                    <el-select filterable v-model="form.restrictForm.fields.country.values" multiple
-                                               class="w-100" :placeholder="$t('Select Country')">
+                                    <el-select filterable v-model="form.restrictForm.fields.country.values" multiple class="w-100">
                                         <el-option
                                             v-for="(value, key) in getCountries"
                                             :key="key"
@@ -369,40 +338,29 @@
                                 </el-form-item>
 
                                 <el-form-item class="ff-form-item">
-                                    <template #label>
+                                    <template slot="label">
                                         {{ $t('Country Restriction Error Message') }}
 
-                                        <el-tooltip class="item" placement="bottom-start"
-                                                    popper-class="ff_tooltip_wrap">
-                                            <template #content>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
                                                 <p>
                                                     {{ $t('Set error message when selected country is restricted.') }}
                                                 </p>
-                                            </template>
+                                            </div>
 
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
                                     </template>
 
-                                    <el-input type="textarea"
-                                              v-model="form.restrictForm.fields.country.message"></el-input>
+                                    <el-input type="textarea" v-model="form.restrictForm.fields.country.message"></el-input>
                                 </el-form-item>
 
                                 <el-form-item class="ff-form-item">
-                                    <el-radio-group class="mb-3"
-                                                    v-model="form.restrictForm.fields.country.validation_type">
-                                        <el-radio value="fail_on_condition_met">
-                                            {{ $t('Fail the submission if match') }}
-                                        </el-radio>
-                                        <el-radio value="success_on_condition_met">
-                                            {{ $t('Allow the submission if match') }}
-                                        </el-radio>
+                                    <el-radio-group class="mb-3" v-model="form.restrictForm.fields.country.validation_type">
+                                        <el-radio label="fail_on_condition_met">{{ $t('Fail the submission if match')}}</el-radio>
+                                        <el-radio label="success_on_condition_met">{{ $t('Allow the submission if match') }}</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
-                            </div>
-                            <div v-else>
-                                <p class="ff_tips_warning">
-                                    {{ $t('Please setup your geolocation IP token from global settings.') }}</p>
                             </div>
                         </div>
                     </div>
@@ -411,20 +369,17 @@
                         <el-checkbox v-model="form.restrictForm.fields.keywords.status">
                             {{ $t('Keyword Based Restriction') }}
                         </el-checkbox>
-                        <div v-if="form.restrictForm.fields.keywords.status && form.restrictForm.enabled"
-                             class="conditional-items">
+                        <div v-if="form.restrictForm.fields.keywords.status && form.restrictForm.enabled" class="conditional-items">
                             <el-form-item class="ff-form-item">
-                                <template #label>
+                                <template slot="label">
                                     {{ $t('Add Keywords') }}
 
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <template #content>
+                                        <div slot="content">
                                             <p>
-                                                {{
-                                                    $t('Add multiple keywords separated by comma to restrict submission.')
-                                                }}
+                                                {{ $t('Add multiple keywords separated by comma to restrict submission.') }}
                                             </p>
-                                        </template>
+                                        </div>
 
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
@@ -434,22 +389,21 @@
                             </el-form-item>
 
                             <el-form-item class="ff-form-item">
-                                <template #label>
+                                <template slot="label">
                                     {{ $t('Keywords Restriction Error Message') }}
 
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <template #content>
+                                        <div slot="content">
                                             <p>
                                                 {{ $t('Set error message when keywords are invalid.') }}
                                             </p>
-                                        </template>
+                                        </div>
 
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </template>
 
-                                <el-input type="textarea"
-                                          v-model="form.restrictForm.fields.keywords.message"></el-input>
+                                <el-input type="textarea" v-model="form.restrictForm.fields.keywords.message"></el-input>
                             </el-form-item>
                         </div>
                     </div>
@@ -460,103 +414,100 @@
 </template>
 
 <script>
-import Notice from "@/admin/components/Notice/Notice.vue";
+    import Notice from "@/admin/components/Notice/Notice.vue";
 
-export default {
-    name: 'FormRestrictions',
-    components: {Notice},
-    props: {
-        data: {
-            required: true
-        },
-        hasPro: {
-            required: true,
-            type: Boolean
-        }
-    },
-    data() {
-        return {
-            isIndeterminate: false,
-            checkAllWeekday: '',
-            selectedDays: [],
-            weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-            entryPeriodOptions: {
-                total: 'Total Entries',
-                day: 'Per Day',
-                week: 'Per Week',
-                month: 'Per Month',
-                year: 'Per Year',
-                per_user_ip: 'Per User (IP Address Based)',
-                per_user_id: 'Per User (Logged in ID based)'
+    export default {
+        name: 'FormRestrictions',
+        components: {Notice},
+        props: {
+            data: {
+                required: true
             },
-            datePickerOptions: {
-                shortcuts: [
-                    {
-                        text: 'Today',
-                        onClick(picker) {
-                            picker.$emit('pick', new Date());
-                        }
-                    },
-                    {
-                        text: this.$t('Yesterday'),
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24);
-                            picker.$emit('pick', date);
-                        }
-                    },
-                    {
-                        text: this.$t('A week ago'),
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', date);
-                        }
-                    }
-                ]
+            hasPro: {
+                required: true,
+                type: Boolean
             }
-        }
-    },
-    methods: {
-        handleCheckAllChange(val) {
-            this.selectedDays = val ? this.weekdays : [];
-            this.form.scheduleForm.selectedDays = this.selectedDays;
-            this.isIndeterminate = false;
         },
-        handleCheckedDayChange(value) {
+        data() {
+            return {
+                isIndeterminate: false,
+                checkAllWeekday:'',
+                selectedDays:[],
+                weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                entryPeriodOptions: {
+                    total: 'Total Entries',
+                    day: 'Per Day',
+                    week: 'Per Week',
+                    month: 'Per Month',
+                    year: 'Per Year',
+                    per_user_ip: 'Per User (IP Address Based)',
+                    per_user_id: 'Per User (Logged in ID based)'
+                },
+                datePickerOptions: {
+                    shortcuts: [
+                        {
+                            text: 'Today',
+                            onClick(picker) {
+                                picker.$emit('pick', new Date());
+                            }
+                        },
+                        {
+                            text: this.$t('Yesterday'),
+                            onClick(picker) {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24);
+                                picker.$emit('pick', date);
+                            }
+                        },
+                        {
+                            text: this.$t('A week ago'),
+                            onClick(picker) {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                                picker.$emit('pick', date);
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        methods: {
+            handleCheckAllChange(val) {
+                this.selectedDays = val ? this.weekdays : [];
+                this.form.scheduleForm.selectedDays = this.selectedDays;
+                this.isIndeterminate = false;
+            },
+            handleCheckedDayChange(value) {
 
-            let checkedCount = this.selectedDays.length;
-            this.checkAllWeekday = checkedCount === this.weekdays.length;
-            this.isIndeterminate = checkedCount > 0 && checkedCount < this.weekdays.length;
-            this.form.scheduleForm.selectedDays = this.selectedDays;
+                let checkedCount = this.selectedDays.length;
+                this.checkAllWeekday = checkedCount === this.weekdays.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.weekdays.length;
+                this.form.scheduleForm.selectedDays = this.selectedDays;
+
+            },
+            checkEnter() {
+            }
+        },
+        mounted() {
+            //if weekdays is not set initially select all weekday
+            if(!this.form.scheduleForm.selectedDays){
+                this.form.scheduleForm.selectedDays = this.weekdays;
+            }
+            this.selectedDays    = this.form.scheduleForm.selectedDays ;
+            this.checkAllWeekday = this.selectedDays.length === this.weekdays.length;
 
         },
-        checkEnter() {
-        }
-    },
-    mounted() {
-        //if weekdays is not set initially select all weekday
-        if (!this.form.scheduleForm.selectedDays) {
-            this.form.scheduleForm.selectedDays = this.weekdays;
-        }
-        this.selectedDays = this.form.scheduleForm.selectedDays;
-        this.checkAllWeekday = this.selectedDays.length === this.weekdays.length;
+        computed: {
+            form() {
+                return this.data;
+            },
+            getCountries() {
+                return window.FluentFormApp.countries;
+            },
+            hasFluentformPro() {
+                return !!window.FluentFormApp.hasPro;
+            }
 
-    },
-    computed: {
-        form() {
-            return this.data;
-        },
-        getCountries() {
-            return window.FluentFormApp.countries;
-        },
-        isIpInfoActive() {
-            return !!window.FluentFormApp.getIpInfo?.length;
-        },
-        hasFluentformPro() {
-            return !!window.FluentFormApp.hasPro;
         }
-
     }
-}
 </script>

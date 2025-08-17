@@ -1,22 +1,22 @@
 <template>
     <div class="ff_email_resend_inline">
-        <el-button v-if="element_type === 'button'" @click="openModal()" type="info" size="large">
+        <el-button v-if="element_type == 'button'" @click="openModal()" type="info" size="medium">
             {{ $t(btn_text) }}
         </el-button>
         <el-dialog
             top="60px"
             @before-close="resetData()"
             :append-to-body="true"
-            v-model="dialogVisible"
+            :visible.sync="dialogVisible"
             :width="has_pro ? '70%' : '45%'"
         >
-            <template #header>
+            <template slot="title">
                 <h4>{{$t('Choose an Action/Integration Feed and Replay')}}</h4>
             </template>
 
             <div v-if="has_pro" class="mt-4">
                 <div v-loading="loading" :element-loading-text="$t('Loading Feeds...')" class="ff_notification_feeds">
-                    <el-checkbox class="mb-3" true-value="yes" false-value="no" v-model="verify_condition">
+                    <el-checkbox class="mb-3" true-label="yes" false-label="no" v-model="verify_condition">
                         {{ $t('Check Conditional Logic when replaying a feed action') }}
                     </el-checkbox>
 
@@ -24,7 +24,7 @@
                         <el-table-column
                             width="180"
                             :label="$t('Integration Icon')">
-                            <template #default="scope">
+                            <template slot-scope="scope">
                                 <img v-if="scope.row.provider_logo" class="general_integration_logo"
                                      :src="scope.row.provider_logo" :alt="scope.row.provider"/>
                                 <span class="general_integration_name" v-else>{{scope.row.provider}}</span>
@@ -32,24 +32,36 @@
                         </el-table-column>
                         <el-table-column
                             :label="$t('Integration Feed Name')">
-                            <template #default="scope">
+                            <template slot-scope="scope">
                                 {{scope.row.name}}
                                 <span v-if="scope.row.has_condition"> {{ $t('(Conditional)') }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
-                            :label="$t('Status')"
+                            :label="$t('Feed Status')"
                             width="120">
-                            <template #default="scope">
+                            <template slot-scope="scope">
                                 <span v-if="scope.row.enabled">{{ $t('Active') }}</span>
                                 <span v-else>{{ $t('Draft') }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
-                            :label="$t('Actions')">
-                            <template #default="scope">
-                                <el-button @click="replayFeed(scope.row.id, scope.row.action_id)" type="info" size="small">
+                            :label="$t('Integration Status')"
+                            width="180">
+                            <template slot-scope="scope">
+                                <el-tag :type="`${scope.row.action_status == 'failed' ? 'danger' : scope.row.action_status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
+                                    {{scope.row.action_status}}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                            :label="$t('Action')">
+                            <template slot-scope="scope">
+                                <el-button @click="replayFeed(scope.row.id, scope.row.action_id)" type="success" size="mini">
                                     {{ $t('Replay') }}
+                                </el-button>
+                                <el-button @click="goToFeedLink(scope.row.feed_link)" type="info" size="mini">
+                                    {{ $t('View Feed') }}
                                 </el-button>
                             </template>
                         </el-table-column>
@@ -203,6 +215,9 @@
                 if (this.has_pro) {
                     this.getFeeds();
                 }
+            },
+            goToFeedLink(link) {
+                window.open(link, '_blank');
             }
         }
     }

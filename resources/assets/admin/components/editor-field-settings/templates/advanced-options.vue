@@ -6,17 +6,18 @@
                     <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
                 </div>
                 <div class="top-check-action">
-                    <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
+                    <el-checkbox v-model="valuesVisible">{{ $t("Show Values") }}</el-checkbox>
                     <el-checkbox v-if="hasCalValue" v-model="editItem.settings.calc_value_status"
-                    >{{ $t('Calc Values') }}
+                    >
+                        {{ $t("Calc Values") }}
                     </el-checkbox>
                     <template v-if="has_pro">
                         <el-checkbox v-if="hasImageSupport" v-model="editItem.settings.enable_image_input"
-                        >{{ $t('Photo') }}
+                        >{{ $t("Photo") }}
                         </el-checkbox>
                     </template>
                     <template v-else-if="hasImageSupport">
-                        <el-checkbox v-model="pro_mock" @change="showProMessage()">{{ $t('Photo') }}</el-checkbox>
+                        <el-checkbox v-model="pro_mock" @change="showProMessage()">{{ $t("Photo") }}</el-checkbox>
                     </template>
                 </div>
             </div>
@@ -51,7 +52,7 @@
                             style="max-width: 64px; max-height: 32px; overflow: hidden"
                             v-if="editItem.settings.enable_image_input && hasImageSupport"
                         >
-                            <photo-widget enable_clear="yes" v-model="option.image" :for_advanced_option="true"/>
+                            <photo-widget enable_clear="yes" v-model="option.image" :for_advanced_option="true" />
                         </div>
 
                         <div>
@@ -84,24 +85,30 @@
             </template>
         </draggable>
 
-        <el-button type="warning" size="small" :disabled="!editItem.attributes.value" @click.prevent="clear"
-        >{{ $t('Clear Selection') }}
+        <el-button
+            type="warning"
+            size="small"
+            :disabled="!editItem.attributes.value"
+            @click.prevent="clear"
+        >
+            {{ $t("Clear Selection") }}
         </el-button>
 
         <el-button
             size="small"
             @click="initBulkEdit()"
             v-if="!editItem.settings.calc_value_status && !editItem.settings.enable_image_input"
-        >{{ $t('Bulk Edit / Predefined Data Sets') }}
+        >
+            {{ $t("Bulk Edit / Predefined Data Sets") }}
         </el-button>
 
         <div :class="{ ff_backdrop: bulkEditVisible }">
             <el-dialog :append-to-body="false" v-model="bulkEditVisible" width="60%">
                 <template #header>
-                    <h4 class="mb-2">{{ $t('Edit your options') }}</h4>
+                    <h4 class="mb-2">{{ $t("Edit your options") }}</h4>
                     <p>
                         {{
-                            $t('Please provide the value as LABEL:VALUE as each line or select from predefined data sets')
+                            $t("Please provide the value as LABEL:VALUE as each line or select from predefined data sets")
                         }}
                     </p>
                 </template>
@@ -113,17 +120,16 @@
                                     @click="setOptions(options)"
                                     v-for="(options, optionGroup) in editor_options"
                                     :key="optionGroup"
-                                    :class="{ active: options === activeClass }"
-                                >
-                                    {{ optionGroup }}
+                                    :class="{ 'active': options === activeClass}"
+                                >{{ optionGroup }}
                                 </li>
                             </ul>
                         </el-col>
                         <el-col :span="24">
                             <el-input type="textarea" :rows="5" v-model="value_key_pair_text"></el-input>
                             <p class="mt-2">
-                                {{ $t('You can simply give value only the system will convert the label as value') }}
-                            </p>
+                                {{ $t("You can simply give value only the system will convert the label as value. To include a colon in either the label or value, use the escape sequence \\:, e.g., LABEL\\:A:VALUE")
+                                }}</p>
                         </el-col>
                     </el-row>
                 </div>
@@ -141,80 +147,80 @@
 </template>
 
 <script>
-import elLabel from '../../includes/el-label.vue';
-import each from 'lodash/each';
-import PhotoWidget from '@/common/PhotoUploader.vue';
-import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
-import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
-import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
+import elLabel from "../../includes/el-label.vue";
+import each from "lodash/each";
+import PhotoWidget from "@/common/PhotoUploader.vue";
+import ActionBtn from "@/admin/components/ActionBtn/ActionBtn.vue";
+import ActionBtnAdd from "@/admin/components/ActionBtn/ActionBtnAdd.vue";
+import ActionBtnRemove from "@/admin/components/ActionBtn/ActionBtnRemove.vue";
 
 export default {
-    name: 'advanced-options',
+    name: "advanced-options",
     props: {
         editItem: {
-            type: Object,
+            type: Object
         },
         listItem: {
-            type: Object,
+            type: Object
         },
         hasCalValue: {
             default() {
                 return true;
-            },
-        },
+            }
+        }
     },
     components: {
         elLabel,
         PhotoWidget,
         ActionBtn,
         ActionBtnAdd,
-        ActionBtnRemove,
+        ActionBtnRemove
     },
     data() {
         return {
             optionsToRender: [],
             bulkEditVisible: false,
-            value_key_pair_text: '',
+            value_key_pair_text: "",
             has_pro: !!window.FluentFormApp.hasPro,
             pro_mock: false,
             editor_options: JSON.parse(window.FluentFormApp.bulk_options_json),
             activeClass: null,
-            defaultOptionsRefs: [],
+            defaultOptionsRefs: []
         };
     },
     computed: {
         stageDragOptions() {
             return {
                 animation: 200,
-                ghostClass: 'vddl-placeholder',
-                dragClass: 'vddl-dragover',
+                ghostClass: "vddl-placeholder",
+                dragClass: "vddl-dragover",
                 bubbleScroll: false,
                 emptyInsertThreshold: 100,
-                handle: '.handle',
-                direction: 'horizontal'
+                handle: ".handle",
+                direction: "horizontal"
             };
         },
         optionsType() {
             let determiner =
                 this.editItem.attributes.type ||
-                (this.editItem.attributes.multiple && 'multiselect') ||
+                (this.editItem.attributes.multiple && "multiselect") ||
                 this.editItem.element;
 
             switch (determiner) {
-                case 'multiselect':
-                case 'checkbox':
-                    return 'checkbox';
+                case "multiselect":
+                case "checkbox":
+                    return "checkbox";
                     break;
-                case 'select':
-                case 'radio':
-                    return 'radio';
+                case "select":
+                case "radio":
+                    return "radio";
                     break;
                 default:
-                    return 'radio';
+                    return "radio";
             }
         },
         hasImageSupport() {
-            return this.editItem.element !== 'select';
+            return this.editItem.element !== "select";
         },
         valuesVisible: {
             get() {
@@ -222,8 +228,8 @@ export default {
             },
             set(val) {
                 this.editItem.settings.values_visible = val;
-            },
-        },
+            }
+        }
     },
     methods: {
         handleDrop(evt) {
@@ -236,32 +242,51 @@ export default {
             }
         },
         initBulkEdit() {
-            let asText = '';
-            each(this.editItem.settings.advanced_options, item => {
-                asText += item.label;
-                if (item.label && item.label !== item.value) {
-                    asText += ':' + item.value;
+            let astext = "";
+            each(this.editItem.settings.advanced_options, (item) => {
+                let label = item.label;
+                let value = item.value;
+
+                // Convert label, value ':' to escaped colons '\:'
+                if (label.includes(":")) {
+                    label = label.replace(/:/g, "\\:");
                 }
-                asText += String.fromCharCode(13, 10);
+                if (value.includes(":")) {
+                    value = value.replace(/:/g, "\\:");
+                }
+
+                astext += label;
+                if (item.label && item.label != item.value) {
+                    astext += " : " + value;
+                }
+                astext += String.fromCharCode(13, 10);
             });
-            this.value_key_pair_text = asText;
+            this.value_key_pair_text = astext;
             this.bulkEditVisible = true;
         },
 
         confirmBulkEdit() {
-            let lines = this.value_key_pair_text.split('\n');
+            let lines = this.value_key_pair_text.split("\n");
             let values = [];
-            each(lines, line => {
-                let lineItem = line.split(':');
+            each(lines, (line) => {
+                // Split by ':' but ignore escaped colons '\:'
+                let lineItem = line.split(/(?<!\\):/);
+
+                // Convert label, value escaped colons '\:' to ':'
                 let label = lineItem[0];
+                if (label) {
+                    label = label.replace(/\\:/g, ":").trim();
+                }
                 let value = lineItem[1];
-                if (!value) {
+                if (value) {
+                    value = value.replace(/\\:/g, ":").trim();
+                } else {
                     value = label;
                 }
                 if (label && value) {
                     values.push({
                         label: label,
-                        value: value,
+                        value: value
                     });
                 }
             });
@@ -271,8 +296,10 @@ export default {
         },
 
         isChecked(optVal) {
-            if (typeof this.editItem.attributes.value !== 'number') {
+            if (Array.isArray(this.editItem.attributes.value)) {
                 return this.editItem.attributes.value.includes(optVal);
+            } else {
+                return this.editItem.attributes.value == optVal;
             }
         },
 
@@ -285,15 +312,15 @@ export default {
                 let nums = value.match(/\d+/g);
                 return nums && Number(nums.pop());
             });
-            let key = Math.max(...keys.filter(i => i !== 'undefined')) + 1;
+            let key = Math.max(...keys.filter(i => i != "undefined")) + 1;
             let optionStr = `Item ${key}`;
-            let optionKey = optionStr.toLowerCase().replace(/\s/g, '_');
+            let optionKey = optionStr.toLowerCase().replace(/\s/g, "_");
 
             let newOpt = {
                 label: optionStr,
                 value: optionKey,
-                calc_value: '',
-                image: '',
+                calc_value: "",
+                image: ""
             };
 
             options.splice(index + 1, 0, newOpt);
@@ -305,34 +332,31 @@ export default {
                 options.splice(index, 1);
             } else {
                 this.$notify.error({
-                    message: 'You have to have at least one option.',
-                    offset: 30,
+                    message: "You have to have at least one option.",
+                    offset: 30
                 });
             }
         },
 
         setOptions(options) {
-            this.value_key_pair_text = options.join('\n');
+            this.value_key_pair_text = options.join("\n");
             this.activeClass = options;
         },
 
         clear() {
             let attributes = this.editItem.attributes;
 
-            if (attributes.type === 'checkbox' || attributes.multiple) {
+            if (attributes.type == "checkbox" || attributes.multiple) {
                 attributes.value = [];
             } else {
-                attributes.value = '';
+                attributes.value = "";
             }
-
-            this.defaultOptionsRefs.forEach(el => {
-                if (el) el.checked = false;
-            });
+            this.$refs.defaultOptions.map(el => el.checked = false);
         },
 
         updateDefaultOption(option) {
             let attributes = this.editItem.attributes;
-            if (attributes.type === 'checkbox' || attributes.multiple) {
+            if (attributes.type == "checkbox" || attributes.multiple) {
                 if (event.target.checked) {
                     attributes.value.push(option.value);
                 } else {
@@ -342,7 +366,7 @@ export default {
                 if (event.target.checked) {
                     attributes.value = option.value;
                 } else {
-                    attributes.value = '';
+                    attributes.value = "";
                 }
             }
         },
@@ -351,7 +375,7 @@ export default {
             this.optionsToRender = this.editItem.settings.advanced_options;
         },
         showProMessage() {
-            this.$notify.error('Image type fields only available on pro version');
+            this.$notify.error("Image type fields only available on pro version");
             this.pro_mock = false;
         },
     },

@@ -3,8 +3,7 @@
 namespace FluentForm\App\Services\FormBuilder\Components;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\App\Utils\Enqueuer\Vite;
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Text extends BaseComponent
 {
@@ -36,20 +35,20 @@ class Text extends BaseComponent
             $data['attributes']['data-mask'] = $data['settings']['temp_mask'];
         }
 
-        if ('custom' == Arr::get($data, 'settings.temp_mask')) {
-            if ('yes' == Arr::get($data, 'settings.data-mask-reverse')) {
+        if ('custom' == ArrayHelper::get($data, 'settings.temp_mask')) {
+            if ('yes' == ArrayHelper::get($data, 'settings.data-mask-reverse')) {
                 $data['attributes']['data-mask-reverse'] = 'true';
             }
 
-            if ('yes' == Arr::get($data, 'settings.data-clear-if-not-match')) {
+            if ('yes' == ArrayHelper::get($data, 'settings.data-clear-if-not-match')) {
                 $data['attributes']['data-clear-if-not-match'] = 'true';
             }
         }
 
         if (isset($data['attributes']['data-mask'])) {
-            Vite::enqueueStaticScript(
+            wp_enqueue_script(
                 'jquery-mask',
-                'assets/libs/jquery.mask.min.js',
+                fluentformMix('libs/jquery.mask.min.js'),
                 ['jquery'],
                 '1.14.15',
                 true
@@ -58,8 +57,8 @@ class Text extends BaseComponent
 
         if ('input_number' == $data['element'] || 'custom_payment_component' == $data['element']) {
             if (
-                Arr::get($data, 'settings.calculation_settings.status') &&
-                $formula = Arr::get($data, 'settings.calculation_settings.formula')
+                ArrayHelper::get($data, 'settings.calculation_settings.status') &&
+                $formula = ArrayHelper::get($data, 'settings.calculation_settings.formula')
             ) {
                 $data['attributes']['data-calculation_formula'] = $formula;
                 $data['attributes']['class'] .= ' ff_has_formula';
@@ -94,7 +93,7 @@ class Text extends BaseComponent
                     'Use fluentform/disable_input_mode instead of fluentform_disable_inputmode'
                 );
                 if (! apply_filters('fluentform/disable_input_mode', $isDisable)) {
-                    $inputMode = apply_filters('fluentform/number_input_mode', Arr::get($data, 'attributes.inputmode'), $data, $form);
+                    $inputMode = apply_filters('fluentform/number_input_mode', ArrayHelper::get($data, 'attributes.inputmode'), $data, $form);
                     if (! $inputMode) {
                         $inputMode = 'numeric';
                     }
@@ -102,31 +101,31 @@ class Text extends BaseComponent
                 }
             }
 
-            if ($step = Arr::get($data, 'settings.number_step')) {
+            if ($step = ArrayHelper::get($data, 'settings.number_step')) {
                 $data['attributes']['step'] = $step;
-            } elseif ('number' == Arr::get($data, 'attributes.type')) {
+            } elseif ('number' == ArrayHelper::get($data, 'attributes.type')) {
                 $data['attributes']['step'] = 'any';
             }
 
-            $min = Arr::get($data, 'settings.validation_rules.min.value');
+            $min = ArrayHelper::get($data, 'settings.validation_rules.min.value');
             if ($min || 0 == $min) {
                 $data['attributes']['min'] = $min;
                 $data['attributes']['aria-valuemin'] = $min;
             }
 
-            if ($max = Arr::get($data, 'settings.validation_rules.max.value')) {
+            if ($max = ArrayHelper::get($data, 'settings.validation_rules.max.value')) {
                 $data['attributes']['max'] = $max;
                 $data['attributes']['aria-valuemax'] = $max;
             }
 
-            if ($formatter = Arr::get($data, 'settings.numeric_formatter')) {
+            if ($formatter = ArrayHelper::get($data, 'settings.numeric_formatter')) {
                 $formatters = Helper::getNumericFormatters();
                 if (! empty($formatters[$formatter]['settings'])) {
                     $data['attributes']['class'] .= ' ff_numeric';
                     $data['attributes']['data-formatter'] = json_encode($formatters[$formatter]['settings']);
-                    Vite::enqueueStaticScript(
+                    wp_enqueue_script(
                         'currency',
-                        'assets/libs/currency.min.js',
+                        fluentformMix('libs/currency.min.js'),
                         [],
                         '2.0.3',
                         true
@@ -137,7 +136,7 @@ class Text extends BaseComponent
         }
 
         // For hidden input
-        if ('hidden' == $data['attributes']['type']) {
+        if ('hidden' == ArrayHelper::get($data, 'attributes.type')) {
             $attributes = $this->buildAttributes($data['attributes'], $form);
             echo '<input ' . $attributes . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $attributes is escaped before being passed in.
             return;
@@ -147,7 +146,7 @@ class Text extends BaseComponent
             $data['attributes']['tabindex'] = $tabIndex;
         }
 
-        $data['attributes']['class'] = @trim('ff-el-form-control ' . Arr::get($data, 'attributes.class', ''));
+        $data['attributes']['class'] = @trim('ff-el-form-control ' . ArrayHelper::get($data, 'attributes.class', ''));
         $data['attributes']['id'] = $this->makeElementId($data, $form);
 
         $elMarkup = $this->buildInputGroup($data, $form);
@@ -172,13 +171,13 @@ class Text extends BaseComponent
     private function buildInputGroup($data, $form)
     {
         $ariaRequired = 'false';
-        if (Arr::get($data, 'settings.validation_rules.required.value')) {
+        if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
             $ariaRequired = 'true';
         }
 
         $input = '<input ' . $this->buildAttributes($data['attributes'], $form) . ' aria-invalid="false" aria-required='.$ariaRequired.'>';
-        $prefix = Arr::get($data, 'settings.prefix_label');
-        $suffix = Arr::get($data, 'settings.suffix_label');
+        $prefix = ArrayHelper::get($data, 'settings.prefix_label');
+        $suffix = ArrayHelper::get($data, 'settings.suffix_label');
         if ($prefix || $suffix) {
             $wrapper = '<div class="ff_input-group">';
             if ($prefix) {

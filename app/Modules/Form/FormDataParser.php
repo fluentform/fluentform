@@ -280,6 +280,7 @@ class FormDataParser
         $columns = $data['settings']['grid_columns'];
 
         foreach ($rows as $rowKey => $rowValue) {
+            $rowKey = trim(sanitize_text_field($rowKey));
             $table[$rowKey] = [
                 'name'    => $rowKey,
                 'label'   => $rowValue,
@@ -288,12 +289,11 @@ class FormDataParser
 
             foreach ($columns as $columnKey => $columnValue) {
                 $table[$rowKey]['columns'][] = [
-                    'name'  => $columnKey,
+                    'name'  => trim(sanitize_text_field($columnKey)),
                     'label' => $columnValue,
                 ];
             }
         }
-
         return $table;
     }
 

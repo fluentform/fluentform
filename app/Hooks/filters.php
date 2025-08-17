@@ -33,7 +33,10 @@ add_filter('fluentform/get_global_settings_values', function ($values, $key) {
         if (in_array('_fluentform_global_default_message_setting_fields', $key)) {
             $values['_fluentform_global_default_message_setting_fields'] = \FluentForm\App\Helpers\Helper::globalDefaultMessageSettingFields();
         }
-        if (in_array('_fluentform_global_form_settings', $key) && !isset($values['_fluentform_global_form_settings']['default_messages'])) {
+
+        if (in_array('_fluentform_global_form_settings', $key) &&
+            !\FluentForm\Framework\Helpers\ArrayHelper::isTrue($values, '_fluentform_global_form_settings.default_messages')
+        ) {
             $values['_fluentform_global_form_settings']['default_messages'] = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
         }
     }
@@ -149,8 +152,24 @@ $elements = [
 
 foreach ($elements as $element) {
     $event = 'fluentform/response_render_' . $element;
-    $app->addFilter($event, function ($response, $field, $form_id, $isLabel = false) {
+    $app->addFilter($event, function ($response, $field, $form_id, $isHtml = false) {
         $element = $field['element'];
+        $isHtml = apply_filters("fluentform/format_{$element}_response_as_html", $isHtml, $response, $field);
+
+        if ('dynamic_field' == $element) {
+            $dynamicFetchValue = 'yes' == \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.dynamic_fetch');
+            if ($dynamicFetchValue) {
+                $field = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $field);
+            }
+            $attrType = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.attributes.type');
+            if ('radio' == $attrType) {
+                $element = 'input_radio';
+            } elseif ('checkbox' == $attrType) {
+                $element = 'input_checkbox';
+            } elseif ('select' == $attrType) {
+                $element = 'select';
+            }
+        }
 
         if ('dynamic_field' == $element) {
             $dynamicFetchValue = 'yes' == \FluentForm\Framework\Support\Arr::get($field, 'raw.settings.dynamic_fetch');
@@ -174,6 +193,10 @@ foreach ($elements as $element) {
             }
         }
 
+        if ('address' == $element) {
+            unset($response->latitude, $response->longitude);
+        }
+
         if ('select_country' == $element) {
             $countryList = getFluentFormCountryList();
             if (isset($countryList[$response])) {
@@ -189,7 +212,7 @@ foreach ($elements as $element) {
             }
         }
 
-        if ($response && $isLabel && in_array($element, ['select', 'input_radio']) && !is_array($response)) {
+        if ($response && $isHtml && in_array($element, ['select', 'input_radio']) && !is_array($response)) {
             if (!isset($field['options'])) {
                 $field['options'] = [];
                 foreach (\FluentForm\Framework\Support\Arr::get($field, 'raw.settings.advanced_options', []) as $option) {
@@ -202,7 +225,7 @@ foreach ($elements as $element) {
         }
 
         if (in_array($element, ['select', 'input_checkbox', 'multi_payment_component']) && is_array($response)) {
-            return \FluentForm\App\Modules\Form\FormDataParser::formatCheckBoxValues($response, $field, $isLabel);
+            return \FluentForm\App\Modules\Form\FormDataParser::formatCheckBoxValues($response, $field, $isHtml);
         }
 
         return \FluentForm\App\Modules\Form\FormDataParser::formatValue($response);
@@ -289,8 +312,8 @@ $app->addFilter('fluentform/filter_insert_data', function ($data) {
 
 $app->addFilter('fluentform/disabled_analytics', function ($status) {
     $settings = get_option('_fluentform_global_form_settings');
-    if (isset($settings['misc']['isAnalyticsDisabled']) && $settings['misc']['isAnalyticsDisabled']) {
-        return true;
+    if (isset($settings['misc']['isAnalyticsDisabled']) && !$settings['misc']['isAnalyticsDisabled']) {
+        return false;
     }
 
     return $status;
@@ -379,6 +402,22 @@ $app->addFilter(
         return $defaultSettings;
     }
 );
+
+// render badge toggle in form editor in case of recaptcha v3
+$app->addFilter('fluentform/editor_element_settings_placement', function($placements, $form) {
+    $recaptchaDetails = get_option('_fluentform_reCaptcha_details');
+    if (!$recaptchaDetails) {
+        return $placements;
+    }
+
+    $isRecaptchaV3 = \FluentForm\Framework\Helpers\ArrayHelper::get($recaptchaDetails, 'api_version') === 'v3_invisible';
+    if (!$isRecaptchaV3) {
+        return $placements;
+    }
+
+    $placements['recaptcha']['general'][] = 'render_recaptcha_v3_badge';
+    return $placements;
+}, 10, 2);
 
 
 /*

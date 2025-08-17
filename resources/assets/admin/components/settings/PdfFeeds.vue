@@ -13,7 +13,7 @@
                             </p>
                         </template>
                         <template v-else>
-                            <h5 class="title">{{ $t('Edit PDF Feed ') }} - {{selectedId}}</h5>
+                            <h5 class="title">{{ $t('Edit PDF Feed - %s', selectedId) }}</h5>
                         </template>
                     </div>
                     <btn-group class="action-buttons">

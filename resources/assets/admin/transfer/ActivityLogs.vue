@@ -85,53 +85,60 @@
                             class="entry_submission_log ff_table_s2"
                             @selection-change="handleSelectionChange"
                         >
-                            <el-table-column sortable type="selection" width="50"></el-table-column>
+                            <el-table-column sortable type="selection" width="40"></el-table-column>
                             <el-table-column type="expand">
-                                <template #default="props">
+                                <template slot-scope="props">
                                     <p v-html="props.row.description"></p>
                                 </template>
                             </el-table-column>
-                            <el-table-column sortable prop="id" width="100px" :label="$t('ID')"></el-table-column>
+                            <el-table-column sortable prop="id" width="60" :label="$t('ID')"></el-table-column>
                             <el-table-column sortable width="140px" :label="$t('Submission ID')">
-                                <template #default="props">
+                                <template slot-scope="props">
                                     <a v-if="props.row.submission_url" :href="props.row.submission_url">#{{props.row.source_id}}</a>
                                     <span v-else>n/a</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column sortable :label="$t('Form')">
-                                <template #default="props">
+                            <el-table-column sortable :label="$t('Form')"  width="140">
+                                <template slot-scope="props">
                                     <span v-if="props.row.form_title">{{props.row.form_title}}</span>
                                     <span v-else>{{ $t('General Log') }}</span>
                                 </template>
                             </el-table-column>
                             <el-table-column sortbale prop="title" :label="$t('Title')"></el-table-column>
                             <el-table-column sortable prop="status" :label="$t('Status')" width="100">
-                                <template #default="props">
+                                <template slot-scope="props">
                                     <el-tag :type="getStatusClass(props.row.status)" size="small" class="el-tag--pill text-capitalize">
                                         {{props.row.status}}
                                     </el-tag>
                                 </template>
                             </el-table-column>
                             <el-table-column sortable :label="$t('Component')">
-                                <template #default="props">
+                                <template slot-scope="props">
                                     <div>{{ props.row.component }}</div>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="created_at" :label="$t('Date')" width="180"></el-table-column>
+                            <el-table-column prop="created_at" :label="$t('Date')" width="180">
+                                <template slot-scope="props">
+                                    <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            {{tooltipDateTime(props.row.created_at)}}
+                                        </div>
+
+                                        <span>{{humanDiffTime(props.row.created_at)}}</span>
+                                    </el-tooltip>
+                                </template>
+                            </el-table-column>
                             <el-table-column width="115" fixed="right" align="center" :label="$t('Action')">
-                                <template #default="props">
+                                <template slot-scope="props">
                                     <btn-group size="sm">
                                         <btn-group-item>
                                             <remove :plain="true" @on-confirm="deleteItems(props.row.id)">
                                                 <el-button
                                                     class="el-button--icon"
-                                                    size="small"
+                                                    size="mini"
                                                     type="danger"
-                                                >
-                                                    <template #icon>
-                                                        <i class="el-icon-delete"></i>
-                                                    </template>
-                                                </el-button>
+                                                    icon="el-icon-delete"
+                                                />
                                             </remove>
                                         </btn-group-item>
                                     </btn-group>
@@ -159,9 +166,9 @@
     </div>
 </template>
 
-<script>
+<script type="text/babel">
     import each from 'lodash/each';
-    import remove from "../components/confirmRemove.vue";
+    import remove from "../components/confirmRemove";
     import Card from '@/admin/components/Card/Card.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';

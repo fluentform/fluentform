@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\Component;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Services\FormBuilder\EditorShortcodeParser;
 use FluentForm\App\Services\FormBuilder\Notifications\EmailNotificationActions;
 use FluentForm\App\Utils\Enqueuer\Vite;
@@ -161,7 +162,21 @@ class Component
 
         if ($hasFluentformMeta || apply_filters('fluentform/load_styles', $loadStyle, $post)) {
             wp_enqueue_style('fluent-form-styles');
-            wp_enqueue_style('fluentform-public-default');
+            $loadPublicStyle = apply_filters_deprecated(
+                'fluentform_load_default_public',
+                [
+                    true,
+                    (object)[],
+                    $postId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/load_default_public',
+                'Use fluentform/load_default_public instead of fluentform_load_default_public.'
+            );
+
+            if (apply_filters('fluentform/load_default_public', $loadPublicStyle, (object)[], $postId)) {
+                wp_enqueue_style('fluentform-public-default');
+            }
 
             do_action_deprecated(
                 'fluentform_pre_load_scripts',
@@ -294,7 +309,7 @@ class Component
             ],
         ];
 
-        if (!defined('FLUENTFORMPRO')) {
+        if (!Helper::hasPro()) {
             $disabled['ratings'] = [
                 'disabled'    => true,
                 'title'       => __('Ratings', 'fluentform'),
@@ -377,54 +392,6 @@ class Component
                 'title'       => __('Color Picker', 'fluentform'),
                 'description' => __('Color Picker is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
                 'image'       => fluentformMix('img/pro-fields/color-picker.png'),
-                'video'       => '',
-            ];
-            $disabled['multi_payment_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Payment Field', 'fluentform'),
-                'description' => __('Payment Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/payment-field.png'),
-                'video'       => '',
-            ];
-            $disabled['custom_payment_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => 'Custom Payment Amount',
-                'description' => __('Custom Payment Amount is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/custom-payment-amount.png'),
-                'video'       => '',
-            ];
-            $disabled['subscription_payment_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Subscription Field', 'fluentform'),
-                'description' => __('Subscription Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/subscription-field.png'),
-                'video'       => '',
-            ];
-            $disabled['item_quantity_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Item Quantity', 'fluentform'),
-                'description' => __('Item Quantity is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/item-quantity.png'),
-                'video'       => '',
-            ];
-            $disabled['payment_method'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Payment Method', 'fluentform'),
-                'description' => __('Payment Method is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/payment-method.png'),
-                'video'       => '',
-            ];
-            $disabled['payment_summary_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Payment Summary', 'fluentform'),
-                'description' => __('Payment Summary is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/payment-summary.png'),
                 'video'       => '',
             ];
             $disabled['payment_coupon'] = [
@@ -556,7 +523,7 @@ class Component
         
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
-            ->where('form_id', $form_id)
+            ->where('form_id', $form->id)
             ->where('meta_key', 'formSettings')
             ->first();
 
@@ -565,7 +532,6 @@ class Component
         }
 
         $form->fields = json_decode($form->form_fields, true);
-
         if (!$form->fields['fields']) {
             return '';
         }
@@ -619,19 +585,20 @@ class Component
         }
 
         wp_enqueue_style('fluent-form-styles');
-
+        $postId = get_the_ID() ?: 0;
         $loadStyle = apply_filters_deprecated(
             'fluentform_load_default_public',
             [
                 true,
-                $form
+                $form,
+                $postId
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/load_default_public',
             'Use fluentform/load_default_public instead of fluentform_load_default_public.'
         );
 
-        if (apply_filters('fluentform/load_default_public', $loadStyle, $form)) {
+        if (apply_filters('fluentform/load_default_public', $loadStyle, $form, $postId)) {
             wp_enqueue_style('fluentform-public-default');
         }
         /*
@@ -655,29 +622,34 @@ class Component
         $stepText = apply_filters('fluentform/step_string', $stepText);
 
         $data = [
-            'ajaxUrl'               => admin_url('admin-ajax.php'),
-            'forms'                 => [],
-            'step_text'             => $stepText,
-            'is_rtl'                => is_rtl(),
-            'date_i18n'             => self::getDatei18n(),
-            'pro_version'           => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,
-            'fluentform_version'    => FLUENTFORM_VERSION,
-            'force_init'            => false,
-            'stepAnimationDuration' => 350,
-            'upload_completed_txt'  => __('100% Completed', 'fluentform'),
-            'upload_start_txt'      => __('0% Completed', 'fluentform'),
-            'uploading_txt'         => __('Uploading', 'fluentform'),
-            'choice_js_vars'        => [
+            'ajaxUrl'                       => admin_url('admin-ajax.php'),
+            'forms'                         => [],
+            'step_text'                     => $stepText,
+            'is_rtl'                        => is_rtl(),
+            'date_i18n'                     => self::getDatei18n(),
+            'pro_version'                   => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,
+            'fluentform_version'            => FLUENTFORM_VERSION,
+            'force_init'                    => false,
+            'stepAnimationDuration'         => 350,
+            'upload_completed_txt'          => __('100% Completed', 'fluentform'),
+            'upload_start_txt'              => __('0% Completed', 'fluentform'),
+            'uploading_txt'                 => __('Uploading', 'fluentform'),
+            'choice_js_vars'                => [
                 'noResultsText'  => __('No results found', 'fluentform'),
                 'loadingText'    => __('Loading...', 'fluentform'),
                 'noChoicesText'  => __('No choices to choose from', 'fluentform'),
                 'itemSelectText' => __('Press to select', 'fluentform'),
                 'maxItemText'    => __('Only %%maxItemCount%% options can be added', 'fluentform'),
             ],
-            'input_mask_vars' => [
+            'input_mask_vars'               => [
                 'clearIfNotMatch' => false,
             ],
-       ];
+            'nonce'                         => wp_create_nonce(),
+            'form_id'                       => $form_id,
+            'step_change_focus'             => true,
+            'has_cleantalk'                 => \FluentForm\App\Modules\Form\CleanTalkHandler::isCleantalkActivated(),
+            'pro_payment_script_compatible' => Helper::isProPaymentScriptCompatible(),
+        ];
     
         $data = apply_filters_deprecated(
             'fluentform_global_form_vars',
@@ -701,12 +673,19 @@ class Component
             'enabled' => false,
         ];
 
+        if (!empty($formBuilder->validationRules)) {
+            $formBuilder->validationRules = fluentform_backend_sanitizer($formBuilder->validationRules, [
+                'message' => 'fluentform_sanitize_html'
+            ]);
+        }
+
         $form_vars = [
             'id'               => $form->id,
             'settings'         => $formSettings,
             'form_instance'    => $instanceCssClass,
             'form_id_selector' => 'fluentform_' . $form->id,
             'rules'            => $formBuilder->validationRules,
+            'debounce_time'    => apply_filters('fluentform/show_hide_elements_debounce_time', 300),
         ];
 
         if ($conditionals = $formBuilder->conditions) {
@@ -729,7 +708,10 @@ class Component
         }
 
         $otherScripts = '';
-        ob_start();
+        $otherScriptsRenderImmediately = apply_filters('fluentform/load_form_instance_js_var_immediately', false);
+        if (!$otherScriptsRenderImmediately) {
+            ob_start();
+        }
         ?>
         <script type="text/javascript">
             window.fluent_form_<?php echo esc_attr($instanceCssClass); ?> = <?php echo wp_json_encode($form_vars); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form_vars is escaped before being passed in.?>;
@@ -750,12 +732,15 @@ class Component
         </script>
         <?php
         $this->addInlineVars();
-        $otherScripts .= ob_get_clean();
+        if (!$otherScriptsRenderImmediately) {
+            $otherScripts .= ob_get_clean();
+        }
+
 
         $disableAnalytics = apply_filters_deprecated(
             'fluentform-disabled_analytics',
             [
-                false
+                true
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/disabled_analytics',
@@ -1208,7 +1193,8 @@ class Component
             'net_promoter_score',
             'featured_image',
         ];
-
+        $advancedFields = apply_filters('fluentform/fields_requiring_advanced_script', $advancedFields);
+        
         if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
             wp_enqueue_script('fluentform-advanced');
         }
@@ -1374,6 +1360,42 @@ class Component
                 return esc_html($value);
             }
             return '';
+        });
+
+        $this->app->addShortcode('ff_entry',function($atts){
+            ob_start();
+    
+            $atts = shortcode_atts([
+                'form_id' => '',
+                'serial_number' => '',
+                'field' => '',
+                'is_html' => true,
+            ], $atts);
+    
+            if (empty($atts['form_id'])  || empty($atts['field'])) {
+                return '';
+            }
+    
+    
+            $formId = (int) $atts['form_id'];
+            $form = wpFluent()->table('fluentform_forms')->find($formId);
+            if (!$form) {
+                return __('Form not found.', 'fluentform');
+            }
+            $isHtml = $atts['is_html'] === 'true' ? true : false;
+            $submission = (new \FluentForm\App\Services\Submission\SubmissionService())->findBySerialID($formId, $atts['serial_number'],$isHtml);
+            if (!$submission) {
+                return __('No entry found.', 'fluentform');
+            }
+    
+            $input = $submission->user_inputs;
+            $field = sanitize_text_field($atts['field']);
+            $fieldVal = Arr::get($input, $field, '');
+    
+            $response = FormDataParser::formatValue($fieldVal);
+            echo $atts['is_html'] ? wp_kses_post($response) : esc_html($response);
+    
+            return ob_get_clean();
         });
 
     }

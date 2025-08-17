@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\GlobalSettings;
 
+use FluentForm\App\Modules\Form\CleanTalkHandler;
 use FluentForm\App\Modules\HCaptcha\HCaptcha;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
@@ -21,7 +22,7 @@ class GlobalSettingsHelper
 
             return([
                 'message' => __('Your reCAPTCHA settings are deleted.', 'fluentform'),
-                'status'  => false,
+                'status'  => true,
             ]);
         }
 
@@ -87,7 +88,7 @@ class GlobalSettingsHelper
 
             return([
                 'message' => __('Your hCaptcha settings are deleted.', 'fluentform'),
-                'status'  => false,
+                'status'  => true,
             ]);
         }
 
@@ -139,6 +140,63 @@ class GlobalSettingsHelper
         ]);
     }
 
+    public function storeCleantalk($attributes)
+    {
+        $data = Arr::get($attributes, 'cleantalk');
+
+        if ('clear-settings' == $data) {
+            delete_option('_fluentform_cleantalk_details');
+
+            return([
+                'message' => __('Your CleanTalk settings are deleted.', 'fluentform'),
+                'status'  => true,
+            ]);
+        }
+
+        $accessKey = Arr::get($data, 'accessKey');
+        $validation = Arr::get($data, 'validation');
+        $status = false;
+
+        if ($accessKey) {
+            // Validate the cleantalk response.
+            $status = CleanTalkHandler::validate($accessKey);
+
+            // cleantalk is valid. So proceed to store.
+            if ($status) {
+                // Prepare data.
+                $captchaData = [
+                    'accessKey'   => sanitize_text_field($accessKey),
+                    'status'      => true,
+                    'validation'  => $validation
+                ];
+
+                // Update the cleantalk details
+                update_option('_fluentform_cleantalk_details', $captchaData, 'no');
+
+                // Send success response letting the user know the cleantalk is valid and saved properly.
+                return([
+                    'message' => __('Your CleanTalk is valid and saved.', 'fluentform'),
+                    'status'  => $status,
+                ]);
+            }
+        }
+
+        $message = __('Sorry, Your CleanTalk is not valid, Please try again', 'fluentform');
+
+        $captchaData = [
+            'accessKey'   => '',
+            'status'      => $status,
+            'validation' => ''
+        ];
+        
+        update_option('_fluentform_cleantalk_details', $captchaData, 'no');
+
+        return([
+            'message' => $message,
+            'status'  => $status,
+        ]);
+    }
+
     public function storeTurnstile($attributes)
     {
         $data = Arr::get($attributes, 'turnstile');
@@ -150,7 +208,7 @@ class GlobalSettingsHelper
 
             return([
                 'message' => __('Your Turnstile settings are deleted.', 'fluentform'),
-                'status'  => false,
+                'status'  => true,
             ]);
         }
 
@@ -226,7 +284,7 @@ class GlobalSettingsHelper
         update_option('_fluentform_global_form_settings', $sanitizedSettings, 'no');
 
         return ([
-            'message' => __('Global settings has been saved')
+            'message' => __('Global settings has been saved', 'fluentform')
         ]);
     }
 

@@ -14,21 +14,25 @@
                     <li>{{ $t('All other characters are literal values and will be displayed automatically.') }}</li>
                 </ul>
 
-                <h4 style="margin-bottom: 5px">Examples</h4>
+                <h4 style="margin-bottom: 5px;">{{ $t('Examples') }}</h4>
                 <p v-for="(input, i) in exampleInputs" :key="i">
-                    <strong>{{ input.title }} </strong> Mask:
-                    <mark>{{ input.mask }}</mark>
-                    . Valid Input:
-                    <mark>{{ input.validInput }}</mark>
+                    <span v-html="
+                        $t(
+                            '%s Mask: %s. Valid Input: %s',
+                            `<strong>${input.title}</strong>`,
+                            `<mark>${input.mask }</mark>`,
+                            `<mark>${input.validInput}</mark>`
+                        )
+                    ">
+                    </span>
                 </p>
-                <p>
-                    {{ $t('View More information about ')
-                    }}<a
-                        target="_blank"
-                        rel="noopener"
-                        href="https://igorescobar.github.io/jQuery-Mask-Plugin/docs.html"
-                        >{{ $t('Mask Library') }}</a
-                    >
+                <p v-html="
+                    $t(
+                        'View More information about %sMask Library%s',
+                        `<a target='_blank' rel='noopener' href='https://igorescobar.github.io/jQuery-Mask-Plugin/docs.html'>`,
+                        '</a>'
+                    )
+                ">
                 </p>
                 <template #footer>
                     <span class="dialog-footer">

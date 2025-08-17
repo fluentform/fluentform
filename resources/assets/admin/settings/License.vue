@@ -12,12 +12,25 @@
                         {{$t('As you are using Fluent Forms Lite, you do not require a license to use it. Enjoy! ')}}😍
                     </p>
 
-                    <p><strong class="text-dark" style="font-weight: 500;">{{ $t('To unlock more features consider') }}</strong> <a href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" target="_blank">{{ $t('upgrading to PRO') }}</a>.</p>
+                    <p>
+                        <strong
+                        class="text-dark"
+                        style="font-weight: 500;"
+                        v-html="
+                            $t(
+                                'To unlock more features consider %supgrading to PRO%s.',
+                                `<a href='https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree' target='_blank'>`,
+                                '</a>'
+                            )
+                        "
+                    >
+                        </strong>
+                    </p>
 
                     <hr class="mt-4 mb-4">
 
                     <p class="mb-3">
-                        {{$t('Thank you for purchasing Fluent Forms Pro Add On!  Please enter your license key below.')}}
+                        {{$t('Thank you for purchasing Fluent Forms Pro Add On! Please enter your license key below.')}}
                     </p>
                     <form action="#">
                         <btn-group>

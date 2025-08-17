@@ -4,7 +4,7 @@
             <el-label :label="listItem.label" :helpText="listItem.help_text" />
         </template>
         <div v-if="isEmpty(value)">
-            {{ $t('No Active Payment Method Found.Please configure from Fluent Forms Settings') }}
+            {{ $t("No Active Payment Method Found.Please configure from Fluent Forms Settings") }}
         </div>
 
         <div class="ff_payment_settings_wrapper">
@@ -54,74 +54,72 @@
 </template>
 
 <script type="text/babel">
-import elLabel from '../../includes/el-label.vue';
-import isEmpty from 'lodash/isEmpty';
-import inputText from './inputText.vue';
-import InputYesNoCheckBox from './inputYesNoCheckbox.vue';
-import InputRadio from './inputRadio.vue';
+import elLabel from "../../includes/el-label.vue";
+import isEmpty from "lodash/isEmpty";
+import inputText from "./inputText.vue";
+import InputYesNoCheckBox from "./inputYesNoCheckbox.vue";
+import InputRadio from "./inputRadio.vue";
 
 export default {
-    name: 'paymentMethodConfig',
-    props: ['listItem', 'value'],
+    name: "paymentMethodConfig",
+    props: ["listItem", "value"],
     components: {
         InputRadio,
         InputYesNoCheckBox,
         elLabel,
-        inputText,
+        inputText
     },
     computed: {
         noSubscriptionSupportMessage() {
-            const formHasSubscriptionField = this.$attrs.form_items.find(
-                field => field.element === 'subscription_payment_component'
-            );
+            const formHasSubscriptionField = this.$attrs.form_items.find(field => field.element === "subscription_payment_component");
 
             let message;
 
             if (formHasSubscriptionField) {
                 const gateWays = [];
-                if (this.value.mollie && this.value.mollie.enabled === 'yes') {
-                    gateWays.push('Mollie');
+                if (this.value.mollie && this.value.mollie.enabled === "yes") {
+                    gateWays.push("Mollie");
                 }
 
-                if (this.value.razorpay && this.value.razorpay.enabled === 'yes') {
-                    gateWays.push('RazorPay');
+                if (this.value.razorpay && this.value.razorpay.enabled === "yes") {
+                    gateWays.push("RazorPay");
                 }
 
-                if (this.value.square && this.value.square.enabled === 'yes') {
-                    gateWays.push('Square');
+                if (this.value.square && this.value.square.enabled === "yes") {
+                    gateWays.push("Square");
                 }
 
                 if (gateWays.length) {
                     if (gateWays.length > 2) {
-                        message = gateWays.join(', ') + '.';
+                        message = gateWays.join(", ") + ".";
                     } else {
-                        message = gateWays.join(' & ');
+                        message = gateWays.join(" & ");
                     }
                 }
             }
 
-            return message && "We don't have Subscription Field support for " + message;
-        },
+            return message && this.$t("We don't have Subscription Field support for %s", message);
+        }
     },
     methods: {
         isEmpty,
         toggleAddressFieldInputs(event) {
             let $el = jQuery(event.target);
-            if (!$el.parent().find('.address-field-option__settings').hasClass('is-open')) {
-                $el.removeClass('el-icon-caret-bottom');
-                $el.addClass('el-icon-caret-top');
-                $el.parent().find('.address-field-option__settings').addClass('is-open');
-                $el.parent().find('.required-checkbox').addClass('is-open');
+            if (!$el.parent().find(".address-field-option__settings").hasClass("is-open")) {
+                $el.removeClass("el-icon-caret-bottom");
+                $el.addClass("el-icon-caret-top");
+                $el.parent().find(".address-field-option__settings").addClass("is-open");
+                $el.parent().find(".required-checkbox").addClass("is-open");
             } else {
-                $el.removeClass('el-icon-caret-top');
-                $el.addClass('el-icon-caret-bottom');
-                $el.parent().find('.address-field-option__settings').removeClass('is-open');
-                $el.parent().find('.required-checkbox').removeClass('is-open');
+                $el.removeClass("el-icon-caret-top");
+                $el.addClass("el-icon-caret-bottom");
+                $el.parent().find(".address-field-option__settings").removeClass("is-open");
+                $el.parent().find(".required-checkbox").removeClass("is-open");
             }
         },
         dependencyPass(listItem, settings) {
             if (listItem.dependency) {
-                let optionPaths = listItem.dependency.depends_on.split('/');
+                let optionPaths = listItem.dependency.depends_on.split("/");
 
                 let dependencyVal = optionPaths.reduce((obj, prop) => {
                     return obj[prop];
@@ -136,14 +134,14 @@ export default {
         },
         compare(operand1, operator, operand2) {
             switch (operator) {
-                case '==':
-                    return operand1 === operand2;
+                case "==":
+                    return operand1 == operand2;
                     break;
-                case '!=':
-                    return operand1 !== operand2;
+                case "!=":
+                    return operand1 != operand2;
                     break;
             }
-        },
-    },
+        }
+    }
 };
 </script>

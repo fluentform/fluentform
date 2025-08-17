@@ -3,10 +3,12 @@
 namespace FluentForm\App\Services\Form;
 
 use Exception;
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
-use FluentForm\Framework\Database\Orm\Builder;
 use FluentForm\Framework\Foundation\App;
+use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
@@ -14,19 +16,19 @@ use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 
 class FormService
 {
-    /** @var Application */
+    /** @var \FluentForm\Framework\Foundation\Application */
     protected $app;
     
-    /** @var Form|Builder */
+    /** @var \FluentForm\App\Models\Form|\FluentForm\Framework\Database\Query\Builder */
     protected $model;
     
-    /** @var Updater */
+    /** @var \FluentForm\App\Services\Form\Updater */
     protected $updater;
     
-    /** @var Duplicator */
+    /** @var \FluentForm\App\Services\Form\Duplicator */
     protected $duplicator;
     
-    /** @var Fields */
+    /** @var \FluentForm\App\Services\Form\Fields */
     protected $fields;
 
     
@@ -63,7 +65,7 @@ class FormService
      * Store a form with its associated meta.
      *
      * @param array $attributes
-     * @return Form $form
+     * @return \FluentForm\App\Models\Form $form
      * @throws Exception
      */
     public function store($attributes = [])
@@ -106,7 +108,7 @@ class FormService
      * Duplicate a form with its associated meta.
      *
      * @param array $attributes
-     * @return Form $form
+     * @return \FluentForm\App\Models\Form $form
      * @throws Exception
      */
     public function duplicate($attributes = [])
@@ -170,7 +172,7 @@ class FormService
      * Update a form with its relevant fields.
      *
      * @param array $attributes
-     * @return Form $form
+     * @return \FluentForm\App\Models\Form $form
      * @throws Exception
      */
     public function update($attributes = [])
@@ -182,7 +184,7 @@ class FormService
      * Duplicate a form with its associated meta.
      *
      * @param int $id
-     * @return Form $form
+     * @return \FluentForm\App\Models\Form $form
      * @throws Exception
      */
     public function convert($id)
@@ -316,64 +318,64 @@ class FormService
             'recaptcha'   => [
                 'disabled'    => $isReCaptchaDisabled,
                 'title'       => __('reCaptcha', 'fluentform'),
-                'description' => __('Please enter a valid API key on FluentForms->Settings->reCaptcha', 'fluentform'),
+                'description' => __('Please enter a valid API key on Global Settings->Security->reCaptcha', 'fluentform'),
                 'hidePro'     => true,
             ],
             'hcaptcha'    => [
                 'disabled'    => $isHCaptchaDisabled,
                 'title'       => __('hCaptcha', 'fluentform'),
-                'description' => __('Please enter a valid API key on FluentForms->Settings->hCaptcha', 'fluentform'),
+                'description' => __('Please enter a valid API key on Global Settings->Security->hCaptcha', 'fluentform'),
                 'hidePro'     => true,
             ],
             'turnstile'   => [
                 'disabled'    => $isTurnstileDisabled,
                 'title'       => __('Turnstile', 'fluentform'),
-                'description' => __('Please enter a valid API key on FluentForms->Settings->Turnstile', 'fluentform'),
+                'description' => __('Please enter a valid API key on Global Settings->Security->Turnstile', 'fluentform'),
                 'hidePro'     => true,
             ],
-            'input_image' => [
+        ];
+        
+        if (!Helper::hasPro()) {
+            $disabled['input_image'] = [
                 'disabled'    => true,
                 'title'       => __('Image Upload', 'fluentform'),
                 'description' => __('Image Upload is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/Yb3FSoZl9Zg',
-            ],
-            'input_file'  => [
+            ];
+            $disabled['input_file']  = [
                 'disabled'    => true,
                 'title'       => __('File Upload', 'fluentform'),
                 'description' => __('File Upload is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/bXbTbNPM_4k',
-            ],
-            'shortcode'   => [
+            ];
+            $disabled['shortcode']   = [
                 'disabled'    => true,
                 'title'       => __('Shortcode', 'fluentform'),
                 'description' => __('Shortcode is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/op3mEQxX1MM',
-            ],
-            'action_hook' => [
+            ];
+            $disabled['action_hook'] = [
                 'disabled'    => true,
                 'title'       => __('Action Hook', 'fluentform'),
                 'description' => __('Action Hook is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => fluentformMix('img/pro-fields/action-hook.png'),
                 'video'       => '',
-            ],
-            'form_step'   => [
+            ];
+            $disabled['form_step']   = [
                 'disabled'    => true,
                 'title'       => __('Form Step', 'fluentform'),
                 'description' => __('Form Step is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/VQTWnM6BbRU',
-            ],
-        ];
-        
-        if (!defined('FLUENTFORMPRO')) {
+            ];
             $disabled['ratings'] = [
                 'disabled'    => true,
                 'title'       => __('Ratings', 'fluentform'),
@@ -470,60 +472,6 @@ class FormService
                 'image'       => fluentformMix('img/pro-fields/color-picker.png'),
                 'video'       => '',
             ];
-            $disabled['multi_payment_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Payment Field', 'fluentform'),
-                'description' => __('Payment Field is not available with the free version. Please upgrade to pro to get all the advanced features.',
-                    'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/payment-field.png'),
-                'video'       => '',
-            ];
-            $disabled['custom_payment_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => 'Custom Payment Amount',
-                'description' => __('Custom Payment Amount is not available with the free version. Please upgrade to pro to get all the advanced features.',
-                    'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/custom-payment-amount.png'),
-                'video'       => '',
-            ];
-            $disabled['subscription_payment_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Subscription Field', 'fluentform'),
-                'description' => __('Subscription Field is not available with the free version. Please upgrade to pro to get all the advanced features.',
-                    'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/subscription-field.png'),
-                'video'       => '',
-            ];
-            $disabled['item_quantity_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Item Quantity', 'fluentform'),
-                'description' => __('Item Quantity is not available with the free version. Please upgrade to pro to get all the advanced features.',
-                    'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/item-quantity.png'),
-                'video'       => '',
-            ];
-            $disabled['payment_method'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Payment Method', 'fluentform'),
-                'description' => __('Payment Method is not available with the free version. Please upgrade to pro to get all the advanced features.',
-                    'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/payment-method.png'),
-                'video'       => '',
-            ];
-            $disabled['payment_summary_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Payment Summary', 'fluentform'),
-                'description' => __('Payment Summary is not available with the free version. Please upgrade to pro to get all the advanced features.',
-                    'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/payment-summary.png'),
-                'video'       => '',
-            ];
             $disabled['payment_coupon'] = [
                 'disabled'    => true,
                 'title'       => __('Coupon', 'fluentform'),
@@ -543,6 +491,7 @@ class FormService
             'fluentform/disabled_components',
             'Use fluentform/disabled_components instead of fluentform_disabled_components.'
         );
+        
         return $this->app->applyFilters('fluentform/disabled_components', $disabled);
     }
     
@@ -608,7 +557,7 @@ class FormService
                 
                 $labels = apply_filters('fluentform/all_entry_labels_with_payment', $labels, false, $form);
             }
-
+            
             return [
                 'inputs' => $inputs,
                 'labels' => $labels,

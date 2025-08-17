@@ -26,6 +26,19 @@ class FormManagerService
         }
     }
 
+    public static function updateHasSpecificFormsPermission($userId, $status)
+    {
+        if (in_array($status, ['no', 'yes'])) {
+            update_user_meta($userId, '_fluent_forms_has_specific_forms_permission', $status);
+        }
+    }
+
+    public static function hasSpecificFormsPermission($userId)
+    {
+        $hasFormsPermission = get_user_meta($userId, '_fluent_forms_has_specific_forms_permission', true);
+        return 'yes' === $hasFormsPermission;
+    }
+
     /**
      * Return user allowed form id's
      * @param string $userId Optional, If not pass user will be current user
@@ -37,7 +50,7 @@ class FormManagerService
         if (!$userId) {
             $userId = get_current_user_id();
         }
-        if ($userId) {
+        if ($userId && self::hasSpecificFormsPermission($userId)) {
             $formIds = get_user_meta($userId, '_fluent_forms_allowed_forms', true);
             if (is_array($formIds)) {
                 return array_filter(array_map('intval', $formIds));

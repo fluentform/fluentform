@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services\FormBuilder\Components;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Services\FormBuilder\Components\Select;
 
 class Name extends Select
@@ -43,17 +43,17 @@ class Name extends Select
 
         $data['attributes']['class'] .= $hasConditions;
         $data['attributes']['class'] .= ' ff-field_container ff-name-field-wrapper';
-        if ($containerClass = Arr::get($data, 'settings.container_class')) {
+        if ($containerClass = ArrayHelper::get($data, 'settings.container_class')) {
             $data['attributes']['class'] .= ' ' . $containerClass;
         }
         $atts = $this->buildAttributes(
-            Arr::except($data['attributes'], 'name')
+            ArrayHelper::except($data['attributes'], 'name')
         );
 
         $html = "<div {$atts}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
         $html .= "<div class='ff-t-container'>";
 
-        $labelPlacement = Arr::get($data, 'settings.label_placement');
+        $labelPlacement = ArrayHelper::get($data, 'settings.label_placement');
         $labelPlacementClass = '';
 
         if ($labelPlacement) {
@@ -80,7 +80,7 @@ class Name extends Select
                 $atts = $this->buildAttributes($field['attributes']);
 
                 $ariaRequired = 'false';
-                if (Arr::get($field, 'settings.validation_rules.required.value')) {
+                if (ArrayHelper::get($field, 'settings.validation_rules.required.value')) {
                     $ariaRequired = 'true';
                 }
 

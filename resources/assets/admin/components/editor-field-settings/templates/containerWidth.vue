@@ -86,7 +86,7 @@
                 const perColumnWidth = this.getNumber(100 / this.editItem.columns.length);
                 this.editItem.modified = false;
                 this.editItem.columns.forEach(column => {
-                    if ( column.width !== perColumnWidth ){
+                    if (column.width !== perColumnWidth) {
                         this.editItem.modified = true;
                     }
                 })

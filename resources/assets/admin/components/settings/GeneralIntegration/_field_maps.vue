@@ -3,21 +3,30 @@
         <table v-if="appReady" class="ff_inner_table w-100">
             <thead>
                 <tr>
-                    <th class="text-left" style="padding-bottom: 14px;">{{ field.field_label_remote }}</th>
-                    <th class="text-left" style="padding-bottom: 14px;">{{ field.field_label_local }}</th>
+                    <th class="text-left" width="50%" style="padding-bottom: 14px;">{{field.field_label_remote}}</th>
+                    <th class="text-left" width="50%" style="padding-bottom: 14px;">{{field.field_label_local}}</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(primary_field, primary_index) in field.primary_fileds" :key="primary_index">
                     <td>
                         <div :class="(primary_field.required) ? 'is-required' : ''" class="el-form-item">
-                            <label class="el-form-item__label">{{ primary_field.label }}</label>
+                            <label class="el-form-item__label">{{primary_field.label}}
+                            <template v-if="primary_field.hasOwnProperty('tips')">
+                                <el-tooltip v-if="primary_field.tips" class="item" popper-class="ff_tooltip_wrap" placement="bottom-start">
+                                    <div slot="content">
+                                        <p v-html="primary_field.tips"></p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </template>
+                            </label>
                         </div>
                     </td>
                     <td>
                         <div class="el-form-item">
                             <el-select
-                                v-if="primary_field.input_options === 'emails'"
+                                v-if="primary_field.input_options == 'emails'"
                                 v-model="settings[primary_field.key]"
                                 :placeholder="$t('Select a Field')"
                                 style="width:100%"
@@ -34,7 +43,7 @@
                             </el-select>
 
                             <el-select
-                                v-else-if="primary_field.input_options === 'all'"
+                                v-else-if="primary_field.input_options == 'all'"
                                 v-model="settings[primary_field.key]"
                                 :placeholder="$t('Select a Field')"
                                 style="width:100%"
@@ -48,6 +57,22 @@
                                 ></el-option>
                             </el-select>
 
+                            <el-select
+                                v-else-if="primary_field.input_options == 'select'"
+                                class="w-100"
+                                filterable
+                                clearable
+                                :multiple="primary_field.is_multiple"
+                                v-model="settings[primary_field.key]"
+                                :placeholder="primary_field.placeholder"
+                            >
+                                <el-option
+                                    v-for="(option, index) in primary_field.options"
+                                    :key="index"
+                                    :value="index"
+                                    :label="option"
+                                ></el-option>
+                            </el-select>
 
                             <template v-else>
                                 <field-general
@@ -57,10 +82,9 @@
                             </template>
 
                             <div style="color: #999;font-size: 12px;line-height: 15px;font-style: italic;"
-                                 class="primary_field_help_text"
-                                 v-if="primary_field.help_text"
-                            >{{ primary_field.help_text }}
-                            </div>
+                                class="primary_field_help_text"
+                                v-if="primary_field.help_text"
+                            >{{ primary_field.help_text }}</div>
 
                             <error-view field="fieldEmailAddress" :errors="errors"></error-view>
                         </div>
@@ -70,7 +94,7 @@
                     <tr v-if="field.default_fields" :key="default_field.name">
                         <td>
                             <div :class="(default_field.required) ? 'is-required' : ''" class="el-form-item">
-                                <label class="el-form-item__label">{{ default_field.label }}</label>
+                                <label class="el-form-item__label">{{default_field.label}}</label>
                             </div>
                         </td>
                         <td>
@@ -105,27 +129,27 @@
 </template>
 
 <script type="text/babel">
-import ErrorView from '../../../../common/errorView.vue';
-import FieldGeneral from './_FieldGeneral.vue'
+    import ErrorView from '../../../../common/errorView';
+    import FieldGeneral from './_FieldGeneral'
 
-export default {
-    name: 'field_maps',
-    components: {
-        ErrorView,
-        FieldGeneral
-    },
-    props: ['settings', 'merge_fields', 'field', 'inputs', 'errors', 'merge_model', 'editorShortcodes'],
-    data() {
-        return {
-            appReady: false
+    export default {
+        name: 'field_maps',
+        components: {
+            ErrorView,
+            FieldGeneral
+        },
+        props: ['settings', 'merge_fields', 'field', 'inputs', 'errors', 'merge_model', 'editorShortcodes'],
+        data() {
+            return {
+                appReady: false
+            }
+        },
+        mounted() {
+            if (Array.isArray(this.merge_model) || !this.merge_model) {
+                this.$emit('merge-model');
+            }
+            this.appReady = true;
         }
-    },
-    mounted() {
-        if (Array.isArray(this.merge_model) || !this.merge_model) {
-            this.$emit('merge-model');
-        }
-        this.appReady = true;
-    }
 
-};
+    };
 </script>

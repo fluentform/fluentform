@@ -1,21 +1,31 @@
-import { createApp } from 'vue';
+import Vue from 'vue';
 import globalSearch from './global_search';
-import en from 'element-plus/es/locale/lang/en';
-
 import {
-    ElLoading
-} from 'element-plus';
+    Loading
+} from 'element-ui';
+import {_$t} from "@/admin/helpers";
 
-const app = createApp({
+Vue.use(Loading);
+
+Vue.mixin({
+    methods: {
+        $t(string) {
+            let transString = window.fluent_forms_global_var.admin_i18n[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
+            }
+            return this.$t(singular, count);
+        }
+    }
+});
+
+var app = new Vue({
+    el: '#ff_documentation_app',
     components: {
         globalSearch
     }
 });
-app.use(ElLoading);
-
-app.config.globalProperties.$ELEMENT = {locale: en};
-app.config.globalProperties.$loading = ElLoading.service;
-
-app.mount('#ff_documentation_app');
-
-

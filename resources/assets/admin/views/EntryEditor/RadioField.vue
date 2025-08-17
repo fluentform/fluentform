@@ -4,7 +4,7 @@
             <el-radio
                 v-for="(option, option_key) in field.raw.options"
                 :key="option_key"
-                :value="option"
+                :label="option_key"
             >
                 {{option}}
             </el-radio>
@@ -12,18 +12,18 @@
     </div>
 </template>
 
-<script>
+<script type="text/babel">
     export default {
         name: 'radio-field',
-        props: ['modelValue', 'type', 'field'],
+        props: ['value', 'type', 'field'],
         data() {
             return {
-                model: this.modelValue
+                model: this.value
             }
         },
         watch: {
             model() {
-                this.$emit('update:modelValue', this.model);
+                this.$emit('input', this.model);
             }
         }
     }

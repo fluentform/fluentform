@@ -15,10 +15,10 @@ import DOMPurify from 'dompurify';
 export default {
     name: 'TNC_Checkbox',
     props: ['item'],
-    computed: {
-        html() {
-            return DOMPurify.sanitize(this.item.settings.tnc_html);
-        },
-    },
-};
+	computed: {
+		html() {
+			return DOMPurify.sanitize(this.item.settings.tnc_html);
+		}
+	}
+}
 </script>

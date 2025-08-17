@@ -4,7 +4,7 @@
             <card>
                 <card-head>
                     <h5 class="title">{{ $t('Cloudflare Turnstile Settings') }}</h5>
-                    <p class="text">
+                        <p class="text">
                         {{
                             $t('Fluent Forms integrates with Cloudflare Turnstile, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the Turnstile field.')
                         }}
@@ -12,22 +12,19 @@
                             {{ $t('Read more about Cloudflare Turnstile.') }}
                         </a>
                     </p>
-                    <p class="text"><b>{{ $t('Please generate API key and API secret using Cloudflare Turnstile') }}</b>
-                    </p>
+                    <p class="text"><b>{{ $t('Please generate API key and API secret using Cloudflare Turnstile') }}</b></p>
                 </card-head>
                 <card-body>
                     <!--Site key-->
                     <el-form-item class="ff-form-item">
-                        <template #label>
+                        <template slot="label">
                             {{ $t('Site Key') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <template #content>
+                                <div slot="content">
                                     <p>
-                                        {{
-                                            $t('Enter your Turnstile Site Key, if you do not have a key you can register for one at the provided link Turnstile is a free service.')
-                                        }}
+                                        {{ $t('Enter your Turnstile Site Key, if you do not have a key you can register for one at the provided link Turnstile is a free service.') }}
                                     </p>
-                                </template>
+                                </div>
 
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -39,16 +36,14 @@
 
                     <!--Secret key-->
                     <el-form-item class="ff-form-item">
-                        <template #label>
+                        <template slot="label">
                             {{ $t('Secret Key') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <template #content>
+                                <div slot="content">
                                     <p>
-                                        {{
-                                            $t('Enter your Turnstile Secret Key, if you do not have a key you can register for one at the provided link, Turnstile is a free service.')
-                                        }}
+                                        {{ $t('Enter your Turnstile Secret Key, if you do not have a key you can register for one at the provided link, Turnstile is a free service.') }}
                                     </p>
-                                </template>
+                                </div>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
@@ -58,46 +53,41 @@
                     </el-form-item>
 
                     <el-form-item class="ff-form-item">
-                        <template #label>
+                        <template slot="label">
                             {{ $t('Appearance Mode') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <template #content>
+                                <div slot="content">
                                     <p>
                                         {{ $t('You can select how the turnstile will appear') }}
                                     </p>
-                                </template>
+                                </div>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
                         </template>
 
-                        <el-radio class="mr-3" v-model="turnstile.appearance" value="always">
-                            {{ $t('Always (Default)') }}
-                        </el-radio>
-                        <el-radio class="mr-3" v-model="turnstile.appearance" value="execute">{{ $t('Execute') }}
-                        </el-radio>
-                        <el-radio class="mr-3" v-model="turnstile.appearance" value="interaction-only">
-                            {{ $t('Interaction-only (Hidden)') }}
-                        </el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="always">{{$t('Managed')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="execute">{{$t('Non-interactive')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="interaction-only">{{$t('Invisible')}}</el-radio>
                     </el-form-item>
 
                     <el-form-item class="ff-form-item">
-                        <template #label>
+                        <template slot="label">
                             {{ $t('Theme') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <template #content>
+                                <div slot="content">
                                     <p>
                                         {{ $t('Choose a theme for the field') }}
                                     </p>
-                                </template>
+                                </div>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
                         </template>
 
-                        <el-radio v-model="turnstile.theme" value="auto">{{ $t('Auto') }}</el-radio>
-                        <el-radio v-model="turnstile.theme" value="light">{{ $t('Light') }}</el-radio>
-                        <el-radio v-model="turnstile.theme" value="dark">{{ $t('Dark') }}</el-radio>
+                        <el-radio v-model="turnstile.theme" label="auto">{{ $t('Auto') }}</el-radio>
+                        <el-radio v-model="turnstile.theme" label="light">{{ $t('Light') }}</el-radio>
+                        <el-radio v-model="turnstile.theme" label="dark">{{ $t('Dark') }}</el-radio>
                     </el-form-item>
 
                     <!--Validate Keys-->
@@ -118,27 +108,19 @@
             <div class="mt-4">
                 <el-button
                     type="primary"
+                    icon="el-icon-success"
                     @click="save"
                     :disabled="disabled"
                     :loading="saving"
-                    size="large"
-                >
-                    <template #icon>
-                        <i class="el-icon-success"></i>
-                    </template>
-                    {{ $t('Save Settings') }}
+                >{{ $t('Save Settings') }}
                 </el-button>
 
                 <el-button
                     type="danger"
+                    icon="ff-icon ff-icon-trash"
                     @click="clearSettings"
                     :loading="clearing"
-                    size="large"
-                >
-                    <template #icon>
-                        <i class="ff-icon ff-icon-trash"></i>
-                    </template>
-                    {{ $t('Clear Settings') }}
+                >{{ $t('Clear Settings') }}
                 </el-button>
             </div>
         </el-form>
@@ -152,9 +134,9 @@ import CardHead from '@/admin/components/Card/CardHead.vue';
 import Notice from '@/admin/components/Notice/Notice.vue';
 
 export default {
-    components: {
-        Card,
-        CardHead,
+    components: { 
+        Card, 
+        CardHead, 
         CardBody,
         Notice
     },
@@ -220,14 +202,17 @@ export default {
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
                     this.turnstile_status = response.status;
-                    this.$success(response.message);
+                    if (this.turnstile_status == 1) {
+                        this.$success(response.message);
+                    } else {
+                        this.$fail(response.message);
+                    }
                     this.siteKeyChanged = false;
                     this.turnstile.token = null;
                 })
                 .catch(error => {
                     this.turnstile_status = parseInt(error.status, 10);
-                    let method = this.turnstile_status === 1 ? '$warning' : '$error';
-                    this[method](error.message);
+                    this.$fail(error.message);
                 })
                 .finally(r => {
                     this.saving = false;
@@ -246,7 +231,11 @@ export default {
                 .then(response => {
                     this.turnstile_status = response.status;
                     this.turnstile = {siteKey: '', secretKey: ''};
-                    this.$success(response.message);
+                    if (this.turnstile_status == 1) {
+                        this.$success(response.message);
+                    } else {
+                        this.$fail(response.message);
+                    }
                 })
                 .catch(error => {
                     this.turnstile_status = error.status;

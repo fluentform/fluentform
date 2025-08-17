@@ -5,13 +5,13 @@
                 <div class="ff_with_arrow">
                     <template v-if="item.taxonomy_settings.hierarchical">
                         <select v-if="isSelectable" class="select el-input__inner">
-                            <option>{{ item.settings.placeholder || item.attributes.placeholder }}</option>
+                            <option>{{item.settings.placeholder || item.attributes.placeholder}}</option>
                         </select>
 
                         <div v-else>
-                            <el-checkbox value="item_1">{{ $t('Item 1') }}</el-checkbox>
-                            <el-checkbox value="item_2">{{ $t('Item 2') }}</el-checkbox>
-                            <el-checkbox value="item_3">{{ $t('Item 3') }}</el-checkbox>
+                            <el-checkbox label="item_1">{{ $t('Item 1') }}</el-checkbox>
+                            <el-checkbox label="item_2">{{ $t('Item 2') }}</el-checkbox>
+                            <el-checkbox label="item_3">{{ $t('Item 3') }}</el-checkbox>
                         </div>
                     </template>
 
@@ -19,8 +19,7 @@
                         v-else
                         :type="item.attributes.type"
                         :value="item.attributes.value"
-                        :placeholder="item.attributes.placeholder"
-                    >
+                        :placeholder="item.settings.placeholder">
                     </el-input>
                 </div>
             </el-form-item>
@@ -29,6 +28,7 @@
 </template>
 
 <script type="text/babel">
+
 import withLabel from './withLabel.vue';
 
 export default {
@@ -44,7 +44,8 @@ export default {
         isSelectable() {
             let type = this.item.settings.field_type;
             return type === 'select_single' || type === 'select_multiple';
-        },
-    },
+        }
+    }
 };
 </script>
+

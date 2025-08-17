@@ -21,14 +21,12 @@
   }
 
   .option-fields-section--content{
-    display: flex;
-    flex-wrap: wrap;
     .v-row{
       flex-direction: row;
     }
     .v-col--50{
       width: 50%;
-      padding: 5px;
+      padding-bottom: 0;
     }
   }
 
@@ -227,6 +225,12 @@
     padding-left: 0;
   }
 
+  .ff_tools_wrap {
+    .ff_settings_sidebar_wrap{
+      height: 100%;
+    }
+  }
+
   .ff_settings_sidebar_wrap{
     position: absolute;
     flex-shrink: 0;
@@ -266,6 +270,13 @@
       width: 100%;
     }
   }
+  .ff-filter-fields-wrap {
+    .ff_conditions_warp {
+      .group-container .conditional-logic {
+        gap: 10px;
+      }
+    }
+  }
   .el-radio-button-group{
     border: 0;
     .el-radio-button{
@@ -278,8 +289,12 @@
       }
     }
   }
+  .conversion-chart-section, .top-performing-forms-section {
+    margin-bottom: 24px;
+  }
 }
 
+// mobile device
 @media (max-width: 425px) {
   label.el-checkbox{
     display: inline-flex;
@@ -359,6 +374,41 @@
   .ff-form-item-flex{
     flex-wrap: wrap;
     gap: 10px;
+  }
+
+  .ff_pagination_wrap.mt-4 {
+    margin-top: 0 !important;
+  }
+  .ff_pagination {
+    flex-wrap: wrap;
+    margin-top: 24px;
+    .el-pagination__jump {
+      margin: 10px 0 0 0;
+    }
+  }
+
+  // all entries
+  .ff_all_entries {
+    .ff_section_head_content {
+      margin-top: 24px;
+      .ff_advanced_search {
+        right: unset;
+      }
+    }
+    .ff_entries_details {
+      .ff_section_head {
+        .lead-title {
+          margin-bottom: 10px !important;
+        }
+      }
+      .ff_radio_group_wrap {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        .ff_radio_group_s2 {
+          width: 100%;
+        }
+      }
+    }
   }
 }
 

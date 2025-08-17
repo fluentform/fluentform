@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
+use FluentForm\Framework\Helpers\ArrayHelper;
+
 class Recaptcha extends BaseComponent
 {
     /**
@@ -47,9 +49,16 @@ class Recaptcha extends BaseComponent
 
         if ('v3_invisible' == $apiVersion) {
             if (!wp_script_is('google-recaptcha')) {
+                $apiUrl = 'https://www.google.com/recaptcha/api.js?render=' . $siteKey;
+
+                $locale = apply_filters('fluentform/recaptcha_lang', '');
+                if ($locale) {
+                    $apiUrl .= '&hl=' . $locale;
+                }
+
                 wp_enqueue_script(
                     'google-recaptcha',
-                    'https://www.google.com/recaptcha/api.js?render=' . $siteKey,
+                    $apiUrl,
                     [],
                     FLUENTFORM_VERSION,
                     true
@@ -66,13 +75,33 @@ class Recaptcha extends BaseComponent
                 return $atts;
             });
 
+            $shouldRenderBadge = ArrayHelper::get($data, 'settings.render_recaptcha_v3_badge', false);
+            
+            if (!$shouldRenderBadge) {
+                // Add CSS to hide reCAPTCHA badge
+                add_action('wp_footer', function() {
+                    echo "<style>
+                    .grecaptcha-badge {
+                        visibility: hidden;
+                    }
+                </style>";
+                });
+            }
+
             return;
         }
 
         if (!wp_script_is('google-recaptcha')) {
+            $apiUrl = 'https://www.google.com/recaptcha/api.js?render=explicit';
+
+            $locale = apply_filters('fluentform/recaptcha_lang', '');
+            if ($locale) {
+                $apiUrl .= '&hl=' . $locale;
+            }
+
             wp_enqueue_script(
                 'google-recaptcha',
-                'https://www.google.com/recaptcha/api.js?render=explicit',
+                $apiUrl,
                 [],
                 FLUENTFORM_VERSION,
                 true

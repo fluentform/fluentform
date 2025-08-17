@@ -1,164 +1,220 @@
 import './helpers';
-import {createApp} from 'vue';
-import draggable from 'vuedraggable';
-import {
-    ElButton,
-    ElCheckbox,
-    ElCheckboxGroup,
-    ElCol,
-    ElColorPicker,
-    ElDialog,
-    ElDropdown,
-    ElDropdownItem,
-    ElDropdownMenu,
-    ElForm,
-    ElFormItem,
-    ElInput,
-    ElSlider,
-    ElLoading,
-    ElMessage,
-    ElNotification,
-    ElOption,
-    ElPopover,
-    ElRadio,
-    ElRadioButton,
-    ElRadioGroup,
-    ElRate,
-    ElRow,
-    ElSelect,
-    ElTabPane,
-    ElTabs,
-    ElTooltip,
-    ElUpload,
-    ElSwitch,
-    ElInputNumber,
-    ElCard,
-    ElAlert,
-    ElSkeleton,
-    ElSkeletonItem,
-    ElOptionGroup,
-    ElLink,
-    ElTable,
-    ElTableColumn,
-    ElDatePicker,
-} from 'element-plus';
+import Vue from 'vue';
+import Vddl from 'vddl';
 
-import en from 'element-plus/es/locale/lang/en';
-import mixins from './editor_mixins.js';
-import globalSearch from './global_search';
+import store from './store';
+import './css/element-variables.scss';
+import {
+    Button,
+    Checkbox,
+    CheckboxGroup,
+    Col,
+    ColorPicker,
+    Dialog,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    Form,
+    FormItem,
+    Input,
+    Slider,
+    Loading,
+    Message,
+    Notification,
+    Option,
+    Popover,
+    Radio,
+    RadioButton,
+    RadioGroup,
+    Rate,
+    Row,
+    Select,
+    TabPane,
+    Tabs,
+    Tooltip,
+    Upload,
+    Switch,
+    InputNumber,
+    Card,
+    Alert,
+    Skeleton,
+    SkeletonItem,
+    OptionGroup,
+    Link,
+    Table,
+    TableColumn,
+    DatePicker
+} from 'element-ui';
+
+import lang from 'element-ui/lib/locale/lang/en';
+import locale from 'element-ui/lib/locale';
+import mixins from './editor_mixins';
+import globalSearch from './global_search'
+// Global error handling...
 import Errors from '../common/Errors';
 import FormEditor from './views/FormEditor.vue';
 import MoreMenu from './views/MoreMenu.vue';
 import {mapActions} from 'vuex';
-import mitt from 'mitt';
-import store from './store';
-import notifier from "@/admin/notifier";
+import {_$t} from "@/admin/helpers";
 
-const emitter = mitt();
-const eventBus = mitt();
+Vue.use(Vddl);
 
-const app = createApp({
+Vue.use(Rate);
+Vue.use(Tabs);
+Vue.use(TabPane);
+Vue.use(ColorPicker);
+Vue.use(Dropdown);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
+Vue.use(Select);
+Vue.use(Slider);
+Vue.use(Option);
+Vue.use(Popover);
+Vue.use(Checkbox);
+Vue.use(CheckboxGroup);
+Vue.use(Row);
+Vue.use(Col);
+Vue.use(RadioButton);
+Vue.use(RadioGroup);
+Vue.use(Radio);
+Vue.use(Input);
+Vue.use(Dialog);
+Vue.use(Button);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Tooltip);
+Vue.use(Upload);
+Vue.use(Switch);
+Vue.use(InputNumber);
+Vue.use(Alert);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
+Vue.use(OptionGroup);
+Vue.use(Link);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(DatePicker);
+
+Vue.use(Loading.directive);
+Vue.prototype.$loading = Loading.service;
+Vue.prototype.$notify = Notification;
+Vue.prototype.$message = Message;
+
+// configure language
+locale.use(lang);
+
+window.FluentFormEditorEvents = new Vue();
+
+Vue.mixin(mixins);
+
+global.Errors = Errors;
+
+window.ffEditorOptionsCustomComponents = window.ffEditorOptionsCustomComponents || {};
+
+window.fluentFormEditorApp = new Vue({
+    el: "#ff_form_editor_app",
+    store,
     components: {
         globalSearch,
-        ff_form_editor: FormEditor,
+        ff_form_editor: FormEditor
     },
-    data() {
-        return {
-            form_id: window.FluentFormApp.form_id,
-            form: {
-                title: '',
-                dropzone: [],
-                submitButton: {},
-                stepsWrapper: {},
-                stepStart: {
-                    element: 'step_start',
-                    attributes: {
-                        id: '',
-                        class: '',
-                    },
-                    settings: {
-                        progress_indicator: 'progress-bar',
-                        step_titles: [],
-                        disable_auto_focus: 'no',
-                        enable_auto_slider: 'no',
-                        enable_step_data_persistency: 'no',
-                        enable_step_page_resume: 'no',
-                        step_animation: 'slide',
-                    },
-                    editor_options: {
-                        title: 'Start Paging',
-                    },
-                },
-                stepEnd: {
-                    element: 'step_end',
-                    attributes: {
-                        id: '',
-                        class: '',
-                    },
-                    settings: {
-                        prev_btn: {
-                            type: 'default',
-                            text: 'Previous',
-                            img_url: '',
-                        },
-                    },
-                    editor_options: {
-                        title: 'End Paging',
-                    },
-                },
-            },
-            submitButtonMock: {
-                uniqElKey: 'el_' + Date.now(),
-                element: 'button',
+    data: {
+        form_id: window.FluentFormApp.form_id,
+        form: {
+            title: "",
+            dropzone: [],
+            submitButton: {},
+            stepsWrapper: {},
+            stepStart: {
+                element: "step_start",
                 attributes: {
-                    type: 'submit',
-                    class: '',
+                    id: "",
+                    class: ""
                 },
                 settings: {
-                    align: 'left',
-                    button_style: 'default',
-                    container_class: '',
-                    help_message: '',
-                    button_size: 'md',
-                    button_ui: {
-                        type: 'default',
-                        text: 'Submit Form',
-                        img_url: '',
-                    },
-                    conditional_logics: [],
-                    normal_styles: {
-                        backgroundColor: '#1a7efb',
-                        borderColor: '#1a7efb',
-                        color: '#ffffff',
-                        borderRadius: '',
-                        minWidth: '',
-                    },
-                    hover_styles: {
-                        backgroundColor: '#ffffff',
-                        borderColor: '#1a7efb',
-                        color: '#1a7efb',
-                        borderRadius: '',
-                        minWidth: '',
-                    },
+                    progress_indicator: "progress-bar",
+                    step_titles: [],
+                    disable_auto_focus: 'no',
+                    enable_auto_slider: 'no',
+                    enable_step_data_persistency: 'no',
+                    enable_step_page_resume: 'no',
+                    step_animation: 'slide',
                 },
                 editor_options: {
-                    title: 'Submit Button',
-                },
+                    title: "Start Paging"
+                }
             },
-            loading: false,
-            form_saving: false,
-            dropzoneHash: '',
-        };
+            stepEnd: {
+                element: "step_end",
+                attributes: {
+                    id: "",
+                    class: ""
+                },
+                settings: {
+                    prev_btn: {
+                        type: "default",
+                        text: "Previous",
+                        img_url: ""
+                    }
+                },
+                editor_options: {
+                    title: "End Paging"
+                }
+            }
+        },
+        submitButtonMock: {
+            uniqElKey: "el_" + Date.now(),
+            element: "button",
+            attributes: {
+                type: "submit",
+                class: ""
+            },
+            settings: {
+                align: "left",
+                button_style: "default",
+                container_class: "",
+                help_message: "",
+                button_size: "md",
+                button_ui: {
+                    type: "default",
+                    text: "Submit Form",
+                    img_url: ""
+                },
+                conditional_logics: [],
+                normal_styles: {
+                    'backgroundColor' : '#1a7efb',
+                    'borderColor'     : '#1a7efb',
+                    'color'           : '#ffffff',
+                    'borderRadius'    : '',
+                    'minWidth'        : ''
+                },
+                hover_styles: {
+                    'backgroundColor' : '#ffffff',
+                    'borderColor'     : '#1a7efb',
+                    'color'           : '#1a7efb',
+                    'borderRadius'    : '',
+                    'minWidth'        : ''
+                }
+            },
+            editor_options: {
+                title: "Submit Button"
+            }
+        },
+        loading: false,
+        form_saving: false,
+        isClicked: false,
+        editHistoryIndex: null,
+        tempFormData : {}
     },
     methods: {
-        ...mapActions(['loadResources']),
+        ...mapActions(["loadResources"]),
 
         /**
          * Prepare the form for the dropzone
          * after fetching from the server
          */
         prepareForm() {
-            const form = window.FluentFormApp.form;
+            var form = window.FluentFormApp.form;
             let formData = form.form_fields ? JSON.parse(form.form_fields) : {};
 
             this.form.id = form.id;
@@ -176,23 +232,23 @@ const app = createApp({
             this.form.stepsWrapper = formData.stepsWrapper || this.form.stepsWrapper;
 
             if (formData.stepsWrapper && formData.stepsWrapper.stepStart) {
-                if (!formData.stepsWrapper.stepStart.settings.disable_auto_focus) {
+                if(!formData.stepsWrapper.stepStart.settings.disable_auto_focus) {
                     formData.stepsWrapper.stepStart.settings.disable_auto_focus = 'no';
                 }
 
-                if (!formData.stepsWrapper.stepStart.settings.enable_auto_slider) {
+                if(!formData.stepsWrapper.stepStart.settings.enable_auto_slider) {
                     formData.stepsWrapper.stepStart.settings.enable_auto_slider = 'no';
                 }
 
-                if (!formData.stepsWrapper.stepStart.settings.enable_step_data_persistency) {
+                if(!formData.stepsWrapper.stepStart.settings.enable_step_data_persistency) {
                     formData.stepsWrapper.stepStart.settings.enable_step_data_persistency = 'no';
                 }
 
-                if (!formData.stepsWrapper.stepStart.settings.enable_step_page_resume) {
+                if(!formData.stepsWrapper.stepStart.settings.enable_step_page_resume) {
                     formData.stepsWrapper.stepStart.settings.enable_step_page_resume = 'no';
                 }
 
-                if (!formData.stepsWrapper.stepStart.settings.step_animation) {
+                if(!formData.stepsWrapper.stepStart.settings.step_animation) {
                     formData.stepsWrapper.stepStart.settings.step_animation = 'slide';
                 }
 
@@ -213,7 +269,7 @@ const app = createApp({
             this.form_saving = true;
             let formFields = {
                 fields: this.form.dropzone,
-                submitButton: this.form.submitButton,
+                submitButton: this.form.submitButton
             };
 
             if (!_ff.isEmpty(this.form.stepsWrapper)) {
@@ -224,7 +280,7 @@ const app = createApp({
                 title: this.form.title,
                 formFields: JSON.stringify(formFields),
                 form_id: this.form_id,
-                action: 'fluentform-form-update',
+                action: 'fluentform-form-update'
             };
 
             FluentFormsGlobal.$post(data)
@@ -233,8 +289,8 @@ const app = createApp({
                     this.form_saving = false;
                     FluentFormApp.isDirty = false;
 
-                    const saveFormBtn = jQuery('#saveFormData');
-                    saveFormBtn.html('<i class="el-icon-success"></i>' + saveFormBtn.data('text'));
+                    const saveFormBtn = jQuery("#saveFormData");
+                    saveFormBtn.html('<i class="el-icon-success"></i>' + saveFormBtn.data("text"));
 
                     // Update the hash now.
                     this.saveHash();
@@ -255,111 +311,95 @@ const app = createApp({
             });
         },
 
+        /*
+        * Show Preview of Form from history
+        */
+        updateFormFromEditHistory(editHistory) {
+            this.form.dropzone = editHistory.fields
+            this.form.submitButton = editHistory.submitButton
+        },
+        /*
+        * return to original form from preview
+        */
+        resetFormToOriginal() {
+            if (this.tempFormData) {
+                this.form.dropzone = this.tempFormData.dropzone || [];
+                this.form.submitButton = this.tempFormData.submitButton || [];
+            }
+        },
+
+        /**
+         * Save a deep copy of the original form data
+         */
+        saveOriginalForm() {
+            this.tempFormData = JSON.parse(JSON.stringify({
+                dropzone: this.form.dropzone,
+                submitButton: this.form.submitButton
+            }));
+        },
+
         saveHash() {
             this.dropzoneHash = JSON.stringify(this.form.dropzone);
         },
 
-        $t(str) {
-            let transString = window.FluentFormApp.form_editor_str[str];
-            if (transString) {
-                return transString;
+        $t(string) {
+            let transString = window.FluentFormApp.form_editor_str[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
         },
     },
-    created() {
-        window.addEventListener('change-title', event => {
-            document.title = `${event.detail} - Fluentform`;
+
+    beforeCreate() {
+        this.$on("change-title", module => {
+            jQuery("title").text(`${module} - Fluentform`);
         });
-        window.dispatchEvent(new CustomEvent('change-title', {detail: 'Editor'}));
+        this.$emit("change-title", "Editor");
     },
+
     mounted() {
         this.prepareForm();
         this.loadResources(this.form_id);
 
-        if (window.FluentFormApp.is_conversion_form) {
-            document.getElementById('wpcontent').classList.add('ff_conversion_editor');
+        if (this.is_conversion_form) {
+            jQuery('#wpcontent').addClass('ff_conversion_editor');
         }
+
+        /**
+         *
+         */
+        FluentFormEditorEvents.$on('editor-history-preview',(editHistory,type,index) =>{
+
+            if (type == 'enter') {
+                this.saveOriginalForm();
+                this.updateFormFromEditHistory(editHistory);
+            }else if (type == 'leave') {
+                if (!this.isClicked && this.editHistoryIndex != index) {
+                    this.resetFormToOriginal(editHistory);
+                }
+            }else if (type == 'restore') {
+                this.isClicked = true;
+                this.editHistoryIndex = index;
+                setTimeout(() => {
+                    this.isClicked = false;
+                }, 1000);
+                this.updateFormFromEditHistory(editHistory);
+                this.$success('Restored from History! Click Save to Confirm');
+            }
+
+        });
     },
 });
 
-const components = [
-    ElButton,
-    ElCheckbox,
-    ElCheckboxGroup,
-    ElCol,
-    ElColorPicker,
-    ElDialog,
-    ElDropdown,
-    ElDropdownItem,
-    ElDropdownMenu,
-    ElForm,
-    ElFormItem,
-    ElInput,
-    ElSlider,
-    ElLoading,
-    ElOption,
-    ElPopover,
-    ElRadio,
-    ElRadioButton,
-    ElRadioGroup,
-    ElRate,
-    ElRow,
-    ElSelect,
-    ElTabPane,
-    ElTabs,
-    ElTooltip,
-    ElUpload,
-    ElSwitch,
-    ElInputNumber,
-    ElCard,
-    ElAlert,
-    ElSkeleton,
-    ElSkeletonItem,
-    ElOptionGroup,
-    ElLink,
-    ElTable,
-    ElTableColumn,
-    ElDatePicker,
-];
-
-components.forEach(component => {
-    app.use(component);
-});
-
-app.component('draggable', draggable);
-
-app.config.globalProperties.$loading = ElLoading.service;
-app.config.globalProperties.$notify = ElNotification;
-app.config.globalProperties.$message = ElMessage;
-app.config.globalProperties.emitter = emitter;
-
-// configure language
-app.config.globalProperties.$ELEMENT = {locale: en};
-
-window.FluentFormEditorEvents = createApp({});
-
-window.Errors = Errors;
-
-window.ffEditorOptionsCustomComponents = window.ffEditorOptionsCustomComponents || {};
-
-app.use(store);
-app.mixin(mixins);
-app.provide("eventBus", eventBus);
-
-window.fluentFormEditorApp = app;
-app.mount('#ff_form_editor_app');
-
 // More menus app
-const MoreMenuApp = createApp({
+new Vue({
+    el: '#more-menu',
     components: {
-        MoreMenu,
+        MoreMenu
     }
-});
-components.forEach(component => {
-    MoreMenuApp.use(component);
-});
-MoreMenuApp.config.globalProperties.$notify = ElNotification;
-MoreMenuApp.config.globalProperties.$message = ElMessage;
-MoreMenuApp.config.globalProperties.$ELEMENT = {locale: en};
-MoreMenuApp.mount('#more-menu');
+})

@@ -3,9 +3,7 @@
         <div class="mb-5">
             <h2 class="mb-2">{{ $t('Share Your Form') }}</h2>
             <p class="fs-17">
-                {{
-                    $t('Share your form by unique URL or copy and paste the shortcode to embed in your page and post')
-                }}
+                {{ $t('Share your form by unique URL or copy and paste the shortcode to embed in your page and post') }}
             </p>
         </div>
         <el-row :gutter="24">
@@ -13,22 +11,14 @@
                 <div class="fcc_card">
                     <h5 class="mb-2">{{ $t('Share Via Direct URL') }}</h5>
                     <p>{{ $t('Get the link or share on social sites') }}</p>
-                    <el-input
-                        :model-value="share_url"
-                        :readonly="true"
-                        @update:model-value="$emit('update:share_url', $event)"
-                    >
-                        <template #append>
-                            <el-button
-                                @click="copyText()"
-                                class="copy_share"
-                                :data-clipboard-text='share_url'
-                            >
-                                <template #icon>
-                                    <i class="ff-icon ff-icon-copy"></i>
-                                </template>
-                            </el-button>
-                        </template>
+                    <el-input v-model="share_url" :readonly="true">
+                        <el-button
+                            @click="copyText()" 
+                            class="copy_share"
+                            :data-clipboard-text='share_url' 
+                            slot="append"
+                            icon="ff-icon ff-icon-copy">
+                        </el-button>
                     </el-input>
                     <ul class="ff_socials mt-3">
                         <li>
@@ -62,41 +52,32 @@
                     <h5 class="mb-2">{{ $t('Shortcode') }}</h5>
                     <p>{{ $t('Use this following shortcode in your Page or Post') }}</p>
                     <el-input v-model="classic_shortcode" :readonly="true">
-                        <template #append>
-                            <el-button
-                                @click="copyText()"
-                                class="copy_share"
-                                :data-clipboard-text='classic_shortcode'
-                            >
-                                <template #icon>
-                                    <i class="ff-icon ff-icon-copy"></i>
-                                </template>
-                            </el-button>
-                        </template>
+                        <el-button 
+                            @click="copyText()" 
+                            class="copy_share" 
+                            :data-clipboard-text='classic_shortcode'
+                            slot="append" 
+                            icon="ff-icon ff-icon-copy">
+                        </el-button>
                     </el-input>
                 </div>
             </el-col>
-            <el-col :span="24">
+             <el-col :span="24">
                 <div class="fcc_card">
                     <h5 class="mb-2">{{ $t('Embed via HTML Code') }}</h5>
-                    <p class="mb-3">{{
-                            $t('Want to use this form in another domain or another site or even outside WordPress ? Use the following code')
-                        }}</p>
+                    <p class="mb-3">{{ $t('Want to use this form in another domain or another site or even outside WordPress? Use the following code') }}</p>
 
-                    <textarea
+                    <textarea 
                         :value="textareaValue"
-                        style="width: 100%"
-                        type="textarea"
-                        :rows="5"
+                        style="width: 100%" 
+                        type="textarea" 
+                        :rows="5" 
                         :readonly="true"
                     >
-                    </textarea>
+                    </textarea>             
                     <div class="mt-3">
-                        <p style="font-style: italic;" class="fs-14">- {{
-                                $t('You can customize the height property.')
-                            }}</p>
-                        <p style="font-style: italic;" class="fs-14">-
-                            {{ $t('Please check if your wp hosting server supports iframe.') }}</p>
+                        <p style="font-style: italic;" class="fs-14">- {{ $t('You can customize the height property.') }}</p>
+                        <p style="font-style: italic;" class="fs-14">- {{ $t('Please check if your wp hosting server supports iframe.') }}</p>
                     </div>
                 </div>
             </el-col>
@@ -104,12 +85,11 @@
     </div>
 </template>
 
-<script>
+<script type="text/babel">
 export default {
     name: 'SharingView',
     props: ['share_url', 'form_id'],
-    emits: ['update:share_url'],
-    data() {
+    data(){
         return {
             textareaValue: `<iframe id="fluentform" width="100%" loading="lazy" height="500px" style="min-height: 500px; width: 100%;" frameborder="0" src="${this.share_url}&embedded=1" onload="this.style.height=(this.contentWindow.document.body.scrollHeight+40)+'px';"></iframe>`
         }

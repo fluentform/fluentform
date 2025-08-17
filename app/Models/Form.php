@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Models;
 
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Models\Traits\PredefinedForms;
 
@@ -201,16 +202,7 @@ class Form extends Model
             'fluentform/forms_default_settings',
             $defaultSettings
         );
-    
-        $defaultSettings = apply_filters_deprecated(
-            'fluentform_create_default_settings',
-            [
-                $defaultSettings
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/create_default_settings',
-            'Use fluentform/create_default_settings instead of fluentform_create_default_settings.'
-        );
+        
 
         return apply_filters(
             'fluentform/create_default_settings',
@@ -248,8 +240,9 @@ class Form extends Model
 
     public static function remove($formId)
     {
-        static::where('id', $formId)->delete();
+        do_action('fluentform/before_form_delete', $formId);
 
+        static::where('id', $formId)->delete();
         Submission::where('form_id', $formId)->delete();
         SubmissionMeta::where('form_id', $formId)->delete();
         EntryDetails::where('form_id', $formId)->delete();
@@ -261,18 +254,23 @@ class Form extends Model
             ])
             ->delete();
 
-        if (defined('FLUENTFORMPRO')) {
-            wpFluent()->table('fluentform_order_items')
-                ->where('form_id', $formId)
-                ->delete();
+        if (PaymentHelper::hasPaymentSettings()) {
+            try {
+                wpFluent()->table('fluentform_order_items')
+                    ->where('form_id', $formId)
+                    ->delete();
 
-            wpFluent()->table('fluentform_transactions')
-                ->where('form_id', $formId)
-                ->delete();
+                wpFluent()->table('fluentform_transactions')
+                    ->where('form_id', $formId)
+                    ->delete();
 
-            wpFluent()->table('fluentform_subscriptions')
-                ->where('form_id', $formId)
-                ->delete();
+                wpFluent()->table('fluentform_subscriptions')
+                    ->where('form_id', $formId)
+                    ->delete();
+            } catch (\Exception $e) {
+            }
         }
+
+        do_action('fluentform/after_form_delete', $formId);
     }
 }

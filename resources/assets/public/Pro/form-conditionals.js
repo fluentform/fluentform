@@ -33,25 +33,47 @@ const formConditional = function ($, $theForm, form) {
                 if (!fieldName) {
                     return;
                 }
-                $.each(field.conditions, function (index, condition) {
-                    let el = getElement(condition.field);
-                    watchableFields[el.prop('name')] = el;
-                });
-            });
+                if (field.type == 'group' && field.condition_groups) {
+                    $.each(field.condition_groups, function (index, conditionGroup) {
 
+                        $.each(conditionGroup.rules, function (index, condition) {
+                            let el = getElement(condition.field);
+                            watchableFields[el.prop('name')] = el;
+                        });
+                    });
+                }else{
+                    $.each(field.conditions, function (index, condition) {
+                        let el = getElement(condition.field);
+                        watchableFields[el.prop('name')] = el;
+                    });
+                }
+
+            });
             formData = getFormData();
             const conditionAppInstance = new ConditionApp(form.conditionals, formData);
 
             $.each(watchableFields, (name, el) => {
-                el.on('change', () => {
+                el.on('keyup change', () => {
                     formData = getFormData();
                     conditionAppInstance.setFormData(formData);
-                    hideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
                 });
             });
 
             hideShowElements(conditionAppInstance.getCalculatedStatuses());
         };
+
+        const debounce = (func, delay = 300) => {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        };
+
+        const debouncedHideShowElements = debounce((statuses) => {
+            hideShowElements(statuses);
+        }, form.debounce_time || 300);
 
         const hideShowElements = function (items) {
             $.each(items, (itemName, status) => {
@@ -71,6 +93,7 @@ const formConditional = function ($, $theForm, form) {
                 }
             });
             $theForm.trigger('do_calculation');
+            $theForm.trigger('ff_render_dynamic_smartcodes', $theForm);
         };
 
         const getFormData = function () {
@@ -130,6 +153,7 @@ const formConditional = function ($, $theForm, form) {
             let $theform = getTheForm();
             var el = $("[data-name='" + name + "']", $theform);
             el = el.length ? el : $("[name='" + name + "']", $theform);
+            el = el.length ? el : $("[data-condition_field_name='" + name + "']", $theform);
             return el.length ? el : $("[name='" + name + "[]']", $theform);
         };
 

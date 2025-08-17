@@ -23,7 +23,7 @@ $defaultElements = [
                         'value'       => '',
                         'id'          => '',
                         'class'       => '',
-                        'placeholder' => __('First Name', 'fluentform'),
+                        'placeholder' => __('Enter Your First Name', 'fluentform'),
                         'maxlength'   => '',
                     ],
                     'settings' => [
@@ -80,7 +80,7 @@ $defaultElements = [
                         'value'       => '',
                         'id'          => '',
                         'class'       => '',
-                        'placeholder' => __('Middle Name', 'fluentform'),
+                        'placeholder' => __('Enter Your Middle Name', 'fluentform'),
                         'required'    => false,
                         'maxlength'   => '',
                     ],
@@ -139,7 +139,7 @@ $defaultElements = [
                         'value'       => '',
                         'id'          => '',
                         'class'       => '',
-                        'placeholder' => __('Last Name', 'fluentform'),
+                        'placeholder' => __('Enter Your Last Name', 'fluentform'),
                         'required'    => false,
                         'maxlength'   => '',
                     ],
@@ -363,6 +363,8 @@ $defaultElements = [
             'settings' => [
                 'label'                 => __('Address', 'fluentform'),
                 'enable_g_autocomplete' => 'no',
+                'autocomplete_provider' => 'none',
+                'enable_auto_locate'    => 'on_click',
                 'admin_field_label'     => 'Address',
                 'field_order'           => [
                     ['id' => 1, 'value' => 'address_line_1'],
@@ -1619,10 +1621,11 @@ $defaultElements = [
             'index'      => 2,
             'element'    => 'recaptcha',
             'attributes' => ['name' => 'g-recaptcha-response'],
-            'settings'   => [
-                'label'            => '',
-                'label_placement'  => '',
-                'validation_rules' => [],
+            'settings' => [
+                'label'                     => '',
+                'label_placement'           => '',
+                'validation_rules'          => [],
+                'render_recaptcha_v3_badge' => false
             ],
             'editor_options' => [
                 'title'              => __('reCaptcha', 'fluentform'),
@@ -1943,85 +1946,32 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputText',
         ],
     ];
-    $defaultElements['payments'] = [
-        'multi_payment_component' => [
-            'index'          => 6,
-            'element'        => 'multi_payment_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Payment Item', 'fluentform'),
-                'icon_class' => 'ff-edit-shopping-cart',
-                'element'    => 'input-radio',
-                'template'   => 'inputMultiPayment',
-            ],
+}
+
+// Add coordinate fields to address elements when FluentFormPro is active
+if (defined('FLUENTFORMPRO')) {
+    $defaultElements['general']['address']['fields']['latitude'] = [
+        'element'    => 'input_hidden',
+        'attributes' => [
+            'type'  => 'hidden',
+            'name'  => 'latitude',
+            'value' => '',
         ],
-        'subscription_payment_component' => [
-            'index'          => 6,
-            'element'        => 'subscription_payment_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Subscription', 'fluentform'),
-                'icon_class' => 'ff-edit-shopping-cart',
-                'element'    => 'input-radio',
-                'template'   => 'inputSubscriptionPayment',
-            ],
+        'settings' => [
+            'label'   => 'Latitude',
+            'visible' => false,
         ],
-        'custom_payment_component' => [
-            'index'          => 6,
-            'element'        => 'custom_payment_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Custom Payment Amount', 'fluentform'),
-                'icon_class' => 'ff-edit-keyboard-o',
-                'template'   => 'inputText',
-            ],
+    ];
+    $defaultElements['general']['address']['fields']['longitude'] = [
+        'element'    => 'input_hidden',
+        'attributes' => [
+            'type'  => 'hidden',
+            'name'  => 'longitude',
+            'value' => '',
         ],
-        'item_quantity_component' => [
-            'index'          => 6,
-            'element'        => 'item_quantity_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Item Quantity', 'fluentform'),
-                'icon_class' => 'ff-edit-keyboard-o',
-                'template'   => 'inputText',
-            ],
-        ],
-        'payment_method' => [
-            'index'          => 6,
-            'element'        => 'payment_method',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Payment Method', 'fluentform'),
-                'icon_class' => 'ff-edit-credit-card',
-                'template'   => 'inputPaymentMethods',
-            ],
-        ],
-        'payment_summary_component' => [
-            'index'          => 6,
-            'element'        => 'payment_summary_component',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Payment Summary', 'fluentform'),
-                'icon_class' => 'ff-edit-html',
-                'template'   => 'customHTML',
-            ],
-        ],
-        'payment_coupon' => [
-            'index'          => 6,
-            'element'        => 'payment_coupon',
-            'attributes'     => [],
-            'settings'       => [],
-            'editor_options' => [
-                'title'      => __('Coupon', 'fluentform'),
-                'icon_class' => 'el-icon-postcard',
-                'template'   => 'inputText',
-            ],
+        'settings' => [
+            'label'   => 'Longitude',
+            'visible' => false,
         ],
     ];
 }

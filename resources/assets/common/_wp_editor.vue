@@ -73,8 +73,12 @@ export default {
     },
     watch: {
         plain_content(newVal) {
-            this.$emit('update:modelValue', newVal);
+            this.$emit('update:modelValue', this.customSanitize(newVal));
+        },
+        modelValue(newVal) {
+            this.$emit('update:modelValue', this.customSanitize(newVal));
         }
+        
     },
     methods: {
         initEditor() {
@@ -108,16 +112,17 @@ export default {
         },
         changeContentEvent() {
             const content = window.wp.editor.getContent(this.editor_id);
-            this.$emit('update:modelValue', content);
+            this.$emit('update:modelValue', this.customSanitize(content));
         },
         handleCommand(command) {
+            const sanitizedCommand = this.customSanitize(command);
             if (this.hasWpEditor) {
-                tinymce.activeEditor.insertContent(command);
+                tinymce.activeEditor.insertContent(sanitizedCommand);
             } else {
                 const part1 = this.plain_content.slice(0, this.cursorPos);
-                const part2 = this.plain_content.slice(this.cursorPos);
-                this.plain_content = part1 + command + part2;
-                this.cursorPos += command.length;
+                const part2 = this.plain_content.slice(this.cursorPos, this.plain_content.length);
+                this.plain_content = part1 + sanitizedCommand + part2;
+                this.cursorPos += sanitizedCommand.length;
             }
         },
         showInsertButtonModal(editor) {
@@ -125,11 +130,18 @@ export default {
             this.showButtonDesigner = true;
         },
         insertHtml(content) {
-            this.currentEditor.insertContent(content);
+            this.currentEditor.insertContent(this.customSanitize(content));
         },
         updateCursorPos() {
             const textarea = document.querySelector('.wp_vue_editor_plain');
             this.cursorPos = textarea.selectionStart;
+        },
+        customSanitize(input) {
+            // Remove potential event handlers
+            let sanitized = input.replace(/\s+(on\w+)\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+            // Remove http-equiv attributes
+            sanitized = sanitized.replace(/\s+http-equiv\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+            return sanitized;
         },
     },
     mounted() {

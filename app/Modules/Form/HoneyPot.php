@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Modules\Form;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Support\Arr;
 
@@ -19,66 +20,71 @@ class HoneyPot
         if (!$this->isEnabled($form->id)) {
             return;
         }
+
+        $fieldName = $this->getFieldName($form->id);
+        $fieldId = 'ff_' . $form->id . '_item_sf' ;
+        $labels = ['Newsletter', 'Updates', 'Contact', 'Subscribe', 'Notify'];
+        $randomLabel = $labels[array_rand($labels)];
         ?>
-        <span style="display: none !important;"><input type="checkbox"
-                name="<?php echo esc_attr($this->getFieldName($form->id)); ?>"
-                value="1" style="display:none !important;" tabindex="-1" aria-hidden="true"></span>
+        <div
+                style="display: none!important; position: absolute!important; transform: translateX(1000%)!important;"
+                class="ff-el-group ff-hpsf-container"
+        >
+            <div class="ff-el-input--label asterisk-right">
+                <label for="<?php echo esc_attr($fieldId); ?>" aria-label="<?php echo esc_attr($randomLabel); ?>">
+                    <?php echo esc_html($randomLabel); ?>
+                </label>
+            </div>
+            <div class="ff-el-input--content">
+                <input type="text"
+                       name="<?php echo esc_attr($fieldName); ?>"
+                       class="ff-el-form-control"
+                       id="<?php echo esc_attr($fieldId); ?>"
+                />
+            </div>
+        </div>
         <?php
     }
 
     public function verify($insertData, $requestData, $formId)
     {
-        if (!$this->isEnabled($formId)) {
+        if (!$this->isEnabled($formId) || (
+                Helper::isConversionForm($formId) &&
+                Arr::isTrue($requestData, 'isFFConversational')
+            )) {
             return;
         }
 
         // Now verify
         if (Arr::get($requestData, $this->getFieldName($formId))) {
             // It's a bot! Block him
-            wp_send_json(
-                [
-                    'errors' => 'Sorry! You can not submit this form at this moment!',
-                ],
-                422
-            );
-        }
+            $honeyPotName = $this->getFieldName($formId);
 
-        return;
+            if (
+                !Arr::exists($requestData, $honeyPotName) ||
+                !empty(Arr::get($requestData, $honeyPotName))
+            ) {
+                wp_send_json(
+                    [
+                        'errors' => __('Sorry! You can not submit this form at this moment!', 'fluentform'),
+                    ],
+                    422
+                );
+            }
+            return;
+        }
     }
 
     public function isEnabled($formId = false)
     {
         $option = get_option('_fluentform_global_form_settings');
         $status = 'yes' == Arr::get($option, 'misc.honeypotStatus');
-    
-        $status = apply_filters_deprecated(
-            'fluentform_honeypot_status',
-            [
-                $status,
-                $formId
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/honeypot_status',
-            'Use fluentform/honeypot_status instead of fluentform_honeypot_status.'
-        );
-
         return apply_filters('fluentform/honeypot_status', $status, $formId);
     }
 
     private function getFieldName($formId)
     {
-        $honeyPotName = 'item__' . $formId . '__fluent_checkme_';
-        $honeyPotName =  apply_filters_deprecated(
-            'fluentform_honeypot_name',
-            [
-                $honeyPotName,
-                $formId
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/honeypot_name',
-            'Use fluentform/honeypot_name instead of fluentform_honeypot_name.'
-        );
-
+        $honeyPotName = 'item_' . $formId . '__fluent_sf';
         return apply_filters('fluentform/honeypot_name', $honeyPotName, $formId);
     }
 }

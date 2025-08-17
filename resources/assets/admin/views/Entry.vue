@@ -1,45 +1,29 @@
 <template>
-    <div class="fluentform-wrapper fluentform-entry-container">
+    <div class="fluentform-wrapper">
         <section-head class="ff_section_head_between items-center" size="sm">
             <section-head-content>
                 <h3>
-                    <router-link :to="{ name: 'form-entries' }">{{ $t('Entries') }}</router-link>
-                    <span role="presentation" class="el-breadcrumb__separator">/</span> {{ $t('Details') }}
-                    #{{ entry.serial_number }}
+                    <router-link :to="{ name: 'form-entries' }">{{$t('Entries')}}</router-link> <span role="presentation" class="el-breadcrumb__separator">/</span> {{$t('Serial Number')}} #{{entry.serial_number}}
                 </h3>
             </section-head-content>
             <section-head-content>
                 <btn-group>
                     <btn-group-item>
-                        <el-button size="large" :loading="entry_changing_prev" @click="changeEntry('-')"
-                                   :disabled="!prevId">
-                            <template #icon>
-                                <i class="ff-icon ff-icon-arrow-left"/>
-                            </template>
-                            <span>{{ $t('Previous') }}</span>
+                        <el-button size="medium" :loading="entry_changing_prev" @click="changeEntry('-')" :disabled="!prevId">
+                            <i class="ff-icon ff-icon-arrow-left"/> <span>{{$t('Previous')}}</span>
                         </el-button>
                     </btn-group-item>
                     <btn-group-item>
-                        <el-button
-                            size="large"
-                            :loading="entry_changing_next"
-                            @click="changeEntry('+')"
-                            :disabled="!nextId"
-                        >
-                            {{ $t('Next') }}
-                            <template #icon>
-                                <i class="ff-icon ff-icon-arrow-right"/>
-                            </template>
+                        <el-button size="medium" :loading="entry_changing_next" @click="changeEntry('+')" :disabled="!nextId">
+                            <span>{{$t('Next')}} </span> <i class="ff-icon ff-icon-arrow-right"/>
                         </el-button>
                     </btn-group-item>
                     <btn-group-item>
                         <router-link :to="{ name: 'form-entries' }">
-                            <el-button  size="large">
-                                <template #icon>
-                                    <i class="ff-icon ff-icon-eye fs-15"></i>
-                                </template>
-                                <span>{{ $t('View All') }}</span>
-                            </el-button>
+                            <span class="el-button el-button--default el-button--medium">
+                                <i class="ff-icon ff-icon-eye fs-15"></i>
+                                <span>{{$t('View All')}}</span>
+                            </span>
                         </router-link>
                     </btn-group-item>
                 </btn-group>
@@ -54,9 +38,8 @@
                             <card-head>
                                 <card-head-group class="justify-between">
                                     <div class="entry_info_box_title">
-                                        <span title="json code" @click="view_as_json = !view_as_json"
-                                              class="dashicons dashicons-editor-code json_action"></span>
-                                        {{ $t('Form Entry Data') }}
+                                        <span title="json code" @click="view_as_json = !view_as_json" class="dashicons dashicons-editor-code json_action"></span>
+                                        {{$t('Form Entry Data')}}
                                     </div>
                                     <div class="entry_info_box_actions">
                                         <span
@@ -70,9 +53,7 @@
                                             v-else
                                             class="el-icon-star-off star_big action_button text-warning"></span>
 
-                                        <el-checkbox true-value="yes" false-value="no" v-model="show_empty">
-                                            {{ $t('Show empty fields') }}
-                                        </el-checkbox>
+                                        <el-checkbox true-label="yes" false-label="no" v-model="show_empty">{{$t('Show empty fields')}}</el-checkbox>
                                     </div>
                                 </card-head-group>
                             </card-head>
@@ -83,44 +64,38 @@
                                             <div
                                                 v-for="(label, label_index) in labels"
                                                 :key="label_index"
-                                                v-show="show_empty === 'yes' || entry.user_inputs[label_index]"
+                                                v-show="show_empty == 'yes' || entry.user_inputs[label_index]"
                                                 class="wpf_each_entry"
                                             >
+
                                                 <div class="wpf_entry_label">
-                                                    {{ label }}
+                                                    {{label}}
                                                 </div>
-                                                <template v-if="formFields[label_index]['element'] === 'input_email'">
-                                                    <div v-show="entry.user_inputs[label_index]"
-                                                         class="wpf_entry_value">
+
+                                                <template v-if="formFields[label_index]['element'] == 'input_email'">
+                                                    <div v-show="entry.user_inputs[label_index]" class="wpf_entry_value">
                                                         <a :href="'mailto:'+entry.user_inputs[label_index]">{{
-                                                                entry.user_inputs[label_index]
-                                                            }}</a>
+                                                            entry.user_inputs[label_index] }}</a>
                                                     </div>
                                                 </template>
-                                                <template
-                                                    v-else-if="formFields[label_index]['element'] === 'input_file'">
-                                                    <entry-file-list :itemKey="label_index"
-                                                                     :dataItems="original_data"></entry-file-list>
+                                                <template v-else-if="formFields[label_index]['element'] == 'input_file'">
+                                                    <entry-file-list :itemKey="label_index" :dataItems="original_data"></entry-file-list>
                                                 </template>
                                                 <template
-                                                    v-else-if="['input_image', 'signature'].indexOf(formFields[label_index]['element']) !== -1">
-                                                    <entry-image-list :itemKey="label_index"
-                                                                      :dataItems="original_data"></entry-image-list>
+                                                    v-else-if="['input_image', 'signature'].indexOf(formFields[label_index]['element']) != -1">
+                                                    <entry-image-list :itemKey="label_index" :dataItems="original_data"></entry-image-list>
                                                 </template>
                                                 <template
-                                                    v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) !== -1">
-                                                    <div class="wpf_entry_value"
-                                                         v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
+                                                    v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
+                                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
                                                 </template>
                                                 <template v-else>
-                                                    <div class="wpf_entry_value"
-                                                         v-html="entry.user_inputs[label_index]"></div>
+                                                    <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
                                                 </template>
                                             </div>
                                         </div>
                                         <div v-show="view_as_json">
-                                            <textarea class="show_code" readonly
-                                                      :value="prettifyJson(entry)"></textarea>
+                                            <textarea class="show_code" readonly :value="prettifyJson(entry)"></textarea>
                                         </div>
                                     </div>
                                 </el-skeleton>
@@ -129,7 +104,7 @@
 
                         <card v-for="(card, cardKey) in extraCards" class="entry_info_box" :key="cardKey">
                             <card-head>
-                                <h6>{{ card.title }}</h6>
+                                <h6>{{card.title}}</h6>
                             </card-head>
                             <card-body>
                                 <div class="narrow_items">
@@ -140,7 +115,7 @@
 
 
                         <payment-summary
-                            @reload_payments="getEntry()"
+                            @reload_payments="reloadPayments()"
                             v-if="order_data"
                             :submission="entry"
                             :order_data="order_data"
@@ -149,13 +124,13 @@
                         <template v-if="hasPermission('fluentform_manage_entries')">
                             <entry_notes :entry_id="entry_id" :form_id="form_id"/>
 
-                            <submission_logs :entry_id="entry_id"/>
+                            <submission_logs :reload_logs="reload_logs" :entry_id="entry_id" @reset_reload_logs="resetReloadLogs" />
                             <btn-group as="div">
                                 <btn-group-item as="div">
-                                    <email-resend :form_id="form_id" :entry_id="entry_id"/>
+                                    <email-resend :form_id="form_id" :entry_id="entry_id" />
                                 </btn-group-item>
                                 <btn-group-item as="div">
-                                    <manual-entry-actions :form_id="form_id" :entry_id="entry_id"/>
+                                    <manual-entry-actions :form_id="form_id" :entry_id="entry_id" />
                                 </btn-group-item>
                             </btn-group>
                         </template>
@@ -164,99 +139,85 @@
                 <el-col :lg="8">
                     <card class="entry_info_box">
                         <card-head>
-                            <div class="entry_info_box_header">
-                                <div class="entry_info_box_title">
-                                    {{ $t('Submission Info') }}
+	                        <div class="entry_info_box_header">
+		                        <div class="entry_info_box_title">
+			                        {{$t('Submission Info')}}
+		                        </div>
+		                        <div>
+                                    <el-button size="small" icon="ff-icon el-icon-printer" @click="printEntry({form_id, submission_ids : [entry_id]})"></el-button>
+                                    <el-button v-if="entry.entry_uid_link" size="small" icon="ff-icon el-icon-link" @click="entryFrontEndLink({form_id, submission_ids : [entry_id]})"></el-button>
                                 </div>
-                                <el-button
-                                    size="small"
-                                    @click="printEntry({form_id, submission_ids : [entry_id]})"
-                                >
-                                    <template #icon>
-                                        <i class="ff-icon el-icon-printer"></i>
-                                    </template>
-                                </el-button>
-                            </div>
+	                        </div>
                         </card-head>
                         <card-body>
                             <ul class="ff_submission_info_list ff_list_border_bottom">
                                 <li>
-                                    <div class="lead-title">{{ $t('Entity ID') }}:</div>
+                                    <div class="lead-title">{{$t('Submission ID')}}:</div>
                                     <div class="lead-text">#{{ entry.id }}</div>
                                 </li>
                                 <li>
-                                    <div class="lead-title"> {{ $t('User IP') }}:</div>
-                                    <a class="lead-text" target="_blank" rel="noopener"
-                                       :href="'https://ipinfo.io/' + entry.ip">
+                                    <div class="lead-title"> {{$t('User IP')}}:</div>
+                                    <a class="lead-text" target="_blank" rel="noopener" :href="'https://ipinfo.io/' + entry.ip">
                                         {{ entry.ip }}
                                     </a>
                                 </li>
                                 <li>
-                                    <div class="lead-title">{{ $t('Source URL') }}:</div>
+                                    <div class="lead-title">{{$t('Source URL')}}:</div>
                                     <a class="lead-text lead-url" target="_blank" :href="entry.source_url">
                                         {{ entry.source_url }}
                                     </a>
                                 </li>
                                 <li>
-                                    <div class="lead-title">{{ $t('Browser') }}:</div>
+                                    <div class="lead-title">{{$t('Browser')}}:</div>
                                     <div class="lead-text">{{ entry.browser }}</div>
                                 </li>
                                 <li>
-                                    <div class="lead-title">{{ $t('Device') }}:</div>
+                                    <div class="lead-title">{{$t('Device')}}:</div>
                                     <div class="lead-text"> {{ entry.device }}</div>
                                 </li>
                                 <li>
-                                    <template v-if="entry.user">
-                                        <div class="lead-title">{{ $t('User') }}:</div>
-                                        <a class="lead-text" target="_blank" rel="noopener"
-                                           :href="entry.user.permalink">{{ entry.user.name }}</a>
+                                    <template  v-if="entry.user">
+                                        <div class="lead-title">{{$t('User')}}:</div>
+                                        <a class="lead-text" target="_blank" rel="noopener" :href="entry.user.permalink">{{ entry.user.name }}</a>
                                     </template>
 
                                     <template v-else>
-                                        <div class="lead-title">{{ $t('User') }}:</div>
-                                        <div class="lead-text">{{ $t('Guest') }}</div>
+                                        <div class="lead-title">{{$t('User')}}:</div>
+                                        <div class="lead-text">{{$t('Guest')}}</div>
                                     </template>
 
-                                    <user-change v-if="hasPermission('fluentform_manage_entries')" :submission="entry"/>
+                                    <user-change v-if="hasPermission('fluentform_manage_entries')" :submission="entry" />
                                 </li>
                                 <li>
-                                    <div class="lead-title">{{ $t('Status') }}:</div>
+                                    <div class="lead-title">{{$t('Status')}}:</div>
                                     <div class="lead-text">{{ entry_statuses[entry.status] || entry.status }}</div>
                                 </li>
                                 <li>
-                                    <div class="lead-title">{{ $t('Submitted On') }}:</div>
+                                    <div class="lead-title">{{$t('Submitted On')}}:</div>
                                     <div class="lead-text"> {{ entry.created_at }}</div>
                                 </li>
                             </ul>
                             <div class="entry-footer" v-if="hasPermission('fluentform_manage_entries')">
                                 <btn-group>
                                     <btn-group-item>
-                                        <el-button @click="editTable = true" size="default" type="primary">
-                                            {{ $t('Edit') }}
-                                            <template #icon>
-                                                <i class="el-icon-edit"></i>
-                                            </template>
+                                        <el-button @click="editTable = true" size="small" type="primary" icon="el-icon-edit">
+                                            {{$t('Edit')}}
                                         </el-button>
                                     </btn-group-item>
                                     <btn-group-item>
                                         <el-dropdown trigger="click" @command="handleStatusChange">
-                                            <el-button size="default" type="primary" class="el-button--soft">
-                                                {{ $t('Change status to') }}
-                                                <template #icon>
-                                                    <i class="el-icon-arrow-down el-icon--right"></i>
-                                                </template>
+                                            <el-button size="small" type="primary" class="el-button--soft">
+                                                {{$t('Change status to')}} <i class="el-icon-arrow-down el-icon--right"></i>
                                             </el-button>
-                                            <template #dropdown>
-                                                <el-dropdown-menu>
-                                                    <el-dropdown-item
-                                                        v-for="(statusName, statusKey) in entry_statuses"
-                                                        :command="statusKey"
-                                                        :key="statusKey"
-                                                    >
-                                                        {{ statusName }}
-                                                    </el-dropdown-item>
-                                                </el-dropdown-menu>
-                                            </template>
+                                            <el-dropdown-menu slot="dropdown">
+                                                <el-dropdown-item
+                                                    v-for="(statusName, statusKey) in entry_statuses"
+                                                    :command="statusKey"
+                                                    :key="statusKey"
+                                                >
+                                                    {{statusName}}
+                                                </el-dropdown-item>
+                                            </el-dropdown-menu>
                                         </el-dropdown>
                                     </btn-group-item>
                                 </btn-group>
@@ -267,13 +228,24 @@
                     <card v-for="(widget, widgetKey) in widgets" class="entry_info_box" :key="widgetKey">
                         <card-head>
                             <div class="entry_info_box_title">
-                                {{ widget.title }}
+                                {{widget.title}}
                             </div>
                         </card-head>
                         <card-body>
                             <div v-html="widget.content"></div>
                         </card-body>
                     </card>
+                    <card v-show="mapMarkers.length != 0">
+                        <card-head>
+                            <div class="entry_info_box_title">
+                                {{$t('Map')}}
+                            </div>
+                        </card-head>
+                        <card-body>
+                                <div id="map" style="height: 300px;"></div>
+                        </card-body>
+                    </card>
+
                 </el-col>
             </el-row>
         </el-skeleton>
@@ -281,11 +253,11 @@
         <el-dialog
             top="42px"
             :append-to-body="true"
-            v-model="editTable"
+            :visible.sync="editTable"
             width="60%"
         >
-            <template #header>
-                <h4>{{ $t('Edit Entry Data') }}</h4>
+            <template slot="title">
+                <h4>{{$t('Edit Entry Data')}}</h4>
             </template>
             <edit-entry
                 @reloadData="getEntry()"
@@ -301,280 +273,389 @@
     </div>
 </template>
 
-<script>
-import remove from '../components/confirmRemove.vue';
-import entry_notes from './EntryNotes.vue';
-import submission_logs from './SubmissionLogs.vue';
-import editEntry from './EditEntry.vue';
-import each from 'lodash/each.js';
-import EntryFileList from './Helpers/FilesList.vue';
-import EntryImageList from './Helpers/ImageList.vue';
-import EmailResend from './Helpers/_ResentEmailNotification.vue';
-import ManualEntryActions from './Helpers/_ManualEntryActions.vue';
-import PaymentSummary from './Payments/PaymentSummary.vue';
-import UserChange from './_UserChange.vue';
-import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
-import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
-import Card from '@/admin/components/Card/Card.vue';
-import CardHead from '@/admin/components/Card/CardHead.vue';
-import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
-import CardBody from '@/admin/components/Card/CardBody.vue';
-import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
-import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
+<script type="text/babel">
+    import remove from '../components/confirmRemove';
+    import entry_notes from './EntryNotes';
+    import submission_logs from './SubmissionLogs';
+    import editEntry from './EditEntry';
+    import each from 'lodash/each';
+    import EntryFileList from './Helpers/FilesList.vue';
+    import EntryImageList from './Helpers/ImageList.vue';
+    import EmailResend from './Helpers/_ResentEmailNotification';
+    import ManualEntryActions from './Helpers/_ManualEntryActions';
+    import PaymentSummary from './Payments/PaymentSummary';
+    import UserChange from './_UserChange';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
+    import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
 
-export default {
-    name: 'Entry',
-    props: ['has_pdf'],
-    inject: ['eventBus'],
-    components: {
-        remove: remove,
-        entry_notes: entry_notes,
-        submission_logs,
-        editEntry,
-        EntryFileList,
-        EntryImageList,
-        EmailResend,
-        PaymentSummary,
-        ManualEntryActions,
-        UserChange,
-        BtnGroup,
-        BtnGroupItem,
-        Card,
-        CardHead,
-        CardHeadGroup,
-        CardBody,
-        SectionHead,
-        SectionHeadContent
-    },
-    data() {
-        return {
-            loading: true,
-            editTable: false,
-            entry: false,
-            view_as_json: false,
-            entry_type: this.$route.query.type || 'all',
-            developer_mode: true,
-            form_id: window.fluent_form_entries_vars.form_id,
-            entry_id: Number.parseInt(this.$route.params.entry_id),
-            nextId: null,
-            prevId: null,
-            order_data: null,
-            sort_by: this.$route.query.sort_by,
-            paginate: {
-                total: null,
-                current_page: this.$route.query.current_page
+    export default {
+        name: 'Entry',
+        props: ['has_pdf'],
+        components: {
+            remove: remove,
+            entry_notes: entry_notes,
+            submission_logs,
+            editEntry,
+            EntryFileList,
+            EntryImageList,
+            EmailResend,
+            PaymentSummary,
+            ManualEntryActions,
+            UserChange,
+            BtnGroup,
+            BtnGroupItem,
+            Card,
+            CardHead,
+            CardHeadGroup,
+            CardBody,
+            SectionHead,
+            SectionHeadContent
+        },
+        data() {
+            return {
+                loading: true,
+                editTable: false,
+                entry: false,
+                view_as_json: false,
+                entry_type: this.$route.query.type || 'all',
+                developer_mode: true,
+                form_id: window.fluent_form_entries_vars.form_id,
+                entry_id: Number.parseInt(this.$route.params.entry_id),
+                nextId: null,
+                prevId: null,
+                order_data: null,
+                sort_by: this.$route.query.sort_by,
+                paginate: {
+                    total: null,
+                    current_page: this.$route.query.current_page
+                },
+                entry_position: this.$route.query.pos,
+                operator: null,
+                currentSerialNo: null,
+                formFields: {},
+                original_data: {},
+                show_empty: 'no',
+                widgets: {},
+                labels: {},
+                extraCards :{},
+                entry_changing_next : false,
+                entry_changing_prev : false,
+                resources_loading : false,
+                location: null,
+                map: null,
+                googleMap: null,
+                mapMarkers: [],
+                mapBounds: null,
+                reload_logs: false
+            }
+        },
+        computed: {
+            entry_statuses() {
+                let statuses = {...window.fluent_form_entries_vars.entry_statuses}
+
+                delete statuses['favorites'];
+
+                return statuses;
+            }
+        },
+        methods: {
+            getEntry() {
+                const url = FluentFormsGlobal.$rest.route('findSubmission', this.entry_id);
+                FluentFormsGlobal.$rest.get(url)
+                    .then(submission => {
+                        this.entry = submission;
+                        this.original_data = JSON.parse(submission.response);
+                        this.currentSerialNo = this.entry.myRowSerial;
+                        this.entry_id = this.entry.id;
+
+                        if (this.entry_id != this.$route.params.entry_id) {
+                            this.$router.push({
+                                name: 'form-entry', params: {entry_id: this.entry.id},
+                                query: this.$route.query
+                            });
+                        }
+
+                        ffEntriesEvents.$emit(
+                            'change-title',
+                            `Entry ${ this.entry.serial_number || '' }`
+                        );
+                    })
+                    .then(() => {
+                        this.getEntryResources();
+						const statusUpdate = window.fluent_form_entries_vars.update_status;
+						if (
+							statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
+							statusUpdate !== this.entry.status
+						) {
+							this.handleStatusChange(statusUpdate);
+							this.getEntryResources();
+						}
+                    })
+                    .catch(error => {
+                        this.$fail(error.message);
+                    })
+                    .finally(() => {
+                        this.entry_changing_next = this.entry_changing_prev = false;
+                        this.loading = false;
+
+                    });
             },
-            entry_position: this.$route.query.pos,
-            operator: null,
-            currentSerialNo: null,
-            formFields: {},
-            original_data: {},
-            show_empty: 'no',
-            widgets: {},
-            labels: {},
-            extraCards: {},
-            entry_changing_next: false,
-            entry_changing_prev: false,
-            resources_loading: false,
-        }
-    },
-    computed: {
-        entry_statuses() {
-            let statuses = {...window.fluent_form_entries_vars.entry_statuses}
+            changeFavorite() {
+                const url = FluentFormsGlobal.$rest.route('toggleSubmissionIsFavorite', this.entry_id);
 
-            delete statuses['favorites'];
+                FluentFormsGlobal.$rest.post(url)
+                    .then(response => {
+                        this.entry.is_favourite = response.is_favourite;
+                        this.$success(response.message);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            handleStatusChange(status) {
+                let data = {status: status};
 
-            return statuses;
-        }
-    },
-    methods: {
-        getEntry() {
-            const url = FluentFormsGlobal.$rest.route('findSubmission', this.entry_id);
-            FluentFormsGlobal.$rest.get(url)
-                .then(submission => {
-                    this.entry = submission;
-                    this.original_data = JSON.parse(submission.response);
-                    this.currentSerialNo = this.entry.myRowSerial;
-                    this.entry_id = this.entry.id;
+                const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', this.entry_id);
 
-                    if (this.entry_id != this.$route.params.entry_id) {
-                        this.$router.push({
-                            name: 'form-entry', params: {entry_id: this.entry.id},
-                            query: this.$route.query
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        this.entry.status = status;
+                        this.$success(response.message);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            changeEntry(operator) {
+                let entryId = (operator === '+' && this.nextId) || (operator === '-' && this.prevId);
+
+                if (entryId) {
+                    if (operator === '+'){
+                        this.entry_changing_next = true;
+                    }else{
+                        this.entry_changing_prev = true;
+                    }
+                    this.entry_id = entryId;
+                    this.getEntry();
+
+                }
+            },
+            explodeFileUrls(value, chunkSize = 4) {
+                return value ? _ff.chunk(value.split(', '), chunkSize) : [];
+            },
+            maybeExtractCommaArrayInfo(dataValue, field) {
+
+                if (typeof dataValue == 'string' && field.element == 'input_checkbox') {
+                    return dataValue;
+                }
+
+                if (field.element == 'select' && field.attributes && !field.attributes.multiple) {
+                    return dataValue;
+                }
+
+                if (!dataValue) {
+                    return;
+                }
+
+                if (typeof dataValue == 'string' && (dataValue.includes('<ul') || dataValue.includes('<li'))) {
+                  return dataValue;
+                }
+
+                let itemArray = [];
+
+                if (typeof dataValue == 'string') {
+                    itemArray = dataValue.split(',');
+                }
+
+
+                let options = field.options;
+
+                if(!options) {
+                    let advancedOptions = field.settings.advanced_options;
+                    if(advancedOptions) {
+                        options = {};
+                        each(advancedOptions, (optionItem) => {
+                            options[optionItem.value] = optionItem.label;
                         });
                     }
-
-                    ffEntriesEvents.eventBus.emit(
-                        'change-title',
-                        `Entry ${this.entry.serial_number || ''}`
-                    );
-                })
-                .then(() => {
-                    this.getEntryResources();
-                    const statusUpdate = window.fluent_form_entries_vars.update_status;
-                    if (
-                        statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
-                        statusUpdate !== this.entry.status
-                    ) {
-                        this.handleStatusChange(statusUpdate);
-                        this.getEntryResources();
-                    }
-                })
-                .catch(error => {
-                    this.$fail(error.message);
-                })
-                .finally(() => {
-                    this.entry_changing_next = this.entry_changing_prev = false;
-                    this.loading = false;
-
-                });
-        },
-        changeFavorite() {
-            const url = FluentFormsGlobal.$rest.route('toggleSubmissionIsFavorite', this.entry_id);
-
-            FluentFormsGlobal.$rest.post(url)
-                .then(response => {
-                    this.entry.is_favourite = response.is_favourite;
-                    this.$success(response.message);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
-        handleStatusChange(status) {
-            let data = {status: status};
-
-            const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', this.entry_id);
-
-            FluentFormsGlobal.$rest.post(url, data)
-                .then(response => {
-                    this.entry.status = status;
-                    this.$success(response.message);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
-        changeEntry(operator) {
-            let entryId = (operator === '+' && this.nextId) || (operator === '-' && this.prevId);
-
-            if (entryId) {
-                if (operator === '+') {
-                    this.entry_changing_next = true;
-                } else {
-                    this.entry_changing_prev = true;
                 }
-                this.entry_id = entryId;
-                this.getEntry();
 
-            }
-        },
-        explodeFileUrls(value, chunkSize = 4) {
-            return value ? _ff.chunk(value.split(', '), chunkSize) : [];
-        },
-        maybeExtractCommaArrayInfo(dataValue, field) {
-
-            if (typeof dataValue == 'string' && field.element == 'input_checkbox') {
-                return dataValue;
-            }
-
-            if (field.element == 'select' && field.attributes && !field.attributes.multiple) {
-                return dataValue;
-            }
-            if (!dataValue) {
-                return;
-            }
-
-            let itemArray = [];
-
-            if (typeof dataValue == 'string') {
-                itemArray = dataValue.split(',');
-            }
+                if (!options) {
+                    return dataValue;
+                }
 
 
-            let options = field.options;
+                if(itemArray.length == 1) {
+                    return `<div class="wpf_entry_value">${options[dataValue] || dataValue}</div>`;
+                }
 
-            if (!options) {
-                let advancedOptions = field.settings.advanced_options;
-                if (advancedOptions) {
-                    options = {};
-                    each(advancedOptions, (optionItem) => {
-                        options[optionItem.value] = optionItem.label;
+                let itemHtml = '<ul class="entry_item_list">';
+                each(itemArray, (item) => {
+                    item = item.trim();
+                    itemHtml += `<li>${options[item] || item}</li>`;
+                });
+                itemHtml += '</ul>';
+                return itemHtml;
+            },
+            dataType(data) {
+                return typeof data;
+            },
+            prettifyJson(entry) {
+                let data = {
+                    id: entry.id,
+                    form_id: entry.form_id,
+                    original: this.original_data,
+                    formatted: entry.user_inputs
+                };
+
+                return JSON.stringify(data, null, 8);
+            },
+            getEntryResources() {
+                this.resources_loading = true;
+                let data = {
+                    form_id: this.form_id,
+                    entry_id: this.entry_id,
+                    fields: true,
+                    labels: true,
+                    next: true,
+                    previous: true,
+                    cards: true,
+                    widgets: true,
+                    orderData: true,
+                };
+
+                const url = FluentFormsGlobal.$rest.route('getSubmissionsResources');
+
+                FluentFormsGlobal.$rest.get(url, data)
+                    .then((response) => {
+                        this.labels = response.labels;
+                        this.formFields = response.fields;
+                        this.order_data = response.orderData;
+                        this.widgets = response.widgets;
+                        this.extraCards = response.cards;
+
+                        this.nextId = response.next && response.next.id;
+                        this.prevId = response.previous && response.previous.id;
+
+                        this.processLatLngs();
+
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        // this.$fail(error.message);
+                    })
+                    .finally(() => {
+                        this.resources_loading = false;
                     });
+            },
+            extractLatLngs() {
+                return Object.keys(this.original_data)
+                    .filter(key => window.fluent_form_entries_vars.address_fields.includes(key))
+                    .reduce((result, key) => {
+                        const addressData = this.original_data[key];
+                        const latitude = parseFloat(addressData?.latitude);
+                        const longitude = parseFloat(addressData?.longitude);
+
+                        if (!isNaN(latitude) && !isNaN(longitude)) {
+                            result[key] = { latitude, longitude };
+                        }
+
+                        return result;
+                    }, {});
+            },
+
+            initializeGMap(lat, lng) {
+                if (isNaN(lat) || isNaN(lng)) {
+                    return null;
                 }
+
+                const mapElement = document.getElementById("map");
+                if (!mapElement) {
+                    return null;
+                }
+
+                if (!this.googleMap) {
+                    this.googleMap = new google.maps.Map(mapElement, {
+                        center: { lat, lng },
+                        zoom: 10, // Set a fixed, moderate zoom level
+                        gestureHandling: 'cooperative'
+                    });
+                    this.mapBounds = new google.maps.LatLngBounds();
+                }
+
+                const isDuplicateMarker = this.mapMarkers.some(
+                    marker => marker.getPosition().lat() === lat &&
+                        marker.getPosition().lng() === lng
+                );
+
+                if (!isDuplicateMarker) {
+                    const marker = new google.maps.Marker({
+                        position: { lat, lng },
+                        map: this.googleMap
+
+                    });
+
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<div>Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>`
+                    });
+
+                    marker.addListener('click', () => {
+                        infoWindow.open(this.googleMap, marker);
+                    });
+
+                    this.mapMarkers.push(marker);
+                    if (this.mapMarkers.length > 1) {
+                        this.mapBounds.extend(new google.maps.LatLng(lat, lng));
+
+                        const center = this.mapBounds.getCenter();
+                        this.googleMap.setCenter(center);
+                    }
+                }
+
+                return this.googleMap;
+            },
+
+            processLatLngs() {
+                this.googleMap = null;
+                this.mapMarkers = [];
+                this.mapBounds = null;
+
+                const latLngs = this.extractLatLngs();
+
+                if (Object.keys(latLngs).length){
+                  Object.entries(latLngs).forEach(([key, address]) => {
+                      this.initializeGMap(address.latitude, address.longitude);
+                  });
+                }
+            },
+            entryFrontEndLink(){
+                window.open(this.entry.entry_uid_link, '_blank');
+            },
+            reloadPayments() {
+                this.getEntry();
+                this.reload_logs = !this.reload_logs;
+            },
+            resetReloadLogs() {
+                this.reload_logs = false;
             }
-
-            if (!options) {
-                return dataValue;
-            }
-
-
-            if (itemArray.length == 1) {
-                return `<div class="wpf_entry_value">${options[dataValue] || dataValue}</div>`;
-            }
-
-            let itemHtml = '<ul class="entry_item_list">';
-            each(itemArray, (item) => {
-                item = item.trim();
-                itemHtml += `<li>${options[item] || item}</li>`;
-            });
-            itemHtml += '</ul>';
-            return itemHtml;
         },
-        dataType(data) {
-            return typeof data;
+        mounted() {
+            this.getEntry();
+	        this.clipboard = new ClipboardJS('.copy');
+	        this.clipboard.on('success', () => {
+		        this.$copy();
+	        });
         },
-        prettifyJson(entry) {
-            let data = {
-                id: entry.id,
-                form_id: entry.form_id,
-                original: this.original_data,
-                formatted: entry.user_inputs
-            };
-
-            return JSON.stringify(data, null, 8);
-        },
-        getEntryResources() {
-            this.resources_loading = true;
-            let data = {
-                form_id: this.form_id,
-                entry_id: this.entry_id,
-                fields: true,
-                labels: true,
-                next: true,
-                previous: true,
-                cards: true,
-                widgets: true,
-                orderData: true,
-            };
-
-            const url = FluentFormsGlobal.$rest.route('getSubmissionsResources');
-
-            FluentFormsGlobal.$rest.get(url, data)
-                .then((response) => {
-                    this.labels = response.labels;
-                    this.formFields = response.fields;
-                    this.order_data = response.orderData;
-                    this.widgets = response.widgets;
-                    this.extraCards = response.cards;
-
-                    this.nextId = response.next && response.next.id;
-                    this.prevId = response.previous && response.previous.id;
-
-                })
-                .catch((error) => {
-                    this.$fail(error.message);
-                })
-                .finally(() => {
-                    this.resources_loading = false;
-                });
-        },
-    },
-    mounted() {
-        this.getEntry();
-        (new ClipboardJS('.copy')).on('success', (e) => {
-            this.$copy();
-        });
-    }
-};
+	    beforeDestroy() {
+		    if (this.clipboard) {
+			    this.clipboard.destroy();
+		    }
+	    }
+    };
 </script>

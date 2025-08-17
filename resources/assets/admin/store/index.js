@@ -1,16 +1,22 @@
-import { createStore, createLogger } from 'vuex';
-import mutations from './mutations';
-import actions from './actions';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import createLogger from 'vuex/dist/logger';
+
+Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== 'production';
 
-export default createStore({
+import mutations from './mutations'
+import actions from './actions'
+
+export default new Vuex.Store({
     state: {
         fieldMode: 'add',
         sidebarLoading: true,
         editorShortcodes: {},
         editorComponents: {},
         editorDisabledComponents: {},
+
         postMockList: [],
         taxonomyMockList: [],
         generalMockList: [],
@@ -18,15 +24,12 @@ export default createStore({
         paymentsMockList: [],
         containerMockList: [],
         isMockLoaded: false,
-        allElements: [],
-        form: {
-            dropzone: []
-        }
     },
     getters: {
         fieldMode: state => state.fieldMode,
         sidebarLoading: state => state.sidebarLoading,
         editorShortcodes: state => state.editorShortcodes,
+
         editorComponents: state => state.editorComponents,
         editorDisabledComponents: state => state.editorDisabledComponents,
         postMockList: state => state.postMockList,
@@ -39,6 +42,6 @@ export default createStore({
     },
     actions,
     mutations,
-    strict: debug,
-    plugins: debug ? [createLogger()] : [],
+    // strict: debug,
+    // plugins: debug ? [createLogger()] : []
 });

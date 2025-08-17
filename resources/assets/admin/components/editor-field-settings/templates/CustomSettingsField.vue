@@ -12,25 +12,25 @@
 
 <script type="text/babel">
 export default {
-    name: 'CustomSettingsField',
-    props: ['listItem', 'editItem', 'form_items'],
+    name: "CustomSettingsField",
+    props: ["listItem", "editItem", "form_items", "item"],
     data() {
         return {
-            componentReady: false,
+            componentReady: false
         };
     },
     computed: {
-        customComponent() {
-            return window.ffEditorOptionsCustomComponents[this.listItem.componentName] || null;
+        componentName() {
+            return this.listItem?.componentName || this.item?.editor_options?.componentName;
         },
-    },
-    beforeMount() {
-        if (window.ffEditorOptionsCustomComponents[this.listItem.componentName]) {
-            this.componentReady = true;
+        customComponent() {
+            return window.ffEditorOptionsCustomComponents[this.componentName] || null;
         }
     },
-    created() {
-        console.log(this);
-    },
+    beforeMount() {
+        if (window.ffEditorOptionsCustomComponents[this.componentName]) {
+            this.componentReady = true;
+        }
+    }
 };
 </script>

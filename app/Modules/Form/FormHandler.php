@@ -106,7 +106,7 @@ class FormHandler
         // Prepare the data to be inserted to the DB.
         $insertData = $this->prepareInsertData();
 
-        if ($this->isSpam($this->formData, $this->form)) {
+        if ($this->isAkismetSpam($this->formData, $this->form)) {
             $insertData['status'] = 'spam';
             $this->handleSpamError();
         }
@@ -640,7 +640,7 @@ class FormHandler
         wp_send_json(['errors' => $errors], 422);
     }
 
-    protected function isSpam($formData, $form)
+    protected function isAkismetSpam($formData, $form)
     {
         if (!AkismetHandler::isEnabled()) {
             return false;
@@ -921,7 +921,7 @@ class FormHandler
         );
         $this->formData = apply_filters('fluentform/insert_response_data', $formData, $formId, $inputConfigs);
 
-        $ipAddress = $this->app->request->getIp();
+        $ipAddress = sanitize_text_field($this->app->request->getIp());
         $disableIpLogging = false;
         $disableIpLogging = apply_filters_deprecated(
             'fluentform_disable_ip_logging',
@@ -1006,9 +1006,10 @@ class FormHandler
 
             $interval = date('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
 
+            $clientIp = sanitize_text_field($this->app->request->getIp());
             $submissionCount = wpFluent()->table('fluentform_submissions')
                 ->where('status', '!=', 'trashed')
-                ->where('ip', $this->app->request->getIp())
+                ->where('ip', $clientIp ?: '0.0.0.0')
                 ->where('created_at', '>=', $interval)
                 ->count();
 

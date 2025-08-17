@@ -55,8 +55,7 @@
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <template #content>
                                             <p>
-                                                {{ $t('Enter the content you would like the user to ') }}<br>
-                                                {{ $t('send via email for confirmation.') }}
+                                                {{ $t('Enter the content you would like the user to send via email for confirmation.') }}
                                             </p>
                                         </template>
 

@@ -637,6 +637,7 @@ class File extends \SplFileInfo implements Contract
         'audio/x-pn-realaudio'                                                      => 'ram',
         'audio/x-pn-realaudio-plugin'                                               => 'rmp',
         'audio/x-wav'                                                               => 'wav',
+        'audio/wav'                                                                 => 'wav',
         'audio/xm'                                                                  => 'xm',
         'chemical/x-cdx'                                                            => 'cdx',
         'chemical/x-cif'                                                            => 'cif',

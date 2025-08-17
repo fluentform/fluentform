@@ -22,7 +22,7 @@
     text-overflow: ellipsis;
     display: block;
   }
-  &:hover {
+  &:hover, &:focus {
     background-color: $btn-element-hover-bg;
     color: $btn-element-hover-color;
   }

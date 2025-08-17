@@ -11,7 +11,7 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\ConditionAssesor;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 /**
  * @deprecated deprecated use  FluentForm\App\Hooks\Handlers\GlobalNotificationHandler;
@@ -100,7 +100,7 @@ class GlobalNotificationManager
 
         foreach ($enabledFeeds as $feed) {
             // We will decide if this feed will run on async or sync
-            $integrationKey = Arr::get($feedKeys, $feed['meta_key']);
+            $integrationKey = ArrayHelper::get($feedKeys, $feed['meta_key']);
 
             $action = 'fluentform/integration_notify_' . $feed['meta_key'];
 
@@ -109,7 +109,7 @@ class GlobalNotificationManager
             }
             // skip emails which will be sent on payment form submit otherwise email is sent after payment success
             if (! ! $form->has_payment && ('notifications' == $feed['meta_key'])) {
-                if (('payment_form_submit' == Arr::get($feed, 'settings.feed_trigger_event'))) {
+                if (('payment_form_submit' == ArrayHelper::get($feed, 'settings.feed_trigger_event'))) {
                     continue;
                 }
             }
@@ -187,11 +187,10 @@ class GlobalNotificationManager
 
     public function checkCondition($parsedValue, $formData, $insertId)
     {
-        $conditionSettings = Arr::get($parsedValue, 'conditionals');
+        $conditionSettings = ArrayHelper::get($parsedValue, 'conditionals');
         if (
             ! $conditionSettings ||
-            ! Arr::isTrue($conditionSettings, 'status') ||
-            ! count(Arr::get($conditionSettings, 'conditions'))
+            ! ArrayHelper::isTrue($conditionSettings, 'status')
         ) {
             return true;
         }
@@ -260,7 +259,7 @@ class GlobalNotificationManager
         $enabledFeeds = [];
         foreach ($feeds as $feed) {
             $parsedValue = json_decode($feed->value, true);
-            if ($parsedValue && Arr::isTrue($parsedValue, 'enabled')) {
+            if ($parsedValue && ArrayHelper::isTrue($parsedValue, 'enabled')) {
                 // Now check if conditions matched or not
                 $isConditionMatched = $this->checkCondition($parsedValue, $formData, $insertId);
                 if ($isConditionMatched) {

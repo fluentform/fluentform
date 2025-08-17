@@ -7,7 +7,7 @@ use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\ConditionAssesor;
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Models\Submission;
 
 
@@ -15,11 +15,10 @@ class GlobalNotificationService
 {
     public function checkCondition($parsedValue, $formData, $insertId)
     {
-        $conditionSettings = Arr::get($parsedValue, 'conditionals');
+        $conditionSettings = ArrayHelper::get($parsedValue, 'conditionals');
         if (
             !$conditionSettings ||
-            !Arr::isTrue($conditionSettings, 'status') ||
-            !count(Arr::get($conditionSettings, 'conditions'))
+            !ArrayHelper::isTrue($conditionSettings, 'status')
         ) {
             return true;
         }
@@ -81,7 +80,7 @@ class GlobalNotificationService
         $enabledFeeds = [];
         foreach ($feeds as $feed) {
             $parsedValue = json_decode($feed->value, true);
-            if ($parsedValue && Arr::isTrue($parsedValue, 'enabled')) {
+            if ($parsedValue && ArrayHelper::isTrue($parsedValue, 'enabled')) {
                 // Now check if conditions matched or not
                 $isConditionMatched = $this->checkCondition($parsedValue, $formData, $insertId);
                 if ($isConditionMatched) {

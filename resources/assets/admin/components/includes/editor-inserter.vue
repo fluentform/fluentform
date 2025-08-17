@@ -30,6 +30,17 @@
                 <li :class="editorInserterTab === 'general' ? 'active' : ''">
                     <a href="#" @click.prevent="changeEditorInserterTab('general')">General</a>
                 </li>
+                <template v-if="!is_conversion_form">
+                    <li :class="editorInserterTab == 'advanced' ? 'active' : ''">
+                        <a href="#" @click.prevent="changeEditorInserterTab('advanced')">Advanced</a>
+                    </li>
+                    <li :class="editorInserterTab == 'container' ? 'active' : ''" v-if="!isInserterInContainer && !isInserterInContainerRepeater">
+                        <a href="#" @click.prevent="changeEditorInserterTab('container')">Container</a>
+                    </li>
+	                <li :class="editorInserterTab == 'payment' ? 'active' : ''" v-if="isInserterInContainer && !isInserterInContainerRepeater">
+		                <a href="#" @click.prevent="changeEditorInserterTab('payment')">Payment</a>
+	                </li>
+                </template>
             </ul>
 
             <div class="editor-inserter__contents">
@@ -47,6 +58,10 @@
 
                 <template v-if="editorInserterTab === 'container'">
                     <list-items :list="containerMockList" :insertItemOnClick="insertItemOnClick" />
+                </template>
+
+	            <template v-if="editorInserterTab == 'payment'">
+                    <listItems :list="paymentsMockList" :insertItemOnClick="insertItemOnClick" />
                 </template>
             </div>
         </template>
@@ -104,8 +119,16 @@ export default {
         },
         insertItemOnClick: {
             type: Function,
-            required: true,
+            required: true
         },
+	    isInserterInContainerRepeater: {
+			type: Boolean,
+		    default: false
+	    },
+	    isInserterInContainer: {
+			type: Boolean,
+		    default: false
+	    },
     },
     data() {
         return {
@@ -141,14 +164,21 @@ export default {
     },
     computed: {
         allMockElements() {
-            return [
-                ...this.postMockList,
-                ...this.taxonomyMockList,
-                ...this.generalMockList,
-                ...this.advancedMockList,
-                ...this.containerMockList,
-                ...this.paymentsMockList,
-            ];
+	        if (this.isInserterInContainerRepeater) {
+		        return [
+			        ...this.generalMockList,
+			        ...this.advancedMockList,
+		        ];
+	        } else {
+		        return [
+			        ...this.postMockList,
+			        ...this.taxonomyMockList,
+			        ...this.generalMockList,
+			        ...this.advancedMockList,
+			        ...this.containerMockList,
+			        ...this.paymentsMockList
+		        ];
+	        }
         },
 
         /**
@@ -192,7 +222,9 @@ export default {
             const allMockElements = this.allMockElements;
             const allMockElNames = allMockElements.map(item => item.element);
 
-            return recentElNames.map(value => allMockElements[allMockElNames.indexOf(value)]);
+            return recentElNames.map(value => (
+                allMockElements[allMockElNames.indexOf(value)]
+            )).filter(item => Boolean(item));
         },
 
         inserterHeight() {

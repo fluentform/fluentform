@@ -1,18 +1,23 @@
 import notifier from './notifier';
+import {_$t} from "@/admin/helpers";
 
 export default {
-    /**
-     * Translate a string
-     * @param str
-     * @return {String}
-     */
     methods: {
-        $t(str) {
-            let transString = window.FluentFormApp.form_editor_str[str];
-            if (transString) {
-                return transString;
+        /**
+         * Translate a string
+         * @param {String}
+         * @return {String}
+         */
+        $t(string) {
+            let transString = window.FluentFormApp.form_editor_str[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
         },
 
         /**
@@ -20,7 +25,7 @@ export default {
          * @param section
          */
         toggleFieldsSection(section) {
-            if (this.optionFieldsSection === section) {
+            if (this.optionFieldsSection == section) {
                 this.optionFieldsSection = '';
             } else {
                 this.optionFieldsSection = section;
@@ -47,12 +52,12 @@ export default {
          * @param callback
          */
         mapElements(allElements, callback) {
-            _ff.map(allElements, existingItem => {
+            _ff.map(allElements, (existingItem) => {
                 if (existingItem.element != 'container') {
                     callback(existingItem);
                 }
                 if (existingItem.element == 'container') {
-                    _ff.map(existingItem.columns, column => {
+                    _ff.map(existingItem.columns, (column) => {
                         this.mapElements(column.fields, callback);
                     });
                 }
@@ -64,28 +69,46 @@ export default {
          * @param item
          */
         uniqElKey(item) {
-            const uniqueKey = 'el_' + Date.now() + Math.floor(Math.random() * 100);
-            item.uniqElKey = uniqueKey; // Directly set the key on the original item
-            this.$store.commit('setUniqueKey', { element: item, key: uniqueKey });
+            item.uniqElKey = 'el_' + Date.now() + Math.floor(Math.random() * 100);
         },
 
         /**
          * Helper method of `makeUniqueNameAttr`
-         * @param existingNames {Array}
-         * @param item
+         * @param existingAttrNames {Array}
+         * @param field
          * @return {string} new unique name
          */
-        getUniqueNameAttr(existingNames, item) {
-            let baseName = item.attributes.name || item.element;
-            let uniqueName = baseName;
-            let counter = 1;
-
-            // Ensure unique name
-            while (existingNames.includes(uniqueName)) {
-                uniqueName = `${baseName}_${counter++}`;
+        getUniqueNameAttr(existingAttrNames, field) {
+            if(!field.attributes.name) {
+                return '';
             }
+            let nameWithSuffix = field.attributes.name.match(/([0-9a-zA-Z-_]+)(?:_(\d+))/);
 
-            return uniqueName;
+            if (existingAttrNames.includes(field.attributes.name)) {
+                let baseName = nameWithSuffix ? nameWithSuffix[1] : field.attributes.name;
+                let siblingsOfNew = existingAttrNames.filter((name) => {
+                    if (name.includes(baseName)) {
+                        return true;
+                    }
+                }).sort(function (a, b) {
+                    var x = a.match(/(?!_)\d+/);
+                    x = x && parseInt(x[0]);
+
+                    var y = b.match(/(?!_)\d+/);
+                    y = y && parseInt(y[0]);
+
+                    return y - x;
+                });
+
+                let suffix = siblingsOfNew[0].match(/(?!_)\d+/);
+
+                if (suffix && parseInt(suffix[0])) {
+                    return siblingsOfNew[0].replace(/(?!_)\d+/, parseInt(suffix[0]) + 1);
+                } else {
+                    return field.attributes.name + '_1';
+                }
+            }
+            return field.attributes.name;
         },
 
         /**
@@ -98,19 +121,18 @@ export default {
             // generate unique key for each element
             this.uniqElKey(newItem);
 
-            if (newItem.attributes.name || newItem.element === 'container') {
+            if (newItem.attributes.name || newItem.element == 'container') {
                 let existingAttrNames = [];
 
-                // Collect existing attribute names
-                _ff.map(allElements, existingItem => {
-                    if (existingItem.attributes.name) {
+                this.mapElements(allElements, (existingItem) => {
+                    if(existingItem.attributes.name) {
                         existingAttrNames.push(existingItem.attributes.name);
                     }
                 });
 
-                if (newItem.element === 'container') {
-                    _ff.map(newItem.columns, column => {
-                        _ff.map(column.fields, field => {
+                if (newItem.element == 'container') {
+                    _ff.map(newItem.columns, (column) => {
+                        _ff.map(column.fields, (field) => {
                             let name = this.getUniqueNameAttr(existingAttrNames, field);
                             this.uniqElKey(field);
                             field.attributes.name = name;
@@ -119,18 +141,12 @@ export default {
                     });
                 } else {
                     let name = this.getUniqueNameAttr(existingAttrNames, newItem);
-                    this.$store.commit('setUniqueName', { element: newItem, name });
+                    newItem.attributes.name = name;
                 }
-            }
-
-            // Commit the updated newItem to Vuex
-            const index = allElements.indexOf(newItem);
-            if (index !== -1) {
-                this.$store.commit('updateElement', { index, element: newItem });
             }
         },
 
-        ...notifier,
+        ...notifier
     },
     filters: {
         ucFirst(string) {
@@ -138,11 +154,11 @@ export default {
         },
         _startCase(string) {
             return _ff.startCase(string);
-        },
+        }
     },
     data() {
         return {
-            is_conversion_form: !!window.FluentFormApp.is_conversion_form,
-        };
-    },
+            is_conversion_form: !!window.FluentFormApp.is_conversion_form
+        }
+    }
 };

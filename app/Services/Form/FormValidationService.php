@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\Form;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Modules\Form\AkismetHandler;
+use FluentForm\App\Modules\Form\CleanTalkHandler;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Modules\HCaptcha\HCaptcha;
@@ -12,7 +13,7 @@ use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
 use FluentForm\App\Services\FormBuilder\Components\SelectCountry;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\Framework\Validator\ValidationException;
 
 class FormValidationService
@@ -20,22 +21,22 @@ class FormValidationService
     protected $app;
     protected $form;
     protected $formData;
-    
+
     public function __construct()
     {
         $this->app = App::getInstance();
     }
-    
+
     public function setForm($form)
     {
         $this->form = $form;
     }
-    
+
     public function setFormData($formData)
     {
         $this->formData = $formData;
     }
-    
+
     /**
      * @param $fields
      * @param $formData
@@ -45,21 +46,21 @@ class FormValidationService
     public function validateSubmission(&$fields, &$formData)
     {
         do_action('fluentform/before_form_validation', $fields, $formData);
-        
+
         $this->preventMaliciousAttacks();
-    
+
         $this->validateRestrictions($fields);
-        
+
         $this->validateNonce();
-        
+
         $this->validateReCaptcha();
         $this->validateHCaptcha();
         $this->validateTurnstile();
-        
+
         foreach ($fields as $fieldName => $field) {
             if (isset($formData[$fieldName])) {
                 $element = $field['element'];
-    
+
                 $formData[$fieldName] = apply_filters_deprecated('fluentform_input_data_' . $element, [
                         $formData[$fieldName],
                         $field,
@@ -73,9 +74,9 @@ class FormValidationService
                 $formData[$fieldName] = apply_filters('fluentform/input_data_' . $element, $formData[$fieldName], $field, $formData, $this->form);
             }
         }
-        
+
         $originalValidations = FormFieldsParser::getValidations($this->form, $formData, $fields);
-        
+
         // Fire an event so that one can hook into it to work with the rules & messages.
         $originalValidations = apply_filters_deprecated('fluentform_validations', [
                 $originalValidations,
@@ -96,18 +97,18 @@ class FormValidationService
         if ($originalValidations && (!$validations || !array_filter($validations))) {
             $validations = $originalValidations;
         }
-        
+
         $validator = wpFluentForm('validator')->make($formData, $validations[0], $validations[1]);
-        
+
         $errors = [];
         if ($validator->validate()->fails()) {
             foreach ($validator->errors() as $attribute => $rules) {
                 $position = strpos($attribute, ']');
-                
+
                 if ($position) {
                     $attribute = substr($attribute, 0, strpos($attribute, ']') + 1);
                 }
-                
+
                 $errors[$attribute] = $rules;
             }
             // Fire an event so that one can hook into it to work with the errors.
@@ -149,12 +150,18 @@ class FormValidationService
                     $errors[$inputName] = [];
                 }
                 if (is_string($error)) {
-                    $error = [$error];
+                    $error = [fluentform_sanitize_html($error)];
+                } else {
+                    if (is_array($error)) {
+                        foreach ($error as $rule => $message) {
+                            $error[$rule] = fluentform_sanitize_html($message);
+                        }
+                    }
                 }
                 $errors[$inputName] = array_merge($error, $errors[$inputName]);
             }
         }
-    
+
         $errors = apply_filters_deprecated('fluentform_validation_errors', [
                 $errors,
                 $formData,
@@ -165,9 +172,9 @@ class FormValidationService
             'fluentform/validation_errors',
             'Use fluentform/validation_errors instead of fluentform_validation_errors.'
         );
-    
+
         $errors = apply_filters('fluentform/validation_errors', $errors, $formData, $this->form, $fields);
-    
+
         if ('yes' == Helper::getFormMeta($this->form->id, '_has_user_registration') && !get_current_user_id()) {
             $errors = apply_filters_deprecated('fluentform_validation_user_registration_errors', [
                     $errors,
@@ -182,7 +189,7 @@ class FormValidationService
 
             $errors = apply_filters('fluentform/validation_user_registration_errors', $errors, $formData, $this->form, $fields);
         }
-    
+
         if ('yes' == Helper::getFormMeta($this->form->id, '_has_user_update') && get_current_user_id()) {
             $errors = apply_filters_deprecated('fluentform_validation_user_update_errors', [
                     $errors,
@@ -200,11 +207,11 @@ class FormValidationService
         if ('update' == Arr::get(Helper::getFormMeta($this->form->id, 'postFeeds'), 'post_form_type')) {
             $errors = apply_filters('fluentform/validation_post_update_errors', $errors, $formData, $this->form, $fields);
         }
-        
+
         if ($errors) {
             throw new ValidationException('', 423, null,  ['errors' => $errors]);
         }
-        
+
         return true;
     }
 
@@ -212,7 +219,7 @@ class FormValidationService
     {
         return Helper::validateInput($field, $formData, $form, $fieldName, $inputValue);
     }
-    
+
     /**
      * Prevents malicious attacks when the submission
      * count exceeds in an allowed interval.
@@ -221,19 +228,20 @@ class FormValidationService
     public function preventMaliciousAttacks()
     {
         $prevent = apply_filters('fluentform/prevent_malicious_attacks', true, $this->form->id);
-        
+
         if ($prevent) {
             $maxSubmissionCount = apply_filters('fluentform/max_submission_count', 5, $this->form->id);
             $minSubmissionInterval = apply_filters('fluentform/min_submission_interval', 30, $this->form->id);
-            
+
             $interval = date('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
-            
+
+            $clientIp = sanitize_text_field($this->app->request->getIp());
             $submissionCount = wpFluent()->table('fluentform_submissions')
                 ->where('status', '!=', 'trashed')
-                ->where('ip', $this->app->request->getIp())
+                ->where('ip', $clientIp ?: '0.0.0.0')
                 ->where('created_at', '>=', $interval)
                 ->count();
-            
+
             if ($submissionCount >= $maxSubmissionCount) {
                 throw new ValidationException('', 429, null,  [
                     'errors' => [
@@ -245,7 +253,7 @@ class FormValidationService
             }
         }
     }
-    
+
     /**
      * Validate form data based on the form restrictions settings.
      *
@@ -255,25 +263,25 @@ class FormValidationService
     private function validateRestrictions(&$fields)
     {
         $formSettings = FormMeta::retrieve('formSettings', $this->form->id);
-    
+
         $this->form->settings = is_array($formSettings) ? $formSettings : [];
-    
+
         $isAllowed = [
             'status'  => true,
             'message' => '',
         ];
-        
+
         // This will check the following restriction settings.
         // 1. limitNumberOfEntries
         // 2. scheduleForm
         // 3. requireLogin
         // 4. restricted submission based on ip, country and keywords
-        
+
         /* This filter is deprecated and will be removed soon */
         $isAllowed = apply_filters('fluentform_is_form_renderable', $isAllowed, $this->form);
-        
+
         $isAllowed = apply_filters('fluentform/is_form_renderable', $isAllowed, $this->form);
-        
+
         if (!$isAllowed['status']) {
             throw new ValidationException('', 422, null,  [
                 'errors' => [
@@ -283,17 +291,17 @@ class FormValidationService
                 ],
             ]);
         }
-        
+
         // Since we are here, we should now handle if the form should be allowed to submit empty.
         $restrictions = Arr::get($this->form->settings, 'restrictions.denyEmptySubmission', []);
-        
+
         $this->handleDenyEmptySubmission($restrictions, $fields);
 
         $formRestrictions = Arr::get($this->form->settings, 'restrictions.restrictForm', []);
 
         $this->handleRestrictedSubmission($formRestrictions, $fields);
     }
-    
+
     /**
      * Handle response when empty form submission is not allowed.
      *
@@ -315,7 +323,8 @@ class FormValidationService
                 if (!count(Helper::arrayFilterRecursive($filteredFormData))) {
                     $defaultMessage = __('Sorry! You can\'t submit an empty form.','fluentform');
                     $customMessage = Arr::get($settings, 'message');
-                    
+                    $customMessage = apply_filters('fluentform/deny_empty_submission_message', $customMessage, $this->form);
+
                     throw new ValidationException('', 422, null,  [
                         'errors' => [
                             'restricted' => [
@@ -341,17 +350,30 @@ class FormValidationService
         if (!Arr::get($settings, 'enabled')) {
             return;
         }
-        $ipInfo = $this->getIpInfo();
-        $country = Arr::get($ipInfo, 'country');
-    
-        $this->checkIpRestriction($settings);
-    
-        $this->checkCountryRestriction($settings, $country);
-    
+
+        $rawIp = $this->app->request->getIp();
+        if (is_array($rawIp)) {
+            $rawIp = Arr::get($rawIp, '0');
+        }
+        $ip = sanitize_text_field($rawIp);
+        if ($ip) {
+            $this->checkIpRestriction($settings, $ip);
+        }
+
+        $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
+        if ($isCountryRestrictionEnabled) {
+            if ($ipInfo = $this->getIpInfo($ip)) {
+                $country = Arr::get($ipInfo, 'country');
+            } else {
+                $country = $this->getIpBasedOnCountry($ip);
+            }
+            $this->checkCountryRestriction($settings, $country);
+        }
+
         $this->checkKeyWordRestriction($settings);
     }
-    
-    
+
+
     /**
      * Validate nonce.
      * @throws ValidationException
@@ -362,9 +384,9 @@ class FormValidationService
         $shouldVerifyNonce = false;
         /* This filter is deprecated and will be removed soon. */
         $shouldVerifyNonce = $this->app->applyFilters('fluentform_nonce_verify', $shouldVerifyNonce, $formId);
-    
+
         $shouldVerifyNonce = $this->app->applyFilters('fluentform/nonce_verify', $shouldVerifyNonce, $formId);
-        
+
         if ($shouldVerifyNonce) {
             $nonce = Arr::get($this->formData, '_fluentform_' . $formId . '_fluentformnonce');
             if (!wp_verify_nonce($nonce, 'fluentform-submit-form')) {
@@ -385,24 +407,60 @@ class FormValidationService
             }
         }
     }
-    
-    /** Validate Spam
+
+    /** Validate Akismet Spam
      * @throws ValidationException
      */
-    public function handleSpamError()
+    public function handleAkismetSpamError()
     {
         $settings = get_option('_fluentform_global_form_settings');
         if (!$settings || 'validation_failed' != Arr::get($settings, 'misc.akismet_validation')) {
             return;
         }
-        
+
         $errors = [
             '_fluentformakismet' => __('Submission marked as spammed. Please try again', 'fluentform'),
         ];
         throw new ValidationException('', 422, null, ['errors' => $errors]);
     }
-    
-    public function isSpam($formData, $form)
+
+    /** Validate CleanTalk Spam
+     * @throws ValidationException
+     */
+    public function handleCleanTalkSpamError()
+    {
+        $settings = get_option('_fluentform_global_form_settings');
+        if (!$settings || 'validation_failed' != Arr::get($settings, 'misc.cleantalk_validation')) {
+            return;
+        }
+
+        $errors = [
+            '_fluentformcleantalk' => __('Submission marked as spammed. Please try again', 'fluentform'),
+        ];
+        throw new ValidationException('', 422, null, ['errors' => $errors]);
+    }
+
+    /** Validate CleanTalk Spam While Using API
+     * @throws ValidationException
+     */
+    public function handleCleanTalkSpamErrorUsingAPi()
+    {
+        $cleantalkSettings = get_option('_fluentform_cleantalk_details');
+
+        if (
+            !$cleantalkSettings ||
+            'validation_failed' != Arr::get($cleantalkSettings, 'validation')
+        ) {
+            return;
+        }
+
+        $errors = [
+            '_fluentformcleantalk' => __('Submission marked as spammed. Please try again', 'fluentform'),
+        ];
+        throw new ValidationException('', 422, null, ['errors' => $errors]);
+    }
+
+    public function isAkismetSpam($formData, $form)
     {
          if (!AkismetHandler::isEnabled()) {
             return false;
@@ -426,7 +484,7 @@ class FormValidationService
         }
         // Let's validate now
         $isSpam = AkismetHandler::isSpamSubmission($formData, $form);
-    
+
         $isSpam = apply_filters_deprecated(
             'fluentform_akismet_spam_result',
             [
@@ -440,13 +498,51 @@ class FormValidationService
         );
         return apply_filters('fluentform/akismet_spam_result', $isSpam, $form->id, $formData);
     }
-    
+
+    public function isCleanTalkSpam($formData, $form)
+    {
+        if (!CleanTalkHandler::isEnabled()) {
+            return false;
+        }
+        $isSpamCheck = apply_filters('fluentform/cleantalk_check_spam', true, $form->id, $formData);
+
+        if (!$isSpamCheck) {
+            return false;
+        }
+        $isSpam = CleanTalkHandler::isSpamSubmission($formData, $form);
+
+        return apply_filters('fluentform/cleantalk_spam_result', $isSpam, $form->id, $formData);
+    }
+
+    public function isCleanTalkSpamUsingApi($formData, $form)
+    {
+        if (!CleanTalkHandler::isCleantalkActivated()) {
+            return false;
+        }
+
+        $isSpamCheck = apply_filters('fluentform/cleantalk_check_spam', true, $form->id, $formData);
+
+        if (!$isSpamCheck) {
+            return false;
+        }
+
+        $isSpam = CleanTalkHandler::spamSubmissionCheckWithApi($formData, $form);
+
+        return apply_filters('fluentform/cleantalk_spam_result', $isSpam, $form->id, $formData);
+    }
+
     /**
      * Validate reCaptcha.
+     * Uses 'fluentform/disable_captcha' filter with 'recaptcha' as the captcha type since 6.0.3
      * @throws ValidationException
      */
     private function validateReCaptcha()
     {
+        // Check if autoload_captcha is enabled and if it's not recaptcha, skip validation
+        if ($this->shouldSkipCaptchaValidation('recaptcha')) {
+            return;
+        }
+
         $hasAutoRecap =  apply_filters_deprecated(
             'ff_has_auto_recaptcha',
             [
@@ -457,7 +553,9 @@ class FormValidationService
             'Use fluentform/has_recaptcha instead of ff_has_auto_recaptcha.'
         );
         $autoInclude = apply_filters('fluentform/has_recaptcha', $hasAutoRecap);
-        if (FormFieldsParser::hasElement($this->form, 'recaptcha') || $autoInclude) {
+        $disableReCaptcha = apply_filters('fluentform/disable_captcha', false, $this->form, 'recaptcha');
+        
+        if (!$disableReCaptcha && (FormFieldsParser::hasElement($this->form, 'recaptcha') || $autoInclude)) {
             $keys = get_option('_fluentform_reCaptcha_details');
             $token = Arr::get($this->formData, 'g-recaptcha-response');
             $version = 'v2_visible';
@@ -480,10 +578,15 @@ class FormValidationService
 
     /**
      * Validate hCaptcha.
+     *
      * @throws ValidationException
      */
     private function validateHCaptcha()
     {
+        // Check if autoload_captcha is enabled and if it's not hcaptcha, skip validation
+        if ($this->shouldSkipCaptchaValidation('hcaptcha')) {
+            return;
+        }
         $hasAutoHcap = apply_filters_deprecated(
             'ff_has_auto_hcaptcha',
             [
@@ -494,8 +597,10 @@ class FormValidationService
             'Use fluentform/has_hcaptcha instead of ff_has_auto_hcaptcha.'
         );
         $autoInclude = apply_filters('fluentform/has_hcaptcha', $hasAutoHcap);
+        $disableHCaptcha = apply_filters('fluentform/disable_captcha', false, $this->form, 'hcaptcha');
+
         FormFieldsParser::resetData();
-        if (FormFieldsParser::hasElement($this->form, 'hcaptcha') || $autoInclude) {
+        if (!$disableHCaptcha && (FormFieldsParser::hasElement($this->form, 'hcaptcha') || $autoInclude)) {
             $keys = get_option('_fluentform_hCaptcha_details');
             $token = Arr::get($this->formData, 'h-captcha-response');
             $isValid = HCaptcha::validate($token, $keys['secretKey']);
@@ -511,13 +616,19 @@ class FormValidationService
             }
         }
     }
-    
+
     /**
      * Validate turnstile.
+     *
      * @throws ValidationException
      */
     private function validateTurnstile()
     {
+        // Check if autoload_captcha is enabled and if it's not turnstile, skip validation
+        if ($this->shouldSkipCaptchaValidation('turnstile')) {
+            return;
+        }
+
         $hasAutoTurnsTile = apply_filters_deprecated(
             'ff_has_auto_turnstile',
             [
@@ -528,7 +639,9 @@ class FormValidationService
             'Use fluentform/has_turnstile instead of ff_has_auto_turnstile.'
         );
         $autoInclude = apply_filters('fluentform/has_turnstile', $hasAutoTurnsTile);
-        if (FormFieldsParser::hasElement($this->form, 'turnstile') || $autoInclude) {
+        $disableTurnsTile = apply_filters('fluentform/disable_captcha', false, $this->form, 'turnstile');
+        
+        if (!$disableTurnsTile && (FormFieldsParser::hasElement($this->form, 'turnstile') || $autoInclude)) {
             $keys = get_option('_fluentform_turnstile_details');
             $token = Arr::get($this->formData, 'cf-turnstile-response');
             
@@ -545,8 +658,8 @@ class FormValidationService
             }
         }
     }
-    
-    
+
+
     /**
      * Delegate the validation rules & messages to the
      * ones that the validation library recognizes.
@@ -561,17 +674,17 @@ class FormValidationService
     {
         $search = $search ?: ['max_file_size', 'allowed_file_types'];
         $replace = $replace ?: ['max', 'mimes'];
-        
+
         foreach ($rules as &$rule) {
             $rule = str_replace($search, $replace, $rule);
         }
-        
+
         foreach ($messages as $key => $message) {
             $newKey = str_replace($search, $replace, $key);
             $messages[$newKey] = $message;
             unset($messages[$key]);
         }
-        
+
         return [$rules, $messages];
     }
 
@@ -580,12 +693,15 @@ class FormValidationService
      *
      * @throws ValidationException
      */
-    private function getIpInfo() {
+    private function getIpInfo($ip) {
         $token = Helper::getIpinfo();
-        $url = 'https://ipinfo.io';
-        if ($token) {
-            $url = 'https://ipinfo.io/?token=' . $token;
+        
+        if (!$token) {
+            $message = __('Sorry! Please provide valid token for ipinfo.io in global settings.', 'fluentform');
+            self::throwValidationException($message);
         }
+        
+        $url = 'https://ipinfo.io/' . $ip . '?token=' . $token;
         $data = wp_remote_get($url);
         $code = wp_remote_retrieve_response_code($data);
         $body = wp_remote_retrieve_body($data);
@@ -597,7 +713,32 @@ class FormValidationService
             self::throwValidationException($message);
         }
     }
-    
+
+    /**
+     * Get IP and Country from geoplugin
+     *
+     * @throws ValidationException
+     */
+    private function getIpBasedOnCountry($ip) {
+        $request = wp_remote_get("http://www.geoplugin.net/php.gp?ip={$ip}");
+        $code = wp_remote_retrieve_response_code($request);
+
+        $message = __('Sorry! There is an error occurred in getting Country using geoplugin.net. Please check form settings and try again.', 'fluentform');
+
+        if ($code === 200) {
+            $body = wp_remote_retrieve_body($request);
+            $body = unserialize($body);
+
+            if ($country = Arr::get($body,'geoplugin_countryCode')) {
+                return $country;
+            } else {
+                self::throwValidationException($message);
+            }
+        } else {
+            self::throwValidationException($message);
+        }
+    }
+
     /**
      * @param $value
      * @param $providedKeywords
@@ -620,11 +761,13 @@ class FormValidationService
 
         return false;
     }
-    
-    
-    private function checkIpRestriction($settings)
+
+
+    /**
+     * @throws ValidationException
+     */
+    private function checkIpRestriction($settings, $ip)
     {
-        $ip = $this->app->request->getIp();
         if (Arr::get($settings, 'fields.ip.status') && $ip) {
             $providedIp = array_map('trim', explode(',', Arr::get($settings, 'fields.ip.values')));
 
@@ -635,15 +778,18 @@ class FormValidationService
 
             if ($failedSubmissionIfExists || $allowSubmissionIfNotExists) {
                 $defaultMessage = __('Sorry! You can\'t submit a form from your IP address.', 'fluentform');
-                $message = Arr::get($settings, 'fields.ip.message', $defaultMessage);
+                $message = apply_filters('fluentform/ip_restriction_message', Arr::get($settings, 'fields.ip.message', $defaultMessage), $this->form);
                 self::throwValidationException($message);
             }
         }
     }
-    
+
+    /**
+     * @throws ValidationException
+     */
     private function checkCountryRestriction($settings, $country)
     {
-        if (Arr::get($settings, 'fields.country.status') && $country) {
+        if ($country) {
             $providedCountry = Arr::get($settings, 'fields.country.values');
 
             $isFailed = Arr::get($settings, 'fields.country.validation_type') === 'fail_on_condition_met';
@@ -652,21 +798,28 @@ class FormValidationService
             $allowSubmissionIfNotExists = !$isFailed && !in_array($country, $providedCountry);
 
             if ($failedSubmissionIfExists || $allowSubmissionIfNotExists) {
-                $defaultMessage = __('Sorry! You can\'t submit a form from the country you are residing.', 'fluentform');
-                $message = Arr::get($settings, 'fields.country.message', $defaultMessage);
+                $defaultMessage = __('Sorry! You can\'t submit this form from the country you are residing.', 'fluentform');
+                $message = apply_filters('fluentform/country_restriction_message', Arr::get($settings, 'fields.country.message', $defaultMessage), $this->form);
                 self::throwValidationException($message);
             }
         }
     }
-    
+
     private function checkKeyWordRestriction($settings)
     {
         if (!Arr::get($settings, 'fields.keywords.status')) {
             return;
         }
-        
-        $providedKeywords = explode(',', Arr::get($settings, 'fields.keywords.values'));
-        $providedKeywords =  array_map('trim', $providedKeywords);
+
+        $keywords = Arr::get($settings, 'fields.keywords.values');
+        if (!$keywords || !is_string($keywords)) {
+            return;
+        }
+        $providedKeywords = explode(',', $keywords);
+        $providedKeywords =  array_filter(array_map('trim', $providedKeywords));
+        if (!$providedKeywords) {
+            return;
+        }
         $inputSubmission = array_intersect_key(
             $this->formData,
             array_flip(
@@ -676,7 +829,7 @@ class FormValidationService
             )
         );
         $defaultMessage = __('Sorry! Your submission contains some restricted keywords.', 'fluentform');
-        $message = Arr::get($settings, 'fields.keywords.message', $defaultMessage);
+        $message = apply_filters('fluentform/keyword_restriction_message', Arr::get($settings, 'fields.keywords.message', $defaultMessage), $this->form);
 
         self::checkKeywordsMatching($inputSubmission, $message, $providedKeywords);
     }
@@ -695,7 +848,7 @@ class FormValidationService
             }
         }
     }
-    
+
     /**
      * @throws ValidationException
      */
@@ -707,5 +860,35 @@ class FormValidationService
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Check if captcha validation should be skipped based on autoload captcha settings
+     *
+     * When autoload captcha is enabled, only the selected captcha type should be validated.
+     * This method returns true if the current captcha type is NOT the selected autoload type,
+     * preventing unnecessary validation of multiple captcha types on the same form.
+     *
+     * @param string $captchaType The captcha type to check ('recaptcha', 'hcaptcha', 'turnstile')
+     * @return bool True if validation should be skipped, false otherwise
+     */
+    private function shouldSkipCaptchaValidation($captchaType)
+    {
+        $globalSettings = get_option('_fluentform_global_form_settings');
+        $autoloadEnabled = Arr::get($globalSettings, 'misc.autoload_captcha');
+
+        // If autoload captcha is not enabled, don't skip any validation
+        if (!$autoloadEnabled) {
+            return false;
+        }
+
+        $selectedCaptchaType = Arr::get($globalSettings, 'misc.captcha_type');
+
+        // If the current captcha type matches the selected autoload type, proceed with validation
+        if ($captchaType === $selectedCaptchaType) {
+            return false;
+        }
+
+        return true; // Skip validation for non-selected captcha types
     }
 }

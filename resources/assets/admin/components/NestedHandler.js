@@ -38,6 +38,10 @@ import inputMultiPayment from './templates/inputMultiPayment.vue';
 import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
 import inputCalendar from './templates/inputCalendar.vue';
 import {Splitpanes, Pane} from 'splitpanes';
+import CustomEditorField from './editor-field-settings/templates/CustomSettingsField.vue';
+import ActionBtn from "@/admin/components/ActionBtn/ActionBtn.vue";
+import ActionBtnRemove from "@/admin/components/ActionBtn/ActionBtnRemove.vue";
+import ActionBtnAdd from "@/admin/components/ActionBtn/ActionBtnAdd.vue";
 
 export default {
     name: 'list',
@@ -51,6 +55,9 @@ export default {
         'allElements',
         'handleDragend',
         'handleDragstart',
+        'editorInserterInContainer',
+        'editorInserterInContainerRepeater',
+        'fieldNotSupportInContainerRepeater',
     ],
     components: {
         ff_select: select,
@@ -94,6 +101,10 @@ export default {
         ff_inputCalendar: inputCalendar,
         Splitpanes,
         Pane,
+        ff_CustomEditorField: CustomEditorField,
+        ActionBtn,
+        ActionBtnRemove,
+        ActionBtnAdd,
     },
     data() {
         return {
@@ -201,6 +212,10 @@ export default {
             if (jQuery(event.target).closest('.item-container').length) {
                 this.eventBus.emit('editor-inserter-in-container');
             }
+
+            if (jQuery(event.target).closest('.repeater-item-container').length) {
+                this.eventBus.emit('editor-inserter-in-container-repeater', true);
+            }
         },
 
         resize(event) {
@@ -301,5 +316,10 @@ export default {
                 emptyInsertThreshold: 200,
             };
         },
+        handleKeyboardDelete(selectedItem) {
+            if (this.item.uniqElKey === selectedItem.uniqElKey) {
+                this.askRemoveConfirm(this.index);
+            }
+        }
     }
 };

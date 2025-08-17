@@ -1,58 +1,131 @@
 import './helpers';
 
-import {createApp} from 'vue';
-import {createRouter, createWebHashHistory} from 'vue-router';
-import Errors from '@/common/Errors.js';
-import en from 'element-plus/es/locale/lang/en';
-import notifier from '@/admin/notifier.js';
-import mitt from 'mitt';
+import Vue from 'vue';
+import Router from 'vue-router';
+
+import Errors from '../common/Errors';
+import locale from 'element-ui/lib/locale';
+import lang from 'element-ui/lib/locale/lang/en';
+import notifier from './notifier';
 
 import {
-    ElButton,
-    ElRow,
-    ElCol,
-    ElRadio,
-    ElCheckbox,
-    ElCheckboxGroup,
-    ElRadioGroup,
-    ElSelect,
-    ElOption,
-    ElOptionGroup,
-    ElInput,
-    ElForm,
-    ElFormItem,
-    ElTooltip,
-    ElSwitch,
-    ElInputNumber,
-    ElDatePicker,
-    ElTable,
-    ElTableColumn,
-    ElPopover,
-    ElDropdown,
-    ElDropdownMenu,
-    ElDropdownItem,
-    ElCollapse,
-    ElCollapseItem,
-    ElSlider,
-    ElTag,
-    ElLoading,
-    ElMessage,
-    ElNotification,
-    ElDialog,
-    ElMessageBox,
-    ElButtonGroup,
-    ElColorPicker,
-    ElTabs,
-    ElTabPane,
-    ElSkeleton,
-    ElSkeletonItem,
-    ElPopconfirm
-} from 'element-plus';
+    Button,
+    Row,
+    Col,
+    Radio,
+    Checkbox,
+    CheckboxGroup,
+    RadioGroup,
+    Select,
+    Option,
+    OptionGroup,
+    Input,
+    Form,
+    FormItem,
+    Tooltip,
+    Switch,
+    InputNumber,
+    DatePicker,
+    Table,
+    TableColumn,
+    Popover,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem,
+    Collapse,
+    CollapseItem,
+    Slider,
+    Tag,
+    Loading,
+    Message,
+    Notification,
+    Dialog,
+    MessageBox,
+    ButtonGroup,
+    ColorPicker,
+    Tabs,
+    TabPane,
+    Skeleton,
+    SkeletonItem,
+} from 'element-ui';
 
-window.Errors = Errors;
-const emitter = mitt();
-const eventBus = mitt();
-window.ffSettingsEvents = emitter;
+global.Errors = Errors;
+global.ffSettingsEvents = new Vue();
+
+// Set locale
+locale.use(lang);
+Vue.use(Router);
+
+Vue.use(CollapseItem);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
+Vue.use(Tag);
+Vue.use(Slider);
+Vue.use(ColorPicker);
+Vue.use(RadioGroup);
+Vue.use(Dropdown);
+Vue.use(ButtonGroup);
+Vue.use(Collapse);
+Vue.use(Checkbox);
+Vue.use(CheckboxGroup);
+Vue.use(Popover);
+Vue.use(Button);
+Vue.use(Select);
+Vue.use(Radio);
+Vue.use(Table);
+Vue.use(Row);
+Vue.use(Col);
+Vue.use(Form);
+Vue.use(Input);
+Vue.use(Option);
+Vue.use(OptionGroup);
+Vue.use(Switch);
+Vue.use(Dialog);
+Vue.use(Tooltip);
+Vue.use(FormItem);
+Vue.use(DatePicker);
+Vue.use(TableColumn);
+Vue.use(InputNumber);
+Vue.use(Tabs);
+Vue.use(TabPane);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
+
+Vue.use(Loading.directive);
+
+Vue.prototype.$message = Message;
+Vue.prototype.$notify = Notification;
+Vue.prototype.$loading = Loading.service;
+Vue.prototype.$confirm = MessageBox.confirm;
+
+Vue.mixin({
+    filters: {
+        ucFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        },
+        _startCase(string) {
+            return _ff.startCase(string);
+        }
+    },
+    methods: {
+        $t(string) {
+            let transString = window.FluentFormApp.form_settings_str[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
+            }
+            return this.$t(singular, count);
+        },
+        ucFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        },
+
+        ...notifier
+    },
+});
 
 import Slack from './components/settings/Slack.vue';
 import Zapier from './components/settings/Zapier.vue';
@@ -68,53 +141,12 @@ import EditGeneralIntegration from './components/settings/GeneralIntegration/Int
 import PdfFeeds from './components/settings/PdfFeeds.vue';
 import PaymentSettings from './components/settings/PaymentSettings.vue';
 import QuizSettings from './components/settings/QuizSettings.vue';
+import FFWpmlSettings from './components/settings/FFWpmlSettings.vue';
 import CustomComponent from './components/CustomComponent.vue';
-
-const components = [
-    ElButton,
-    ElRow,
-    ElCol,
-    ElRadio,
-    ElCheckbox,
-    ElCheckboxGroup,
-    ElRadioGroup,
-    ElSelect,
-    ElOption,
-    ElOptionGroup,
-    ElInput,
-    ElForm,
-    ElFormItem,
-    ElTooltip,
-    ElSwitch,
-    ElInputNumber,
-    ElDatePicker,
-    ElTable,
-    ElTableColumn,
-    ElPopover,
-    ElDropdown,
-    ElDropdownMenu,
-    ElDropdownItem,
-    ElCollapse,
-    ElCollapseItem,
-    ElSlider,
-    ElTag,
-    ElLoading,
-    ElMessage,
-    ElNotification,
-    ElDialog,
-    ElMessageBox,
-    ElButtonGroup,
-    ElColorPicker,
-    ElTabs,
-    ElTabPane,
-    ElSkeleton,
-    ElSkeletonItem,
-    ElPopconfirm
-];
 
 const routes = [
     {
-        path: '/:pathMatch(.*)*',
+        path: '*',
         name: 'formSettingsHome',
         component: BasicSettings
     },
@@ -184,56 +216,26 @@ const routes = [
         component: QuizSettings
     },
     {
+        path: '/ff-wpml',
+        name: 'ff_wpml',
+        component: FFWpmlSettings
+    },
+    {
         path: '/custom-settings-component/:component_name',
         name: 'custom_settings',
         component: CustomComponent
     }
 ];
 
-const router = createRouter({
-    history: createWebHashHistory('/wp-admin/admin.php?page=fluent_forms&form_id=' + window.FluentFormApp.form_id + '&route=settings&sub_route=form_settings'),
-    routes
+const router = new Router({
+    routes: routes
 });
 
 import App from './components/settings/SettingsApp.vue';
+import {_$t} from "@/admin/helpers";
 
-const app = createApp(App);
-
-components.forEach((component) => {
-    app.use(component);
+const app = new Vue({
+    el: '#ff_form_settings_app',
+    render: h => h(App),
+    router: router
 });
-
-app.mixin({
-    filters: {
-        ucFirst(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        },
-        _startCase(string) {
-            return _ff.startCase(string);
-        }
-    },
-    methods: {
-        $t(str) {
-            let transString = window.FluentFormApp.form_settings_str[str];
-            if (transString) {
-                return transString;
-            }
-            return str;
-        },
-
-        ...notifier
-    },
-});
-
-app.provide('eventBus', eventBus);
-
-app.config.globalProperties.$message = ElMessage;
-app.config.globalProperties.$notify = ElNotification;
-app.config.globalProperties.$confirm = ElMessageBox.confirm;
-app.config.globalProperties.$loading = ElLoading.service;
-app.config.globalProperties.Errors = Errors;
-app.config.globalProperties.emitter = emitter;
-app.config.globalProperties.$ELEMENT = {locale: en};
-
-app.use(router);
-app.mount('#ff_form_settings_app');

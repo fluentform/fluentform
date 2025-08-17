@@ -23,8 +23,15 @@ export default {
     },
     watch: {
         model() {
-            this.$emit('update:modelValue', this.model);
+            const sanitized = this.customSanitize(this.model);
+            this.$emit('update:modelValue', sanitized);
         },
     },
+    methods: {
+        customSanitize(input) {
+            // Remove potential event handlers
+            return input.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+        },
+    }
 };
 </script>

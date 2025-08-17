@@ -18,8 +18,8 @@
                                 :name="migrators.key"
                             >
                                 <div class="ff_migrator_navigation_header mt-1 mb-2">
-                                    <h5> {{ $t('Import ') }} {{ migrators.name }}</h5>
-                                    <el-button v-if="forms.length" size="small" type="info" @click="importForms()">
+                                    <h5> {{ $t('Import %s', migrators.name) }}</h5>
+                                    <el-button v-if="forms.length" size="small" type="primary" @click="importForms()">
                                         {{ $t('Import All Forms') }}
                                     </el-button>
                                 </div>
@@ -44,7 +44,7 @@
                                         :label="$t('Imported')"
                                         width="120"
                                         align="center">
-                                        <template #default="props">
+                                        <template slot-scope="props">
                                             <span v-if="props.row.imported_ff_id">
                                             <i class="el-icon-success text-success"></i>
                                             </span>
@@ -60,11 +60,12 @@
                                         width="120"
                                         label=""
                                     >
-                                        <template #default="props">
+                                        <template slot-scope="props">
+
                                             <el-button
                                                 v-if="entryImportSupported && props.row.imported_ff_id"
                                                 class="el-button--soft"
-                                                size="small"
+                                                size="mini"
                                                 type="success"
                                                 @click="importEntries( props.row.imported_ff_id, props.row.id )"
                                             >
@@ -74,11 +75,10 @@
                                     </el-table-column>
 
                                     <el-table-column width="160" :label="$t('Action')" align="right">
-                                        <template #default="props">
+                                        <template slot-scope="props">
                                             <el-button
-                                                class="el-button--soft"
-                                                size="small"
-                                                type="info"
+                                                size="mini"
+                                                type="primary" plain
                                                 @click="importForms([props.row.id])"
                                             >
                                                 {{ $t('Import Form') }}
@@ -95,7 +95,7 @@
                                 <el-button
                                     v-if="multipleSelection.length"
                                     size="small"
-                                    type="info"
+                                    type="success"
                                     icon="el-icon-success"
                                     @click="importForms(multipleSelection)"
                                 >
@@ -129,7 +129,7 @@
                                         </el-table-column>
 
                                         <el-table-column width="120" prop="edit_url" label="" align="right">
-                                            <template #default="props">
+                                            <template slot-scope="props">
                                                 <a :href="props.row.edit_url"> {{ $t('Edit Form') }}</a>
                                             </template>
                                         </el-table-column>
@@ -148,14 +148,8 @@
 
                         </el-tabs>
                         <p v-else>
-                          <b>
-                              {{ $t('Migration tools only works if you have any other contact form plugin already installed along with Fluent Forms.') }}
-                          </b>
-                        </p>
-                        <p class="mt-3">
-                            <el-button size="large">
-                                <a href="https://wpmanageninja.com/docs/fluent-form/import-export/fluent-forms-migrator-caldera-forms-ninja-forms-gravity-forms/" target="_blank"> {{ $t('Learn More') }}</a>
-                            </el-button>
+                          <b>{{ $t('Migration tools only works if you have any other contact form plugin already installed along with Fluent Forms.') }}</b>
+                          <a href="https://wpmanageninja.com/docs/fluent-form/import-export/fluent-forms-migrator-caldera-forms-ninja-forms-gravity-forms/" target="_blank"> {{ $t('Learn More') }}</a>
                         </p>
                     </el-skeleton>
                 </div>

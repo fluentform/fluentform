@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Migrator\Classes;
 
 use FluentForm\App\Modules\Form\Form;
 
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 class ContactForm7Migrator extends BaseMigrator
 {
@@ -117,13 +117,13 @@ class ContactForm7Migrator extends BaseMigrator
     {
         switch ($type) {
             case 'input_number':
-                $args['min'] = Arr::get($args, 'min', 0);
-                $args['max'] = Arr::get($args, 'max');
+                $args['min'] = ArrayHelper::get($args, 'min', 0);
+                $args['max'] = ArrayHelper::get($args, 'max');
                 break;
             case 'rangeslider':
-                $args['min'] = Arr::get($args, 'min', 0);
-                $args['max'] = Arr::get($args, 'max', 10);
-                $args['step'] = Arr::get($args, 'step',1);
+                $args['min'] = ArrayHelper::get($args, 'min', 0);
+                $args['max'] = ArrayHelper::get($args, 'max', 10);
+                $args['step'] = ArrayHelper::get($args, 'step',1);
                 break;
             case 'input_date':
                 $args['format'] = "Y-m-d H:i";
@@ -131,12 +131,12 @@ class ContactForm7Migrator extends BaseMigrator
             case 'select':
             case 'input_radio':
             case 'input_checkbox':
-                list($options, $defaultVal) = $this->getOptions(Arr::get($args, 'choices', []),
-                    Arr::get($args, 'default', '')
+                list($options, $defaultVal) = $this->getOptions(ArrayHelper::get($args, 'choices', []),
+                    ArrayHelper::get($args, 'default', '')
                 );;
                 $args['options'] = $options;
                 if ($type == 'select') {
-                    $isMulti = Arr::isTrue($args, 'multiple');
+                    $isMulti = ArrayHelper::isTrue($args, 'multiple');
                     if ($isMulti) {
                         $args['multiple'] = true;
                         $args['value'] = $defaultVal;
@@ -151,8 +151,8 @@ class ContactForm7Migrator extends BaseMigrator
                 break;
             case 'input_file':
                 $args['allowed_file_types'] = $this->getFileTypes($args, 'allowed_file_types');
-                $args['max_size_unit'] = Arr::get($args, 'max_size_unit');
-                $max_size = Arr::get($args, 'max_file_size') ?: 1;
+                $args['max_size_unit'] = ArrayHelper::get($args, 'max_size_unit');
+                $max_size = ArrayHelper::get($args, 'max_file_size') ?: 1;
                 if ($args['max_size_unit'] === 'MB') {
                     $args['max_file_size'] = ceil($max_size * 1048576); // 1MB = 1048576 Bytes
                 }
@@ -160,8 +160,8 @@ class ContactForm7Migrator extends BaseMigrator
                 $args['upload_btn_text'] = 'File Upload';
                 break;
             case 'terms_and_condition':
-                if (Arr::get($args, 'tnc_html') !== '') {
-                    $args['tnc_html'] = Arr::get($args, 'tnc_html',
+                if (ArrayHelper::get($args, 'tnc_html') !== '') {
+                    $args['tnc_html'] = ArrayHelper::get($args, 'tnc_html',
                         'I have read and agree to the Terms and Conditions and Privacy Policy.'
                     );
                     $args['required'] = true;
@@ -216,7 +216,7 @@ class ContactForm7Migrator extends BaseMigrator
             "csv"
         ];
 
-        $formattedTypes = explode('|', Arr::get($field, $arg, ''));
+        $formattedTypes = explode('|', ArrayHelper::get($field, $arg, ''));
         $fileTypeOptions = [];
 
         foreach ($formattedTypes as $format) {
@@ -245,9 +245,9 @@ class ContactForm7Migrator extends BaseMigrator
 
         return [
             'formSettings'                 => [
-                'confirmation' => Arr::get($defaults, 'confirmation'),
-                'restrictions' => Arr::get($defaults, 'restrictions'),
-                'layout'       => Arr::get($defaults, 'layout'),
+                'confirmation' => ArrayHelper::get($defaults, 'confirmation'),
+                'restrictions' => ArrayHelper::get($defaults, 'restrictions'),
+                'layout'       => ArrayHelper::get($defaults, 'layout'),
             ],
             'advancedValidationSettings'   => $this->getAdvancedValidation(),
             'delete_entry_on_submission'   => 'no',
@@ -484,7 +484,7 @@ class ContactForm7Migrator extends BaseMigrator
                 $fieldLabel = $fieldElement;
             }
 
-            $fieldType = Arr::get($this->fieldTypeMap(), $fieldElement);
+            $fieldType = ArrayHelper::get($this->fieldTypeMap(), $fieldElement);
 
             $args = [
                 'uniqElKey'          => 'el_' . $fieldKey . time(),

@@ -24,7 +24,6 @@
                     <h5 class="mb-2">{{ $t('Confirmation') }}</h5>
                     <p>{{ $t('Are you sure you want to convert this form?') }}</p>
                 </template>
-
                 <template v-if="!isConversationalForm">
                     <el-alert
                         class="mt-4"

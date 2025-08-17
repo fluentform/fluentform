@@ -54,7 +54,7 @@ trait ValidatesAttributes
         $type = $this->deduceType($value, $attribute);
 
         switch ($type) {
-            case 'numeric':
+            case 'numeric' && $this->hasRule($attribute, ['numeric']):
                 return $value;
             case 'array':
                 return count($value);

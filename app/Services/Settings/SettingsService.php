@@ -119,18 +119,9 @@ class SettingsService
         } else {
             FormMeta::remove($formId, 'conv_form_resume_from_last_step');
         }
-
-        do_action_deprecated(
-            'fluentform_after_save_form_settings',
-            [
-                $formId,
-                $attributes
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/after_save_form_settings',
-            'Use fluentform/after_save_form_settings instead of fluentform_after_save_form_settings.'
-        );
-
+      
+    
+    
         do_action('fluentform/after_save_form_settings', $formId, $attributes);
     }
 
@@ -280,6 +271,20 @@ class SettingsService
         }
 
         $meta = Arr::get($attributes, 'meta_settings', []);
+        $metaSanitizationMap = [
+            'title'             =>  'sanitize_text_field',
+            'description'       =>  [$this, 'secureMetaDescription'],
+            'featured_image'    =>  'esc_url_raw',
+            'share_key'         =>  'sanitize_text_field',
+            'google_font_href'  =>  'esc_url_raw',
+            'font_css'          =>  'wp_kses_post',
+        ];
+        foreach ($metaSanitizationMap as $key => $sanitizer) {
+            if (isset($meta[$key])) {
+                $meta[$key] = call_user_func($sanitizer, $meta[$key]);
+            }
+        }
+        
         if ($meta) {
             FormMeta::persist($formId, $metaKey . '_meta', $meta);
         }
@@ -291,7 +296,7 @@ class SettingsService
             $params['form'] = $meta['share_key'];
         }
 
-        $shareUrl = add_query_arg($params, site_url());
+        $shareUrl = add_query_arg($params, Helper::getFrontendFacingUrl());
         return [
             'message'   => __('Settings successfully updated'),
             'share_url' => $shareUrl,
@@ -332,5 +337,22 @@ class SettingsService
             ];
         }
         throw new \Exception(__('Settings save failed', 'fluentform'));
+    }
+    
+    public function secureMetaDescription($description) {
+        $clean = preg_replace(
+            [
+                '/url\s*=/',          // Remove URL assignments
+                '/http-equiv\s*=/',   // Remove HTTP equiv
+                '/refresh/',          // Remove refresh attempts
+            ],
+            '',
+            $description
+        );
+        
+        $clean = wp_strip_all_tags($clean);
+        $clean = sanitize_text_field($clean);
+        
+        return trim($clean);
     }
 }
