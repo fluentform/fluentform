@@ -1,44 +1,59 @@
-import Vue from 'vue';
-import AddOnModules from './views/AddonModules';
-import notifier from './notifier';
-import globalSearch from './global_search';
+import { createApp } from "vue";
+import AddOnModules from "./views/AddonModules.vue";
+import notifier from "./notifier";
+import globalSearch from "./global_search.js";
+import en from "element-plus/es/locale/lang/en";
 
 import {
-    Button,
-    Select,
-    Input,
-    Switch,
-    Notification,
-    RadioButton,
-    Radio,
-    RadioGroup,
-    Row,
-    Col,
-    Loading
-} from 'element-ui';
-import {_$t} from "@/admin/helpers";
+    ElButton,
+    ElSelect,
+    ElInput,
+    ElSwitch,
+    ElNotification,
+    ElRadioButton,
+    ElRadio,
+    ElRadioGroup,
+    ElRow,
+    ElCol,
+    ElLoading
+} from "element-plus";
 
-Vue.use(RadioButton);
-Vue.use(Radio);
-Vue.use(RadioGroup);
-Vue.use(Button);
-Vue.use(Select);
-Vue.use(Input);
-Vue.use(Switch);
-Vue.use(Row);
-Vue.use(Col);
-Vue.use(Loading);
+const components = [
+    ElButton,
+    ElSelect,
+    ElInput,
+    ElSwitch,
+    ElNotification,
+    ElRadioButton,
+    ElRadio,
+    ElRadioGroup,
+    ElRow,
+    ElCol,
+    ElLoading
+];
 
-Vue.prototype.$notify = Notification;
+const app = createApp({
+    components: {
+        globalSearch,
+        "fluent-add-ons": AddOnModules
+    }
+});
 
-Vue.mixin({
+components.forEach(component => {
+    app.use(component);
+});
+
+app.config.globalProperties.$notify = ElNotification;
+app.config.globalProperties.$ELEMENT = { locale: en };
+
+app.mixin({
     methods: {
         $t(string) {
-            let transString = window.fluent_addon_modules.addOnModule_str[string] || string
+            let transString = window.fluent_addon_modules.addOnModule_str[string] || string;
             return _$t(transString, ...arguments);
         },
         $_n(singular, plural, count) {
-            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            let number = parseInt(count.toString().replace(/,/g, ""), 10);
             if (number > 1) {
                 return this.$t(plural, count);
             }
@@ -48,10 +63,4 @@ Vue.mixin({
     }
 });
 
-var app = new Vue({
-    el: '#ff_add_ons_app',
-    components: {
-        globalSearch,
-        'fluent-add-ons': AddOnModules
-    }
-});
+app.mount("#ff_add_ons_app");

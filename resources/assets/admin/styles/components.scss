@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .list-group {
   margin: 0;
   > li.title {
@@ -85,7 +87,7 @@
       right: 10px;
       border: 0;
       z-index: 1;
-      border-top: 1px solid darken($gray, 7%);
+      border-top: 1px solid color.adjust($gray, $lightness: -7%);
     }
   }
 }
@@ -106,7 +108,7 @@
 .empty-dropzone {
   height: $item-height;
   border: 1px dashed #CED0D4;
-  margin: 0 10px;
+  margin: 5px 10px;
   border-radius: 6px;
   position: relative;
   z-index: 2;

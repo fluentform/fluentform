@@ -4,14 +4,10 @@ namespace FluentForm\App\Services\Migrator\Classes;
 
 
 use FluentForm\App\Modules\Form\Form;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class GravityFormsMigrator extends BaseMigrator
 {
-    /**
-     * @var bool
-     */
-    protected $hasStep = false;
 
     public function __construct()
     {
@@ -41,16 +37,16 @@ class GravityFormsMigrator extends BaseMigrator
             if ($value = $this->getFluentClassicField($type, $args)) {
                 $fluentFields[$field['id']] = $value;
             } else {
-                $this->unSupportFields[] = ArrayHelper::get($field, 'label');
+                $this->unSupportFields[] = Arr::get($field, 'label');
             }
         }
 
         $submitBtn = $this->getSubmitBttn([
             'uniqElKey' => time(),
             'class'     => '',
-            'label'     => ArrayHelper::get($form, 'button.text', 'Submit'),
-            'type'      => ArrayHelper::get($form, 'button.type') == 'text' ? 'default' : 'image',
-            'img_url'   => ArrayHelper::get($form, 'button.imageUrl'),
+            'label'     => Arr::get($form, 'button.text', 'Submit'),
+            'type'      => Arr::get($form, 'button.type') == 'text' ? 'default' : 'image',
+            'img_url'   => Arr::get($form, 'button.imageUrl'),
         ]);
 
         $returnData = [
@@ -73,15 +69,15 @@ class GravityFormsMigrator extends BaseMigrator
             'required'          => $field['isRequired'],
             'label'             => $field['label'],
             'label_placement'   => $this->getLabelPlacement($field),
-            'admin_field_label' => ArrayHelper::get($field, 'adminLabel'),
+            'admin_field_label' => Arr::get($field, 'adminLabel'),
             'name'              => $this->getInputName($field),
-            'placeholder'       => ArrayHelper::get($field, 'placeholder'),
+            'placeholder'       => Arr::get($field, 'placeholder'),
             'class'             => $field['cssClass'],
-            'value'             => ArrayHelper::get($field, 'defaultValue'),
-            'help_message'      => ArrayHelper::get($field, 'description'),
+            'value'             => Arr::get($field, 'defaultValue'),
+            'help_message'      => Arr::get($field, 'description'),
         ];
 
-        $type = ArrayHelper::get($this->fieldTypes(), $field['type'], '');
+        $type = Arr::get($this->fieldTypes(), $field['type'], '');
 
         switch ($type) {
 
@@ -90,26 +86,26 @@ class GravityFormsMigrator extends BaseMigrator
                 $args['input_name_args']['first_name']['name'] = $this->getInputName($field['inputs'][1]);
                 $args['input_name_args']['middle_name']['name'] = $this->getInputName($field['inputs'][2]);
                 $args['input_name_args']['last_name']['name'] = $this->getInputName($field['inputs'][3]);
-                $args['input_name_args']['first_name']['label'] = ArrayHelper::get($field['inputs'][1], 'label');
-                $args['input_name_args']['middle_name']['label'] = ArrayHelper::get($field['inputs'][2], 'label');
-                $args['input_name_args']['last_name']['label'] = ArrayHelper::get($field['inputs'][3], 'label');
-                $args['input_name_args']['first_name']['visible'] = ArrayHelper::get($field, 'inputs.1.isHidden', true);
-                $args['input_name_args']['middle_name']['visible'] = ArrayHelper::get($field, 'inputs.2.isHidden',
+                $args['input_name_args']['first_name']['label'] = Arr::get($field['inputs'][1], 'label');
+                $args['input_name_args']['middle_name']['label'] = Arr::get($field['inputs'][2], 'label');
+                $args['input_name_args']['last_name']['label'] = Arr::get($field['inputs'][3], 'label');
+                $args['input_name_args']['first_name']['visible'] = Arr::get($field, 'inputs.1.isHidden', true);
+                $args['input_name_args']['middle_name']['visible'] = Arr::get($field, 'inputs.2.isHidden',
                     true);
-                $args['input_name_args']['last_name']['visible'] = ArrayHelper::get($field, 'inputs.3.isHidden', true);
+                $args['input_name_args']['last_name']['visible'] = Arr::get($field, 'inputs.3.isHidden', true);
                 break;
             case 'input_textarea':
                 $args['maxlength'] = $field['maxLength'];
                 break;
             case 'input_text':
                 $args['maxlength'] = $field['maxLength'];
-                $args['is_unique'] = ArrayHelper::isTrue($field, 'noDuplicates');
-                if (ArrayHelper::isTrue($field, 'inputMask')) {
+                $args['is_unique'] = Arr::isTrue($field, 'noDuplicates');
+                if (Arr::isTrue($field, 'inputMask')) {
                     $type = 'input_mask';
                     $args['temp_mask'] = 'custom';
                     $args['mask'] = $field['inputMaskValue'];
                 }
-                if (ArrayHelper::isTrue($field, 'enablePasswordInput')) {
+                if (Arr::isTrue($field, 'enablePasswordInput')) {
                     $type = 'input_password';
                 }
                 break;
@@ -118,14 +114,14 @@ class GravityFormsMigrator extends BaseMigrator
                 break;
             case 'select':
             case 'input_radio':
-                $optionData = $this->getOptions(ArrayHelper::get($field, 'choices'));
-                $args['options'] = ArrayHelper::get($optionData, 'options');
-                $args['value'] = ArrayHelper::get($optionData, 'selectedOption.0');
+                $optionData = $this->getOptions(Arr::get($field, 'choices'));
+                $args['options'] = Arr::get($optionData, 'options');
+                $args['value'] = Arr::get($optionData, 'selectedOption.0');
             case 'multi_select':
             case 'input_checkbox':
-                $optionData = $this->getOptions(ArrayHelper::get($field, 'choices'));
-                $args['options'] = ArrayHelper::get($optionData, 'options');
-                $args['value'] = ArrayHelper::get($optionData, 'selectedOption');
+                $optionData = $this->getOptions(Arr::get($field, 'choices'));
+                $args['options'] = Arr::get($optionData, 'options');
+                $args['value'] = Arr::get($optionData, 'selectedOption');
 
                 break;
             case 'input_date':
@@ -139,13 +135,13 @@ class GravityFormsMigrator extends BaseMigrator
                 $args['max'] = $field['rangeMax'];
                 break;
             case 'repeater_field':
-                $repeaterFields = ArrayHelper::get($field, 'choices', []);
+                $repeaterFields = Arr::get($field, 'choices', []);
                 $args['fields'] = $this->getRepeaterFields($repeaterFields, $field['label']);;
             case 'input_file':
                 $args['allowed_file_types'] = $this->getFileTypes($field, 'allowedExtensions');
                 $args['max_size_unit'] = 'MB';
                 $args['max_file_size'] = $this->getFileSize($field);;
-                $args['max_file_count'] = ArrayHelper::isTrue($field,
+                $args['max_file_count'] = Arr::isTrue($field,
                     'multipleFiles') ? $field['maxFiles'] : 1;
                 $args['upload_btn_text'] = 'File Upload';
                 break;
@@ -193,7 +189,7 @@ class GravityFormsMigrator extends BaseMigrator
      */
     private function getFileSize($field)
     {
-        $fileSizeByte = ArrayHelper::get($field, 'maxFileSize', 10);
+        $fileSizeByte = Arr::get($field, 'maxFileSize', 10);
 
         if (empty($fileSizeByte)) {
             $fileSizeByte = 1;
@@ -243,42 +239,42 @@ class GravityFormsMigrator extends BaseMigrator
      */
     private function getAddressArgs(array $field)
     {
-        $required = ArrayHelper::isTrue($field, 'isRequired');
+        $required = Arr::isTrue($field, 'isRequired');
         return [
             'address_line_1' => [
                 'name'    => $this->getInputName($field['inputs'][0]),
                 'label'   => $field['inputs'][0]['label'],
-                'visible' => ArrayHelper::get($field, 'inputs.0.isHidden', true),
+                'visible' => Arr::get($field, 'inputs.0.isHidden', true),
                 'required' => $required,
             ],
             'address_line_2' => [
                 'name'    => $this->getInputName($field['inputs'][1]),
                 'label'   => $field['inputs'][1]['label'],
-                'visible' => ArrayHelper::get($field, 'inputs.1.isHidden', true),
+                'visible' => Arr::get($field, 'inputs.1.isHidden', true),
                 'required' => $required,
             ],
             'city'           => [
                 'name'    => $this->getInputName($field['inputs'][2]),
                 'label'   => $field['inputs'][2]['label'],
-                'visible' => ArrayHelper::get($field, 'inputs.2.isHidden', true),
+                'visible' => Arr::get($field, 'inputs.2.isHidden', true),
                 'required' => $required,
             ],
             'state'          => [
                 'name'    => $this->getInputName($field['inputs'][3]),
                 'label'   => $field['inputs'][3]['label'],
-                'visible' => ArrayHelper::get($field, 'inputs.3.isHidden', true),
+                'visible' => Arr::get($field, 'inputs.3.isHidden', true),
                 'required' => $required,
             ],
             'zip'            => [
                 'name'    => $this->getInputName($field['inputs'][4]),
                 'label'   => $field['inputs'][4]['label'],
-                'visible' => ArrayHelper::get($field, 'inputs.4.isHidden', true),
+                'visible' => Arr::get($field, 'inputs.4.isHidden', true),
                 'required' => $required,
             ],
             'country'        => [
                 'name'    => $this->getInputName($field['inputs'][5]),
                 'label'   => $field['inputs'][5]['label'],
-                'visible' => ArrayHelper::get($field, 'inputs.5.isHidden', true),
+                'visible' => Arr::get($field, 'inputs.5.isHidden', true),
                 'required' => $required,
             ],
         ];
@@ -294,12 +290,12 @@ class GravityFormsMigrator extends BaseMigrator
         $selectedOption = [];
         foreach ($options as $key => $option) {
             $arr = [
-                'label' => ArrayHelper::get($option, 'text', 'Item -' . $key),
-                'value' => ArrayHelper::get($option, 'value'),
-                'id'    => ArrayHelper::get($option, $key)
+                'label' => Arr::get($option, 'text', 'Item -' . $key),
+                'value' => Arr::get($option, 'value'),
+                'id'    => Arr::get($option, $key)
             ];
-            if (ArrayHelper::isTrue($option, 'isSelected')) {
-                $selectedOption[] = ArrayHelper::get($option, 'value', '');
+            if (Arr::isTrue($option, 'isSelected')) {
+                $selectedOption[] = Arr::get($option, 'value', '');
             }
             $formattedOptions[] = $arr;
         }
@@ -344,7 +340,7 @@ class GravityFormsMigrator extends BaseMigrator
                         'placeholder' => '',
                     ),
                     'settings'   => array(
-                        'label'            => ArrayHelper::get($repeaterField, 'label', ''),
+                        'label'            => Arr::get($repeaterField, 'label', ''),
                         'help_message'     => '',
                         'validation_rules' => array(
                             'required' => array(
@@ -519,20 +515,20 @@ class GravityFormsMigrator extends BaseMigrator
         $confirmationsFormatted = $this->getConfirmations($form, $defaults['confirmation']);
         $defaultConfirmation = array_shift($confirmationsFormatted);
         $notifications = $this->getNotifications($form);
-        $defaults['restrictions']['requireLogin']['enabled'] = ArrayHelper::isTrue($form, 'requireLogin');
-        $defaults['restrictions']['requireLogin']['requireLoginMsg'] = ArrayHelper::isTrue($form,
+        $defaults['restrictions']['requireLogin']['enabled'] = Arr::isTrue($form, 'requireLogin');
+        $defaults['restrictions']['requireLogin']['requireLoginMsg'] = Arr::isTrue($form,
             'requireLoginMessage');
-        $defaults['restrictions']['limitNumberOfEntries']['enabled'] = ArrayHelper::isTrue($form, 'limitEntries');
-        $defaults['restrictions']['limitNumberOfEntries']['numberOfEntries'] = ArrayHelper::isTrue($form,
+        $defaults['restrictions']['limitNumberOfEntries']['enabled'] = Arr::isTrue($form, 'limitEntries');
+        $defaults['restrictions']['limitNumberOfEntries']['numberOfEntries'] = Arr::isTrue($form,
             'limitEntriesCount');
-        $defaults['restrictions']['limitNumberOfEntries']['period'] = ArrayHelper::isTrue($form, 'limitEntriesPeriod');
-        $defaults['restrictions']['limitNumberOfEntries']['limitReachedMsg'] = ArrayHelper::isTrue($form,
+        $defaults['restrictions']['limitNumberOfEntries']['period'] = Arr::isTrue($form, 'limitEntriesPeriod');
+        $defaults['restrictions']['limitNumberOfEntries']['limitReachedMsg'] = Arr::isTrue($form,
             'limitEntriesMessage');
-        $defaults['restrictions']['scheduleForm']['enabled'] = ArrayHelper::isTrue($form, 'scheduleForm');
-        $defaults['restrictions']['scheduleForm']['start'] = ArrayHelper::isTrue($form, 'scheduleStart');
-        $defaults['restrictions']['scheduleForm']['end'] = ArrayHelper::isTrue($form, 'scheduleEnd');
-        $defaults['restrictions']['scheduleForm']['pendingMsg'] = ArrayHelper::isTrue($form, 'schedulePendingMessage');
-        $defaults['restrictions']['scheduleForm']['expiredMsg'] = ArrayHelper::isTrue($form, 'scheduleMessage');
+        $defaults['restrictions']['scheduleForm']['enabled'] = Arr::isTrue($form, 'scheduleForm');
+        $defaults['restrictions']['scheduleForm']['start'] = Arr::isTrue($form, 'scheduleStart');
+        $defaults['restrictions']['scheduleForm']['end'] = Arr::isTrue($form, 'scheduleEnd');
+        $defaults['restrictions']['scheduleForm']['pendingMsg'] = Arr::isTrue($form, 'schedulePendingMessage');
+        $defaults['restrictions']['scheduleForm']['expiredMsg'] = Arr::isTrue($form, 'scheduleMessage');
         $advancedValidation = [
             'status'          => false,
             'type'            => 'all',
@@ -561,8 +557,8 @@ class GravityFormsMigrator extends BaseMigrator
     private function getNotifications($form)
     {
         $notificationsFormatted = [];
-        foreach (ArrayHelper::get($form, 'notifications', []) as $notification) {
-            $fieldType = ArrayHelper::get($notification, 'toType', 'email');
+        foreach (Arr::get($form, 'notifications', []) as $notification) {
+            $fieldType = Arr::get($notification, 'toType', 'email');
             $sendTo = [
                 'type'    => $fieldType,
                 'email'   => '',
@@ -570,39 +566,39 @@ class GravityFormsMigrator extends BaseMigrator
                 'routing' => [],
             ];
             if ('field' == $fieldType) {
-                $sendTo['field'] = $this->getFormFieldName(ArrayHelper::get($notification, 'to', ''), $form);
+                $sendTo['field'] = $this->getFormFieldName(Arr::get($notification, 'to', ''), $form);
             } elseif('routing' == $fieldType) {
-                foreach (ArrayHelper::get($notification, 'routing', []) as $route) {
-                    $fieldName = $this->getFormFieldName(ArrayHelper::get($route, 'fieldId'), $form);
-                    $routeEmail = ArrayHelper::get($route, 'email');
+                foreach (Arr::get($notification, 'routing', []) as $route) {
+                    $fieldName = $this->getFormFieldName(Arr::get($route, 'fieldId'), $form);
+                    $routeEmail = Arr::get($route, 'email');
                     if (!$fieldName || !$routeEmail) {
                         continue;
                     }
-                    if ($operator = $this->getResolveOperator(ArrayHelper::get($route, 'operator', ''))) {
+                    if ($operator = $this->getResolveOperator(Arr::get($route, 'operator', ''))) {
                         $sendTo['routing'][] = [
                             'field' => $fieldName,
                             'operator' => $operator,
                             'input_value' => $routeEmail,
-                            'value' => ArrayHelper::get($route, 'value', '')
+                            'value' => Arr::get($route, 'value', '')
                         ];
                     }
                 }
             } else {
-                $sendTo['email'] = $this->getResolveShortcodes(ArrayHelper::get($notification, 'to', ''), $form);
+                $sendTo['email'] = $this->getResolveShortcodes(Arr::get($notification, 'to', ''), $form);
             }
-            $message = $this->getResolveShortcodes(ArrayHelper::get($notification, 'message', ''), $form);
-            $replyTo = $this->getResolveShortcodes(ArrayHelper::get($notification, 'replyTo', ''), $form);
+            $message = $this->getResolveShortcodes(Arr::get($notification, 'message', ''), $form);
+            $replyTo = $this->getResolveShortcodes(Arr::get($notification, 'replyTo', ''), $form);
             $notificationsFormatted[] = [
                 'sendTo'       => $sendTo,
-                'enabled'      => ArrayHelper::get($notification, 'isActive', true),
-                'name'         => ArrayHelper::get($notification, 'name', 'Admin Notification'),
-                'subject'      => $this->getResolveShortcodes(ArrayHelper::get($notification, 'subject', 'Notification'), $form),
+                'enabled'      => Arr::get($notification, 'isActive', true),
+                'name'         => Arr::get($notification, 'name', 'Admin Notification'),
+                'subject'      => $this->getResolveShortcodes(Arr::get($notification, 'subject', 'Notification'), $form),
                 'to'           => $sendTo['email'],
                 'replyTo'      => $replyTo ?: '{wp.admin_email}',
                 'message'      => str_replace("\n", "<br />", $message),
-                'fromName'     => $this->getResolveShortcodes(ArrayHelper::get($notification, 'fromName', ''), $form),
-                'fromEmail'    => $this->getResolveShortcodes(ArrayHelper::get($notification, 'from', ''), $form),
-                'bcc'          => $this->getResolveShortcodes(ArrayHelper::get($notification, 'bcc', ''), $form),
+                'fromName'     => $this->getResolveShortcodes(Arr::get($notification, 'fromName', ''), $form),
+                'fromEmail'    => $this->getResolveShortcodes(Arr::get($notification, 'from', ''), $form),
+                'bcc'          => $this->getResolveShortcodes(Arr::get($notification, 'bcc', ''), $form),
                 'conditionals' => $this->getConditionals($notification,'notification', $form)
             ];
         }
@@ -611,30 +607,30 @@ class GravityFormsMigrator extends BaseMigrator
 
     private function getConditionals($notification, $key, $form)
     {
-        $conditionals = ArrayHelper::get($notification, 'conditionalLogic', []);
+        $conditionals = Arr::get($notification, 'conditionalLogic', []);
         $conditions = [];
         if (!$conditionals) {
-            $conditionals = ArrayHelper::get($notification, $key.'_conditional_logic_object', []);
+            $conditionals = Arr::get($notification, $key.'_conditional_logic_object', []);
         }
         $type = 'any';
         if ($conditionals) {
-            $type = ArrayHelper::get($conditionals, 'logicType', 'any');
-            foreach (ArrayHelper::get($conditionals, 'rules', []) as $rule) {
-                $fieldName = $this->getFormFieldName(ArrayHelper::get($rule, 'fieldId'), $form);
+            $type = Arr::get($conditionals, 'logicType', 'any');
+            foreach (Arr::get($conditionals, 'rules', []) as $rule) {
+                $fieldName = $this->getFormFieldName(Arr::get($rule, 'fieldId'), $form);
                 if (!$fieldName) {
                     continue;
                 }
-                if ($operator = $this->getResolveOperator(ArrayHelper::get($rule, 'operator', ''))) {
+                if ($operator = $this->getResolveOperator(Arr::get($rule, 'operator', ''))) {
                     $conditions[] = [
                         'field' => $fieldName,
                         'operator' => $operator,
-                        'value' => ArrayHelper::get($rule, 'value', '')
+                        'value' => Arr::get($rule, 'value', '')
                     ];
                 }
             }
         }
         return [
-            "status" => ArrayHelper::isTrue($notification, $key . '_conditional_logic'),
+            "status" => Arr::isTrue($notification, $key . '_conditional_logic'),
             "type" => $type,
             'conditions' => $conditions
         ];
@@ -643,31 +639,31 @@ class GravityFormsMigrator extends BaseMigrator
     private function getConfirmations($form, $defaultValues)
     {
         $confirmationsFormatted = [];
-        foreach (ArrayHelper::get($form, 'confirmations', []) as $confirmation) {
-            $type = ArrayHelper::get($confirmation, 'type');
+        foreach (Arr::get($form, 'confirmations', []) as $confirmation) {
+            $type = Arr::get($confirmation, 'type');
             $queryString = "";
             if ($type == 'redirect') {
                 $redirectTo = 'customUrl';
-                $queryString = $this->getResolveShortcodes(ArrayHelper::get($confirmation, 'queryString', ''), $form);
+                $queryString = $this->getResolveShortcodes(Arr::get($confirmation, 'queryString', ''), $form);
             } elseif ($type == 'page') {
-                $queryString = $this->getResolveShortcodes(ArrayHelper::get($confirmation, 'queryString', ''), $form);
+                $queryString = $this->getResolveShortcodes(Arr::get($confirmation, 'queryString', ''), $form);
                 $redirectTo = 'customPage';
             } else {
                 $redirectTo = 'samePage';
             }
 
             $format = [
-                'name'                 => ArrayHelper::get($confirmation, 'name', 'Confirmation'),
-                'messageToShow'        => str_replace("\n", "<br />", $this->getResolveShortcodes(ArrayHelper::get($confirmation, 'message', ''), $form)),
+                'name'                 => Arr::get($confirmation, 'name', 'Confirmation'),
+                'messageToShow'        => str_replace("\n", "<br />", $this->getResolveShortcodes(Arr::get($confirmation, 'message', ''), $form)),
                 'samePageFormBehavior' => 'hide_form',
                 'redirectTo'           => $redirectTo,
-                'customPage'           => intval(ArrayHelper::get($confirmation, 'page')),
-                'customUrl'            => ArrayHelper::get($confirmation, 'url'),
-                'active'               => ArrayHelper::get($confirmation, 'isActive', true),
+                'customPage'           => intval(Arr::get($confirmation, 'page')),
+                'customUrl'            => Arr::get($confirmation, 'url'),
+                'active'               => Arr::get($confirmation, 'isActive', true),
                 'enable_query_string'  => $queryString ? 'yes' : 'no',
                 'query_strings'        => $queryString,
             ];
-            $isDefault = ArrayHelper::isTrue($confirmation, 'isDefault');
+            $isDefault = Arr::isTrue($confirmation, 'isDefault');
             if (!$isDefault) {
                 $format['conditionals'] = $this->getConditionals($confirmation,'confirmation', $form);
             }
@@ -686,7 +682,7 @@ class GravityFormsMigrator extends BaseMigrator
     private function getFormFieldName($str, $form)
     {
         preg_match('/[0-9]+[.]?[0-9]*/', $str, $fieldId);
-        $fieldId = ArrayHelper::get($fieldId, 0, '0');
+        $fieldId = Arr::get($fieldId, 0, '0');
         if (!$fieldId) {
             return '';
         }
@@ -696,17 +692,17 @@ class GravityFormsMigrator extends BaseMigrator
             $fieldId = $fieldId[0];
         }
         $field = [];
-        foreach (ArrayHelper::get($form, 'fields', []) as $formField) {
+        foreach (Arr::get($form, 'fields', []) as $formField) {
             if (isset($formField->id) && $formField->id == $fieldId) {
                 $field = (array)$formField;
                 break;
             }
         }
         list($type, $args) = $this->formatFieldData($field);
-        $name = ArrayHelper::get($args, 'name', '');
-        if ($fieldIds && ArrayHelper::get($fieldIds, 1)) {
-            foreach (ArrayHelper::get($field, "inputs", []) as $input) {
-                if (ArrayHelper::get($input, 'id') != join('.', $fieldIds)) {
+        $name = Arr::get($args, 'name', '');
+        if ($fieldIds && Arr::get($fieldIds, 1)) {
+            foreach (Arr::get($field, "inputs", []) as $input) {
+                if (Arr::get($input, 'id') != join('.', $fieldIds)) {
                     continue;
                 }
                 if ($subName = $this->getInputName($input)) {
@@ -756,7 +752,7 @@ class GravityFormsMigrator extends BaseMigrator
     private function isFormField($shortcode)
     {
         preg_match('/:[0-9]+[.]?[0-9]*/', $shortcode, $fieldId);
-        return ArrayHelper::isTrue($fieldId, '0');
+        return Arr::isTrue($fieldId, '0');
     }
 
     /**
@@ -853,12 +849,12 @@ class GravityFormsMigrator extends BaseMigrator
         foreach ($submissions as $submission) {
             $entry = [];
             foreach ($fieldsMap['fields'] as $id => $field) {
-                $name = ArrayHelper::get($field, 'attributes.name');
+                $name = Arr::get($field, 'attributes.name');
                 if (!$name) {
                     continue;
                 }
 
-                $type = ArrayHelper::get($field, 'element');
+                $type = Arr::get($field, 'element');
                 $fieldModel = \GFFormsModel::get_field($form, $id);
 
                 // format entry value by field name
@@ -874,7 +870,7 @@ class GravityFormsMigrator extends BaseMigrator
                     }
                 } elseif (
                     "select" == $type &&
-                    ArrayHelper::isTrue($field, 'attributes.multiple') &&
+                    Arr::isTrue($field, 'attributes.multiple') &&
                     $value = $this->getSubmissionValue($id, $submission)
                 ) {
                     $finalValue = \json_decode($value);
@@ -895,19 +891,19 @@ class GravityFormsMigrator extends BaseMigrator
                 }
                 $entry[$name] = $finalValue;
             }
-            if ($created_at = ArrayHelper::get($submission, 'date_created')) {
+            if ($created_at = Arr::get($submission, 'date_created')) {
                 $entry['created_at'] = $created_at;
             }
-            if ($updated_at = ArrayHelper::get($submission, 'date_updated')) {
+            if ($updated_at = Arr::get($submission, 'date_updated')) {
                 $entry['updated_at'] = $updated_at;
             }
-            if ($is_favourite = ArrayHelper::get($submission, 'is_starred')) {
+            if ($is_favourite = Arr::get($submission, 'is_starred')) {
                 $entry['is_favourite'] = $is_favourite;
             }
-            if ($status = ArrayHelper::get($submission, 'status')) {
+            if ($status = Arr::get($submission, 'status')) {
                 if ('trash' == $status || 'spam' == $status) {
                     $entry['status'] = 'trashed';
-                } elseif ('active' == $status && ArrayHelper::isTrue($submission, 'is_read')) {
+                } elseif ('active' == $status && Arr::isTrue($submission, 'is_read')) {
                     $entry['status'] = 'read';
                 }
             }
@@ -935,11 +931,11 @@ class GravityFormsMigrator extends BaseMigrator
             if (!isset($submission[$input['id']])) {
                 continue;
             }
-            if ("input_name" == $type && $subFields = ArrayHelper::get($field, 'fields')) {
+            if ("input_name" == $type && $subFields = Arr::get($field, 'fields')) {
                 foreach ($subFields as $subField) {
                     if (
-                        $input['label'] == ArrayHelper::get($subField, 'settings.label') &&
-                        $subName = ArrayHelper::get($subField, 'attributes.name', '')
+                        $input['label'] == Arr::get($subField, 'settings.label') &&
+                        $subName = Arr::get($subField, 'attributes.name', '')
                     ) {
                         $arrayValue[$subName] = $submission[$input['id']];
                     }

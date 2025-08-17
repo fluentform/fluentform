@@ -8,7 +8,6 @@ use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Database\DBMigrator;
 use FluentForm\Database\Migrations\Logs;
 use FluentForm\Database\Migrations\LogsMigrator;
-use FluentForm\Database\Migrations\SubmissionDetails;
 use FluentForm\Database\Migrations\SubmissionDetailsMigrator;
 use FluentForm\Framework\Foundation\Application;
 

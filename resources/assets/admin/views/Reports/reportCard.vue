@@ -20,7 +20,7 @@
         </div>
         <div class="report_body">
             <div class="ff_chart_view">
-                <comment :is="chartType" :chartdata="chartData" :options="chartOptions"></comment>
+                <component :is="chartType" :chartData="chartData" :options="chartOptions"></component>
             </div>
             <div class="chart_data">
                 <table class="ff-table">
@@ -42,15 +42,14 @@
             </div>
         </div>
         <div class="report_footer">
-
         </div>
     </div>
 </template>
 
 <script type="text/babel">
-    import PieChart from './_PieChart';
-    import BarChart from './_BarChart';
-    import HorizontalBar from './_HorizontalBarChart';
+    import PieChart from './_PieChart.vue';
+    import BarChart from './_BarChart.vue';
+    import HorizontalBar from './_HorizontalBarChart.vue';
     import chroma from 'chroma-js'
     import each from 'lodash/each';
     import truncate from 'lodash/truncate';
@@ -66,6 +65,7 @@
             BtnGroup,
             BtnGroupItem
         },
+        props: ['report', 'report_key', 'report_indexes', 'form_id'],
         data() {
             return {
                 chartType: 'pie-chart'
@@ -196,7 +196,6 @@
                 });
             }
         },
-        props: ['report', 'report_key', 'report_indexes', 'form_id'],
         created() {
             this.chartType = this.$getFromStore(this.chartKey, 'pie-chart');
         }

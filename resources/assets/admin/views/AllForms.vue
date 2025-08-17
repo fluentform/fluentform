@@ -1,13 +1,14 @@
 <template>
     <div>
         <section-head size="sm">
-            <h1 class="ff_section_title">{{ $t('Forms') }}</h1>
+            <h1 class="ff_section_title">{{ $t("Forms") }}</h1>
         </section-head>
         <el-row class="ff_all_forms_action_row">
             <el-col :sm="12">
                 <btn-group as="div">
                     <btn-group-item as="div">
                         <el-select
+                            size="large"
                             clearable
                             v-model="filter_by"
                             :placeholder="$t('All Types')"
@@ -26,12 +27,13 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <el-button
+                            size="large"
                             v-if="hasPermission('fluentform_forms_manager')"
                             type="primary"
                             @click.prevent="showAddFormModal = true"
                         >
                             <i class="el-icon-plus el-icon-left el-icon"></i>
-                            <span>{{ $t('Add New Form') }}</span>
+                            <span>{{ $t("Add New Form") }}</span>
                         </el-button>
                     </btn-group-item>
                 </btn-group>
@@ -40,37 +42,41 @@
                 <div class="ff_filter_wrap ff_row justify-end">
                     <btn-group as="div">
                         <btn-group-item as="div">
-                            <el-form @submit.native.prevent="searchForms">
+                            <el-form @submit.prevent="searchForms">
                                 <el-input
                                     clearable
                                     @clear="refetchItems"
                                     v-model="searchFormsKeyWord"
                                     :placeholder="$t('Search Forms')"
-                                    prefix-icon="el-icon-search"
                                     class="all-forms-search"
+                                    size="large"
                                 >
+                                    <template #prefix>
+                                        <i class="el-icon-search el-icon-left el-icon"></i>
+                                    </template>
                                 </el-input>
                             </el-form>
                         </btn-group-item>
                         <btn-group-item as="div">
                             <div class="ff_advanced_filter_wrap">
-                                <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
-                                    <span>{{ $t('Filter') }}</span>
+                                <el-button size="large" @click="advancedFilter = !advancedFilter"
+                                           :class="filter_date_range && 'ff_filter_selected'">
+                                    <span>{{ $t("Filter") }}</span>
                                     <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
                                     <i v-else class="ff-icon ff-icon-filter"></i>
                                 </el-button>
                                 <div v-if="advancedFilter" class="ff_advanced_search">
                                     <div class="ff_advanced_search_radios">
                                         <el-radio-group v-model="radioOption" class="el-radio-group-column">
-                                            <el-radio label="all">{{$t('All')}}</el-radio>
-                                            <el-radio label="today">{{$t('Today')}}</el-radio>
-                                            <el-radio label="yesterday">{{$t('Yesterday')}}</el-radio>
-                                            <el-radio label="last-week">{{$t('Last Week')}}</el-radio>
-                                            <el-radio label="last-month">{{$t('Last Month')}}</el-radio>
+                                            <el-radio value="all">{{ $t("All") }}</el-radio>
+                                            <el-radio value="today">{{ $t("Today") }}</el-radio>
+                                            <el-radio value="yesterday">{{ $t("Yesterday") }}</el-radio>
+                                            <el-radio value="last-week">{{ $t("Last Week") }}</el-radio>
+                                            <el-radio value="last-month">{{ $t("Last Month") }}</el-radio>
                                         </el-radio-group>
                                     </div>
                                     <div class="ff_advanced_search_date_range">
-                                        <p>{{$t('Select a Timeframe')}}</p>
+                                        <p>{{ $t("Select a Timeframe") }}</p>
                                         <el-date-picker
                                             v-model="filter_date_range"
                                             type="daterange"
@@ -97,15 +103,16 @@
                     <el-skeleton :loading="loading" animated :rows="10">
                         <el-table
                             :data="items"
-                            :stripe="true"
+                            stripe
                             @sort-change="handleTableSort"
                             @selection-change="handleSelectionChange"
                             :row-class-name="tableRowClass"
+                            size="large"
                         >
                             <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="40"></el-table-column>
 
                             <el-table-column sortable="custom" :label="$t('Title')" prop="title" min-width="400">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <strong>
                                         {{ scope.row.title }}
                                     </strong>
@@ -113,36 +120,39 @@
                                     <div class="row-actions">
                                         <template v-if="hasPermission('fluentform_forms_manager')">
                                             <span class="row-actions-item ff_edit">
-                                                <a :href="scope.row.edit_url"> {{ $t('Edit') }}</a>
+                                                <a :href="scope.row.edit_url"> {{ $t("Edit") }}</a>
                                             </span>
                                             <span class="row-actions-item ff_edit">
-                                                <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a>
+                                                <a :href="scope.row.settings_url"> {{ $t("Settings") }}</a>
                                             </span>
                                         </template>
-                                        <span v-if="hasPermission('fluentform_entries_viewer')" class="row-actions-item ff_entries">
-                                                <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a>
+                                        <span v-if="hasPermission('fluentform_entries_viewer')"
+                                              class="row-actions-item ff_entries">
+                                                <a :href="scope.row.entries_url"> {{ $t("Entries") }}</a>
                                         </span>
                                         <span v-if="scope.row.conversion_preview" class="row-actions-item ff_entries">
-                                                <a target="_blank" :href="scope.row.conversion_preview"> {{ $t('Conversational Preview') }}</a>
+                                                <a target="_blank" :href="scope.row.conversion_preview"> {{
+                                                        $t("Conversational Preview")
+                                                    }}</a>
                                         </span>
                                         <span class="row-actions-item ff_entries">
-                                            <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a>
+                                            <a target="_blank" :href="scope.row.preview_url"> {{ $t("Preview") }}</a>
                                         </span>
 
                                         <template v-if="hasPermission('fluentform_forms_manager')">
                                             <span class="row-actions-item ff_duplicate">
                                                 <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
-                                                        $t('Duplicate')
-                                                }}</a>
+                                                        $t("Duplicate")
+                                                    }}</a>
                                             </span>
                                             <span class="row-actions-item ff_export">
                                                 <a href="#" @click.prevent="exportForm(scope.row.id)"> {{
-                                                        $t('Export')
+                                                        $t("Export")
                                                     }}</a>
                                             </span>
                                             <span class="row-actions-item ">
                                                 <a href="#" @click.prevent="findShortCodeLocation(scope.row.id)"> {{
-                                                        $t('Find')
+                                                        $t("Find")
                                                     }}
                                                 <i class="el-icon-loading" v-if="loadingLocations"></i></a>
                                             </span>
@@ -152,12 +162,21 @@
                                             >
                                                <a href="#" @click.prevent="redirectToSharePage(scope.row.id)">
                                                    {{
-                                                        $t('Share')
+                                                       $t("Share")
                                                    }}
                                                </a>
                                             </span>
                                             <span class="row-actions-item trash">
-                                                <a href="#" @click.prevent="removeFormConfirmation(scope.row.id, scope.$index)">{{ $t('Delete') }}</a>
+                                                <span class="row-actions-item trash">
+                                                    <el-popconfirm
+                                                        :title="$t('Are you sure to delete this?')"
+                                                        @confirm="removeFormConfirmation(scope.row.id, scope.$index)"
+                                                    >
+                                                    <template #reference>
+                                                        <a href="#" @click.prevent>{{ $t("Delete") }}</a>
+                                                    </template>
+                                                </el-popconfirm>
+                                                </span>
                                             </span>
                                             <el-switch
                                                 class="el-switch--small"
@@ -170,18 +189,21 @@
                                             />
 
                                         </template>
-                                        <div class="form-locations" v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length >= 1">
-                                            {{$t('Found in')}}
+                                        <div class="form-locations"
+                                             v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length >= 1">
+                                            {{ $t("Found in") }}
                                             <ul class="ff_inline_list">
-                                                <li v-for="(location, index) in formLocations[scope.row.id] " :key="index">
+                                                <li v-for="(location, index) in formLocations[scope.row.id] "
+                                                    :key="index">
                                                     <a target="_blank" :href="location.edit_link">
-                                                        <code class="item ">{{location.title}}</code>
+                                                        <code class="item ">{{ location.title }}</code>
                                                     </a>
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length == 0 ">
-                                            {{$t('Could not find anywhere')}}
+                                        <div
+                                            v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length == 0 ">
+                                            {{ $t("Could not find anywhere") }}
                                         </div>
 
                                     </div>
@@ -189,63 +211,67 @@
                             </el-table-column>
 
                             <el-table-column :label="$t('ShortCode')" width="240">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <div class="ff_shortcode_wrap">
-                                        <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
-                                            <span><i class="el-icon el-icon-document-copy"></i> [fluentform id="{{ scope.row.id }}"]</span>
+                                        <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy"
+                                              :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
+                                            <span><i
+                                                class="el-icon el-icon-document-copy"></i> [fluentform id="{{ scope.row.id
+                                                }}"]</span>
                                         </code>
                                     </div>
 
-                                    <div class="ff_shortcode_wrap ff_conversational_shortcode" v-if="scope.row.conversion_preview">
-                                        <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
+                                    <div class="ff_shortcode_wrap ff_conversational_shortcode"
+                                         v-if="scope.row.conversion_preview">
+                                        <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy"
+                                              :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
                                             <span><i class="el-icon el-icon-document-copy"></i> [fluentform type="conversational" id="{{
-                                            scope.row.id }}"]</span>
+                                                    scope.row.id }}"]</span>
                                         </code>
                                     </div>
                                 </template>
                             </el-table-column>
 
                             <el-table-column width="120" align="center">
-                                <template slot="header">
-                                    {{$t('Entries')}}
+                                <template #header>
+                                    {{ $t("Entries") }}
                                     <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
-                                            <h6>{{ $t('Numbers of entries') }}</h6>
-                                            <p>
-                                                {{ $t('Unread / Total Entries') }}
-                                            </p>
-                                        </div>
-
-                                        <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
+                                        <template #content>
+                                            <h6>{{ $t("Numbers of entries") }}</h6>
+                                            <p>{{ $t("Unread / Total Entries") }}</p>
+                                        </template>
+                                        <i class="ff-icon ff-icon-gray ff-icon-info-filled" />
                                     </el-tooltip>
                                 </template>
-                                <template slot-scope="scope">
-                                    <a :href="scope.row.entries_url"><span
-                                        v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
-                                        scope.row.total_Submissions
-                                        }}</a>
+
+                                <template #default="scope">
+                                    <a :href="scope.row.entries_url">
+                                        <span v-show="scope.row.unread_count">{{
+                                                scope.row.unread_count
+                                            }} / </span>{{ scope.row.total_Submissions }}
+                                    </a>
                                 </template>
                             </el-table-column>
 
+
                             <el-table-column v-if="!isDisabledAnalytics" :label="$t('Views')" width="60" align="center">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     {{ scope.row.total_views }}
                                 </template>
                             </el-table-column>
 
                             <el-table-column v-if="!isDisabledAnalytics" width="130" align="center">
-                                <template slot="header">
-                                    {{$t('Conversion')}}
+                                <template #header>
+                                    {{ $t("Conversion") }}
                                     <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
-                                            <p>{{ $t('Percentage of total submission and Total views') }}</p>
-                                        </div>
-
-                                        <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
+                                        <template #content>
+                                            <p>{{ $t("Percentage of total submission and Total views") }}</p>
+                                        </template>
+                                        <i class="ff-icon ff-icon-gray ff-icon-info-filled" />
                                     </el-tooltip>
                                 </template>
 
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     {{ scope.row.conversion }}%
                                 </template>
                             </el-table-column>
@@ -271,22 +297,24 @@
                     <el-col :lg="12">
                         <card class="fluent_form_intro" style="height: 390px;">
                             <card-body>
-                                <h2 class="mb-3">{{ $t('Welcome to WP Fluent Forms') }}</h2>
-                                <p class="mb-4 fs-17">{{ $t('Thank you for installing WP Fluent Forms - The Most Advanced Form Builder Plugin for WordPress.') }}
+                                <h2 class="mb-3">{{ $t("Welcome to WP Fluent Forms") }}</h2>
+                                <p class="mb-4 fs-17">
+                                    {{ $t("Thank you for installing WP Fluent Forms - The Most Advanced Form Builder Plugin for WordPress.")
+                                    }}
                                 </p>
                                 <el-button type="primary" size="large" @click="showAddFormModal = true">
-                                    {{$t('Click Here to Create Your First Form')}}
+                                    {{ $t("Click Here to Create Your First Form") }}
                                 </el-button>
                             </card-body>
                         </card>
                     </el-col>
                     <el-col :lg="12">
                         <card class="fluent_form_intro_video">
-                            <h2 class="mb-4">{{$t('Check the Video Intro')}}</h2>
+                            <h2 class="mb-4">{{ $t("Check the Video Intro") }}</h2>
                             <iframe src="https://www.youtube.com/embed/AqVr0l1JrGE"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
                         </card>
                     </el-col>
                 </el-row>
@@ -296,25 +324,26 @@
         <CreateNewFormModal
             v-if="hasPermission('fluentform_forms_manager')"
             ref="predefinedFormsModal"
-            :visibility.sync="showAddFormModal"
+            :visibility="showAddFormModal"
+            @update:visibility="showAddFormModal = $event"
         />
     </div>
 </template>
 
 <script type="text/babel">
-import Clipboard from 'clipboard';
-import remove from '@/admin/components/confirmRemove'
-import CreateNewFormModal from '@/admin/components/modals/CreateNewFormModal';
+import Clipboard from "clipboard.js";
+import remove from "@/admin/components/confirmRemove.vue";
+import CreateNewFormModal from "@/admin/components/modals/CreateNewFormModal.vue";
 import moment from "moment";
-import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
-import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
-import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
-import Card from '@/admin/components/Card/Card.vue';
-import CardBody from '@/admin/components/Card/CardBody.vue';
-import {scrollTop} from '@/admin/helpers';
+import BtnGroup from "@/admin/components/BtnGroup/BtnGroup.vue";
+import BtnGroupItem from "@/admin/components/BtnGroup/BtnGroupItem.vue";
+import SectionHead from "@/admin/components/SectionHead/SectionHead.vue";
+import Card from "@/admin/components/Card/Card.vue";
+import CardBody from "@/admin/components/Card/CardBody.vue";
+import { scrollTop } from "@/admin/helpers";
 
 export default {
-    name: 'AllForms',
+    name: "AllForms",
     components: {
         CreateNewFormModal,
         remove,
@@ -330,13 +359,13 @@ export default {
             app: window.FluentFormApp,
             paginate: {
                 total: 0,
-                current_page: +(localStorage.getItem('formItemsCurrentPage') || 1),
+                current_page: +(localStorage.getItem("formItemsCurrentPage") || 1),
                 last_page: 1,
-                per_page: localStorage.getItem('formItemsPerPage') || 10
+                per_page: localStorage.getItem("formItemsPerPage") || 10
             },
             loading: true,
             items: [],
-            search_string: '',
+            search_string: "",
             selectAll: 0,
             showAddFormModal: false,
             checkedItems: [],
@@ -344,76 +373,76 @@ export default {
             advancedFilter: false,
             filter_date_range: null,
             pickerOptions: {
-              disabledDate(time) {
-                return time.getTime() >= Date.now();
-              },
-              shortcuts: [
-                {
-                  text: 'Today',
-                  onClick(picker) {
-                    const start = new Date();
-                    picker.$emit('pick', [start, start]);
-                  }
+                disabledDate(time) {
+                    return time.getTime() >= Date.now();
                 },
-                {
-                  text: 'Yesterday',
-                  onClick(picker) {
-                    const start = new Date();
-                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-                    picker.$emit('pick', [start, start]);
-                  }
-                },
-                {
-                  text: 'Last week',
-                  onClick(picker) {
-                    const end = new Date();
-                    const start = new Date();
-                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                    picker.$emit('pick', [start, end]);
-                  }
-                }, {
-                  text: 'Last month',
-                  onClick(picker) {
-                    const end = new Date();
-                    const start = new Date();
-                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                    picker.$emit('pick', [start, end]);
-                  }
-                }
-              ]
+                shortcuts: [
+                    {
+                        text: "Today",
+                        onClick(picker) {
+                            const start = new Date();
+                            picker.$emit("pick", [start, start]);
+                        }
+                    },
+                    {
+                        text: "Yesterday",
+                        onClick(picker) {
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit("pick", [start, start]);
+                        }
+                    },
+                    {
+                        text: "Last week",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit("pick", [start, end]);
+                        }
+                    }, {
+                        text: "Last month",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit("pick", [start, end]);
+                        }
+                    }
+                ]
             },
-            filter_by:'published',
+            filter_by: "published",
             form_statuses: {
-                all: 'All',
-                published: 'Active',
-                unpublished: 'Inactive',
-                is_payment: 'Payment Form',
-                post: 'Post Form',
-                conv_form: 'Conversational Form',
-                step_form: 'Multi-Step Form'
+                all: "All",
+                published: "Active",
+                unpublished: "Inactive",
+                is_payment: "Payment Form",
+                post: "Post Form",
+                conv_form: "Conversational Form",
+                step_form: "Multi-Step Form"
             },
-            searchFormsKeyWord: '',
+            searchFormsKeyWord: "",
             clearingSearchKeyword: false,
             postTypeSelectionDialogVisibility: false,
             isDisabledAnalytics: !!window.FluentFormApp.isDisableAnalytics,
-            sort_column: 'id',
-            sort_by: 'DESC',
+            sort_column: "id",
+            sort_by: "DESC",
             formLocations: {},
             loadingLocations: false,
-            radioOption: 'all',
-            changingStatus: {},
+            radioOption: "all",
+            changingStatus: {}
 
-        }
+        };
     },
     methods: {
         toggleStatus(id, title, status) {
             let data = {
                 title,
-                status,
+                status
             };
             this.$set(this.changingStatus, id, true);
 
-            const url = FluentFormsGlobal.$rest.route('updateForm', id);
+            const url = FluentFormsGlobal.$rest.route("updateForm", id);
             FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
                     this.$success(response.message);
@@ -428,22 +457,22 @@ export default {
         },
         goToPage(val) {
             scrollTop().then(_ => {
-	            localStorage.setItem('formItemsCurrentPage', val);
-                this.paginate.current_page = val
+                localStorage.setItem("formItemsCurrentPage", val);
+                this.paginate.current_page = val;
                 this.fetchItems();
             });
         },
         handleSizeChange(val) {
             scrollTop().then(_ => {
-                localStorage.setItem('formItemsPerPage', val);
+                localStorage.setItem("formItemsPerPage", val);
                 this.paginate.per_page = val;
                 this.fetchItems();
-            })
+            });
         },
         fetchItems() {
-	        if (this.advancedFilter) {
-		        this.advancedFilter = false;
-	        }
+            if (this.advancedFilter) {
+                this.advancedFilter = false;
+            }
             this.loading = true;
             let data = {
                 search: this.searchFormsKeyWord,
@@ -454,10 +483,10 @@ export default {
                 sort_by: this.sort_by
             };
             if (this.hasEnabledDateFilter) {
-              data.date_range = this.filter_date_range;
+                data.date_range = this.filter_date_range;
             }
 
-            const url = FluentFormsGlobal.$rest.route('getForms');
+            const url = FluentFormsGlobal.$rest.route("getForms");
             FluentFormsGlobal.$rest.get(url, data)
                 .then((response) => {
                     this.items = response.data;
@@ -466,7 +495,7 @@ export default {
                     this.paginate.last_page = response.last_page;
                 })
                 .catch(error => {
-                    this.$fail(this.$t('Something went wrong, please try again.'));
+                    this.$fail(this.$t("Something went wrong, please try again."));
                 })
                 .finally(() => {
                     this.loading = false;
@@ -481,24 +510,24 @@ export default {
             });
         },
         removeFormConfirmation(id, index) {
-            this.$confirm(this.$t('Are you sure you want to delete this form?'), this.$t('Warning'), {
-                confirmButtonText: this.$t('Yes, Delete the form'),
-                cancelButtonText: this.$t('No'),
-                type: 'warning',
-                confirmButtonClass: 'ff_form_remove_confirm_class'
+            this.$confirm(this.$t("Are you sure you want to delete this form?"), this.$t("Warning"), {
+                confirmButtonText: this.$t("Yes, Delete the form"),
+                cancelButtonText: this.$t("No"),
+                type: "warning",
+                confirmButtonClass: "ff_form_remove_confirm_class"
             }).then(() => {
-                this.$prompt(this.$t('Please type %s" to confirm. All entries and integration feeds of this form will be deleted', '"DELETE"'), this.$t('Delete Form'), {
-                    confirmButtonText: this.$t('Confirm Delete'),
-                    cancelButtonText: this.$t('Cancel'),
-                    confirmButtonClass: 'ff_form_remove_confirm_class'
+                this.$prompt(this.$t("Please type %s\" to confirm. All entries and integration feeds of this form will be deleted", "\"DELETE\""), this.$t("Delete Form"), {
+                    confirmButtonText: this.$t("Confirm Delete"),
+                    cancelButtonText: this.$t("Cancel"),
+                    confirmButtonClass: "ff_form_remove_confirm_class"
                 }).then((response) => {
-                    if (response.value === 'DELETE') {
+                    if (response.value === "DELETE") {
                         this.removeForm(id, index);
                     } else {
                         this.$notify.error({
-                            title: this.$t('Error'),
-                            message:this.$t('You must type %s to confirm', 'DELETE'),
-                            position: 'bottom-right'
+                            title: this.$t("Error"),
+                            message: this.$t("You must type %s to confirm", "DELETE"),
+                            position: "bottom-right"
                         });
                     }
                 });
@@ -507,7 +536,7 @@ export default {
             });
         },
         removeForm(id, index) {
-            const url = FluentFormsGlobal.$rest.route('deleteForm', id);
+            const url = FluentFormsGlobal.$rest.route("deleteForm", id);
 
             FluentFormsGlobal.$rest.delete(url)
                 .then(res => {
@@ -519,7 +548,7 @@ export default {
                 });
         },
         duplicateForm(id) {
-            const url = FluentFormsGlobal.$rest.route('duplicateForm', id);
+            const url = FluentFormsGlobal.$rest.route("duplicateForm", id);
 
             FluentFormsGlobal.$rest.post(url)
                 .then(res => {
@@ -527,7 +556,7 @@ export default {
                     if (res.redirect) {
                         window.location.href = res.redirect;
                     } else {
-                        this.$fail(this.$t('Something is wrong! Please try again'));
+                        this.$fail(this.$t("Something is wrong! Please try again"));
                     }
                 })
                 .catch(error => {
@@ -537,9 +566,9 @@ export default {
         handleTableSort(column) {
             if (column.order) {
                 this.sort_column = column.prop;
-                this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';
-                localStorage.setItem('ff_all_form_sort_column', this.sort_column);
-                localStorage.setItem('ff_all_form_sort_by', this.sort_by);
+                this.sort_by = (column.order === "ascending") ? "ASC" : "DESC";
+                localStorage.setItem("ff_all_form_sort_column", this.sort_column);
+                localStorage.setItem("ff_all_form_sort_by", this.sort_by);
                 this.fetchItems();
             }
         },
@@ -550,88 +579,59 @@ export default {
             this.paginate.current_page = 1;
             this.fetchItems();
         },
-        createForm({key, form}) {
-            if (key === 'post') {
-                return this.createPostForm(key, form);
-            }
-
-            this.$refs.predefinedFormsModal.createForm(
-                key, // formType
-                form // form
-            );
-        },
         createPostForm(key, form) {
             this.postTypeSelectionDialogVisibility = true;
         },
-        onPostTypeSelctionEnd(post_type) {
-            this.postTypeSelectionDialogVisibility = false;
-
-            if (post_type) {
-                this.$refs.predefinedFormsModal.doCreateForm({
-                    post_type,
-                    type: 'post',
-                    title: 'Post Form',
-                    predefined: 'blank_form',
-                    action: 'fluentform-predefined-create'
-                });
-            }
-        },
-        resetAdvancedFilter() {
-		  this.radioOption = "";
-		  this.filter_date_range = null;
-          this.fetchItems();
-        },
-	    filterDateRangedPicked() {
-		    this.radioOption = "";
-			this.fetchItems();
+        filterDateRangedPicked() {
+            this.radioOption = "";
+            this.fetchItems();
         },
         filterFormType() {
-          this.search_string = '';
-          this.setDefaultPaginate();
-          this.fetchItems();
-          localStorage.setItem('selectedFormType', this.filter_by);
+            this.search_string = "";
+            this.setDefaultPaginate();
+            this.fetchItems();
+            localStorage.setItem("selectedFormType", this.filter_by);
 
         },
         setDefaultPaginate() {
-          this.paginate = {
-            total: 0,
-            current_page: +(localStorage.getItem('formItemsCurrentPage') || 1),
-            last_page: 1,
-            per_page: localStorage.getItem('formItemsPerPage') || 10
-          }
+            this.paginate = {
+                total: 0,
+                current_page: +(localStorage.getItem("formItemsCurrentPage") || 1),
+                last_page: 1,
+                per_page: localStorage.getItem("formItemsPerPage") || 10
+            };
         },
-        tableRowClass({row}) {
-            return row.status == 'unpublished' ? 'inactive_form' : '';
+        tableRowClass({ row }) {
+            return row.status == "unpublished" ? "inactive_form" : "";
         },
-        findShortCodeLocation(formId){
-
+        findShortCodeLocation(formId) {
             this.loadingLocations = true;
-            const url = FluentFormsGlobal.$rest.route('findFormShortCodePage',formId);
+            const url = FluentFormsGlobal.$rest.route("findFormShortCodePage", formId);
             FluentFormsGlobal.$rest.get(url)
                 .then(res => {
-                    console.log(res)
-                    if (res.status === true){
+                    console.log(res);
+                    if (res.status === true) {
                         this.$set(this.formLocations, formId, res.locations);
-                    }else{
+                    } else {
                         this.$set(this.formLocations, formId, []);
                     }
                 })
                 .catch(error => {
-                    this.$fail(this.$t('Something went wrong, please try again.'));
+                    this.$fail(this.$t("Something went wrong, please try again."));
                 })
-                .finally(()=>{
+                .finally(() => {
                     this.loadingLocations = false;
                 })
             ;
         },
         exportForm(id) {
             const data = {
-	            action: 'fluentform-export-forms',
+                action: "fluentform-export-forms",
                 forms: [id],
-                format: 'json',
-	            fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
+                format: "json",
+                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
             };
-	        location.href = ajaxurl + '?' + jQuery.param(data);
+            location.href = ajaxurl + "?" + jQuery.param(data);
         },
         isLandingPageEnabled(id) {
             if (this.hasPro() && window.FluentFormApp.landing_page_enabled_forms) {
@@ -644,30 +644,30 @@ export default {
         },
         redirectToSharePage(id) {
             const siteUrl = window.FluentFormApp.siteUrl;
-            window.open(`${siteUrl}/?ff_landing=${id}`, '_blank');
+            window.open(`${siteUrl}/?ff_landing=${id}`, "_blank");
         },
         hasPro() {
             return !!window.FluentFormApp.hasPro;
         }
     },
     computed: {
-	    hasEnabledDateFilter() {
-		    return !!(this.radioOption && this.radioOption != 'all' ||
-			    (Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
-		    );
+        hasEnabledDateFilter() {
+            return !!(this.radioOption && this.radioOption != "all" ||
+                (Array.isArray(this.filter_date_range) && this.filter_date_range.join(""))
+            );
         }
     },
     mounted() {
-        (new Clipboard('.copy')).on('success', event => {
+        (new Clipboard(".copy")).on("success", event => {
             this.$copy();
         });
-        const savedOption = localStorage.getItem('selectedFormType');
+        const savedOption = localStorage.getItem("selectedFormType");
         if (savedOption) {
             this.filter_by = savedOption;
         }
 
-        const savedSortColumn = localStorage.getItem('ff_all_form_sort_column');
-        const savedSortBy = localStorage.getItem('ff_all_form_sort_by');
+        const savedSortColumn = localStorage.getItem("ff_all_form_sort_column");
+        const savedSortBy = localStorage.getItem("ff_all_form_sort_by");
 
         if (savedSortColumn && savedSortBy) {
             this.sort_column = savedSortColumn;
@@ -679,20 +679,20 @@ export default {
     created() {
         let hash = window.location.hash;
 
-        if (hash.indexOf('add=1') != -1) {
+        if (hash.indexOf("add=1") != -1) {
             this.showAddFormModal = true;
         }
 
-        if (hash.indexOf('entries') != -1) {
+        if (hash.indexOf("entries") != -1) {
             this.showSelectFormModal = true;
         }
 
-        jQuery('a[href="admin.php?page=fluent_forms#add=1"]').on('click', event => {
+        jQuery("a[href=\"admin.php?page=fluent_forms#add=1\"]").on("click", event => {
             this.showAddFormModal = true;
             this.showSelectFormModal = false;
         });
 
-        jQuery('a[href="admin.php?page=fluent_forms#entries"]').on('click', event => {
+        jQuery("a[href=\"admin.php?page=fluent_forms#entries\"]").on("click", event => {
             this.showAddFormModal = false;
             this.showSelectFormModal = true;
         });
@@ -700,7 +700,7 @@ export default {
 
     },
     watch: {
-        searchFormsKeyWord: function (newVal, oldVal) {
+        searchFormsKeyWord: function(newVal, oldVal) {
             if ((oldVal && !newVal) && !this.clearingSearchKeyword) {
                 this.paginate.current_page = 1;
                 this.fetchItems();
@@ -711,19 +711,19 @@ export default {
             const end = new Date();
             let number = 1;
             switch (this.radioOption) {
-                case 'today':
-					number = 0;
-					break;
-                case 'yesterday':
+                case "today":
+                    number = 0;
+                    break;
+                case "yesterday":
                     end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
                     break;
-                case 'last-week':
+                case "last-week":
                     number = 7;
                     break;
-                case 'last-month':
+                case "last-month":
                     number = 30;
                     break;
-                case 'all':
+                case "all":
                     this.filter_date_range = null;
                     this.fetchItems();
                     return;
@@ -739,9 +739,3 @@ export default {
     }
 };
 </script>
-<style scoped>
-.el-dropdown-menu{
-  z-index: 9999 !important;
-}
-</style>
-

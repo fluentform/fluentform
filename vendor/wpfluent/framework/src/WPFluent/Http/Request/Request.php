@@ -514,15 +514,23 @@ class Request
      */
     public function getIp()
     {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $this->server('HTTP_CLIENT_IP');
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $this->server('HTTP_X_FORWARDED_FOR');
-        } else {
-            $ip = $this->server('REMOTE_ADDR');
+        // Nginx + Cloudflare setup
+        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            return $this->server('HTTP_CF_CONNECTING_IP');
         }
 
-        return $ip;
+        if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            return $this->server('HTTP_X_REAL_IP');
+        }
+
+        // Nginx is configured to use X-Forwarded-For
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $this->server('HTTP_X_FORWARDED_FOR'));
+            return trim($ips[0]); // First IP is typically the client
+        }
+
+        // Fallback to direct connection
+        return $this->server('REMOTE_ADDR') ? $this->server('REMOTE_ADDR') : '0.0.0.0';
     }
 
     /**

@@ -15,44 +15,38 @@
                     <el-label
                         :label="$t('Condition Match')"
                         :helpText="
-                            $t(
-                                'Select to match whether all rules are required or any. if the match is successful then the field will be shown'
-                            )
+                            $t('Select to match whether all rules are required or any or in groups. If the condition is passed then the field will be shown')
                         "
                     ></el-label>
                 </template>
                 <el-radio v-model="conditional_logics.type" valye="any">{{ $t('Any') }}</el-radio>
                 <el-radio v-model="conditional_logics.type" value="all">{{ $t('All') }}</el-radio>
+                <el-radio v-model="conditional_logics.type" label="group">{{ $t('Group') }}</el-radio>
             </el-form-item>
 
-            <div v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
+            <div v-if="conditional_logics.type != 'group'" v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
                 <select
                     v-model="condition.field"
                     @change="condition.value = ''"
+                    :placeholder="$t('Select')"
                     class="condition-field ff-select ff-select-small"
                 >
                     <option value="" disabled>Select</option>
                     <template v-for="(dep, meta, i) in dependencies">
-                        <option v-if="meta !== editItem.attributes.name" :key="i" :value="meta">
-                            {{ dep.field_label || meta }}
+                        <option
+                            v-if="meta != editItem.attributes.name"
+                            :key="i"
+                            :value="meta">{{ dep.field_label || meta }}
                         </option>
                     </template>
                 </select>
-
-                <select
-                    v-model="condition.operator"
-                    class="condition-operator ff-select ff-select-small"
-                >
+                <select v-model="condition.operator" :placeholder="$t('Select')" class="condition-operator ff-select ff-select-small">
                     <option value="" disabled>{{ $t('Select') }}</option>
                     <option value="=">{{ $t('equal') }}</option>
                     <option value="!=">{{ $t('not equal') }}</option>
-                    <!-- Additional options based on condition.field -->
+
                     <template
-                        v-if="
-                            condition.field &&
-                            (!dependencies[condition.field] || !dependencies[condition.field].options)
-                        "
-                    >
+                        v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
                         <option value=">">{{ $t('greater than') }}</option>
                         <option value="<">{{ $t('less than') }}</option>
                         <option value=">=">{{ $t('greater than or equal') }}</option>
@@ -65,44 +59,201 @@
                     </template>
                 </select>
 
-                <!-- Conditional value input -->
                 <template v-if="condition.field">
                     <input
-                        v-if="!dependencies[condition.field] || !dependencies[condition.field].options"
+                        v-if="!dependencies[condition.field] ||!dependencies[condition.field].options"
                         class="form-control-2 condition-value"
                         type="text"
                         v-model="condition.value"
-                    />
-                    <select
-                        v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
-                        v-model="condition.value"
-                        class="condition-value ff-select ff-select-small"
                     >
-                        <option value="" selected>{{ $t('Select') }}</option>
-                        <option
-                            v-for="(option, i) in dependencies[condition.field].options"
-                            :key="i"
-                            :value="option.value"
-                        >
-                            {{ option.label }}
+                    <select v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
+                            v-model="condition.value" :placeholder="$t('Select')" class="condition-value ff-select ff-select-small">
+                        <option value="" selected >{{ $t('Select') }}</option>
+                        <option v-for="(option, i) in dependencies[condition.field].options"
+                                :key="i"
+                                :value="option.value">{{ option.label }}
                         </option>
                     </select>
                 </template>
 
+                <!-- JUST A PLACEHOLDER -->
+                <select v-else class="condition-value ff-select ff-select-small">
+                    <option value="" disabled selected>{{ $t('Select') }}</option>
+                </select>
                 <action-btn>
-                    <action-btn-add
-                        @click="conditional_logics.conditions.pushAfter(i, emptyRules)"
-                        size="small"
-                    ></action-btn-add>
-                    <action-btn-remove @click="decreaseLogic(i)" size="small"></action-btn-remove>
+                    <action-btn-add @click="conditional_logics.conditions.pushAfter(i, emptyRules)" size="mini"></action-btn-add>
+                    <action-btn-remove @click="decreaseLogic(i)" size="mini"></action-btn-remove>
                 </action-btn>
             </div>
+
+            <div v-if="conditional_logics.type == 'group'">
+                <div v-for="(group, groupIndex) in conditional_logics.condition_groups" :key="groupIndex">
+                    <div class="group-container">
+                        <div class="group-header">
+                            <div class="title-section">
+                                <div class="group-relationship">
+                                    <b> {{$t('IF')}} </b>
+                                </div>
+
+                                <template v-if="group.isEditingTitle">
+                                    <el-input
+                                        v-model="group.title"
+                                        size="small"
+                                        class="title-input"
+                                        @blur="finishTitleEdit(group)"
+                                        @keyup.enter.native="finishTitleEdit(group)"
+                                    />
+                                </template>
+                                <template v-else>
+                                    <div class="group-title" @click="startTitleEdit(group)">
+                                        <span v-if="group.title">{{ group.title }}</span>
+                                        <span v-else>{{ `${$t('Group')} ${groupIndex + 1}` }}</span>
+                                        <i class="el-icon-edit-outline" style="font-size: 12px; margin-left: 5px;"></i>
+                                    </div>
+                                </template>
+                                <el-tooltip class="item" :content="$t('Enter a descriptive name for this condition group if you want. This helps you identify different sets of rules easily.')" placement="bottom" popper-class="ff_tooltip_wrap">
+                                    <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
+                                </el-tooltip>
+                            </div>
+
+                            <div class="actions">
+
+                                <el-button size="mini" class="el-button--icon" v-if="conditional_logics.condition_groups.length > 1" @click="removeGroup(groupIndex)" icon="el-icon-delete" type="danger" plain>
+                                </el-button>
+
+                                <el-button size="mini"  class="el-button--icon"  @click="toggleGroup(groupIndex)" plain>
+                                    <i :class="[
+                                    { 'el-icon-arrow-up': group.isGroupOpen },
+                                    { 'el-icon-arrow-down': !group.isGroupOpen }
+                                ]"> </i>
+                                </el-button>
+                            </div>
+                        </div>
+
+                        <!-- Conditions within group -->
+                        <div v-for="(condition, conditionIndex) in group.rules"
+                             :key="conditionIndex"
+                             class="conditional-logic" v-show="group.isGroupOpen">
+                            <select
+                                v-model="condition.field"
+                                @change="condition.value = ''"
+                                :placeholder="$t('Select')"
+                                class="condition-field ff-select ff-select-small"
+                            >
+                                <option value="" disabled>{{ $t('Select') }}</option>
+                                <template v-for="(dep, meta, i) in dependencies">
+                                    <option
+                                        v-if="meta != editItem.attributes.name"
+                                        :key="i"
+                                        :value="meta"
+                                    >
+                                        {{ dep.field_label || meta }}
+                                    </option>
+                                </template>
+                            </select>
+
+                            <!-- Operator Selection -->
+                            <select
+                                v-model="condition.operator"
+                                :placeholder="$t('Select')"
+                                class="condition-operator ff-select ff-select-small"
+                            >
+                                <option value="" disabled>{{ $t('Select') }}</option>
+                                <option value="=">{{ $t('equal') }}</option>
+                                <option value="!=">{{ $t('not equal') }}</option>
+
+                                <template v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
+                                    <option value=">">{{ $t('greater than') }}</option>
+                                    <option value="<">{{ $t('less than') }}</option>
+                                    <option value=">=">{{ $t('greater than or equal') }}</option>
+                                    <option value="<=">{{ $t('less than or equal') }}</option>
+                                    <option value="contains">{{ $t('includes') }}</option>
+                                    <option value="doNotContains">{{ $t('not includes') }}</option>
+                                    <option value="startsWith">{{ $t('starts with') }}</option>
+                                    <option value="endsWith">{{ $t('ends with') }}</option>
+                                    <option value="test_regex">{{ $t('Regex match') }}</option>
+                                </template>
+                            </select>
+
+                            <!-- Value Input -->
+                            <template v-if="condition.field">
+                                <input
+                                    v-if="!dependencies[condition.field] || !dependencies[condition.field].options"
+                                    class="form-control-2 condition-value"
+                                    type="text"
+                                    v-model="condition.value"
+                                >
+                                <select
+                                    v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
+                                    v-model="condition.value"
+                                    :placeholder="$t('Select')"
+                                    class="condition-value ff-select ff-select-small"
+                                >
+                                    <option value="" selected>{{ $t('Select') }}</option>
+                                    <option
+                                        v-for="(option, i) in dependencies[condition.field].options"
+                                        :key="i"
+                                        :value="option.value"
+                                    >
+                                        {{ option.label }}
+                                    </option>
+                                </select>
+                            </template>
+
+                            <select v-else class="condition-value ff-select ff-select-small">
+                                <option value="" disabled selected>{{ $t('Select') }}</option>
+                            </select>
+
+                            <action-btn>
+                                <action-btn-add @click="addGroupRule(groupIndex, conditionIndex)" size="mini"/>
+                                <action-btn-remove v-if="group.rules.length > 1" @click="removeRule(groupIndex, conditionIndex)" size="mini"/>
+                            </action-btn>
+                        </div>
+
+                        <div class="preview-section" v-if="!isGroupEmpty(group) && group.isGroupOpen && getGroupPreview(group)">
+                            <div class="preview-header" @click="togglePreview(group)">
+                                <div class="preview-toggle">
+                                    <i :class="[
+                                    { 'el-icon-arrow-up': group.isPreviewOpen },
+                                    { 'el-icon-arrow-down': !group.isPreviewOpen }
+                                ]"></i>
+                                </div>
+                            </div>
+
+                            <div v-show="group.isPreviewOpen" class="preview-content">
+                                <div class="group-preview">
+                                    <div class="preview-conditions" v-html="getGroupPreview(group)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="conditional_logics.condition_groups && groupIndex !== conditional_logics.condition_groups.length - 1 && conditional_logics.condition_groups.length > 1 " class="ff_cond_or">
+                        <span>{{ $t('OR') }}</span>
+                    </div>
+
+                </div>
+
+                <div class="add-group-btn">
+                    <el-button
+                        @click="addNewGroup"
+                        type="primary"
+                        plain
+                        size="small">
+                        {{ $t('+ OR') }}
+                    </el-button>
+                </div>
+            </div>
+
         </div>
 
-        <!-- Dialog -->
-        <el-dialog width="30%" top="30%" style="text-align: center" v-model="showPreventMessage">
+        <el-dialog
+            width="30%"
+            top="30%"
+            style="text-align: center;"
+            :visible.sync="showPreventMessage">
             <span>{{ $t('You have to have at least one item here.') }}</span>
-            <div style="margin-top: 20px">
+            <div style="margin-top: 20px;">
                 <el-button @click="showPreventMessage = false">{{ $t('Close') }}</el-button>
             </div>
         </el-dialog>
@@ -110,21 +261,20 @@
 </template>
 
 <script>
-import elLabel from '@/admin/components/includes/el-label.vue';
-import each from 'lodash/each';
+import elLabel from '@/admin/components/includes/el-label.vue'
+import each from "lodash/each";
 import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
 import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
 import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
 export default {
     name: 'conditionalLogics',
-    inject: ['eventBus'],
     props: ['listItem', 'editItem', 'form_items'],
     components: {
         elLabel,
         ActionBtn,
         ActionBtnAdd,
-        ActionBtnRemove,
+        ActionBtnRemove
     },
     data() {
         return {
@@ -164,11 +314,11 @@ export default {
                 'item_quantity_component',
                 'cpt_selection',
                 'dynamic_field',
-                'subscription_payment_component',
+                'subscription_payment_component'
             ],
             showPreventMessage: false,
             emptyRules: { field: '', value: '', operator: '' },
-        };
+        }
     },
     computed: {
         conditional_logics: {
@@ -177,8 +327,9 @@ export default {
             },
             set(defaultObj) {
                 this.editItem.settings.conditional_logics = defaultObj;
-            },
+            }
         },
+
         /**
          * Conditions of one element can possibly
          * depend on those elements
@@ -186,26 +337,24 @@ export default {
          */
         dependencies() {
             let dependencies = {};
-            this.mapElements(this.form_items, formItem => {
+            this.mapElements(this.form_items, (formItem) => {
                 if (this.conditionalSupportedFields.includes(formItem.element)) {
-                    if (this.editItem.uniqElKey !== formItem.uniqElKey) {
+                    if (this.editItem.uniqElKey != formItem.uniqElKey) {
                         if (['terms_and_condition', 'gdpr_agreement'].includes(formItem.element)) {
                             dependencies[formItem.attributes.name] = {
-                                options: this.formatOptions({ on: 'Checked' }),
-                                field_label: formItem.settings.label,
-                            };
+                                options: this.formatOptions({'on': 'Checked'}),
+                                field_label: formItem.settings.label
+                            }
                         } else if (['address', 'input_name'].includes(formItem.element)) {
                             this.mapElements(formItem.fields, item => {
                                 if (item.settings.visible) {
                                     let name = formItem.attributes.name + '[' + item.attributes.name + ']';
                                     dependencies[name] = {
                                         options: item.options ? this.formatOptions(item.options) : null,
-                                        field_label: formItem.attributes.name + '[' + item.settings.label + ']',
+                                        field_label: formItem.attributes.name + '[' + item.settings.label + ']'
                                     };
-                                    if (item.element === 'select_country') {
-                                        dependencies[name]['options'] = this.formatOptions(
-                                            window.FluentFormApp.countries
-                                        );
+                                    if (item.element == 'select_country') {
+                                        dependencies[name]['options'] = this.formatOptions(window.FluentFormApp.countries);
                                     }
                                 }
                             });
@@ -214,66 +363,76 @@ export default {
                                 let name = formItem.attributes.name + '[' + item + ']';
                                 dependencies[name] = {
                                     options: formItem.options ? this.formatOptions(formItem.options) : null,
-                                    field_label: formItem.attributes.name + '[' + item + ']',
+                                    field_label: formItem.attributes.name + '[' + item + ']'
                                 };
                             });
-                        } else if (formItem.element === 'select_country') {
+                        } else if (formItem.element == 'select_country') {
                             dependencies[formItem.attributes.name] = {
                                 options: this.formatOptions(window.FluentFormApp.countries),
-                                field_label: formItem.settings.label,
+                                field_label: formItem.settings.label
                             };
-                        } else if (
-                            ['input_radio', 'select', 'input_checkbox', 'dynamic_field'].includes(formItem.element)
-                        ) {
+                        } else if (['input_radio', 'select', 'input_checkbox', 'dynamic_field'].includes(formItem.element)) {
                             let options = formItem.options ? this.formatOptions(formItem.options) : null;
                             if (!options) {
                                 options = formItem.settings.advanced_options;
                             }
                             if ('text' === formItem.attributes.type) {
-                                options = null;
+                                options = null
                             }
                             dependencies[formItem.attributes.name] = {
                                 options: options,
-                                field_label: formItem.settings.label,
-                            };
-                        } else if (formItem.element === 'payment_method') {
+                                field_label: formItem.settings.label
+                            }
+                        } else if (formItem.element == 'payment_method') {
                             let options = [];
                             each(formItem.settings.payment_methods, (optionItem, itemName) => {
                                 options.push({
                                     label: optionItem.title,
-                                    value: itemName,
-                                });
+                                    value: itemName
+                                })
                             });
                             dependencies[formItem.attributes.name] = {
                                 options: options,
-                                field_label: formItem.settings.label,
-                            };
-                        } else if (formItem.element === 'multi_payment_component') {
-                            if (formItem.attributes.type === 'single') {
+                                field_label: formItem.settings.label
+                            }
+                        } else if (formItem.element == 'multi_payment_component') {
+                            if (formItem.attributes.type == 'single') {
                                 dependencies[formItem.attributes.name] = {
                                     options: null,
-                                    field_label: formItem.settings.label,
-                                };
+                                    field_label: formItem.settings.label
+                                }
                             } else {
                                 let options = [];
-                                each(formItem.settings.pricing_options, priceOption => {
+                                each(formItem.settings.pricing_options, (priceOption) => {
                                     options.push({
                                         label: priceOption.label,
-                                        value: priceOption.label,
-                                    });
+                                        value: priceOption.label
+                                    })
                                 });
 
                                 dependencies[formItem.attributes.name] = {
                                     options: options,
+                                    field_label: formItem.settings.label
+                                }
+                            }
+                        } else if (formItem.element == 'input_number') {
+                            if (formItem.attributes.name) {
+                                dependencies[formItem.attributes.name] = {
+                                    options: formItem.options ? this.formatOptions(formItem.options) : null,
                                     field_label: formItem.settings.label,
-                                };
+                                }
+                                this.editItem.settings.conditional_logics.conditions.map(cond => {
+                                    if (cond.value && formItem.attributes.name === cond.field && formItem.settings.numeric_formatter) {
+                                        cond.numeric_formatter = formItem.settings.numeric_formatter;
+                                    }
+                                });
                             }
                         } else {
                             if (formItem.attributes.name) {
                                 dependencies[formItem.attributes.name] = {
                                     options: formItem.options ? this.formatOptions(formItem.options) : null,
-                                    field_label: formItem.settings.label,
-                                };
+                                    field_label: formItem.settings.label
+                                }
                             }
                         }
                     }
@@ -281,9 +440,77 @@ export default {
             });
 
             return dependencies;
-        },
+        }
     },
     methods: {
+        addGroupRule(groupIndex, conditionIndex) {
+            const group = this.conditional_logics.condition_groups[groupIndex]
+            group.rules.splice(conditionIndex + 1, 0, { ...this.emptyRules })
+        },
+
+        removeRule(groupIndex, conditionIndex) {
+            const group = this.conditional_logics.condition_groups[groupIndex]
+            if (group.rules.length > 1) {
+                group.rules.splice(conditionIndex, 1)
+            }
+        },
+
+        removeGroup(groupIndex) {
+            if (this.conditional_logics.condition_groups.length > 1) {
+                this.conditional_logics.condition_groups.splice(groupIndex, 1)
+            }
+        },
+        isGroupEmpty(group) {
+            return group.rules.every(rule => !rule.field && !rule.value);
+        },
+        togglePreview(group) {
+            if (!group.hasOwnProperty('isPreviewOpen')) {
+                this.$set(group, 'isPreviewOpen', false);
+            }
+            group.isPreviewOpen = !group.isPreviewOpen;
+        },
+        toggleGroup(groupIndex) {
+            const group = this.conditional_logics.condition_groups[groupIndex]
+            if (!group.hasOwnProperty('isGroupOpen')) {
+                this.$set(group, 'isGroupOpen', false);
+            }
+            group.isGroupOpen = !group.isGroupOpen;
+        },
+
+        getGroupPreview(group) {
+            const conditions = group.rules.map(rule => {
+                if (!rule.field || !rule.operator) return '';
+
+                const fieldLabel = this.dependencies[rule.field]?.field_label || rule.field;
+                const value = this.dependencies[rule.field]?.options?.find(opt => opt.value === rule.value)?.label || rule.value;
+                const operator = this.getOperatorLabel(rule.operator);
+
+                return `
+                <span class="preview-field">${fieldLabel}</span>
+                <span class="preview-operator">${operator}</span>
+                <span class="preview-value ${!value ? 'empty-value' : ''}">${value || 'empty'}</span>
+            `;
+            }).filter(preview => preview);
+
+            return conditions.join('<span class="preview-and">AND</span>');
+        },
+
+        getOperatorLabel(operator) {
+            const operators = {
+                '=': this.$t('equals'),
+                '!=': this.$t('not equals'),
+                '>': this.$t('greater than'),
+                '<': this.$t('less than'),
+                '>=': this.$t('greater than or equals'),
+                '<=': this.$t('less than or equals'),
+                'contains': this.$t('contains'),
+                'doNotContains': this.$t('does not contain'),
+                'startsWith': this.$t('starts with'),
+                'endsWith': this.$t('ends with'),
+                'test_regex': this.$t('matches regex')
+            };
+            return operators[operator] || operator;
+        },
         decreaseLogic(index) {
             if (this.conditional_logics.conditions.length > 1) {
                 return this.conditional_logics.conditions.splice(index, 1);
@@ -295,15 +522,64 @@ export default {
                 this.conditional_logics = {
                     type: 'any',
                     status: false,
-                    conditions: [this.emptyRules],
+                    conditions: [this.emptyRules]
                 };
             }
+            if (!this.conditional_logics.conditions.length) {
+                this.conditional_logics.conditions.push(this.emptyRules);
+            }
+
+            // Ensure condition_groups exists and has at least one group with an empty rule
+            if (!this.conditional_logics.condition_groups) {
+                this.addNewGroup();
+            } else if (!this.conditional_logics.condition_groups.length) {
+                this.addNewGroup();
+            } else {
+                // Ensure each existing group has at least one rule
+                this.conditional_logics.condition_groups.forEach(group => {
+                    if (!group.rules || !group.rules.length) {
+                        group.rules = [{ ...this.emptyRules }];
+                    }
+                });
+            }
+        },
+        startTitleEdit(group) {
+            if (!group.hasOwnProperty('title')) {
+                this.$set(group, 'title', '');
+            }
+            this.$set(group, 'isEditingTitle', true);
+        },
+        finishTitleEdit(group) {
+            group.isEditingTitle = false;
+            if (group.title) {
+                group.title = group.title.trim();
+            }
+        },
+        addNewGroup() {
+            if (!this.conditional_logics.condition_groups) {
+                this.$set(this.conditional_logics, 'condition_groups', []);
+            }
+
+            const newGroup = {
+                rules: [{ ...this.emptyRules }],
+                title: '',
+                isEditingTitle: false,
+                isPreviewOpen: false,
+                isGroupOpen: true
+            };
+
+            this.conditional_logics.condition_groups.push(newGroup);
         },
         formatOptions(items) {
             let options = [];
-            each(items, (value, key) => options.push({ label: value, value: key }));
+
+            each(items, (value, key) => options.push({
+                label: value,
+                value: key
+            }));
+
             return options;
-        },
+        }
     },
     beforeMount() {
         this.bootConditionals();
@@ -313,5 +589,23 @@ export default {
             }
         });
     },
-};
+    created() {
+        if (this.conditional_logics.condition_groups) {
+            this.conditional_logics.condition_groups.forEach(group => {
+                if (!group.hasOwnProperty('title')) {
+                    this.$set(group, 'title', '');
+                }
+                if (!group.hasOwnProperty('isEditingTitle')) {
+                    this.$set(group, 'isEditingTitle', false);
+                }
+                if (!group.hasOwnProperty('isPreviewOpen')) {
+                    this.$set(group, 'isPreviewOpen', false);
+                }
+                if (!group.hasOwnProperty('isGroupOpen')) {
+                    this.$set(group, 'isGroupOpen', true);
+                }
+            });
+        }
+    }
+}
 </script>

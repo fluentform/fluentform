@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Notifications;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Emogrifier\Emogrifier;
@@ -39,7 +39,7 @@ class EmailNotification
      */
     public function notify($notification, $submittedData, $form, $entryId = false)
     {
-        $isSendAsPlain = 'yes' == ArrayHelper::get($notification, 'asPlainText');
+        $isSendAsPlain = 'yes' == Arr::get($notification, 'asPlainText');
     
         $isSendAsPlain= apply_filters_deprecated(
             'fluentform_send_plain_html_email',
@@ -151,7 +151,7 @@ class EmailNotification
             * Inline email logger. It will work fine hopefully
             */
             add_action('wp_mail_failed', function ($error) use ($notification, $form, $entryId) {
-                $failedMailSubject = ArrayHelper::get($error->error_data, 'wp_mail_failed.subject');
+                $failedMailSubject = Arr::get($error->error_data, 'wp_mail_failed.subject');
                 if ($failedMailSubject == $notification['subject']) {
                     $reason = $error->get_error_message();
                     do_action('fluentform/log_data', [
@@ -229,23 +229,23 @@ class EmailNotification
      */
     private function getSendAddresses($notification, $submittedData)
     {
-        $sendAddresses = ArrayHelper::get($notification, 'sendTo.email');
+        $sendAddresses = Arr::get($notification, 'sendTo.email');
 
-        if ('field' == ArrayHelper::get($notification, 'sendTo.type') && ! empty($notification['sendTo']['field'])) {
-            $sendAddresses = ArrayHelper::get($submittedData, $notification['sendTo']['field'], '');
+        if ('field' == Arr::get($notification, 'sendTo.type') && ! empty($notification['sendTo']['field'])) {
+            $sendAddresses = Arr::get($submittedData, $notification['sendTo']['field'], '');
             if (!is_email($sendAddresses)) {
                 return '';
             }
         }
 
-        if ('routing' != ArrayHelper::get($notification, 'sendTo.type')) {
+        if ('routing' != Arr::get($notification, 'sendTo.type')) {
             return $sendAddresses;
         }
 
-        $routings = ArrayHelper::get($notification, 'sendTo.routing');
+        $routings = Arr::get($notification, 'sendTo.routing');
         $validAddresses = [];
         foreach ($routings as $routing) {
-            $emailAddresses = ArrayHelper::get($routing, 'input_value');
+            $emailAddresses = Arr::get($routing, 'input_value');
     
             if (!$emailAddresses || trim($emailAddresses) === '') {
                 continue;

@@ -29,7 +29,7 @@
 
 <script type="text/babel">
     import elLabel from '../../../includes/el-label.vue'
-    import ninjaColorPicker from './ColorPicker';
+    import ninjaColorPicker from './ColorPicker.vue';
     import DOMPurify from "dompurify";
     export default {
         name: 'ButtonStyler',

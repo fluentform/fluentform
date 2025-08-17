@@ -2,7 +2,8 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Utils\Enqueuer\Vite;
+use FluentForm\Framework\Support\Arr;
 
 class Recaptcha extends BaseComponent
 {
@@ -56,7 +57,7 @@ class Recaptcha extends BaseComponent
                     $apiUrl .= '&hl=' . $locale;
                 }
 
-                wp_enqueue_script(
+                Vite::EnqueueScript(
                     'google-recaptcha',
                     $apiUrl,
                     [],
@@ -75,7 +76,7 @@ class Recaptcha extends BaseComponent
                 return $atts;
             });
 
-            $shouldRenderBadge = ArrayHelper::get($data, 'settings.render_recaptcha_v3_badge', false);
+            $shouldRenderBadge = Arr::get($data, 'settings.render_recaptcha_v3_badge', false);
             
             if (!$shouldRenderBadge) {
                 // Add CSS to hide reCAPTCHA badge

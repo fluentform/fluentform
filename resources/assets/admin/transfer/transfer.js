@@ -1,96 +1,72 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
+import notifier from '@/admin/notifier.js';
+import ExportForms from './ExportForms.vue';
+import ImportForms from './ImportForms.vue';
+import ActivityLogs from './ActivityLogs.vue';
+import ApiLogs from './ApiLogs.vue';
+import Migrator from './Migrator.vue';
+import globalSearch from '../global_search.js';
+import ImportEntries from './ImportEntries.vue';
+import en from 'element-plus/es/locale/lang/en';
 
 import {
-    Button,
-    Form,
-    FormItem,
-    Tooltip,
-    Row,
-    Col,
-    Select,
-    Option,
-    Checkbox,
-    Radio,
-    RadioGroup,
-    Dialog,
-    Table,
-    TableColumn,
-    Pagination,
-    Popover,
-    Notification,
-    Tabs,
-    TabPane,
-    Loading,
-    Tag,
-    Skeleton,
-    SkeletonItem,
-    DatePicker
-} from 'element-ui';
+    ElButton,
+    ElForm,
+    ElFormItem,
+    ElTooltip,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption,
+    ElCheckbox,
+    ElRadio,
+    ElRadioGroup,
+    ElDialog,
+    ElTable,
+    ElTableColumn,
+    ElPagination,
+    ElPopover,
+    ElNotification,
+    ElTabs,
+    ElTabPane,
+    ElLoading,
+    ElTag,
+    ElSkeleton,
+    ElSkeletonItem,
+    ElDatePicker,
+    ElMessage,
+    ElPopconfirm
+} from "element-plus";
 
-Vue.use(Button);
-Vue.use(Table);
-Vue.use(TableColumn);
-Vue.use(Form);
-Vue.use(FormItem);
-Vue.use(Tooltip);
-Vue.use(Row);
-Vue.use(Col);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(RadioGroup);
-Vue.use(Radio);
-Vue.use(Checkbox);
-Vue.use(Dialog);
-Vue.use(Pagination);
-Vue.use(Popover);
-Vue.use(Tabs);
-Vue.use(TabPane);
-Vue.use(Tag);
-Vue.use(Skeleton);
-Vue.use(SkeletonItem);
-Vue.use(DatePicker);
+const components = [
+    ElButton,
+    ElForm,
+    ElFormItem,
+    ElTooltip,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption,
+    ElCheckbox,
+    ElRadio,
+    ElRadioGroup,
+    ElDialog,
+    ElTable,
+    ElTableColumn,
+    ElPagination,
+    ElPopover,
+    ElNotification,
+    ElTabs,
+    ElTabPane,
+    ElLoading,
+    ElTag,
+    ElSkeleton,
+    ElSkeletonItem,
+    ElDatePicker,
+    ElPopconfirm
+];
 
-
-Vue.prototype.$notify = Notification;
-Vue.use(Loading.directive);
-Vue.prototype.$loading = Loading.service;
-
-import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
-// configure language
-locale.use(lang);
-import notifier from '@/admin/notifier';
-import {humanDiffTime,tooltipDateTime} from '@/admin/helpers';
-import ExportForms from './ExportForms';
-import ImportForms from './ImportForms';
-import ActivityLogs from './ActivityLogs';
-import ApiLogs from './ApiLogs';
-import Migrator from './Migrator';
-import globalSearch from '../global_search';
-import ImportEntries from './ImportEntries';
-import {_$t} from "@/admin/helpers";
-
-
-Vue.mixin({
-    methods:{
-        $t(string) {
-            let transString = window.FluentFormApp.transfer_str[string] || string
-            return _$t(transString, ...arguments);
-        },
-        $_n(singular, plural, count) {
-            let number = parseInt(count.toString().replace(/,/g, ''), 10);
-            if (number > 1) {
-                return this.$t(plural, count);
-            }
-            return this.$t(singular, count);
-        },
-        ...notifier,
-        humanDiffTime,
-        tooltipDateTime
-    }
-})
-new Vue({
-    el: '#ff_transfer_app',
+const app = createApp({
     components: {
         globalSearch,
         exportforms: ExportForms,
@@ -100,17 +76,18 @@ new Vue({
         apilogs: ApiLogs,
         migrator: Migrator
     },
-    data: {
-        component: 'exportforms',
-        App: window.FluentFormApp
+    data() {
+        return {
+            component: "exportforms",
+            App: window.FluentFormApp
+        };
     },
     methods: {
         setRoute(component) {
-
             if (this.$options.components[component]) {
-                let $listItems = jQuery('.ff_admin_menu_list li').removeClass('active');
+                let $listItems = jQuery(".ff_admin_menu_list li").removeClass("active");
 
-                $listItems.find('a[data-hash=' + component + ']').parent().addClass('active');
+                $listItems.find("a[data-hash=" + component + "]").parent().addClass("active");
 
                 this.component = component;
             }
@@ -125,11 +102,41 @@ new Vue({
 
         jQuery(document).ready(() => {
             const that = this;
-            jQuery('.ff_admin_menu_list li a').on('click', function () {
-                let component = jQuery(this).attr('data-hash');
+            jQuery(".ff_admin_menu_list li a").on("click", function() {
+                let component = jQuery(this).attr("data-hash");
 
                 that.setRoute(component);
             });
         });
     }
 });
+
+components.forEach(component => {
+    app.use(component);
+});
+
+app.config.globalProperties.$loading = ElLoading.service;
+app.config.globalProperties.$notify = ElNotification;
+app.config.globalProperties.$message = ElMessage;
+app.config.globalProperties.$ELEMENT = { locale: en };
+
+app.mixin({
+    methods: {
+        $t(string) {
+            let transString = window.FluentFormApp.transfer_str[string] || string;
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ""), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
+            }
+            return this.$t(singular, count);
+        },
+        ...notifier,
+        humanDiffTime,
+        tooltipDateTime
+    }
+});
+
+app.mount("#ff_transfer_app");

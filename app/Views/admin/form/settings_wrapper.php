@@ -1,5 +1,5 @@
 <?php
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 ?>
 
 <div class="ff_settings_wrapper ff_layout_section">
@@ -81,7 +81,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 				</li>
 				
 				<?php foreach ($settings_menus as $settings_menu): ?>
-					<?php if (ArrayHelper::get($settings_menu, 'hash') != 'basic_settings') : ?>
+					<?php if (Arr::get($settings_menu, 'hash') != 'basic_settings') : ?>
 
 					<li class="ff_list_button_item">
 						<?php if(isset($settings_menu['route'])): ?>

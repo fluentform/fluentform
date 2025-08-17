@@ -3,23 +3,24 @@
         <input-popover
             :fieldType="field_type"
             :placeholder="placeholder"
-            v-model="fieldValue"
+            v-model="model"
             icon="el-icon-arrow-down"
             :data="editorShortcodes"
-        ></input-popover>
+        />
     </div>
 </template>
 
 <script type="text/babel">
-    import inputPopover from '../../input-popover.vue';
+import InputPopover from '../../input-popover.vue';
 
     export default {
         name: 'fieldGeneral',
+        emits: ['update:modelValue'],
         components: {
-            inputPopover
+            InputPopover
         },
         props: {
-            value: [String, Number, Boolean],
+            modelValue: [String, Number, Boolean],
             editorShortcodes: Array,
             field_type: {
                 type: String,
@@ -29,17 +30,16 @@
                 type: String,
                 default: 'Select a Field or Type Custom value'
             }
-
         },
-	    computed : {
-		    fieldValue: {
-			    get() {
-				    return this.value;
-			    },
-			    set(value) {
-				    this.$emit('input', value);
-			    }
-		    }
-	    }
+        data() {
+            return {
+                model: this.modelValue
+            }
+        },
+        watch: {
+            model(newValue) {
+                this.$emit('update:modelValue', newValue);
+            },
+        }
     }
 </script>

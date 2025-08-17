@@ -6,7 +6,7 @@ use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Helpers\Helper;
 
 class ShortCodeParser
@@ -181,11 +181,11 @@ class ShortCodeParser
 
         if (strpos($key, '.value')) {
             $key = str_replace('.value', '', $key);
-            return ArrayHelper::get(static::$store['original_inputs'], $key);
+            return Arr::get(static::$store['original_inputs'], $key);
         }
 
         if (strpos($key, '.') && ! isset(static::$store['inputs'][$key])) {
-            return ArrayHelper::get(
+            return Arr::get(
                 static::$store['original_inputs'],
                 $key,
                 ''
@@ -193,7 +193,7 @@ class ShortCodeParser
         }
 
         if (! isset(static::$store['inputs'][$key])) {
-            static::$store['inputs'][$key] = ArrayHelper::get(
+            static::$store['inputs'][$key] = Arr::get(
                 static::$store['inputs'],
                 $key,
                 ''
@@ -207,14 +207,14 @@ class ShortCodeParser
             );
         }
 
-        $field = ArrayHelper::get(static::$formFields, $key, '');
+        $field = Arr::get(static::$formFields, $key, '');
 
         if (! $field) {
             return '';
         }
 
         if ($isHtml) {
-            $originalInput = ArrayHelper::get(static::$store['original_inputs'], $key, '');
+            $originalInput = Arr::get(static::$store['original_inputs'], $key, '');
             $originalInput = apply_filters_deprecated(
                 'fluentform_response_render_' . $field['element'],
                 [
@@ -269,11 +269,11 @@ class ShortCodeParser
 
         // Resolve global validation messages {labels.current_field} shortcode.
         // Current field name attribute was setted as inputs data key 'current_field'.
-        if ('current_field' === $key && $currentFieldName = ArrayHelper::get(static::$store['inputs'], $key)) {
+        if ('current_field' === $key && $currentFieldName = Arr::get(static::$store['inputs'], $key)) {
             $currentFieldName = str_replace(['[', ']'], ['.', ''], $currentFieldName);
             $key = $currentFieldName;
         }
-        $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $key, []), 'label', '');
+        $inputLabel = Arr::get(Arr::get(static::$formFields, $key, []), 'label', '');
         $inputLabel = str_replace(['[', ']'], '', $inputLabel);
         $keys = explode(".", $key);
         if (count($keys) > 1) {
@@ -281,10 +281,10 @@ class ShortCodeParser
             $inputLabel = str_replace($parentKey, '', $inputLabel);
         }
         if(empty($inputLabel)){
-            $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $key, []), 'admin_label', '');
+            $inputLabel = Arr::get(Arr::get(static::$formFields, $key, []), 'admin_label', '');
         }
         if (empty($inputLabel) && isset($parentKey) && $parentKey) {
-            $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $parentKey, []), 'label', '');
+            $inputLabel = Arr::get(Arr::get(static::$formFields, $parentKey, []), 'label', '');
             $key = $parentKey;
         }
 
@@ -422,7 +422,7 @@ class ShortCodeParser
                 $passwords = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_password']);
                 if (is_array($passwords) && ! empty($passwords)) {
                     $user_inputs = $response->user_inputs;
-                    ArrayHelper::forget($user_inputs, array_keys($passwords));
+                    Arr::forget($user_inputs, array_keys($passwords));
                     $response->user_inputs = $user_inputs;
                 }
             }
@@ -443,14 +443,14 @@ class ShortCodeParser
             if ($skipHiddenFields) {
                 $hiddenFields = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_hidden']);
                 if (is_array($hiddenFields) && ! empty($hiddenFields)) {
-                    ArrayHelper::forget($response->user_inputs, array_keys($hiddenFields));
+                    Arr::forget($response->user_inputs, array_keys($hiddenFields));
                 }
             }
 
             $html = '<table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"><tbody>';
             foreach ($inputLabels as $inputKey => $label) {
-                if (array_key_exists($inputKey, $response->user_inputs) && '' !== ArrayHelper::get($response->user_inputs, $inputKey)) {
-                    $data = ArrayHelper::get($response->user_inputs, $inputKey);
+                if (array_key_exists($inputKey, $response->user_inputs) && '' !== Arr::get($response->user_inputs, $inputKey)) {
+                    $data = Arr::get($response->user_inputs, $inputKey);
                     if (is_array($data) || is_object($data)) {
                         continue;
                     }
@@ -634,7 +634,7 @@ class ShortCodeParser
 
         // Check if front-end entry view is enabled for this form
         $frontEndSettings = Helper::getFormMeta($entry->form_id, 'front_end_entry_view', []);
-        if (ArrayHelper::get($frontEndSettings, 'status') !== 'yes') {
+        if (Arr::get($frontEndSettings, 'status') !== 'yes') {
             return '';
         }
 

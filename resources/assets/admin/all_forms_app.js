@@ -41,6 +41,7 @@ import Acl from "@/common/Acl";
 import AllForms from "./views/AllForms.vue";
 import globalSearch from "./global_search";
 import notifier from "./notifier";
+import { _$t } from "@/admin/helpers";
 
 const app = createApp({
     components: {
@@ -58,9 +59,16 @@ const app = createApp({
 // Mixin
 app.mixin({
     methods: {
-        $t(str) {
-            let transString = window.fluent_forms_global_var.admin_i18n[str];
-            return transString || str;
+        $t(string) {
+            let transString = window.fluent_forms_global_var.admin_i18n[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
+            }
+            return str;
         },
         hasPermission(permission) {
             return new Acl().verify(permission);

@@ -119,9 +119,7 @@ class SettingsService
         } else {
             FormMeta::remove($formId, 'conv_form_resume_from_last_step');
         }
-      
-    
-    
+        
         do_action('fluentform/after_save_form_settings', $formId, $attributes);
     }
 

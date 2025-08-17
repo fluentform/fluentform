@@ -10,15 +10,15 @@
 						<el-col :lg="12" :md="24">
 							<!--Select Forms-->
 							<el-form-item class="ff-form-item">
-								<template slot="label">
+								<template #label>
 									{{ $t('Select Forms') }}
 
 									<el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-										<div slot="content">
+										<template #content>
 											<p>
 												{{ $t('Select the form you would like to map entries.') }}
 											</p>
-										</div>
+										</template>
 
 										<i class="ff-icon ff-icon-info-filled text-primary"></i>
 									</el-tooltip>
@@ -34,35 +34,35 @@
 						<el-col :lg="12" :md="24">
 							<!--File Type-->
 							<el-form-item>
-								<template slot="label">
+								<template #label>
 									{{ $t('File Type') }}
 									<el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-										<div slot="content">
+										<template #content>
 											<p>
 												{{ $t('Choose File type you would like to import') }}
 											</p>
-										</div>
+										</template>
 
 										<i class="ff-icon ff-icon-info-filled text-primary"></i>
 									</el-tooltip>
 								</template>
 								<el-radio-group v-model="file_type">
-									<el-radio label="json">JSON (.json)</el-radio>
-									<el-radio label="csv">CSV (.csv)</el-radio>
+									<el-radio value="json">JSON (.json)</el-radio>
+									<el-radio value="csv">CSV (.csv)</el-radio>
 								</el-radio-group>
 							</el-form-item>
 						</el-col>
 						<el-col :span="24">
 							<!--Csv Delimiter-->
 							<el-form-item v-if="is_csv_file_type" class="ff-form-item">
-								<template slot="label">
+								<template #label>
 									{{ $t('Csv Delimiter') }}
 									<el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-										<div slot="content">
+										<template #content>
 											<p>
 												{{ $t('Select your csv file delimiter') }}
 											</p>
-										</div>
+										</template>
 										<i class="ff-icon ff-icon-info-filled text-primary"></i>
 									</el-tooltip>
 								</template>
@@ -77,16 +77,18 @@
 
 							<!--Select File-->
 							<el-form-item class="ff-form-item">
-								<template slot="label">
+								<template #label>
 									{{ $t('Select File') }}
 								</template>
 								<p>{{ file_upload_info }}</p>
 								<input type="file" ref="fileButton" id="fileButton" class="file-input w-100"
 								       @click="clear">
 							</el-form-item>
-							<el-button :type="is_imported ? 'success' : 'primary'" :icon="is_imported ? 'el-icon-success' : 'el-icon-right'" :disabled="is_imported" @click="goForMapFields"
-							           :loading="loading_map_columns">
+							<el-button :type="is_imported ? 'success' : 'primary'" :disabled="is_imported" @click="goForMapFields" :loading="loading_map_columns">
 								{{ is_imported ? $t('Imported') : $t('Next [Map Columns]')}}
+                                <template #icon>
+                                    <i :class="is_imported ? 'el-icon-success' : 'el-icon-right'"></i>
+                                </template>
 							</el-button>
 						</el-col>
 					</el-row>
@@ -104,10 +106,10 @@
 							width="70%"
 							element-loading-spinner="el-icon-loading"
 							:loading="loading_map_columns"
-							:visible="show_mapping_dialog"
+							v-model="show_mapping_dialog"
 							:before-close="closeInputSelection"
 						>
-							<template slot="title">
+							<template #header>
 								<div class="el-dialog__header_group">
 									<h3 class="mr-3">{{ $t('Map responsible fields to import') }}</h3>
 								</div>
@@ -123,8 +125,8 @@
 									</el-col>
 								</el-row>
 								<hr/>
-								<template v-for="(form_field, key) in form_fields">
-									<el-row :gutter="24" :key="key">
+								<template v-for="(form_field, key) in form_fields" :key="key">
+									<el-row :gutter="24">
 										<el-col :lg="12" :sm="24">
 											<span>{{ form_field.label }}</span>
 										</el-col>
@@ -156,8 +158,8 @@
 									</el-col>
 								</el-row>
 								<hr/>
-								<template v-for="(submission_info_field, key) in submission_info_fields">
-									<el-row :gutter="24" :key="key">
+								<template v-for="(submission_info_field, key) in submission_info_fields" :key="key">
+									<el-row :gutter="24">
 										<el-col :lg="12" :sm="24">
 											<span>{{ submission_info_field.label }}</span>
 										</el-col>
@@ -177,7 +179,7 @@
 								</template>
 							</div>
 
-							<div slot="footer">
+							<template #footer>
 								<el-row :gutter="24">
 									<el-col :lg="12" :sm="24" style="align-self: center;text-align: left;">
 										<el-checkbox v-model="delete_existing_submissions">
@@ -199,7 +201,7 @@
 										</p>
 									</el-col>
 								</el-row>
-		                    </div>
+		                    </template>
 						</el-dialog>
 					</div>
 				</el-form>

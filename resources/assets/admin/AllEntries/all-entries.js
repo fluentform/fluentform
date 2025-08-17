@@ -60,6 +60,7 @@ const components = [
 import App from './App.vue';
 import globalSearch from '../global_search';
 import notifier from '../notifier';
+import { _$t } from "@/admin/helpers";
 
 const app = createApp({
     components: {
@@ -80,10 +81,14 @@ app.config.globalProperties.$ELEMENT = {locale: en};
 
 app.mixin({
     methods: {
-        $t(str) {
-            let transString = window.fluent_forms_global_var.admin_i18n[str];
-            if(transString) {
-                return transString;
+        $t(string) {
+            let transString = window.fluent_forms_global_var.admin_i18n[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
             return str;
         },

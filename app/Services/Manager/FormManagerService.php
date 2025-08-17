@@ -26,13 +26,6 @@ class FormManagerService
         }
     }
 
-    public static function updateHasSpecificFormsPermission($userId, $status)
-    {
-        if (in_array($status, ['no', 'yes'])) {
-            update_user_meta($userId, '_fluent_forms_has_specific_forms_permission', $status);
-        }
-    }
-
     public static function hasSpecificFormsPermission($userId)
     {
         $hasFormsPermission = get_user_meta($userId, '_fluent_forms_has_specific_forms_permission', true);

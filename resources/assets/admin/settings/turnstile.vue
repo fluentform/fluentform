@@ -3,28 +3,30 @@
         <el-form label-position="top">
             <card>
                 <card-head>
-                    <h5 class="title">{{ $t('Cloudflare Turnstile Settings') }}</h5>
-                        <p class="text">
+                    <h5 class="title">{{ $t("Cloudflare Turnstile Settings") }}</h5>
+                    <p class="text">
                         {{
-                            $t('Fluent Forms integrates with Cloudflare Turnstile, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the Turnstile field.')
+                            $t("Fluent Forms integrates with Cloudflare Turnstile, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the Turnstile field.")
                         }}
                         <a href="https://www.cloudflare.com/en-gb/products/turnstile/" target="_blank">
-                            {{ $t('Read more about Cloudflare Turnstile.') }}
+                            {{ $t("Read more about Cloudflare Turnstile.") }}
                         </a>
                     </p>
-                    <p class="text"><b>{{ $t('Please generate API key and API secret using Cloudflare Turnstile') }}</b></p>
+                    <p class="text"><b>{{ $t("Please generate API key and API secret using Cloudflare Turnstile") }}</b>
+                    </p>
                 </card-head>
                 <card-body>
                     <!--Site key-->
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
-                            {{ $t('Site Key') }}
+                        <template #label>
+                            {{ $t("Site Key") }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
-                                        {{ $t('Enter your Turnstile Site Key, if you do not have a key you can register for one at the provided link Turnstile is a free service.') }}
+                                        {{ $t("Enter your Turnstile Site Key, if you do not have a key you can register for one at the provided link Turnstile is a free service.")
+                                        }}
                                     </p>
-                                </div>
+                                </template>
 
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -36,14 +38,15 @@
 
                     <!--Secret key-->
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
-                            {{ $t('Secret Key') }}
+                        <template #label>
+                            {{ $t("Secret Key") }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
-                                        {{ $t('Enter your Turnstile Secret Key, if you do not have a key you can register for one at the provided link, Turnstile is a free service.') }}
+                                        {{ $t("Enter your Turnstile Secret Key, if you do not have a key you can register for one at the provided link, Turnstile is a free service.")
+                                        }}
                                     </p>
-                                </div>
+                                </template>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
@@ -53,41 +56,46 @@
                     </el-form-item>
 
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
-                            {{ $t('Appearance Mode') }}
+                        <template #label>
+                            {{ $t("Appearance Mode") }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
-                                        {{ $t('You can select how the turnstile will appear') }}
+                                        {{ $t("You can select how the turnstile will appear") }}
                                     </p>
-                                </div>
+                                </template>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
                         </template>
 
-                        <el-radio class="mr-3" v-model="turnstile.appearance" label="always">{{$t('Managed')}}</el-radio>
-                        <el-radio class="mr-3" v-model="turnstile.appearance" label="execute">{{$t('Non-interactive')}}</el-radio>
-                        <el-radio class="mr-3" v-model="turnstile.appearance" label="interaction-only">{{$t('Invisible')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" value="always">{{ $t("Managed") }}
+                        </el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" value="execute">
+                            {{ $t("Non-interactive") }}
+                        </el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" value="interaction-only">
+                            {{ $t("Invisible") }}
+                        </el-radio>
                     </el-form-item>
 
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
-                            {{ $t('Theme') }}
+                        <template #label>
+                            {{ $t("Theme") }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
-                                        {{ $t('Choose a theme for the field') }}
+                                        {{ $t("Choose a theme for the field") }}
                                     </p>
-                                </div>
+                                </template>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
                         </template>
 
-                        <el-radio v-model="turnstile.theme" label="auto">{{ $t('Auto') }}</el-radio>
-                        <el-radio v-model="turnstile.theme" label="light">{{ $t('Light') }}</el-radio>
-                        <el-radio v-model="turnstile.theme" label="dark">{{ $t('Dark') }}</el-radio>
+                        <el-radio v-model="turnstile.theme" value="auto">{{ $t("Auto") }}</el-radio>
+                        <el-radio v-model="turnstile.theme" value="light">{{ $t("Light") }}</el-radio>
+                        <el-radio v-model="turnstile.theme" value="dark">{{ $t("Dark") }}</el-radio>
                     </el-form-item>
 
                     <!--Validate Keys-->
@@ -100,7 +108,7 @@
                     </el-form-item>
 
                     <notice v-if="turnstile_status && !disabled" size="sm" type="success-soft">
-                        <p>{{ $t('Your Cloudflare Turnstile is valid') }}</p>
+                        <p>{{ $t("Your Cloudflare Turnstile is valid") }}</p>
                     </notice>
                 </card-body>
             </card>
@@ -108,19 +116,27 @@
             <div class="mt-4">
                 <el-button
                     type="primary"
-                    icon="el-icon-success"
                     @click="save"
                     :disabled="disabled"
                     :loading="saving"
-                >{{ $t('Save Settings') }}
+                    size="large"
+                >
+                    <template #icon>
+                        <i class="el-icon-success"></i>
+                    </template>
+                    {{ $t("Save Settings") }}
                 </el-button>
 
                 <el-button
                     type="danger"
-                    icon="ff-icon ff-icon-trash"
                     @click="clearSettings"
                     :loading="clearing"
-                >{{ $t('Clear Settings') }}
+                    size="large"
+                >
+                    <template #icon>
+                        <i class="ff-icon ff-icon-trash"></i>
+                    </template>
+                    {{ $t("Clear Settings") }}
                 </el-button>
             </div>
         </el-form>
@@ -128,15 +144,15 @@
 </template>
 
 <script>
-import Card from '@/admin/components/Card/Card.vue';
-import CardBody from '@/admin/components/Card/CardBody.vue';
-import CardHead from '@/admin/components/Card/CardHead.vue';
-import Notice from '@/admin/components/Notice/Notice.vue';
+import Card from "@/admin/components/Card/Card.vue";
+import CardBody from "@/admin/components/Card/CardBody.vue";
+import CardHead from "@/admin/components/Card/CardHead.vue";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
 export default {
-    components: { 
-        Card, 
-        CardHead, 
+    components: {
+        Card,
+        CardHead,
         CardBody,
         Notice
     },
@@ -148,14 +164,14 @@ export default {
                 siteKey: "",
                 secretKey: "",
                 invisible: "no",
-                appearance: 'always',
-                theme: 'auto'
+                appearance: "always",
+                theme: "auto"
             },
             turnstile_status: false,
             siteKeyChanged: false,
             disabled: false,
             saving: false,
-            clearing: false,
+            clearing: false
         };
     },
     methods: {
@@ -171,10 +187,10 @@ export default {
             }
 
             this.$nextTick(() => {
-                let id = '#turnstile';
+                let id = "#turnstile";
                 let $turnstile = jQuery(id);
                 let siteKey = this.turnstile.siteKey;
-                $turnstile.html('');
+                $turnstile.html("");
 
                 let widgetID = turnstile.render(id, {
                     sitekey: siteKey,
@@ -185,19 +201,19 @@ export default {
                 });
 
                 this.disabled = false;
-            })
+            });
         },
         save() {
             if (!this.validate()) {
-                return this.$fail(this.$t('Missing required fields.'));
+                return this.$fail(this.$t("Missing required fields."));
             }
             this.saving = true;
 
-            const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
+            const url = FluentFormsGlobal.$rest.route("storeGlobalSettings");
             let data = {
-                key: 'turnstile',
+                key: "turnstile",
                 turnstile: this.turnstile
-            }
+            };
 
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
@@ -221,16 +237,16 @@ export default {
         clearSettings() {
             this.clearing = true;
 
-            const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
+            const url = FluentFormsGlobal.$rest.route("storeGlobalSettings");
             let data = {
-                key: 'turnstile',
-                turnstile: 'clear-settings'
-            }
+                key: "turnstile",
+                turnstile: "clear-settings"
+            };
 
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
                     this.turnstile_status = response.status;
-                    this.turnstile = {siteKey: '', secretKey: ''};
+                    this.turnstile = { siteKey: "", secretKey: "" };
                     if (this.turnstile_status == 1) {
                         this.$success(response.message);
                     } else {
@@ -239,7 +255,7 @@ export default {
                 })
                 .catch(error => {
                     this.turnstile_status = error.status;
-                    this.$fail(this.$t('Something went wrong.'));
+                    this.$fail(this.$t("Something went wrong."));
                 })
                 .finally(r => {
                     this.clearing = false;
@@ -249,20 +265,20 @@ export default {
             return !!(this.turnstile.siteKey && this.turnstile.secretKey);
         },
         getTurnstileSettings() {
-            const url = FluentFormsGlobal.$rest.route('getGlobalSettings');
+            const url = FluentFormsGlobal.$rest.route("getGlobalSettings");
             let data = {
                 key: [
-                    '_fluentform_turnstile_details',
-                    '_fluentform_turnstile_keys_status'
+                    "_fluentform_turnstile_details",
+                    "_fluentform_turnstile_keys_status"
                 ]
-            }
+            };
 
             FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
                     const turnstile = response._fluentform_turnstile_details;
                     this.turnstile = turnstile;
-                    if (this.turnstile?.invisible == 'yes') {
-                        this.turnstile.appearance = 'interaction-only';
+                    if (this.turnstile?.invisible == "yes") {
+                        this.turnstile.appearance = "interaction-only";
                     }
                     this.turnstile_status = response._fluentform_turnstile_keys_status;
                 });
@@ -272,11 +288,11 @@ export default {
         this.getTurnstileSettings();
     },
     created() {
-        let turnstileScript = document.createElement('script');
+        let turnstileScript = document.createElement("script");
 
-        turnstileScript.setAttribute('src', 'https://challenges.cloudflare.com/turnstile/v0/api.js');
+        turnstileScript.setAttribute("src", "https://challenges.cloudflare.com/turnstile/v0/api.js");
 
         document.body.appendChild(turnstileScript);
-    },
+    }
 };
 </script>

@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\Framework\Support\Helper;
 use stdClass;
@@ -87,7 +87,7 @@ class BaseComponent
     protected function extractDynamicValues($data, $form)
     {
         $defaultValues = [];
-        if ($dynamicDefaultValue = ArrayHelper::get($data, 'settings.dynamic_default_value')) {
+        if ($dynamicDefaultValue = Arr::get($data, 'settings.dynamic_default_value')) {
             $parseValue = $this->parseEditorSmartCode($dynamicDefaultValue, $form);
             if (is_array($parseValue)) {
                 $defaultValues = $parseValue;
@@ -108,17 +108,17 @@ class BaseComponent
      */
     protected function hasConditions($element)
     {
-        $conditionals = ArrayHelper::get($element, 'settings.conditional_logics');
+        $conditionals = Arr::get($element, 'settings.conditional_logics');
         
         if (isset($conditionals['status']) && $conditionals['status']) {
             if (isset($conditionals['type']) && $conditionals['type'] === 'group') {
-                $groups = ArrayHelper::get($conditionals, 'condition_groups');
+                $groups = Arr::get($conditionals, 'condition_groups');
                 if (!is_array($groups)) {
                     return false;
                 }
     
                 $groups = array_filter($groups, function ($group) {
-                    $rules = ArrayHelper::get($group, 'rules', []);
+                    $rules = Arr::get($group, 'rules', []);
                     return !empty(array_filter($rules, fn($rule) => !empty($rule['field']) && !empty($rule['operator'])));
                 });
                 return !!$groups;
@@ -198,7 +198,7 @@ class BaseComponent
         
         $id = isset($data['attributes']['id']) ? $data['attributes']['id'] : '';
         $label = isset($data['settings']['label']) ? $data['settings']['label'] : '';
-        $requiredClass = $this->getRequiredClass(ArrayHelper::get($data, 'settings.validation_rules', []));
+        $requiredClass = $this->getRequiredClass(Arr::get($data, 'settings.validation_rules', []));
         $classes = trim('ff-el-input--label ' . $requiredClass . $this->getAsteriskPlacement($form));
         
         return "<div class='" . esc_attr($classes) . "'><label aria-label='" . esc_attr($this->removeShortcode($label)) . "' for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label) . '</label>' . $helpMessage . '</div>';
@@ -217,11 +217,11 @@ class BaseComponent
     {
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
         
-        $labelPlacement = ArrayHelper::get($data, 'settings.label_placement');
+        $labelPlacement = Arr::get($data, 'settings.label_placement');
         
         $labelPlacementClass = $labelPlacement ? 'ff-el-form-' . $labelPlacement . ' ' : '';
         
-        $validationRules = ArrayHelper::get($data, 'settings.validation_rules');
+        $validationRules = Arr::get($data, 'settings.validation_rules');
         
         $requiredClass = $this->getRequiredClass($validationRules);
         
@@ -235,7 +235,7 @@ class BaseComponent
             $this->getDefaultContainerClass() .
             $labelPlacementClass .
             $hasConditions .
-            ArrayHelper::get($data, 'settings.container_class')
+            Arr::get($data, 'settings.container_class')
         );
         
         $labelHelpText = $inputHelpText = '';
@@ -259,13 +259,13 @@ class BaseComponent
         $labelMarkup = '';
         
         if (!empty($data['settings']['label'])) {
-            $label = ArrayHelper::get($data, 'settings.label');
+            $label = Arr::get($data, 'settings.label');
             $ariaLabel = $label;
             
             $hasShortCodeIndex = strpos($label, '{dynamic.');
             
             //Handle name field duplicate label accessibility
-            $isNameField = strpos(ArrayHelper::get($data, 'attributes.name', ''), 'name') !== false;
+            $isNameField = strpos(Arr::get($data, 'attributes.name', ''), 'name') !== false;
             if ($isNameField) {
                 $ariaLabel = '';
             } elseif ($hasShortCodeIndex !== false) {

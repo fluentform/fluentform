@@ -2,7 +2,8 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Utils\Enqueuer\Vite;
+use FluentForm\Framework\Support\Arr;
 
 class Turnstile extends BaseComponent
 {
@@ -30,7 +31,7 @@ class Turnstile extends BaseComponent
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $turnstile = get_option('_fluentform_turnstile_details');
-        $siteKey = ArrayHelper::get($turnstile, 'siteKey');
+        $siteKey = Arr::get($turnstile, 'siteKey');
 
         if (! $siteKey) {
             return false;
@@ -42,7 +43,7 @@ class Turnstile extends BaseComponent
         });
 
         if (!wp_script_is('turnstile')) {
-            wp_enqueue_script(
+            Vite::enqueueStaticScript(
                 'turnstile',
                 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
                 [],
@@ -54,15 +55,15 @@ class Turnstile extends BaseComponent
             wp_script_add_data('turnstile', 'data-cfasync', 'false');
         }
 
-        $appearance = esc_attr(ArrayHelper::get($turnstile, 'appearance', 'always'));
+        $appearance = esc_attr(Arr::get($turnstile, 'appearance', 'always'));
 
-        if ('yes' == ArrayHelper::get($turnstile, 'invisible')) {
+        if ('yes' == Arr::get($turnstile, 'invisible')) {
             $appearance = 'interaction-only';
         }
 
         $turnstileBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
-		data-theme='" . esc_attr(ArrayHelper::get($turnstile, 'theme', 'auto')) . "'
+		data-theme='" . esc_attr(Arr::get($turnstile, 'theme', 'auto')) . "'
 		id='fluentform-turnstile-{$form->id}-{$form->instance_index}'
 		class='ff-el-turnstile cf-turnstile'
 		data-appearance='" . $appearance . "'></div>";

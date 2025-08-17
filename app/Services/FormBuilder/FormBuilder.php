@@ -3,7 +3,8 @@
 namespace FluentForm\App\Services\FormBuilder;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Utils\Enqueuer\Vite;
+use FluentForm\Framework\Support\Arr;
 
 class FormBuilder
 {
@@ -75,7 +76,7 @@ class FormBuilder
             $formClass .= ' ' . $extraFormClass;
         }
 
-        $themeStyle = ArrayHelper::get($atts, 'theme');
+        $themeStyle = Arr::get($atts, 'theme');
 
         if (!$themeStyle) {
             $selectedStyle = Helper::getFormMeta($form->id, '_ff_selected_style');
@@ -93,7 +94,7 @@ class FormBuilder
 
         if (strpos($formBody, '{dynamic.')) {
             $formClass .= ' ff_has_dynamic_smartcode';
-            wp_enqueue_script('fluentform-advanced');
+            Vite::enqueueRegisteredScript('fluentform-advanced');
         }
     
         $formClass = apply_filters_deprecated(
@@ -141,7 +142,7 @@ class FormBuilder
         $formAtts = $this->buildAttributes($formAttributes);
       
 
-        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . ArrayHelper::get($atts, 'css_classes'));
+        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . Arr::get($atts, 'css_classes'));
 
         if ($themeStyle === 'ffs_inherit_theme') {
             $wrapperClasses = str_replace("ff-default", "ff-inherit-theme-style", $wrapperClasses);
@@ -302,7 +303,7 @@ class FormBuilder
         if ($hasStepWrapper) {
             $startElement = $form->fields['stepsWrapper']['stepStart'];
 
-            $steps = ArrayHelper::get($startElement, 'settings.step_titles');
+            $steps = Arr::get($startElement, 'settings.step_titles');
 
             // check if $stepCounter == count()
             if ($stepCounter > count($steps)) {
@@ -433,7 +434,7 @@ class FormBuilder
             foreach ($item['columns'] as $key => $innerItem) {
                 foreach ($innerItem['fields'] as &$innerField) {
                     $innerField['attributes']['name'] = $rootName . '[' . $key . ']';
-                    $rules = ArrayHelper::get($innerField, 'settings.validation_rules', []);
+                    $rules = Arr::get($innerField, 'settings.validation_rules', []);
                     $innerField['settings']['validation_rules'] = $rules;
                     $this->extractValidationRule($innerField, $rootName . '[' . $ruleIndex . ']');
                     $ruleIndex++;
@@ -461,7 +462,7 @@ class FormBuilder
                         $rule['message'] = apply_filters('fluentform/get_global_message_' . $ruleName, $rule['message']);
                     }
                     // Shortcode parse on validation message
-                    $rule['message'] = Helper::shortCodeParseOnValidationMessage($rule['message'], $this->form, ArrayHelper::get($item, 'attributes.name'));
+                    $rule['message'] = Helper::shortCodeParseOnValidationMessage($rule['message'], $this->form, Arr::get($item, 'attributes.name'));
                     $rules[$ruleName]['message'] = apply_filters_deprecated(
                         'fluentform_validation_message_' . $ruleName,
                         [
@@ -528,8 +529,8 @@ class FormBuilder
                     }
                 }
             }
-            $parentName = ArrayHelper::get($item, 'attributes.name');
-            $isRepeaterContainer = ArrayHelper::get($item, 'element') === 'repeater_container';
+            $parentName = Arr::get($item, 'attributes.name');
+            $isRepeaterContainer = Arr::get($item, 'element') === 'repeater_container';
 
             foreach ($item['columns'] as $colIndex => $column) {
                 foreach ($column['fields'] as $fieldIndex => $field) {

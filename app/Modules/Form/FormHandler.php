@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Form;
 
-use FluentForm\App\Databases\Migrations\SubmissionDetails;
+use FluentForm\App\Databases\Migrations\SubmissionDetailsMigrator;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Activator;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;

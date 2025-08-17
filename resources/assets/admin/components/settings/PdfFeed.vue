@@ -8,8 +8,7 @@
                         :editorShortcodes="editorShortcodes"
                         :errors="errors"
                         v-model="feed.name"
-                    >
-                    </field-mapper>
+                    />
 
                     <!-- form iteration loop -->
                     <field-mapper
@@ -19,9 +18,14 @@
                         :errors="errors"
                         :editorShortcodes="editorShortcodes"
                         v-model="feed.settings[field.key]"
-                     />
+                    />
                 </el-form>
-                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary" icon="el-icon-success">{{ $t('Save Feed') }}</el-button>
+                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary" size="large">
+                    <template #icon>
+                        <i class="el-icon-success"></i>
+                    </template>
+                    {{ $t("Save Feed") }}
+                </el-button>
             </el-tab-pane>
 
             <el-tab-pane :label="$t('Appearance')">
@@ -35,74 +39,79 @@
                         v-model="feed.appearance[field.key]"
                     />
                 </el-form>
-                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary" icon="el-icon-success">{{ $t('Save Feed') }}</el-button>
+                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary">
+                    <template #icon>
+                        <i class="el-icon-success"></i>
+                    </template>
+                    {{ $t("Save Feed") }}
+                </el-button>
             </el-tab-pane>
         </el-tabs>
     </div>
 </template>
 
 <script type="text/babel">
-    import FieldMapper from "./GeneralIntegration/FieldMapper";
+import FieldMapper from "./GeneralIntegration/FieldMapper.vue";
 
-    export default {
-        name: 'EditAddPdf',
-        props: ['edit_id', 'form_id', 'editorShortcodes'],
-        components: {
-            FieldMapper
-        },
-        data() {
-            return {
-                loading: true,
-                saving: false,
-                feed: {},
-                settings_fields: [],
-                appearance_fields: [],
-                errors: new Errors()
-            }
-        },
-        methods: {
-            getFeed() {
-                this.loading = true;
-                FluentFormsGlobal.$get({
-                    form_id: this.form_id,
-                    feed_id: this.edit_id,
-                    action: 'fluentform_pdf_admin_ajax_actions',
-                    route: 'get_feed'
+export default {
+    name: "EditAddPdf",
+    props: ["edit_id", "form_id", "editorShortcodes"],
+    components: {
+        FieldMapper
+    },
+    data() {
+        return {
+            loading: true,
+            saving: false,
+            feed: {},
+            settings_fields: [],
+            appearance_fields: [],
+            errors: new Errors()
+        };
+    },
+    methods: {
+        getFeed() {
+            this.loading = true;
+            FluentFormsGlobal.$get({
+                form_id: this.form_id,
+                feed_id: this.edit_id,
+                action: "fluentform_pdf_admin_ajax_actions",
+                route: "get_feed"
+            })
+                .then(response => {
+                    this.feed = response.data.feed;
+                    this.settings_fields = response.data.settings_fields;
+                    this.appearance_fields = response.data.appearance_fields;
                 })
-                    .then(response => {
-                        this.feed = response.data.feed;
-                        this.settings_fields = response.data.settings_fields;
-                        this.appearance_fields = response.data.appearance_fields;
-                    })
-                    .fail((error) => {
-                        console.log(error);
-                    })
-                    .always(() => {
-                        this.loading = false;
-                    });
-            },
-            saveFeed() {
-                this.saving = true;
-                FluentFormsGlobal.$post({
-                    form_id: this.form_id,
-                    feed_id: this.edit_id,
-                    action: 'fluentform_pdf_admin_ajax_actions',
-                    route: 'save_feed',
-                    feed: this.feed
+                .fail((error) => {
+                    console.log(error);
                 })
-                    .then(response => {
-                        this.$success(response.data.message);
-                    })
-                    .fail((error) => {
-                        this.$fail(error.responseJSON.data.message);
-                    })
-                    .always(() => {
-                        this.saving = false;
-                    });
-            }
+                .always(() => {
+                    this.loading = false;
+                });
         },
-        mounted() {
-            this.getFeed();
+        saveFeed() {
+            this.saving = true;
+            FluentFormsGlobal.$post({
+                form_id: this.form_id,
+                feed_id: this.edit_id,
+                action: "fluentform_pdf_admin_ajax_actions",
+                route: "save_feed",
+                feed: this.feed
+            })
+                .then(response => {
+                    this.$success(response.data.message);
+                })
+                .fail((error) => {
+                    this.$fail(error.responseJSON.data.message);
+                })
+                .always(() => {
+                    this.saving = false;
+                });
         }
+    },
+    mounted() {
+        this.getFeed();
     }
+};
 </script>

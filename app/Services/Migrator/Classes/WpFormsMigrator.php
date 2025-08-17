@@ -2,18 +2,11 @@
 
 namespace FluentForm\App\Services\Migrator\Classes;
 
-use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\Form;
-use FluentForm\App\Services\Migrator\Classes\BaseMigrator;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class WpFormsMigrator extends BaseMigrator
 {
-    /**
-     * @var bool
-     */
-    protected $hasStep = false;
-
     public function __construct()
     {
         $this->key = 'wpforms';
@@ -32,8 +25,8 @@ class WpFormsMigrator extends BaseMigrator
                 $forms[] = [
                     'ID'       => $form->ID,
                     'name'     => $form->post_title,
-                    'fields'   => ArrayHelper::get($formData, 'fields'),
-                    'settings' => ArrayHelper::get($formData, 'settings'),
+                    'fields'   => Arr::get($formData, 'fields'),
+                    'settings' => Arr::get($formData, 'settings'),
                 ];
             }
         }
@@ -43,32 +36,32 @@ class WpFormsMigrator extends BaseMigrator
     public function getFields($form)
     {
         $fluentFields = [];
-        $fields = ArrayHelper::get($form, 'fields');
+        $fields = Arr::get($form, 'fields');
         
         foreach ($fields as $field) {
             if (
-                "pagebreak" == ArrayHelper::get($field, 'type') &&
-                $position = ArrayHelper::get($field, 'position')
+                "pagebreak" == Arr::get($field, 'type') &&
+                $position = Arr::get($field, 'position')
             ) {
                 if ("top" == $position || "bottom" == $position) {
                     continue;
                 }
             }
-            $fieldType = ArrayHelper::get($this->fieldTypeMap(), ArrayHelper::get($field, 'type'));
+            $fieldType = Arr::get($this->fieldTypeMap(), Arr::get($field, 'type'));
             $args = $this->formatFieldData($field, $fieldType);
-            if ('select' == $fieldType && ArrayHelper::isTrue($field, 'multiple')) {
+            if ('select' == $fieldType && Arr::isTrue($field, 'multiple')) {
                 $fieldType = 'multi_select';
             }
             if ($fieldData = $this->getFluentClassicField($fieldType, $args)) {
                 $fluentFields[$field['id']] = $fieldData;
             } else {
-                $this->unSupportFields[] = ArrayHelper::get($field, 'label');
+                $this->unSupportFields[] = Arr::get($field, 'label');
             }
         }
         $submitBtn = $this->getSubmitBttn([
             'uniqElKey' => 'button_' . time(),
-            'label'     => ArrayHelper::get($form, 'settings.submit_text'),
-            'class'     => ArrayHelper::get($form, 'settings.submit_class'),
+            'label'     => Arr::get($form, 'settings.submit_text'),
+            'class'     => Arr::get($form, 'settings.submit_class'),
         ]);
         if (empty($fluentFields)) {
             return false;
@@ -103,9 +96,9 @@ class WpFormsMigrator extends BaseMigrator
                 'color'            => '#ffffff',
                 'background_color' => '#409EFF',
                 'button_ui'        => [
-                    'type'    => ArrayHelper::get($args, 'type', 'default'),
+                    'type'    => Arr::get($args, 'type', 'default'),
                     'text'    => $args['label'],
-                    'img_url' => ArrayHelper::get($args, 'img_url', '')
+                    'img_url' => Arr::get($args, 'img_url', '')
                 ],
                 'normal_styles'    => [],
                 'hover_styles'     => [],
@@ -160,8 +153,8 @@ class WpFormsMigrator extends BaseMigrator
             return [
                 'ID'       => $form->ID,
                 'name'     => $form->post_title,
-                'fields'   => ArrayHelper::get($formData, 'fields'),
-                'settings' => ArrayHelper::get($formData, 'settings'),
+                'fields'   => Arr::get($formData, 'fields'),
+                'settings' => Arr::get($formData, 'settings'),
             ];
         }
         return false;
@@ -204,33 +197,33 @@ class WpFormsMigrator extends BaseMigrator
                     continue;
                 }
                 $formField = $formFields[$fieldId];
-                $name = ArrayHelper::get($formField, 'attributes.name');
+                $name = Arr::get($formField, 'attributes.name');
                 if (!$name) {
                     continue;
                 }
-                $type = ArrayHelper::get($formField, 'element');
+                $type = Arr::get($formField, 'element');
                 // format entry value by field name
-                $finalValue = ArrayHelper::get($field, 'value');
+                $finalValue = Arr::get($field, 'value');
                 if ("input_name" == $type) {
                     $finalValue = $this->getSubmissionNameValue($formField['fields'], $field);
                 } elseif (
                     "input_checkbox" == $type ||
                     (
                         "select" == $type &&
-                        ArrayHelper::isTrue($formField, 'attributes.multiple')
+                        Arr::isTrue($formField, 'attributes.multiple')
                     )
                 ) {
                     $finalValue = explode("\n", $finalValue);
                 } elseif ("address" == $type) {
                     $finalValue = [
-                        "address_line_1" => ArrayHelper::get($field, 'address1', ''),
-                        "address_line_2" => ArrayHelper::get($field, 'address2', ''),
-                        "city" => ArrayHelper::get($field, 'city', ''),
-                        "state" => ArrayHelper::get($field, 'state', ''),
-                        "zip" => ArrayHelper::get($field, 'postal', ''),
-                        "country" => ArrayHelper::get($field, 'country', ''),
+                        "address_line_1" => Arr::get($field, 'address1', ''),
+                        "address_line_2" => Arr::get($field, 'address2', ''),
+                        "city" => Arr::get($field, 'city', ''),
+                        "state" => Arr::get($field, 'state', ''),
+                        "zip" => Arr::get($field, 'postal', ''),
+                        "country" => Arr::get($field, 'country', ''),
                     ];
-                } elseif ("input_file" == $type && $value = ArrayHelper::get($field, 'value')) {
+                } elseif ("input_file" == $type && $value = Arr::get($field, 'value')) {
                     $finalValue = $this->migrateFilesAndGetUrls($value);
                 }
                 if (null == $finalValue) {
@@ -258,14 +251,14 @@ class WpFormsMigrator extends BaseMigrator
     protected function getSubmissionNameValue($nameFields, $submissionField) {
         $finalValue = [];
         foreach ($nameFields as $key => $field) {
-            if ($name = ArrayHelper::get($field, 'attributes.name')) {
+            if ($name = Arr::get($field, 'attributes.name')) {
                 $value = "";
                 if ("first_name" == $key) {
-                    $value = ArrayHelper::get($submissionField, 'first');
+                    $value = Arr::get($submissionField, 'first');
                 } elseif ("middle_name" == $key) {
-                    $value = ArrayHelper::get($submissionField, 'middle');
+                    $value = Arr::get($submissionField, 'middle');
                 } elseif ("last_name" == $key) {
-                    $value = ArrayHelper::get($submissionField, 'last');
+                    $value = Arr::get($submissionField, 'last');
                 }
                 $finalValue[$name] = $value;
             }
@@ -298,21 +291,21 @@ class WpFormsMigrator extends BaseMigrator
         $args = [
             'uniqElKey'       => $field['id'] . '-' . time(),
             'index'           => $field['id'],
-            'required'        => ArrayHelper::isTrue($field, 'required'),
-            'label'           => ArrayHelper::get($field, 'label', ''),
-            'name'            => ArrayHelper::get($field, 'type') . '_' . $field['id'],
-            'placeholder'     => ArrayHelper::get($field, 'placeholder', ''),
+            'required'        => Arr::isTrue($field, 'required'),
+            'label'           => Arr::get($field, 'label', ''),
+            'name'            => Arr::get($field, 'type') . '_' . $field['id'],
+            'placeholder'     => Arr::get($field, 'placeholder', ''),
             'class'           => '',
-            'value'           => ArrayHelper::get($field, 'default_value') ?: "",
-            'help_message'    => ArrayHelper::get($field, 'description', ''),
-            'container_class' => ArrayHelper::get($field, 'css', ''),
+            'value'           => Arr::get($field, 'default_value') ?: "",
+            'help_message'    => Arr::get($field, 'description', ''),
+            'container_class' => Arr::get($field, 'css', ''),
         ];
         
         switch ($type) {
             case 'input_text':
-                if (ArrayHelper::isTrue($field, 'limit_enabled')) {
-                    $max_length = ArrayHelper::get($field, 'limit_count', '');
-                    $mode = ArrayHelper::get($field, 'limit_mode', '');
+                if (Arr::isTrue($field, 'limit_enabled')) {
+                    $max_length = Arr::get($field, 'limit_count', '');
+                    $mode = Arr::get($field, 'limit_mode', '');
                     if ("words" == $mode && $max_length) {
                         $max_length = (int)$max_length * 6; // average 6 characters is a word
                     }
@@ -324,24 +317,24 @@ class WpFormsMigrator extends BaseMigrator
                 break;
             case 'input_name':
                 $args['input_name_args'] = [];
-                $fields = ArrayHelper::get($field, 'format');
+                $fields = Arr::get($field, 'format');
                 if (!$fields) {
                     break;
                 }
                 $fields = explode('-', $fields);
-                $required = ArrayHelper::isTrue($field, 'required');
+                $required = Arr::isTrue($field, 'required');
                 foreach ($fields as $subField) {
                     if ($subField == 'simple') {
                         $label = $args['label'];
                         $subName = 'first_name';
-                        $hideLabel = ArrayHelper::isTrue($field, 'label_hide');
+                        $hideLabel = Arr::isTrue($field, 'label_hide');
                     } else {
                         $subName = $subField . '_name';
                         $label = ucfirst($subField);
-                        $hideLabel = ArrayHelper::isTrue($field, 'sublabel_hide');
+                        $hideLabel = Arr::isTrue($field, 'sublabel_hide');
                     }
-                    $placeholder = ArrayHelper::get($field, $subField . "_placeholder" , '');
-                    $default = ArrayHelper::get($field, $subField . "_default" , '');
+                    $placeholder = Arr::get($field, $subField . "_placeholder" , '');
+                    $default = Arr::get($field, $subField . "_default" , '');
                     $args['input_name_args'][$subName] = [
                         "visible" => true,
                         "required" => $required,
@@ -359,11 +352,11 @@ class WpFormsMigrator extends BaseMigrator
             case 'select':
             case 'input_radio':
             case 'input_checkbox':
-                list($options, $defaultVal) = $this->getOptions(ArrayHelper::get($field, 'choices', []));
+                list($options, $defaultVal) = $this->getOptions(Arr::get($field, 'choices', []));
                 $args['options'] = $options;
-                $args['randomize_options'] = ArrayHelper::isTrue($field, 'random');
+                $args['randomize_options'] = Arr::isTrue($field, 'random');
                 if ($type == 'select') {
-                    $isMulti = ArrayHelper::isTrue($field, 'multiple');
+                    $isMulti = Arr::isTrue($field, 'multiple');
                     if ($isMulti) {
                         $args['multiple'] = true;
                         $args['value'] = $defaultVal;
@@ -377,13 +370,13 @@ class WpFormsMigrator extends BaseMigrator
                 }
                 break;
             case 'input_date':
-                $format = ArrayHelper::get($field, 'format');
+                $format = Arr::get($field, 'format');
                 if ("date" == $format) {
-                    $format = ArrayHelper::get($field, 'date_format', 'd/m/Y');
+                    $format = Arr::get($field, 'date_format', 'd/m/Y');
                 } elseif ("time" == $format) {
-                    $format = ArrayHelper::get($field, 'time_format', 'H:i');
+                    $format = Arr::get($field, 'time_format', 'H:i');
                 } else {
-                    $format = ArrayHelper::get($field, 'date_format', 'd/m/Y') . ' ' .ArrayHelper::get($field, 'time_format', 'H:i');
+                    $format = Arr::get($field, 'date_format', 'd/m/Y') . ' ' .Arr::get($field, 'time_format', 'H:i');
                 }
                 $args['format'] = $format;
                 break;
@@ -393,19 +386,19 @@ class WpFormsMigrator extends BaseMigrator
                 $args['max'] = $field['max'];
                 break;
             case 'ratings':
-                $number = ArrayHelper::get($field, 'scale', 5);
+                $number = Arr::get($field, 'scale', 5);
                 $args['options'] = array_combine(range(1, $number), range(1, $number));
                 break;
             case 'input_file':
                 $args['allowed_file_types'] = $this->getFileTypes($field, 'extensions');
                 $args['max_size_unit'] = 'MB';
-                $max_size = ArrayHelper::get($field, 'max_size') ?: 1;
+                $max_size = Arr::get($field, 'max_size') ?: 1;
                 $args['max_file_size'] = ceil( $max_size * 1048576); // 1MB = 1048576 Bytes
-                $args['max_file_count'] = ArrayHelper::get($field, 'max_file_number', 1);
-                $args['upload_btn_text'] = ArrayHelper::get($field, 'label', 'File Upload');
+                $args['max_file_count'] = Arr::get($field, 'max_file_number', 1);
+                $args['upload_btn_text'] = Arr::get($field, 'label', 'File Upload');
                 break;
             case 'custom_html':
-                $args['html_codes'] = ArrayHelper::get($field, 'code', '');
+                $args['html_codes'] = Arr::get($field, 'code', '');
                 break;
             case 'form_step':
                 $this->hasStep = true;
@@ -414,7 +407,7 @@ class WpFormsMigrator extends BaseMigrator
                 $args['address_args'] = $this->getAddressArgs($field, $args);
                 break;
             case 'rich_text_input':
-                $size = ArrayHelper::get($field, 'size');
+                $size = Arr::get($field, 'size');
                 if ('small' == $size) {
                     $rows = 2;
                 } elseif ('large' == $size) {
@@ -425,7 +418,7 @@ class WpFormsMigrator extends BaseMigrator
                 $args['rows'] = $rows;
                 break;
             case 'section_break':
-                $args['section_break_desc'] = ArrayHelper::get($field, 'description');
+                $args['section_break_desc'] = Arr::get($field, 'description');
                 break;
             case 'input_number':
                 $args['min'] = '';
@@ -468,7 +461,7 @@ class WpFormsMigrator extends BaseMigrator
     
     private function getConfirmations($form, $defaultValues)
     {
-        $confirmations = ArrayHelper::get($form, 'settings.confirmations');
+        $confirmations = Arr::get($form, 'settings.confirmations');
         $confirmationsFormatted = [];
         if (!empty($confirmations)) {
             foreach ($confirmations as $confirmation) {
@@ -484,12 +477,12 @@ class WpFormsMigrator extends BaseMigrator
                 }
                 $confirmationsFormatted[] = wp_parse_args(
                     [
-                        'name'                 => ArrayHelper::get($confirmation, 'name'),
-                        'messageToShow'        => $this->getResolveShortcode(ArrayHelper::get($confirmation, 'message'), $form),
+                        'name'                 => Arr::get($confirmation, 'name'),
+                        'messageToShow'        => $this->getResolveShortcode(Arr::get($confirmation, 'message'), $form),
                         'samePageFormBehavior' => 'hide_form',
                         'redirectTo'           => $redirectTo,
-                        'customPage'           => intval(ArrayHelper::get($confirmation, 'page')),
-                        'customUrl'            => ArrayHelper::get($confirmation, 'redirect'),
+                        'customPage'           => intval(Arr::get($confirmation, 'page')),
+                        'customUrl'            => Arr::get($confirmation, 'redirect'),
                         'active'               => true,
                         'conditionals'         => $this->getConditionals($confirmation, $form)
                     ], $defaultValues
@@ -501,9 +494,9 @@ class WpFormsMigrator extends BaseMigrator
 
     private function getConditionals($notification, $form)
     {
-        $conditionals = ArrayHelper::get($notification, 'conditionals', []);
-        $status = ArrayHelper::isTrue($notification, 'conditional_logic');
-        if ('stop' == ArrayHelper::get($notification, 'conditional_type')) {
+        $conditionals = Arr::get($notification, 'conditionals', []);
+        $status = Arr::isTrue($notification, 'conditional_logic');
+        if ('stop' == Arr::get($notification, 'conditional_type')) {
             $status = false;
         }
         $type = 'all';
@@ -513,23 +506,23 @@ class WpFormsMigrator extends BaseMigrator
                 $type = 'any';
                 $conditionals = array_filter(array_column($conditionals, 0));
             } else {
-                $conditionals = ArrayHelper::get($conditionals, 0, []);
+                $conditionals = Arr::get($conditionals, 0, []);
             }
             foreach ($conditionals as $condition) {
-                $fieldId = ArrayHelper::get($condition, 'field');
+                $fieldId = Arr::get($condition, 'field');
                 list ($fieldName, $fieldType) = $this->getFormFieldName($fieldId, $form);
                 if (!$fieldName) {
                     continue;
                 }
-                if ($operator = $this->getResolveOperator(ArrayHelper::get($condition, 'operator', ''))) {
-                    $value = ArrayHelper::get($condition, 'value', '');
+                if ($operator = $this->getResolveOperator(Arr::get($condition, 'operator', ''))) {
+                    $value = Arr::get($condition, 'value', '');
                     if (
                         in_array($fieldType, ['select', 'multi_select', 'input_radio', 'input_checkbox']) &&
-                        $choices = ArrayHelper::get($form, "fields.$fieldId.choices")
+                        $choices = Arr::get($form, "fields.$fieldId.choices")
                     ) {
-                        $choiceValue = ArrayHelper::get($choices,  "$value.value", '');
+                        $choiceValue = Arr::get($choices,  "$value.value", '');
                         if (!$choiceValue) {
-                            $choiceValue = ArrayHelper::get($choices, "$value.label", '');
+                            $choiceValue = Arr::get($choices, "$value.label", '');
                         }
                         $value = $choiceValue;
                     }
@@ -568,11 +561,11 @@ class WpFormsMigrator extends BaseMigrator
     private function getNotifications($form)
     {
         $notificationsFormatted = [];
-        $enabled = ArrayHelper::isTrue($form, 'settings.notification_enable');
-        $notifications = ArrayHelper::get($form, 'settings.notifications');
+        $enabled = Arr::isTrue($form, 'settings.notification_enable');
+        $notifications = Arr::get($form, 'settings.notifications');
 
         foreach ($notifications as $notification) {
-            $email = ArrayHelper::get($notification, 'email', '');
+            $email = Arr::get($notification, 'email', '');
             $sendTo = [
                 'type'    => 'email',
                 'email'   => '{wp.admin_email}',
@@ -589,18 +582,18 @@ class WpFormsMigrator extends BaseMigrator
                     $sendTo['email'] = $this->getResolveShortcode($email, $form);
                 }
             }
-            $message = $this->getResolveShortcode(ArrayHelper::get($notification, 'message', ''), $form);
-            $replyTo = $this->getResolveShortcode(ArrayHelper::get($notification, 'replyto', ''), $form);
+            $message = $this->getResolveShortcode(Arr::get($notification, 'message', ''), $form);
+            $replyTo = $this->getResolveShortcode(Arr::get($notification, 'replyto', ''), $form);
             $notificationsFormatted[] = [
                 'sendTo'       => $sendTo,
                 'enabled'      => $enabled,
-                'name'         => ArrayHelper::get($notification, 'notification_name', 'Admin Notification'),
-                'subject'      => $this->getResolveShortcode(ArrayHelper::get($notification, 'subject', 'Notification'), $form),
+                'name'         => Arr::get($notification, 'notification_name', 'Admin Notification'),
+                'subject'      => $this->getResolveShortcode(Arr::get($notification, 'subject', 'Notification'), $form),
                 'to'           => $sendTo['email'],
                 'replyTo'      => $replyTo ?: '{wp.admin_email}',
                 'message'      => str_replace("\n", "<br />", $message),
-                'fromName'     => $this->getResolveShortcode(ArrayHelper::get($notification, 'sender_name', ''), $form),
-                'fromEmail'    => $this->getResolveShortcode(ArrayHelper::get($notification, 'sender_address', ''), $form),
+                'fromName'     => $this->getResolveShortcode(Arr::get($notification, 'sender_name', ''), $form),
+                'fromEmail'    => $this->getResolveShortcode(Arr::get($notification, 'sender_address', ''), $form),
                 'bcc'          => '',
                 'conditionals' => $this->getConditionals($notification, $form)
             ];
@@ -617,10 +610,10 @@ class WpFormsMigrator extends BaseMigrator
     private function getWebhooks($form)
     {
         $webhooksFeeds = [];
-        foreach (ArrayHelper::get($form, 'settings.webhooks', []) as $webhook) {
-            list($headers, $headersKeysStatus, $headersValuesStatus) = $this->getResolveMappingFields(ArrayHelper::get($webhook, 'headers', []), $form);
+        foreach (Arr::get($form, 'settings.webhooks', []) as $webhook) {
+            list($headers, $headersKeysStatus, $headersValuesStatus) = $this->getResolveMappingFields(Arr::get($webhook, 'headers', []), $form);
 
-            $body = ArrayHelper::get($webhook, 'body', []);
+            $body = Arr::get($webhook, 'body', []);
             // ff webhook body parameter doesn't support custom type fields
             // remove custom type fields, wpforms add "custom_" prefix on key for custom type value
             $body = array_filter($body, function ($key) {
@@ -629,18 +622,18 @@ class WpFormsMigrator extends BaseMigrator
             list($body) = $this->getResolveMappingFields($body, $form);
 
             $webhooksFeeds[] = [
-                'name'                 => ArrayHelper::get($webhook, 'name', ''),
-                'request_url'          => ArrayHelper::get($webhook, 'url', ''),
+                'name'                 => Arr::get($webhook, 'name', ''),
+                'request_url'          => Arr::get($webhook, 'url', ''),
                 'with_header'          => count($headers) > 0 ? 'yup' : 'nop',
-                'request_method'       => strtoupper(ArrayHelper::get($webhook, 'method', 'GET')),
-                'request_format'       => strtoupper(ArrayHelper::get($webhook, 'format', 'FORM')),
+                'request_method'       => strtoupper(Arr::get($webhook, 'method', 'GET')),
+                'request_format'       => strtoupper(Arr::get($webhook, 'format', 'FORM')),
                 'request_body'         => 'selected_fields',
                 'custom_header_keys'   => $headersKeysStatus,
                 'custom_header_values' => $headersValuesStatus,
                 'fields'               => $body,
                 'request_headers'      => $headers,
                 'conditionals'         => $this->getConditionals($webhook, $form),
-                'enabled'              => ArrayHelper::isTrue($form, 'settings.webhooks_enable')
+                'enabled'              => Arr::isTrue($form, 'settings.webhooks_enable')
             ];
         }
         return $webhooksFeeds;
@@ -663,13 +656,13 @@ class WpFormsMigrator extends BaseMigrator
             if ((strpos($key, 'custom_') !== false) || is_array($value)) {
                 $key = str_replace('custom_', '', $key);
                 // ff not support secure value, when value is secure decrypt it's by wpforms helper
-                if (ArrayHelper::isTrue($value, 'secure') && method_exists('\WPForms\Helpers\Crypto', 'decrypt')) {
-                    $value = ArrayHelper::get($value, 'value', '');
+                if (Arr::isTrue($value, 'secure') && method_exists('\WPForms\Helpers\Crypto', 'decrypt')) {
+                    $value = Arr::get($value, 'value', '');
                     if ($decryptValue = \WPForms\Helpers\Crypto::decrypt($value)) {
                         $value = $decryptValue;
                     }
                 } else {
-                    $value = ArrayHelper::get($value, 'value', '');
+                    $value = Arr::get($value, 'value', '');
                 }
                 $mappingKeysStatus[] = true;
                 $mappingValuesStatus[] = true;
@@ -711,12 +704,12 @@ class WpFormsMigrator extends BaseMigrator
     private function getFormFieldName($str, $form)
     {
         preg_match('/\d+/', $str, $fieldId);
-        $field = ArrayHelper::get($form, 'fields.' . ArrayHelper::get($fieldId, 0, '0'));
-        $fieldType = ArrayHelper::get($this->fieldTypeMap(), ArrayHelper::get($field, 'type'));
-        if (in_array(ArrayHelper::get($field, 'label'), $this->unSupportFields)) {
+        $field = Arr::get($form, 'fields.' . Arr::get($fieldId, 0, '0'));
+        $fieldType = Arr::get($this->fieldTypeMap(), Arr::get($field, 'type'));
+        if (in_array(Arr::get($field, 'label'), $this->unSupportFields)) {
             return ['', $fieldType];
         }
-        $fieldName = ArrayHelper::get($this->formatFieldData($field, $fieldType), 'name', '');
+        $fieldName = Arr::get($this->formatFieldData($field, $fieldType), 'name', '');
         return [$fieldName, $fieldType];
     }
 
@@ -775,7 +768,7 @@ class WpFormsMigrator extends BaseMigrator
                 }
             } elseif (strpos($match, 'query_var') !== false) {
                 preg_match('#key=["\'](\S+)["\']#', $match, $result);
-                if ($key = ArrayHelper::get($result, 1)) {
+                if ($key = Arr::get($result, 1)) {
                     $replace = "{get.$key}";
                 }
             }
@@ -790,14 +783,14 @@ class WpFormsMigrator extends BaseMigrator
         $defaults = [];
         foreach ($options as $key => $option) {
             $formattedOption = [
-                'label'      => ArrayHelper::get($option, 'label', 'Item -' . $key),
-                'value'      => !empty(ArrayHelper::get($option, 'value')) ? ArrayHelper::get($option,
-                    'value') : ArrayHelper::get($option, 'label', 'Item -' . $key),
-                'image'      => ArrayHelper::get($option, 'image'),
+                'label'      => Arr::get($option, 'label', 'Item -' . $key),
+                'value'      => !empty(Arr::get($option, 'value')) ? Arr::get($option,
+                    'value') : Arr::get($option, 'label', 'Item -' . $key),
+                'image'      => Arr::get($option, 'image'),
                 'calc_value' => '',
                 'id'         => $key,
             ];
-            if (ArrayHelper::isTrue($option, 'default')) {
+            if (Arr::isTrue($option, 'default')) {
                 $defaults[] = $formattedOption['value'];
             }
             $formattedOptions[] = $formattedOption;
@@ -857,53 +850,53 @@ class WpFormsMigrator extends BaseMigrator
      */
     private function getAddressArgs($field, $args)
     {
-        if ('us' == ArrayHelper::get($field, 'scheme')) {
+        if ('us' == Arr::get($field, 'scheme')) {
             $field['country_default'] = 'US';
         }
-        $hideSubLabel = ArrayHelper::isTrue($field, 'sublabel_hide');
-        $name = ArrayHelper::get($args, 'name', 'address');
+        $hideSubLabel = Arr::isTrue($field, 'sublabel_hide');
+        $name = Arr::get($args, 'name', 'address');
         return [
             'address_line_1' => [
                 'name'        => $name . '_address_line_1',
-                'default'     => ArrayHelper::get($field, 'address1_default', ''),
-                'placeholder' => ArrayHelper::get($field, 'address1_placeholder', ''),
+                'default'     => Arr::get($field, 'address1_default', ''),
+                'placeholder' => Arr::get($field, 'address1_placeholder', ''),
                 'label'       => $hideSubLabel ? '' : 'Address Line 1',
                 'visible'     => true,
             ],
             'address_line_2' => [
                 'name'        => $name . '_address_line_2',
-                'default'     => ArrayHelper::get($field, 'address2_default', ''),
-                'placeholder' => ArrayHelper::get($field, 'address2_placeholder', ''),
+                'default'     => Arr::get($field, 'address2_default', ''),
+                'placeholder' => Arr::get($field, 'address2_placeholder', ''),
                 'label'       => $hideSubLabel ? '' : 'Address Line 2',
-                'visible'     => !ArrayHelper::isTrue($field, 'address2_hide'),
+                'visible'     => !Arr::isTrue($field, 'address2_hide'),
             ],
             'city'           => [
                 'name'        => $name . '_city',
-                'default'     => ArrayHelper::get($field, 'city_default', ''),
-                'placeholder' => ArrayHelper::get($field, 'city_placeholder', ''),
+                'default'     => Arr::get($field, 'city_default', ''),
+                'placeholder' => Arr::get($field, 'city_placeholder', ''),
                 'label'       => $hideSubLabel ? '' : 'City',
                 'visible'     => true,
             ],
             'state'          => [
                 'name'        => $name . '_state',
-                'default'     => ArrayHelper::get($field, 'state_default', ''),
-                'placeholder' => ArrayHelper::get($field, 'state_placeholder', ''),
+                'default'     => Arr::get($field, 'state_default', ''),
+                'placeholder' => Arr::get($field, 'state_placeholder', ''),
                 'label'       => $hideSubLabel ? '' : 'State',
                 'visible'     => true,
             ],
             'zip'            => [
                 'name'        => $name . '_zip',
-                'default'     => ArrayHelper::get($field, 'postal_default', ''),
-                'placeholder' => ArrayHelper::get($field, 'postal_placeholder', ''),
+                'default'     => Arr::get($field, 'postal_default', ''),
+                'placeholder' => Arr::get($field, 'postal_placeholder', ''),
                 'label'       => $hideSubLabel ? '' : 'Zip',
-                'visible'     => !ArrayHelper::isTrue($field, 'postal_hide'),
+                'visible'     => !Arr::isTrue($field, 'postal_hide'),
             ],
             'country'        => [
                 'name'        => $name . '_country',
-                'default'     => ArrayHelper::get($field, 'country_default', ''),
-                'placeholder' => ArrayHelper::get($field, 'country_placeholder', ''),
+                'default'     => Arr::get($field, 'country_default', ''),
+                'placeholder' => Arr::get($field, 'country_placeholder', ''),
                 'label'       => $hideSubLabel ? '' : 'Country',
-                'visible'     => !ArrayHelper::isTrue($field, 'country_hide'),
+                'visible'     => !Arr::isTrue($field, 'country_hide'),
             ],
         ];
     }

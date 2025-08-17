@@ -1,105 +1,57 @@
 import './helpers';
 
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Vddl from 'vddl';
-Vue.use(VueRouter);
-
-import {
-    Card,
-    Button,
-    Dropdown,
-    DropdownMenu,
-    DropdownItem,
-    ButtonGroup,
-    Row,
-    Col,
-    Select,
-    Option,
-    Input,
-    Table,
-    TableColumn,
-    Pagination,
-    Popover,
-    Loading,
-    Message,
-    Notification,
-    Checkbox,
-    RadioGroup,
-    RadioButton,
-    Switch,
-    DatePicker,
-    Dialog,
-    Form,
-    FormItem,
-    Radio,
-    CheckboxGroup,
-    OptionGroup,
-    Alert,
-    Skeleton,
-    SkeletonItem,
-    Tooltip,
-    Cascader,
-    TimePicker,
-    CascaderPanel,
-    Tag
-
-} from 'element-ui';
-Vue.use(Vddl);
-Vue.use(Form);
-Vue.use(Alert);
-Vue.use(Radio);
-Vue.use(OptionGroup);
-Vue.use(CheckboxGroup);
-Vue.use(FormItem);
-Vue.use(Checkbox);
-Vue.use(Card);
-Vue.use(Popover);
-Vue.use(Pagination);
-Vue.use(ButtonGroup);
-Vue.use(Table);
-Vue.use(TableColumn);
-Vue.use(Input);
-Vue.use(Switch);
-Vue.use(DatePicker);
-Vue.use(TimePicker);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(Button);
-Vue.use(RadioGroup);
-Vue.use(RadioButton);
-Vue.use(Row);
-Vue.use(Col);
-Vue.use(DropdownMenu)
-Vue.use(DropdownItem)
-Vue.use(Dropdown)
-Vue.use(Dialog)
-Vue.use(Skeleton)
-Vue.use(SkeletonItem)
-Vue.use(Tooltip)
-Vue.use(Cascader)
-Vue.use(CascaderPanel)
-Vue.use(Tag)
-
-Vue.use(Loading.directive)
-Vue.prototype.$loading = Loading.service
-Vue.prototype.$notify = Notification
-Vue.prototype.$message = Message
-
-import lang from 'element-ui/lib/locale/lang/en';
-import locale from 'element-ui/lib/locale';
-
-locale.use(lang);
-
+import { createApp } from 'vue';
+import { createRouter, createWebHashHistory } from 'vue-router';
+import en from 'element-plus/es/locale/lang/en';
 import Acl from '@/common/Acl';
-
 import Entries from './views/Entries.vue';
 import Entry from './views/Entry.vue';
 import VisualReports from './views/Reports/VisualReports.vue';
 import notifier from './notifier';
 import globalSearch from './global_search';
-import { humanDiffTime,tooltipDateTime } from './helpers';
+import { humanDiffTime, tooltipDateTime } from './helpers';
 import { _$t } from './helpers';
+import draggable from 'vuedraggable';
+
+import {
+    ElCard,
+    ElButton,
+    ElDropdown,
+    ElDropdownMenu,
+    ElDropdownItem,
+    ElButtonGroup,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption,
+    ElInput,
+    ElTable,
+    ElTableColumn,
+    ElPagination,
+    ElPopover,
+    ElLoading,
+    ElMessage,
+    ElNotification,
+    ElCheckbox,
+    ElRadioGroup,
+    ElRadioButton,
+    ElSwitch,
+    ElDatePicker,
+    ElDialog,
+    ElForm,
+    ElFormItem,
+    ElRadio,
+    ElCheckboxGroup,
+    ElOptionGroup,
+    ElAlert,
+    ElSkeleton,
+    ElSkeletonItem,
+    ElTooltip,
+    ElCascader,
+    ElTimePicker,
+    ElCascaderPanel,
+    ElPopconfirm
+} from 'element-plus';
 
 const routes = [
     {
@@ -122,17 +74,23 @@ const routes = [
     }
 ];
 
-const router = new VueRouter({
+const router = createRouter({
+    history: createWebHashHistory(),
     linkActiveClass: 'active',
     routes
+})
+
+window.ffEntriesEvents = createApp({});
+
+const app = createApp({
+    components: {
+        globalSearch,
+        draggable
+    }
 });
 
-window.ffEntriesEvents = new Vue();
-
-
-function formatMoneyFunc(n, decimals, decimal_sep, thousands_sep)
-{
-    var c = isNaN(decimals) ? 2 : Math.abs(decimals),
+function formatMoneyFunc(n, decimals, decimal_sep, thousands_sep) {
+    const c = isNaN(decimals) ? 2 : Math.abs(decimals),
         d = decimal_sep || '.',
         t = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
         sign = (n < 0) ? '-' : '',
@@ -142,10 +100,56 @@ function formatMoneyFunc(n, decimals, decimal_sep, thousands_sep)
     return sign + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '');
 }
 
-Vue.mixin({
-    components: {
-        globalSearch
-    },
+const components = [
+    ElCard,
+    ElButton,
+    ElDropdown,
+    ElDropdownMenu,
+    ElDropdownItem,
+    ElButtonGroup,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption,
+    ElInput,
+    ElTable,
+    ElTableColumn,
+    ElPagination,
+    ElPopover,
+    ElLoading,
+    ElMessage,
+    ElNotification,
+    ElCheckbox,
+    ElRadioGroup,
+    ElRadioButton,
+    ElSwitch,
+    ElDatePicker,
+    ElDialog,
+    ElForm,
+    ElFormItem,
+    ElRadio,
+    ElCheckboxGroup,
+    ElOptionGroup,
+    ElAlert,
+    ElSkeleton,
+    ElSkeletonItem,
+    ElTooltip,
+    ElCascader,
+    ElTimePicker,
+    ElCascaderPanel,
+    ElPopconfirm
+];
+
+components.forEach(component => {
+   app.use(component); 
+});
+
+app.config.globalProperties.$loading = ElLoading.service;
+app.config.globalProperties.$notify = ElNotification;
+app.config.globalProperties.$message = ElMessage;
+app.config.globalProperties.$ELEMENT = {locale: en};
+
+app.mixin({
     methods: {
         $t(string) {
             let transString = window.fluent_form_entries_vars.form_entries_str[string] || string
@@ -158,11 +162,10 @@ Vue.mixin({
             }
             return this.$t(singular, count);
         },
-
         $storeData(key, value) {
             var prevData = localStorage.getItem('ff_entry_data');
 
-            if(!prevData) {
+            if (!prevData) {
                 prevData = {};
             } else {
                 prevData = JSON.parse(prevData);
@@ -171,8 +174,8 @@ Vue.mixin({
             localStorage.setItem('ff_entry_data', JSON.stringify(prevData));
         },
         $getFromStore(key, defaultValue) {
-            var prevData = localStorage.getItem('ff_entry_data');
-            if(!prevData) {
+            let prevData = localStorage.getItem('ff_entry_data');
+            if (!prevData) {
                 return defaultValue;
             } else {
                 prevData = JSON.parse(prevData);
@@ -180,40 +183,37 @@ Vue.mixin({
             return prevData[key] || defaultValue;
         },
         formatMoney(cents, currency) {
-
-            if(!cents) {
+            if (!cents) {
                 return '0';
             }
 
-            if(!cents) {
+            if (!cents) {
                 cents = 0;
             }
 
-            if(currency) {
+            if (currency) {
                 currency = currency.toUpperCase();
             }
 
             const config = window.fluent_form_entries_vars.currency_config;
             const currencyConfigs = window.fluent_form_entries_vars.currency_symbols;
-
             let $symbol = config.currency_sign;
-            if(currency) {
+
+            if (currency) {
                 $symbol = currencyConfigs[currency];
             } else {
                 currency = config.currency;
             }
 
-
             let $position = config.currency_sign_position;
-
             let $decimalSeparator = '.';
             let $thousandSeparator = ',';
-            if (config.currency_separator != 'dot_comma') {
+            if (config.currency_separator !== 'dot_comma') {
                 $decimalSeparator = ',';
                 $thousandSeparator = '.';
             }
             let $decimalPoints = 2;
-            if (cents % 100 == 0 && config.decimal_points == 0) {
+            if (cents % 100 === 0 && config.decimal_points === 0) {
                 $decimalPoints = 0;
             }
 
@@ -306,13 +306,17 @@ Vue.mixin({
 import Errors from '../common/Errors'
 import moment from "moment";
 
-global.Errors = Errors;
+window.Errors = Errors;
 
-const app = new Vue({
-    router,
-    beforeCreate() {
-        ffEntriesEvents.$on('change-title', (module) => {
-            jQuery('title').text(`${module} - Fluentform`);
-        });
-    }
-}).$mount('#ff_form_entries_app');
+app.use(router);
+
+import mitt from 'mitt';
+const eventBus = mitt();
+app.provide('eventBus', eventBus);
+window.ffEntriesEvents = {
+    eventBus: eventBus
+};
+
+app.mount('#ff_form_entries_app');
+
+window.ffEntriesEvents.eventBus.emit('change-title', 'Fluentform');

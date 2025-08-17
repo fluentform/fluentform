@@ -1,122 +1,66 @@
 import './helpers';
-import Vue from 'vue';
-import Vddl from 'vddl';
-
-import store from './store';
-import './css/element-variables.scss';
+import {createApp} from 'vue';
+import draggable from 'vuedraggable';
 import {
-    Button,
-    Checkbox,
-    CheckboxGroup,
-    Col,
-    ColorPicker,
-    Dialog,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    Form,
-    FormItem,
-    Input,
-    Slider,
-    Loading,
-    Message,
-    Notification,
-    Option,
-    Popover,
-    Radio,
-    RadioButton,
-    RadioGroup,
-    Rate,
-    Row,
-    Select,
-    TabPane,
-    Tabs,
-    Tooltip,
-    Upload,
-    Switch,
-    InputNumber,
-    Card,
-    Alert,
-    Skeleton,
-    SkeletonItem,
-    OptionGroup,
-    Link,
-    Table,
-    TableColumn,
-    DatePicker
-} from 'element-ui';
+    ElButton,
+    ElCheckbox,
+    ElCheckboxGroup,
+    ElCol,
+    ElColorPicker,
+    ElDialog,
+    ElDropdown,
+    ElDropdownItem,
+    ElDropdownMenu,
+    ElForm,
+    ElFormItem,
+    ElInput,
+    ElSlider,
+    ElLoading,
+    ElMessage,
+    ElNotification,
+    ElOption,
+    ElPopover,
+    ElRadio,
+    ElRadioButton,
+    ElRadioGroup,
+    ElRate,
+    ElRow,
+    ElSelect,
+    ElTabPane,
+    ElTabs,
+    ElTooltip,
+    ElUpload,
+    ElSwitch,
+    ElInputNumber,
+    ElCard,
+    ElAlert,
+    ElSkeleton,
+    ElSkeletonItem,
+    ElOptionGroup,
+    ElLink,
+    ElTable,
+    ElTableColumn,
+    ElDatePicker,
+} from 'element-plus';
 
-import lang from 'element-ui/lib/locale/lang/en';
-import locale from 'element-ui/lib/locale';
-import mixins from './editor_mixins';
-import globalSearch from './global_search'
-// Global error handling...
+import en from 'element-plus/es/locale/lang/en';
+import mixins from './editor_mixins.js';
+import globalSearch from './global_search';
 import Errors from '../common/Errors';
 import FormEditor from './views/FormEditor.vue';
 import MoreMenu from './views/MoreMenu.vue';
 import {mapActions} from 'vuex';
-import {_$t} from "@/admin/helpers";
+import mitt from 'mitt';
+import store from './store';
+import notifier from "@/admin/notifier";
 
-Vue.use(Vddl);
+const emitter = mitt();
+const eventBus = mitt();
 
-Vue.use(Rate);
-Vue.use(Tabs);
-Vue.use(TabPane);
-Vue.use(ColorPicker);
-Vue.use(Dropdown);
-Vue.use(DropdownMenu);
-Vue.use(DropdownItem);
-Vue.use(Select);
-Vue.use(Slider);
-Vue.use(Option);
-Vue.use(Popover);
-Vue.use(Checkbox);
-Vue.use(CheckboxGroup);
-Vue.use(Row);
-Vue.use(Col);
-Vue.use(RadioButton);
-Vue.use(RadioGroup);
-Vue.use(Radio);
-Vue.use(Input);
-Vue.use(Dialog);
-Vue.use(Button);
-Vue.use(Form);
-Vue.use(FormItem);
-Vue.use(Tooltip);
-Vue.use(Upload);
-Vue.use(Switch);
-Vue.use(InputNumber);
-Vue.use(Alert);
-Vue.use(Skeleton);
-Vue.use(SkeletonItem);
-Vue.use(OptionGroup);
-Vue.use(Link);
-Vue.use(Table);
-Vue.use(TableColumn);
-Vue.use(DatePicker);
-
-Vue.use(Loading.directive);
-Vue.prototype.$loading = Loading.service;
-Vue.prototype.$notify = Notification;
-Vue.prototype.$message = Message;
-
-// configure language
-locale.use(lang);
-
-window.FluentFormEditorEvents = new Vue();
-
-Vue.mixin(mixins);
-
-global.Errors = Errors;
-
-window.ffEditorOptionsCustomComponents = window.ffEditorOptionsCustomComponents || {};
-
-window.fluentFormEditorApp = new Vue({
-    el: "#ff_form_editor_app",
-    store,
+const app = createApp({
     components: {
         globalSearch,
-        ff_form_editor: FormEditor
+        ff_form_editor: FormEditor,
     },
     data: {
         form_id: window.FluentFormApp.form_id,
@@ -214,7 +158,7 @@ window.fluentFormEditorApp = new Vue({
          * after fetching from the server
          */
         prepareForm() {
-            var form = window.FluentFormApp.form;
+            const form = window.FluentFormApp.form;
             let formData = form.form_fields ? JSON.parse(form.form_fields) : {};
 
             this.form.id = form.id;
@@ -232,23 +176,23 @@ window.fluentFormEditorApp = new Vue({
             this.form.stepsWrapper = formData.stepsWrapper || this.form.stepsWrapper;
 
             if (formData.stepsWrapper && formData.stepsWrapper.stepStart) {
-                if(!formData.stepsWrapper.stepStart.settings.disable_auto_focus) {
+                if (!formData.stepsWrapper.stepStart.settings.disable_auto_focus) {
                     formData.stepsWrapper.stepStart.settings.disable_auto_focus = 'no';
                 }
 
-                if(!formData.stepsWrapper.stepStart.settings.enable_auto_slider) {
+                if (!formData.stepsWrapper.stepStart.settings.enable_auto_slider) {
                     formData.stepsWrapper.stepStart.settings.enable_auto_slider = 'no';
                 }
 
-                if(!formData.stepsWrapper.stepStart.settings.enable_step_data_persistency) {
+                if (!formData.stepsWrapper.stepStart.settings.enable_step_data_persistency) {
                     formData.stepsWrapper.stepStart.settings.enable_step_data_persistency = 'no';
                 }
 
-                if(!formData.stepsWrapper.stepStart.settings.enable_step_page_resume) {
+                if (!formData.stepsWrapper.stepStart.settings.enable_step_page_resume) {
                     formData.stepsWrapper.stepStart.settings.enable_step_page_resume = 'no';
                 }
 
-                if(!formData.stepsWrapper.stepStart.settings.step_animation) {
+                if (!formData.stepsWrapper.stepStart.settings.step_animation) {
                     formData.stepsWrapper.stepStart.settings.step_animation = 'slide';
                 }
 
@@ -361,7 +305,6 @@ window.fluentFormEditorApp = new Vue({
         });
         this.$emit("change-title", "Editor");
     },
-
     mounted() {
         this.prepareForm();
         this.loadResources(this.form_id);
@@ -370,19 +313,19 @@ window.fluentFormEditorApp = new Vue({
             jQuery('#wpcontent').addClass('ff_conversion_editor');
         }
 
-        /**
-         *
-         */
-        FluentFormEditorEvents.$on('editor-history-preview',(editHistory,type,index) =>{
+        if (window.FluentFormApp.is_conversion_form) {
+            document.getElementById('wpcontent').classList.add('ff_conversion_editor');
+        }
 
+        FluentFormEditorEvents.$on('editor-history-preview',(editHistory,type,index) =>{
             if (type == 'enter') {
                 this.saveOriginalForm();
                 this.updateFormFromEditHistory(editHistory);
-            }else if (type == 'leave') {
+            } else if (type == 'leave') {
                 if (!this.isClicked && this.editHistoryIndex != index) {
                     this.resetFormToOriginal(editHistory);
                 }
-            }else if (type == 'restore') {
+            } else if (type == 'restore') {
                 this.isClicked = true;
                 this.editHistoryIndex = index;
                 setTimeout(() => {
@@ -391,15 +334,87 @@ window.fluentFormEditorApp = new Vue({
                 this.updateFormFromEditHistory(editHistory);
                 this.$success('Restored from History! Click Save to Confirm');
             }
-
         });
     },
 });
 
+const components = [
+    ElButton,
+    ElCheckbox,
+    ElCheckboxGroup,
+    ElCol,
+    ElColorPicker,
+    ElDialog,
+    ElDropdown,
+    ElDropdownItem,
+    ElDropdownMenu,
+    ElForm,
+    ElFormItem,
+    ElInput,
+    ElSlider,
+    ElLoading,
+    ElOption,
+    ElPopover,
+    ElRadio,
+    ElRadioButton,
+    ElRadioGroup,
+    ElRate,
+    ElRow,
+    ElSelect,
+    ElTabPane,
+    ElTabs,
+    ElTooltip,
+    ElUpload,
+    ElSwitch,
+    ElInputNumber,
+    ElCard,
+    ElAlert,
+    ElSkeleton,
+    ElSkeletonItem,
+    ElOptionGroup,
+    ElLink,
+    ElTable,
+    ElTableColumn,
+    ElDatePicker,
+];
+
+components.forEach(component => {
+    app.use(component);
+});
+
+app.component('draggable', draggable);
+
+app.config.globalProperties.$loading = ElLoading.service;
+app.config.globalProperties.$notify = ElNotification;
+app.config.globalProperties.$message = ElMessage;
+app.config.globalProperties.emitter = emitter;
+
+// configure language
+app.config.globalProperties.$ELEMENT = {locale: en};
+
+window.FluentFormEditorEvents = createApp({});
+
+window.Errors = Errors;
+
+window.ffEditorOptionsCustomComponents = window.ffEditorOptionsCustomComponents || {};
+
+app.use(store);
+app.mixin(mixins);
+app.provide("eventBus", eventBus);
+
+window.fluentFormEditorApp = app;
+app.mount('#ff_form_editor_app');
+
 // More menus app
-new Vue({
-    el: '#more-menu',
+const MoreMenuApp = createApp({
     components: {
-        MoreMenu
+        MoreMenu,
     }
-})
+});
+components.forEach(component => {
+    MoreMenuApp.use(component);
+});
+MoreMenuApp.config.globalProperties.$notify = ElNotification;
+MoreMenuApp.config.globalProperties.$message = ElMessage;
+MoreMenuApp.config.globalProperties.$ELEMENT = {locale: en};
+MoreMenuApp.mount('#more-menu');

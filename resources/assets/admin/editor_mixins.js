@@ -1,7 +1,11 @@
-import notifier from './notifier';
-import {_$t} from "@/admin/helpers";
+import notifier from "./notifier";
 
 export default {
+    /**
+     * Translate a string
+     * @param str
+     * @return {String}
+     */
     methods: {
         /**
          * Translate a string
@@ -9,11 +13,11 @@ export default {
          * @return {String}
          */
         $t(string) {
-            let transString = window.FluentFormApp.form_editor_str[string] || string
+            let transString = window.FluentFormApp.form_editor_str[string] || string;
             return _$t(transString, ...arguments);
         },
         $_n(singular, plural, count) {
-            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            let number = parseInt(count.toString().replace(/,/g, ""), 10);
             if (number > 1) {
                 return this.$t(plural, count);
             }
@@ -26,7 +30,7 @@ export default {
          */
         toggleFieldsSection(section) {
             if (this.optionFieldsSection == section) {
-                this.optionFieldsSection = '';
+                this.optionFieldsSection = "";
             } else {
                 this.optionFieldsSection = section;
             }
@@ -39,7 +43,7 @@ export default {
          * @return {string}
          */
         guessElTemplate(item) {
-            let template = 'ff_';
+            let template = "ff_";
             template += item.template || item.editor_options.template;
             return template;
         },
@@ -53,10 +57,10 @@ export default {
          */
         mapElements(allElements, callback) {
             _ff.map(allElements, (existingItem) => {
-                if (existingItem.element != 'container') {
+                if (existingItem.element != "container") {
                     callback(existingItem);
                 }
-                if (existingItem.element == 'container') {
+                if (existingItem.element == "container") {
                     _ff.map(existingItem.columns, (column) => {
                         this.mapElements(column.fields, callback);
                     });
@@ -69,18 +73,20 @@ export default {
          * @param item
          */
         uniqElKey(item) {
-            item.uniqElKey = 'el_' + Date.now() + Math.floor(Math.random() * 100);
+            const uniqueKey = "el_" + Date.now() + Math.floor(Math.random() * 100);
+            item.uniqElKey = uniqueKey; // Directly set the key on the original item
+            this.$store.commit("setUniqueKey", { element: item, key: uniqueKey });
         },
 
         /**
          * Helper method of `makeUniqueNameAttr`
-         * @param existingAttrNames {Array}
-         * @param field
+         * @param existingNames {Array}
+         * @param item
          * @return {string} new unique name
          */
         getUniqueNameAttr(existingAttrNames, field) {
-            if(!field.attributes.name) {
-                return '';
+            if (!field.attributes.name) {
+                return "";
             }
             let nameWithSuffix = field.attributes.name.match(/([0-9a-zA-Z-_]+)(?:_(\d+))/);
 
@@ -90,11 +96,11 @@ export default {
                     if (name.includes(baseName)) {
                         return true;
                     }
-                }).sort(function (a, b) {
-                    var x = a.match(/(?!_)\d+/);
+                }).sort(function(a, b) {
+                    let x = a.match(/(?!_)\d+/);
                     x = x && parseInt(x[0]);
 
-                    var y = b.match(/(?!_)\d+/);
+                    let y = b.match(/(?!_)\d+/);
                     y = y && parseInt(y[0]);
 
                     return y - x;
@@ -105,7 +111,7 @@ export default {
                 if (suffix && parseInt(suffix[0])) {
                     return siblingsOfNew[0].replace(/(?!_)\d+/, parseInt(suffix[0]) + 1);
                 } else {
-                    return field.attributes.name + '_1';
+                    return field.attributes.name + "_1";
                 }
             }
             return field.attributes.name;
@@ -121,16 +127,16 @@ export default {
             // generate unique key for each element
             this.uniqElKey(newItem);
 
-            if (newItem.attributes.name || newItem.element == 'container') {
+            if (newItem.attributes.name || newItem.element == "container") {
                 let existingAttrNames = [];
 
                 this.mapElements(allElements, (existingItem) => {
-                    if(existingItem.attributes.name) {
+                    if (existingItem.attributes.name) {
                         existingAttrNames.push(existingItem.attributes.name);
                     }
                 });
 
-                if (newItem.element == 'container') {
+                if (newItem.element == "container") {
                     _ff.map(newItem.columns, (column) => {
                         _ff.map(column.fields, (field) => {
                             let name = this.getUniqueNameAttr(existingAttrNames, field);
@@ -141,8 +147,14 @@ export default {
                     });
                 } else {
                     let name = this.getUniqueNameAttr(existingAttrNames, newItem);
-                    newItem.attributes.name = name;
+                    this.$store.commit("setUniqueName", { element: newItem, name });
                 }
+            }
+
+            // Commit the updated newItem to Vuex
+            const index = allElements.indexOf(newItem);
+            if (index !== -1) {
+                this.$store.commit("updateElement", { index, element: newItem });
             }
         },
 
@@ -159,6 +171,6 @@ export default {
     data() {
         return {
             is_conversion_form: !!window.FluentFormApp.is_conversion_form
-        }
+        };
     }
 };

@@ -59,7 +59,7 @@ class EditorShortCode
 
         return $formShortCodes;
     }
-
+    
     public static function getFormLabelShortCodes($form)
     {
         $form = static::getForm($form);
@@ -103,7 +103,7 @@ class EditorShortCode
             'title'      => __('Entry Attributes','fluentform'),
             'shortcodes' => $submissionProperties,
         ];
-
+        
         return apply_filters('fluentform/submission_shortcodes', $submissionShortcodes, $form);
     }
 
@@ -135,7 +135,7 @@ class EditorShortCode
         if ($form->has_payment) {
             $groups[] = static::getPaymentShortcodes($form);
         }
-
+    
         $groups = apply_filters_deprecated(
             'fluentform_form_settings_smartcodes', [
                 $groups,

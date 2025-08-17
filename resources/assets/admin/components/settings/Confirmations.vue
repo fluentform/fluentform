@@ -8,7 +8,7 @@
                         <h5 class="title">{{ $t('Conditional Confirmations') }}</h5>
                         <btn-group>
                             <btn-group-item>
-                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="otherConfirmationSettings"/>
+                                <video-doc btn_size="default" :btn_text="$t('Learn More')" route_id="otherConfirmationSettings"/>
                             </btn-group-item>
                             <btn-group-item>
                                 <el-button class="el-button--soft" v-if="selected" type="info" size="medium" @click="discard" icon="ff-icon ff-icon-arrow-left">
@@ -60,17 +60,22 @@
                                     </el-table-column>
 
                                     <el-table-column width="120" :label="$t('Actions')" class-name="action-buttons">
-                                        <template slot-scope="scope">
+                                        <template #default="scope">
                                             <ul class="ff_btn_group sm">
                                                 <li>
-                                                    <el-tooltip class="item" :content="$t('Duplicate notification settings')" placement="top">
+                                                    <el-tooltip class="item"
+                                                                :content="$t('Duplicate notification settings')"
+                                                                placement="top">
                                                         <el-button
                                                             class="el-button--icon"
                                                             @click="clone(scope.$index)"
                                                             type="primary"
-                                                            icon="el-icon-plus"
-                                                            size="mini"
-                                                        ></el-button>
+                                                            size="small"
+                                                        >
+                                                            <template #icon>
+                                                                <i class="el-icon-plus"></i>
+                                                            </template>
+                                                        </el-button>
                                                     </el-tooltip>
                                                 </li>
                                                 <li>
@@ -78,18 +83,24 @@
                                                         class="el-button--icon"
                                                         @click="edit(scope.$index)"
                                                         type="success"
-                                                        icon="el-icon-setting"
-                                                        size="mini"
-                                                    ></el-button>
+                                                        size="small"
+                                                    >
+                                                        <template #icon>
+                                                            <i class="el-icon-setting"></i>
+                                                        </template>
+                                                    </el-button>
                                                 </li>
                                                 <li>
                                                     <remove @on-confirm="remove(scope.$index, scope.row.id)">
                                                         <el-button
                                                             class="el-button--icon"
-                                                            size="mini"
+                                                            size="small"
                                                             type="danger"
-                                                            icon="el-icon-delete"
-                                                        />
+                                                        >
+                                                            <template #icon>
+                                                                <i class="el-icon-delete"></i>
+                                                            </template>
+                                                        </el-button>
                                                     </remove>
                                                 </li>
                                             </ul>
@@ -101,13 +112,13 @@
 
                         <template v-if="selected">
                             <el-form-item class="ff-form-item">
-                                <template slot="label">
+                                <template #label>
                                     {{ $t('Confirmation Name') }}
 
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
+                                        <template #content>
                                             <p>{{ $t('The name to identify each confirmation.') }}</p>
-                                        </div>
+                                        </template>
 
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
@@ -125,15 +136,15 @@
                             </add-confirmation>
 
                             <el-form-item class="ff-form-item">
-                                <template slot="label">
+                                <template #label>
                                     {{ $t('Conditional Logic') }}
 
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
+                                        <template #content>
                                             <p>
 	                                            {{ $t('Enable this feed conditionally. Select to match whether all rules are required, any rule is sufficient, or use group logic. If the conditions match, the feed will be run. For groups, if any group\'s conditions are fully met, the feed will be run.') }}
                                             </p>
-                                        </div>
+                                        </template>
 
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
@@ -157,7 +168,15 @@
             </card>
 
             <div v-if="selected">
-                <el-button @click="store" type="primary" icon="el-icon-success">{{$t('Save Notification')}}</el-button>
+                <el-button
+                    @click="store"
+                    type="primary"
+                >
+                    <template #icon>
+                        <i class="el-icon-success"></i>
+                    </template>
+                    {{ $t('Save Notification') }}
+                </el-button>
             </div>
         </el-form>
     </div>

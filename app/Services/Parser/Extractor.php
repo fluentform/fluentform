@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Parser;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Services\ConditionAssesor;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 class Extractor
 {
@@ -442,7 +442,7 @@ class Extractor
 		if (in_array('raw', $this->with)) {
 			$this->result[$this->attribute]['raw'] = $this->field;
 		}
-		
+
 		return $this;
 	}
 }

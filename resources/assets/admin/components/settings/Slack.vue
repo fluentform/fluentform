@@ -1,15 +1,15 @@
 <template>
     <card>
         <card-head>
-            <h5 class="title">{{ $t('Slack Integration') }}</h5>
+            <h5 class="title">{{ $t("Slack Integration") }}</h5>
         </card-head>
         <card-body>
             <el-skeleton :loading="loading" animated :rows="6">
                 <el-form label-position="top">
                     <el-form-item class="ff-form-item ff-form-item-flex">
-                        <span slot="label" style="width: 120px;">
-                            {{ $t('Integrate Slack') }}
-                        </span>
+                        <template #label style="width: 120px;">
+                            {{ $t("Integrate Slack") }}
+                        </template>
                         <el-switch class="el-switch-lg" v-model="slack.enabled"></el-switch>
                     </el-form-item>
 
@@ -19,11 +19,11 @@
                         </el-form-item>
 
                         <el-form-item class="conditional-items ff-form-item">
-                            <template slot="label">
-                                {{ $t('Webhook URL') }}
+                            <template #label>
+                                {{ $t("Webhook URL") }}
 
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         <p v-html="
                                             $t(
                                                 'The %sSlack webhook URL%s where Fluent Forms will send JSON payload.',
@@ -32,7 +32,7 @@
                                             )
                                         ">
                                         </p>
-                                    </div>
+                                    </template>
 
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
@@ -42,20 +42,24 @@
                             </el-input>
                         </el-form-item>
 
-                        <el-form-item v-if="formattedFields"  class="conditional-items ff-form-item">
-                            <template slot="label">
-                                {{$t('Select Fields')}}
+                        <el-form-item v-if="formattedFields" class="conditional-items ff-form-item">
+                            <template #label>
+                                {{ $t("Select Fields") }}
                             </template>
-                            <el-checkbox class="mb-2" :disabled="!hasPro" :indeterminate="isIndeterminate" v-model="slack.checkAll"  @change="handleCheckAllChange">{{ $t('Check all') }}</el-checkbox>
+                            <el-checkbox class="mb-2" :disabled="!hasPro" :indeterminate="isIndeterminate"
+                                         v-model="slack.checkAll" @change="handleCheckAllChange">{{ $t("Check all") }}
+                            </el-checkbox>
 
                             <el-checkbox-group v-model="slack.fields">
                                 <el-checkbox
                                     v-for="(value, i) in formattedFields"
-                                    :label="value"
+                                    :value="value"
                                     :key="value + i"
                                     @change="handleCheckedChange"
                                     :disabled="!hasPro"
-                                ></el-checkbox>
+                                >
+                                    {{ $t(value) }}
+                                </el-checkbox>
                             </el-checkbox-group>
                             <div
                                 v-show="!hasPro" class="mt-3 text-danger"
@@ -70,13 +74,17 @@
                         </el-form-item>
 
                         <el-form-item class="ff-form-item" :label="$t('Slack Footer message')">
-                            <el-input :placeholder="$t(`Default is 'fluentform'`)" v-model="slack.footerText"></el-input>
+                            <el-input :placeholder="$t(`Default is 'fluentform'`)"
+                                      v-model="slack.footerText"></el-input>
                         </el-form-item>
                     </template>
 
                     <div>
-                        <el-button type="primary" icon="el-icon-success" @click="save">
-                            {{ $t('%s Feed', loading ? 'Saving' : 'Save') }}
+                        <el-button type="primary" @click="save" size="large">
+                            <template #icon>
+                                <i class="el-icon-success"></i>
+                            </template>
+                            {{ $t("%s Feed", loading ? "Saving" : "Save") }}
                         </el-button>
                     </div>
                 </el-form>
@@ -86,109 +94,110 @@
 </template>
 
 <script>
-    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
-    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
-    import Card from '@/admin/components/Card/Card.vue';
-    import CardBody from '@/admin/components/Card/CardBody.vue';
-    import CardHead from '@/admin/components/Card/CardHead.vue';
-    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+import BtnGroup from "@/admin/components/BtnGroup/BtnGroup.vue";
+import BtnGroupItem from "@/admin/components/BtnGroup/BtnGroupItem.vue";
+import Card from "@/admin/components/Card/Card.vue";
+import CardBody from "@/admin/components/Card/CardBody.vue";
+import CardHead from "@/admin/components/Card/CardHead.vue";
+import CardHeadGroup from "@/admin/components/Card/CardHeadGroup.vue";
 
-    export default {
-        name: "Slack",
-        props: ['form_id','inputs'],
-        components: { 
-            Card,
-            CardHead,
-            CardBody,
-            CardHeadGroup,
-            BtnGroup,
-            BtnGroupItem
-        },
-        data() {
-            return {
-                loading: false,
-                saving: false,
-                slack: {
-                    enabled: false,
-                    webhook: null,
-                    textTitle:'',
-                    footerText:'',
-                    fields:[],
-                    checkAll:'',
-                },
-                formattedFields:[],
-                hasPro : window.FluentFormApp.hasPro,
-                isIndeterminate: false,
-                errors: new Errors
-            }
-        },
-        methods: {
-            handleCheckAllChange(val) {
-                this.slack.fields = val ? this.formattedFields : [];
-                this.isIndeterminate = false;
+export default {
+    name: "Slack",
+    inject: ["eventBus"],
+    props: ["form_id", "inputs"],
+    components: {
+        Card,
+        CardHead,
+        CardBody,
+        CardHeadGroup,
+        BtnGroup,
+        BtnGroupItem
+    },
+    data() {
+        return {
+            loading: false,
+            saving: false,
+            slack: {
+                enabled: false,
+                webhook: null,
+                textTitle: "",
+                footerText: "",
+                fields: [],
+                checkAll: ""
             },
-            handleCheckedChange(value) {
-                let checkedCount = this.slack.fields.length;
-                this.slack.checkAll = checkedCount === this.formattedFields.length;
-                this.isIndeterminate = checkedCount > 0 && checkedCount < this.formattedFields.length;
-            },
-            fetch() {
-                this.loading = true;
+            formattedFields: [],
+            hasPro: window.FluentFormApp.hasPro,
+            isIndeterminate: false,
+            errors: new Errors
+        };
+    },
+    methods: {
+        handleCheckAllChange(val) {
+            this.slack.fields = val ? this.formattedFields : [];
+            this.isIndeterminate = false;
+        },
+        handleCheckedChange(value) {
+            let checkedCount = this.slack.fields.length;
+            this.slack.checkAll = checkedCount === this.formattedFields.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.formattedFields.length;
+        },
+        fetch() {
+            this.loading = true;
 
-                const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form_id);
-            
-                FluentFormsGlobal.$rest.get(url, {meta_key: 'slack'})
-                    .then(response => {
-                        if (response[0]) {
-                            this.slack = response[0].value;
-                            this.slack.id = response[0].id;
-                            if(!this.slack.fields){
-                                this.$set(this.slack , 'fields', []);
-                            }
-                            if(!this.slack.checkAll){
-                                this.$set(this.slack , 'checkAll', '');
-                            }
+            const url = FluentFormsGlobal.$rest.route("getFormSettings", this.form_id);
+
+            FluentFormsGlobal.$rest.get(url, { meta_key: "slack" })
+                .then(response => {
+                    if (response[0]) {
+                        this.slack = response[0].value;
+                        this.slack.id = response[0].id;
+                        if (!this.slack.fields) {
+                            this.$set(this.slack, "fields", []);
                         }
-                        this.formattedFields = response.formattedFields ? response.formattedFields : [];
-    
-                    })
-                    .catch(e => {
-                    })
-                    .finally(() => {
-                        this.loading = false;
-                    })
-            },
-            save() {
-                this.saving = true;
+                        if (!this.slack.checkAll) {
+                            this.$set(this.slack, "checkAll", "");
+                        }
+                    }
+                    this.formattedFields = response.formattedFields ? response.formattedFields : [];
 
-                let data = {
-                    meta_key: 'slack',
-                    value: JSON.stringify(this.slack),
-                    meta_id: this.slack.id,
-                };
-
-                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form_id);
-            
-                FluentFormsGlobal.$rest.post(url, data)
-                    .then(response => {
-                        this.slack.id = response.id;
-
-                        this.$success(response.message);
-                    })
-                    .catch(error => {
-                        this.errors.record(error);
-                    })
-                    .finally(() => {
-                        this.saving = false;
-                    });
-            }
+                })
+                .catch(e => {
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
         },
-        mounted() {
-            this.fetch();
-        },
-        beforeCreate() {
-            jQuery('head title').text('Slack Settings - Fluent Forms');
-            ffSettingsEvents.$emit('change-title', 'Slack Settings');
+        save() {
+            this.saving = true;
+
+            let data = {
+                meta_key: "slack",
+                value: JSON.stringify(this.slack),
+                meta_id: this.slack.id
+            };
+
+            const url = FluentFormsGlobal.$rest.route("storeFormSettings", this.form_id);
+
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
+                    this.slack.id = response.id;
+
+                    this.$success(response.message);
+                })
+                .catch(error => {
+                    this.errors.record(error);
+                })
+                .finally(() => {
+                    this.saving = false;
+                });
         }
+    },
+    mounted() {
+        this.fetch();
+    },
+    beforeCreate() {
+        jQuery("head title").text("Slack Settings - Fluent Forms");
+        this.eventBus.emit('change-title', 'Slack Settings');
     }
+};
 </script>

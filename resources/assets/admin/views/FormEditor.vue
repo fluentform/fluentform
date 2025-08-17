@@ -1,8 +1,8 @@
 <template>
     <div class="form-editor" id="form-editor">
-        <div class="form-editor-main"  >
+        <div class="form-editor-main">
             <div id="js-form-editor--body" class="form-editor--body"
-             :style="{width: editorConfig.bodyWidth ? editorConfig.bodyWidth + 'px' : ''}">
+                 :style="{width: editorConfig.bodyWidth ? editorConfig.bodyWidth + 'px' : ''}">
                 <div class="form-editor__body-content">
                     <div>
                         <!-- =========================
@@ -16,11 +16,11 @@
                             </div>
                             <div class="step-start text-center">
                                 <div class="step-start__indicator">
-                                    <strong>{{ $t('PAGING START') }}</strong>
-                                    <hr>
+                                    <strong>{{ $t("PAGING START") }}</strong>
+                                    <hr />
                                 </div>
                                 <div class="start-of-page">
-                                    {{ $t('Click to configure your step settings') }}
+                                    {{ $t("Click to configure your step settings") }}
                                 </div>
                             </div>
                         </div>
@@ -28,59 +28,42 @@
                         <!-- =========================
                             FORM DROPZONE
                         ============================== -->
-                        <el-form :class="'label_position_org_'+original_label_placement" class="form-editor-elements"
-                                :label-position="labelPlacement" label-width="120px">
-                            <vddl-list class="panel__body--list"
-                                    :class="{'empty-dropzone': !form.dropzone.length}"
-                                    :list="form.dropzone"
-                                    :drop="handleDrop"
-                                    :horizontal="false">
-
-                                <!-- Placeholder shown when element dragged -->
-                                <vddl-placeholder :style="{ minHeight: dragSourceHeight }">
-                                </vddl-placeholder>
-
-                                <!-- Empty dropzone placeholder -->
+                        <el-form :class="'label_position_org_' + original_label_placement" class="form-editor-elements"
+                                 :label-position="labelPlacement" label-width="120px">
+                            <div :class="{ 'empty-dropzone': !form.dropzone.length }">
                                 <div v-if="!form.dropzone.length" class="empty-dropzone-placeholder">
                                     <i @click.stop="editorInserterPopup(0, form.dropzone)"
-                                    class="popup-search-element ff-icon ff-icon-plus"></i>
+                                       class="popup-search-element ff-icon ff-icon-plus"></i>
                                 </div>
-
-                                <template v-if="is_conversion_form">
-                                    <list-conversion v-for="(item, index) in form.dropzone"
-                                    :handleDragstart="handleDragstart"
-                                    :handleDragend="handleDragend"
-                                    :allElements="form.dropzone"
-                                    :handleEdit="editSelected"
-                                    :handleDrop="handleDrop"
-                                    :wrapper="form.dropzone"
-                                    :key="item.uniqElKey"
-                                    :editItem="editItem"
-                                    :editorInserterInContainer="editorInserterInContainer"
-                                    :editorInserterInContainerRepeater="editorInserterInContainerRepeater"
-                                    :index="index"
-                                    :item="item">
-                                    </list-conversion>
-                                </template>
-                                <template v-else>
-                                    <list v-for="(item, index) in form.dropzone"
-                                        :handleDragstart="handleDragstart"
-                                        :handleDragend="handleDragend"
-                                        :allElements="form.dropzone"
-                                        :handleEdit="editSelected"
-                                        :handleDrop="handleDrop"
-                                        :wrapper="form.dropzone"
-                                        :key="item.uniqElKey"
-                                        :editItem="editItem"
-                                        :editorInserterInContainer="editorInserterInContainer"
-                                        :editorInserterInContainerRepeater="editorInserterInContainerRepeater"
-                                        :fieldNotSupportInContainerRepeater="fieldNotSupportInContainerRepeater"
-                                        :index="index"
-                                        :item="item">
-                                    </list>
-                                </template>
-
-                            </vddl-list>
+                                <draggable
+                                    v-model="form.dropzone"
+                                    :component-data="{
+                                        tag: 'div',
+                                        type: 'transition-group',
+                                        name: !stageDrag ? 'flip-list' : null,
+                                    }"
+                                    v-bind="stageDragOptions"
+                                    item-key="uniqElKey"
+                                    class="panel__body--list"
+                                    @start="handleDragstart"
+                                    @end="handleDragend"
+                                >
+                                    <template #item="{ element }">
+                                        <div>
+                                            <component
+                                                :is="is_conversion_form ? 'list-conversion' : 'list'"
+                                                :allElements="form.dropzone"
+                                                :handleEdit="editSelected"
+                                                :handleDrop="handleDrop"
+                                                :wrapper="form.dropzone"
+                                                :editItem="editItem"
+                                                :index="form.dropzone.indexOf(element)"
+                                                :item="element"
+                                            />
+                                        </div>
+                                    </template>
+                                </draggable>
+                            </div>
                         </el-form>
 
                         <!-- =========================
@@ -91,27 +74,35 @@
                                 v-if="Object.keys(submitButton).length"
                                 :editItem="editItem"
                                 :submitButton="submitButton"
-                                :editSelected="editSelected"/>
+                                :editSelected="editSelected"
+                            />
                         </div>
 
                         <div v-if="!form.dropzone.length" class="ff-user-guide">
                             <div @click="introVisible = true" class="editor_play_video">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" class="el-icon"><path d="m9.5 16.5 7-4.5-7-4.5ZM12 22q-2.075 0-3.9-.788-1.825-.787-3.175-2.137-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175 1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138 1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175-1.35 1.35-3.175 2.137Q14.075 22 12 22Z"></path>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" class="el-icon">
+                                    <path
+                                        d="m9.5 16.5 7-4.5-7-4.5ZM12 22q-2.075 0-3.9-.788-1.825-.787-3.175-2.137-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175 1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138 1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175-1.35 1.35-3.175 2.137Q14.075 22 12 22Z"></path>
                                 </svg>
-                                {{ $t('Video Instruction') }}
+                                {{ $t("Video Instruction") }}
                             </div>
-                            <img :src="instructionImage" alt="">
-                            <el-dialog
-                                :visible.sync="introVisible"
-                                :append-to-body="true"
-                                width="60%"
-                            >
-                                <div slot="title">
-                                    <h5 class="mb-2">{{$t('How to create a form')}}</h5>
-                                    <p>{{ $t('Watch our Fluent Form\'s video to understand better.') }}</p>
-                                </div>
+                            <img :src="instructionImage" alt="" />
+                            <el-dialog v-model="introVisible" :append-to-body="true" width="60%">
+                                <template #header>
+                                    <h5 class="mb-2">
+                                        {{ $t("How to create a form") }}
+                                    </h5>
+                                    <p>{{ $t("Watch our Fluent Forms video to better understand.") }}</p>
+                                </template>
                                 <div v-if="introVisible" class="videoWrapper mt-4">
-                                    <iframe class="w-100" height="530" style="border-radius: 10px;" src="https://www.youtube.com/embed/ebZUein_foM?autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                                    <iframe
+                                        class="w-100"
+                                        height="530"
+                                        style="border-radius: 10px"
+                                        src="https://www.youtube.com/embed/ebZUein_foM?autoplay=1"
+                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen
+                                    >
                                     </iframe>
                                 </div>
                             </el-dialog>
@@ -128,11 +119,11 @@
                             </div>
                             <div class="step-start text-center">
                                 <div class="start-of-page">
-                                    {{ $t('End of last page') }}
+                                    {{ $t("End of last page") }}
                                 </div>
                                 <div class="step-start__indicator">
-                                    <strong>{{ $t('PAGING END') }}</strong>
-                                    <hr>
+                                    <strong>{{ $t("PAGING END") }}</strong>
+                                    <hr />
                                 </div>
                             </div>
                         </div>
@@ -144,18 +135,18 @@
                 SIDEBAR
             ============================== -->
             <div class="form-editor--sidebar"
-                :style="{width: editorConfig.sidebarWidth ? editorConfig.sidebarWidth + 'px' : ''}">
+                 :style="{width: editorConfig.sidebarWidth ? editorConfig.sidebarWidth + 'px' : ''}">
 
                 <div class="form-editor--sidebar-content nav-tabs new-elements">
                     <ul class="nav-tab-list toggle-fields-options">
                         <li :class="fieldMode == 'add' ? 'active' : ''">
-                            <a href="#" @click.prevent="changeFieldMode('add')">{{ $t('Input Fields') }}</a>
+                            <a href="#" @click.prevent="changeFieldMode('add')">{{ $t("Input Fields") }}</a>
                         </li>
                         <li :class="fieldMode == 'edit' ? 'active' : ''">
-                            <a href="#" @click.prevent="changeSidebarMode('edit')">{{ $t('Input Customization') }}</a>
+                            <a href="#" @click.prevent="changeSidebarMode('edit')">{{ $t("Input Customization") }}</a>
                         </li>
                         <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
-                            <a href="#" @click.prevent="changeSidebarMode('history')">{{ $t('History') }}</a>
+                            <a href="#" @click.prevent="changeSidebarMode('history')">{{ $t("History") }}</a>
                         </li>
                         <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
 
@@ -170,20 +161,14 @@
                                 ============================== -->
                                 <template v-if="fieldMode == 'add'">
                                     <div class="search-element-wrap">
-                                        <searchElement
-                                        :placeholder="$t('Search (press \'/\' to focus)')"
-                                        :isSidebarSearch.sync="isSidebarSearch"
-                                        :moved="moved"
-                                        :isDisabled="isDisabled"
-                                        :insertItemOnClick="insertItemOnClick"
-                                        :list="[
-                                            ...postMockList,
-                                            ...taxonomyMockList,
-                                            ...generalMockList,
-                                            ...advancedMockList,
-                                            ...containerMockList,
-                                            ...paymentsMockList
-                                        ]"/>
+                                        <search-element
+                                            :placeholder="$t('Search name, address, mask input etc.')"
+                                            v-model="isSidebarSearch"
+                                            :isDisabled="isDisabled"
+                                            :insertItemOnClick="insertItemOnClick"
+                                            :sideBarDragOptions="sideBarDragOptions"
+                                            :list="[...postMockList, ...taxonomyMockList, ...generalMockList, ...advancedMockList, ...containerMockList, ...paymentsMockList]"
+                                        />
                                     </div>
 
                                     <div class="sidebar_elements_wrapper" v-show="!isSidebarSearch">
@@ -196,30 +181,44 @@
                                             <h5 @click="toggleFieldsSection('post')"
                                                 :class="optionFieldsSection == 'post' ? 'active' : ''"
                                                 class="option-fields-section--title">
-                                                {{ $t('Post Fields') }}
+                                                {{ $t("Post Fields") }}
                                             </h5>
 
                                             <transition name="slide-fade">
-                                                <div v-show="optionFieldsSection == 'post'"
-                                                    class="option-fields-section--content">
-                                                    <div v-for="(itemMockList, i) in postMockListChunked" :key="i"
-                                                        class="v-row mb15">
-                                                        <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
-                                                            <vddl-draggable
-                                                                class="btn-element"
-                                                                :class="{ 'disabled': isDisabled(itemMock) }"
-                                                                :draggable="itemMock"
-                                                                :selected="insertItemOnClick"
-                                                                :index="i"
-                                                                :wrapper="itemMockList"
-                                                                :disable-if="isDisabled(itemMock)"
-                                                                :moved="moved"
-                                                                effectAllowed="copy">
-                                                                <i :class="itemMock.editor_options.icon_class"></i>
-                                                                <span>{{ itemMock.editor_options.title }}</span>
-                                                            </vddl-draggable>
-                                                        </div>
-                                                    </div>
+                                                <div class="option-fields-section--content"
+                                                     v-show="optionFieldsSection === 'post'">
+                                                    <transition name="slide-fade">
+                                                        <draggable
+                                                            class="v-row mb-15"
+                                                            v-model="postMockList"
+                                                            item-key="id"
+                                                            v-bind="sideBarDragOptions"
+                                                            :component-data="{
+                                                                tag: 'div',
+                                                                type: 'transition-group',
+                                                                name: !stageDrag ? 'flip-list' : null,
+                                                            }"
+                                                            @start="handleDragstart"
+                                                            @end="handleDragend($event, postMockList)"
+                                                            :move="checkMove"
+                                                        >
+                                                            <template #item="{ element }">
+                                                                <div class="v-col--50">
+                                                                    <div
+                                                                        class="vddl-draggable btn-element"
+                                                                        :class="{
+                                                                            disabled: isDisabled(element),
+                                                                        }"
+                                                                        :draggable="!isDisabled(element)"
+                                                                        @click="insertItemOnClick(element, $event)"
+                                                                    >
+                                                                        <i :class="element.editor_options.icon_class"></i>
+                                                                        <span>{{ element.editor_options.title }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </draggable>
+                                                    </transition>
                                                 </div>
                                             </transition>
                                         </div>
@@ -233,41 +232,44 @@
                                             <h5 @click="toggleFieldsSection('taxonomy')"
                                                 :class="optionFieldsSection == 'taxonomy' ? 'active' : ''"
                                                 class="option-fields-section--title">
-                                                {{ $t('Taxonomy Fields') }}
+                                                {{ $t("Taxonomy Fields") }}
                                             </h5>
 
-                                            <transition name="slide-fade">
-                                                <div
-                                                    class="option-fields-section--content"
-                                                    v-show="optionFieldsSection == 'taxonomy'"
-                                                >
-                                                    <div
-                                                        :key="i"
-                                                        class="v-row mb15"
-                                                        v-for="(itemMockList, i) in taxonomyMockListChunked"
+                                            <div class="option-fields-section--content"
+                                                 v-show="optionFieldsSection === 'taxonomy'">
+                                                <transition name="slide-fade">
+                                                    <draggable
+                                                        class="v-row mb-15"
+                                                        v-model="taxonomyMockList"
+                                                        item-key="id"
+                                                        v-bind="sideBarDragOptions"
+                                                        :component-data="{
+                                                            tag: 'div',
+                                                            type: 'transition-group',
+                                                            name: !stageDrag ? 'flip-list' : null,
+                                                        }"
+                                                        @start="handleDragstart"
+                                                        @end="handleDragend($event, taxonomyMockList)"
+                                                        :move="checkMove"
                                                     >
-                                                        <div
-                                                            :key="i"
-                                                            class="v-col--50"
-                                                            v-for="(itemMock, i) in itemMockList"
-                                                        >
-                                                            <vddl-draggable
-                                                                class="btn-element"
-                                                                :class="{ 'disabled': isDisabled(itemMock) }"
-                                                                :draggable="itemMock"
-                                                                :selected="insertItemOnClick"
-                                                                :index="i"
-                                                                :wrapper="itemMockList"
-                                                                :disable-if="isDisabled(itemMock)"
-                                                                :moved="moved"
-                                                                effectAllowed="copy">
-                                                                <i :class="itemMock.editor_options.icon_class"></i>
-                                                                <span>{{ itemMock.editor_options.title }}</span>
-                                                            </vddl-draggable>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </transition>
+                                                        <template #item="{ element }">
+                                                            <div class="v-col--50">
+                                                                <div
+                                                                    class="vddl-draggable btn-element"
+                                                                    :class="{
+                                                                        disabled: isDisabled(element),
+                                                                    }"
+                                                                    :draggable="!isDisabled(element)"
+                                                                    @click="insertItemOnClick(element, $event)"
+                                                                >
+                                                                    <i :class="element.editor_options.icon_class"></i>
+                                                                    <span>{{ element.editor_options.title }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </draggable>
+                                                </transition>
+                                            </div>
                                         </div>
 
                                         <!-- General Fields -->
@@ -278,33 +280,44 @@
                                             <h5 @click="toggleFieldsSection('general')"
                                                 :class="optionFieldsSection == 'general' ? 'active' : ''"
                                                 class="option-fields-section--title">
-                                                {{ $t('General Fields') }}
+                                                {{ $t("General Fields") }}
                                             </h5>
 
-                                            <transition name="slide-fade">
-                                                <div v-show="optionFieldsSection == 'general'"
-                                                    class="option-fields-section--content">
-                                                    <div v-for="(itemMockList, i) in itemMockListChunked" :key="i"
-                                                        class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                        <div @keydown.enter.prevent="insertItemOnClick(itemMock,$event.target.querySelector('span'))"   class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
-                                                            <vddl-draggable
-                                                                 tabindex="0"
-                                                                class="btn-element"
-                                                                :class="{ 'disabled': isDisabled(itemMock) }"
-                                                                :draggable="itemMock"
-                                                                :selected="insertItemOnClick"
-                                                                :index="i"
-                                                                :wrapper="itemMockList"
-                                                                :disable-if="isDisabled(itemMock)"
-                                                                :moved="moved"
-                                                                effectAllowed="copy">
-                                                                <i :class="itemMock.editor_options.icon_class"></i>
-                                                                <span>{{ itemMock.editor_options.title }}</span>
-                                                            </vddl-draggable>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </transition>
+                                            <div class="option-fields-section--content"
+                                                 v-show="optionFieldsSection === 'general'">
+                                                <transition name="slide-fade">
+                                                    <draggable
+                                                        class="v-row mb-15"
+                                                        v-model="generalMockList"
+                                                        item-key="id"
+                                                        v-bind="sideBarDragOptions"
+                                                        :component-data="{
+                                                            tag: 'div',
+                                                            type: 'transition-group',
+                                                            name: !stageDrag ? 'flip-list' : null,
+                                                        }"
+                                                        @start="handleDragstart"
+                                                        @end="handleDragend($event, generalMockList)"
+                                                        :move="checkMove"
+                                                    >
+                                                        <template #item="{ element }">
+                                                            <div class="v-col--50">
+                                                                <div
+                                                                    class="vddl-draggable btn-element"
+                                                                    :class="{
+                                                                        disabled: isDisabled(element),
+                                                                    }"
+                                                                    :draggable="!isDisabled(element)"
+                                                                    @click="insertItemOnClick(element, $event)"
+                                                                >
+                                                                    <i :class="element.editor_options.icon_class"></i>
+                                                                    <span>{{ element.editor_options.title }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </draggable>
+                                                </transition>
+                                            </div>
                                         </div>
 
                                         <!-- Advanced Fields -->
@@ -315,63 +328,91 @@
                                             <h5 @click="toggleFieldsSection('others')"
                                                 :class="optionFieldsSection == 'others' ? 'active' : ''"
                                                 class="option-fields-section--title">
-                                                {{ $t('Advanced Fields') }}
+                                                {{ $t("Advanced Fields") }}
                                             </h5>
-                                            <transition name="slide-fade">
-                                                <div v-show="optionFieldsSection == 'others'"
-                                                        class="option-fields-section--content">
-                                                    <div v-for="(itemMockList, i) in otherItemsMockListChunked" :key="i"
-                                                            class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                        <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
-                                                            <vddl-draggable
-                                                                class="btn-element"
-                                                                :draggable="itemMock"
-                                                                :index="i"
-                                                                :wrapper="itemMockList"
-                                                                :selected="insertItemOnClick"
-                                                                :disable-if="isDisabled(itemMock)"
-                                                                :moved="moved"
-                                                                effect-allowed="copy"
-                                                            ><i :class="itemMock.editor_options.icon_class"></i>
-                                                            <span>{{itemMock.editor_options.title}}</span>
-                                                            </vddl-draggable>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </transition>
+                                            <div class="option-fields-section--content"
+                                                 v-show="optionFieldsSection === 'others'">
+                                                <transition name="slide-fade">
+                                                    <draggable
+                                                        class="v-row mb-15"
+                                                        v-model="advancedMockList"
+                                                        item-key="id"
+                                                        v-bind="sideBarDragOptions"
+                                                        :component-data="{
+                                                            tag: 'div',
+                                                            type: 'transition-group',
+                                                            name: !stageDrag ? 'flip-list' : null,
+                                                        }"
+                                                        @start="handleDragstart"
+                                                        @end="handleDragend($event, advancedMockList)"
+                                                        :move="checkMove"
+                                                    >
+                                                        <template #item="{ element }">
+                                                            <div class="v-col--50">
+                                                                <div
+                                                                    class="vddl-draggable btn-element"
+                                                                    :class="{
+                                                                        disabled: isDisabled(element),
+                                                                    }"
+                                                                    :draggable="!isDisabled(element)"
+                                                                    @click="insertItemOnClick(element, $event)"
+                                                                >
+                                                                    <i :class="element.editor_options.icon_class"></i>
+                                                                    <span>{{ element.editor_options.title }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </draggable>
+                                                </transition>
+                                            </div>
                                         </div>
 
                                         <!-- Container Fields -->
                                         <div
-                                        v-if="!is_conversion_form"
+                                            v-if="!is_conversion_form"
                                             class="option-fields-section"
                                             :class="(optionFieldsSection == 'container') ? 'option-fields-section_active' : ''"
                                         >
                                             <h5 @click="toggleFieldsSection('container')"
                                                 :class="optionFieldsSection == 'container' ? 'active' : ''"
                                                 class="option-fields-section--title">
-                                                {{ $t('Container') }}
+                                                {{ $t("Container") }}
                                             </h5>
-                                            <transition name="slide-fade">
-                                                <div v-show="optionFieldsSection == 'container'"
-                                                        class="option-fields-section--content">
-                                                    <div class="v-row mb15">
-                                                        <div class="v-col--50" v-for="(mockItem, i) in containerMockList" :key="i">
-                                                            <vddl-draggable
-                                                                class="btn-element mb15"
-                                                                :draggable="mockItem"
-                                                                :wrapper="containerMockList"
-                                                                :index="i"
-                                                                :selected="insertItemOnClick"
-                                                                :moved="moved"
-                                                                effect-allowed="copy"
-                                                            ><i :class="mockItem.editor_options.icon_class"></i>
-                                                            <span>{{mockItem.editor_options.title}}</span>
-                                                            </vddl-draggable>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </transition>
+                                            <div class="option-fields-section--content"
+                                                 v-show="optionFieldsSection === 'container'">
+                                                <transition name="slide-fade">
+                                                    <draggable
+                                                        class="v-row mb-15"
+                                                        v-model="containerMockList"
+                                                        item-key="id"
+                                                        v-bind="sideBarDragOptions"
+                                                        :component-data="{
+                                                            tag: 'div',
+                                                            type: 'transition-group',
+                                                            name: !stageDrag ? 'flip-list' : null,
+                                                        }"
+                                                        @start="handleDragstart"
+                                                        @end="handleDragend($event, containerMockList)"
+                                                        :move="checkMove"
+                                                    >
+                                                        <template #item="{ element }">
+                                                            <div class="v-col--50">
+                                                                <div
+                                                                    class="vddl-draggable btn-element"
+                                                                    :class="{
+                                                                        disabled: isDisabled(element),
+                                                                    }"
+                                                                    :draggable="!isDisabled(element)"
+                                                                    @click="insertItemOnClick(element, $event)"
+                                                                >
+                                                                    <i :class="element.editor_options.icon_class"></i>
+                                                                    <span>{{ element.editor_options.title }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </draggable>
+                                                </transition>
+                                            </div>
                                         </div>
 
                                         <!-- Payment Fields -->
@@ -383,33 +424,44 @@
                                             <h5 @click="toggleFieldsSection('payment')"
                                                 :class="optionFieldsSection == 'payment' ? 'active' : ''"
                                                 class="option-fields-section--title">
-                                                {{ $t('Payment Fields') }}
+                                                {{ $t("Payment Fields") }}
                                             </h5>
-                                            <transition name="slide-fade">
-                                                <div v-show="optionFieldsSection == 'payment'"
-                                                        class="option-fields-section--content">
-                                                    <div v-for="(itemMockList, i) in paymentsMockListChunked" :key="i"
-                                                            class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                        <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
-                                                            <vddl-draggable
-                                                                class="btn-element"
-                                                                :class="{ 'disabled': isDisabled(itemMock) }"
-                                                                :draggable="itemMock"
-                                                                :selected="insertItemOnClick"
-                                                                :index="i"
-                                                                :wrapper="itemMockList"
-                                                                :disable-if="isDisabled(itemMock)"
-                                                                :moved="moved"
-                                                                effectAllowed="copy">
-                                                                <i :class="itemMock.editor_options.icon_class"></i>
-                                                                <span>{{ itemMock.editor_options.title }}</span>
-                                                            </vddl-draggable>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </transition>
+                                            <div class="option-fields-section--content"
+                                                 v-show="optionFieldsSection === 'payment'">
+                                                <transition name="slide-fade">
+                                                    <draggable
+                                                        class="v-row mb-15"
+                                                        v-model="paymentsMockList"
+                                                        item-key="id"
+                                                        v-bind="sideBarDragOptions"
+                                                        :component-data="{
+                                                            tag: 'div',
+                                                            type: 'transition-group',
+                                                            name: !stageDrag ? 'flip-list' : null,
+                                                        }"
+                                                        @start="handleDragstart"
+                                                        @end="handleDragend($event, paymentsMockList)"
+                                                        :move="checkMove"
+                                                    >
+                                                        <template #item="{ element }">
+                                                            <div class="v-col--50">
+                                                                <div
+                                                                    class="vddl-draggable btn-element"
+                                                                    :class="{
+                                                                        disabled: isDisabled(element),
+                                                                    }"
+                                                                    :draggable="!isDisabled(element)"
+                                                                    @click="insertItemOnClick(element, $event)"
+                                                                >
+                                                                    <i :class="element.editor_options.icon_class"></i>
+                                                                    <span>{{ element.editor_options.title }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </draggable>
+                                                </transition>
+                                            </div>
                                         </div>
-
                                     </div>
                                 </template>
 
@@ -419,7 +471,7 @@
                                 <template v-if="fieldMode == 'edit' && Object.keys(editItem).length">
                                     <div class="ff-input-customization-wrap" style="min-height: 100px;">
                                         <el-skeleton :loading="sidebarLoading" animated :rows="10">
-                                            <EditorSidebar
+                                            <editor-sidebar
                                                 v-if="!sidebarLoading"
                                                 :editItem="editItem"
                                                 :form_items="form.dropzone"
@@ -443,12 +495,13 @@
         </div><!-- .form-editor-main -->
 
         <!-- OTHER MODAL/POPUP COMPONENTS -->
-        <ItemDisabled
-            :visibility.sync="whyDisabledModal"
+        <item-disabled
+            v-model="isItemDisabled"
+            :field-type="whyDisabledModal"
             :modal="itemDisableConditions[whyDisabledModal] || {}">
-        </ItemDisabled>
+        </item-disabled>
 
-        <editorInserter
+        <editor-inserter
             :dropzone="dropzone"
             :postMockList="postMockList"
             :taxonomyMockList="taxonomyMockList"
@@ -459,41 +512,45 @@
             :containerMockList="containerMockList"
             :isInserterInContainerRepeater="editorInserterInContainerRepeater"
             :isInserterInContainer="editorInserterInContainer"
-            :insertItemOnClick="insertItemOnClick"/>
+            :insertItemOnClick="insertItemOnClick" />
 
         <RenameForm
             :formTitle="form.title"
+            @update:visible="renameFormVisibility = $event"
             @rename-success="formRenameSuccess"
-            :visible.sync="renameFormVisibility"/>
+            :visible.sync="renameFormVisibility" />
     </div>
 </template>
 
-<script type="text/babel">
-    import {mapGetters, mapMutations} from 'vuex';
-    import List from '../components/nested-list.vue';
-    import ListConversion from '../components/nested-list-conversion.vue';
-    import recaptcha from '../components/modals/Recaptcha.vue';
-    import hcaptcha from '../components/modals/Hcaptcha.vue';
-    import searchElement from '../components/searchElement.vue';
-    import EditorSidebar from '../components/EditorSidebar.vue';
-    import RenameForm from '../components/modals/RenameForm.vue';
-    import ItemDisabled from '../components/modals/ItemDisabled.vue';
-    import submitButton from '../components/templates/submitButton.vue';
-    import editorInserter from '../components/includes/editor-inserter.vue';
-    import FormHistory from "@/admin/views/FormHistory";
-    import UndoRedo from "@/admin/views/Editor/UndoRedo.js";
+<script>
+import { mapActions, mapGetters, mapMutations } from "vuex";
+import List from "../components/nested-list.vue";
+import ListConversion from "../components/nested-list-conversion.vue";
+import recaptcha from "../components/modals/Recaptcha.vue";
+import hcaptcha from "../components/modals/Hcaptcha.vue";
+import searchElement from "../components/searchElement.vue";
+import EditorSidebar from "../components/EditorSidebar.vue";
+import RenameForm from "../components/modals/RenameForm.vue";
+import ItemDisabled from "../components/modals/ItemDisabled.vue";
+import submitButton from "../components/templates/submitButton.vue";
+import editorInserter from "../components/includes/editor-inserter.vue";
+import FormHistory from "@/admin/views/FormHistory.vue";
+import UndoRedo from "@/admin/views/Editor/UndoRedo.js";
 
-    export default {
-    name: 'FormEditor',
+export default {
+    name: "FormEditor",
+    inject: ["eventBus"],
     props: [
-        'form',
-        'save_form',
-        'form_saving'
+        "form",
+        "save_form",
+        "form_saving"
     ],
     components: {
         FormHistory,
         List,
         ListConversion,
+        recaptcha,
+        hcaptcha,
         RenameForm,
         ItemDisabled,
         submitButton,
@@ -504,8 +561,8 @@
     data() {
         return {
             form_id: window.FluentFormApp.form_id,
-            labelPlacement: 'top',
-            original_label_placement: 'top',
+            labelPlacement: "top",
+            original_label_placement: "top",
             editorConfig: {
                 bodyWidth: 0,
                 sidebarWidth: 0
@@ -513,10 +570,11 @@
             editItem: {},
             disable: false,
             dragSourceHeight: null,
-            whyDisabledModal: '',
-            optionFieldsSection: window.FluentFormApp.form.type === 'post' ? 'post' : 'general',
+            whyDisabledModal: "",
+            isItemDisabled: false,
+            optionFieldsSection: window.FluentFormApp.form.type === "post" ? "post" : "general",
             nameEditable: false,
-            searchElementStr: '',
+            searchElementStr: "",
             searchResult: [],
             isSidebarSearch: false,
             editorInserterVisible: false,
@@ -527,123 +585,62 @@
             renameFormVisibility: false,
             editorInserterInContainer: false,
             editorInserterInContainerRepeater: false,
-	        fieldNotSupportInContainerRepeater: false,
-            instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
+            fieldNotSupportInContainerRepeater: false,
+            instructionImage: FluentFormApp.plugin_public_url + "img/help.svg",
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false,
-            isCommandKeyPressed : false,
+            isCommandKeyPressed: false,
             undoRedoManager: null,
             canUndo: false,
             canRedo: false,
             isPerformingUndoRedo: false,
-            containerSupportedFields : [
-                { key: 'input_text', label: 'Text Field' },
-                { key: 'input_email', label: 'Email Field' },
-                { key: 'select', label: 'Select Field', condition: field => !field.attributes.multiple }, // Only allow non-multiple select
-                { key: 'input_mask', label: 'Mask Field' },
-                { key: 'custom_html', label: 'Custom HTML' },
-                { key: 'textarea', label: 'Text Area' },
-                { key: 'input_number', label: 'Number' },
-                { key: 'input_url', label: 'Url' },
-                { key: 'select_country', label: 'Country' },
-                { key: 'section_break', label: 'Section' },
-                { key: 'input_password', label: 'Password' },
+            containerSupportedFields: [
+                { key: "input_text", label: "Text Field" },
+                { key: "input_email", label: "Email Field" },
+                { key: "select", label: "Select Field", condition: field => !field.attributes.multiple }, // Only allow non-multiple select
+                { key: "input_mask", label: "Mask Field" },
+                { key: "custom_html", label: "Custom HTML" },
+                { key: "textarea", label: "Text Area" },
+                { key: "input_number", label: "Number" },
+                { key: "input_url", label: "Url" },
+                { key: "select_country", label: "Country" },
+                { key: "section_break", label: "Section" },
+                { key: "input_password", label: "Password" }
             ]
 
-        }
+        };
     },
-
     computed: {
         ...mapGetters({
-            fieldMode: 'fieldMode',
-            sidebarLoading: 'sidebarLoading',
-            itemDisableConditions: 'editorDisabledComponents',
-            postMockList: 'postMockList',
-            taxonomyMockList: 'taxonomyMockList',
-            generalMockList: 'generalMockList',
-            advancedMockList: 'advancedMockList',
-            paymentsMockList: 'paymentsMockList',
-            containerMockList: 'containerMockList',
-            isMockLoaded: 'isMockLoaded',
+            fieldMode: "fieldMode",
+            sidebarLoading: "sidebarLoading",
+            itemDisableConditions: "editorDisabledComponents",
+            postMockList: "postMockList",
+            taxonomyMockList: "taxonomyMockList",
+            generalMockList: "generalMockList",
+            advancedMockList: "advancedMockList",
+            paymentsMockList: "paymentsMockList",
+            containerMockList: "containerMockList",
+            isMockLoaded: "isMockLoaded"
         }),
 
-	    filteredGeneralMockList() {
-		    if (this.editorInserterInContainerRepeater) {
-			    return this.generalMockList.filter(item => {
-				    const supportedField = this.containerSupportedFields.find(field => field.key === item.element);
-
-				    if (!supportedField) return false;
-
-				    if (supportedField.condition && typeof supportedField.condition === 'function') {
-					    return supportedField.condition(item);
-				    }
-
-				    return true;
-			    });
-		    }
-		    return this.generalMockList;
-	    },
-
-	    filteredAdvancedMockList() {
-		    if (this.editorInserterInContainerRepeater) {
-			    return this.advancedMockList.filter(item => {
-				    const supportedField = this.containerSupportedFields.find(field => field.key === item.element);
-
-				    if (!supportedField) return false;
-
-				    if (supportedField.condition && typeof supportedField.condition === 'function') {
-					    return supportedField.condition(item);
-				    }
-
-				    return true;
-			    });
-		    }
-		    return this.advancedMockList;
-	    },
-
-        /**
-         * Make chunks of item draggable
-         * in post section
-         * @return {Array}
-         */
-        postMockListChunked() {
-            return _ff.chunk(this.postMockList, 2);
+        stageDragOptions() {
+            return {
+                group: "dropzone",
+                animation: 200,
+                ghostClass: "vddl-placeholder",
+                dragClass: "vddl-dragover",
+                bubbleScroll: false,
+                emptyInsertThreshold: 200
+            };
         },
 
-        /**
-         * Make chunks of item draggable
-         * in post section
-         * @return {Array}
-         */
-        paymentsMockListChunked() {
-            return _ff.chunk(this.paymentsMockList, 2);
-        },
-
-        /**
-         * Make chunks of item draggable
-         * in taxonomy section
-         * @return {Array}
-         */
-        taxonomyMockListChunked() {
-            return _ff.chunk(this.taxonomyMockList, 2);
-        },
-
-        /**
-         * Make chunks of item draggable
-         * in general section
-         * @return {Array}
-         */
-        itemMockListChunked() {
-            return _ff.chunk(this.generalMockList, 2);
-        },
-
-        /**
-         * Make chunks of item draggable
-         * in advanced section
-         * @return {Array}
-         */
-        otherItemsMockListChunked() {
-            return _ff.chunk(this.advancedMockList, 2);
+        sideBarDragOptions() {
+            return {
+                animation: 200,
+                sort: false,
+                group: { name: "dropzone", pull: "clone", put: false }
+            };
         },
 
         /**
@@ -669,12 +666,12 @@
         haveFormSteps() {
             let result = false;
 
-			if (this.is_conversion_form) {
-				return result; // Conversation form doesn't support steps field
+            if (this.is_conversion_form) {
+                return result; // Conversation form doesn't support steps field
             }
-            _ff.map(this.form.dropzone, (field) => {
-                if (field && field.editor_options && field.editor_options.template == "formStep") {
-                    return result = true;
+            _ff.map(this.form.dropzone, field => {
+                if (field && field.editor_options && field.editor_options.template === "formStep") {
+                    return (result = true);
                 }
             });
             return result;
@@ -710,11 +707,11 @@
             return this.form.stepsWrapper.stepEnd;
         },
         isPostForm() {
-            return window.FluentFormApp.form.type === 'post';
+            return window.FluentFormApp.form.type === "post";
         },
         isAutoloadCaptchaEnabled() {
             return !!window.FluentFormApp.is_autoload_captcha;
-        },
+        }
     },
     watch: {
         form: {
@@ -730,23 +727,16 @@
             deep: true
         },
         form_saving() {
-            const saveBtn = jQuery('#saveFormData');
-
+            const saveBtn = jQuery("#saveFormData");
             if (this.form_saving) {
-                FluentFormEditorEvents.$emit('editor-form-saving',this.form);
+                this.eventBus.emit("editor-form-saving", this.form);
 
                 this.clearEditableObject(); // Empty {editItem} after form saved
-                saveBtn.html('<i class="el-icon-loading mr-1"></i> Save Form');
+                saveBtn.html("<i class=\"el-icon-loading mr-1\"></i> Save Form");
             } else {
-                saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>');
+                saveBtn.html("<i class=\"el-icon-success mr-1\"></i> Save Form <span class=\"ff-tooltip\">Save ⌘S</span>");
             }
             this.undoRedoManager.clear();
-        },
-
-        formStepsCount() {
-            if (this.stepStart && this.stepStart.settings.step_titles.length > this.formStepsCount) {
-                this.stepStart.settings.step_titles.splice(this.formStepsCount);
-            }
         },
 
         /**
@@ -758,81 +748,27 @@
                 this.form.stepsWrapper = {
                     stepStart: this.form.stepStart,
                     stepEnd: this.form.stepEnd
-                }
+                };
             } else {
-                this.$delete(this.form.stepsWrapper, 'stepStart');
-                this.$delete(this.form.stepsWrapper, 'stepEnd');
+                this.$delete(this.form.stepsWrapper, "stepStart");
+                this.$delete(this.form.stepsWrapper, "stepEnd");
             }
-        },
-
+        }
     },
     methods: {
         ...mapMutations({
-            changeFieldMode: 'changeFieldMode',
-            updateSidebar: 'updateSidebar'
+            changeFieldMode: "changeFieldMode",
+            updateSidebar: "updateSidebar"
         }),
-
-        undo() {
-            if (this.undoRedoManager?.canUndo()) {
-                this.undoRedoManager.undo();
-            }
-        },
-
-        redo() {
-            if (this.undoRedoManager?.canRedo()) {
-                this.undoRedoManager.redo();
-            }
-        },
-
-        initUndoRedo() {
-            this.undoRedoManager = new UndoRedo();
-
-            this.undoRedoManager.on('undo', ({ state }) => {
-                this.handleUndoRedoStateChange(state);
-            });
-
-            this.undoRedoManager.on('redo', ({ state }) => {
-                this.handleUndoRedoStateChange(state);
-            });
-
-            this.undoRedoManager.on('update', ({ canUndo, canRedo }) => {
-                this.canUndo = canUndo;
-                this.canRedo = canRedo;
-                jQuery(document).trigger('updateUndoState');
-            });
-        },
-
-        handleUndoRedoStateChange(newState) {
-			// Sync input customization sidebar
-	        if (Object.keys(this.editItem).length) {
-		        let editItem = newState?.dropzone.find(item => item.attributes.name === this.editItem.attributes.name);
-		        if (editItem) {
-			        this.editItem = editItem
-		        }
-	        }
-            this.isPerformingUndoRedo = true;
-            this.$emit('update:form', newState);
-
-            setTimeout(() => {
-                this.isPerformingUndoRedo = false;
-            }, 400);
-        },
-        moved(o) {
-            // vddl has issue with this method.
-            // we can remove this method once fixed.
-        },
-
-        // probably not in use (need to re-check)
-        enableNameEditable() {
-            this.nameEditable = true;
-            jQuery('.nameEditableInput').find('input').focus();
-        },
+        ...mapActions({
+            updateSidebar: "updateSidebar"
+        }),
 
         /**
          * Empty {editItem} and restore sidebar to add item mode
          */
         clearEditableObject() {
-            this.changeFieldMode('add');
+            this.changeFieldMode("add");
             this.editItem = {};
         },
 
@@ -853,131 +789,34 @@
         },
 
         /**
-         * Actions after Drag & Drop an element
-         * @param {Object|vddl prams}
-         * @return {void}
-         */
-        handleDrop({index, list, item, type}) {
-            if (type != 'existingElement') {
-                this.makeUniqueNameAttr(this.form.dropzone, item);
-
-	            // Make save & resume button right align by default for conversation form
-	            if (this.is_conversion_form && 'save_progress_button' === item.element) {
-		            item.settings.align = 'right';
-	            }
-            }
-
-	        let $containerElement = jQuery(event.target).closest('.item-container');
-	        if ($containerElement.length) {
-		        this.editorInserterInContainer = true;
-	        }
-
-            if ((item.element == 'repeater_container' || item.element == 'container') && this.form.dropzone != list) {
-                this.$message({
-                    message: this.$t('You can not insert a container into another.'),
-                    type: 'warning',
-                });
-                return false;
-            }
-
-            let $repeaterContainerElement = jQuery(event.target).closest('.repeater-item-container');
-            if ($repeaterContainerElement.length) {
-                // Check if it's a multi-select
-                if (item.element === 'select' && item.attributes && item.attributes.multiple) {
-                    this.$message({
-                        message: this.$t('Multi-select fields are not supported in container repeaters.'),
-                        type: 'warning',
-                    });
-                    return false;
-                }
-
-                const isSupportedField = this.containerSupportedFields.some(field => {
-                    if (field.key === item.element) {
-                        if (field.condition && typeof field.condition === 'function') {
-                            return field.condition(item);
-                        }
-                        return true;
-                    }
-                    return false;
-                });
-
-                if (!isSupportedField && this.form.dropzone != list) {
-                    this.fieldNotSupportInContainerRepeater = true;
-                    const supportedFieldsList = this.containerSupportedFields
-                        .filter(field => !field.condition)
-                        .map(field => field.label)
-                        .join(', ');
-                    this.$message({
-                        message: this.$t(`This field is not supported in the container. Supported fields are: ${supportedFieldsList}`),
-                        type: 'warning',
-                    });
-                    return false;
-                }
-            }
-
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
-            if (this.isAutoloadCaptchaEnabled && captchas.includes(item.element)) {
-                this.$message({
-                    message: this.$t('Captcha has been enabled globally.'),
-                    type: 'warning',
-                });
-                return false;
-            }
-
-            let isCaptchaExists = type != 'existingElement' && this.isCaptchaExists(captchas, item.element);
-
-            if (isCaptchaExists) {
-                return;
-            }
-
-            item.uniqElKey = 'el_' + new Date().getTime();
-
-            list.splice(index, 0, item);
-        },
-
-        /**
          * Insert element into form on click sidebar buttons
+         * @param evt
          * @param item
          * @return {void}
          */
-        insertItemOnClick(item, target) {
-            if (this.itemDisableConditions.hasOwnProperty(item.element) && this.itemDisableConditions[item.element].disabled) {
+        insertItemOnClick(item, evt) {
+            if (this.itemDisableConditions[item.element]?.disabled) {
+                this.isItemDisabled = true;
                 this.whyDisabledModal = item.element;
                 return;
             }
-            let freshCopy = _ff.cloneDeep(item);
-            const $target = jQuery(target);
 
-            if (target && !target.draggable
-                && $target.hasClass('disabled')
-                || $target.parents().hasClass('disabled')) {
+            let freshCopy = _ff.cloneDeep(item);
+            const $target = jQuery(evt.target);
+
+            if ((!evt.target.draggable && $target.hasClass("disabled")) || $target.parents().hasClass("disabled")) {
+                this.isItemDisabled = true;
                 return this.showWhyDisabled(item);
             }
 
-            if (this.editorInserterInContainer && (freshCopy.element === 'container' || freshCopy.element === 'repeater_container')) {
-                this.$message({
-                    message: this.$t('You can not insert a container into another.'),
-                    type: 'warning',
-                });
-
-                return;
-            }
-
-            // Check if it's a multi-select being added to a repeater container
-            if (this.editorInserterInContainerRepeater &&
-                freshCopy.element === 'select' &&
-                freshCopy.attributes &&
-                freshCopy.attributes.multiple) {
-                this.$message({
-                    message: this.$t('Multi-select fields are not supported in container repeaters.'),
-                    type: 'warning',
-                });
+            if (this.editorInserterInContainer && freshCopy.element === "container") {
+                this.$message.warning(this.$t("You can not insert a container into another."));
                 return;
             }
 
             const isSupportedField = this.containerSupportedFields.some(field => {
                 if (field.key === item.element) {
-                    if (field.condition && typeof field.condition === 'function') {
+                    if (field.condition && typeof field.condition === "function") {
                         return field.condition(item);
                     }
                     return true;
@@ -989,42 +828,36 @@
                 const supportedFieldsList = this.containerSupportedFields
                     .filter(field => !field.condition)
                     .map(field => field.label)
-                    .join(', ');
+                    .join(", ");
                 this.$message({
                     message: this.$t(`This field is not supported in the container repeater. Supported fields are: ${supportedFieldsList}`),
-                    type: 'warning',
+                    type: "warning"
                 });
                 return false;
             }
 
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
+            const captchas = ["recaptcha", "hcaptcha", "turnstile"];
             if (this.isAutoloadCaptchaEnabled && captchas.includes(freshCopy.element)) {
-                this.$message({
-                    message: this.$t('Captcha has been enabled globally.'),
-                    type: 'warning',
-                });
-
+                this.$message.warning(this.$t("Captcha has been enabled globally."));
                 return;
             }
 
-            let isCaptchaExists = this.isCaptchaExists(captchas, item.element);
-
-            if (isCaptchaExists) {
+            if (this.isCaptchaExists(captchas, item.element)) {
                 return;
             }
 
             this.makeUniqueNameAttr(this.form.dropzone, freshCopy);
 
-			// Make save & resume button right align by default for conversation form
-			if (this.is_conversion_form && 'save_progress_button' === freshCopy.element) {
-				freshCopy.settings.align = 'right';
-			}
+            // Make save & resume button right align by default for conversation form
+            if (this.is_conversion_form && "save_progress_button" === freshCopy.element) {
+                freshCopy.settings.align = "right";
+            }
 
             if (this.insertNext.index != null) {
                 this.insertNext.wrapper.splice(this.insertNext.index + 1, 0, freshCopy);
                 this.editorInserterDismiss();
                 this.editItem = freshCopy;
-                this.changeSidebarMode('edit');
+                this.changeSidebarMode("edit");
             } else {
                 this.form.dropzone.push(freshCopy);
             }
@@ -1043,13 +876,13 @@
          * @param item
          * @param mode
          */
-        editSelected(item, mode = 'edit') {
+        editSelected(item, mode = "edit") {
             this.updateSidebar();
             this.changeFieldMode(mode);
 
             this.editItem = item;
 
-            jQuery('html, body').animate({
+            jQuery("html, body").animate({
                 scrollTop: 0
             }, 300);
         },
@@ -1069,20 +902,152 @@
         /**
          * Rearrange elements in the editor
          * Action when drag starts
-         * @param el
+         * @param evt
          */
-        handleDragstart(el) {
-            var height = jQuery(el).height() + 20;
-            this.dragSourceHeight = height + 'px';
+        handleDrop(evt) {
+            const { added, removed, moved } = evt;
+
+            if (added) {
+                const { element: item, newIndex: index } = added;
+
+                let freshCopy = _ff.cloneDeep(item);
+
+                if (type !== "existingElement") {
+                    this.makeUniqueNameAttr(props.form.dropzone, item);
+
+                    // Make save & resume button right align by default for conversation form
+                    if (this.is_conversion_form && "save_progress_button" === item.element) {
+                        item.settings.align = "right";
+                    }
+                }
+
+                let $containerElement = jQuery(evt.originalEvent?.target).closest(".item-container");
+                if ($containerElement.length) {
+                    this.editorInserterInContainer = true;
+                }
+
+                // Prevent inserting container into container
+                if ((freshCopy.element === "repeater_container" || freshCopy.element === "container") && this.form.dropzone !== evt.to) {
+                    this.$message({
+                        message: this.$t("You can not insert a container into another."),
+                        type: "warning"
+                    });
+                    this.$store.commit("removeFromDropzone", index); // Clean up
+                    return;
+                }
+
+                if (freshCopy.element === "select" && item.attributes && item.attributes.multiple) {
+                    this.$message({
+                        message: this.$t("Multi-select fields are not supported in container repeaters."),
+                        type: "warning"
+                    });
+
+                    // Remove the item that was added
+                    const itemIndex = this.form.dropzone.findIndex(el => el === item);
+                    if (itemIndex !== -1) {
+                        this.form.dropzone.splice(itemIndex, 1);
+                    }
+                    return false;
+                }
+
+                const isSupportedField = this.containerSupportedFields.some(field => {
+                    if (field.key === item.element) {
+                        if (field.condition && typeof field.condition === "function") {
+                            return field.condition(item);
+                        }
+                        return true;
+                    }
+                    return false;
+                });
+
+                if (!isSupportedField && this.form.dropzone !== evt.to) {
+                    this.fieldNotSupportInContainerRepeater = true;
+                    const supportedFieldsList = this.containerSupportedFields
+                        .filter(field => !field.condition)
+                        .map(field => field.label)
+                        .join(", ");
+                    this.$message({
+                        message: this.$t(`This field is not supported in the container. Supported fields are: ${supportedFieldsList}`),
+                        type: "warning"
+                    });
+                    return false;
+                }
+
+                // Prevent adding multiple captchas
+                const captchas = ["recaptcha", "hcaptcha", "turnstile"];
+                if (this.isAutoloadCaptchaEnabled && captchas.includes(freshCopy.element)) {
+                    this.$message({
+                        message: this.$t("Captcha has been enabled globally."),
+                        type: "warning"
+                    });
+                    this.$store.commit("removeFromDropzone", index); // Clean up
+                    return;
+                }
+
+                // Check if captcha already exists
+                if (this.isCaptchaExists(captchas, item.element)) {
+                    this.$store.commit("removeFromDropzone", index); // Clean up
+                    return;
+                }
+
+                // Set unique key for item
+                const uniqueKey = "el_" + new Date().getTime();
+                this.$store.commit("setUniqueKey", { element: item, key: uniqueKey });
+
+                // Add item to dropzone in the correct position
+                this.$store.commit("addToDropzone", { index, item });
+            }
+
+            if (removed) {
+                const { oldIndex } = removed;
+                this.$store.commit("removeFromDropzone", oldIndex); // Handle removal
+            }
+
+            if (moved) {
+                const { newIndex, oldIndex } = moved;
+                this.$store.commit("moveInDropzone", { newIndex, oldIndex }); // Handle movement
+            }
+        },
+
+        /**
+         * Rearrange elements in the editor
+         * Action when drag starts
+         * @param evt
+         */
+        handleDragstart(evt) {
+            this.stageDrag = true;
+            const height = evt.item.offsetHeight + 20;
+            this.dragSourceHeight = height + "px";
         },
 
         /**
          * Rearrange elements in the editor
          * Action when drag ends
-         * @param el
+         * @param evt
+         * @param mockList
          */
-        handleDragend(el) {
+        handleDragend(evt, mockList = []) {
+            if (mockList.length) {
+                const draggedIndex = evt.oldIndex;
+                const draggedItem = mockList[draggedIndex];
+                if (this.itemDisableConditions[draggedItem.element]?.disabled) {
+                    this.isItemDisabled = true;
+                    this.whyDisabledModal = draggedItem.element;
+                }
+            }
+            this.stageDrag = false;
             this.dragSourceHeight = null;
+        },
+
+        /**
+         * Rearrange elements in the editor
+         * Check if the item is moveable
+         * @param evt
+         */
+        checkMove(evt) {
+            if (this.itemDisableConditions.hasOwnProperty(evt.draggedContext.element.element)) {
+                return false;
+            }
         },
 
         /**
@@ -1098,16 +1063,16 @@
          * And do necessary adjustments to the editor
          */
         fetchSettings() {
-            const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form_id);
+            const url = FluentFormsGlobal.$rest.route("getFormSettings", this.form_id);
 
-            FluentFormsGlobal.$rest.get(url, {meta_key: 'formSettings'})
+            FluentFormsGlobal.$rest.get(url, { meta_key: "formSettings" })
                 .then(response => {
                     let result = response[0];
                     if (result && result.value) {
                         let settings = result.value;
                         this.original_label_placement = settings.layout.labelPlacement;
-                        if (settings.layout.labelPlacement == 'hide_label') {
-                            settings.layout.labelPlacement = 'top';
+                        if (settings.layout.labelPlacement == "hide_label") {
+                            settings.layout.labelPlacement = "top";
                         } else {
                             this.labelPlacement = settings.layout.labelPlacement;
                         }
@@ -1123,14 +1088,15 @@
          * once the element is removed
          */
         garbageCleaner() {
-            FluentFormEditorEvents.$on('onElRemoveSuccess', field => {
+            this.eventBus.on("onElRemoveSuccess", field => {
                 // Reset Editable Object
-                if (!_ff.isEmpty(this.editItem) && this.editItem.attributes.name == field)
+                if (!_ff.isEmpty(this.editItem) && this.editItem.attributes.name == field) {
                     this.clearEditableObject();
+                }
 
                 // remove garbage conditional logics
                 // recursively from nested elements
-                this.mapElements(this.dropzone, (el) => {
+                this.mapElements(this.dropzone, el => {
                     const conditions = el.settings.conditional_logics && el.settings.conditional_logics.conditions;
                     _ff.map(conditions, (condition, index) => {
                         if (condition) {
@@ -1152,75 +1118,74 @@
          **/
         initSaveBtn() {
             const self = this;
-            var saveButton = jQuery('<button />', {
-                id: 'saveFormData',
-                class: 'el-button el-button--primary ff-keyboard-shortcut-tooltip',
-                html: '<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>'
+            var saveButton = jQuery("<button />", {
+                id: "saveFormData",
+                class: "el-button el-button--primary ff-keyboard-shortcut-tooltip",
+                html: "<i class=\"el-icon-success mr-1\"></i> Save Form <span class=\"ff-tooltip\">Save ⌘S</span>"
             });
-            saveButton.on('click', function () {
+            saveButton.on("click", function() {
                 const $this = jQuery(this);
-                if (!$this.data('text')) $this.data('text', $this.text());
-                $this.html('<i class="el-icon-loading mr-1"></i> Save Form');
+                if (!$this.data("text")) $this.data("text", $this.text());
+                $this.html("<i class=\"el-icon-loading mr-1\"></i> Save Form");
                 self.save_form();
             });
 
-            jQuery('.ff-navigation-right').append(saveButton);
+            jQuery(".ff-navigation-right").append(saveButton);
 
-            var screenButton = jQuery('<span />', {
-                id: 'switchScreen',
-                class: 'ff_icon_switch_full ff-icon ff-icon-fullscreen',
-                text: ''
+            var screenButton = jQuery("<span />", {
+                id: "switchScreen",
+                class: "ff_icon_switch_full ff-icon ff-icon-fullscreen",
+                text: ""
             });
 
-            screenButton.on('click', function () {
-                const $body = jQuery('body');
-                let wasFullScreen = $body.hasClass('ff_full_screen');
+            screenButton.on("click", function() {
+                const $body = jQuery("body");
+                let wasFullScreen = $body.hasClass("ff_full_screen");
                 if (window.localStorage) {
                     if (wasFullScreen) {
-                        window.localStorage.setItem('ff_is_full_screen', 'no');
-
+                        window.localStorage.setItem("ff_is_full_screen", "no");
                     } else {
-                        window.localStorage.setItem('ff_is_full_screen', 'yes');
+                        window.localStorage.setItem("ff_is_full_screen", "yes");
                     }
                 }
-                $body.toggleClass('ff_full_screen');
+                $body.toggleClass("ff_full_screen");
             });
 
             if (window.localStorage) {
-                if (window.localStorage.getItem('ff_is_full_screen') == 'yes') {
-                    jQuery('body').addClass('ff_full_screen').addClass('folded');
+                if (window.localStorage.getItem("ff_is_full_screen") == "yes") {
+                    jQuery("body").addClass("ff_full_screen").addClass("folded");
                 }
             } else {
-                jQuery('body').addClass('ff_full_screen').addClass('folded');
+                jQuery("body").addClass("ff_full_screen").addClass("folded");
             }
 
-            jQuery('.ff-navigation-right').append(screenButton);
+            jQuery(".ff-navigation-right").append(screenButton);
         },
-        initUndoRedoBttn(){
+        initUndoRedoBtn() {
             const self = this;
 
-            let buttonContainer = jQuery('<div />', {
-                class: 'ff-undo-redo-container' // Custom container class
+            let buttonContainer = jQuery("<div />", {
+                class: "ff-undo-redo-container" // Custom container class
             });
 
-            let undoButton = jQuery('<button />', {
-                type: 'button',
-                class: 'ff-undo-button ff-keyboard-shortcut-tooltip', // Custom undo button class
-                'aria-label': 'Undo',
-	            html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M18.3 11.7c-.6-.6-1.4-.9-2.3-.9H6.7l2.9-3.3-1.1-1-4.5 5L8.5 16l1-1-2.7-2.7H16c.5 0 .9.2 1.3.5 1 1 1 3.4 1 4.5v.3h1.5v-.2c0-1.5 0-4.3-1.5-5.7z"></path></svg> <span class="ff-tooltip">Undo ⌘Z</span>`
-            }).on('click', function(e) {
+            let undoButton = jQuery("<button />", {
+                type: "button",
+                class: "ff-undo-button ff-keyboard-shortcut-tooltip", // Custom undo button class
+                "aria-label": "Undo",
+                html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M18.3 11.7c-.6-.6-1.4-.9-2.3-.9H6.7l2.9-3.3-1.1-1-4.5 5L8.5 16l1-1-2.7-2.7H16c.5 0 .9.2 1.3.5 1 1 1 3.4 1 4.5v.3h1.5v-.2c0-1.5 0-4.3-1.5-5.7z"></path></svg> <span class="ff-tooltip">Undo ⌘Z</span>`
+            }).on("click", function(e) {
                 e.preventDefault();
                 if (self.canUndo) {
                     self.undo();
                 }
             });
 
-            let redoButton = jQuery('<button />', {
-                type: 'button',
-                class: 'ff-redo-button ff-keyboard-shortcut-tooltip',
-                'aria-label': 'Redo',
-	            html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15.6 6.5l-1.1 1 2.9 3.3H8c-.9 0-1.7.3-2.3.9-1.4 1.5-1.4 4.2-1.4 5.6v.2h1.5v-.3c0-1.1 0-3.5 1-4.5.3-.3.7-.5 1.3-.5h9.2L14.5 15l1.1 1.1 4.6-4.6-4.6-5z"></path></svg><span class="ff-tooltip">Redo ⇧⌘Z</span>`
-            }).on('click', function(e) {
+            let redoButton = jQuery("<button />", {
+                type: "button",
+                class: "ff-redo-button ff-keyboard-shortcut-tooltip",
+                "aria-label": "Redo",
+                html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15.6 6.5l-1.1 1 2.9 3.3H8c-.9 0-1.7.3-2.3.9-1.4 1.5-1.4 4.2-1.4 5.6v.2h1.5v-.3c0-1.1 0-3.5 1-4.5.3-.3.7-.5 1.3-.5h9.2L14.5 15l1.1 1.1 4.6-4.6-4.6-5z"></path></svg><span class="ff-tooltip">Redo ⇧⌘Z</span>`
+            }).on("click", function(e) {
                 e.preventDefault();
                 if (self.canRedo) {
                     self.redo();
@@ -1229,7 +1194,7 @@
 
             buttonContainer.append(undoButton, redoButton);
 
-            jQuery('.ff_menu_back').after(buttonContainer);
+            jQuery(".ff_menu_back").after(buttonContainer);
         },
 
 
@@ -1243,24 +1208,24 @@
             this.editorInserterVisible = false;
             this.editorInserterInContainer = false;
             this.editorInserterInContainerRepeater = false;
-            jQuery('.js-editor-item').removeClass('is-editor-inserter');
+            jQuery(".js-editor-item").removeClass("is-editor-inserter");
         },
 
         /**
          * Show editor inserter popup event
          */
         editorInserterPopup(index, wrapper) {
-            FluentFormEditorEvents.$emit('editor-inserter-popup', index, wrapper, this.$el);
+            this.eventBus.emit("editor-inserter-popup", [index, wrapper, this.$el]);
         },
 
         /**
          * Initiate form rename popup
          */
         initRenameForm() {
-            jQuery('#js-ff-nav-title')
-                .on('click', _ => this.renameFormVisibility = true)
-                .prepend('<i class="el-icon-edit"></i> ')
-                .css('cursor', 'pointer');
+            jQuery("#js-ff-nav-title")
+                .on("click", _ => (this.renameFormVisibility = true))
+                .prepend("<i class=\"el-icon-edit\"></i> ")
+                .css("cursor", "pointer");
         },
 
         /**
@@ -1269,19 +1234,19 @@
          */
         formRenameSuccess(title) {
             this.form.title = title;
-            jQuery('#js-ff-nav-title').find('div').text(title);
+            jQuery("#js-ff-nav-title").find("div").text(title);
         },
 
         /*
-        * checking if captcha is already exists in the Editor
-        */
+         * checking if captcha is already exists in the Editor
+         */
         isCaptchaExists(captchas, itemEl) {
             let isCaptchaExists = false;
             this.dropzone.forEach(el => {
                 if (captchas.includes(el.element) && captchas.includes(itemEl)) {
-                     this.$message({
-                        message: this.$t('A captcha has been already added.'),
-                        type: 'warning',
+                    this.$message({
+                        message: this.$t("A captcha has been already added."),
+                        type: "warning"
                     });
 
                     isCaptchaExists = true;
@@ -1291,16 +1256,16 @@
             return isCaptchaExists;
         },
         initKeyboardSave(e) {
-            if ((window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) && e.key === 's') {
+            if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key === "s") {
                 e.preventDefault();
                 this.save_form();
             }
         },
         initKeyboardUndoRedo(e) {
-            const isMac = window.navigator.platform.match('Mac');
+            const isMac = window.navigator.platform.match("Mac");
             const modifierKey = isMac ? e.metaKey : e.ctrlKey;
 
-            if (modifierKey && e.key === 'z') {
+            if (modifierKey && e.key === "z") {
                 e.preventDefault();
                 if (e.shiftKey) {
                     this.redo();
@@ -1311,20 +1276,20 @@
         },
 
         initKeyboardDelete(e) {
-			if (this.editorInserterVisible || this.fieldMode !== 'edit') {
-				return;
-			}
-
-            // only trigger delete if no input is focused
-            const activeElement = document.activeElement;
-            if (activeElement && activeElement.tagName !== 'BODY') {
+            if (this.editorInserterVisible || this.fieldMode !== "edit") {
                 return;
             }
 
-            const isDelete = e.key === 'Backspace' || e.key === 'Delete';
+            // only trigger delete if no input is focused
+            const activeElement = document.activeElement;
+            if (activeElement && activeElement.tagName !== "BODY") {
+                return;
+            }
+
+            const isDelete = e.key === "Backspace" || e.key === "Delete";
             if (isDelete && Object.keys(this.editItem).length > 0) {
                 e.preventDefault();
-                FluentFormEditorEvents.$emit('keyboard-delete-selected-item', this.editItem);
+                this.eventBus.emit("keyboard-delete-selected-item", this.editItem);
             }
         }
     },
@@ -1335,32 +1300,32 @@
          * and hide from view
          * @augments {event}
          */
-        FluentFormEditorEvents.$on('editor-inserter-dismiss', this.editorInserterDismiss);
+        this.eventBus.on("editor-inserter-dismiss", this.editorInserterDismiss);
 
         /**
          * Event: On editor inserter popup visible
          * @augments {index, wrapper, elDOM}
          */
-        FluentFormEditorEvents.$on('editor-inserter-popup', (index, wrapper, elDOM) => {
+        this.eventBus.on("editor-inserter-popup", ([index, wrapper, elDOM]) => {
             this.editorInserterDismiss();
-            jQuery(elDOM).find('.js-editor-item').first().addClass('is-editor-inserter');
+            jQuery(elDOM).find(".js-editor-item").first().addClass("is-editor-inserter");
 
-            this.insertNext = {index, wrapper};
-            this.$nextTick(_ => this.editorInserterVisible = true);
+            this.insertNext = { index, wrapper };
+            this.editorInserterVisible = true;
         });
 
         /**
          * Event listener
          * If the editor inserter popup is triggered from a container element
          */
-        FluentFormEditorEvents.$on('editor-inserter-in-container', newVal => {
+
+        this.eventBus.on("editor-inserter-in-container", newVal => {
             this.editorInserterInContainer = newVal;
         });
-        FluentFormEditorEvents.$on('editor-inserter-in-container-repeater', newVal => {
+        this.eventBus.on("editor-inserter-in-container-repeater", newVal => {
             this.editorInserterInContainerRepeater = newVal;
         });
-
-		FluentFormEditorEvents.$on('not-supported-in-container-repeater', newValue => {
+        this.eventBus.on("not-supported-in-container-repeater", newValue => {
             this.fieldNotSupportInContainerRepeater = newValue;
         });
     },
@@ -1371,43 +1336,47 @@
         this.initSaveBtn();
         this.initRenameForm();
         this.initUndoRedo();
-        this.initUndoRedoBttn();
+        this.initUndoRedoBtn();
 
 
-        jQuery(document).on('updateUndoState', () => {
-            jQuery('.ff-undo-button').toggleClass('active', this.canUndo);
-            jQuery('.ff-redo-button').toggleClass('active', this.canRedo);
+        jQuery(document).on("updateUndoState", () => {
+            jQuery(".ff-undo-button").toggleClass("active", this.canUndo);
+            jQuery(".ff-redo-button").toggleClass("active", this.canRedo);
         });
 
         /**
          * Dismiss editor inserter popup when clicked outside
          */
-        jQuery(document).on('click', this.editorInserterDismiss);
+        jQuery(document).on("click", this.editorInserterDismiss);
 
-        (new ClipboardJS('.copy')).on('success', (e) => {
+        /**
+         * Copy to clip board
+         * @type {Clipboard}
+         */
+        (new ClipboardJS(".copy")).on("success", e => {
             this.$copy();
         });
         /*
         * Maybe Autoload Captcha
          */
         if (this.isAutoloadCaptchaEnabled) {
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
+            const captchas = ["recaptcha", "hcaptcha", "turnstile"];
             setTimeout(() => {
                 this.form.dropzone = this.form.dropzone.filter(el => !captchas.includes(el.element));
             }, 100);
         }
-        document.addEventListener('keydown', this.initKeyboardSave);
-        document.addEventListener('keydown', this.initKeyboardUndoRedo);
-        document.addEventListener('keydown', this.initKeyboardDelete);
+        document.addEventListener("keydown", this.initKeyboardSave);
+        document.addEventListener("keydown", this.initKeyboardUndoRedo);
+        document.addEventListener("keydown", this.initKeyboardDelete);
     },
     beforeDestroy() {
-        document.removeEventListener('keydown', this.initKeyboardSave);
-        document.removeEventListener('keydown', this.initKeyboardUndoRedo);
-        document.removeEventListener('keydown', this.initKeyboardDelete);
+        document.removeEventListener("keydown", this.initKeyboardSave);
+        document.removeEventListener("keydown", this.initKeyboardUndoRedo);
+        document.removeEventListener("keydown", this.initKeyboardDelete);
         if (this.undoRedoManager) {
-            this.undoRedoManager.off('undo');
-            this.undoRedoManager.off('redo');
-            this.undoRedoManager.off('update');
+            this.undoRedoManager.off("undo");
+            this.undoRedoManager.off("redo");
+            this.undoRedoManager.off("update");
         }
     }
 };

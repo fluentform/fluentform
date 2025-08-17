@@ -6,7 +6,7 @@ namespace FluentForm\App\Services\Submission;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 
 class SubmissionPrint

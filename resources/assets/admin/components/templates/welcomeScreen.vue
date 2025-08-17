@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import customButton from './customButton';
+import customButton from "./customButton.vue";
+
 export default {
-    name: 'section_break',
-    props: ['item'],
+    name: "section_break",
+    props: ["item"],
     components: {
         customButton
     }
-}
+};
 </script>
-

@@ -7,18 +7,18 @@
 </template>
 
 <script>
-import withLabel from './withLabel.vue';
+import withLabel from "./withLabel.vue";
 
 export default {
-    name: 'turnstile',
-    props: ['item'],
+    name: "turnstile",
+    props: ["item"],
     components: {
         withLabel
     },
     data() {
         return {
             plugin_url: window.FluentFormApp.plugin_public_url
-        }
+        };
     }
-}
+};
 </script>

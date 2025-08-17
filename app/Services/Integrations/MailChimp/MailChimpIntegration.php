@@ -5,7 +5,7 @@ namespace FluentForm\App\Services\Integrations\MailChimp;
 use FluentForm\App\Http\Controllers\IntegrationManagerController;
 use FluentForm\App\Services\Integrations\MailChimp\MailChimpSubscriber as Subscriber;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class MailChimpIntegration extends IntegrationManagerController
 {
@@ -215,7 +215,7 @@ class MailChimpIntegration extends IntegrationManagerController
                 [
                     'key'                => 'tags',
                     'require_list'       => true,
-                    'label'              => __('Tags xyz', 'fluentform'),
+                    'label'              => __('Tags', 'fluentform'),
                     'tips'               => __('Associate tags to your Mailchimp contacts with a comma separated list (e.g. new lead, FluentForms, web source). Commas within a merge tag value will be created as a single tag.', 'fluentform'),
                     'component'          => 'selection_routing',
                     'simple_component'   => 'value_text',
@@ -303,8 +303,8 @@ class MailChimpIntegration extends IntegrationManagerController
             $setting['list_id'] = (string) $setting['list_id'];
         }
 
-        $settings['markAsVIP'] = ArrayHelper::isTrue($setting, 'markAsVIP');
-        $settings['doubleOptIn'] = ArrayHelper::isTrue($setting, 'doubleOptIn');
+        $settings['markAsVIP'] = Arr::isTrue($setting, 'markAsVIP');
+        $settings['doubleOptIn'] = Arr::isTrue($setting, 'doubleOptIn');
 
         return wp_parse_args($setting, $defaults);
     }
@@ -370,7 +370,7 @@ class MailChimpIntegration extends IntegrationManagerController
     {
         $settings = wp_unslash($this->app->request->get('settings'));
 
-        $listId = ArrayHelper::get($settings, 'list_id');
+        $listId = Arr::get($settings, 'list_id');
         if (! $listId) {
             wp_send_json_success([
                 'categories'    => [],
@@ -379,7 +379,7 @@ class MailChimpIntegration extends IntegrationManagerController
             ]);
         }
 
-        $categoryId = ArrayHelper::get($settings, 'interest_group.category');
+        $categoryId = Arr::get($settings, 'interest_group.category');
         $categories = $this->getInterestCategories($listId);
 
         $subCategories = [];
@@ -409,7 +409,7 @@ class MailChimpIntegration extends IntegrationManagerController
         } catch (\Exception $exception) {
             return [];
         }
-        $categories = ArrayHelper::get($categories, 'categories', []);
+        $categories = Arr::get($categories, 'categories', []);
         $formattedLists = [];
         foreach ($categories as $list) {
             $formattedLists[] = [
@@ -435,7 +435,7 @@ class MailChimpIntegration extends IntegrationManagerController
         } catch (\Exception $exception) {
             return [];
         }
-        $categories = ArrayHelper::get($categories, 'interests', []);
+        $categories = Arr::get($categories, 'interests', []);
         $formattedLists = [];
         foreach ($categories as $list) {
             $formattedLists[] = [
@@ -486,7 +486,7 @@ class MailChimpIntegration extends IntegrationManagerController
                     $messageArray = $message;
                     $message = '';
                     foreach ($messageArray as $error) {
-                        $message .= ArrayHelper::get($error, 'message');
+                        $message .= Arr::get($error, 'message');
                     }
                 }
             }

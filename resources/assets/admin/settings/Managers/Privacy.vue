@@ -1,17 +1,18 @@
 <template>
-
     <div class="ff_block_item" v-if="roles.length">
         <el-skeleton :loading="loading" animated :rows="4">
-            <h6 class="ff_block_title mb-1">{{ $t('Role Based') }}</h6>
-            <p class="ff_block_text">{{ $t('Administrators have full access to Fluent Forms. By selecting additional roles below, you can give access to other user roles.') }}</p>
+            <h6 class="ff_block_title mb-1">{{ $t("Role Based") }}</h6>
+            <p class="ff_block_text">
+                {{ $t("Administrators have full access to Fluent Forms. By selecting additional roles below, you can give access to other user roles.")
+                }}</p>
             <div class="ff_block_item_body mt-3">
                 <div class="mb-3">
                     <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
-                        {{ $t('Check all') }}
+                        {{ $t("Check all") }}
                     </el-checkbox>
                 </div>
                 <el-checkbox-group v-model="capability" @change="handleCheckedCapabilitiesChange">
-                    <el-checkbox v-for="role in roles" :label="role.key" :key="role.key">
+                    <el-checkbox v-for="role in roles" :value="role.key" :key="role.key">
                         {{ role.name }}
                     </el-checkbox>
                 </el-checkbox-group>
@@ -29,14 +30,14 @@ export default {
             checkAll: false,
             isIndeterminate: false,
             capability: ["administrator"],
-            roles: [],
+            roles: []
         };
     },
     methods: {
         fetchRoles() {
             this.loading = true;
 
-            const url = FluentFormsGlobal.$rest.route('getRoles');
+            const url = FluentFormsGlobal.$rest.route("getRoles");
 
             FluentFormsGlobal.$rest.get(url)
                 .then(response => {
@@ -62,7 +63,7 @@ export default {
                 return;
             }
 
-            const url = FluentFormsGlobal.$rest.route('storeRoles');
+            const url = FluentFormsGlobal.$rest.route("storeRoles");
             let data = {
                 capability: this.capability
             };
@@ -82,7 +83,7 @@ export default {
             const filteredCapability = val ? this.roles.map(item => item.key) : [];
             this.isIndeterminate = false;
             this.capability = filteredCapability;
-            this.$nextTick(function () {
+            this.$nextTick(function() {
                 this.store();
             });
         },

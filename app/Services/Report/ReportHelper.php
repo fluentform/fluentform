@@ -11,7 +11,7 @@ use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\Submission\SubmissionService;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 class ReportHelper
 {

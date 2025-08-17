@@ -1,28 +1,28 @@
 import Request from "./Request.js";
 import Rest from "./Rest.js";
 
-(function ($) {
+(function($) {
     class FluentFormsGlobal {
         constructor() {
             this.fluent_forms_global_var = window.fluent_forms_global_var;
             this.url = fluent_forms_global_var.ajaxurl;
 
             $.ajaxSetup({
-                data:{
+                data: {
                     fluent_forms_admin_nonce: this.fluent_forms_global_var.fluent_forms_admin_nonce
                 }
             });
             // hide all notice
-            jQuery('.update-nag,.notice, #wpbody-content > .updated, #wpbody-content > .error').not('.fluentform-admin-notice').remove();
+            jQuery(".update-nag,.notice, #wpbody-content > .updated, #wpbody-content > .error").not(".fluentform-admin-notice").remove();
         }
 
-        $get(data, url = '') {
+        $get(data, url = "") {
             url = url || this.url;
 
             return $.get(url, data);
         }
 
-        $post(data, url = '') {
+        $post(data, url = "") {
             url = url || this.url;
 
             return $.post(url, data);
@@ -32,6 +32,6 @@ import Rest from "./Rest.js";
 
         $rest = Rest;
     }
-    window.FluentFormsGlobal = new FluentFormsGlobal();
 
-})(jQuery)
+    window.FluentFormsGlobal = new FluentFormsGlobal();
+})(jQuery);

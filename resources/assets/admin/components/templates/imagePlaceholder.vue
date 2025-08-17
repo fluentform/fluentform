@@ -8,13 +8,13 @@
 </template>
 
 <script>
-import withLabel from './withLabel.vue';
+import withLabel from "./withLabel.vue";
 
 export default {
-    name: 'imagePlaceholder',
-    props: ['item'],
+    name: "imagePlaceholder",
+    props: ["item"],
     components: {
         withLabel
     }
-}
+};
 </script>

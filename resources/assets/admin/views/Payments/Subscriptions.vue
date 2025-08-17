@@ -58,14 +58,15 @@
                                 <el-button
                                     class="el-button--soft"
                                     @click="cancelSubscription(subscription)"
-                                    v-if="subscription.status == 'active' || subscription.status == 'trialling' || subscription.status == 'failing'" size="mini" type="danger">
+                                    v-if="subscription.status === 'active' || subscription.status === 'trialling' || subscription.status === 'failing'" size="small" type="danger"
+                                >
                                     {{$t('Cancel')}}
                                 </el-button>
                             </btn-group-item>
                         </btn-group>
                     </div><!-- .ff_subscription_data_item -->
                 </div><!-- .ff_subscription_data -->
-
+                
                 <div v-if="subscription && subscription.related_payments" class="payment_head_bottom wpf_entry_order_items">
                     <h3>{{ $t('Related Payments') }}</h3>
 
@@ -147,16 +148,16 @@
             v-loading="cancelling"
             width="50%">
             <h3>{{ $t('You are about to cancel this subscription') }}</h3>
-            <p v-if="payment_method == 'stripe'" v-html="$t('This will also %s cancel the subscription at stripe.%s So no further payment will be processed.', '<b>', '</b>')"></p>
+            <p v-if="payment_method === 'stripe'" v-html="$t('This will also %s cancel the subscription at stripe.%s So no further payment will be processed.', '<b>', '</b>')"></p>
 	        <p v-else-if="subscription_supported_methods.includes(payment_method)" v-html="$t('This will also %s cancel the subscription at %s.%s So no further payment will be processed.', '<b>', payment_method, '</b>')"></p>
             <div v-else>
                 <p>{{ $t('%s payment gateway does not support remote cancellation at this moment.', ucFirst(payment_method)) }}</p>
                 <p style="font-weight: bold;">{{ $t('Please cancel the subscription from %s dashboard too.', payment_method) }}</p>
             </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="sub_cancel_modal = false">{{ $t('Close') }}</el-button>
+            <template #footer class="dialog-footer">
+                <el-button @click="sub_cancel_modal = false">{{ $t('close') }}</el-button>
                 <el-button type="primary" @click="confirmCancel()">{{ $t('Yes, Cancel this subscription') }}</el-button>
-            </span>
+            </template>
         </el-dialog>
     </div>
 </template>

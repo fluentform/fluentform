@@ -139,6 +139,12 @@ export default {
         };
     },
     methods: NestedHandler.methods,
-    computed: NestedHandler.computed
+    computed: NestedHandler.computed,
+    mounted() {
+        FluentFormEditorEvents.$on('keyboard-delete-selected-item', this.handleKeyboardDelete);
+    },
+    beforeDestroy() {
+        FluentFormEditorEvents.$off('keyboard-delete-selected-item', this.handleKeyboardDelete);
+    },
 };
 </script>
