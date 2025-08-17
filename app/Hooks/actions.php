@@ -456,7 +456,7 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         // Initialize autocomplete provider settings
         if (!isset($item['settings']['autocomplete_provider'])) {
             // If google autocomplete setting is enabled, set provider to google
-            if (ArrayHelper::get($item, 'settings.enable_g_autocomplete') === 'yes') {
+            if (Arr::get($item, 'settings.enable_g_autocomplete') === 'yes') {
                 $item['settings']['autocomplete_provider'] = 'google';
             } else {
                 $item['settings']['autocomplete_provider'] = 'none';

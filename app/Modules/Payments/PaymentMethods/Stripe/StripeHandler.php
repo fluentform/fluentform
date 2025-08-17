@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\Components\PaymentMethods;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ApiRequest;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\StripeListener;
@@ -63,7 +63,7 @@ class StripeHandler
 
     public function routeStripeProcessor($submissionId, $submissionData, $form, $methodSettings, $hasSubscriptions, $totalPayable = 0)
     {
-        $processor = ArrayHelper::get($methodSettings, 'settings.embedded_checkout.value') === 'yes' ? 'inline' : 'hosted';
+        $processor = Arr::get($methodSettings, 'settings.embedded_checkout.value') === 'yes' ? 'inline' : 'hosted';
 
         do_action_deprecated(
             'fluentform_process_payment_stripe_' . $processor,
@@ -147,7 +147,7 @@ class StripeHandler
 
     public function validateSettings($errors, $settings)
     {
-        if (ArrayHelper::get($settings, 'is_active') != 'yes') {
+        if (Arr::get($settings, 'is_active') != 'yes') {
             return [];
         }
 

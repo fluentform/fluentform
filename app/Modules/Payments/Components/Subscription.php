@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\BaseFieldManager;
 
@@ -38,7 +38,7 @@ class Subscription extends BaseFieldManager
             if (!$isHtml) {
                 return $response;
             }
-            return ArrayHelper::get($field, 'raw.settings.subscription_options.' . $response . '.name', $response);
+            return Arr::get($field, 'raw.settings.subscription_options.' . $response . '.name', $response);
         }, 10, 4);
         add_filter('fluentform/white_listed_fields', [$this, 'addWhiteListedFields'], 10, 2);
     }

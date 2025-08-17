@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Modules\Payments\PaymentMethods\BaseProcessor;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\CheckoutSession;
@@ -79,11 +79,11 @@ class StripeProcessor extends BaseProcessor
             ]
         ];
 
-        if (ArrayHelper::get($methodSettings, 'settings.require_billing_info.value') == 'yes') {
+        if (Arr::get($methodSettings, 'settings.require_billing_info.value') == 'yes') {
             $checkoutArgs['billing_address_collection'] = 'required';
         }
 
-        if (ArrayHelper::get($methodSettings, 'settings.require_shipping_info.value') == 'yes') {
+        if (Arr::get($methodSettings, 'settings.require_shipping_info.value') == 'yes') {
             $checkoutArgs['shipping_address_collection'] = [
                 'allowed_countries' => StripeSettings::supportedShippingCountries()
             ];
@@ -151,7 +151,7 @@ class StripeProcessor extends BaseProcessor
         } else {
             $checkoutArgs['submit_type'] = 'auto';
             $checkoutArgs['payment_intent_data'] = $this->getPaymentIntentData($transaction, $submission, $form);
-            if ($receiptEmail && ArrayHelper::get($formSettings, 'disable_stripe_payment_receipt') != 'yes') {
+            if ($receiptEmail && Arr::get($formSettings, 'disable_stripe_payment_receipt') != 'yes') {
                 $checkoutArgs['payment_intent_data']['receipt_email'] = $receiptEmail;
             }
         }
@@ -584,11 +584,11 @@ class StripeProcessor extends BaseProcessor
             'form_title'     => $form->title
         ];
     
-        $metaItems = ArrayHelper::get($paymentSettings, 'stripe_meta_data', []);
-        if ((ArrayHelper::get($paymentSettings, 'push_meta_to_stripe') == 'yes') && !empty($metaItems)) {
+        $metaItems = Arr::get($paymentSettings, 'stripe_meta_data', []);
+        if ((Arr::get($paymentSettings, 'push_meta_to_stripe') == 'yes') && !empty($metaItems)) {
 
             foreach ($metaItems as $metaItem) {
-                if ($itemValue = ArrayHelper::get($metaItem, 'item_value')) {
+                if ($itemValue = Arr::get($metaItem, 'item_value')) {
                     $metaData[ArrayHelper::get($metaItem, 'label', 'item')] = $itemValue;
                 }
             }

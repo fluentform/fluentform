@@ -3,7 +3,7 @@
 namespace FluentForm\App\Modules\Payments\PaymentMethods\Stripe;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\Account;
 
 if (!defined('ABSPATH')) {
@@ -80,7 +80,7 @@ class ConnectConfig
         $response = json_decode(wp_remote_retrieve_body($response), true);
 
         if (empty($response['stripe_user_id'])) {
-            $message = ArrayHelper::get($response, 'message');
+            $message = Arr::get($response, 'message');
             if (!$message) {
                 $message = __('Invalid Stripe Request. Please configure stripe payment gateway again', 'fluentform');
             }
@@ -128,7 +128,7 @@ class ConnectConfig
 
         $apiKey = $settings[$mode . '_secret_key'];
 
-        $accountId = ArrayHelper::get($settings, $mode . '_account_id');
+        $accountId = Arr::get($settings, $mode . '_account_id');
 
         if (!$accountId) {
             return false;
@@ -177,7 +177,7 @@ class ConnectConfig
 
     public static function disconnect($data, $sendResponse = false)
     {
-        $mode = ArrayHelper::get($data, 'mode');
+        $mode = Arr::get($data, 'mode');
         $stripeSettings = StripeSettings::getSettings();
 
         if($stripeSettings['is_active'] != 'yes') {

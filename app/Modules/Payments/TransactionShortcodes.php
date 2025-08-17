@@ -3,7 +3,7 @@
 namespace FluentForm\App\Modules\Payments   ;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\Classes\PaymentReceipt;
 use FluentForm\App\Modules\Payments\Orders\OrderData;
 
@@ -96,7 +96,7 @@ class TransactionShortcodes
 
     public function renderPaymentReceiptPage($data, $echo = true)
     {
-        $transactionHash = ArrayHelper::get($data, 'transaction');
+        $transactionHash = Arr::get($data, 'transaction');
 
         $transaction = fluentFormApi('submissions')->transaction($transactionHash, 'transaction_hash');
 
@@ -152,7 +152,7 @@ class TransactionShortcodes
 
     public function routeAjaxEndpoints()
     {
-        $route = sanitize_text_field(ArrayHelper::get($_REQUEST, 'route'));
+        $route = sanitize_text_field(Arr::get($_REQUEST, 'route'));
         $this->verifyNonce();
         if ($route == 'get_subscription_transactions') {
             $this->sendSubscriptionPayments();
@@ -169,7 +169,7 @@ class TransactionShortcodes
 
         $subscriptions = fluentFormApi('submissions')->subscriptionsByUserId($userId, [
             'form_title' => true,
-            'statuses'   => ArrayHelper::get($atts, 'subscription_statuses', [])
+            'statuses'   => Arr::get($atts, 'subscription_statuses', [])
         ]);
 
         if (!$subscriptions) {
@@ -191,8 +191,8 @@ class TransactionShortcodes
             $subscription->billing_text = $billingText;
             $subscription->starting_date_formated = date_i18n($viewConfig['date_format'], strtotime($subscription->created_at));
             $subscription->can_cancel = $this->canCancelSubscription($subscription);
-            $subscription->status = ArrayHelper::get(PaymentHelper::getSubscriptionStatuses(), $subscription->status, $subscription->status);
-            $subscription->billing_interval =  ArrayHelper::get(PaymentHelper::getBillingIntervals(), $subscription->billing_interval, $subscription->billing_interval);
+            $subscription->status = Arr::get(PaymentHelper::getSubscriptionStatuses(), $subscription->status, $subscription->status);
+            $subscription->billing_interval =  Arr::get(PaymentHelper::getBillingIntervals(), $subscription->billing_interval, $subscription->billing_interval);
         }
 
         return PaymentHelper::loadView('user_subscriptions_table', [
@@ -209,7 +209,7 @@ class TransactionShortcodes
 
         $transactions = fluentFormApi('submissions')->transactionsByUserId($userId, [
             'transaction_types' => ['onetime'],
-            'statuses'          => ArrayHelper::get($atts, 'payment_statuses', [])
+            'statuses'          => Arr::get($atts, 'payment_statuses', [])
         ]);
 
         if (!$transactions) {
@@ -232,7 +232,7 @@ class TransactionShortcodes
             }
 
             $transaction->view_url = $viewConfig['base_url'] . 'transaction=' . $transaction->transaction_hash . '&payment_method=' . $transaction->payment_method;
-            $transaction->status = ArrayHelper::get(PaymentHelper::getPaymentStatuses(), $transaction->status, $transaction->status);
+            $transaction->status = Arr::get(PaymentHelper::getPaymentStatuses(), $transaction->status, $transaction->status);
 
         }
 
@@ -251,7 +251,7 @@ class TransactionShortcodes
 
     public function sendSubscriptionPayments()
     {
-        $subscriptionId = intval(ArrayHelper::get($_REQUEST, 'subscription_id'));
+        $subscriptionId = intval(Arr::get($_REQUEST, 'subscription_id'));
 
         if (!$subscriptionId) {
             wp_send_json_error([
@@ -298,7 +298,7 @@ class TransactionShortcodes
             $transaction->formatted_amount = PaymentHelper::formatMoney($transaction->payment_total, $transaction->currency);
             $transaction->formatted_date = date_i18n($viewConfig['date_time_format'], strtotime($transaction->created_at));
             $transaction->view_url = false; //$viewConfig['base_url'] . 'transaction=' . $transaction->transaction_hash . '&payment_method=' . $transaction->payment_method;
-            $transaction->status = ArrayHelper::get(PaymentHelper::getPaymentStatuses(), $transaction->status, $transaction->status);
+            $transaction->status = Arr::get(PaymentHelper::getPaymentStatuses(), $transaction->status, $transaction->status);
 
         }
 
@@ -320,7 +320,7 @@ class TransactionShortcodes
     private function getViewConfig()
     {
         $paymentSettings = PaymentHelper::getPaymentSettings();
-        $pageId = ArrayHelper::get($paymentSettings, 'receipt_page_id');
+        $pageId = Arr::get($paymentSettings, 'receipt_page_id');
 
         $urlBase = false;
         if($pageId) {
@@ -431,7 +431,7 @@ class TransactionShortcodes
 
     public function cancelSubscriptionAjax()
     {
-        $subscriptionId = ArrayHelper::get($_REQUEST, 'subscription_id');
+        $subscriptionId = Arr::get($_REQUEST, 'subscription_id');
 
         if (!$subscriptionId) {
             $this->sendError(__('Invalid Request', 'fluentform'));

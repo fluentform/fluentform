@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -126,7 +126,7 @@ class ApiRequest
         if ('charges' === $api && 'POST' === $method) {
             $customer = !empty($request['customer']) ? $request['customer'] : '';
             $source = !empty($request['source']) ? $request['source'] : $customer;
-            $key = ArrayHelper::get($request, 'metadata.fluentform_tid') . '-' . $source . '-' . $api;
+            $key = Arr::get($request, 'metadata.fluentform_tid') . '-' . $source . '-' . $api;
             $key = apply_filters_deprecated(
                 'fluentform_stripe_idempotency_key',
                 [

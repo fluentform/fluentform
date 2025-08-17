@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Services\Form\SubmissionHandlerService;
 
 class PaymentHelper
@@ -137,7 +137,7 @@ class PaymentHelper
             $settings['currency'] = $currency;
         }
 
-        $settings = ArrayHelper::only($settings, ['currency', 'currency_sign_position', 'currency_separator', 'decimal_points']);
+        $settings = Arr::only($settings, ['currency', 'currency_sign_position', 'currency_separator', 'decimal_points']);
 
         $settings['currency_sign'] = self::getCurrencySymbol($settings['currency']);
         return $settings;
@@ -616,7 +616,7 @@ class PaymentHelper
         $inputs = FormFieldsParser::getInputs($formId, ['element', 'settings']);
         foreach ($inputs as $field) {
             if ($field['element'] == 'payment_method') {
-                $methods = ArrayHelper::get($field, 'settings.payment_methods');
+                $methods = Arr::get($field, 'settings.payment_methods');
                 if (is_array($methods)) {
                     return array_filter($methods, function ($method) {
                         return $method['enabled'] == 'yes';
@@ -631,10 +631,10 @@ class PaymentHelper
     {
 
         $formSettings = PaymentHelper::getFormSettings($submission->form_id, 'admin');
-        $customerEmailField = ArrayHelper::get($formSettings, 'receipt_email');
+        $customerEmailField = Arr::get($formSettings, 'receipt_email');
 
         if ($customerEmailField) {
-            $email = ArrayHelper::get($submission->response, $customerEmailField);
+            $email = Arr::get($submission->response, $customerEmailField);
             if ($email) {
                 return $email;
             }
@@ -748,7 +748,7 @@ class PaymentHelper
     public static function getCustomerName($submission, $form = false)
     {
         $formSettings = PaymentHelper::getFormSettings($submission->form_id, 'admin');
-        $customerNameCode = ArrayHelper::get($formSettings, 'customer_name');
+        $customerNameCode = Arr::get($formSettings, 'customer_name');
         if ($customerNameCode) {
             $customerName = ShortCodeParser::parse($customerNameCode, $submission->id, $submission->response);
             if ($customerName) {
@@ -797,15 +797,15 @@ class PaymentHelper
     {
         $methods = static::getFormPaymentMethods($formId);
 
-        $stripe = ArrayHelper::get($methods, 'stripe');
-        $stripeInlineStyles = ArrayHelper::get(Helper::getFormMeta($formId, '_ff_form_styles', []), 'stripe_inline_element_style', false);
+        $stripe = Arr::get($methods, 'stripe');
+        $stripeInlineStyles = Arr::get(Helper::getFormMeta($formId, '_ff_form_styles', []), 'stripe_inline_element_style', false);
         if ($stripe) {
             return apply_filters(
                 'fluentform/stripe_inline_config',
                 [
-                    'is_inline'     => ArrayHelper::get($stripe, 'settings.embedded_checkout.value') == 'yes',
+                    'is_inline'     => Arr::get($stripe, 'settings.embedded_checkout.value') == 'yes',
                     'inline_styles' => $stripeInlineStyles,
-                    'verifyZip'     => ArrayHelper::get($methods['stripe'], 'settings.verify_zip_code.value') === 'yes',
+                    'verifyZip'     => Arr::get($methods['stripe'], 'settings.verify_zip_code.value') === 'yes',
                     'disable_link'  => false
                 ],
                 $formId
@@ -981,20 +981,20 @@ class PaymentHelper
         $cases = apply_filters('fluentform/recurring_payment_summary_texts', $paymentSummaryText, $plan, $formId);
 
         // if is trial
-        $hasTrial = ArrayHelper::get($plan, 'has_trial_days') == 'yes' && ArrayHelper::get($plan, 'trial_days');
+        $hasTrial = Arr::get($plan, 'has_trial_days') == 'yes' && Arr::get($plan, 'trial_days');
         if ($hasTrial) {
             $plan['signup_fee'] = 0;
         }
 
         $signupFee = 0;
-        $hasSignupFee = ArrayHelper::get($plan, 'has_signup_fee') == 'yes' && ArrayHelper::get($plan, 'signup_fee');
+        $hasSignupFee = Arr::get($plan, 'has_signup_fee') == 'yes' && Arr::get($plan, 'signup_fee');
         if ($hasSignupFee) {
             $plan['trial_days'] = 0;
-            $signupFee = ArrayHelper::get($plan, 'signup_fee');
+            $signupFee = Arr::get($plan, 'signup_fee');
         }
 
         $firstIntervalTotal = PaymentHelper::formatMoney(
-            PaymentHelper::convertToCents($signupFee + ArrayHelper::get($plan, 'subscription_amount')),
+            PaymentHelper::convertToCents($signupFee + Arr::get($plan, 'subscription_amount')),
             $currency
         );
 
@@ -1006,22 +1006,22 @@ class PaymentHelper
         }
 
         $subscriptionAmount = PaymentHelper::formatMoney(
-            PaymentHelper::convertToCents(ArrayHelper::get($plan, 'subscription_amount')),
+            PaymentHelper::convertToCents(Arr::get($plan, 'subscription_amount')),
             $currency
         );
 
         $billingInterval = $plan['billing_interval'];
-        $billingInterval = ArrayHelper::get(self::getBillingIntervals(), $billingInterval, $billingInterval);
+        $billingInterval = Arr::get(self::getBillingIntervals(), $billingInterval, $billingInterval);
         $replaces = array(
             '{signup_fee}'           => '<span class="ff_bs ffbs_signup_fee">' . $signupFee . '</span>',
             '{first_interval_total}' => '<span class="ff_bs ffbs_first_interval_total">' . $firstIntervalTotal . '</span>',
             '{subscription_amount}'  => '<span class="ff_bs ffbs_subscription_amount">' . $subscriptionAmount . '</span>',
             '{billing_interval}'     => '<span class="ff_bs ffbs_billing_interval">' . $billingInterval . '</span>',
             '{trial_days}'           => '<span class="ff_bs ffbs_trial_days">' . $plan['trial_days'] . '</span>',
-            '{bill_times}'           => '<span class="ff_bs ffbs_bill_times">' . ArrayHelper::get($plan, 'bill_times') . '</span>'
+            '{bill_times}'           => '<span class="ff_bs ffbs_bill_times">' . Arr::get($plan, 'bill_times') . '</span>'
         );
 
-        if (ArrayHelper::get($plan, 'user_input') == 'yes') {
+        if (Arr::get($plan, 'user_input') == 'yes') {
             $cases['{subscription_amount}'] = '<span class="ff_dynamic_input_amount">' . $subscriptionAmount . '</span>';
         }
 
@@ -1033,7 +1033,7 @@ class PaymentHelper
         if ($hasSignupFee) {
             $customText = $cases['has_signup_fee'];
         } else if ($hasTrial) {
-            if (ArrayHelper::get($plan, 'bill_times') == 1) {
+            if (Arr::get($plan, 'bill_times') == 1) {
                 $customText = $cases['single_trial'];
             } else {
                 $customText = $cases['has_trial'];
@@ -1057,10 +1057,10 @@ class PaymentHelper
 	public static function getCustomerAddress($submission)
 	{
 		$formSettings = PaymentHelper::getFormSettings($submission->form_id, 'admin');
-		$customerAddressField = ArrayHelper::get($formSettings, 'customer_address');
+		$customerAddressField = Arr::get($formSettings, 'customer_address');
 
 		if ($customerAddressField) {
-            return ArrayHelper::get($submission->response, $customerAddressField);
+            return Arr::get($submission->response, $customerAddressField);
 		}
 
 		return null;
@@ -1092,7 +1092,7 @@ class PaymentHelper
         $fields = FormFieldsParser::getInputsByElementTypes($form, [$inputType], ['attributes']);
         if (!empty($fields)) {
             $field = array_shift($fields);
-            return ArrayHelper::get($field, 'attributes.name');
+            return Arr::get($field, 'attributes.name');
         }
         return '';
     }

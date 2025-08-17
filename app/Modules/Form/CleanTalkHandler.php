@@ -3,7 +3,7 @@
 namespace FluentForm\App\Modules\Form;
 
 use Cleantalk\Antispam\CleantalkRequest;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class CleanTalkHandler
 {
@@ -60,13 +60,13 @@ class CleanTalkHandler
     {
         global $cleantalk_executed;
         
-        $accessKey = ArrayHelper::get(get_option('_fluentform_cleantalk_details'), 'accessKey');
+        $accessKey = Arr::get(get_option('_fluentform_cleantalk_details'), 'accessKey');
 
         if (!$accessKey) {
             return false;
         }
 
-        $eventToken = ArrayHelper::get($formData, 'ct_bot_detector_event_token');
+        $eventToken = Arr::get($formData, 'ct_bot_detector_event_token');
         $submitTime = isset($formData['ff_ct_form_load_time']) ? time() - (int)$formData['ff_ct_form_load_time'] : null;
 
         $cleanTalkRequest = [
@@ -102,10 +102,10 @@ class CleanTalkHandler
         $inputs = FormFieldsParser::getInputs($form, ['attributes']);
 
         foreach ($inputs as $input) {
-            $element = ArrayHelper::get($input, 'element');
-            $key = ArrayHelper::get($input, 'attributes.name');
+            $element = Arr::get($input, 'element');
+            $key = Arr::get($input, 'attributes.name');
             if (isset($maps[$element]) && !$cleanTalkRequest[$maps[$element]]) {
-                $value = ArrayHelper::get($formData, $key);
+                $value = Arr::get($formData, $key);
                 if ($value) {
                     if (is_array($value)) {
                         $value = implode(' ', $value);
@@ -143,7 +143,7 @@ class CleanTalkHandler
     public static function isCleantalkActivated()
     {
         $settings = get_option('_fluentform_cleantalk_details');
-        return $settings && ArrayHelper::get($settings, 'status');
+        return $settings && Arr::get($settings, 'status');
     }
     
     public static function isEnabled()
@@ -153,7 +153,7 @@ class CleanTalkHandler
         }
 
         $settings = get_option('_fluentform_global_form_settings');
-        return $settings && 'yes' == ArrayHelper::get($settings, 'misc.cleantalk_status');
+        return $settings && 'yes' == Arr::get($settings, 'misc.cleantalk_status');
     }
 
     public static function isPluginEnabled()
@@ -206,10 +206,10 @@ class CleanTalkHandler
         $inputs = FormFieldsParser::getInputs($form, ['attributes']);
 
         foreach ($inputs as $input) {
-            $element = ArrayHelper::get($input, 'element');
-            $key = ArrayHelper::get($input, 'attributes.name');
+            $element = Arr::get($input, 'element');
+            $key = Arr::get($input, 'attributes.name');
             if (isset($maps[$element]) && !$info[$maps[$element]]) {
-                $value = ArrayHelper::get($data, $key);
+                $value = Arr::get($data, $key);
                 if ($value) {
                     if (is_array($value)) {
                         $value = implode(' ', $value);

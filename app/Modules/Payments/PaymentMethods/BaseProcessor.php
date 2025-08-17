@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 }
 
 use FluentForm\App\Modules\Payments\PaymentHelper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Services\Form\SubmissionHandlerService;
 
 abstract class BaseProcessor

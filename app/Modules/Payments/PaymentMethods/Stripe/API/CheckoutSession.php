@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeSettings;
 
 if (!defined('ABSPATH')) {
@@ -27,7 +27,7 @@ class CheckoutSession
 
         $args = wp_parse_args($args, $argsDefault);
 
-        $formId = ArrayHelper::get($args, 'metadata.form_id');
+        $formId = Arr::get($args, 'metadata.form_id');
         $secretKey = apply_filters_deprecated(
             'fluentform-payment_stripe_secret_key',
             [

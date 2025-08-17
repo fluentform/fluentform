@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 }
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Modules\Payments\PaymentMethods\BaseProcessor;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeProcessor;
@@ -72,7 +72,7 @@ class StripeListener
 
         $meta = (array) $charge->metadata;
 
-        $transactionId = ArrayHelper::get($meta, 'transaction_id');
+        $transactionId = Arr::get($meta, 'transaction_id');
 
         if(!$transactionId) {
             $transaction = wpFluent()->table('fluentform_transactions')
@@ -82,7 +82,7 @@ class StripeListener
                 return;
             }
         } else {
-            $submissionId = ArrayHelper::get($meta, 'submission_id');
+            $submissionId = Arr::get($meta, 'submission_id');
             $transaction = wpFluent()->table('fluentform_transactions')
                 ->where('submission_id', $submissionId)
                 ->where('id', $transactionId)
@@ -234,7 +234,7 @@ class StripeListener
 
         $metaData = (array)$data->metadata;
 
-        $formId = ArrayHelper::get($metaData, 'form_id');
+        $formId = Arr::get($metaData, 'form_id');
 
         $session = CheckoutSession::retrieve($data->id, [
             'expand' => [
@@ -265,7 +265,7 @@ class StripeListener
             return;
         }
 
-        $transactionId = ArrayHelper::get($metaData, 'transaction_id');
+        $transactionId = Arr::get($metaData, 'transaction_id');
 
         if(!$transactionId) {
             return;

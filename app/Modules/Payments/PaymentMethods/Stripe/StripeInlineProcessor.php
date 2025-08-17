@@ -4,7 +4,7 @@ namespace FluentForm\App\Modules\Payments\PaymentMethods\Stripe;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\SCA;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\Plan;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\Invoice;
@@ -51,7 +51,7 @@ class StripeInlineProcessor extends StripeProcessor
         // Create the initial transaction here
         $transaction = $this->createInitialPendingTransaction($submission, $hasSubscriptions);
 
-        $paymentMethodId = ArrayHelper::get($submissionData['response'], '__stripe_payment_method_id');
+        $paymentMethodId = Arr::get($submissionData['response'], '__stripe_payment_method_id');
         $customerArgs = $this->customerArguments($paymentMethodId, $submission);
 
         $customer = Customer::createCustomer($customerArgs, $this->form->id);
@@ -221,12 +221,12 @@ class StripeInlineProcessor extends StripeProcessor
 		$address = PaymentHelper::getCustomerAddress($submission);
 		if ($address) {
 			$customerArgs['address'] = [
-				'city'        => ArrayHelper::get($address, 'city'),
-				'country'     => ArrayHelper::get($address, 'country'),
-				'line1'       => ArrayHelper::get($address, 'address_line_1'),
-				'line2'       => ArrayHelper::get($address, 'address_line_2'),
-				'postal_code' => ArrayHelper::get($address, 'zip'),
-				'state'       => ArrayHelper::get($address, 'state'),
+				'city'        => Arr::get($address, 'city'),
+				'country'     => Arr::get($address, 'country'),
+				'line1'       => Arr::get($address, 'address_line_1'),
+				'line2'       => Arr::get($address, 'address_line_2'),
+				'postal_code' => Arr::get($address, 'zip'),
+				'state'       => Arr::get($address, 'state'),
 			];
 		}
 
@@ -268,7 +268,7 @@ class StripeInlineProcessor extends StripeProcessor
 
         $receiptEmail = PaymentHelper::getCustomerEmail($submission, $this->form);
 
-        if ($receiptEmail && ArrayHelper::get($formSettings, 'disable_stripe_payment_receipt') != 'yes') {
+        if ($receiptEmail && Arr::get($formSettings, 'disable_stripe_payment_receipt') != 'yes') {
             $intentArgs['receipt_email'] = $receiptEmail;
         }
 

@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Payments\PaymentMethods\Stripe\Components;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Services\FormBuilder\BaseFieldManager;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeSettings;
 
@@ -30,7 +30,7 @@ class StripeInline extends BaseFieldManager
 
     public function maybePushPaymentInputs($inlineContents, $method, $data, $form)
     {
-        if (ArrayHelper::get($method, 'settings.embedded_checkout.value') !== 'yes') {
+        if (Arr::get($method, 'settings.embedded_checkout.value') !== 'yes') {
             return $inlineContents;
         }
 
@@ -43,7 +43,7 @@ class StripeInline extends BaseFieldManager
         }, 10, 2);
 
         $elementId = $data['attributes']['name'] . '_' . $form->id . '_' . $form->instance_index . '_stripe_inline';
-        $label = ArrayHelper::get($method, 'settings.option_label.value', __('Pay with Stripe', 'fluentform'));
+        $label = Arr::get($method, 'settings.option_label.value', __('Pay with Stripe', 'fluentform'));
         $display = $method['is_default'] ? 'block' : 'none';
 
         $markup = '<div class="stripe-inline-wrapper ff_pay_inline ff_pay_inline_stripe" style="display: ' . $display . '">';
@@ -57,7 +57,7 @@ class StripeInline extends BaseFieldManager
             'data-wpf_payment_method' => 'stripe',
             'id'                      => $elementId,
             'data-checkout_style'     => 'embedded_form',
-            'data-verify_zip'         => ArrayHelper::get($method, 'settings.verify_zip.value') === 'yes'
+            'data-verify_zip'         => Arr::get($method, 'settings.verify_zip.value') === 'yes'
         ];
 
         $markup .= '<div ' . $this->buildAttributes($attributes) . '></div>';

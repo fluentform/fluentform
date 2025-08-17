@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Integrations\Slack;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 class SlackNotificationActions
 {

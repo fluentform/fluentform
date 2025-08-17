@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 }
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Services\FormBuilder\BaseFieldManager;
 
 class PaymentMethods extends BaseFieldManager

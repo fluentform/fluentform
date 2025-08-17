@@ -10,7 +10,7 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Modules\Payments\PaymentMethods\BaseProcessor;
 use FluentForm\Database\Migrations\Submissions;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\Classes\PaymentManagement;
 use FluentForm\App\Modules\Payments\Migrations\Migration;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\ConnectConfig;
@@ -194,7 +194,7 @@ class AjaxEndpoints
 
         $changingStatus = $oldTransaction->status != $transactionData['status'];
 
-        $updateData = ArrayHelper::only($transactionData, [
+        $updateData = Arr::only($transactionData, [
             'payer_name',
             'payer_email',
             'billing_address',
@@ -209,12 +209,12 @@ class AjaxEndpoints
             ->where('id', $transactionId)
             ->update($updateData);
 
-        $subscriptionId = intval(ArrayHelper::get($_REQUEST, 'subscription_id', '0'));
+        $subscriptionId = intval(Arr::get($_REQUEST, 'subscription_id', '0'));
         if ($subscriptionId) {
             $existingSubscription = wpFluent()->table('fluentform_subscriptions')
                                         ->find($subscriptionId);
 
-            $changedStatus = ArrayHelper::get($transactionData, 'status');
+            $changedStatus = Arr::get($transactionData, 'status');
 
             $isStatusChanged = $existingSubscription->status != $changedStatus;
 
@@ -238,7 +238,7 @@ class AjaxEndpoints
 
         if (
             ($changingStatus && ($newStatus == 'refunded' || $newStatus == 'partial-refunded')) ||
-            ($newStatus == 'partial-refunded' && ArrayHelper::get($transactionData, 'refund_amount'))
+            ($newStatus == 'partial-refunded' && Arr::get($transactionData, 'refund_amount'))
         ) {
             $refundAmount = 0;
             $refundNote = 'Refunded by Admin';
@@ -247,8 +247,8 @@ class AjaxEndpoints
                 // Handle refund here
                 $refundAmount = $oldTransaction->payment_total;
             } else if ($newStatus == 'partially-refunded') {
-                $refundAmount = ArrayHelper::get($transactionData, 'refund_amount') * 100;
-                $refundNote = ArrayHelper::get($transactionData, 'refund_note');
+                $refundAmount = Arr::get($transactionData, 'refund_amount') * 100;
+                $refundNote = Arr::get($transactionData, 'refund_note');
             }
 
             if ($refundAmount) {
@@ -276,7 +276,7 @@ class AjaxEndpoints
             $baseProcessor->recalculatePaidTotal();
         }
 
-        $shouldRunActions = ArrayHelper::get($transactionData, 'should_run_actions', 'no');
+        $shouldRunActions = Arr::get($transactionData, 'should_run_actions', 'no');
 
         if (
             $changingStatus &&
@@ -321,7 +321,7 @@ class AjaxEndpoints
 
     public function cancelSubscription()
     {
-        $subscriptionId = intval(ArrayHelper::get($_REQUEST, 'subscription_id'));
+        $subscriptionId = intval(Arr::get($_REQUEST, 'subscription_id'));
 
         $subscription = fluentFormApi('submissions')->getSubscription($subscriptionId);
 
@@ -331,8 +331,8 @@ class AjaxEndpoints
             ], 423);
         }
 
-        $transactionId = intval(ArrayHelper::get($_REQUEST, 'transaction_id', '0'));
-        $submissionId = intval(ArrayHelper::get($_REQUEST, 'submission_id', '0'));
+        $transactionId = intval(Arr::get($_REQUEST, 'transaction_id', '0'));
+        $submissionId = intval(Arr::get($_REQUEST, 'submission_id', '0'));
 
         $oldTransaction = wpFluent()->table('fluentform_transactions')
                                     ->find($transactionId);

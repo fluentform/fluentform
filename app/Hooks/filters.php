@@ -35,7 +35,7 @@ add_filter('fluentform/get_global_settings_values', function ($values, $key) {
         }
 
         if (in_array('_fluentform_global_form_settings', $key) &&
-            !\FluentForm\Framework\Helpers\ArrayHelper::isTrue($values, '_fluentform_global_form_settings.default_messages')
+            !\FluentForm\Framework\Support\Arr::isTrue($values, '_fluentform_global_form_settings.default_messages')
         ) {
             $values['_fluentform_global_form_settings']['default_messages'] = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
         }
@@ -157,11 +157,11 @@ foreach ($elements as $element) {
         $isHtml = apply_filters("fluentform/format_{$element}_response_as_html", $isHtml, $response, $field);
 
         if ('dynamic_field' == $element) {
-            $dynamicFetchValue = 'yes' == \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.dynamic_fetch');
+            $dynamicFetchValue = 'yes' == \FluentForm\Framework\Support\Arr::get($field, 'raw.settings.dynamic_fetch');
             if ($dynamicFetchValue) {
                 $field = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $field);
             }
-            $attrType = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.attributes.type');
+            $attrType = \FluentForm\Framework\Support\Arr::get($field, 'raw.attributes.type');
             if ('radio' == $attrType) {
                 $element = 'input_radio';
             } elseif ('checkbox' == $attrType) {
@@ -410,7 +410,7 @@ $app->addFilter('fluentform/editor_element_settings_placement', function($placem
         return $placements;
     }
 
-    $isRecaptchaV3 = \FluentForm\Framework\Helpers\ArrayHelper::get($recaptchaDetails, 'api_version') === 'v3_invisible';
+    $isRecaptchaV3 = \FluentForm\Framework\Support\Arr::get($recaptchaDetails, 'api_version') === 'v3_invisible';
     if (!$isRecaptchaV3) {
         return $placements;
     }

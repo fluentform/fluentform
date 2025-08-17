@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Services\FormBuilder\BaseFieldManager;
 use FluentForm\App\Services\FormBuilder\Components\Text;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class ItemQuantity extends BaseFieldManager
 {
@@ -131,7 +131,7 @@ class ItemQuantity extends BaseFieldManager
     function render($data, $form)
     {
         $data['attributes']['class'] .= ' ff_quantity_item';
-        $data['attributes']['data-target_product'] = ArrayHelper::get($data, 'settings.target_product');
+        $data['attributes']['data-target_product'] = Arr::get($data, 'settings.target_product');
 
         if (ArrayHelper::get($data, 'settings.validation_rules.min.value') == '') {
             ArrayHelper::set($data, 'settings.validation_rules.min.value', 0);

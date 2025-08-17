@@ -211,11 +211,11 @@ class Form
         $request = wpFluentForm('request')->get();
 
         if ((isset($request[$paramKey])) && !wp_doing_ajax()) {
-            $formId = (int) ArrayHelper::get($request, $paramKey);
+            $formId = (int) Arr::get($request, $paramKey);
             if (!Helper::isConversionForm($formId)) {
                 return;
             }
-            $shareKey = ArrayHelper::get($request, 'form');
+            $shareKey = Arr::get($request, 'form');
             $this->renderFormHtml($formId, $shareKey);
         }
     }
@@ -928,8 +928,8 @@ class Form
             'reCaptcha'                 => $form->reCaptcha,
             'hCaptcha'                  => $form->hCaptcha,
             'turnstile'                 => $form->turnstile,
-            'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
-            'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
+            'has_per_step_save'         => Arr::get($form->settings, 'conv_form_per_step_save', false),
+            'has_resume_from_last_step' => Arr::get($form->settings, 'conv_form_resume_from_last_step', false),
             'has_save_link'             => $form->save_state?? false,
             'has_save_and_resume_button'=> $form->hasSaveAndResumeButton ?? false,
             'step_completed'            => $form->stepCompleted ?? 0
@@ -948,10 +948,10 @@ class Form
             'email_button'              => fluentFormMix('img/email.svg'),
             'email_placeholder_str'     => __('Your Email Here', 'fluentform'),
             'email_resume_link_enabled' => false,
-            'save_progress_btn_name'    => ArrayHelper::get($field, 'attributes.name'),
+            'save_progress_btn_name'    => Arr::get($field, 'attributes.name'),
         ]);
 
-        if (ArrayHelper::get($field, 'settings.email_resume_link_enabled')) {
+        if (Arr::get($field, 'settings.email_resume_link_enabled')) {
             $vars['email_resume_link_enabled'] = true;
         }
 

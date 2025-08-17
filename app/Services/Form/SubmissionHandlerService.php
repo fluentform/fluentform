@@ -12,7 +12,7 @@ use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Database\Migrations\SubmissionDetailsMigrator;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Validator\ValidationException;
 
 

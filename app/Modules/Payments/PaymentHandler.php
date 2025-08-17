@@ -11,7 +11,7 @@ use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Modules\Payments\Orders\OrderData;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\Classes\PaymentAction;
 use FluentForm\App\Modules\Payments\Classes\PaymentEntries;
 use FluentForm\App\Modules\Payments\Classes\PaymentReceipt;
@@ -214,7 +214,7 @@ class PaymentHandler
                 
                 $type = sanitize_text_field($_GET['fluentform_payment']);
                 
-                if ($type == 'view' && $route = ArrayHelper::get($data, 'route')) {
+                if ($type == 'view' && $route = Arr::get($data, 'route')) {
                     do_action_deprecated(
                         'fluent_payment_view_' . $route,
                         [
@@ -324,7 +324,7 @@ class PaymentHandler
     {
         
         if (isset($_GET['ff_stripe_connect'])) {
-            $data = ArrayHelper::only($_GET, ['ff_stripe_connect', 'mode', 'state', 'code']);
+            $data = Arr::only($_GET, ['ff_stripe_connect', 'mode', 'state', 'code']);
             ConnectConfig::verifyAuthorizeSuccess($data);
         }
         
@@ -453,7 +453,7 @@ class PaymentHandler
     {
         $formFields = FormFieldsParser::getPaymentFields($form);
         if ($formFields && is_array($formFields)) {
-            $labels = ArrayHelper::except($labels, array_keys($formFields));
+            $labels = Arr::except($labels, array_keys($formFields));
         }
         return $labels;
     }
@@ -491,8 +491,8 @@ class PaymentHandler
     private function validateFrameLessPage($data)
     {
         // We should verify the transaction hash from the URL
-        $transactionHash = sanitize_text_field(ArrayHelper::get($data, 'transaction_hash'));
-        $submissionId = intval(ArrayHelper::get($data, 'fluentform_payment'));
+        $transactionHash = sanitize_text_field(Arr::get($data, 'transaction_hash'));
+        $submissionId = intval(Arr::get($data, 'fluentform_payment'));
         if (!$submissionId) {
             die('Validation Failed');
         }
@@ -509,7 +509,7 @@ class PaymentHandler
             die('Transaction hash is invalid');
         }
         
-        $uid = sanitize_text_field(ArrayHelper::get($data, 'entry_uid'));
+        $uid = sanitize_text_field(Arr::get($data, 'entry_uid'));
         if (!$uid) {
             die('Validation Failed');
         }
@@ -613,17 +613,17 @@ class PaymentHandler
     public function validateSubscriptionInputs($error, $field, $formData)
     {
         if (isset($formData[$field['name']])) {
-            $subscriptionOptions = ArrayHelper::get($field, 'raw.settings.subscription_options', []);
+            $subscriptionOptions = Arr::get($field, 'raw.settings.subscription_options', []);
             $selectedPlanIndex = $formData[$field['name']];
             $acceptedSubscriptionPlan = is_numeric($selectedPlanIndex) && in_array($selectedPlanIndex, array_keys($subscriptionOptions));
             if (!$acceptedSubscriptionPlan) {
                 $error = __('This subscription plan is invalid', 'fluentform');
             }
-            $selectedPlan = ArrayHelper::get($subscriptionOptions, $selectedPlanIndex, []);
-            if ('yes' === ArrayHelper::get($selectedPlan, 'user_input')) {
-                $userGivenValue = ArrayHelper::get($formData, "{$field['name']}_custom_$selectedPlanIndex");
+            $selectedPlan = Arr::get($subscriptionOptions, $selectedPlanIndex, []);
+            if ('yes' === Arr::get($selectedPlan, 'user_input')) {
+                $userGivenValue = Arr::get($formData, "{$field['name']}_custom_$selectedPlanIndex");
                 $userGivenValue = $userGivenValue ?: 0;
-                $planMinValue = ArrayHelper::get($selectedPlan, 'user_input_min_value');
+                $planMinValue = Arr::get($selectedPlan, 'user_input_min_value');
                 if (!is_numeric($userGivenValue) || ($planMinValue && $userGivenValue < $planMinValue)) {
                     $error = __('This subscription plan value is invalid', 'fluentform');
                 }
@@ -635,12 +635,12 @@ class PaymentHandler
     
     public function validatePaymentInputs($error, $field, $formData)
     {
-        if (ArrayHelper::get($formData, $field['name'])) {
-            $fieldType = ArrayHelper::get($field, 'raw.attributes.type');
+        if (Arr::get($formData, $field['name'])) {
+            $fieldType = Arr::get($field, 'raw.attributes.type');
             
             if (in_array($fieldType, ['radio', 'select', 'checkbox'])) {
                 $pricingOptions = array_column(
-                    ArrayHelper::get($field, 'raw.settings.pricing_options', []),
+                    Arr::get($field, 'raw.settings.pricing_options', []),
                     'label'
                 );
                 
@@ -665,7 +665,7 @@ class PaymentHandler
     
     public function validatePaymentMethod($error, $field, $formData, $fields, $form)
     {
-        if ($selectedMethod = ArrayHelper::get($formData, $field['name'])) {
+        if ($selectedMethod = Arr::get($formData, $field['name'])) {
             $activeMethods = array_keys(PaymentHelper::getFormPaymentMethods($form->id));
             if (!in_array($selectedMethod, $activeMethods)) {
                 $error = __('This payment method is invalid', 'fluentform');

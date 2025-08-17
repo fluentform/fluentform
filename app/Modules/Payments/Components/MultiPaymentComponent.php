@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Services\FormBuilder\BaseFieldManager;
 use FluentForm\App\Services\FormBuilder\Components\Text;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 
 class MultiPaymentComponent extends BaseFieldManager

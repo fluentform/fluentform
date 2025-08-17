@@ -1,6 +1,6 @@
 <?php
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Component\BaseComponent;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;
 
@@ -79,7 +79,7 @@ function wpFluentFormAddComponent(BaseComponent $component)
 function fluentFormSanitizer($input, $attribute = null, $fields = [])
 {
     if (is_string($input)) {
-        $element = ArrayHelper::get($fields, $attribute . '.element');
+        $element = Arr::get($fields, $attribute . '.element');
 
         if (in_array($element, ['post_content', 'rich_text_input'])) {
             return wp_kses_post($input);
@@ -322,7 +322,7 @@ function fluentform_options_sanitize($options)
     $mapKeys = array_keys($maps);
 
     foreach ($options as $optionIndex => $option) {
-        $attributes = array_filter(ArrayHelper::only($option, $mapKeys));
+        $attributes = array_filter(Arr::only($option, $mapKeys));
         foreach ($attributes as $key => $value) {
             $options[$optionIndex][$key] = call_user_func($maps[$key], $value);
         }
@@ -450,7 +450,7 @@ function fluentform_backend_sanitizer($inputs, $sanitizeMap = [])
         if (is_array($value)) {
             $value = fluentform_backend_sanitizer($value, $sanitizeMap);
         } else {
-            $method = ArrayHelper::get($sanitizeMap, $key);
+            $method = Arr::get($sanitizeMap, $key);
             if (is_callable($method)) {
                 $value = call_user_func($method, $value);
             }

@@ -352,7 +352,7 @@ class ComposerStaticInit0686cb653dffd2a64b73eee0fb31f94d
         'FluentForm\\Framework\\Foundation\\RequestGuard' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Foundation/RequestGuard.php',
         'FluentForm\\Framework\\Foundation\\UnAuthorizedException' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Foundation/UnAuthorizedException.php',
         'FluentForm\\Framework\\Foundation\\WPException' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Foundation/WPException.php',
-        'FluentForm\\Framework\\Helpers\\ArrayHelper' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Helpers/ArrayHelper.php',
+        'FluentForm\\Framework\\Helpers\\Arr' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Helpers/Arr.php',
         'FluentForm\\Framework\\Http\\Client' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Http/Client.php',
         'FluentForm\\Framework\\Http\\Controller' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Http/Controller.php',
         'FluentForm\\Framework\\Http\\Cookie' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Http/Cookie.php',

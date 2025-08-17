@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Payments\PaymentMethods\Stripe;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 
 if (!defined('ABSPATH')) {
@@ -66,7 +66,7 @@ class StripeSettings
 
     public static function maybeDecryptKeys($settings)
     {
-        if (ArrayHelper::get($settings, 'is_encrypted') == 'yes') {
+        if (Arr::get($settings, 'is_encrypted') == 'yes') {
             if (!empty($settings['live_secret_key'])) {
                 $settings['live_secret_key'] = PaymentHelper::decryptKey($settings['live_secret_key']);
             }
@@ -88,7 +88,7 @@ class StripeSettings
     {
         if ($formId) {
             $formPaymentSettings = PaymentHelper::getFormSettings($formId, 'admin');
-            if (ArrayHelper::get($formPaymentSettings, 'stripe_account_type') == 'custom') {
+            if (Arr::get($formPaymentSettings, 'stripe_account_type') == 'custom') {
                 return ArrayHelper::get($formPaymentSettings, 'stripe_custom_config.secret_key');
             }
         }

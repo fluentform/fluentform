@@ -327,7 +327,7 @@ return array(
     'FluentForm\\Framework\\Foundation\\RequestGuard' => $vendorDir . '/wpfluent/framework/src/WPFluent/Foundation/RequestGuard.php',
     'FluentForm\\Framework\\Foundation\\UnAuthorizedException' => $vendorDir . '/wpfluent/framework/src/WPFluent/Foundation/UnAuthorizedException.php',
     'FluentForm\\Framework\\Foundation\\WPException' => $vendorDir . '/wpfluent/framework/src/WPFluent/Foundation/WPException.php',
-    'FluentForm\\Framework\\Helpers\\ArrayHelper' => $vendorDir . '/wpfluent/framework/src/WPFluent/Helpers/ArrayHelper.php',
+    'FluentForm\\Framework\\Helpers\\Arr' => $vendorDir . '/wpfluent/framework/src/WPFluent/Helpers/Arr.php',
     'FluentForm\\Framework\\Http\\Client' => $vendorDir . '/wpfluent/framework/src/WPFluent/Http/Client.php',
     'FluentForm\\Framework\\Http\\Controller' => $vendorDir . '/wpfluent/framework/src/WPFluent/Http/Controller.php',
     'FluentForm\\Framework\\Http\\Cookie' => $vendorDir . '/wpfluent/framework/src/WPFluent/Http/Cookie.php',
