@@ -63,4 +63,9 @@ app.mixin({
     }
 });
 
-app.mount("#ff_add_ons_app");
+const mountElement = document.getElementById('ff_add_ons_app');
+if (mountElement) {
+    app.mount("#ff_add_ons_app");
+} else {
+    console.warn('FluentForm Add-ons: Mount element #ff_add_ons_app not found. This script may be loading on the wrong page.');
+}

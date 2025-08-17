@@ -47,9 +47,9 @@
 </template>
 
 <script>
-    import PieChart from './_PieChart.vue';
-    import BarChart from './_BarChart.vue';
-    import HorizontalBar from './_HorizontalBarChart.vue';
+    import PieChart from './_PieChart.js';
+    import BarChart from './_BarChart.js';
+    import HorizontalBar from './_HorizontalBarChart.js';
     import chroma from 'chroma-js'
     import each from 'lodash/each';
     import truncate from 'lodash/truncate';

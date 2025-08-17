@@ -52,24 +52,6 @@
                                               type="text"></el-input>
                                 </el-form-item>
                             </div>
-                            <transition name="slide-fade">
-                                <div style="max-height: 60px">
-                                    <el-form-item>
-                                        <el-input
-                                            v-if="!validation_rules[key].global"
-                                            v-model="validation_rules[key].message"
-                                            type="text"
-                                        ></el-input>
-                                        <el-input
-                                            v-else
-                                            disabled
-                                            readonly
-                                            v-model="validation_rules[key].global_message"
-                                            type="text"
-                                        ></el-input>
-                                    </el-form-item>
-                                </div>
-                            </transition>
                         </transition>
                     </div>
                 </transition>

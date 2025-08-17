@@ -440,7 +440,7 @@ export default {
                 title,
                 status
             };
-            this.$set(this.changingStatus, id, true);
+            this.changingStatus[id] = true;
 
             const url = FluentFormsGlobal.$rest.route("updateForm", id);
             FluentFormsGlobal.$rest.post(url, data)

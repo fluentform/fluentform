@@ -32,8 +32,8 @@
 </template>
 
 <script type="text/babel">
-import SettingsBuilder from './SettingsBuilder';
-import StripeSettings from "./StripeSettings";
+import SettingsBuilder from './SettingsBuilder.vue';
+import StripeSettings from "./StripeSettings.vue";
 
 export default {
 	name: 'PaymentMethods',

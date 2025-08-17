@@ -428,7 +428,7 @@
                     <card-head>
                         <card-head-group class="justify-between">
                             <h5 class="title">{{ $t("Form Layout") }}</h5>
-                            <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="formErrorMessage" />
+                            <video-doc btn_size="default" :btn_text="$t('Learn More')" route_id="formErrorMessage" />
                         </card-head-group>
                     </card-head>
                     <card-body>

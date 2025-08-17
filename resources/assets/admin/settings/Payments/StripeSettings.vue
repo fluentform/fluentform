@@ -136,7 +136,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <el-button @click="saveSettings()" type="primary" size="medium" icon="el-icon-success">
+                    <el-button @click="saveSettings()" type="primary" size="default" icon="el-icon-success">
                         {{ $t('Save Stripe Settings') }}
                     </el-button>
                 </div>
@@ -152,8 +152,8 @@
     </div>
 </template>
 
-<script type="text/babel">
-import ConnectAccount from './_ConnectAccount';
+<script>
+import ConnectAccount from './_ConnectAccount.vue';
 import ErrorView from "@/common/errorView.vue";
 
 export default {

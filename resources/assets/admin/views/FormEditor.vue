@@ -167,7 +167,7 @@
                                             :isDisabled="isDisabled"
                                             :insertItemOnClick="insertItemOnClick"
                                             :sideBarDragOptions="sideBarDragOptions"
-                                            :list="[...postMockList, ...taxonomyMockList, ...generalMockList, ...advancedMockList, ...containerMockList, ...paymentsMockList]"
+                                            :list="[...(postMockList || []), ...(taxonomyMockList || []), ...(generalMockList || []), ...(advancedMockList || []), ...(containerMockList || []), ...(paymentsMockList || [])]"
                                         />
                                     </div>
 
@@ -606,7 +606,9 @@ export default {
                 { key: "select_country", label: "Country" },
                 { key: "section_break", label: "Section" },
                 { key: "input_password", label: "Password" }
-            ]
+            ],
+            is_conversion_form: !!window.FluentFormApp.is_conversion_form,
+            stageDrag: false
 
         };
     },
@@ -711,6 +713,38 @@ export default {
         },
         isAutoloadCaptchaEnabled() {
             return !!window.FluentFormApp.is_autoload_captcha;
+        },
+
+        /**
+         * Filtered general mock list based on form type
+         * @return {Array}
+         */
+        filteredGeneralMockList() {
+            const generalList = this.generalMockList || [];
+            if (this.is_conversion_form) {
+                // Filter out fields not supported in conversion forms
+                return generalList.filter(item => {
+                    const supportedFields = window.FluentFormApp.conversational_form_fields || [];
+                    return supportedFields.includes(item.element);
+                });
+            }
+            return generalList;
+        },
+
+        /**
+         * Filtered advanced mock list based on form type
+         * @return {Array}
+         */
+        filteredAdvancedMockList() {
+            const advancedList = this.advancedMockList || [];
+            if (this.is_conversion_form) {
+                // Filter out fields not supported in conversion forms
+                return advancedList.filter(item => {
+                    const supportedFields = window.FluentFormApp.conversational_form_fields || [];
+                    return supportedFields.includes(item.element);
+                });
+            }
+            return advancedList;
         }
     },
     watch: {
@@ -750,8 +784,8 @@ export default {
                     stepEnd: this.form.stepEnd
                 };
             } else {
-                this.$delete(this.form.stepsWrapper, "stepStart");
-                this.$delete(this.form.stepsWrapper, "stepEnd");
+                delete this.form.stepsWrapper.stepStart;
+                delete this.form.stepsWrapper.stepEnd;
             }
         }
     },
@@ -1161,6 +1195,37 @@ export default {
 
             jQuery(".ff-navigation-right").append(screenButton);
         },
+
+        /**
+         * Initialize the undo/redo manager
+         */
+        initUndoRedo() {
+            this.undoRedoManager = new UndoRedo(50); // Max 50 history items
+
+            // Listen for undo/redo events
+            this.undoRedoManager.eventBus.$on('undo', (event) => {
+                this.isPerformingUndoRedo = true;
+                this.form = event.state;
+                this.$nextTick(() => {
+                    this.isPerformingUndoRedo = false;
+                });
+            });
+
+            this.undoRedoManager.eventBus.$on('redo', (event) => {
+                this.isPerformingUndoRedo = true;
+                this.form = event.state;
+                this.$nextTick(() => {
+                    this.isPerformingUndoRedo = false;
+                });
+            });
+
+            this.undoRedoManager.eventBus.$on('stateChanged', () => {
+                this.canUndo = this.undoRedoManager.canUndo();
+                this.canRedo = this.undoRedoManager.canRedo();
+                jQuery(document).trigger("updateUndoState");
+            });
+        },
+
         initUndoRedoBtn() {
             const self = this;
 

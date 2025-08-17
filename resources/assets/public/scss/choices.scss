@@ -139,7 +139,7 @@ $inner-border-color: #ced4da;
       position: relative;
       display: inline-block;
       margin-top: 0;
-      margin-right: -$choices-button-offset/2;
+      margin-right: calc(-1 * $choices-button-offset / 2);
       margin-bottom: 0;
       margin-left: $choices-button-offset;
       padding: 0px 20px 0px 10px;

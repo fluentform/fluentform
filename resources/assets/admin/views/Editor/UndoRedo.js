@@ -1,5 +1,33 @@
-import Vue from 'vue';
+import { reactive, nextTick } from 'vue';
 import debounce from 'lodash/debounce';
+
+// Simple event emitter for Vue 3 compatibility
+class EventEmitter {
+    constructor() {
+        this.events = {};
+    }
+
+    $on(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(callback);
+    }
+
+    $off(event, callback) {
+        if (!this.events[event]) return;
+        if (callback) {
+            this.events[event] = this.events[event].filter(cb => cb !== callback);
+        } else {
+            this.events[event] = [];
+        }
+    }
+
+    $emit(event, ...args) {
+        if (!this.events[event]) return;
+        this.events[event].forEach(callback => callback(...args));
+    }
+}
 
 class UndoRedo {
     constructor(maxHistory = 10) {
@@ -7,7 +35,7 @@ class UndoRedo {
         this.currentIndex = -1;
         this.currentState = null;
         this.isPerformingAction = false;
-        this.eventBus = new Vue();
+        this.eventBus = new EventEmitter();
         this.pushDebounced = debounce(this.pushImmediate.bind(this), 300);
     }
 
@@ -41,12 +69,12 @@ class UndoRedo {
             }
         }
 
-        return Vue.observable(snapshot);
+        return reactive(snapshot);
     }
 
     pushChange(state) {
         if (!this.isPerformingAction) {
-            Vue.nextTick(() => this.pushDebounced(state));
+            nextTick(() => this.pushDebounced(state));
         }
     }
 
@@ -78,7 +106,7 @@ class UndoRedo {
         this.currentIndex--;
         this.currentState = this.createSnapshot(this.stack[this.currentIndex]);
 
-        Vue.nextTick(() => {
+        nextTick(() => {
             this.emitUpdate();
             this.eventBus.$emit('undo', { state: this.currentState });
             this.isPerformingAction = false;
@@ -92,7 +120,7 @@ class UndoRedo {
         this.currentIndex++;
         this.currentState = this.createSnapshot(this.stack[this.currentIndex]);
 
-        Vue.nextTick(() => {
+        nextTick(() => {
             this.emitUpdate();
             this.eventBus.$emit('redo', { state: this.currentState });
             this.isPerformingAction = false;

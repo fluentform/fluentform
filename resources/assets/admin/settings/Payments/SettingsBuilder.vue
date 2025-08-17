@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="mt-4">
-                    <el-button :disabled="saving" v-loading="saving" @click="saveSettings()" type="primary" size="medium" icon="el-icon-success">
+                    <el-button :disabled="saving" v-loading="saving" @click="saveSettings()" type="primary" size="default" icon="el-icon-success">
                         {{ $t('Save Settings') }}
                     </el-button>
                 </div>

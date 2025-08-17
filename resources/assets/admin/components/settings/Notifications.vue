@@ -8,7 +8,7 @@
                         <h5 class="title">{{ $t("Email Notifications") }}</h5>
                         <btn-group>
                             <btn-group-item>
-                                <video-doc btn_size="medium" :btn_text="$t('Learn More')"
+                                <video-doc btn_size="default" :btn_text="$t('Learn More')"
                                            route_id="formEmailSettings"></video-doc>
                             </btn-group-item>
                             <btn-group-item>

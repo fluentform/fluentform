@@ -96,7 +96,7 @@ function formatMoneyFunc(n, decimals, decimal_sep, thousands_sep) {
         sign = (n < 0) ? '-' : '',
         //extracting the absolute value of the integer part of the number and converting to string
         i = parseInt(n = Math.abs(n).toFixed(c)) + '',
-        j = ((j = i.length) > 3) ? j % 3 : 0;
+        j = (i.length > 3) ? i.length % 3 : 0;
     return sign + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '');
 }
 
@@ -317,6 +317,11 @@ window.ffEntriesEvents = {
     eventBus: eventBus
 };
 
-app.mount('#ff_form_entries_app');
+const mountElement = document.getElementById('ff_form_entries_app');
+if (mountElement) {
+    app.mount('#ff_form_entries_app');
+} else {
+    console.warn('FluentForm Entries: Mount element #ff_form_entries_app not found. This script may be loading on the wrong page.');
+}
 
 window.ffEntriesEvents.eventBus.emit('change-title', 'Fluentform');

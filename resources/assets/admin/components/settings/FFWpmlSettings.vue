@@ -39,8 +39,8 @@
     </div>
 </template>
 
-<script type="text/babel">
-import errorView from '@/common/errorView';
+<script>
+import errorView from '@/common/errorView.vue';
 import Card from '@/admin/components/Card/Card.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
 import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';

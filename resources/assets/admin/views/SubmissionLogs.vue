@@ -88,7 +88,7 @@
     </div>
 </template>
 <script>
-import remove from "@/admin/components/confirmRemove";
+import remove from "@/admin/components/confirmRemove.vue";
 import Card from "@/admin/components/Card/Card.vue";
 import CardBody from "@/admin/components/Card/CardBody.vue";
 import CardHead from "@/admin/components/Card/CardHead.vue";

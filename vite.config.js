@@ -97,6 +97,12 @@ const inputs = [
     'resources/assets/admin/styles/index.less',
 ];
 export default defineConfig({
+    define: {
+        // Vue 3 feature flags
+        __VUE_OPTIONS_API__: true,
+        __VUE_PROD_DEVTOOLS__: false,
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
+    },
     plugins: [
         vue(),
         react(),
@@ -116,6 +122,7 @@ export default defineConfig({
                     importStyle: 'sass',
                     directives: true,
                     version: '2.1.5',
+                    exclude: ['ElLabel'] // Exclude ElLabel since it doesn't exist in Element Plus
                 }),
             ],
         }),
@@ -143,6 +150,7 @@ export default defineConfig({
         publicDir: 'assets',
         //root: '/',
         emptyOutDir: true, // delete the contents of the output directory before each build
+        sourcemap: true, // Enable source maps for debugging
 
         // https://rollupjs.org/guide/en/#big-list-of-options
         rollupOptions: {
@@ -150,6 +158,11 @@ export default defineConfig({
             output: {
                 chunkFileNames: '[name].js',
                 entryFileNames: '[name].js',
+            },
+            onwarn(warning, warn) {
+                // Suppress certain warnings
+                if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
+                warn(warning);
             },
         },
     },
@@ -159,6 +172,7 @@ export default defineConfig({
             vue: 'vue/dist/vue.esm-bundler.js',
             '@': path.resolve(__dirname, 'resources/assets/'),
         },
+        dedupe: ['vue'],
     },
 
     server: {
@@ -180,13 +194,9 @@ export default defineConfig({
         loader: 'js',
     },
     optimizeDeps: {
+        include: ['vue', 'vuex', 'element-plus', 'mitt', 'lodash'],
         esbuildOptions: {
-            // include: ["vue"],
-            // Set up the specific loaders for TypeScript and JavaScript
-            // loader: {
-            //     '.ts': 'ts',
-            //     '.js': 'js',
-            // },
+            target: 'es2015',
         },
     },
 });

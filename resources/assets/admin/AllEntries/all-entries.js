@@ -96,4 +96,9 @@ app.mixin({
     },
 });
 
-app.mount('#ff_all_entries');
+const mountElement = document.getElementById('ff_all_entries');
+if (mountElement) {
+    app.mount('#ff_all_entries');
+} else {
+    console.warn('FluentForm All Entries: Mount element #ff_all_entries not found. This script may be loading on the wrong page.');
+}

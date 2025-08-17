@@ -25,7 +25,7 @@
                             <el-select
                                 v-model="selectedGlobalFormId"
                                 :placeholder="$t('Select Form')"
-                                size="medium"
+                                size="default"
                                 clearable
                                 filterable
                                 @change="fetchReportsData"
@@ -153,7 +153,7 @@
                             <el-select
                                 v-model="selectedGlobalFormId"
                                 :placeholder="$t('Select Form')"
-                                size="medium"
+                                size="default"
                                 clearable
                                 filterable
                                 @change="fetchReportsData"
@@ -241,7 +241,7 @@
                             <el-select
                                 v-model="selectedGlobalFormId"
                                 :placeholder="$t('Select Form')"
-                                size="medium"
+                                size="default"
                                 clearable
                                 filterable
                                 @change="fetchReportsData"

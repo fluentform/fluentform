@@ -7,7 +7,7 @@
                 v-model="modalSelectedRange"
                 :placeholder="$t('Select date range')"
                 @visible-change="(state) => isDateQuickSelectOpen = state"
-                size="medium"
+                size="default"
                 style="margin-right: 10px; width: 140px;"
             >
                 <el-option :label="$t('Today')" value="today"></el-option>
@@ -38,7 +38,7 @@
             value-format="MMM d, yyyy"
             format="MMM d, yyyy"
             :picker-options="pickerOptions"
-            size="medium"
+            size="default"
             :clearable="false"
         />
     </div>

@@ -11,11 +11,11 @@
                                 <video-doc btn_size="default" :btn_text="$t('Learn More')" route_id="otherConfirmationSettings"/>
                             </btn-group-item>
                             <btn-group-item>
-                                <el-button class="el-button--soft" v-if="selected" type="info" size="medium" @click="discard" icon="ff-icon ff-icon-arrow-left">
+                                <el-button class="el-button--soft" v-if="selected" type="info" size="default" @click="discard" icon="ff-icon ff-icon-arrow-left">
                                     {{ $t('Back') }}
                                 </el-button>
                                 <template v-else>
-                                    <el-button v-if='has_pro' @click="add" type="info" size="medium" icon="ff-icon ff-icon-plus">
+                                    <el-button v-if='has_pro' @click="add" type="info" size="default" icon="ff-icon ff-icon-plus">
                                         {{ $t('Add Confirmation') }}
                                     </el-button>
                                 </template>
@@ -185,8 +185,8 @@
 <script>
     import Remove from '../confirmRemove.vue'
     import InputPopover from '../input-popover.vue'
-    import FilterFields from './Includes/FilterFields'
-    import ErrorView from '@/common/errorView'
+    import FilterFields from './Includes/FilterFields.vue'
+    import ErrorView from '@/common/errorView.vue'
     import AddConfirmation from './Includes/AddConfirmation.vue'
     import VideoDoc from '@/common/VideoInstruction.vue';
     import Card from '@/admin/components/Card/Card.vue';

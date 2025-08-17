@@ -1,11 +1,10 @@
-import "./helpers";
-
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import Errors from "@/common/Errors.js";
 import en from "element-plus/es/locale/lang/en";
 import notifier from "@/admin/notifier.js";
 import mitt from "mitt";
+import { _$t } from "@/admin/helpers";
 
 import {
     ElButton,
@@ -249,4 +248,11 @@ app.config.globalProperties.emitter = emitter;
 app.config.globalProperties.$ELEMENT = {locale: en};
 
 app.use(router);
-app.mount('#ff_form_settings_app');
+
+// Check if mount element exists before mounting
+const mountElement = document.getElementById('ff_form_settings_app');
+if (mountElement) {
+    app.mount('#ff_form_settings_app');
+} else {
+    console.warn('FluentForm Settings: Mount element #ff_form_settings_app not found. This script may be loading on the wrong page.');
+}

@@ -62,7 +62,8 @@ const app = createApp({
         globalSearch,
         ff_form_editor: FormEditor,
     },
-    data: {
+    data() {
+        return {
         form_id: window.FluentFormApp.form_id,
         form: {
             title: "",
@@ -149,6 +150,7 @@ const app = createApp({
         isClicked: false,
         editHistoryIndex: null,
         tempFormData : {}
+        };
     },
     methods: {
         ...mapActions(["loadResources"]),
@@ -300,10 +302,12 @@ const app = createApp({
     },
 
     beforeCreate() {
-        this.$on("change-title", module => {
-            jQuery("title").text(`${module} - Fluentform`);
-        });
-        this.$emit("change-title", "Editor");
+        // Vue 3: Use the provided eventBus instead of this.$on/$emit
+        // Note: eventBus is provided via app.provide("eventBus", eventBus)
+    },
+    created() {
+        // Set the title directly since we don't need the event system for this
+        jQuery("title").text("Editor - Fluentform");
     },
     mounted() {
         this.prepareForm();
@@ -317,7 +321,7 @@ const app = createApp({
             document.getElementById('wpcontent').classList.add('ff_conversion_editor');
         }
 
-        FluentFormEditorEvents.$on('editor-history-preview',(editHistory,type,index) =>{
+        FluentFormEditorEvents.on('editor-history-preview',(editHistory,type,index) =>{
             if (type == 'enter') {
                 this.saveOriginalForm();
                 this.updateFormFromEditHistory(editHistory);
@@ -392,18 +396,33 @@ app.config.globalProperties.emitter = emitter;
 // configure language
 app.config.globalProperties.$ELEMENT = {locale: en};
 
-window.FluentFormEditorEvents = createApp({});
+window.FluentFormEditorEvents = emitter;
 
 window.Errors = Errors;
 
 window.ffEditorOptionsCustomComponents = window.ffEditorOptionsCustomComponents || {};
+
+// Add error handling
+app.config.errorHandler = (err, instance, info) => {
+    console.error('FluentForm Editor Error:', err);
+    console.error('Component:', instance);
+    console.error('Info:', info);
+};
 
 app.use(store);
 app.mixin(mixins);
 app.provide("eventBus", eventBus);
 
 window.fluentFormEditorApp = app;
-app.mount('#ff_form_editor_app');
+
+// Debug: Check if mount element exists
+const mountElement = document.getElementById('ff_form_editor_app');
+if (!mountElement) {
+    console.error('FluentForm Editor: Mount element #ff_form_editor_app not found!');
+} else {
+    console.log('FluentForm Editor: Mount element found, mounting app...');
+    app.mount('#ff_form_editor_app');
+}
 
 // More menus app
 const MoreMenuApp = createApp({

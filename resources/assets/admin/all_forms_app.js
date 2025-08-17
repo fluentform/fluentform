@@ -122,4 +122,9 @@ app.config.globalProperties.$notify = ElNotification;
 app.config.globalProperties.$ELEMENT = { locale: en };
 
 // Mount the app
-app.mount("#ff_all_forms_app");
+const mountElement = document.getElementById('ff_all_forms_app');
+if (mountElement) {
+    app.mount("#ff_all_forms_app");
+} else {
+    console.warn('FluentForm All Forms: Mount element #ff_all_forms_app not found. This script may be loading on the wrong page.');
+}

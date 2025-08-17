@@ -29,4 +29,9 @@ app.use(ElLoading);
 app.config.globalProperties.$ELEMENT = { locale: en };
 app.config.globalProperties.$loading = ElLoading.service;
 
-app.mount("#ff_documentation_app");
+const mountElement = document.getElementById('ff_documentation_app');
+if (mountElement) {
+    app.mount("#ff_documentation_app");
+} else {
+    console.warn('FluentForm Documentation: Mount element #ff_documentation_app not found. This script may be loading on the wrong page.');
+}

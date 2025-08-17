@@ -39,7 +39,7 @@ export default {
                 .then(response => {
                     let dataOptions = response.data;
                     each(dataOptions, (data, dataKey) => {
-                        this.$set(this.field, dataKey, data);
+                        this.field[dataKey] = data;
                     });
                 })
                 .fail(error => {

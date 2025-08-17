@@ -2,6 +2,7 @@
     <div class="search-element">
         <div class="ff-input-wrap">
             <el-input
+                ref="searchInput"
                 :class="[searchElementStr.length > 0 ? 'active' : '']"
                 v-model="searchElementStr"
                 type="text"
@@ -132,9 +133,13 @@ export default {
         },
     },
     mounted() {
-        this.$refs.searchInput.focus()
+        this.$nextTick(() => {
+            if (this.$refs.searchInput) {
+                this.$refs.searchInput.focus();
+            }
+        });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         document.removeEventListener('keydown', this.handleSearchFocus);
     }
 }

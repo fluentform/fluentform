@@ -147,7 +147,7 @@
         </div>
 
         <div class="mt-4">
-            <el-button @click="saveSettings()" type="primary" size="medium" icon="el-icon-success">
+            <el-button @click="saveSettings()" type="primary" size="default" icon="el-icon-success">
                 {{ $t('Save Settings') }}
             </el-button>
         </div>
@@ -155,8 +155,8 @@
 </template>
 
 <script type="text/babel">
-import PhotoUploader from "./PhotoUploader";
-import PageSettings from './_PageSettings';
+import PhotoUploader from "./PhotoUploader.vue";
+import PageSettings from './_PageSettings.vue';
 
 export default {
     name: 'general_payment_settings',

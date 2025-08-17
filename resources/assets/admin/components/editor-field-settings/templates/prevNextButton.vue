@@ -64,7 +64,7 @@ export default {
                 return this.editItem.settings[this.prop].text
             },
             set(value) {
-                this.$set(this.editItem.settings[this.prop], 'text', DOMPurify.sanitize(value))
+                this.editItem.settings[this.prop].text = DOMPurify.sanitize(value);
             }
         },
     },

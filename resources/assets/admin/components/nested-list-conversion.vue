@@ -110,10 +110,10 @@ export default {
     },
     methods: NestedHandler.methods,
     mounted() {
-        FluentFormEditorEvents.$on('keyboard-delete-selected-item', this.handleKeyboardDelete);
+        FluentFormEditorEvents.on('keyboard-delete-selected-item', this.handleKeyboardDelete);
     },
-    beforeDestroy() {
-        FluentFormEditorEvents.$off('keyboard-delete-selected-item', this.handleKeyboardDelete);
+    beforeUnmount() {
+        FluentFormEditorEvents.off('keyboard-delete-selected-item', this.handleKeyboardDelete);
     }
 };
 </script>

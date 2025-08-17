@@ -180,7 +180,7 @@
                     </el-tooltip>
                 </template>
 
-                <wp-editor :height="100" :editor-shortcodes="emailBodyeditorShortcodes"
+                <wp-editor :height="100" :editor-shortcodes="emailBodyEditorShortcodes"
                            v-model="confirmation.redirectMessage" />
             </el-form-item>
 

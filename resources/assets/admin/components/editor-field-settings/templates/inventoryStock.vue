@@ -126,7 +126,7 @@ export default {
         let items = this.editItem.settings[this.getOptionsKey];
         items.forEach((item, i) => {
             if (item.quantity === undefined) {
-                this.$set(this.editItem.settings[this.getOptionsKey][i], 'quantity', 1)
+                this.editItem.settings[this.getOptionsKey][i].quantity = 1;
             }
             this.editItem.settings[this.getOptionsKey][i].quantity = parseInt(item.quantity)
         })

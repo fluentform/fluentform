@@ -1,4 +1,5 @@
 import notifier from "./notifier";
+import { _$t } from "./helpers";
 
 export default {
     /**

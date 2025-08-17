@@ -90,7 +90,7 @@
         },
         methods: {
             renderHistory(i, type) {
-                FluentFormEditorEvents.$emit(
+                FluentFormEditorEvents.emit(
                     "editor-history-preview",
                     this.historyData[i].old_data,
                     type,
@@ -100,7 +100,7 @@
             showDetail(i) {
                 let state = this.showDetails[i];
                 this.showDetails = {};
-                this.$set(this.showDetails, i, !state);
+                this.showDetails[i] = !state;
             },
             fetchHistory() {
                 const url = FluentFormsGlobal.$rest.route(
@@ -133,8 +133,11 @@
             },
         },
         mounted() {
-            FluentFormEditorEvents.$on("editor-form-saving", this.fetchHistory);
+            FluentFormEditorEvents.on("editor-form-saving", this.fetchHistory);
             this.fetchHistory();
+        },
+        beforeUnmount() {
+            FluentFormEditorEvents.off("editor-form-saving", this.fetchHistory);
         },
     };
 </script>

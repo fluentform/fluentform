@@ -20,7 +20,7 @@
                                 <span class="mr-3 title">{{ $t('Submission Stats') }}</span>
                                 <el-date-picker
                                     v-model="date_range"
-                                    size="medium"
+                                    size="default"
                                     value-format="yyyy-MM-dd"
                                     type="daterange"
                                     :picker-options="pickerOptions"

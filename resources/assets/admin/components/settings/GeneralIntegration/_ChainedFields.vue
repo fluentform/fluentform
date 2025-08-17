@@ -69,7 +69,7 @@ export default {
                 });
         },
         handleCategoryChange() {
-            this.$set(this.settings, this.field["key"].category, this.selected_category);
+            this.settings[this.field["key"].category] = this.selected_category;
             this.fetchSettings();
         }
     },
