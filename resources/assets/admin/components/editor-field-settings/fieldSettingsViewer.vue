@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import FieldOptionSettings from "./FieldOptionsSettings.vue";
 
 const fieldOptionsDictionary = FluentFormApp.element_customization_settings;

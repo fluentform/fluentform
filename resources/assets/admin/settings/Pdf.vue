@@ -31,7 +31,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import FieldMapper from "@/admin/components/settings/GeneralIntegration/FieldMapper.vue";
     import Errors from '@/common/Errors.js';
     import Card from '@/admin/components/Card/Card.vue';

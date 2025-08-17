@@ -88,7 +88,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import NestedHandler from './NestedHandler.js';
 import StylePrefPreview from '../conversion_templates/StylePrefPreview.vue';
 

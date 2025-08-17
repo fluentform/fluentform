@@ -24,7 +24,7 @@
     </el-form-item>
 </template>
 
-<script type="text/babel">
+<script>
 import DOMPurify from 'dompurify';
 
 export default {

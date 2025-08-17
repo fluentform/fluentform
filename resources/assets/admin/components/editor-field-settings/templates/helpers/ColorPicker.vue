@@ -2,7 +2,7 @@
     <el-color-picker show-alpha @active-change="changeColor" v-model="color"></el-color-picker>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: 'ninja_color_picker',
     props: ['value'],

@@ -95,7 +95,7 @@
     </el-form-item>
 </template>
 
-<script type="text/babel">
+<script>
 import elLabel from '../../includes/el-label.vue';
 import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
 import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';

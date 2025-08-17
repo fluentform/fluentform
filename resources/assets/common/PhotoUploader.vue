@@ -42,7 +42,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: 'photo_widget',
     props: ['value', 'design_mode', 'enable_clear', 'for_advanced_option'],

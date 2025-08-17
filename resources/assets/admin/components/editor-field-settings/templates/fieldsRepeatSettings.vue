@@ -52,7 +52,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import elLabel from '../../includes/el-label.vue';
 import fieldOptionSettings from './fieldOptionSettings.vue';
 import validationRules from './validationRules.vue';

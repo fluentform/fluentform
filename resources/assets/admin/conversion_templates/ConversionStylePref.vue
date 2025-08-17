@@ -93,7 +93,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import elLabel from "../components/includes/el-label.vue";
 import PhotoWidget from "../../common/PhotoUploader.vue";
 

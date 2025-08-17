@@ -103,7 +103,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import PhotoUploader from '@/common/PhotoUploader.vue';
     import Card from '@/admin/components/Card/Card.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';

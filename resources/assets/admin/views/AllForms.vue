@@ -330,8 +330,8 @@
     </div>
 </template>
 
-<script type="text/babel">
-import Clipboard from "clipboard.js";
+<script>
+import Clipboard from "clipboard";
 import remove from "@/admin/components/confirmRemove.vue";
 import CreateNewFormModal from "@/admin/components/modals/CreateNewFormModal.vue";
 import moment from "moment";

@@ -8,7 +8,7 @@
         </div>
     </div>
 </template>
-<script type="text/babel">
+<script>
     export default {
         name: 'ninja_ace_editor_js',
         props: ['value', 'mode', 'editor_id', 'aceLoaded'],

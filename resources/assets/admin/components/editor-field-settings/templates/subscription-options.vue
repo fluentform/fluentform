@@ -228,7 +228,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import each from 'lodash/each';
 import elLabel from '../../includes/el-label.vue';
 

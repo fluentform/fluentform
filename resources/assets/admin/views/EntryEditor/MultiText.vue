@@ -6,7 +6,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     export default {
         name: 'mult-text-line',
         props: ['modelValue'],

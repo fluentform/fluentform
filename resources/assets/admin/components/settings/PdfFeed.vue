@@ -50,7 +50,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import FieldMapper from "./GeneralIntegration/FieldMapper.vue";
 
 export default {

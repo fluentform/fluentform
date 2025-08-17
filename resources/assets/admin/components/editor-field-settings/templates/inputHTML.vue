@@ -31,7 +31,7 @@
     </el-form-item>
 </template>
 
-<script type="text/babel">
+<script>
 import WpEditor from "../../../../common/_wp_editor.vue";
 
 export default {

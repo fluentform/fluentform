@@ -190,7 +190,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import wpEditor from '@/common/_wp_editor.vue';
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';

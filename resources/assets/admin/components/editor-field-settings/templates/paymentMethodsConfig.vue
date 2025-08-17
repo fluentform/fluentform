@@ -53,7 +53,7 @@
     </el-form-item>
 </template>
 
-<script type="text/babel">
+<script>
 import elLabel from "../../includes/el-label.vue";
 import isEmpty from "lodash/isEmpty";
 import inputText from "./inputText.vue";

@@ -43,7 +43,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import RoutingFilterFields from '@/admin/components/settings/Includes/RoutingFilterFields.vue';
 import FiledGeneral from './_FieldGeneral.vue';
 

@@ -79,7 +79,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import { mapGetters } from 'vuex';
 
 import inputText from './inputText.vue';

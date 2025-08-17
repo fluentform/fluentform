@@ -23,7 +23,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import Layout from '../components/settings/FormSettings/Layout.vue';
 
     export default {

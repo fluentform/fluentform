@@ -18,7 +18,7 @@
         </el-row>
     </div>
 </template>
-<script type="text/babel">
+<script>
 import each from 'lodash/each';
 
 export default {

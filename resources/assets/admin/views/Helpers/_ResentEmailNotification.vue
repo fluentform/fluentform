@@ -64,7 +64,7 @@
         </el-dialog>
     </div>
 </template>
-<script type="text/babel">
+<script>
     import Notice from '@/admin/components/Notice/Notice.vue';
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';

@@ -62,7 +62,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import elLabel from '@/admin/components/includes/el-label.vue';
 
 export default {

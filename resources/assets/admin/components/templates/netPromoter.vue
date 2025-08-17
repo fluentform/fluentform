@@ -10,7 +10,7 @@
     </withLabel>
 </template>
 
-<script type="text/babel">
+<script>
 import withLabel from './withLabel.vue';
 import range from 'lodash/range';
 

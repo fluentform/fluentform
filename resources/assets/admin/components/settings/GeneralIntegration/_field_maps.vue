@@ -130,7 +130,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import ErrorView from "../../../../common/errorView.vue";
 import FieldGeneral from "./_FieldGeneral.vue";
 

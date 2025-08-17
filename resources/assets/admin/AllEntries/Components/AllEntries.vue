@@ -184,7 +184,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import EntryChart from "./chartView.vue";
 import BtnGroup from "@/admin/components/BtnGroup/BtnGroup.vue";
 import BtnGroupItem from "@/admin/components/BtnGroup/BtnGroupItem.vue";

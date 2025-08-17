@@ -27,7 +27,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import elLabel from '../../../includes/el-label.vue'
     import ninjaColorPicker from './ColorPicker.vue';
     import DOMPurify from "dompurify";

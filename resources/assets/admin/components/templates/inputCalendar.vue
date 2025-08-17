@@ -6,7 +6,7 @@
     </withLabel>
 </template>
 
-<script type="text/babel">
+<script>
 import withLabel from './withLabel.vue';
 
 export default {

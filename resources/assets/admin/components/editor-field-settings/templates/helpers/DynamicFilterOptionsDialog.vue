@@ -72,7 +72,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: 'DynamicFilterOptionsDialog',
     props: ['visible', 'options', 'dynamic', 'type', 'value'],

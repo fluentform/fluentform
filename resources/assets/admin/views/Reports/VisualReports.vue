@@ -117,7 +117,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import ReportCard from './reportCard.vue';
 import each from 'lodash/each.js';
 import EntriesChart from '../../AllEntries/Components/chartView.vue';

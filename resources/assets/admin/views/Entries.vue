@@ -582,7 +582,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import Confirm from "@/admin/components/confirmRemove.vue";
 import moment from "moment";
 import each from "lodash/each.js";

@@ -80,7 +80,7 @@
         </el-form>
     </div>
 </template>
-<script type="text/babel">
+<script>
 import FilterFields from "./FilterFields.vue";
 
 export default {

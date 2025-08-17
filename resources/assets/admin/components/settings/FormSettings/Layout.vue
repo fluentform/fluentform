@@ -753,7 +753,7 @@
     </el-form>
 </template>
 
-<script type="text/babel">
+<script>
 import Card from "@/admin/components/Card/Card.vue";
 import CardBody from "@/admin/components/Card/CardBody.vue";
 import CardHead from "@/admin/components/Card/CardHead.vue";

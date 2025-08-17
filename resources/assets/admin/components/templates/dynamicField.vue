@@ -5,7 +5,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import customSelect from "./select.vue";
 import inputCheckable from "./inputCheckable.vue";
 import inputHidden from "./inputHidden.vue";

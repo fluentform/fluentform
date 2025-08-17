@@ -124,7 +124,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import each from 'lodash/each';
     import PostTypeSelectionModal from './PostTypeSelectionModal';
 

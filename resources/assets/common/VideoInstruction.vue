@@ -44,7 +44,7 @@
     </span>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: 'VideoInstruction',
     props: {

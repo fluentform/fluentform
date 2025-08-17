@@ -63,7 +63,7 @@
     </el-dialog>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: 'tinyButtonDesigner',
     emits: ['update:visibility'],

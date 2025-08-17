@@ -182,7 +182,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import Remove from '../confirmRemove.vue'
     import InputPopover from '../input-popover.vue'
     import FilterFields from './Includes/FilterFields'

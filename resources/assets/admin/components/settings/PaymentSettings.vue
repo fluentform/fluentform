@@ -441,7 +441,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import DropdownLabelRepeater from "./GeneralIntegration/_DropdownLabelRepeater.vue";
 import FieldGeneral from "./GeneralIntegration/_FieldGeneral.vue";
 import inputPopover from "../input-popover.vue";

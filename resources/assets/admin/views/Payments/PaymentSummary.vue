@@ -293,7 +293,7 @@
 
     </div>
 </template>
-<script type="text/babel">
+<script>
 import Subscriptions from "./Subscriptions.vue";
 import Card from "@/admin/components/Card/Card.vue";
 import CardHead from "@/admin/components/Card/CardHead.vue";

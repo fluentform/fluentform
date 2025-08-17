@@ -21,7 +21,7 @@
         </el-select>
     </div>
 </template>
-<script type="text/babel">
+<script>
 export default {
     name: "ListSelectFilter",
     props: ["settings", "field", "value", "select_class"],

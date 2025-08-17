@@ -3,7 +3,7 @@
         <all-entries />
     </div>
 </template>
-<script type="text/babel">
+<script>
     import AllEntries from './Components/AllEntries.vue';
 
     export default {

@@ -47,7 +47,7 @@
     </withLabel>
 </template>
 
-<script type="text/babel">
+<script>
 import each from 'lodash/each';
 import withLabel from './withLabel.vue';
 

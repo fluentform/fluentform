@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     export default {
         name: 'ninja_ace_editor',
         props: ['value', 'mode', 'editor_id', 'aceLoaded'],

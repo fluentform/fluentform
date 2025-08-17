@@ -555,7 +555,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import remove from "../confirmRemove.vue";
 import inputPopover from "../input-popover.vue";
 import wpEditor from "@/common/_wp_editor.vue";

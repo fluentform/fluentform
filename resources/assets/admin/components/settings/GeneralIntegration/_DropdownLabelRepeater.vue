@@ -32,7 +32,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import FieldGeneral from "./_FieldGeneral.vue";
 import ActionBtn from "@/admin/components/ActionBtn/ActionBtn.vue";
 import ActionBtnAdd from "@/admin/components/ActionBtn/ActionBtnAdd.vue";

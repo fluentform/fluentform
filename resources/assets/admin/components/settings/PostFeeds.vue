@@ -80,7 +80,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import PostFeed from "./PostFeed.vue";
 import remove from "../confirmRemove.vue";
 import BtnGroup from "@/admin/components/BtnGroup/BtnGroup.vue";

@@ -18,7 +18,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import RichFilter from './Filters';
 import isArray from 'lodash/isArray';
 

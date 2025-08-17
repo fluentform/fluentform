@@ -8,7 +8,7 @@
     </withLabel>
 </template>
 
-<script type="text/babel">
+<script>
 import withLabel from './withLabel.vue';
 import find from 'lodash/find';
 

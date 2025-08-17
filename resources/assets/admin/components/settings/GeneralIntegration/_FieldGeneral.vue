@@ -10,7 +10,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import InputPopover from '../../input-popover.vue';
 
     export default {

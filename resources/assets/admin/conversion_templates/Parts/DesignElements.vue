@@ -85,7 +85,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import PhotoUploader from '../../../common/PhotoUploader.vue';
 
 export default {

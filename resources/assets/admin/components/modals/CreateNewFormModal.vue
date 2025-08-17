@@ -157,7 +157,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import Card from '../Card/Card.vue';
     import CardBody from '../Card/CardBody.vue';
     import ChooseTemplateModal from './ChooseTemplateModal.vue';

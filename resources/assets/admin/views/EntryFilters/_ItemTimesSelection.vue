@@ -17,7 +17,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import isArray from 'lodash/isArray';
 
 export default {

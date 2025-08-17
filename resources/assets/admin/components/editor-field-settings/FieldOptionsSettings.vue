@@ -99,7 +99,7 @@
     </el-form>
 </template>
 
-<script type="text/babel">
+<script>
 import select from './templates/select.vue';
 import nameAttr from './templates/nameAttr.vue';
 import infoBlock from './templates/infoBlock.vue';

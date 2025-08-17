@@ -10,7 +10,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: "CustomSettingsField",
     props: ["listItem", "editItem", "form_items", "item"],

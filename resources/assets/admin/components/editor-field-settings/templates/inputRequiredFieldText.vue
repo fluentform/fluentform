@@ -28,7 +28,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import elLabel from '../../includes/el-label.vue';
 import inputRadio from './inputRadio.vue';
 

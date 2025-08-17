@@ -12,7 +12,7 @@
     ></component>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: 'CustomComponent',
     props: ['form_id', 'form', 'has_pro', 'inputs', 'editorShortcodes', 'has_pdf', 'app'],

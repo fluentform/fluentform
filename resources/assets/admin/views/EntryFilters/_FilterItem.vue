@@ -108,7 +108,7 @@
     </tr>
 </template>
 
-<script type="text/babel">
+<script>
 import isArray from "lodash/isArray";
 import ItemTimesSelection from "@/admin/views/EntryFilters/_ItemTimesSelection.vue";
 

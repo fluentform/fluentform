@@ -78,7 +78,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
 import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
 import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';

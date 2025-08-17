@@ -45,7 +45,7 @@
     </el-form-item>
 </template>
 
-<script type="text/babel">
+<script>
 import elLabel from '@/admin/components/includes/el-label.vue';
 import dynamicFilterGroup from './DynamicFilterGroup.vue';
 

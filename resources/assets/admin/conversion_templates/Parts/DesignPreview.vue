@@ -33,7 +33,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: 'DesignPreview',
     props: ['form_id', 'design_settings', 'has_pro', 'fonts', 'meta_settings'],

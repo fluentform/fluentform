@@ -298,7 +298,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import inputPopover from "../input-popover.vue";
 import FilterFields from "./Includes/FilterFields.vue";
 import PostMetaPluginMapping from "./_PostMetaPluginsMapping.vue";

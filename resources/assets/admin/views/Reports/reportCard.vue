@@ -46,7 +46,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import PieChart from './_PieChart.vue';
     import BarChart from './_BarChart.vue';
     import HorizontalBar from './_HorizontalBarChart.vue';

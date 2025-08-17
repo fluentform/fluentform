@@ -51,7 +51,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import DesignPreview from './DesignPreview.vue';
 import DesignElements from './DesignElements.vue';
 import MetaSettingView from './MetaSettings.vue';

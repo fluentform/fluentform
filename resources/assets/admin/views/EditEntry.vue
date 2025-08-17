@@ -40,7 +40,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import each from 'lodash/each.js';
     import MultiTextLine from './EntryEditor/MultiText.vue';
     import TextLine from './EntryEditor/Text.vue';

@@ -135,7 +135,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import inputPopover from "../input-popover.vue";
 import each from "lodash/each";
 

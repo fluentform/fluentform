@@ -162,7 +162,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import each from "lodash/each";
 import Card from '@/admin/components/Card/Card.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';

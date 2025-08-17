@@ -188,7 +188,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import wpEditor from "../../../../common/_wp_editor.vue";
 import errorView from "../../../../common/errorView.vue";
 import inputPopover from "../../input-popover.vue";

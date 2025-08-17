@@ -111,7 +111,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import ErrorView from '@/common/errorView.vue';
 import wpEditor from '@/common/_wp_editor.vue';
 import FiledGeneral from './_FieldGeneral.vue';
