@@ -168,7 +168,7 @@ export default {
             if (this.settings.saved_quiz_fields[key]) {
                 return this.settings.saved_quiz_fields[key];
             }
-            this.$set(this.settings.saved_quiz_fields, key, this.quizFields[key]);
+            this.settings.saved_quiz_fields[key] = this.quizFields[key];
             return this.settings.saved_quiz_fields[key];
         },
         getSettings() {

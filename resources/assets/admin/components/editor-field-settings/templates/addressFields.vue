@@ -185,7 +185,7 @@ export default {
         },
         createDraggableList() {
             if (!this.editItem.settings.field_order) {
-                this.$set(this.editItem.settings, 'field_order', []);
+                this.editItem.settings.field_order = [];
                 let i = 0;
                 let optionToRender = [];
 

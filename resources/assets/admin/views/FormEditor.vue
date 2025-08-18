@@ -1434,7 +1434,7 @@ export default {
         document.addEventListener("keydown", this.initKeyboardUndoRedo);
         document.addEventListener("keydown", this.initKeyboardDelete);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         document.removeEventListener("keydown", this.initKeyboardSave);
         document.removeEventListener("keydown", this.initKeyboardUndoRedo);
         document.removeEventListener("keydown", this.initKeyboardDelete);

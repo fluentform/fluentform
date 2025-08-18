@@ -209,14 +209,6 @@ components.forEach((component) => {
 });
 
 app.mixin({
-    filters: {
-        ucFirst(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        },
-        _startCase(string) {
-            return _ff.startCase(string);
-        }
-    },
     methods: {
         $t(string) {
             let transString = window.FluentFormApp.form_settings_str[string] || string;
@@ -229,8 +221,12 @@ app.mixin({
             }
             return this.$t(singular, count);
         },
+        // Vue 3 doesn't have filters, convert to methods
         ucFirst(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
+        },
+        _startCase(string) {
+            return _ff.startCase(string);
         },
 
         ...notifier

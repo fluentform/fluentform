@@ -65,7 +65,7 @@ export default {
         },
         sanitizeStep(index) {
             const sanitizedValue = this.sanitizeInput(this.editItem.settings.step_titles[index]);
-            this.$set(this.editItem.settings.step_titles, index, sanitizedValue);
+            this.editItem.settings.step_titles[index] = sanitizedValue;
         }
     },
 }

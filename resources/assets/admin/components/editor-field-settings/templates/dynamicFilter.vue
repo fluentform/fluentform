@@ -361,7 +361,7 @@ export default {
 
 		maybeSetDefaultCsvDelimiter() {
 			if (this.isDynamicCsv && !this.model.csv_delimiter) {
-				this.$set(this.model, 'csv_delimiter', 'comma')
+				this.model.csv_delimiter = 'comma';
 			}
 		},
 
@@ -461,7 +461,7 @@ export default {
             this.allOptionsDialog = true;
         };
 	},
-    beforeDestroy() {
+    beforeUnmount() {
         delete window.ffDynamicFilterHandleValidOptionsClick;
         delete window.ffDynamicFilterHandleAllOptionsClick;
     },

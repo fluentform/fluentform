@@ -611,9 +611,9 @@ export default {
                 .then(res => {
                     console.log(res);
                     if (res.status === true) {
-                        this.$set(this.formLocations, formId, res.locations);
+                        this.formLocations[formId] = res.locations;
                     } else {
-                        this.$set(this.formLocations, formId, []);
+                        this.formLocations[formId] = [];
                     }
                 })
                 .catch(error => {

@@ -605,11 +605,11 @@ export default {
             // For free users, initialize pro components with demo data (no API calls)
             if (!this.hasPro) {
                 // Set demo data for pro components
-                this.$set(this.reports, 'completion_rate', this.getDemoCompletionRate());
-                this.$set(this.reports, 'heatmap_data', this.getDemoHeatmapData());
-                this.$set(this.reports, 'payment_types', this.getDemoPaymentTypes());
-                this.$set(this.reports, 'subscriptions', this.getDemoSubscriptions());
-                this.$set(this.reports, 'country_heatmap', {
+                this.reports.completion_rate = this.getDemoCompletionRate();
+                this.reports.heatmap_data = this.getDemoHeatmapData();
+                this.reports.payment_types = this.getDemoPaymentTypes();
+                this.reports.subscriptions = this.getDemoSubscriptions();
+                this.reports.country_heatmap = {
                     country_data: [
                         { name: "Sweden", value: 10 },
                         { name: "United States (US)", value: 10 },
@@ -617,7 +617,7 @@ export default {
                         { name: "India", value: 10 },
                         { name: "Australia", value: 10 }
                     ]
-                });
+                };
             }
 
             // Create promises for all components
@@ -641,43 +641,43 @@ export default {
                 switch (componentName) {
                     case 'overviewChart':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportOverviewChart"), commonParams);
-                        this.$set(this.reports, 'overview_chart', response.overview_chart);
+                        this.reports.overview_chart = response.overview_chart;
                         break;
                     case 'revenueChart':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportRevenueChart"), commonParams);
-                        this.$set(this.reports, 'revenue_chart', response.revenue_chart);
+                        this.reports.revenue_chart = response.revenue_chart;
                         break;
                     case 'completionRate':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportCompletionRate"), commonParams);
-                        this.$set(this.reports, 'completion_rate', response.completion_rate);
+                        this.reports.completion_rate = response.completion_rate;
                         break;
                     case 'formStats':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportFormStats"), commonParams);
-                        this.$set(this.reports, 'form_stats', response.form_stats);
+                        this.reports.form_stats = response.form_stats;
                         break;
                     case 'heatmapData':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportHeatmapData"), commonParams);
-                        this.$set(this.reports, 'heatmap_data', response.heatmap_data);
+                        this.reports.heatmap_data = response.heatmap_data;
                         break;
                     case 'countryHeatmap':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportCountryHeatmap"), commonParams);
-                        this.$set(this.reports, 'country_heatmap', response.country_heatmap);
+                        this.reports.country_heatmap = response.country_heatmap;
                         break;
                     case 'apiLogs':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportApiLogs"), commonParams);
-                        this.$set(this.reports, 'api_logs', response.api_logs);
+                        this.reports.api_logs = response.api_logs;
                         break;
                     case 'topPerformingForms':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportTopPerformingForms"), commonParams);
-                        this.$set(this.reports, 'top_performing_forms', response.top_performing_forms);
+                        this.reports.top_performing_forms = response.top_performing_forms;
                         break;
                     case 'subscriptions':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportSubscriptions"), commonParams);
-                        this.$set(this.reports, 'subscriptions', response.subscriptions);
+                        this.reports.subscriptions = response.subscriptions;
                         break;
                     case 'paymentTypes':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportPaymentTypes"), commonParams);
-                        this.$set(this.reports, 'payment_types', response.payment_types);
+                        this.reports.payment_types = response.payment_types;
                         break;
                 }
             } catch (error) {

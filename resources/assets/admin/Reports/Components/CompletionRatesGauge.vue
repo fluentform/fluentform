@@ -100,7 +100,7 @@ export default {
     mounted() {
         this.initChart();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.gaugeChart) {
             this.gaugeChart.dispose();
         }

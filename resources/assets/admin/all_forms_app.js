@@ -106,15 +106,14 @@ const components = [
     ElSkeleton,
     ElSkeletonItem,
     ElPopconfirm,
+    ElLoading,
+    ElIcon
 ];
 
 components.forEach(component => {
     app.use(component);
 });
 
-// Register Element Plus plugins
-app.use(ElLoading);
-app.use(ElIcon);
 app.config.globalProperties.$message = ElMessage;
 app.config.globalProperties.$notify = ElNotification;
 

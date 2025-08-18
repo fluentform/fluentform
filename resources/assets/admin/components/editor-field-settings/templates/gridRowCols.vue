@@ -198,9 +198,9 @@ export default {
                 }
             } else {
                 if (event.target.checked) {
-                    this.$set(selectedGrids, 0, option.value);
+                    selectedGrids[0] = option.value;
                 } else {
-                    this.$set(selectedGrids, 0, '');
+                    selectedGrids[0] = '';
                 }
             }
         },

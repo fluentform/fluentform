@@ -465,14 +465,14 @@ export default {
         },
         togglePreview(group) {
             if (!group.hasOwnProperty('isPreviewOpen')) {
-                this.$set(group, 'isPreviewOpen', false);
+                group.isPreviewOpen = false;
             }
             group.isPreviewOpen = !group.isPreviewOpen;
         },
         toggleGroup(groupIndex) {
             const group = this.conditional_logics.condition_groups[groupIndex]
             if (!group.hasOwnProperty('isGroupOpen')) {
-                this.$set(group, 'isGroupOpen', false);
+                group.isGroupOpen = false;
             }
             group.isGroupOpen = !group.isGroupOpen;
         },
@@ -545,9 +545,9 @@ export default {
         },
         startTitleEdit(group) {
             if (!group.hasOwnProperty('title')) {
-                this.$set(group, 'title', '');
+                group.title = '';
             }
-            this.$set(group, 'isEditingTitle', true);
+            group.isEditingTitle = true;
         },
         finishTitleEdit(group) {
             group.isEditingTitle = false;
@@ -557,7 +557,7 @@ export default {
         },
         addNewGroup() {
             if (!this.conditional_logics.condition_groups) {
-                this.$set(this.conditional_logics, 'condition_groups', []);
+                this.conditional_logics.condition_groups = [];
             }
 
             const newGroup = {
@@ -593,16 +593,16 @@ export default {
         if (this.conditional_logics.condition_groups) {
             this.conditional_logics.condition_groups.forEach(group => {
                 if (!group.hasOwnProperty('title')) {
-                    this.$set(group, 'title', '');
+                    group.title = '';
                 }
                 if (!group.hasOwnProperty('isEditingTitle')) {
-                    this.$set(group, 'isEditingTitle', false);
+                    group.isEditingTitle = false;
                 }
                 if (!group.hasOwnProperty('isPreviewOpen')) {
-                    this.$set(group, 'isPreviewOpen', false);
+                    group.isPreviewOpen = false;
                 }
                 if (!group.hasOwnProperty('isGroupOpen')) {
-                    this.$set(group, 'isGroupOpen', true);
+                    group.isGroupOpen = true;
                 }
             });
         }

@@ -134,14 +134,6 @@ class Menu
             'all'
         );
 
-        Vite::registerStyle(
-            'fluentform_editor_sass',
-            'assets/admin/styles/index.less',
-            [],
-            FLUENTFORM_VERSION,
-            'all'
-        );
-
         Vite::registerScript(
             'fluentform-transfer-js',
             'assets/admin/transfer/transfer.js',
@@ -190,6 +182,14 @@ class Menu
             true
         );
 
+        Vite::registerScript(
+            'fluentform_reports',
+            'assets/admin/Reports/reports.js',
+            ['jquery'],
+            FLUENTFORM_VERSION,
+            true
+        );
+
         Vite::registerStyle(
             'fluentform-add-ons',
             'assets/admin/css/add-ons.scss',
@@ -205,7 +205,15 @@ class Menu
             FLUENTFORM_VERSION,
             'all'
         );
-    
+
+        Vite::registerStyle(
+            'fluentform_reports',
+            'assets/admin/css/fluent-forms-reports.scss',
+            [],
+            FLUENTFORM_VERSION,
+            'all'
+        );
+
         add_filter('admin_footer_text', function ($text) {
             return '<span id="footer-thankyou">If you like the plugin please rate Fluent Forms <a target="_blank" rel="nofollow" href="https://wordpress.org/support/plugin/fluentform/reviews/#new-post">★★★★★ </a> on  <a target="_blank" rel="nofollow" href="https://wordpress.org/support/plugin/fluentform/reviews/#new-post">WordPress.org</a> to help us spread the word ♥ from the Fluent Forms team. </span>';
         });

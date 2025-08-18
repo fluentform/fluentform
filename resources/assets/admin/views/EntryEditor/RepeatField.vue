@@ -82,7 +82,7 @@ export default {
             this.model.splice(index + 1, 0, new Array(this.field.raw.fields.length).fill(""));
         },
         removeRow(index) {
-            this.$delete(this.model, index);
+            this.model.splice(index, 1);
         },
         initNewRow() {
             this.model = [new Array(this.field.raw.fields.length).fill("")];

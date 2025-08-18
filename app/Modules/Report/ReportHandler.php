@@ -29,7 +29,7 @@ class ReportHandler
 
         $hasPayment = false;
         $paymentSettings = get_option('__fluentform_payment_module_settings');
-        if ($paymentSettings && ArrayHelper::get($paymentSettings, 'status') === 'yes') {
+        if ($paymentSettings && Arr::get($paymentSettings, 'status') === 'yes') {
             $hasPayment = true;
         }
 

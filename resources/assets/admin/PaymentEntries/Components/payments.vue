@@ -352,7 +352,8 @@ import moment from 'moment';
 			    return window.fluent_forms_global_var.disable_time_diff ? '190' : '80';
 		    }
 	    },
-        filters: {
+        methods: {
+            // Vue 3 doesn't have filters, convert to methods
             ucFirst: function(value) {
                 if (!value) return ''
                 value = value.toString()

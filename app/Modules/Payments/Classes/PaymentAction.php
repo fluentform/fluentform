@@ -73,15 +73,15 @@ class PaymentAction
         $paymentMethod = false;
         $couponField = false;
         foreach ($formFields as $fieldKey => $field) {
-            $element = ArrayHelper::get($field, 'element');
+            $element = Arr::get($field, 'element');
             if (in_array($element, $paymentInputElements)) {
                 $paymentInputs[$fieldKey] = $field;
             } else if ($element == 'item_quantity_component' || $element == 'rangeslider') {
-                if ('rangeslider' == $element && 'yes' != ArrayHelper::get($field, 'settings.enable_target_product')) {
+                if ('rangeslider' == $element && 'yes' != Arr::get($field, 'settings.enable_target_product')) {
                     continue;
                 }
-                if ($targetProductName = ArrayHelper::get($field, 'settings.target_product')) {
-                    $quantityItems[$targetProductName] = ArrayHelper::get($field, 'attributes.name');
+                if ($targetProductName = Arr::get($field, 'settings.target_product')) {
+                    $quantityItems[$targetProductName] = Arr::get($field, 'attributes.name');
                 }
             } else if ($element == 'payment_method') {
                 $paymentMethod = $field;
@@ -99,14 +99,14 @@ class PaymentAction
         if ($paymentMethod) {
             $this->methodField = $paymentMethod;
             if ($this->isConditionPass()) {
-                $methodName = ArrayHelper::get($paymentMethod, 'attributes.name');
-                $this->selectedPaymentMethod = ArrayHelper::get($this->data, $methodName);
-                $this->methodSettings = ArrayHelper::get($paymentMethod, 'settings.payment_methods.' . $this->selectedPaymentMethod);
+                $methodName = Arr::get($paymentMethod, 'attributes.name');
+                $this->selectedPaymentMethod = Arr::get($this->data, $methodName);
+                $this->methodSettings = Arr::get($paymentMethod, 'settings.payment_methods.' . $this->selectedPaymentMethod);
             }
         }
 
         if ($couponField) {
-            $couponCodes = ArrayHelper::get($this->data, '__ff_all_applied_coupons', '');
+            $couponCodes = Arr::get($this->data, '__ff_all_applied_coupons', '');
             if ($couponCodes) {
                 $couponCodes = \json_decode($couponCodes, true);
                 if ($couponCodes && class_exists('FluentFormPro\Payments\Classes\CouponModel')) {
@@ -128,10 +128,10 @@ class PaymentAction
 
     public function isConditionPass()
     {
-        $conditionSettings = ArrayHelper::get($this->methodField, 'settings.conditional_logics', []);
+        $conditionSettings = Arr::get($this->methodField, 'settings.conditional_logics', []);
         if (
             !$conditionSettings ||
-            !ArrayHelper::isTrue($conditionSettings, 'status')
+            !Arr::isTrue($conditionSettings, 'status')
         ) {
             return true;
         }
@@ -301,12 +301,12 @@ class PaymentAction
         $data = $this->submissionData['response'];
 
         foreach ($paymentInputs as $paymentInput) {
-            $name = ArrayHelper::get($paymentInput, 'attributes.name');
+            $name = Arr::get($paymentInput, 'attributes.name');
             if (!$name || !isset($data[$name])) {
                 continue;
             }
             $price = 0;
-            $inputType = ArrayHelper::get($paymentInput, 'attributes.type');
+            $inputType = Arr::get($paymentInput, 'attributes.type');
 
             if (!$data[$name]) {
                 continue;
@@ -315,8 +315,8 @@ class PaymentAction
             if ($inputType == 'number') {
                 $price = $data[$name];
             } else if ($inputType == 'single') {
-                $price = ArrayHelper::get($paymentInput, 'attributes.value');
-                if (ArrayHelper::get($paymentInput, 'settings.dynamic_default_value')) {
+                $price = Arr::get($paymentInput, 'attributes.value');
+                if (Arr::get($paymentInput, 'settings.dynamic_default_value')) {
                     $price = $data[$name];
                 }
             } else if ($inputType == 'radio' || $inputType == 'select') {
@@ -330,7 +330,7 @@ class PaymentAction
                     $this->pushItem($item);
                 }
                 continue;
-            } else if (ArrayHelper::get($paymentInput, 'attributes.type') == 'checkbox') {
+            } else if (Arr::get($paymentInput, 'attributes.type') == 'checkbox') {
                 $selectedItems = $data[$name];
                 foreach ($selectedItems as $selectedItem) {
                     $item = $this->getItemFromVariables($paymentInput, $selectedItem);
@@ -350,7 +350,7 @@ class PaymentAction
                 continue;
             }
 
-            $productName = ArrayHelper::get($paymentInput, 'attributes.name');
+            $productName = Arr::get($paymentInput, 'attributes.name');
             $quantity = $this->getQuantity($productName);
             if (!$quantity) {
                 continue;
@@ -358,7 +358,7 @@ class PaymentAction
 
             $this->pushItem([
                 'parent_holder' => $productName,
-                'item_name'     => ArrayHelper::get($paymentInput, 'admin_label'),
+                'item_name'     => Arr::get($paymentInput, 'admin_label'),
                 'item_price'    => $price,
                 'quantity'      => $quantity
             ]);
@@ -396,7 +396,7 @@ class PaymentAction
             return $quantity;
         }
         $inputName = $this->quantityItems[$productName];
-        $quantity = ArrayHelper::get($this->submissionData['response'], $inputName);
+        $quantity = Arr::get($this->submissionData['response'], $inputName);
         if (!$quantity) {
             return 0;
         }
@@ -432,7 +432,7 @@ class PaymentAction
     private function getItemFromVariables($item, $key)
     {
         $elementName = $item['element'];
-        $pricingOptions = ArrayHelper::get($item, 'settings.pricing_options');
+        $pricingOptions = Arr::get($item, 'settings.pricing_options');
         $pricingOptions = apply_filters_deprecated(
             'fluentform_payment_field_' . $elementName . '_pricing_options',
             [
@@ -460,7 +460,7 @@ class PaymentAction
         }
 
         return [
-            'parent_holder' => ArrayHelper::get($item, 'attributes.name'),
+            'parent_holder' => Arr::get($item, 'attributes.name'),
             'item_name'     => $selectedOption['label'],
             'item_price'    => $selectedOption['value']
         ];
@@ -510,16 +510,16 @@ class PaymentAction
         }
 
         foreach ($subscriptionInputs as $subscriptionInput) {
-            $name = ArrayHelper::get($subscriptionInput, 'attributes.name');
+            $name = Arr::get($subscriptionInput, 'attributes.name');
             $quantity = $this->getQuantity($name);
 
             if (!$name || !isset($data[$name]) || $quantity === 0) {
                 continue;
             }
 
-            $label = ArrayHelper::get($subscriptionInput, 'settings.label', $name);
+            $label = Arr::get($subscriptionInput, 'settings.label', $name);
 
-            $subscriptionOptions = ArrayHelper::get($subscriptionInput, 'settings.subscription_options');
+            $subscriptionOptions = Arr::get($subscriptionInput, 'settings.subscription_options');
 
             $plan = $subscriptionOptions[$data[$name]];
 
@@ -527,19 +527,19 @@ class PaymentAction
                 continue;
             }
 
-            if (ArrayHelper::get($plan, 'user_input') === 'yes') {
-                $plan['subscription_amount'] = ArrayHelper::get($data, $name . '_custom_' . $data[$name]);
+            if (Arr::get($plan, 'user_input') === 'yes') {
+                $plan['subscription_amount'] = Arr::get($data, $name . '_custom_' . $data[$name]);
                 $plan['subscription_amount'] = $plan['subscription_amount'] ?: 0;
             }
 
-            $noTrial = ArrayHelper::get($plan, 'has_trial_days') === 'no' ||
-                       !ArrayHelper::get($plan, 'trial_days');
+            $noTrial = Arr::get($plan, 'has_trial_days') === 'no' ||
+                       !Arr::get($plan, 'trial_days');
                        
             if (!$plan['subscription_amount'] && $noTrial) {
                 continue;
             }
 
-            if (ArrayHelper::get($plan, 'bill_times') == 1 && ArrayHelper::get($plan, 'has_trial_days') != 'yes') {
+            if (Arr::get($plan, 'bill_times') == 1 && Arr::get($plan, 'has_trial_days') != 'yes') {
                 // Since the billing times is 1 and no trial days,
                 // the subscription acts like as an one time payment.
                 // We'll convert this as a payment item.
@@ -577,11 +577,11 @@ class PaymentAction
                     'updated_at'       => current_time('mysql'),
                 );
 
-                if (ArrayHelper::get($plan, 'has_signup_fee') === 'yes' && ArrayHelper::get($plan, 'signup_fee')) {
+                if (Arr::get($plan, 'has_signup_fee') === 'yes' && Arr::get($plan, 'signup_fee')) {
                     $subscription['initial_amount'] = PaymentHelper::convertToCents($plan['signup_fee']);
                 }
 
-                if (ArrayHelper::get($plan, 'has_trial_days') === 'yes' && ArrayHelper::get($plan, 'trial_days')) {
+                if (Arr::get($plan, 'has_trial_days') === 'yes' && Arr::get($plan, 'trial_days')) {
                     $subscription['trial_days'] = $plan['trial_days'];
                     $dateTime = current_datetime();
                     $localtime = $dateTime->getTimestamp() + $dateTime->getOffset();
@@ -614,7 +614,7 @@ class PaymentAction
 
     private function checkForExistingSubmission()
     {
-        $entryUid = ArrayHelper::get($this->submissionData, 'response.__entry_intermediate_hash');
+        $entryUid = Arr::get($this->submissionData, 'response.__entry_intermediate_hash');
 
         if (!$entryUid) {
             return false;
@@ -702,7 +702,7 @@ class PaymentAction
         $discountCodes = $this->discountCodes;
 
         foreach ($subscriptionInputs as $inputIndex => $subscriptionInput) {
-            $name = ArrayHelper::get($subscriptionInput, 'attributes.name');
+            $name = Arr::get($subscriptionInput, 'attributes.name');
             $quantity = $this->getQuantity($name);
 
             if (!$quantity) {
@@ -713,7 +713,7 @@ class PaymentAction
                 continue;
             }
 
-            $subscriptionOptions = ArrayHelper::get($subscriptionInput, 'settings.subscription_options');
+            $subscriptionOptions = Arr::get($subscriptionInput, 'settings.subscription_options');
 
             $plan = $subscriptionOptions[$data[$name]];
 
@@ -725,24 +725,24 @@ class PaymentAction
 
             }
 
-            if (ArrayHelper::get($plan, 'has_trial_days') == 'yes' && ArrayHelper::get($plan, 'trial_days')) {
+            if (Arr::get($plan, 'has_trial_days') == 'yes' && Arr::get($plan, 'trial_days')) {
                 continue; // this is a valid subscription
             }
 
-            if (ArrayHelper::get($plan, 'bill_times') != 1) {
+            if (Arr::get($plan, 'bill_times') != 1) {
                 continue;
             }
 
             // We have bill times 1 so we have to remove this and push to  hooked inputs and later merged to payment inputs
 
-            if (ArrayHelper::get($plan, 'user_input') === 'yes') {
-                $plan['subscription_amount'] = ArrayHelper::get($data, $name . '_custom_' . $data[$name]);
+            if (Arr::get($plan, 'user_input') === 'yes') {
+                $plan['subscription_amount'] = Arr::get($data, $name . '_custom_' . $data[$name]);
                 $plan['subscription_amount'] = $plan['subscription_amount'] ?: 0;
             }
 
             $amount = PaymentHelper::convertToCents($plan['subscription_amount']);
 
-            if (ArrayHelper::get($plan, 'has_signup_fee') === 'yes' && ArrayHelper::get($plan, 'signup_fee')) {
+            if (Arr::get($plan, 'has_signup_fee') === 'yes' && Arr::get($plan, 'signup_fee')) {
                 $amount += PaymentHelper::convertToCents($plan['signup_fee']);
             }
 
@@ -750,7 +750,7 @@ class PaymentAction
                 'type'          => 'single',
                 'form_id'       => $this->form->id,
                 'parent_holder' => $name,
-                'item_name'     => ArrayHelper::get($subscriptionInput, 'admin_label') . ' (' . $plan['name'] . ')',
+                'item_name'     => Arr::get($subscriptionInput, 'admin_label') . ' (' . $plan['name'] . ')',
                 'item_price'    => $amount,
                 'quantity'      => $quantity,
                 'line_total'    => $quantity * $amount,
@@ -812,7 +812,7 @@ class PaymentAction
             }
 
             $this->pushItem([
-                'parent_holder' => ArrayHelper::get($this->couponField, 'attributes.name'),
+                'parent_holder' => Arr::get($this->couponField, 'attributes.name'),
                 'item_name'     => $coupon->title,
                 'item_price'    => $discountAmount, // this is not cent. We convert to cent at pushItem method
                 'quantity'      => 1,

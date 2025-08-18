@@ -265,7 +265,7 @@ export default {
             this.$copy();
         });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.clipboard) {
             this.clipboard.destroy();
         }

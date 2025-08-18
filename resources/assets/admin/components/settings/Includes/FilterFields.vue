@@ -357,7 +357,7 @@ export default {
         },
         addGroup() {
             if (!this.conditionals.condition_groups) {
-                this.$set(this.conditionals, "condition_groups", []);
+                this.conditionals.condition_groups = [];
             }
             this.conditionals.condition_groups.push({
                 title: "",
@@ -435,7 +435,7 @@ export default {
             }
         } else {
             if (!this.conditionals.conditions || !this.conditionals.conditions.length) {
-                this.$set(this.conditionals, "conditions", [{ ...this.defaultRules }]);
+                this.conditionals.conditions = [{ ...this.defaultRules }];
             }
         }
     }

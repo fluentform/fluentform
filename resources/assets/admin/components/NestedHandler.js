@@ -1,4 +1,5 @@
 import {mapMutations, mapActions} from 'vuex';
+import { getCurrentInstance } from 'vue';
 import select from './templates/select.vue';
 import taxonomy from './templates/taxonomy.vue';
 import chainedSelect from './templates/chainedSelect.vue';
@@ -124,7 +125,8 @@ export default {
                 return false;
             }
             const dynamicComponent = 'ff_' + item.editor_options.template;
-            const registeredComponents = Object.keys(this.$options.components);
+            const instance = getCurrentInstance();
+            const registeredComponents = Object.keys(instance.type.components || {});
 
             return registeredComponents.includes(dynamicComponent);
         },
@@ -272,16 +274,16 @@ export default {
         },
 
         showContextMenu(index, e) {
-            this.$set(this.contextMenuIndex, index, !this.contextMenuIndex[index]);
+            this.contextMenuIndex[index] = !this.contextMenuIndex[index];
 
             if (this.contextMenuIndex[index]) {
                 const rect = e.target.getBoundingClientRect();
-                this.$set(this.contextMenuStyle, index, {
+                this.contextMenuStyle[index] = {
                     display: 'flex',
                     position: 'absolute',
                     left: `${e.clientX - rect.left}px`,
                     top: `${e.clientY - rect.top}px`,
-                });
+                };
             } else {
                 this.resetContextMenu(index);
             }
@@ -290,9 +292,9 @@ export default {
 
         resetContextMenu(index = false) {
             if (index) {
-                this.$set(this.contextMenuStyle, index, {
+                this.contextMenuStyle[index] = {
                     display: 'none',
-                });
+                };
             }
             this.contextMenuIndex = {};
             this.contextMenuStyle = {};

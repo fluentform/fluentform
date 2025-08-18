@@ -393,7 +393,7 @@ export default {
         },
         addAcfAdvancedMetaFieldMapping() {
             if (!this.feed.value.advanced_acf_mappings) {
-                this.$set(this.feed.value, "advanced_acf_mappings", []);
+                this.feed.value.advanced_acf_mappings = [];
             }
             this.feed.value.advanced_acf_mappings.push({
                 field_key: "",

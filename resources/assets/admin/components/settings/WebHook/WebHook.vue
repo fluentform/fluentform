@@ -256,7 +256,7 @@ export default {
     beforeCreate() {
         jQuery("head title").text("WebHook Settings - Fluent Forms");
     },
-    beforeDestroy() {
+    beforeUnmount() {
         delete window.ffAddWebhookFeed;
     }
 }

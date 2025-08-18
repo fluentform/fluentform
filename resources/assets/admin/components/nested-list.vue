@@ -49,7 +49,7 @@
                 <div
                     v-if="item.element === 'container' && item.columns.length > 1 && item.modified"
                     @click.stop="resetContainer()"
-                    class="context-menu__item"
+                    class="action-menu-item"
                 >
                     <i class="el-icon el-icon-refresh-right"></i>
                     <span>Reset Container</span>

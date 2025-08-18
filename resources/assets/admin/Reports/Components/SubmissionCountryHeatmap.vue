@@ -313,7 +313,7 @@ export default {
             immediate: true
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.chartInstance) {
             this.chartInstance.dispose();
             this.chartInstance = null;

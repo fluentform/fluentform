@@ -873,34 +873,34 @@ export default {
 
         for (const fieldKey in this.default_message_setting_fields) {
             if (!(fieldKey in this.data.default_messages)) {
-                this.$set(this.data.default_messages, fieldKey, this.default_message_setting_fields[fieldKey].value);
+                this.data.default_messages[fieldKey] = this.default_message_setting_fields[fieldKey].value;
             }
         }
         this.default_messages = this.data.default_messages;
 
         if (!this.data.misc.akismet_validation) {
-            this.$set(this.data.misc, "akismet_validation", "mark_as_spam");
+            this.data.misc.akismet_validation = "mark_as_spam";
         }
 
         if (!this.data.misc.cleantalk_validation) {
-            this.$set(this.data.misc, "cleantalk_validation", "mark_as_spam");
+            this.data.misc.cleantalk_validation = "mark_as_spam";
         }
 
         if (!this.data.misc.geo_provider) {
-            this.$set(this.data.misc, "geo_provider", "ipinfo.io");
+            this.data.misc.geo_provider = "ipinfo.io";
         }
         if (!this.data.misc.file_upload_locations) {
-            this.$set(this.data.misc, "file_upload_locations", "default");
+            this.data.misc.file_upload_locations = "default";
         }
         if (!this.data.misc.admin_top_nav_status) {
-            this.$set(this.data.misc, "admin_top_nav_status", "yes");
+            this.data.misc.admin_top_nav_status = "yes";
         }
         if (!this.data.misc.default_admin_date_time) {
-            this.$set(this.data.misc, "default_admin_date_time", "time_diff");
+            this.data.misc.default_admin_date_time = "time_diff";
         }
 
         if (!this.data.misc.tokenBasedProtectionStatus) {
-            this.$set(this.data.misc, "tokenBasedProtectionStatus", "no");
+            this.data.misc.tokenBasedProtectionStatus = "no";
         }
 
         this.misc = this.data.misc;

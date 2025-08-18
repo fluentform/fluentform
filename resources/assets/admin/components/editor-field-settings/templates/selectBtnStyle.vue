@@ -111,7 +111,7 @@ export default {
         }
         this.editItem.settings.current_state = this.activeName;
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.editItem.settings.current_state = 'normal_styles';
     },
 };

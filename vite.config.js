@@ -53,6 +53,7 @@ const inputs = [
     'resources/assets/admin/AllEntries/all-entries.js',
     'resources/assets/admin/form_entries_app.js',
     'resources/assets/admin/transfer/transfer.js',
+    'resources/assets/admin/Reports/reports.js',
     'resources/assets/admin/modules.js',
     'resources/assets/admin/documentation.js',
     'resources/assets/admin/admin_notices.js',
@@ -61,7 +62,7 @@ const inputs = [
     'resources/assets/admin/copier.js',
     'resources/assets/admin/form_preview_app.js',
     'resources/assets/admin/conversion_templates/conversational_design.js',
-    // 'resources/assets/admin/fluent_gutenblock.jsx',
+    'resources/assets/admin/fluent_gutenblock.jsx',
 
     // Public JS files
     'resources/assets/public/form-submission.js',
@@ -78,6 +79,7 @@ const inputs = [
     'resources/assets/admin/css/fluent-all-forms.scss',
     'resources/assets/admin/css/settings_global.scss',
     'resources/assets/admin/css/fluent-forms-admin.scss',
+    'resources/assets/admin/css/fluent-forms-reports.scss',
     'resources/assets/admin/css/admin_notices.scss',
     'resources/assets/admin/css/admin_docs.scss',
     'resources/assets/admin/css/add-ons.scss',
@@ -92,9 +94,6 @@ const inputs = [
     // Other CSS/SCSS files
     'resources/assets/elementor/fluent-forms-elementor-widget.scss',
     'resources/assets/admin/conversion_templates/design_css.scss',
-
-    // Less files
-    'resources/assets/admin/styles/index.less',
 ];
 export default defineConfig({
     define: {
@@ -105,7 +104,9 @@ export default defineConfig({
     },
     plugins: [
         vue(),
-        react(),
+        react({
+            include: /\.(jsx|js|tsx|ts)$/,
+        }),
         //liveReload([`${__dirname}/**/*\.php`]),
         viteStaticCopy({
             targets: [
@@ -117,14 +118,7 @@ export default defineConfig({
             ],
         }),
         AutoImport({
-            resolvers: [
-                ElementPlusResolver({
-                    importStyle: 'sass',
-                    directives: true,
-                    version: '2.1.5',
-                    exclude: ['ElLabel'] // Exclude ElLabel since it doesn't exist in Element Plus
-                }),
-            ],
+            resolvers: [],
         }),
         Components({
             // resolvers: [ElementPlusResolver()],
@@ -191,10 +185,12 @@ export default defineConfig({
         },
     },
     esbuild: {
-        loader: 'js',
+        loader: 'jsx',
+        include: /\.(jsx?|tsx?)$/,
+        exclude: [],
     },
     optimizeDeps: {
-        include: ['vue', 'vuex', 'element-plus', 'mitt', 'lodash'],
+        include: ['vue', 'vuex', 'element-plus', 'mitt', 'lodash', 'vue-echarts', 'echarts', 'react', 'react-dom'],
         esbuildOptions: {
             target: 'es2015',
         },

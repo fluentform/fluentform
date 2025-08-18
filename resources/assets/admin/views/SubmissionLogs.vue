@@ -174,7 +174,7 @@ export default {
                 });
         },
         runAction(log) {
-            this.$set(this.replaying, log.id, true);
+            this.replaying.log.id = true;
             const logObj = [
                 {
                     action_id: log.id,
@@ -204,7 +204,7 @@ export default {
                 })
                 .always(() => {
                     this.fetchLogs();
-                    this.$set(this.replaying, log.id, false);
+                    this.replaying.log.id =false;
                 });
         }
     },

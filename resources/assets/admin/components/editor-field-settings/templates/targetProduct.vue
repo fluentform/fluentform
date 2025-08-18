@@ -55,7 +55,7 @@ export default {
         if (!this.model || !this.available_products[this.model]) {
             if (Object.keys(this.available_products).length) {
                 let firstItem = Object.keys(this.available_products)[0];
-                this.$set(this, 'model', firstItem);
+                this.model = firstItem;
             }
         }
     },

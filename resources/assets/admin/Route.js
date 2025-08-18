@@ -126,11 +126,6 @@ class Route {
     getInventoryList = this.inventory ;
     storeInventory = this.inventory ;
 
-    //pro routes
-    inventory ='inventory';
-    getInventoryList = this.inventory ;
-    storeInventory = this.inventory ;
-
     noticeAction = 'notice';
 
     globalSearch = 'global-search';

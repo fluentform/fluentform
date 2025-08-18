@@ -318,7 +318,7 @@ export default {
     methods: {
         initTransactionEditor(transaction) {
             this.editingTransaction = transaction;
-            this.$set(this.editingTransaction, "should_run_actions", "no");
+            this.editingTransaction.should_run_actions = "no";
             this.original_editing_status = JSON.parse(JSON.stringify(transaction.status));
             this.transactionModal = true;
         },

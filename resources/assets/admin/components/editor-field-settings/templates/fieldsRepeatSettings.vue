@@ -105,7 +105,7 @@ export default {
             let newCopy = this.getTypeSettings(field.element);
             newCopy.settings.label = field.settings.label;
             let freshCopy = _ff.cloneDeep(newCopy);
-            this.$set(this.editItem.fields, index, freshCopy);
+            this.editItem.fields[index] = freshCopy;
         },
         getTypeSettings(element) {
             let item = {

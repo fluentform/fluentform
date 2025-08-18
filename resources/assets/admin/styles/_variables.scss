@@ -1,5 +1,7 @@
+@use "sass:color";
+
 // import element ui variable
-@import './element_ui_var';
+@use './element_ui_var';
 
 // colors
 $white:       #ffffff;
@@ -53,7 +55,7 @@ $submenu-link-active-color:               $base-color;
 $submenu-link-active-hover-bg:           #efefef;
 
 // ff icon btn
-$icon-btn-dark-soft-bg:                    mix($base-color, $white, 10%);
+$icon-btn-dark-soft-bg:                    color.mix($base-color, $white, 10%);
 $icon-btn-dark-soft-color:                 $base-color;
 
 $icon-btn-dark-soft-hover-bg:              $base-color;

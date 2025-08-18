@@ -45,7 +45,7 @@
                     }
                 });
                 this.editor.getSession().on("change", () => {
-                    this.$emit('input', this.editor.getSession().getValue());
+                    this.$emit('update:modelValue', this.editor.getSession().getValue());
                 });
                 this.loading = false;
             }

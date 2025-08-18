@@ -1275,7 +1275,7 @@ export default {
     beforeCreate() {
         ffEntriesEvents.eventBus.emit("change-title", "All Entries");
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.clipboard) {
             this.clipboard.destroy();
         }

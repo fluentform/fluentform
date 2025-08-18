@@ -1,3 +1,5 @@
+@use "sass:math";
+
 /* === v-grid === */
 
 .v-row {
@@ -37,14 +39,14 @@ $cols: 5, 10, 15, 20, 25, 30, 33.3333, 35, 40, 45, 50, 55, 60, 65, 66.6667, 70, 
     .v-col--auto:nth-last-child(#{$j}),
     .v-col--auto:nth-last-child(#{$j}) ~ .v-col--auto {
         $j-1: $j - 1;
-        width: percentage(calc(1 / $j));
+        width: percentage(math.div(1, $j));
         width: -webkit-calc((100% - 15px * #{$j-1}) / #{$j});
         width: calc((100% - 15px * #{$j-1}) / #{$j});
     }
     &.v-row--no-gutter {
         .v-col--auto:nth-last-child(#{$j}),
         .v-col--auto:nth-last-child(#{$j}) ~ .v-col--auto {
-            width: percentage(calc(1 / $j));
+            width: percentage(math.div(1, $j));
         }
     }
 }

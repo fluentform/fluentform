@@ -327,7 +327,7 @@ export default {
             let logIds = [];
 
             if (singlelog) {
-                this.$set(this.replaying, singlelog.id, true);
+                this.replaying[singlelog.id] = true;
                 logIds = [
                     {
                         action_id: singlelog.id,

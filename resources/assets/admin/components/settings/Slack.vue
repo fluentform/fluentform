@@ -152,10 +152,10 @@ export default {
                         this.slack = response[0].value;
                         this.slack.id = response[0].id;
                         if (!this.slack.fields) {
-                            this.$set(this.slack, "fields", []);
+                            this.slack.fields = [];
                         }
                         if (!this.slack.checkAll) {
-                            this.$set(this.slack, "checkAll", "");
+                            this.slack.checkAll = "";
                         }
                     }
                     this.formattedFields = response.formattedFields ? response.formattedFields : [];

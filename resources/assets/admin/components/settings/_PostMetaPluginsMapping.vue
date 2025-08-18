@@ -165,7 +165,7 @@ export default {
         },
         addAdvancedMetaFieldMapping() {
             if (!this.advanced_settings) {
-                this.$set(this, "advanced_settings", []);
+                this.advanced_settings = [];
             }
             this.advanced_settings.push({
                 field_key: "",

@@ -589,7 +589,7 @@ class StripeProcessor extends BaseProcessor
 
             foreach ($metaItems as $metaItem) {
                 if ($itemValue = Arr::get($metaItem, 'item_value')) {
-                    $metaData[ArrayHelper::get($metaItem, 'label', 'item')] = $itemValue;
+                    $metaData[Arr::get($metaItem, 'label', 'item')] = $itemValue;
                 }
             }
 

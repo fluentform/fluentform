@@ -62,7 +62,7 @@ class Vite
             return;
         }
 
-        $manifestPath = realpath(__DIR__) . '/../assets/manifest.json';
+        $manifestPath = FLUENTFORM_DIR_PATH . 'assets/manifest.json';
         if (!file_exists($manifestPath)) {
             throw new \Exception('Vite Manifest Not Found. Run : npm run dev or npm run prod');
         }
@@ -76,7 +76,6 @@ class Vite
             global $wp_filesystem;
             $manifestData = $wp_filesystem->get_contents($manifestPath);
         }
-        dd($manifestData);
 
         (static::$instance)->manifestData = json_decode($manifestData, true);
     }
@@ -349,7 +348,7 @@ class Vite
     static function getAssetUrl($path = '')
     {
         if (!static::isOnDevMode()) {
-            return FLUENTFORM_URL . 'assets' . DIRECTORY_SEPARATOR . $path;
+            return plugin_dir_url(FLUENTFORM_DIR_PATH . 'fluentform.php') . 'assets/' . $path;
         } else {
             return static::getVitePath() . $path;
         }
