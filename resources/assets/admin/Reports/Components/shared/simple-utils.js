@@ -15,7 +15,9 @@ export const COLORS = {
     trashed: '#A0AEC0',
     revenue: '#7D52F4',
     cancelled: '#FB3748',
-    failed: '#FB3748'
+    failed: '#FB3748',
+    // Colors ordered from lightest to strongest (bottom to top bars)
+    topPerformingBars: ['#DCD5FF','#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4']
 };
 
 // Simple chart loader component

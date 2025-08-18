@@ -254,6 +254,7 @@ export default {
                     itemGap: 20,
                     itemWidth: 12,
                     itemHeight: 12,
+                    icon: 'roundRect',
                     textStyle: {
                         color: '#6b7280',
                         fontSize: 12

@@ -29,7 +29,7 @@ class ReportHandler
 
 
         // Maybe load intl-tel-input flags 
-        if (\FluentForm\App\Helpers\Helper::hasPro()) {
+        if (Helper::hasPro()) {
             $cssSource = '';
             if (defined('FLUENTFORMPRO_DIR_URL')) {
                 $cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput.min.css';
