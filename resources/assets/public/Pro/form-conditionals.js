@@ -86,6 +86,8 @@ const formConditional = function ($, $theForm, form) {
                     $parent.removeClass('ff_excluded')
                         .addClass('ff_cond_v')
                         .slideDown(200);
+
+                    restoreDefaultValue(el);
                 } else {
                     $parent.removeClass('ff_cond_v')
                         .addClass('ff_excluded')
@@ -123,7 +125,7 @@ const formConditional = function ($, $theForm, form) {
                     } else {
                         data[name] = [];
                     }
-                } else if(type == 'file') {
+                } else if (type == 'file') {
                     let file_urls = '';
                     let $el = $theForm.find('input[name='+name+']')
                     $el
@@ -141,6 +143,29 @@ const formConditional = function ($, $theForm, form) {
 
 
             return data;
+        };
+
+        /**
+         * Restore default value from DOM properties
+         */
+        const restoreDefaultValue = function (el) {
+            if (el.is('input[type="radio"]')) {
+                el.each((i, item) => {
+                    $(item).prop('checked', $(item).prop('defaultChecked'));
+                });
+            } else if (el.is('input[type="checkbox"]')) {
+                el.each((i, item) => {
+                    $(item).prop('checked', $(item).prop('defaultChecked'));
+                });
+            } else if (el.is('select')) {
+                el.find('option').each((i, option) => {
+                    $(option).prop('selected', $(option).prop('defaultSelected'));
+                });
+            } else {
+                el.val(el.prop('defaultValue'));
+            }
+
+            el.trigger('change');
         };
 
         /**
