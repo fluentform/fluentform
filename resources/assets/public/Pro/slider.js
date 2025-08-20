@@ -599,7 +599,7 @@ class FluentFormSlider {
                 // Fire ajax request to persist the step state/data
                 if (self.stepPersistency && !self.isPopulatingStepData && !isLastStep) {
                     self.saveStepData(self.$theForm, self.activeStep).then(response => {
-                        console.log(response);
+                        // console.log(response);
                     });
                 }
 

@@ -852,45 +852,62 @@ class ReportHelper
     ) {
         global $wpdb;
         $prefix = $wpdb->prefix;
-        // Use wpFluent query builder for better security
-        $subQueryBuilder = wpFluent()
-            ->table('fluentform_submissions')
-            ->selectRaw("
+        $formCondition = $formId ? "AND {$prefix}fluentform_submissions.form_id = ?" : "";
+        $bindings = [$startDate, $endDate];
+        if ($formId) {
+            $bindings[] = $formId;
+        }
+
+        // First, get the total count for pagination
+        $countQuery = "SELECT COUNT(*) as total FROM (
+            SELECT
                 COALESCE(
                     NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
                     NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),
                     NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.user_email')), ''),
                     'No Email'
-                ) as email,
-                COUNT(*) as total_submissions,
-                SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
-                SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
-                SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions,
-                ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
-            ")
-            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
-
-        if ($formId) {
-            $subQueryBuilder->where('fluentform_submissions.form_id', $formId);
-        }
-
-        $subQueryBuilder->groupByRaw("
-            COALESCE(
+                ) as email
+            FROM {$prefix}fluentform_submissions
+            WHERE {$prefix}fluentform_submissions.created_at BETWEEN ? AND ?
+            {$formCondition}
+            GROUP BY COALESCE(
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),
                 NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.user_email')), ''),
                 'No Email'
             )
-        ");
+        ) as email_count";
 
-        $subQuery = $subQueryBuilder->toSql();
+        $totalResult = wpFluent()->selectOne($countQuery, $bindings);
+        $total = $totalResult ? (int)$totalResult->total : 0;
 
-        $query = wpFluent()
-            ->table(wpFluent()->raw("({$subQuery}) as email_stats"))
-            ->orderBy('total_submissions', 'DESC');
+        // Now get the actual data with pagination
+        $offset = ($currentPage - 1) * $perPage;
+        $dataQuery = "SELECT
+            COALESCE(
+                NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
+                NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),
+                NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.user_email')), ''),
+                'No Email'
+            ) as email,
+            COUNT(*) as total_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions,
+            ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+        FROM {$prefix}fluentform_submissions
+        WHERE {$prefix}fluentform_submissions.created_at BETWEEN ? AND ?
+        {$formCondition}
+        GROUP BY COALESCE(
+            NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email')), ''),
+            NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.email_1')), ''),
+            NULLIF(JSON_UNQUOTE(JSON_EXTRACT({$prefix}fluentform_submissions.response, '$.user_email')), ''),
+            'No Email'
+        )
+        ORDER BY total_submissions DESC
+        LIMIT {$perPage} OFFSET {$offset}";
 
-        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
-        $total = $results->total();
+        $results = wpFluent()->select($dataQuery, $bindings);
 
         // Get totals for all data
         $totalsQuery = wpFluent()
@@ -928,7 +945,7 @@ class ReportHelper
         }
 
         $formattedResults = [];
-        foreach ($results->items() as $row) {
+        foreach ($results as $row) {
             $formattedResults[] = [
                 'email'              => $row->email,
                 'total_submissions'  => (int)$row->total_submissions,
@@ -1052,28 +1069,40 @@ class ReportHelper
     ) {
         global $wpdb;
         $prefix = $wpdb->prefix;
-        $query = wpFluent()
-            ->table('fluentform_submissions')
-            ->select(
-                wpFluent()->raw("DATE({$prefix}fluentform_submissions.created_at) as submission_date"),
-                wpFluent()->raw('COUNT(*) as total_submissions'),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions"),
-                wpFluent()->raw("ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate")
-            )
-            ->whereBetween('fluentform_submissions.created_at', [$startDate, $endDate]);
-
+        $formCondition = $formId ? "AND {$prefix}fluentform_submissions.form_id = ?" : "";
+        $bindings = [$startDate, $endDate];
         if ($formId) {
-            $query->where('fluentform_submissions.form_id', $formId);
+            $bindings[] = $formId;
         }
 
-        // Group by date and order by date descending
-        $query->groupBy(wpFluent()->raw("DATE({$prefix}fluentform_submissions.created_at)"))
-            ->orderBy('submission_date', 'DESC');
+        // First, get the total count for pagination
+        $countQuery = "SELECT COUNT(*) as total FROM (
+            SELECT DATE({$prefix}fluentform_submissions.created_at) as submission_date
+            FROM {$prefix}fluentform_submissions
+            WHERE {$prefix}fluentform_submissions.created_at BETWEEN ? AND ?
+            {$formCondition}
+            GROUP BY DATE({$prefix}fluentform_submissions.created_at)
+        ) as date_count";
 
-        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
-        $total = $results->total();
+        $totalResult = wpFluent()->selectOne($countQuery, $bindings);
+        $total = $totalResult ? (int)$totalResult->total : 0;
+
+        $offset = ($currentPage - 1) * $perPage;
+        $dataQuery = "SELECT
+            DATE({$prefix}fluentform_submissions.created_at) as submission_date,
+            COUNT(*) as total_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) as read_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_submissions,
+            SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'spam' THEN 1 ELSE 0 END) as spam_submissions,
+            ROUND((SUM(CASE WHEN {$prefix}fluentform_submissions.status = 'read' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as conversion_rate
+        FROM {$prefix}fluentform_submissions
+        WHERE {$prefix}fluentform_submissions.created_at BETWEEN ? AND ?
+        {$formCondition}
+        GROUP BY DATE({$prefix}fluentform_submissions.created_at)
+        ORDER BY submission_date DESC
+        LIMIT {$perPage} OFFSET {$offset}";
+
+        $results = wpFluent()->select($dataQuery, $bindings);
 
         // Get totals for all data
         $totalsQuery = wpFluent()
@@ -1111,7 +1140,7 @@ class ReportHelper
         }
 
         $formattedResults = [];
-        foreach ($results->items() as $row) {
+        foreach ($results as $row) {
             $formattedResults[] = [
                 'submission_date'    => $row->submission_date,
                 'total_submissions'  => (int)$row->total_submissions,
