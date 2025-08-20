@@ -1189,7 +1189,7 @@ class TranslationString
             'Convert to Conversational Forms' => __('Convert to Conversational Forms', 'fluentform'),
             'This process is irreversible.' => __('This process is irreversible.', 'fluentform'),
             'Are you sure?' => __('Are you sure?', 'fluentform'),
-            'Conversational Forms currently doesn\'t support the following fields:' => __('Conversational Forms currently doesn\'t support the following fields', 'fluentform'),
+            'Conversational Forms currently doesn\'t support the following fields: You may also lose data of these fields.' => __('Conversational Forms currently doesn\'t support the following fields: You may also lose data of these fields.', 'fluentform'),
             'You may also lose data of these fields.' => __('You may lose data of these fields.', 'fluentform'),
             'Cancel' => __('Cancel', 'fluentform'),
             'Convert' => __('Convert', 'fluentform'),

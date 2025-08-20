@@ -65,7 +65,6 @@ export default {
             form_id: window.FluentFormApp.form_id,
             visible: false,
             fields: [
-                "Section Break",
                 "Shortcode",
                 "Action Hook",
                 "Form Step",
@@ -75,7 +74,8 @@ export default {
                 "Color Picker Field",
                 "Repeat Field",
                 "POST/CPT Selection",
-                "Containers"
+                "Containers",
+                "Repeater Containers",
             ]
         };
     },
