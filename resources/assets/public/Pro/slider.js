@@ -247,7 +247,7 @@ class FluentFormSlider {
                         $el.data('choicesjs').removeActiveItems(value);
                         $el.data('choicesjs').setChoiceByValue(value);
                     }
-                    
+
                     let $canvas = $el.closest('.ff-el-group').find('.fluentform-signature-pad');
                     if ($canvas.length) {
                         let canvas = $canvas[0];
@@ -302,10 +302,23 @@ class FluentFormSlider {
         const totalSteps = formSteps.length;
         const stepTitles = this.$theForm.find('.ff-step-titles li');
 
+        // Pre-skip steps that are fully hidden by conditions on initial load to avoid flicker
+        if (!window.ff_disable_auto_step) {
+            let candidateStepIndex = this.activeStep;
+            let stepSkipSafetyCounter = 0;
+            while (candidateStepIndex < totalSteps && this.isStepAllFieldsHidden($(formSteps[candidateStepIndex])) && stepSkipSafetyCounter < totalSteps) {
+                candidateStepIndex++;
+                stepSkipSafetyCounter++;
+            }
+            if (candidateStepIndex !== this.activeStep && candidateStepIndex < totalSteps) {
+                this.activeStep = candidateStepIndex;
+            }
+        }
+
         // Use display:none/block and hide all steps initially
         formSteps.css('display', 'none');
 
-        // Show the first step
+        // Show the computed first step
         $(formSteps[this.activeStep]).css('display', 'block');
 
         // Add accessibility attributes
@@ -458,6 +471,26 @@ class FluentFormSlider {
         }
     }
 
+        /**
+         * Determine if a step has all fields conditionally hidden
+         * @param {object} $step - jQuery step element
+         * @return {boolean}
+         */
+        isStepAllFieldsHidden($step) {
+            const $ = this.$;
+            // Find field groups within the step, excluding custom HTML blocks
+            const $groups = $step.find('.ff-el-group').not('.ff-custom_html');
+            if ($groups.length === 0) {
+                return false;
+            }
+            // If all non-HTML groups are excluded, the step is effectively empty due to conditions
+            const visibleGroups = $groups.filter(function () {
+                return !$(this).hasClass('ff_excluded');
+            });
+            return visibleGroups.length === 0;
+        }
+
+
     /**
      * Register event handlers for form steps to move forward or backward
      * @param {number} animDuration - Animation duration in milliseconds
@@ -540,8 +573,26 @@ class FluentFormSlider {
                 formSteps = this.$theForm.find('.fluentform-step'),
                 totalSteps = formSteps.length;
 
-            // Use display:none/block instead of slider
-            // Hide all steps and show the active one
+            // Pre-skip steps that are fully hidden due to conditions before making any visible change
+            if (!window.ff_disable_auto_step && totalSteps) {
+                // Determine direction by comparing desired step with current DOM active index
+                const currentDomActiveIndex = self.$theForm.find('.fluentform-step')
+                    .index(self.$theForm.find('.fluentform-step.active'));
+                const isNavigatingBackward = actionType === 'prev' || (currentDomActiveIndex > -1 && this.activeStep < currentDomActiveIndex);
+
+                if (isNavigatingBackward) {
+                    // Walk backwards until a non-empty step is found
+                    while (this.activeStep > 0 && this.isStepAllFieldsHidden($(formSteps[this.activeStep]))) {
+                        this.activeStep--;
+                    }
+                } else {
+                    // Walk forward until a non-empty step is found
+                    while (this.activeStep < totalSteps - 1 && this.isStepAllFieldsHidden($(formSteps[this.activeStep]))) {
+                        this.activeStep++;
+                    }
+                }
+            }
+
             formSteps.css('display', 'none').removeClass('active').attr('aria-hidden', 'true');
             $(formSteps[this.activeStep]).css('display', 'block').addClass('active').attr('aria-hidden', 'false');
 
