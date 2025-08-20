@@ -3,31 +3,37 @@
         <card>
             <card-head>
                 <h3>{{ title }}</h3>
-                <div class="chart-type-toggle">
-                    <el-radio-group v-model="chartType" size="small">
-                        <el-radio-button label="line">
-                            <i class="el-icon-connection"></i>
-                            {{ $t('Line Chart') }}
-                        </el-radio-button>
-                        <el-radio-button label="bar">
-                            <i class="el-icon-s-data"></i>
-                            {{ $t('Bar Chart') }}
-                        </el-radio-button>
-                    </el-radio-group>
+                <div class="card-controls">
+                    <div class="chart-type-toggle svg-icons" style="margin-right: 12px;">
+                        <el-radio-group v-model="chartType" size="mini">
+                            <el-radio-button label="line">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="width: 14px; height: 14px; margin-right: 4px;">
+                                    <circle cx="8.5" cy="10.5" r="1.5" stroke="currentColor" stroke-width="1.5"></circle>
+                                    <circle cx="14.5" cy="15.5" r="1.5" stroke="currentColor" stroke-width="1.5"></circle>
+                                    <circle cx="18.5" cy="7.5" r="1.5" stroke="currentColor" stroke-width="1.5"></circle>
+                                    <path d="M15.4341 14.2963L18 9M9.58251 11.5684L13.2038 14.2963M3 19L7.58957 11.8792" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M20 21H9C5.70017 21 4.05025 21 3.02513 19.9749C2 18.9497 2 17.2998 2 14V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                </svg>
+                            </el-radio-button>
+                            <el-radio-button label="bar">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="width: 14px; height: 14px; margin-right: 4px;">
+                                    <rect x="3" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"></rect>
+                                    <rect x="10" y="4" width="4" height="17" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"></rect>
+                                    <rect x="17" y="12" width="4" height="9" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"></rect>
+                                </svg>
+                            </el-radio-button>
+                        </el-radio-group>
+                    </div>
                 </div>
             </card-head>
             <card-body class="line-chart-body">
-                <div v-if="loading" class="loading-overlay">
-                    <div class="loading-spinner">
-                        <i class="el-icon-loading"></i>
-                        <span>{{ $t('Loading data...') }}</span>
-                    </div>
-                </div>
+                <chart-loader v-if="loading" :rows="12" />
                 <div class="chart-wrapper">
                     <v-chart
                         v-if="!loading"
+                        ref="chart"
                         :option="chartOptions"
-                        style="height: 440px;"
+                        style="height: 440px; width: 100%;"
                         autoresize
                     />
 
@@ -52,18 +58,19 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
+import { ChartLoader } from './shared/simple-utils.js';
 
 export default {
-    name: "LineChart",
-    props: ['data', 'title', 'type'],
+    name: "ChartDisplay",
+    props: ['data', 'title', 'type', 'loading'],
     components: {
         Card,
         CardBody,
         CardHead,
+        ChartLoader
     },
     data() {
         return {
-            loading: false,
             chartType: 'line', // Default to line chart
             statuses: {
                 success: { name: this.$t('Success'), color: '#1FC16B' },
@@ -133,7 +140,7 @@ export default {
                     axisPointer: {
                         type: 'cross'
                     },
-                    formatter: (params) => {
+                    formatter: function(params) {
                         let result = `${params[0].axisValue}<br/>`;
                         params.forEach(param => {
                             let value = param.value;
@@ -143,7 +150,7 @@ export default {
                             result += `${param.marker} ${param.seriesName}: ${value}<br/>`;
                         });
                         return result;
-                    }
+                    }.bind(this)
                 },
                 legend: {
                     show: true,
@@ -197,12 +204,12 @@ export default {
                     axisLabel: {
                         color: '#8e8da4',
                         fontSize: 12,
-                        formatter: (value) => {
+                        formatter: function(value) {
                             if (this.type === 'revenue') {
                                 return this.getCurrencySymbol() + (value >= 1000 ? (value/1000).toFixed(1) + 'K' : value);
                             }
                             return value >= 1000 ? (value/1000).toFixed(1) + 'K' : value;
-                        }
+                        }.bind(this)
                     },
                     splitLine: {
                         lineStyle: {

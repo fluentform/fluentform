@@ -33,7 +33,7 @@ class ReportHelper
         $reportableInputs = Helper::getSubFieldReportableInputs();
         $formSubFieldInputs = array_intersect($reportableInputs, array_values($elements));
 
-    
+
         if (!$formReportableInputs && !$formSubFieldInputs) {
             return [
                 'report_items'  => (object)[],
@@ -42,7 +42,7 @@ class ReportHelper
                 'devices'       => static::getDeviceCounts($form->id, $statuses),
             ];
         }
-    
+
         $inputs = [];
         $subfieldInputs = [];
         foreach ($elements as $elementKey => $element) {
@@ -53,9 +53,9 @@ class ReportHelper
                 $subfieldInputs[$elementKey] = $element;
             }
         }
-    
+
         $reports = static::getInputReport($form->id, array_keys($inputs), $statuses);
-    
+
         $subFieldReports = static::getSubFieldInputReport($form->id, array_keys($subfieldInputs), $statuses);
         $reports = array_merge($reports, $subFieldReports);
         foreach ($reports as $reportKey => $report) {
@@ -72,8 +72,11 @@ class ReportHelper
         ];
     }
 
-    public static function getInputReport($formId, $fieldNames, $statuses = ['read', 'unread', 'unapproved', 'approved', 'declined', 'unconfirmed', 'confirmed'])
-    {
+    public static function getInputReport(
+        $formId,
+        $fieldNames,
+        $statuses = ['read', 'unread', 'unapproved', 'approved', 'declined', 'unconfirmed', 'confirmed']
+    ) {
         if (!$fieldNames) {
             return [];
         }
@@ -105,7 +108,8 @@ class ReportHelper
         }
         if ($formattedReports) {
             //sync with form field order
-            $formattedReports = array_replace(array_intersect_key(array_flip($fieldNames), $formattedReports), $formattedReports);
+            $formattedReports = array_replace(array_intersect_key(array_flip($fieldNames), $formattedReports),
+                $formattedReports);
         }
         return $formattedReports;
     }
@@ -143,7 +147,7 @@ class ReportHelper
         }
         foreach ($formattedReports as $fieldName => $val) {
             $formattedReports[$fieldName]['total_entry'] = static::getEntryTotal(
-                Arr::get($report,'field_name'),
+                Arr::get($report, 'field_name'),
                 $formId,
                 $statuses
             );
@@ -156,7 +160,7 @@ class ReportHelper
 
     protected static function setReportForSubInput($report, &$formattedReports)
     {
-        $filedValue = maybe_unserialize(Arr::get($report,'field_value'));
+        $filedValue = maybe_unserialize(Arr::get($report, 'field_value'));
 
         if (is_array($filedValue)) {
             foreach ($filedValue as $fVal) {
@@ -166,9 +170,9 @@ class ReportHelper
                 );
             }
         } else {
-            $value = Arr::get($report,'sub_field_name') . ' : ' . $filedValue;
+            $value = Arr::get($report, 'sub_field_name') . ' : ' . $filedValue;
             $count = Arr::get($formattedReports, $report['field_name'] . '.reports.' . $value . '.count');
-            $count = $count ? $count + Arr::get($report,'total_count') : Arr::get($report,'total_count');
+            $count = $count ? $count + Arr::get($report, 'total_count') : Arr::get($report, 'total_count');
 
             $formattedReports[$report['field_name']]['reports'][$value] = [
                 'value'     => $value,
@@ -190,7 +194,7 @@ class ReportHelper
                     });
                 }
             )
-            ->distinct(['field_name','submission_id'])
+            ->distinct(['field_name', 'submission_id'])
             ->count();
     }
 
@@ -293,43 +297,9 @@ class ReportHelper
         return $chartData;
     }
 
-    /**
-     * Get completion rate data for the gauge chart
-     */
-    public static function getCompletionRateData($startDate, $endDate, $formId)
-    {
-        $completeQuery = Submission::whereBetween('created_at', [$startDate, $endDate]);
 
-        if ($formId) {
-            $completeQuery->where('form_id', $formId);
-        }
 
-        $completeSubmissions = $completeQuery->count();
 
-        $incompleteSubmissions = 0;
-        if (Helper::hasPro()) {
-            $incompleteQuery = wpFluent()->table('fluentform_draft_submissions')
-                ->whereBetween('created_at', [$startDate, $endDate]);
-
-            if ($formId) {
-                $incompleteQuery->where('form_id', $formId);
-            }
-
-            $incompleteSubmissions = $incompleteQuery->count();
-        }
-
-        // Calculate totals - total_submissions should be complete submissions only
-        // Total attempts = complete + incomplete (drafts)
-        $totalAttempts = $completeSubmissions + $incompleteSubmissions;
-        $completionRate = $totalAttempts > 0 ? round(($completeSubmissions / $totalAttempts) * 100, 1) : 0;
-
-        return [
-            'completion_rate' => $completionRate,
-            'incomplete_submissions' => $incompleteSubmissions,
-            'total_submissions' => $completeSubmissions, // This should be complete submissions only
-            'total_attempts' => $totalAttempts // Total form attempts (complete + incomplete)
-        ];
-    }
 
     public static function getFormStats($startDate, $endDate, $formId)
     {
@@ -388,7 +358,7 @@ class ReportHelper
 
         // Get active integrations count from wp_options
         $modulesStatus = get_option('fluentform_global_modules_status');
-        $activeIntegrations = count(array_filter($modulesStatus, function($status) {
+        $activeIntegrations = count(array_filter($modulesStatus, function ($status) {
             return $status === 'yes' || $status == 1 || $status == 'true';
         }));
 
@@ -407,7 +377,8 @@ class ReportHelper
         // calculate spam percentage
         $spamPercentage = 0;
         if ($previousSpamSubmissions > 0) {
-            $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100, 1);
+            $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100,
+                1);
         } elseif ($periodSpamSubmissions > 0) {
             $spamPercentage = 100;
         }
@@ -415,11 +386,14 @@ class ReportHelper
         $spamType = $spamPercentage > 0 ? 'down' : ($spamPercentage < 0 ? 'up' : 'neutral'); // Refunds going up is bad
 
         // Active forms
-        $periodActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$startDate, $endDate])->count();
-        $previousActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at', [$previousStartDate, $previousEndDate])->count();
+        $periodActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at',
+            [$startDate, $endDate])->count();
+        $previousActiveFormsCount = Form::where('status', 'published')->whereBetween('created_at',
+            [$previousStartDate, $previousEndDate])->count();
         $activeFormsPercentage = 0;
         if ($previousActiveFormsCount > 0) {
-            $activeFormsPercentage = round((($periodActiveFormsCount - $previousActiveFormsCount) / $previousActiveFormsCount) * 100, 1);
+            $activeFormsPercentage = round((($periodActiveFormsCount - $previousActiveFormsCount) / $previousActiveFormsCount) * 100,
+                1);
         } elseif ($periodActiveFormsCount > 0) {
             $activeFormsPercentage = 100;
         }
@@ -429,31 +403,31 @@ class ReportHelper
         $readRate = $periodSubmissions > 0 ? round(($readSubmissions / $periodSubmissions) * 100, 1) : 0;
 
         $stats = [
-            'period'              => $daysDifference . ' days',
-            'total_submissions'   => [
+            'period'               => $daysDifference . ' days',
+            'total_submissions'    => [
                 'value'        => $periodSubmissions,
                 'period_value' => $periodSubmissions,
                 'change'       => $growthText,
                 'change_type'  => $growthType
             ],
-            'spam_submissions'    => [
+            'spam_submissions'     => [
                 'value'        => $periodSpamSubmissions,
                 'period_value' => $previousSpamSubmissions,
                 'change'       => $spamText,
                 'change_type'  => $spamType
             ],
-            'active_integrations' => [
+            'active_integrations'  => [
                 'value' => $activeIntegrations,
             ],
-            'unread_submissions'  => [
+            'unread_submissions'   => [
                 'value' => $unreadSubmissions,
             ],
-            'read_submissions'    => [
+            'read_submissions'     => [
                 'value' => $readSubmissions,
             ],
             'active_forms'         => [
-                'value' => $periodActiveFormsCount,
-                'change' => $activeFormsText,
+                'value'       => $periodActiveFormsCount,
+                'change'      => $activeFormsText,
                 'change_type' => $activeFormsType
             ],
             'read_submission_rate' => [
@@ -472,85 +446,11 @@ class ReportHelper
         return $stats;
     }
 
-    /**
-     * Get submission heatmap data aggregated by recurring time periods
-     *
-     * This method returns cumulative submissions aggregated by 1-hour time slots within recurring periods.
-     * (e.g., all Mondays combined, all Tuesdays combined, etc.) .
-     *
-     * @param string $startDate
-     * @param string $endDate
-     * @param int|null $formId Optional form ID to filter by
-     * @return array Heatmap data with aggregated submissions by recurring time periods
-     */
-    public static function getSubmissionHeatmap($startDate, $endDate, $formId = null)
-    {
-
-        if (!Helper::hasPro()) {
-            return [];
-        }
-
-
-
-        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
-
-        // Create cache key based on parameters
-        $cacheKey = 'ff_heatmap_' . md5($startDate . $endDate . ($formId ?? 'all'));
-
-        // Try to get from cache first (cache for 5 minutes)
-        $cached = get_transient($cacheKey);
-        if ($cached !== false) {
-            return $cached;
-        }
-
-        // Calculate date difference to determine aggregation type
-        $startDateTime = new \DateTime($startDate);
-        $endDateTime = new \DateTime($endDate);
-        $interval = $startDateTime->diff($endDateTime);
-        $daysInterval = $interval->days + 1;
-
-        $aggregationType = 'day_of_week';
-
-        $heatmapData = self::initializeHeatmapData($aggregationType);
-
-        $results = self::getHeatmapSubmissionData($startDate, $endDate, $formId, $aggregationType);
-
-        // Fill in actual submission data
-        foreach ($results as $row) {
-            $timeSlotIndex = (int)$row->submission_hour; // 1-hour intervals (0-23)
-            $count = (int)$row->count;
-
-            if ($aggregationType === 'day_of_week') {
-                // Convert MySQL DAYOFWEEK (1=Sunday, 7=Saturday) to our format (0=Sunday, 6=Saturday)
-                $dayOfWeek = ((int)$row->day_of_week - 1) % 7;
-                $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                $dayKey = $dayNames[$dayOfWeek];
-
-                if (isset($heatmapData[$dayKey])) {
-                    $heatmapData[$dayKey][$timeSlotIndex] += $count;
-                }
-            }
-        }
-
-        $result = [
-            'heatmap_data' => $heatmapData,
-            'aggregation_type' => $aggregationType,
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'days_in_range' => $daysInterval
-        ];
-
-        // Cache the result for 5 minutes (300 seconds)
-        set_transient($cacheKey, $result, 300);
-
-        return $result;
-    }
-    
 
     /**
      * Initialize heatmap data structure based on aggregation type
      */
-    private static function initializeHeatmapData($aggregationType)
+    protected static function initializeHeatmapData($aggregationType)
     {
         if ($aggregationType === 'day_of_week') {
             $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -569,7 +469,7 @@ class ReportHelper
      * Get submission data for heatmap with appropriate grouping
      * Optimized version with better query performance
      */
-    private static function getHeatmapSubmissionData($startDate, $endDate, $formId, $aggregationType)
+    protected static function getHeatmapSubmissionData($startDate, $endDate, $formId, $aggregationType)
     {
         if ($aggregationType === 'day_of_week') {
             // Use optimized single query
@@ -578,14 +478,14 @@ class ReportHelper
                 HOUR(created_at) as submission_hour,
                 COUNT(*) as count
             ')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->when($formId, function ($q) use ($formId) {
-                return $q->where('form_id', $formId);
-            })
-            ->whereNotIn('status', ['trashed', 'spam'])
-            ->groupBy('day_of_week', 'submission_hour')
-            ->orderBy('day_of_week')
-            ->orderBy('submission_hour');
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->when($formId, function ($q) use ($formId) {
+                    return $q->where('form_id', $formId);
+                })
+                ->whereNotIn('status', ['trashed', 'spam'])
+                ->groupBy('day_of_week', 'submission_hour')
+                ->orderBy('day_of_week')
+                ->orderBy('submission_hour');
 
             return $query->get();
         }
@@ -593,38 +493,6 @@ class ReportHelper
         return collect([]);
     }
 
-
-    public static function getSubmissionsByCountry($startDate, $endDate, $formId = null)
-    {
-        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
-
-        $query = Submission::whereBetween('created_at', [$startDate, $endDate])
-            ->selectRaw('UPPER(country) as country_code, COUNT(*) as count')
-            ->whereNotNull('country')
-            ->where('country', '!=', '')
-            ->groupBy('country_code')
-            ->orderBy('count', 'DESC');
-
-        if ($formId) {
-            $query->where('form_id', $formId);
-        }
-
-        $results = $query->get();
-        $countryNames = getFluentFormCountryList();
-
-        $countryData = [];
-        foreach ($results as $result) {
-            $countryCode = $result->country_code;
-            $countryData[] = [
-                'name' => $countryNames[$countryCode] ?? $countryCode,
-                'value' => (int)$result->count
-            ];
-        }
-
-        return [
-            'country_data' => $countryData
-        ];
-    }
 
     public static function getApiLogs($startDate, $endDate, $formId = null)
     {
@@ -668,7 +536,7 @@ class ReportHelper
         $logsQuery = Log::whereBetween('created_at', [$startDate, $endDate]);
 
         // Exclude components - handle both NULL and specific values
-        $logsQuery->where(function($query) use ($excludedComponents) {
+        $logsQuery->where(function ($query) use ($excludedComponents) {
             $query->whereNull('component')
                 ->orWhereNotIn('component', $excludedComponents);
         });
@@ -687,7 +555,7 @@ class ReportHelper
         // Get total counts by status (also excluding the specific components)
         $totalsQuery = Log::whereBetween('created_at', [$startDate, $endDate]);
 
-        $totalsQuery->where(function($query) use ($excludedComponents) {
+        $totalsQuery->where(function ($query) use ($excludedComponents) {
             $query->whereNull('component')
                 ->orWhereNotIn('component', $excludedComponents);
         });
@@ -781,11 +649,22 @@ class ReportHelper
                         $value = $value ? round($value / 100, 2) : 0;
                     }
                     break;
+                case 'views':
+                    // Count unique views by IP from analytics table if analytics enabled
+                    if (!apply_filters('fluentform/disabled_analytics', false)) {
+                        $value = wpFluent()
+                            ->table('fluentform_form_analytics')
+                            ->where('form_id', $form->id)
+                            ->whereBetween('created_at', [$startDate, $endDate])
+                            ->distinct()
+                            ->count('ip');
+                    }
+                    break;
             }
 
             if ($value > 0) {
                 $topForms[] = [
-                    'id' => $form->id,
+                    'id'    => $form->id,
                     'title' => $form->title ?: 'Untitled Form',
                     'value' => $value
                 ];
@@ -793,339 +672,15 @@ class ReportHelper
         }
 
         // Sort by value in descending order
-        usort($topForms, function($a, $b) {
+        usort($topForms, function ($a, $b) {
             return $b['value'] - $a['value'];
         });
-
+        
         // Return top 5 forms
         return array_reverse(array_slice($topForms, 0, 5));
     }
 
-    public static function getSubscriptions($startDate, $endDate, $formId = null)
-    {
-        $paymentSettings = get_option('__fluentform_payment_module_settings');
-        if (!$paymentSettings || !Arr::get($paymentSettings, 'status')) {
-            return []; // Return empty if payment module is disabled
-        }
 
-        // Process date range
-        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
-
-        // Query subscriptions
-        $query = wpFluent()
-            ->table('fluentform_subscriptions')
-            ->whereBetween('created_at', [$startDate, $endDate]);
-
-        // Apply form id
-        if ($formId) {
-            $query->where('form_id', $formId);
-        }
-
-        // Fetch subscriptions
-        $subscriptions = $query->get();
-
-        // Group subscriptions by plan_name for chart display
-        $subscriptionsByPlan = [];
-        $totalRecurringAmount = 0;
-
-        foreach ($subscriptions as $subscription) {
-            $planName = $subscription->plan_name ?: ($subscription->item_name ?: 'Unnamed Plan');
-            $recurringAmount = $subscription->recurring_amount / 100; // Convert cents to dollars
-
-            if (!isset($subscriptionsByPlan[$planName])) {
-                $subscriptionsByPlan[$planName] = 0;
-            }
-
-            $subscriptionsByPlan[$planName] += $recurringAmount;
-            $totalRecurringAmount += $recurringAmount;
-        }
-
-        // Sort by amount (highest first)
-        arsort($subscriptionsByPlan);
-
-        // Calculate growth compared to previous period
-        $previousStartDate = (new \DateTime($startDate))->modify('-' . self::getDateDifference($startDate, $endDate) . ' days')->format('Y-m-d H:i:s');
-        $previousEndDate = (new \DateTime($startDate))->modify('-1 day')->format('Y-m-d H:i:s');
-
-        $previousQuery = wpFluent()
-            ->table('fluentform_subscriptions')
-            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
-            ->where(function($q) {
-                $q->where('status', 'active')
-                    ->orWhere('status', 'trialing');
-            });
-
-        if ($formId) {
-            $previousQuery->where('form_id', $formId);
-        }
-
-        $previousSubscriptions = $previousQuery->get();
-        $previousTotalRecurring = 0;
-
-        foreach ($previousSubscriptions as $subscription) {
-            $previousTotalRecurring += $subscription->recurring_amount / 100;
-        }
-
-        // Calculate growth percentage
-        $growthPercentage = 0;
-        if ($previousTotalRecurring > 0) {
-            $growthPercentage = round((($totalRecurringAmount - $previousTotalRecurring) / $previousTotalRecurring) * 100, 1);
-        } elseif ($totalRecurringAmount > 0) {
-            $growthPercentage = 100;
-        }
-
-        // Format data for chart display
-        $chartData = [];
-        foreach ($subscriptionsByPlan as $plan => $amount) {
-            $chartData[] = [
-                'name' => $plan,
-                'value' => $amount,
-            ];
-        }
-
-        // Limit to top 5 plans for readability
-        $chartData = array_slice($chartData, 0, 5);
-
-        return [
-            'total_recurring' => $totalRecurringAmount,
-            'growth_percentage' => $growthPercentage,
-            'subscription_count' => count($subscriptions),
-            'chart_data' => $chartData,
-            'start_date' => $startDate,
-            'currency_symbol' => Arr::get(PaymentHelper::getCurrencyConfig($formId), 'currency_sign', '$'),
-            'end_date' => $endDate
-        ];
-    }
-
-    public static function getNetRevenueByForms($startDate, $endDate, $perPage = 10, $currentPage = 1)
-    {
-        global $wpdb;
-        $prefix = $wpdb->prefix;
-        $query = wpFluent()
-            ->table('fluentform_transactions')
-            ->join('fluentform_forms', 'fluentform_transactions.form_id', '=', 'fluentform_forms.id')
-            ->select(
-                'fluentform_forms.id as form_id',
-                'fluentform_forms.title as form_title',
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid_amount"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending_amount"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded_amount"),
-                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net_revenue")
-            )
-            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
-            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded'])
-            ->groupBy('fluentform_forms.id', 'fluentform_forms.title')
-            ->orderBy('net_revenue', 'DESC');
-
-        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
-        $total = $results->total();
-
-        // Get totals for all data
-        $totalsQuery = wpFluent()
-            ->table('fluentform_transactions')
-            ->select(
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded"),
-                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net")
-            )
-            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
-            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded']);
-
-        $totals = $totalsQuery->first();
-        if ($totals) {
-            $formattedTotals = [
-                'paid' => round($totals->paid / 100, 2),
-                'pending' => round($totals->pending / 100, 2),
-                'refunded' => round($totals->refunded / 100, 2),
-                'net' => round($totals->net / 100, 2)
-            ];
-        } else {
-            $formattedTotals = [
-                'paid' => 0,
-                'pending' => 0,
-                'refunded' => 0,
-                'net' => 0
-            ];
-        }
-
-        $formattedResults = [];
-        foreach ($results->items() as $row) {
-            $formattedResults[] = [
-                'form_id' => $row->form_id,
-                'form_title' => $row->form_title ?: 'Untitled Form',
-                'paid_amount' => round($row->paid_amount / 100, 2),
-                'pending_amount' => round($row->pending_amount / 100, 2),
-                'refunded_amount' => round($row->refunded_amount / 100, 2),
-                'net_revenue' => round($row->net_revenue / 100, 2)
-            ];
-        }
-
-        return [
-            'data' => $formattedResults,
-            'totals' => $formattedTotals,
-            'total' => $total
-        ];
-    }
-
-    public static function getNetRevenueByPaymentMethod($startDate, $endDate, $formId = null, $perPage = 10, $currentPage = 1)
-    {
-        global $wpdb;
-        $prefix = $wpdb->prefix;
-        $query = wpFluent()
-            ->table('fluentform_transactions')
-            ->select(
-                'fluentform_transactions.payment_method',
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid_amount"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending_amount"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded_amount"),
-                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net_revenue"),
-                wpFluent()->raw("COUNT(*) as transaction_count")
-            )
-            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
-            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded'])
-            ->whereNotNull('fluentform_transactions.payment_method');
-
-        if ($formId) {
-            $query->where('fluentform_transactions.form_id', $formId);
-        }
-
-        $query->groupBy('fluentform_transactions.payment_method')
-            ->orderBy('net_revenue', 'DESC');
-
-        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
-        $total = $results->total();
-
-        // Get totals for all data
-        $totalsQuery = wpFluent()
-            ->table('fluentform_transactions')
-            ->select(
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded"),
-                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net")
-            )
-            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
-            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded']);
-
-        $totals = $totalsQuery->first();
-        if ($totals) {
-            $formattedTotals = [
-                'paid' => round($totals->paid / 100, 2),
-                'pending' => round($totals->pending / 100, 2),
-                'refunded' => round($totals->refunded / 100, 2),
-                'net' => round($totals->net / 100, 2)
-            ];
-        } else {
-            $formattedTotals = [
-                'paid' => 0,
-                'pending' => 0,
-                'refunded' => 0,
-                'net' => 0
-            ];
-        }
-
-        $formattedResults = [];
-        foreach ($results->items() as $row) {
-            $paymentMethodName = self::formatPaymentMethodName($row->payment_method);
-            $formattedResults[] = [
-                'payment_method' => $row->payment_method,
-                'payment_method_name' => $paymentMethodName,
-                'paid_amount' => round($row->paid_amount / 100, 2),
-                'pending_amount' => round($row->pending_amount / 100, 2),
-                'refunded_amount' => round($row->refunded_amount / 100, 2),
-                'net_revenue' => round($row->net_revenue / 100, 2),
-                'transaction_count' => $row->transaction_count
-            ];
-        }
-        return [
-            'data' => $formattedResults,
-            'totals' => $formattedTotals,
-            'total' => $total
-        ];
-    }
-
-    public static function getNetRevenueByPaymentType($startDate, $endDate, $formId = null, $perPage = 10, $currentPage = 1)
-    {
-        global $wpdb;
-        $prefix = $wpdb->prefix;
-        $query = wpFluent()
-            ->table('fluentform_transactions')
-            ->select(
-                'fluentform_transactions.transaction_type',
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid_amount"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending_amount"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded_amount"),
-                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net_revenue"),
-                wpFluent()->raw("COUNT(*) as transaction_count")
-            )
-            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
-            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded'])
-            ->whereIn('fluentform_transactions.transaction_type', ['onetime', 'subscription']);
-
-        if ($formId) {
-            $query->where('fluentform_transactions.form_id', $formId);
-        }
-
-        $query->groupBy('fluentform_transactions.transaction_type')
-            ->orderBy('net_revenue', 'DESC');
-
-        $results = $query->paginate($perPage, ['*'], 'page', $currentPage);
-        $total = $results->total();
-
-        // Get totals for all data
-        $totalsQuery = wpFluent()
-            ->table('fluentform_transactions')
-            ->select(
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as paid"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'pending' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as pending"),
-                wpFluent()->raw("SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) as refunded"),
-                wpFluent()->raw("(SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'paid' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END) - SUM(CASE WHEN {$prefix}fluentform_transactions.status = 'refunded' THEN {$prefix}fluentform_transactions.payment_total ELSE 0 END)) as net")
-            )
-            ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
-            ->whereIn('fluentform_transactions.status', ['paid', 'pending', 'refunded']);
-
-        if ($formId) {
-            $totalsQuery->where('fluentform_transactions.form_id', $formId);
-        }
-
-        $totals = $totalsQuery->first();
-        if ($totals) {
-            $formattedTotals = [
-                'paid' => round($totals->paid / 100, 2),
-                'pending' => round($totals->pending / 100, 2),
-                'refunded' => round($totals->refunded / 100, 2),
-                'net' => round($totals->net / 100, 2)
-            ];
-        } else {
-            $formattedTotals = [
-                'paid' => 0,
-                'pending' => 0,
-                'refunded' => 0,
-                'net' => 0
-            ];
-        }
-
-        $formattedResults = [];
-        foreach ($results->items() as $row) {
-            $typeName = $row->transaction_type === 'onetime' ? 'One-time Payment' : 'Subscription';
-            $formattedResults[] = [
-                'payment_type' => $row->transaction_type,
-                'payment_type_name' => $typeName,
-                'paid_amount' => round($row->paid_amount / 100, 2),
-                'pending_amount' => round($row->pending_amount / 100, 2),
-                'refunded_amount' => round($row->refunded_amount / 100, 2),
-                'net_revenue' => round($row->net_revenue / 100, 2),
-                'transaction_count' => $row->transaction_count
-            ];
-        }
-
-        return [
-            'data' => $formattedResults,
-            'totals' => $formattedTotals,
-            'total' => $total
-        ];
-    }
 
 
     public static function getSubmissionAnalysisByForms($startDate, $endDate, $perPage = 10, $currentPage = 1)
@@ -1165,18 +720,19 @@ class ReportHelper
         $totalsData = $totalsQuery->first();
         if ($totalsData) {
             $totals = [
-                'total' => (int)$totalsData->total,
-                'read' => (int)$totalsData->read_count,
-                'unread' => (int)$totalsData->unread_count,
-                'spam' => (int)$totalsData->spam_count,
-                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+                'total'    => (int)$totalsData->total,
+                'read'     => (int)$totalsData->read_count,
+                'unread'   => (int)$totalsData->unread_count,
+                'spam'     => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100,
+                    2) : 0
             ];
         } else {
             $totals = [
-                'total' => 0,
-                'read' => 0,
-                'unread' => 0,
-                'spam' => 0,
+                'total'    => 0,
+                'read'     => 0,
+                'unread'   => 0,
+                'spam'     => 0,
                 'readRate' => 0
             ];
         }
@@ -1184,25 +740,30 @@ class ReportHelper
         $formattedResults = [];
         foreach ($results->items() as $row) {
             $formattedResults[] = [
-                'form_id' => $row->form_id,
-                'form_title' => $row->form_title ?: 'Untitled Form',
-                'total_submissions' => (int)$row->total_submissions,
-                'read_submissions' => (int)$row->read_submissions,
+                'form_id'            => $row->form_id,
+                'form_title'         => $row->form_title ?: 'Untitled Form',
+                'total_submissions'  => (int)$row->total_submissions,
+                'read_submissions'   => (int)$row->read_submissions,
                 'unread_submissions' => (int)$row->unread_submissions,
-                'spam_submissions' => (int)$row->spam_submissions,
-                'conversion_rate' => (float)$row->conversion_rate
+                'spam_submissions'   => (int)$row->spam_submissions,
+                'conversion_rate'    => (float)$row->conversion_rate
             ];
         }
 
         return [
-            'data' => $formattedResults,
-            'total' => $total,
+            'data'   => $formattedResults,
+            'total'  => $total,
             'totals' => $totals
         ];
     }
 
-    public static function getSubmissionAnalysisBySource($startDate, $endDate, $formId = null, $perPage = 10, $currentPage = 1)
-    {
+    public static function getSubmissionAnalysisBySource(
+        $startDate,
+        $endDate,
+        $formId = null,
+        $perPage = 10,
+        $currentPage = 1
+    ) {
         global $wpdb;
         $prefix = $wpdb->prefix;
         // Build the query using wpFluent with full table names
@@ -1246,18 +807,19 @@ class ReportHelper
         $totalsData = $totalsQuery->first();
         if ($totalsData) {
             $totals = [
-                'total' => (int)$totalsData->total,
-                'read' => (int)$totalsData->read_count,
-                'unread' => (int)$totalsData->unread_count,
-                'spam' => (int)$totalsData->spam_count,
-                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+                'total'    => (int)$totalsData->total,
+                'read'     => (int)$totalsData->read_count,
+                'unread'   => (int)$totalsData->unread_count,
+                'spam'     => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100,
+                    2) : 0
             ];
         } else {
             $totals = [
-                'total' => 0,
-                'read' => 0,
-                'unread' => 0,
-                'spam' => 0,
+                'total'    => 0,
+                'read'     => 0,
+                'unread'   => 0,
+                'spam'     => 0,
                 'readRate' => 0
             ];
         }
@@ -1265,24 +827,29 @@ class ReportHelper
         $formattedResults = [];
         foreach ($results->items() as $row) {
             $formattedResults[] = [
-                'source_url' => $row->source_url ?: 'Direct Access',
-                'total_submissions' => (int)$row->total_submissions,
-                'read_submissions' => (int)$row->read_submissions,
+                'source_url'         => $row->source_url ?: 'Direct Access',
+                'total_submissions'  => (int)$row->total_submissions,
+                'read_submissions'   => (int)$row->read_submissions,
                 'unread_submissions' => (int)$row->unread_submissions,
-                'spam_submissions' => (int)$row->spam_submissions,
-                'conversion_rate' => (float)$row->conversion_rate
+                'spam_submissions'   => (int)$row->spam_submissions,
+                'conversion_rate'    => (float)$row->conversion_rate
             ];
         }
 
         return [
-            'data' => $formattedResults,
-            'total' => $total,
+            'data'   => $formattedResults,
+            'total'  => $total,
             'totals' => $totals
         ];
     }
 
-    public static function getSubmissionAnalysisByEmail($startDate, $endDate, $formId = null, $perPage = 10, $currentPage = 1)
-    {
+    public static function getSubmissionAnalysisByEmail(
+        $startDate,
+        $endDate,
+        $formId = null,
+        $perPage = 10,
+        $currentPage = 1
+    ) {
         global $wpdb;
         $prefix = $wpdb->prefix;
         // Use wpFluent query builder for better security
@@ -1343,18 +910,19 @@ class ReportHelper
         $totalsData = $totalsQuery->first();
         if ($totalsData) {
             $totals = [
-                'total' => (int)$totalsData->total,
-                'read' => (int)$totalsData->read_count,
-                'unread' => (int)$totalsData->unread_count,
-                'spam' => (int)$totalsData->spam_count,
-                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+                'total'    => (int)$totalsData->total,
+                'read'     => (int)$totalsData->read_count,
+                'unread'   => (int)$totalsData->unread_count,
+                'spam'     => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100,
+                    2) : 0
             ];
         } else {
             $totals = [
-                'total' => 0,
-                'read' => 0,
-                'unread' => 0,
-                'spam' => 0,
+                'total'    => 0,
+                'read'     => 0,
+                'unread'   => 0,
+                'spam'     => 0,
                 'readRate' => 0
             ];
         }
@@ -1362,24 +930,29 @@ class ReportHelper
         $formattedResults = [];
         foreach ($results->items() as $row) {
             $formattedResults[] = [
-                'email' => $row->email,
-                'total_submissions' => (int)$row->total_submissions,
-                'read_submissions' => (int)$row->read_submissions,
+                'email'              => $row->email,
+                'total_submissions'  => (int)$row->total_submissions,
+                'read_submissions'   => (int)$row->read_submissions,
                 'unread_submissions' => (int)$row->unread_submissions,
-                'spam_submissions' => (int)$row->spam_submissions,
-                'conversion_rate' => (float)$row->conversion_rate
+                'spam_submissions'   => (int)$row->spam_submissions,
+                'conversion_rate'    => (float)$row->conversion_rate
             ];
         }
 
         return [
-            'data' => $formattedResults,
-            'total' => $total,
+            'data'   => $formattedResults,
+            'total'  => $total,
             'totals' => $totals
         ];
     }
 
-    public static function getSubmissionAnalysisByCountry($startDate, $endDate, $formId = null, $perPage = 10, $currentPage = 1)
-    {
+    public static function getSubmissionAnalysisByCountry(
+        $startDate,
+        $endDate,
+        $formId = null,
+        $perPage = 10,
+        $currentPage = 1
+    ) {
         global $wpdb;
         $prefix = $wpdb->prefix;
         $query = wpFluent()
@@ -1424,18 +997,19 @@ class ReportHelper
         $totalsData = $totalsQuery->first();
         if ($totalsData) {
             $totals = [
-                'total' => (int)$totalsData->total,
-                'read' => (int)$totalsData->read_count,
-                'unread' => (int)$totalsData->unread_count,
-                'spam' => (int)$totalsData->spam_count,
-                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+                'total'    => (int)$totalsData->total,
+                'read'     => (int)$totalsData->read_count,
+                'unread'   => (int)$totalsData->unread_count,
+                'spam'     => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100,
+                    2) : 0
             ];
         } else {
-            $totals =  [
-                'total' => 0,
-                'read' => 0,
-                'unread' => 0,
-                'spam' => 0,
+            $totals = [
+                'total'    => 0,
+                'read'     => 0,
+                'unread'   => 0,
+                'spam'     => 0,
                 'readRate' => 0,
             ];
         }
@@ -1443,25 +1017,39 @@ class ReportHelper
         $formattedResults = [];
         $countryNames = getFluentFormCountryList();
         foreach ($results->items() as $row) {
+            $countryCode = null;
+            if ($row->country && strlen($row->country) === 2 && ctype_alpha($row->country)) {
+                $upper = strtoupper($row->country);
+                if (isset($countryNames[$upper])) {
+                    // Stored as ISO2 code
+                    $countryCode = strtolower($upper);
+                }
+            }
             $formattedResults[] = [
-                'country' => $row->country ? Arr::get($countryNames, $row->country, $row->country) : 'Unknown',
-                'total_submissions' => (int)$row->total_submissions,
-                'read_submissions' => (int)$row->read_submissions,
+                'country'            => $row->country ? Arr::get($countryNames, strtoupper($row->country), $row->country) : 'Unknown',
+                'country_code'       => $countryCode, // ISO2 lower-case (e.g., 'us', 'gb') for flags
+                'total_submissions'  => (int)$row->total_submissions,
+                'read_submissions'   => (int)$row->read_submissions,
                 'unread_submissions' => (int)$row->unread_submissions,
-                'spam_submissions' => (int)$row->spam_submissions,
-                'conversion_rate' => (float)$row->conversion_rate
+                'spam_submissions'   => (int)$row->spam_submissions,
+                'conversion_rate'    => (float)$row->conversion_rate
             ];
         }
 
         return [
-            'data' => $formattedResults,
-            'total' => $total,
+            'data'   => $formattedResults,
+            'total'  => $total,
             'totals' => $totals
         ];
     }
 
-    public static function getSubmissionAnalysisByDate($startDate, $endDate, $formId = null, $perPage = 10, $currentPage = 1)
-    {
+    public static function getSubmissionAnalysisByDate(
+        $startDate,
+        $endDate,
+        $formId = null,
+        $perPage = 10,
+        $currentPage = 1
+    ) {
         global $wpdb;
         $prefix = $wpdb->prefix;
         $query = wpFluent()
@@ -1505,18 +1093,19 @@ class ReportHelper
         $totalsData = $totalsQuery->first();
         if ($totalsData) {
             $totals = [
-                'total' => (int)$totalsData->total,
-                'read' => (int)$totalsData->read_count,
-                'unread' => (int)$totalsData->unread_count,
-                'spam' => (int)$totalsData->spam_count,
-                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100, 2) : 0
+                'total'    => (int)$totalsData->total,
+                'read'     => (int)$totalsData->read_count,
+                'unread'   => (int)$totalsData->unread_count,
+                'spam'     => (int)$totalsData->spam_count,
+                'readRate' => $totalsData->total > 0 ? round(($totalsData->read_count / $totalsData->total) * 100,
+                    2) : 0
             ];
         } else {
-            $totals =  [
-                'total' => 0,
-                'read' => 0,
-                'unread' => 0,
-                'spam' => 0,
+            $totals = [
+                'total'    => 0,
+                'read'     => 0,
+                'unread'   => 0,
+                'spam'     => 0,
                 'readRate' => 0,
             ];
         }
@@ -1524,18 +1113,18 @@ class ReportHelper
         $formattedResults = [];
         foreach ($results->items() as $row) {
             $formattedResults[] = [
-                'submission_date' => $row->submission_date,
-                'total_submissions' => (int)$row->total_submissions,
-                'read_submissions' => (int)$row->read_submissions,
+                'submission_date'    => $row->submission_date,
+                'total_submissions'  => (int)$row->total_submissions,
+                'read_submissions'   => (int)$row->read_submissions,
                 'unread_submissions' => (int)$row->unread_submissions,
-                'spam_submissions' => (int)$row->spam_submissions,
-                'conversion_rate' => (float)$row->conversion_rate
+                'spam_submissions'   => (int)$row->spam_submissions,
+                'conversion_rate'    => (float)$row->conversion_rate
             ];
         }
 
         return [
-            'data' => $formattedResults,
-            'total' => $total,
+            'data'   => $formattedResults,
+            'total'  => $total,
             'totals' => $totals
         ];
     }
@@ -1655,7 +1244,7 @@ class ReportHelper
 
             // Get paid payments
             $paidQuery->whereNotNull('payment_total')
-                ->where(function($query) {
+                ->where(function ($query) {
                     $query->where('payment_status', 'paid');
                 })
                 ->selectRaw('ROUND(SUM(payment_total) / 100, 2) as count');
@@ -1792,10 +1381,10 @@ class ReportHelper
             // Return all four datasets
             return [
                 'submissions' => $total,
-                'read' => $read,
-                'unread' => $unread,
-                'spam' => $spam,
-                'trashed' => $trashed
+                'read'        => $read,
+                'unread'      => $unread,
+                'spam'        => $spam,
+                'trashed'     => $trashed
             ];
         }
     }
@@ -1897,22 +1486,93 @@ class ReportHelper
 
         return ['dates' => $dates, 'labels' => $labels];
     }
-
+    
+    public static function getPaymentsByType($startDate, $endDate, $type, $formId = 0)
+    {
+        $paymentSettings = get_option('__fluentform_payment_module_settings');
+        if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
+            return []; // Return empty if payment module is disabled
+        }
+        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+        
+        // Base query for transactions
+        $query = wpFluent()->table('fluentform_transactions')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+        
+        // Filter by transaction type if specified
+        if ($type === 'subscription') {
+            $query->whereIn('transaction_type', ['subscription', 'subscription_signup_fee']);
+        } elseif ($type === 'onetime') {
+            $query->where('transaction_type', 'onetime');
+        }
+        
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+        
+        // Get payments grouped by status
+        $payments = $query->select('status')
+            ->selectRaw('SUM(payment_total) as total_amount')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('status')
+            ->get();
+        
+        // Get the total payment amount
+        $totalAmount = 0;
+        foreach ($payments as $payment) {
+            $totalAmount += $payment->total_amount;
+        }
+        
+        $formattedData = [];
+        foreach ($payments as $payment) {
+            $status = strtolower($payment->status);
+            $amount = $payment->total_amount / 100; // Convert from cents to dollars
+            $percentage = $totalAmount > 0 ? round(($payment->total_amount / $totalAmount) * 100, 2) : 0;
+            
+            $formattedData[$status] = [
+                'amount' => $amount,
+                'percentage' => $percentage,
+                'count' => $payment->count
+            ];
+        }
+        
+        // Calculate weekly average paid amount
+        $daysInRange = self::getDateDifference($startDate, $endDate);
+        $weeksInRange = max(1, round($daysInRange / 7, 1));
+        
+        $paidAmount = 0;
+        foreach ($formattedData as $status => $data) {
+            if ($status === 'paid') {
+                $paidAmount = $data['amount'];
+                break;
+            }
+        }
+        
+        $weeklyAverage = $paidAmount / $weeksInRange;
+        
+        return [
+            'currency_symbol' => Arr::get(PaymentHelper::getCurrencyConfig($formId), 'currency_sign', '$'),
+            'payment_statuses' => $formattedData,
+            'total_amount'     => $totalAmount / 100, // Convert from cents to dollars
+            'weekly_average'   => round($weeklyAverage, 2)
+        ];
+    }
+    
     /**
      * Format payment method name for display
      */
-    private static function formatPaymentMethodName($paymentMethod)
+    protected static function formatPaymentMethodName($paymentMethod)
     {
         $methodNames = [
-            'stripe' => 'Stripe',
-            'paypal' => 'PayPal',
+            'stripe'   => 'Stripe',
+            'paypal'   => 'PayPal',
             'razorpay' => 'Razorpay',
             'paystack' => 'Paystack',
-            'mollie' => 'Mollie',
-            'square' => 'Square',
-            'paddle' => 'Paddle',
-            'test' => 'Offline/Test',
-            'offline' => 'Offline'
+            'mollie'   => 'Mollie',
+            'square'   => 'Square',
+            'paddle'   => 'Paddle',
+            'test'     => 'Offline/Test',
+            'offline'  => 'Offline'
         ];
 
         return $methodNames[$paymentMethod] ?? ucfirst($paymentMethod);
@@ -1960,8 +1620,10 @@ class ReportHelper
 
     /**
      * Fill in missing data based on date intervals
+     *
      * @param array $allDates Array of interval start dates
-     * @param array $data Associative array of date => value pairs
+     * @param array $data     Associative array of date => value pairs
+     *
      * @return array Result with interval start dates mapped to summed values
      */
     private static function fillMissingData($allDates, $data)
@@ -2121,121 +1783,43 @@ class ReportHelper
         $currencySymbol = PaymentHelper::getCurrencySymbol($currency);
 
         return [
-            'total_payments' => [
-                'value' => number_format($currentPayments, 2),
-                'raw_value' => $currentPayments,
-                'currency' => $currency,
+            'total_payments'   => [
+                'value'           => number_format($currentPayments, 2),
+                'raw_value'       => $currentPayments,
+                'currency'        => $currency,
                 'currency_symbol' => $currencySymbol,
-                'change' => $paymentGrowthText,
-                'change_type' => $paymentGrowthType
+                'change'          => $paymentGrowthText,
+                'change_type'     => $paymentGrowthType
             ],
             'pending_payments' => [
-                'value' => number_format($currentPending, 2),
-                'raw_value' => $currentPending,
-                'currency' => $currency,
+                'value'           => number_format($currentPending, 2),
+                'raw_value'       => $currentPending,
+                'currency'        => $currency,
                 'currency_symbol' => $currencySymbol,
-                'change' => $pendingGrowthText,
-                'change_type' => $pendingGrowthType
+                'change'          => $pendingGrowthText,
+                'change_type'     => $pendingGrowthType
             ],
-            'total_refunds' => [
-                'value' => number_format($currentRefunds, 2),
-                'raw_value' => $currentRefunds,
-                'currency' => $currency,
+            'total_refunds'    => [
+                'value'           => number_format($currentRefunds, 2),
+                'raw_value'       => $currentRefunds,
+                'currency'        => $currency,
                 'currency_symbol' => $currencySymbol,
-                'change' => $refundGrowthText,
-                'change_type' => $refundGrowthType
+                'change'          => $refundGrowthText,
+                'change_type'     => $refundGrowthType
             ],
-            'total_revenue' => [
-                'value' => number_format($totalRevenue, 2),
-                'raw_value' => $totalRevenue,
-                'change' => $revenueText,
-                'change_type' => $revenueType,
-                'currency' => $currency,
+            'total_revenue'    => [
+                'value'           => number_format($totalRevenue, 2),
+                'raw_value'       => $totalRevenue,
+                'change'          => $revenueText,
+                'change_type'     => $revenueType,
+                'currency'        => $currency,
                 'currency_symbol' => $currencySymbol
             ]
         ];
     }
 
-    /**
-     * Get payment data grouped by payment status
-     *
-     * @param string $startDate
-     * @param string $endDate
-     * @param string $paymentType Either 'subscription' or 'onetime'
-     * @return array
-     */
-    public static function getPaymentsByType($startDate, $endDate, $paymentType = 'subscription', $formId = null)
-    {
-        $paymentSettings = get_option('__fluentform_payment_module_settings');
-        if (!$paymentSettings || !Arr::isTrue($paymentSettings, 'status')) {
-            return []; // Return empty if payment module is disabled
-        }
-        list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
-
-        // Base query for transactions
-        $query = wpFluent()->table('fluentform_transactions')
-            ->whereBetween('created_at', [$startDate, $endDate]);
-
-        // Filter by transaction type if specified
-        if ($paymentType === 'subscription') {
-            $query->whereIn('transaction_type', ['subscription', 'subscription_signup_fee']);
-        } elseif ($paymentType === 'onetime') {
-            $query->where('transaction_type', 'onetime');
-        }
-
-        if ($formId) {
-            $query->where('form_id', $formId);
-        }
-
-        // Get payments grouped by status
-        $payments = $query->select('status')
-            ->selectRaw('SUM(payment_total) as total_amount')
-            ->selectRaw('COUNT(*) as count')
-            ->groupBy('status')
-            ->get();
-
-        // Get the total payment amount
-        $totalAmount = 0;
-        foreach ($payments as $payment) {
-            $totalAmount += $payment->total_amount;
-        }
-
-        $formattedData = [];
-        foreach ($payments as $payment) {
-            $status = strtolower($payment->status);
-            $amount = $payment->total_amount / 100; // Convert from cents to dollars
-            $percentage = $totalAmount > 0 ? round(($payment->total_amount / $totalAmount) * 100, 2) : 0;
-
-            $formattedData[$status] = [
-                'amount' => $amount,
-                'percentage' => $percentage,
-                'count' => $payment->count
-            ];
-        }
-
-        // Calculate weekly average paid amount
-        $daysInRange = self::getDateDifference($startDate, $endDate);
-        $weeksInRange = max(1, round($daysInRange / 7, 1));
-
-        $paidAmount = 0;
-        foreach ($formattedData as $status => $data) {
-            if ($status === 'paid') {
-                $paidAmount = $data['amount'];
-                break;
-            }
-        }
-
-        $weeklyAverage = $paidAmount / $weeksInRange;
-
-        return [
-            'currency_symbol' => Arr::get(PaymentHelper::getCurrencyConfig($formId), 'currency_sign', '$'),
-            'payment_statuses' => $formattedData,
-            'total_amount'     => $totalAmount / 100, // Convert from cents to dollars
-            'weekly_average'   => round($weeklyAverage, 2)
-        ];
-    }
-
-    private static function getDateDifference($startDate, $endDate)
+    
+    protected static function getDateDifference($startDate, $endDate)
     {
         $start = new \DateTime($startDate);
         $end = new \DateTime($endDate);

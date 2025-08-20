@@ -8,7 +8,7 @@
             <div class="subscription-amount" v-if="hasSubscriptionData">
                 <p>{{ $t('Recurring') }}</p>
                 <div class="subscription-total">
-                    <span class="total-amount">{{ formatCurrency(totalAmount, getCurrencySymbol()) }}</span>
+                    <span class="total-amount">{{ getCurrencySymbol() }}{{ formatNumber(totalAmount) }}</span>
                     <span
                         class="growth-indicator"
                         :class="{ 'positive': growthPercentage > 0, 'negative': growthPercentage < 0 }"
@@ -21,12 +21,14 @@
             </div>
 
             <div class="subscription-chart">
-                <chart-loader v-if="isLoading" :rows="6" />
-
-                <no-data
-                    v-else-if="!hasSubscriptionData"
-                    :message="$t('No subscription data available for the selected period')"
-                />
+                <div v-if="isLoading" class="loading-chart">
+                    <i class="el-icon-loading "></i>
+                    <span>{{ $t('Loading subscription data...') }}</span>
+                </div>
+                <div v-else-if="!hasSubscriptionData" class="no-data">
+                    <i class="el-icon-data-analysis  no-data-icon"></i>
+                    <span>{{ $t('No subscription data available for the selected period') }}</span>
+                </div>
                 <v-chart
                     v-else
                     ref="chart"
@@ -54,7 +56,6 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
-import { COLORS, formatCurrency, ChartLoader, NoData } from './shared/simple-utils.js';
 
 export default {
     name: 'TopSubscriptionByPlan',
@@ -62,9 +63,7 @@ export default {
         Card,
         CardBody,
         CardHead,
-        Notice,
-        ChartLoader,
-        NoData
+        Notice
     },
     emits: ['subscription-filter-change'],
     props: {
@@ -91,44 +90,24 @@ export default {
         },
 
         hasSubscriptionData() {
-            // Always show data for non-pro users (demo data)
-            if (!this.hasPro) {
-                return true;
-            }
-
             return this.subscriptionData &&
                 this.subscriptionData.chart_data &&
                 this.subscriptionData.chart_data.length > 0;
         },
 
         totalAmount() {
-            // Return demo data for non-pro users
-            if (!this.hasPro) {
-                return 12450.75;
-            }
-
             return this.subscriptionData && this.subscriptionData.total_recurring !== undefined
                 ? this.subscriptionData.total_recurring
                 : 0;
         },
 
         growthPercentage() {
-            // Return demo data for non-pro users
-            if (!this.hasPro) {
-                return 23.5;
-            }
-
             return this.subscriptionData && this.subscriptionData.growth_percentage !== undefined
                 ? this.subscriptionData.growth_percentage
                 : 0;
         },
 
         chartData() {
-            // Return demo data for non-pro users
-            if (!this.hasPro) {
-                return this.getDemoChartData();
-            }
-
             return this.hasSubscriptionData
                 ? this.subscriptionData.chart_data
                 : [];
@@ -246,7 +225,7 @@ export default {
                     },
                     formatter: (params) => {
                         const data = params[0];
-                        return `${data.name}: ${this.formatCurrency(data.value, this.getCurrencySymbol())}`;
+                        return `${data.name}: ${this.getCurrencySymbol()}${this.formatNumber(data.value)}`;
                     }
                 },
                 animation: true
@@ -255,7 +234,8 @@ export default {
     },
     methods: {
         getBarColor(index) {
-            const colors = COLORS.topPerformingBars;
+            // Colors ordered from lightest to strongest (bottom to top bars)
+            const colors = ['#DCD5FF','#CAC0FF', '#A897FF', '#8C71F6', '#7D52F4'];
             const totalBars = this.chartData.length;
 
             // Always use the strongest colors, starting from the end of the array
@@ -267,14 +247,15 @@ export default {
             return '#D5E2FF';
         },
         getCurrencySymbol() {
-            // Return default currency for demo data
-            if (!this.hasPro) {
-                return '$';
-            }
-
             const textarea = document.createElement('textarea');
             textarea.innerHTML = this.subscriptionData?.currency_symbol || '$';
             return textarea.value;
+        },
+        formatNumber(num) {
+            return parseFloat(num).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         },
 
         calculateInterval(maxValue) {
@@ -295,20 +276,6 @@ export default {
             if (num <= 500) return Math.ceil(num / 100) * 100;
             if (num <= 1000) return Math.ceil(num / 200) * 200;
             return Math.ceil(num / 1000) * 1000;
-        },
-
-        getDemoChartData() {
-            return [
-                { name: 'Premium Plan', value: 4250.25 },
-                { name: 'Business Plan', value: 3180.50 },
-                { name: 'Starter Plan', value: 2890.75 },
-                { name: 'Enterprise Plan', value: 1650.00 },
-                { name: 'Basic Plan', value: 479.25 }
-            ];
-        },
-
-        formatCurrency(value, currencySymbol = '$') {
-            return formatCurrency(value, currencySymbol);
         }
     },
 };

@@ -11,14 +11,15 @@
                             v-model="selectedGroupBy"
                             :placeholder="$t('Group By')"
                             size="mini"
-                            @change="handleGroupByChange"
+                            @change="hasPro ? handleGroupByChange() : null"
                             style="width: 150px; margin-right: 12px;"
                         >
                             <el-option
-                                v-for="(label, value) in groupByOptions"
+                                v-for="(option, value) in groupByOptionsWithDisabled"
                                 :key="value"
-                                :label="label"
+                                :label="option.label"
                                 :value="value"
+                                :disabled="option.disabled"
                             />
                         </el-select>
                     </div>
@@ -26,9 +27,7 @@
             </card-head>
 
             <card-body>
-                <div v-if="loading" class="loading-state">
-                    <el-skeleton :rows="12" animated />
-                </div>
+                <chart-loader v-if="loading" :rows="12" />
 
                 <div v-else-if="revenueData.length === 0" class="no-data-state">
                     <i class="el-icon-money no-data-icon"></i>
@@ -186,6 +185,7 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
+import { ChartLoader } from './shared/simple-utils.js';
 
 export default {
     name: 'NetRevenueByGroup',
@@ -193,7 +193,8 @@ export default {
         Card,
         CardBody,
         CardHead,
-        Notice
+        Notice,
+        ChartLoader
     },
     props: {
         formsList: {
@@ -247,6 +248,34 @@ export default {
             }
             return options;
         },
+
+           groupByOptionsWithDisabled() {
+            let options = {};
+
+            if (!this.hasPro) {
+                // For non-pro users: only 'forms' is selectable, others are disabled
+                options = {
+                    'forms': { label: this.$t('Forms'), disabled: false },
+                    'payment_method': { label: this.$t('Payment Method'), disabled: true },
+                    'payment_type': { label: this.$t('Payment Type'), disabled: true }
+                };
+            } else {
+                // For pro users: all options are selectable
+                Object.keys(this.groupByOptions).forEach(key => {
+                    options[key] = { label: this.groupByOptions[key], disabled: false };
+                });
+            }
+
+            if (this.selectedFormId) {
+                delete options.forms;
+                // If a form is selected, make payment_method the only selectable option
+                if (options.payment_method) {
+                    options.payment_method.disabled = false;
+                }
+            }
+
+            return options;
+        },
     },
     watch: {
         globalDateParams: {
@@ -272,7 +301,7 @@ export default {
             this.loading = true;
 
             if (!this.hasPro) {
-                // Show demo data for free users
+                // Show demo data
                 setTimeout(() => {
                     this.revenueData = [
                         {

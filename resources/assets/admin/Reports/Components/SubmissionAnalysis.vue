@@ -16,10 +16,11 @@
                             style="width: 180px; margin-right: 12px;"
                         >
                             <el-option
-                                v-for="(label, value) in groupByOptions"
+                                v-for="(option, value) in groupByOptionsWithDisabled"
                                 :key="value"
-                                :label="label"
+                                :label="option.label"
                                 :value="value"
+                                :disabled="option.disabled"
                             />
                         </el-select>
                     </div>
@@ -27,9 +28,7 @@
             </card-head>
 
             <card-body>
-                <div v-if="loading" class="loading-state">
-                    <el-skeleton :rows="12" animated />
-                </div>
+                <chart-loader v-if="loading" :rows="12" />
 
                 <div v-else-if="submissionData.length === 0" class="no-data-state">
                     <i class="el-icon-data-analysis no-data-icon"></i>
@@ -99,8 +98,11 @@
                         >
                             <template #default="{ row }">
                                 <div class="country-info">
+                                    <span v-if="row.country_code" class="iti">
+                                        <span :class="['iti__flag', `iti__${row.country_code}`]"></span>
+                                    </span>
+                                    <span v-else class="country-flag-emoji">{{ getCountryFlag(row.country || '') }}</span>
                                     <span class="country-name">{{ row.country || $t('Unknown') }}</span>
-                                    <span class="country-flag" v-if="row.country">{{ getCountryFlag(row.country) }}</span>
                                 </div>
                             </template>
                         </el-table-column>
@@ -215,6 +217,7 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
+import { ChartLoader } from './shared/simple-utils.js';
 
 export default {
     name: 'SubmissionAnalysis',
@@ -222,7 +225,8 @@ export default {
         Card,
         CardBody,
         CardHead,
-        Notice
+        Notice,
+        ChartLoader
     },
     props: {
         formsList: {
@@ -288,6 +292,35 @@ export default {
             }
             return options;
         },
+
+        groupByOptionsWithDisabled() {
+            let options = {};
+
+            if (!this.hasPro) {
+                // For non-pro users: only 'forms' is selectable, others are disabled
+                options = {
+                    'forms': { label: this.$t('Forms'), disabled: false },
+                    'submission_source': { label: this.$t('Submission Source'), disabled: true },
+                    'email': { label: this.$t('Email'), disabled: true },
+                    'country': { label: this.$t('Country'), disabled: true },
+                    'submission_date': { label: this.$t('Submission Date'), disabled: true }
+                };
+            } else {
+                // For pro users: all options are selectable
+                Object.keys(this.groupByOptions).forEach(key => {
+                    options[key] = { label: this.groupByOptions[key], disabled: false };
+                });
+            }
+
+            if (this.selectedFormId) {
+                delete options.forms;
+                // If a form is selected, make submission_source the only selectable option
+                if (options.submission_source) {
+                    options.submission_source.disabled = false;
+                }
+            }
+            return options;
+        },
     },
     mounted() {
         this.fetchSubmissionData();
@@ -297,7 +330,7 @@ export default {
             this.loading = true;
 
             if (!this.hasPro) {
-                // Show demo data for free users
+                // Show demo data
                 setTimeout(() => {
                     this.submissionData = [
                         {
@@ -337,7 +370,7 @@ export default {
                             conversion_rate: 0
                         }
                     ];
-                    this.totalItems = 6;
+                    this.totalItems = 4;
                     this.totals = {
                         total: 217,
                         read: 11,
@@ -460,20 +493,9 @@ export default {
         },
 
         getCountryFlag(country) {
-            // Simple country to flag emoji mapping
-            const countryFlags = {
-                'United States': '🇺🇸',
-                'Canada': '🇨🇦',
-                'United Kingdom': '🇬🇧',
-                'Germany': '🇩🇪',
-                'France': '🇫🇷',
-                'Australia': '🇦🇺',
-                'Japan': '🇯🇵',
-                'India': '🇮🇳',
-                'Brazil': '🇧🇷',
-                'China': '🇨🇳'
-            };
-            return countryFlags[country] || '🌍';
+            // Fallback emoji if no country_code is present
+            if (!country) return '🌍';
+            return '🌍';
         },
 
         getReadRateClass(rate) {

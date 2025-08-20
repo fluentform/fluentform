@@ -27,6 +27,22 @@ class ReportHandler
         wp_enqueue_script('fluentform_reports');
         wp_enqueue_style('fluentform_reports');
 
+
+        // Maybe load intl-tel-input flags 
+        if (Helper::hasPro()) {
+            $cssSource = '';
+            if (defined('FLUENTFORMPRO_DIR_URL')) {
+                $cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput.min.css';
+                if (is_rtl()) {
+                    $cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput-rtl.min.css';
+                }
+            }
+        
+            if ($cssSource) {
+                wp_enqueue_style('intlTelInput', $cssSource, [], '24.2.0');
+            }
+        }
+
         $hasPayment = false;
         $paymentSettings = get_option('__fluentform_payment_module_settings');
         if ($paymentSettings && ArrayHelper::get($paymentSettings, 'status') === 'yes') {

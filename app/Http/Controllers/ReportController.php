@@ -19,7 +19,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Submission Report
      * @return \WP_REST_Response
@@ -36,9 +36,8 @@ class ReportController extends Controller
             ]);
         }
     }
-
-
-
+    
+    
     /**
      * Get Forms for Dropdown
      * @return \WP_REST_Response
@@ -55,7 +54,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get payment revenue grouped by different criteria
      * @return \WP_REST_Response
@@ -63,33 +62,32 @@ class ReportController extends Controller
     public function netRevenue(ReportService $reportService)
     {
         try {
-            return $this->sendSuccess(
-                $reportService->netRevenue($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/revenue_analysis', [], $this->request->all());
+            return $this->sendSuccess($data);
+            
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
         }
     }
-
+    
     /**
      * Get submission analysis grouped by different criteria
      * @return \WP_REST_Response
      */
-    public function submissionsAnalysis(ReportService $reportService)
+    public function submissionsAnalysis()
     {
         try {
-            return $this->sendSuccess(
-                $reportService->submissionsAnalysis($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/submissions_analysis', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
         }
     }
-
+    
     /**
      * Get Overview Chart Data
      * @return \WP_REST_Response
@@ -106,7 +104,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Revenue Chart Data
      * @return \WP_REST_Response
@@ -123,24 +121,23 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Completion Rate Data
      * @return \WP_REST_Response
      */
-    public function getCompletionRate(ReportService $reportService)
+    public function getCompletionRate()
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getCompletionRate($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/completion_rate', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
         }
     }
-
+    
     /**
      * Get Form Stats Data
      * @return \WP_REST_Response
@@ -157,24 +154,23 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Heatmap Data
      * @return \WP_REST_Response
      */
-    public function getHeatmapData(ReportService $reportService)
+    public function getHeatmapData()
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getHeatmapData($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/heatmap_data', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
         }
     }
-
+    
     /**
      * Get Country Heatmap Data
      * @return \WP_REST_Response
@@ -182,16 +178,15 @@ class ReportController extends Controller
     public function getCountryHeatmap(ReportService $reportService)
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getCountryHeatmap($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/country_heatmap', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
         }
     }
-
+    
     /**
      * Get API Logs Data
      * @return \WP_REST_Response
@@ -208,7 +203,7 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Top Performing Forms Data
      * @return \WP_REST_Response
@@ -225,24 +220,23 @@ class ReportController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get Subscriptions Data
      * @return \WP_REST_Response
      */
-    public function getSubscriptions(ReportService $reportService)
+    public function getSubscriptions()
     {
         try {
-            return $this->sendSuccess(
-                $reportService->getSubscriptions($this->request->all())
-            );
+            $data = apply_filters('fluentform/reports/subscriptions', [], $this->request->all());
+            return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
         }
     }
-
+    
     /**
      * Get Payment Types Data
      * @return \WP_REST_Response
