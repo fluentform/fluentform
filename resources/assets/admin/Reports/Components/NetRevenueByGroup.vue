@@ -69,14 +69,7 @@
                             :label="$t('Payment Method')"
                             min-width="150"
                             sortable
-                        >
-                            <template #default="{ row }">
-                                <div class="payment-method">
-                                    <span class="method-name">{{ row.payment_method_name }}</span>
-                                    <span class="method-code">({{ row.payment_method }})</span>
-                                </div>
-                            </template>
-                        </el-table-column>
+                        />
 
                         <el-table-column
                             v-if="selectedGroupBy === 'payment_type'"
@@ -88,7 +81,7 @@
 
                         <el-table-column
                             prop="paid_amount"
-                            label="Paid"
+                            :label="$t('Paid')"
                             min-width="120"
                             sortable
                             align="right"
@@ -185,7 +178,7 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
-import { ChartLoader } from './shared/simple-utils.js';
+import { ChartLoader, getFormPreviewUrl } from './shared/simple-utils.js';
 
 export default {
     name: 'NetRevenueByGroup',
@@ -408,9 +401,7 @@ export default {
             }
             return baseTitle;
         },
-        getFormPreviewUrl(formId) {
-            return `${window.location.origin}/?fluent_forms_pages=1&design_mode=1&preview_id=${formId}#ff_preview`;
-        }
+        getFormPreviewUrl
     }
 };
 </script>

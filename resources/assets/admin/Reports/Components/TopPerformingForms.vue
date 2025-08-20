@@ -17,7 +17,7 @@
         </card-head>
 
         <card-body>
-            <chart-loader v-if="loading" :rows="6" />
+            <chart-loader v-if="loading" :rows="7" />
 
             <div class="top-forms-chart" v-else>
                 <no-data

@@ -28,7 +28,7 @@
             </card-head>
             <card-body class="line-chart-body">
                 <chart-loader v-if="loading" :rows="12" />
-                <div class="chart-wrapper">
+                <div v-else class="chart-wrapper">
                     <v-chart
                         v-if="!loading"
                         ref="chart"

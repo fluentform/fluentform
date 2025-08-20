@@ -12,15 +12,16 @@
         </card-head>
 
         <card-body>
-            <div class="payment-amount-section" v-if="hasPaymentData">
+            <div class="payment-amount-section" v-if="!loading && hasPaymentData">
                 <div class="total-amount-section">
                     <p class="amount-label">{{ $t('Total Amount') }}</p>
                     <div class="amount-value">{{ currencySymbol }}{{ formatNumber(totalAmount) }}</div>
                 </div>
             </div>
 
-            <div class="payment-chart-section" :class="{ 'no-data': !hasPaymentData }">
-                <div v-if="!hasPaymentData"  class="no-data">
+            <div class="payment-chart-section" :class="{ 'no-data': !loading && !hasPaymentData }">
+                <chart-loader v-if="loading" :rows="7" />
+                <div v-else-if="!hasPaymentData"  class="no-data">
                     <i class="el-icon-data-analysis  no-data-icon"></i>
                     <span>{{ $t('No payment data available for the selected period') }}</span>
                 </div>
@@ -62,11 +63,12 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
-import { COLORS, formatNumber, formatCurrency, getCurrencySymbol } from './shared/simple-utils.js';
+import { COLORS, formatNumber, getCurrencySymbol, ChartLoader } from "./shared/simple-utils.js";
 
 export default {
     name: 'PaymentByTypeChart',
     components: {
+        ChartLoader,
         Card,
         CardBody,
         CardHead
@@ -75,6 +77,10 @@ export default {
         paymentData: {
             type: Object,
             default: () => ({})
+        },
+        loading: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

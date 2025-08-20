@@ -67,3 +67,7 @@ export function getCurrencySymbol(htmlEntity = '$') {
     textarea.innerHTML = htmlEntity;
     return textarea.value;
 }
+
+export function getFormPreviewUrl(formId) {
+    return `${window.location.origin}/?fluent_forms_pages=1&design_mode=1&preview_id=${formId}#ff_preview`;
+}

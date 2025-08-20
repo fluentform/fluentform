@@ -6,7 +6,7 @@
             </card-head>
 
             <card-body class="chart-container">
-                <chart-loader v-if="loading" :rows="8" />
+                <chart-loader v-if="loading" :rows="7" />
 
                 <no-data
                     v-else-if="!countryData || countryData.length === 0"
@@ -47,7 +47,7 @@ import CardHead from "@/admin/components/Card/CardHead.vue";
 import CardBody from "@/admin/components/Card/CardBody.vue";
 import worldMapJson from "../world.geo.json";
 import Notice from "@/admin/components/Notice/Notice.vue";
-import { COLORS, formatNumber, ChartLoader, NoData } from './shared/simple-utils.js';
+import { COLORS, ChartLoader, NoData } from './shared/simple-utils.js';
 
 export default {
     name: 'SubmissionCountryHeatmap',
@@ -56,11 +56,14 @@ export default {
         countryHeatmap: {
             type: Object,
             default: () => ({})
+        },
+        loading: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
-            loading: false,
             chartInstance: null,
             zoomLevel: 1.2,
             minZoom: 1.2,

@@ -621,67 +621,97 @@ class ReportHelper
     public static function getTopPerformingForms($startDate, $endDate, $metric = 'entries')
     {
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
+        global $wpdb;
+        $prefix = $wpdb->prefix;
+        $formResults = [];
 
-        $forms = Form::select(['id', 'title'])->get();
+        switch ($metric) {
+            case 'entries':
+                // Use Form model with Submission relationship
+                $results = Form::select(['id', 'title'])
+                    ->withCount([
+                        'submissions' => function ($q) use ($startDate, $endDate) {
+                            $q->whereBetween('created_at', [$startDate, $endDate]);
+                        }
+                    ])
+                    ->orderBy('submissions_count', 'DESC')
+                    ->limit(5)
+                    ->get();
+
+                // Map the results to standard format
+                foreach ($results as $form) {
+                    $formResults[] = (object)[
+                        'id' => $form->id,
+                        'title' => $form->title,
+                        'value' => $form->submissions_count
+                    ];
+                }
+                break;
+
+            case 'payments':
+                // Check if payment module is enabled
+                $paymentSettings = get_option('__fluentform_payment_module_settings');
+                if ($paymentSettings && Arr::get($paymentSettings, 'status')) {
+                    $results = wpFluent()->table('fluentform_forms')
+                        ->select([
+                            'fluentform_forms.id',
+                            'fluentform_forms.title',
+                            wpFluent()->raw("COALESCE(SUM({$prefix}fluentform_transactions.payment_total), 0) as raw_value")
+                        ])
+                        ->leftJoin('fluentform_transactions', 'fluentform_forms.id', '=',
+                            'fluentform_transactions.form_id')
+                        ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
+                        ->where('fluentform_transactions.status', 'paid')
+                        ->groupBy('fluentform_forms.id')
+                        ->orderBy('raw_value', 'DESC')
+                        ->limit(5)
+                        ->get();
+
+                    // Convert cents to dollars in PHP for better precision
+                    foreach ($results as $form) {
+                        $form->value = round((float)$form->raw_value / 100, 2);
+                    }
+
+                    $formResults = $results;
+                }
+                break;
+
+            case 'views':
+                // Count unique views by IP from analytics table if analytics enabled
+                if (!apply_filters('fluentform/disabled_analytics', false)) {
+                    $results = wpFluent()->table('fluentform_forms')
+                        ->select([
+                            'fluentform_forms.id',
+                            'fluentform_forms.title',
+                            wpFluent()->raw("COUNT(DISTINCT {$prefix}fluentform_form_analytics.ip) as value")
+                        ])
+                        ->leftJoin('fluentform_form_analytics', 'fluentform_forms.id', '=',
+                            'fluentform_form_analytics.form_id')
+                        ->whereBetween('fluentform_form_analytics.created_at', [$startDate, $endDate])
+                        ->groupBy('fluentform_forms.id')
+                        ->orderBy('value', 'DESC')
+                        ->limit(5)
+                        ->get();
+
+                    $formResults = $results;
+                }
+                break;
+        }
+
+        // Common formatting for all results
         $topForms = [];
-
-        foreach ($forms as $form) {
-            $value = 0;
-
-            switch ($metric) {
-                case 'entries':
-                    $value = Submission::where('form_id', $form->id)
-                        ->whereBetween('created_at', [$startDate, $endDate])
-                        ->count();
-                    break;
-
-                case 'payments':
-                    // Check if payment module is enabled
-                    $paymentSettings = get_option('__fluentform_payment_module_settings');
-                    if ($paymentSettings && Arr::get($paymentSettings, 'status')) {
-                        $value = wpFluent()
-                            ->table('fluentform_transactions')
-                            ->where('form_id', $form->id)
-                            ->where('status', 'paid')
-                            ->whereBetween('created_at', [$startDate, $endDate])
-                            ->sum('payment_total');
-                        // Convert from cents to dollars
-                        $value = $value ? round($value / 100, 2) : 0;
-                    }
-                    break;
-                case 'views':
-                    // Count unique views by IP from analytics table if analytics enabled
-                    if (!apply_filters('fluentform/disabled_analytics', false)) {
-                        $value = wpFluent()
-                            ->table('fluentform_form_analytics')
-                            ->where('form_id', $form->id)
-                            ->whereBetween('created_at', [$startDate, $endDate])
-                            ->distinct()
-                            ->count('ip');
-                    }
-                    break;
-            }
-
-            if ($value > 0) {
+        foreach ($formResults as $form) {
+            if ((float)$form->value > 0) {
                 $topForms[] = [
                     'id'    => $form->id,
                     'title' => $form->title ?: 'Untitled Form',
-                    'value' => $value
+                    'value' => (float)$form->value
                 ];
             }
         }
 
-        // Sort by value in descending order
-        usort($topForms, function ($a, $b) {
-            return $b['value'] - $a['value'];
-        });
-        
-        // Return top 5 forms
-        return array_reverse(array_slice($topForms, 0, 5));
+        return array_reverse($topForms);
     }
-
-
-
 
     public static function getSubmissionAnalysisByForms($startDate, $endDate, $perPage = 10, $currentPage = 1)
     {

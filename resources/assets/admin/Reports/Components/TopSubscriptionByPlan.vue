@@ -5,7 +5,7 @@
         </card-head>
 
         <card-body>
-            <div class="subscription-amount" v-if="hasSubscriptionData">
+            <div class="subscription-amount" v-if="!loading && hasSubscriptionData">
                 <p>{{ $t('Recurring') }}</p>
                 <div class="subscription-total">
                     <span class="total-amount">{{ formatCurrency(totalAmount, getCurrencySymbol()) }}</span>
@@ -21,7 +21,7 @@
             </div>
 
             <div class="subscription-chart">
-                <chart-loader v-if="isLoading" :rows="6" />
+                <chart-loader v-if="loading" :rows="7" />
 
                 <no-data
                     v-else-if="!hasSubscriptionData"
@@ -75,14 +75,17 @@ export default {
         formsList: {
             type: Array,
             default: () => []
+        },
+        loading: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
             selectedStatus: 'all',
             selectedInterval: 'all',
-            selectedFormId: null,
-            isLoading: false,
+            selectedFormId: null
         };
     },
     computed: {

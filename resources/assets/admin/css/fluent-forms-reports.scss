@@ -389,6 +389,12 @@
                         z-index: 1;
                         border-color: #1A7EFB;
                     }
+                    .el-range-separator + .el-range-input {
+                        width: 47%;
+                    }
+                    .el-range__close-icon {
+                        display: none;
+                    }
                 }
             }
 

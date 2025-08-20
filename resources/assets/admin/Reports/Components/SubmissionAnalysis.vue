@@ -52,7 +52,13 @@
                         >
                             <template #default="{ row }">
                                 <div class="form-info">
-                                    <span class="form-title">{{ row.form_title }}</span>
+                                    <a
+                                      :href="getFormPreviewUrl(row.form_id)"
+                                      target="_blank"
+                                      class="form-title-link"
+                                    >
+                                      <span class="form-title">{{ row.form_title }}</span>
+                                    </a>
                                     <span class="form-id">#{{ row.form_id }}</span>
                                 </div>
                             </template>
@@ -217,7 +223,7 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
-import { ChartLoader } from './shared/simple-utils.js';
+import { ChartLoader, getFormPreviewUrl } from './shared/simple-utils.js';
 
 export default {
     name: 'SubmissionAnalysis',
@@ -326,6 +332,8 @@ export default {
         this.fetchSubmissionData();
     },
     methods: {
+        getFormPreviewUrl,
+
         fetchSubmissionData() {
             this.loading = true;
 

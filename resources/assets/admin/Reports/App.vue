@@ -112,10 +112,9 @@
                         <el-col :span="24" :md="12">
                             <!-- Country Heatmap Section -->
                             <div class="country-heatmap-section">
-                                <el-skeleton v-if="isComponentLoading('countryHeatmap')" :rows="8" animated />
                                 <submission-country-heatmap
-                                    v-else
                                     :country-heatmap="reports.country_heatmap"
+                                    :loading="isComponentLoading('countryHeatmap')"
                                 />
                             </div>
                         </el-col>
@@ -208,20 +207,18 @@
                     <el-row :gutter="24" class="subscription-plan-payment-type-section">
                         <el-col :span="24" :md="12">
                             <div class="top-performing-subscription-plan-section">
-                                <el-skeleton v-if="isComponentLoading('subscriptions')" :rows="6" animated />
                                 <top-subscription-by-plan
-                                    v-else
                                     :subscription-data="reports.subscriptions"
                                     :global-date-params="globalDateParams"
+                                    :loading="isComponentLoading('subscriptions')"
                                 />
                             </div>
                         </el-col>
 
                         <el-col :span="24" :md="12">
                             <div class="payment-by-type-section">
-                                <el-skeleton v-if="isComponentLoading('paymentTypes')" :rows="6" animated />
                                 <payment-by-type-chart
-                                    v-else
+                                    :loading="isComponentLoading('paymentTypes')"
                                     :payment-data="reports.payment_types"
                                 />
                             </div>
@@ -381,19 +378,6 @@ export default {
                 topPerformingForms: true,
                 subscriptions: false,
                 paymentTypes: false
-            },
-            // Individual component error states
-            componentErrors: {
-                overviewChart: null,
-                revenueChart: null,
-                completionRate: null,
-                formStats: null,
-                heatmapData: null,
-                countryHeatmap: null,
-                apiLogs: null,
-                topPerformingForms: null,
-                subscriptions: null,
-                paymentTypes: null
             },
             lastUsedSelector: "range",
             selectedFormId: null,
@@ -600,12 +584,6 @@ export default {
     methods: {
         async fetchReports() {
             this.loading = true;
-
-            // Reset errors
-            Object.keys(this.componentErrors).forEach(key => {
-                this.componentErrors[key] = null;
-            });
-
             // Define all components to load based on Pro status
             const allComponents = this.hasPro
                 ? ['overviewChart', 'revenueChart', 'completionRate', 'formStats', 'heatmapData', 'countryHeatmap', 'apiLogs', 'topPerformingForms', 'subscriptions', 'paymentTypes']
@@ -629,7 +607,11 @@ export default {
                 });
             }
 
-            const primary = ['overviewChart', 'formStats'].filter(name => allComponents.includes(name));
+            let primary = ['overviewChart', 'formStats'].filter(name => allComponents.includes(name));
+            if (this.activeTab === 'revenue') {
+                primary = ['revenueChart', 'formStats', 'subscriptions', 'paymentTypes'].filter(name => allComponents.includes(name));
+            }
+
             const background = allComponents.filter(name => !primary.includes(name));
 
             await Promise.allSettled(primary.map(c => this.fetchComponent(c)));
@@ -695,7 +677,6 @@ export default {
                 }
             } catch (error) {
                 console.error(`Error fetching ${componentName}:`, error);
-                this.componentErrors[componentName] = error;
             } finally {
                 this.componentLoading[componentName] = false;
             }
@@ -707,6 +688,7 @@ export default {
                 end_date: this.globalDateParams.endDate,
                 form_id: this.selectedGlobalFormId,
                 view: this.chartMode,
+                metric: this.selectedTopFormsMetric,
                 stats_range: this.globalDateParams.statsRange
             };
         },
@@ -738,16 +720,6 @@ export default {
         async fetchReportsData() {
             // Use the same component-wise fetching approach
             await this.fetchReports();
-        },
-
-        // Method to refresh individual components
-        async refreshComponent(componentName) {
-            await this.fetchComponent(componentName);
-        },
-
-        // Method to check if a component has an error
-        hasComponentError(componentName) {
-            return this.componentErrors[componentName] !== null;
         },
 
         // Method to check if a component is loading
