@@ -1200,7 +1200,12 @@ jQuery(document).ready(function () {
                     if (parseInt(maxSelection)) {
                         args.maxItemCount = parseInt(maxSelection);
                         args.maxItemText = function (maxItemCount) {
-                            let message = window.fluentFormVars.choice_js_vars.maxItemText;
+                            let message;
+                            if (maxItemCount === 1) {
+                                message = window.fluentFormVars.choice_js_vars.maxItemTextSingular;
+                            } else {
+                                message = window.fluentFormVars.choice_js_vars.maxItemTextPlural;
+                            }
                             message = message.replace('%%maxItemCount%%', maxItemCount);
                             return message;
                         }

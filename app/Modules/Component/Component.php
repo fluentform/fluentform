@@ -640,7 +640,8 @@ class Component
                 'loadingText'    => __('Loading...', 'fluentform'),
                 'noChoicesText'  => __('No choices to choose from', 'fluentform'),
                 'itemSelectText' => __('Press to select', 'fluentform'),
-                'maxItemText'    => __('Only %%maxItemCount%% options can be added', 'fluentform'),
+                'maxItemTextSingular' => __('Only %%maxItemCount%% option can be added', 'fluentform'),
+                'maxItemTextPlural'   => __('Only %%maxItemCount%% options can be added', 'fluentform'),
             ],
             'input_mask_vars'               => [
                 'clearIfNotMatch' => false,
