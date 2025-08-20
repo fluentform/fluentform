@@ -582,7 +582,7 @@ class FluentFormSlider {
                     // Smoother scrolling
                     $('html, body').animate({
                         scrollTop: formTop
-                    }, 400, 'swing');
+                    }, 500, 'swing');
                 }
             };
 
@@ -591,6 +591,60 @@ class FluentFormSlider {
             // Get the current and next step elements
             const $currentStep = $(formSteps[this.activeStep]);
             $currentStep.find('.step-nav button, .step-nav img').css('visibility', 'hidden');
+
+            const completeStepChange = function () {
+                // Skip saving the last step
+                let isLastStep = self.activeStep === totalSteps;
+
+                // Fire ajax request to persist the step state/data
+                if (self.stepPersistency && !self.isPopulatingStepData && !isLastStep) {
+                    self.saveStepData(self.$theForm, self.activeStep).then(response => {
+                        console.log(response);
+                    });
+                }
+
+                // Update progress bar and titles after animation completes
+                self.stepProgressBarHandle({activeStep: self.activeStep, totalSteps});
+
+                // Show submit button on last step
+                if (formSteps.last().hasClass('active')) {
+                    self.$theForm.find('button[type="submit"]').css('visibility', 'visible');
+                } else {
+                    self.$theForm.find('button[type="submit"]').css('visibility', 'hidden');
+                }
+
+                // Step skipping logic
+                if (!window.ff_disable_auto_step) {
+                    let $activeStepDom = self.$theForm.find('.fluentform-step.active');
+                    let childDomCounts = self.$theForm.find('.fluentform-step.active > div').length - 1;
+                    let hiddenDomCounts = self.$theForm.find('.fluentform-step.active > .ff_excluded').length;
+
+                    if (self.$theForm.find('.fluentform-step.active > .ff-t-container').length) {
+                        childDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container').length;
+                        childDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
+                        hiddenDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
+
+                        if (self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
+                            hiddenDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
+                            hiddenDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
+                            hiddenDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+                        }
+                    }
+
+                    if (childDomCounts === hiddenDomCounts) {
+                        $activeStepDom.find(`.step-nav button[data-action=${actionType}], .step-nav img[data-action=${actionType}]`).click();
+                        resolve(); // Ensure that we resolve the promise here if we are skipping steps
+                        return;
+                    }
+                }
+
+                self.$theForm.find('.fluentform-step.active').find('.step-nav button[data-action="next"]').css('visibility', 'visible');
+                self.$theForm.find('.fluentform-step.active').find('.step-nav button[data-action="prev"]').css('visibility', 'visible');
+                self.$theForm.find('.fluentform-step.active').find('.step-nav img[data-action="next"]').css('visibility', 'visible');
+                self.$theForm.find('.fluentform-step.active').find('.step-nav img[data-action="prev"]').css('visibility', 'visible');
+
+                resolve(); // Resolve the promise after animations, scrolling, and step skipping logic
+            };
 
             switch (animationType) {
                 case 'slide':
@@ -690,66 +744,14 @@ class FluentFormSlider {
 
                 case 'none':
                 default:
-                    // No animation, just show
-                    if (isScrollTop) {
-                        scrollTop();
-                    }
-                    completeStepChange();
-                    break;
-            }
-
-            const completeStepChange = function () {
-                // Skip saving the last step
-                let isLastStep = self.activeStep === totalSteps;
-
-                // Fire ajax request to persist the step state/data
-                if (self.stepPersistency && !self.isPopulatingStepData && !isLastStep) {
-                    self.saveStepData(self.$theForm, self.activeStep).then(response => {
-                        console.log(response);
-                    });
-                }
-
-                // Update progress bar and titles after animation completes
-                self.stepProgressBarHandle({activeStep: self.activeStep, totalSteps});
-
-                // Show submit button on last step
-                if (formSteps.last().hasClass('active')) {
-                    self.$theForm.find('button[type="submit"]').css('visibility', 'visible');
-                } else {
-                    self.$theForm.find('button[type="submit"]').css('visibility', 'hidden');
-                }
-
-                // Step skipping logic
-                if (!window.ff_disable_auto_step) {
-                    let $activeStepDom = self.$theForm.find('.fluentform-step.active');
-                    let childDomCounts = self.$theForm.find('.fluentform-step.active > div').length - 1;
-                    let hiddenDomCounts = self.$theForm.find('.fluentform-step.active > .ff_excluded').length;
-
-                    if (self.$theForm.find('.fluentform-step.active > .ff-t-container').length) {
-                        childDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container').length;
-                        childDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
-                        hiddenDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
-
-                        if (self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
-                            hiddenDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
-                            hiddenDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
-                            hiddenDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+                    const conditionalDelay = window.ffTransitionTimeOut || 500;
+                    setTimeout(function () {
+                        if (isScrollTop) {
+                            scrollTop();
                         }
-                    }
-
-                    if (childDomCounts === hiddenDomCounts) {
-                        $activeStepDom.find(`.step-nav button[data-action=${actionType}], .step-nav img[data-action=${actionType}]`).click();
-                        resolve(); // Ensure that we resolve the promise here if we are skipping steps
-                        return;
-                    }
-                }
-
-                self.$theForm.find('.fluentform-step.active').find('.step-nav button[data-action="next"]').css('visibility', 'visible');
-                self.$theForm.find('.fluentform-step.active').find('.step-nav button[data-action="prev"]').css('visibility', 'visible');
-                self.$theForm.find('.fluentform-step.active').find('.step-nav img[data-action="next"]').css('visibility', 'visible');
-                self.$theForm.find('.fluentform-step.active').find('.step-nav img[data-action="prev"]').css('visibility', 'visible');
-
-                resolve(); // Resolve the promise after animations, scrolling, and step skipping logic
+                        completeStepChange();
+                    }, conditionalDelay);
+                    break;
             }
         });
     }
@@ -919,7 +921,7 @@ class FluentFormSlider {
             if (count == 1) {
                 let condCounts = $el.closest('.fluentform-step.active').find('.ff_excluded').length;
                 if (condCounts) {
-                    let timeout = window.ffTransitionTimeOut || 400;
+                    let timeout = window.ffTransitionTimeOut || 500;
                     setTimeout(() => {
                         $el.closest('.fluentform-step.active').find('.ff-btn-next').trigger('click');
                     }, timeout);
