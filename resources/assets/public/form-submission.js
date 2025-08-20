@@ -833,6 +833,63 @@ jQuery(document).ready(function () {
                 };
 
                 var reinitExtras = function () {
+                    // Range Sliders
+                    var rangeSliders = $theForm.find('input[type="range"]');
+                    if (rangeSliders.length) {
+                        rangeSliders.each(function() {
+                            var $element = $(this);
+                            // Check if element is visible and has proper dimensions
+                            var $container = $element.closest('.has-conditions');
+                            if ($container.length && ($container.is(':hidden') || $container.css('height') === '0px')) {
+                                return;
+                            }
+
+                            // Destroy existing rangeslider instance if it exists
+                            if ($element.data('plugin_rangeslider')) {
+                                $element.rangeslider('destroy');
+                            }
+
+                            // Reinitialize the rangeslider
+                            if (typeof $element.rangeslider === 'function') {
+                                var $valueWrapper = $element.parent().find('.ff_range_value');
+                                var prevValue = 0;
+                                var isRequired = !!$element.parents('.ff-el-group').children('.ff-el-is-required').length;
+
+                                $element.rangeslider({
+                                    polyfill: false,
+                                    onSlide: function (position, value) {
+                                        if (prevValue != value) {
+                                            $element.attr('is-changed', true);
+                                            prevValue = value;
+                                            $element.trigger('keyup');
+                                            $valueWrapper.text(value);
+                                            $element.rangeslider('update', true);
+                                        }
+                                    },
+                                    onInit: function () {
+                                        if (isRequired) {
+                                            $element.attr('is-changed', false);
+                                            if ($element.data('default_value') !== undefined) {
+                                                $element.attr('is-changed', true);
+                                            }
+                                            $element.val() ? $valueWrapper.text($element.val()) : $valueWrapper.text('');
+                                        } else {
+                                            $valueWrapper.text($element.val());
+                                        }
+                                    }
+                                });
+
+                                $element.on('change', function () {
+                                    $valueWrapper.text($element.val());
+                                    var hasCondition = $element.closest('.ff-el-group').hasClass('has-conditions');
+                                    if (hasCondition) {
+                                        $element.rangeslider('update', true);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
                     // reCAPTCHA
                     if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
                         window.grecaptcha.ready(function () {
@@ -877,6 +934,11 @@ jQuery(document).ready(function () {
                         return e.which !== 13;
                     });
                     $theForm.data('is_initialized', 'yes');
+
+                    // Listen for reInitExtras event
+                    $theForm.on('reInitExtras', function() {
+                        reinitExtras();
+                    });
 
                     $theForm.find('input.ff-read-only').each(function () {
                         $(this).attr({
