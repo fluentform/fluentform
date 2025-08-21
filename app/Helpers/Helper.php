@@ -1299,4 +1299,17 @@ class Helper
 
         return null;
     }
+    
+    /**
+     * Fixes PHP Object Injection Vulnerability
+     * @param $data
+     * @return mixed
+     */
+    public static function safeUnserialize($data)
+    {
+        if (is_serialized($data)) { // Don't attempt to unserialize data that wasn't serialized going in.
+            return @unserialize(trim($data), ['allowed_classes' => false]);
+        }
+        return $data;
+    }
 }
