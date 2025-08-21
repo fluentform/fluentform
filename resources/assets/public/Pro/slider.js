@@ -473,6 +473,7 @@ class FluentFormSlider {
 
         /**
          * Determine if a step has all fields conditionally hidden
+         * Also Handles nested containers (e.g., ff-t-container, ff-column-container) that may carry ff_excluded
          * @param {object} $step - jQuery step element
          * @return {boolean}
          */
@@ -483,11 +484,20 @@ class FluentFormSlider {
             if ($groups.length === 0) {
                 return false;
             }
-            // If all non-HTML groups are excluded, the step is effectively empty due to conditions
-            const visibleGroups = $groups.filter(function () {
-                return !$(this).hasClass('ff_excluded');
+
+            // Collect inputs that are not buttons and not hidden (self or any ancestor) by ff_excluded
+            const $eligibleInputs = $step.find(':input').not(':button').filter(function () {
+                const $el = $(this);
+                return !$el.hasClass('ff_excluded') && $el.parents('.ff_excluded').length === 0;
             });
-            return visibleGroups.length === 0;
+
+            // Limit to inputs that belong to actual field groups to avoid counting meta/hidden fields
+            const $eligibleInputsInGroups = $eligibleInputs.filter(function () {
+                return $(this).closest('.ff-el-group').length > 0;
+            });
+
+            // If no eligible inputs remain, the step is effectively empty due to conditions
+            return $eligibleInputsInGroups.length === 0;
         }
 
 
