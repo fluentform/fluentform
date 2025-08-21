@@ -405,13 +405,21 @@ class Helper
     public static function isMultiStepForm($formId)
     {
         $form = Form::find($formId);
-        $fields = json_decode($form->form_fields, true);
-        
-        if (ArrayHelper::get($fields, 'stepsWrapper')) {
-            return true;
+        if (!$form) {
+            return false;
         }
-        
-        return false;
+
+        $fieldsJson = (string) ($form->form_fields ?? '');
+        if ($fieldsJson === '') {
+            return false;
+        }
+
+        $fields = json_decode($fieldsJson, true);
+        if (!is_array($fields)) {
+            return false;
+        }
+
+        return (bool) ArrayHelper::get($fields, 'stepsWrapper');
     }
     
     public static function hasFormElement($formId, $elementName)

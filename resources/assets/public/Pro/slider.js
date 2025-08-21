@@ -247,7 +247,7 @@ class FluentFormSlider {
                         $el.data('choicesjs').removeActiveItems(value);
                         $el.data('choicesjs').setChoiceByValue(value);
                     }
-                    
+
                     let $canvas = $el.closest('.ff-el-group').find('.fluentform-signature-pad');
                     if ($canvas.length) {
                         let canvas = $canvas[0];
@@ -302,10 +302,23 @@ class FluentFormSlider {
         const totalSteps = formSteps.length;
         const stepTitles = this.$theForm.find('.ff-step-titles li');
 
+        // Pre-skip steps that are fully hidden by conditions on initial load to avoid flicker
+        if (!window.ff_disable_auto_step) {
+            let candidateStepIndex = this.activeStep;
+            let stepSkipSafetyCounter = 0;
+            while (candidateStepIndex < totalSteps && this.isStepAllFieldsHidden($(formSteps[candidateStepIndex])) && stepSkipSafetyCounter < totalSteps) {
+                candidateStepIndex++;
+                stepSkipSafetyCounter++;
+            }
+            if (candidateStepIndex !== this.activeStep && candidateStepIndex < totalSteps) {
+                this.activeStep = candidateStepIndex;
+            }
+        }
+
         // Use display:none/block and hide all steps initially
         formSteps.css('display', 'none');
 
-        // Show the first step
+        // Show the computed first step
         $(formSteps[this.activeStep]).css('display', 'block');
 
         // Add accessibility attributes
@@ -458,6 +471,84 @@ class FluentFormSlider {
         }
     }
 
+        /**
+         * Determine if a step has all fields conditionally hidden
+         * Also Handles nested containers (e.g., ff-t-container, ff-column-container) that may carry ff_excluded
+         * Eligible inputs are those inside a field group and not hidden by ff_excluded on self or any ancestor
+         * @param {object} $step - jQuery step element
+         * @return {boolean}
+         */
+        isStepAllFieldsHidden($step) {
+            const $ = this.$;
+            const $groups = $step.find('.ff-el-group').not('.ff-custom_html');
+            if ($groups.length === 0) {
+                return false;
+            }
+
+            const $eligibleInputs = $step.find(':input').not(':button').filter(function () {
+                const $el = $(this);
+                return !$el.hasClass('ff_excluded') && $el.parents('.ff_excluded').length === 0;
+            });
+
+            const $eligibleInputsInGroups = $eligibleInputs.filter(function () {
+                return $(this).closest('.ff-el-group').length > 0;
+            });
+
+            return $eligibleInputsInGroups.length === 0;
+        }
+
+        /**
+         * Animate the progress bar to the target step and resolve when transition completes
+         * The progress bar's width transition is timed to match the content animation for visual sync.
+         * @param {number} activeStep - zero based index (current destination step)
+         * @param {number} totalSteps - total count of steps used for completeness calculation
+         * @param {number} durationMs - transition duration to sync with content animation
+         * @return {Promise}
+         */
+        animateProgressToStep(activeStep, totalSteps, durationMs) {
+            const $ = this.$;
+            const progressBar = this.$theForm.find('.ff-step-header .ff-el-progress-bar');
+            if (!progressBar.length || !totalSteps) {
+                return Promise.resolve();
+            }
+
+            const completeness = (100 / totalSteps * (activeStep + 1));
+
+            if (durationMs && durationMs > 0) {
+                progressBar.css({ transition: `width ${durationMs}ms ease-in-out` });
+            } else {
+                progressBar.css({ transition: 'none' });
+            }
+
+            if (progressBar[0]) {
+                // Force reflow to ensure transition is applied
+                progressBar[0].offsetHeight;
+            }
+
+            progressBar.css('width', completeness + '%');
+
+            return new Promise(resolve => {
+                let resolved = false;
+                const safety = setTimeout(() => {
+                    if (!resolved) {
+                        resolved = true;
+                        resolve();
+                    }
+                }, (durationMs || 0) + 120);
+
+                const onEnd = () => {
+                    if (!resolved) {
+                        resolved = true;
+                        clearTimeout(safety);
+                        resolve();
+                    }
+                };
+
+                progressBar.one('transitionend webkitTransitionEnd oTransitionEnd', onEnd);
+            });
+        }
+
+
     /**
      * Register event handlers for form steps to move forward or backward
      * @param {number} animDuration - Animation duration in milliseconds
@@ -540,8 +631,26 @@ class FluentFormSlider {
                 formSteps = this.$theForm.find('.fluentform-step'),
                 totalSteps = formSteps.length;
 
-            // Use display:none/block instead of slider
-            // Hide all steps and show the active one
+            // Pre-skip steps that are fully hidden due to conditions before making any visible change
+            if (!window.ff_disable_auto_step && totalSteps) {
+                // Determine direction by comparing desired step with current DOM active index
+                const currentDomActiveIndex = self.$theForm.find('.fluentform-step')
+                    .index(self.$theForm.find('.fluentform-step.active'));
+                const isNavigatingBackward = actionType === 'prev' || (currentDomActiveIndex > -1 && this.activeStep < currentDomActiveIndex);
+
+                if (isNavigatingBackward) {
+                    // Walk backwards until a non-empty step is found
+                    while (this.activeStep > 0 && this.isStepAllFieldsHidden($(formSteps[this.activeStep]))) {
+                        this.activeStep--;
+                    }
+                } else {
+                    // Walk forward until a non-empty step is found
+                    while (this.activeStep < totalSteps - 1 && this.isStepAllFieldsHidden($(formSteps[this.activeStep]))) {
+                        this.activeStep++;
+                    }
+                }
+            }
+
             formSteps.css('display', 'none').removeClass('active').attr('aria-hidden', 'true');
             $(formSteps[this.activeStep]).css('display', 'block').addClass('active').attr('aria-hidden', 'false');
 
@@ -591,6 +700,13 @@ class FluentFormSlider {
             // Get the current and next step elements
             const $currentStep = $(formSteps[this.activeStep]);
             $currentStep.find('.step-nav button, .step-nav img').css('visibility', 'hidden');
+
+            // Prepare synchronized progress animation
+            // Alias totalSteps just for separation of concern when computing completeness for the progress bar
+            const completenessTotalSteps = totalSteps;
+            const progressPromise = (animationType === 'none')
+                ? this.animateProgressToStep(this.activeStep, completenessTotalSteps, window.ffTransitionTimeOut || 500)
+                : this.animateProgressToStep(this.activeStep, completenessTotalSteps, animDuration);
 
             const completeStepChange = function () {
                 // Skip saving the last step
@@ -646,6 +762,7 @@ class FluentFormSlider {
                 resolve(); // Resolve the promise after animations, scrolling, and step skipping logic
             };
 
+            let contentPromise;
             switch (animationType) {
                 case 'slide':
                     // Prepare for slide animation with enhanced smoothness
@@ -665,21 +782,10 @@ class FluentFormSlider {
                         opacity: 1
                     });
 
-                    // Set timeout based on animation duration
-                    setTimeout(function () {
-                        // Reset positioning
-                        $currentStep.css({
-                            position: '',
-                            left: '',
-                            transition: ''
-                        });
-
-                        // Continue with common steps
-                        if (isScrollTop) {
-                            scrollTop();
-                        }
-                        completeStepChange();
-                    }, animDuration + 50); // Small buffer for transition completion
+                    contentPromise = new Promise((res) => setTimeout(() => {
+                        $currentStep.css({ position: '', left: '', transition: '' });
+                        res();
+                    }, animDuration + 50));
                     break;
 
                 case 'fade':
@@ -696,15 +802,10 @@ class FluentFormSlider {
                     // Trigger fade in
                     $currentStep.css('opacity', 1);
 
-                    setTimeout(function () {
-                        // Clean up transition
+                    contentPromise = new Promise((res) => setTimeout(() => {
                         $currentStep.css('transition', '');
-
-                        if (isScrollTop) {
-                            scrollTop();
-                        }
-                        completeStepChange();
-                    }, animDuration + 50);
+                        res();
+                    }, animDuration + 50));
                     break;
 
                 case 'slide_down':
@@ -727,32 +828,25 @@ class FluentFormSlider {
                         opacity: 1
                     });
 
-                    setTimeout(function () {
-                        // Clean up styles
-                        $currentStep.css({
-                            maxHeight: '',
-                            overflow: '',
-                            transition: ''
-                        });
-
-                        if (isScrollTop) {
-                            scrollTop();
-                        }
-                        completeStepChange();
-                    }, animDuration + 50);
+                    contentPromise = new Promise((res) => setTimeout(() => {
+                        $currentStep.css({ maxHeight: '', overflow: '', transition: '' });
+                        res();
+                    }, animDuration + 50));
                     break;
 
                 case 'none':
                 default:
                     const conditionalDelay = window.ffTransitionTimeOut || 500;
-                    setTimeout(function () {
-                        if (isScrollTop) {
-                            scrollTop();
-                        }
-                        completeStepChange();
-                    }, conditionalDelay);
+                    contentPromise = new Promise((res) => setTimeout(res, conditionalDelay));
                     break;
             }
+
+            Promise.all([contentPromise, progressPromise]).then(() => {
+                if (isScrollTop) {
+                    scrollTop();
+                }
+                completeStepChange();
+            });
         });
     }
 
