@@ -100,6 +100,7 @@
                             <div class="top-performing-forms-section">
                                 <top-performing-forms
                                     :top-forms-data="reports.top_performing_forms || []"
+                                    :disable-message="reports.top_performing_forms_disable_message"
                                     :global-date-params="globalDateParams"
                                     :has-payment="hasPayment"
                                     :payment-currency="paymentCurrency"
@@ -355,6 +356,7 @@ export default {
                 country_heatmap: null,
                 api_logs: null,
                 top_performing_forms: null,
+                top_performing_forms_disable_message: '',
                 subscriptions: null,
                 payment_types: null,
                 net_revenue: null,
@@ -665,6 +667,7 @@ export default {
                     case 'topPerformingForms':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportTopPerformingForms"), commonParams);
                         this.$set(this.reports, 'top_performing_forms', response.top_performing_forms);
+                        this.$set(this.reports, 'top_performing_forms_disable_message', response.disable_message || '');
                         break;
                     case 'subscriptions':
                         response = await FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route("reportSubscriptions"), commonParams);
@@ -806,6 +809,7 @@ export default {
                     if (response && response.top_performing_forms) {
                         this.reports.top_performing_forms = response.top_performing_forms;
                     }
+                    this.reports.top_performing_forms_disable_message = response.disable_message || '';
                 })
                 .catch(error => {
                     console.error("Error fetching top performing forms data:", error);

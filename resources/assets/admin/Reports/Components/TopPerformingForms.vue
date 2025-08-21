@@ -22,7 +22,7 @@
             <div class="top-forms-chart" v-else>
                 <no-data
                     v-if="!topFormsData || topFormsData.length === 0"
-                    :message="$t('No form data available for the selected period')"
+                    :message="disableMessage || $t('No form data available for the selected period')"
                 />
                 <div v-else class="chart-wrapper">
                     <v-chart
@@ -73,6 +73,10 @@ export default {
         loading: {
             type: Boolean,
             default: false
+        },
+        disableMessage: {
+            type: String,
+            default: null
         }
     },
     emits: ['metric-change'],

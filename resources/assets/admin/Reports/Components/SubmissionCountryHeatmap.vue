@@ -10,7 +10,7 @@
 
                 <no-data
                     v-else-if="!countryData || countryData.length === 0"
-                    :message="$t('No submission data available for the selected date range')"
+                    :message="infoMessage"
                 />
 
                 <div v-else class="chart-wrapper">
@@ -102,6 +102,9 @@ export default {
                 };
             });
             return result;
+        },
+        infoMessage() {
+            return this.countryHeatmap?.disable ? this.$t('Country detection is disabled. Please enable it to see the submissions by country.') : this.$t('No submission data available for the selected date range');
         }
     },
     methods: {
@@ -246,11 +249,13 @@ export default {
             if (!this.chartInstance) {
                 return;
             }
-            if (this.countryData && this.countryData.length > 0) {
-                const option = this.getMapOption();
-                this.chartInstance.clear();
-                this.chartInstance.setOption(option, {notMerge: true});
-            }
+            this.$nextTick(() => {
+                if (this.countryData && this.countryData.length > 0) {
+                    const option = this.getMapOption();
+                    this.chartInstance.clear();
+                    this.chartInstance.setOption(option, {notMerge: true});
+                }
+            });
         },
 
         zoomIn() {
@@ -289,39 +294,31 @@ export default {
 
             const cleanName = countryName.replace(/\s*\([A-Z]{2,3}\)\s*$/, '').trim();
             return countryMapping[cleanName] || cleanName;
-        }
+        },
+        refreshChart() {
+            if (this.chartInstance) {
+                this.chartInstance.dispose();
+                this.chartInstance = null;
+            }
+        },
     },
     watch: {
         countryHeatmap: {
             handler(newVal, oldVal) {
+                this.refreshChart();
                 if (newVal && newVal.country_data && newVal.country_data.length > 0) {
-                    this.maxValue = Math.max(...newVal.country_data.map((item) => item.value || 0));
-                    this.currentVisualMapRange = [0, this.maxValue];
-                    if (!this.chartInstance) {
-                        this.$nextTick(() => {
-                            setTimeout(() => {
-                                this.initChart();
-                            }, 100);
-                        });
-                    } else {
-                        this.chartInstance.clear();
-                        this.updateChart();
-                    }
-                } else {
-                   if (this.chartInstance) {
-                        this.chartInstance = null;
-                   }
+                    this.$nextTick(() => {
+                        this.initChart();
+                    });
                 }
             },
             deep: true,
             immediate: true
         }
     },
+
     beforeDestroy() {
-        if (this.chartInstance) {
-            this.chartInstance.dispose();
-            this.chartInstance = null;
-        }
+        this.refreshChart();
     },
 };
 </script>

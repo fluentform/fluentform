@@ -2081,6 +2081,7 @@ class TranslationString
             'No Data Available'    => __('No Data Available', 'fluentform'),
             'Submissions By Country'    => __('Submissions By Country', 'fluentform'),
             'No submission data available for the selected date range'    => __('No submission data available for the selected date range', 'fluentform'),
+            'Country detection is disabled. Please enable it to see the submissions by country.'    => __('Country detection is disabled. Please enable it to see the submissions by country.', 'fluentform'),
             'Submissions:'    => __('Submissions:', 'fluentform'),
             'No data available for selected form'    => __('No data available for selected form', 'fluentform'),
             'Submission Timeline'    => __('Submission Timeline', 'fluentform'),

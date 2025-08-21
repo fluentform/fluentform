@@ -32,7 +32,8 @@
 
                 <div v-else-if="submissionData.length === 0" class="no-data-state">
                     <i class="el-icon-data-analysis no-data-icon"></i>
-                    <p>{{ $t('No submission data found for the selected criteria and date range.') }}</p>
+                    <p v-if="isCountryDisable"> {{ $t('Country detection is disabled. Please enable it to see the submissions by country.') }}</p>
+                    <p v-else>{{ $t('No submission data found for the selected criteria and date range.') }}</p>
                 </div>
 
                 <div v-else class="submission-table-container">
@@ -251,6 +252,7 @@ export default {
         return {
             loading: false,
             submissionData: [],
+            isCountryDisable: false,
             selectedGroupBy: 'forms',
             currentPage: 1,
             pageSize: localStorage.getItem('ffReportSubmissionAnalysisPerPage') || 5,
@@ -414,6 +416,7 @@ export default {
                             spam: 0,
                             readRate: 0
                         };
+                        this.isCountryDisable = !!response.is_country_disable;
                     } else {
                         this.submissionData = [];
                         this.totalItems = 0;
