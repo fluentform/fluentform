@@ -782,7 +782,10 @@ class FluentFormSlider {
                         opacity: 1
                     });
 
-                    contentPromise = new Promise((res) => setTimeout(res, animDuration + 50));
+                    contentPromise = new Promise((res) => setTimeout(() => {
+                        $currentStep.css({ position: '', left: '', transition: '' });
+                        res();
+                    }, animDuration + 50));
                     break;
 
                 case 'fade':
@@ -799,7 +802,10 @@ class FluentFormSlider {
                     // Trigger fade in
                     $currentStep.css('opacity', 1);
 
-                    contentPromise = new Promise((res) => setTimeout(res, animDuration + 50));
+                    contentPromise = new Promise((res) => setTimeout(() => {
+                        $currentStep.css('transition', '');
+                        res();
+                    }, animDuration + 50));
                     break;
 
                 case 'slide_down':
@@ -822,7 +828,10 @@ class FluentFormSlider {
                         opacity: 1
                     });
 
-                    contentPromise = new Promise((res) => setTimeout(res, animDuration + 50));
+                    contentPromise = new Promise((res) => setTimeout(() => {
+                        $currentStep.css({ maxHeight: '', overflow: '', transition: '' });
+                        res();
+                    }, animDuration + 50));
                     break;
 
                 case 'none':
