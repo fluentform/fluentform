@@ -447,6 +447,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds close button to payment summary items
 - Adds keyboard shortcut for delete input field in the editor
 - Adds conversational forms scroll to top option
+- Improves Export entries fields by remembering last selected fields
 - Improves IP detection
 - Improves consistency of settings deletion notifications
 - Fixes form API empty title retrieval issue

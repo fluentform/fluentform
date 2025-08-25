@@ -1114,6 +1114,7 @@
                         value: element,
                     });
                 });
+                this.saveLastExportFields();
                 let selectedEntries = [];
                 this.entrySelections.forEach(function (element) {
                     selectedEntries.push(element.id);
@@ -1220,6 +1221,47 @@
             showImport() {
                 this.showImportEntriesModal = !this.showImportEntriesModal;
             },
+            /**
+             * Load last used export fields from localStorage
+             */
+            loadLastExportFields() {
+                const storageKey = `ff_last_export_fields_${this.form_id}`;
+                const saved = localStorage.getItem(storageKey);
+                if (saved) {
+                    try {
+                        const lastFields = JSON.parse(saved);
+                        this.fieldsToExport = lastFields.fieldsToExport || Object.keys(this.input_labels);
+                        this.shortcodesToExport = lastFields.shortcodesToExport || ['{submission.id}','{submission.created_at}','{submission.status}'];
+                        this.exportWithNotes = lastFields.exportWithNotes || false;
+
+                        this.updateCheckAllState();
+                    } catch (e) {
+                    }
+                }
+            },
+
+            /**
+             * Save current field selection for next time
+             */
+            saveLastExportFields() {
+                const storageKey = `ff_last_export_fields_${this.form_id}`;
+                const fieldsToSave = {
+                    fieldsToExport: [...this.fieldsToExport],
+                    shortcodesToExport: [...this.shortcodesToExport],
+                    exportWithNotes: this.exportWithNotes
+                };
+                localStorage.setItem(storageKey, JSON.stringify(fieldsToSave));
+            },
+            /**
+             * Update the check all state based on current selections
+             */
+            updateCheckAllState() {
+                const totalFields = Object.keys(this.input_labels).length + Object.keys(this.editor_shortcodes).length;
+                const selectedFields = this.fieldsToExport.length + this.shortcodesToExport.length;
+
+                this.checkAllFields = selectedFields === totalFields;
+                this.isIndeterminateFieldsSelection = selectedFields > 0 && selectedFields < totalFields;
+            }
         },
         mounted() {
             this.getEntryResources();
@@ -1230,6 +1272,7 @@
             this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
             this.fieldsToExport = Object.keys(this.input_labels)
             this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
+            this.loadLastExportFields();
         },
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
