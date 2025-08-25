@@ -446,7 +446,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds Fluent Forms Report module
 - Adds close button to payment summary items
 - Adds shortcut for delete input field in the editor
-- Improves IP detection accepting client IP explicitly
+- Improves IP detection
 - Improves consistency of settings deletion notifications
 - Fixes form API empty title retrieval issue
 - Fixes WPForm Migrator with empty forms
@@ -456,7 +456,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes integrations page sidebar menu selection indication on reload
 - Fixes conversational forms GDPR checkbox implementation
 - Fixes captcha conflict when global and form-specific settings differ
-- Fixes client IP detection for Cloudflare and Nginx proxies
 - Fixes hide after submission option setting for conversational forms
 - Fixes Terms & Conditions field validation error messages for not Accepted
 - Removes non-functional Reset Form button from conversational forms
@@ -467,6 +466,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes database creation errors in WordPress Studio environments
 - Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
 - Fixes WP Text Editor sanitizer removing links in success messages with search parameters
+- Fixes Object Injection Vulnerability unserialize issue when using user profile specific shortcodes
 
 = 6.0.4 (Date: May 29, 2025) =
 - Fixes the net promoter score field's zero (0) value in the visual report
