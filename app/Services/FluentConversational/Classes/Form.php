@@ -123,6 +123,7 @@ class Form
             'disable_branding'      => 'no',
             'hide_media_on_mobile'  => 'no',
             'key_hint'              => 'yes',
+            'enable_scroll_to_top'  => 'no',
             'asteriskPlacement'     => $this->getAsteriskPlacement($formId)
         ];
 
