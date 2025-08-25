@@ -784,7 +784,6 @@ class Menu
             ],
             'countries'            => getFluentFormCountryList(),
             'getIpInfo'            => Helper::getIpinfo(),
-            'google_sheet_api' => apply_filters('fluentform/google_sheet_api_settings', []),
             'has_conv_form_save_and_resume' => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.12', '>=')
         ]);
 

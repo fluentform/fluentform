@@ -1,17 +1,5 @@
 <template>
     <div class="edit_integration">
-	    <notice class="ff_alert_between mb-4" type="info-soft" v-if="needGoogleSheetApiUpdate">
-		    <div>
-			    <h6 class="title">{{ $t('Google Sheet API') }}</h6>
-			    <p class="text">
-				    {{ $t('Please upgrade Google Access Code to get automatically fetch spreadsheet and worksheet.') }}</p>
-		    </div>
-		    <a target="_blank"
-		       :href="googleApiUpdateUrl"
-		       class="el-button el-button--primary el-button--small">
-			    {{ $t('Upgrade Google Access Code') }}
-		    </a>
-	    </notice>
         <card>
             <card-head>
                 <card-head-group class="justify-between">
@@ -407,15 +395,6 @@
                     return `Add New ${integrationName} Integration Feed`;
                 }
             },
-	        googleApiUpdateUrl() {
-				if (this.integration_name === 'google_sheet' && this.needGoogleSheetApiUpdate) {
-					return window.FluentFormApp?.google_sheet_api?.update_url;
-				}
-				return '';
-	        },
-	        needGoogleSheetApiUpdate() {
-				return this.integration_name === 'google_sheet' && !window.FluentFormApp?.google_sheet_api?.is_new_google_api;
-	        },
             maybeShowSaveButton() {
                 let fields = this.settings_fields;
                 let mergeFields = this.merge_fields;
