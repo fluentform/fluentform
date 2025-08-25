@@ -461,7 +461,6 @@ class ReportHelper
             return $heatmapData;
         }
 
-        // Default fallback
         return [];
     }
 
@@ -472,7 +471,6 @@ class ReportHelper
     protected static function getHeatmapSubmissionData($startDate, $endDate, $formId, $aggregationType)
     {
         if ($aggregationType === 'day_of_week') {
-            // Use optimized single query
             $query = Submission::selectRaw('
                 DAYOFWEEK(created_at) as day_of_week,
                 HOUR(created_at) as submission_hour,

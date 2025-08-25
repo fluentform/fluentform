@@ -47,28 +47,28 @@
                 <!-- Heatmap grid -->
                 <div class="heatmap-grid">
                     <div
-                        v-for="(dayName, rowIndex) in dayNames"
+                        v-for="(dayName, rowIndex) in getDayNames()"
                         :key="'row-' + rowIndex"
                         class="heatmap-row"
                     >
                         <!-- Day name cell -->
                         <div class="date-cell">
-                            <div class="date-day-short">{{ formatDayShort(dayName) }}</div>
+                            <div class="date-day-short">{{ getDayLabel(dayName) }}</div>
                         </div>
 
                         <!-- Data cells with Element UI tooltips -->
                         <el-tooltip
                             v-for="(timeSlot, colIndex) in visibleTimeSlots"
                             :key="`cell-${rowIndex}-${colIndex}`"
-                            :content="getTooltipContent(getActualTimeIndex(colIndex), dayName)"
+                            :content="getTooltipContent(colIndex, dayName)"
                             placement="top"
                             :open-delay="200"
                             effect="dark"
-                            :disabled="getValueForCell(getActualTimeIndex(colIndex), dayName) === 0"
+                            :disabled="getValueForCell(colIndex, dayName) === 0"
                         >
                             <div
                                 class="data-cell"
-                                :class="getCellClass(getValueForCell(getActualTimeIndex(colIndex), dayName))"
+                                :class="getCellClass(getValueForCell(colIndex, dayName))"
                             >
                             </div>
                         </el-tooltip>
@@ -123,23 +123,8 @@ export default {
     data() {
         return {
             loading: false,
-            allTimeSlots: [
-                "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM",
-                "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM",
-                "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"
-            ],
-            amTimeSlots: [
-                "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM",
-                "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM"
-            ],
-            pmTimeSlots: [
-                "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM",
-                "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"
-            ],
             currentPeriod: 'am', // 'am' or 'pm'
-            dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             heatmapDataStore: {},
-            aggregationType: 'day_of_week',
             dateRange: null
         };
     },
@@ -170,7 +155,33 @@ export default {
         },
 
         visibleTimeSlots() {
-            return this.currentPeriod === 'am' ? this.amTimeSlots : this.pmTimeSlots;
+            if (!this.heatmap_data?.time_slots) return [];
+            return this.heatmap_data.time_slots[this.currentPeriod] || [];
+        },
+
+        hasData() {
+            if (!this.heatmapDataStore || Object.keys(this.heatmapDataStore).length === 0) {
+                return false;
+            }
+
+            // Check if any day has non-zero values
+            for (const dayName of this.getDayNames()) {
+                if (this.heatmapDataStore[dayName]) {
+                    for (let i = 0; i < 24; i++) {
+                        if (this.heatmapDataStore[dayName][i] > 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        },
+
+        infoMessage() {
+            if (!this.hasPro) {
+                return this.$t('This is a demo preview. Upgrade to FluentForms Pro to see real submission heatmap data.');
+            }
+            return this.$t('No submission data available for the selected date range');
         }
     },
     watch: {
@@ -186,7 +197,6 @@ export default {
 
                 if (newData && newData.heatmap_data) {
                     this.processHeatmapData(newData.heatmap_data);
-                    this.aggregationType = newData.aggregation_type || 'day_of_week';
                     this.dateRange = {
                         start_date: newData.start_date,
                         end_date: newData.end_date
@@ -247,37 +257,25 @@ export default {
     },
     methods: {
         processHeatmapData(data) {
-            this.heatmapDataStore = {};
-
-            // Process data for each day of the week
-            this.dayNames.forEach(dayName => {
-                // Initialize with zeros for all time slots
-                this.heatmapDataStore[dayName] = {};
-                for (let i = 0; i < 24; i++) {
-                    this.heatmapDataStore[dayName][i] = 0;
-                }
-
-                // If real data exists for this day, use it
-                if (data && data[dayName]) {
-                    for (let i = 0; i < 24; i++) {
-                        this.heatmapDataStore[dayName][i] = data[dayName][i] || 0;
-                    }
-                }
-            });
+            this.heatmapDataStore = data || {};
         },
 
         initializeEmptyData() {
             this.heatmapDataStore = {};
-
-            // Initialize data for all days of the week with all zeros
-            this.dayNames.forEach(dayName => {
-                this.heatmapDataStore[dayName] = {};
-
-                // Initialize all time slots with 0
-                for (let i = 0; i < 24; i++) {
-                    this.heatmapDataStore[dayName][i] = 0;
-                }
+            // Initialize with empty data for all days
+            this.getDayNames().forEach(dayName => {
+                this.heatmapDataStore[dayName] = Array(24).fill(0);
             });
+        },
+
+        getDayNames() {
+            return this.heatmap_data?.day_labels ?
+                Object.keys(this.heatmap_data.day_labels) :
+                ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        },
+
+        getDayLabel(dayName) {
+            return this.heatmap_data?.day_labels?.[dayName] || dayName.substring(0, 3).toUpperCase();
         },
 
         generateSampleData() {
@@ -290,27 +288,10 @@ export default {
         },
 
         generateDemoData() {
+            // Generate simple demo data for non-pro users
             this.heatmapDataStore = {};
-
-            // Demo data patterns - realistic submission patterns
-            const demoPatterns = {
-                'Monday': [0, 0, 0, 0, 0, 0, 1, 3, 8, 12, 15, 18, 22, 25, 20, 18, 15, 12, 8, 5, 3, 1, 0, 0],
-                'Tuesday': [0, 0, 0, 0, 0, 0, 2, 4, 10, 15, 18, 22, 25, 28, 24, 20, 16, 14, 10, 6, 4, 2, 1, 0],
-                'Wednesday': [0, 0, 0, 0, 0, 1, 2, 5, 12, 18, 22, 25, 28, 30, 26, 22, 18, 15, 11, 7, 4, 2, 1, 0],
-                'Thursday': [0, 0, 0, 0, 0, 0, 1, 4, 9, 14, 19, 24, 27, 29, 25, 21, 17, 13, 9, 6, 3, 2, 0, 0],
-                'Friday': [0, 0, 0, 0, 0, 0, 2, 3, 7, 11, 16, 20, 24, 26, 23, 19, 15, 11, 8, 5, 3, 1, 0, 0],
-                'Saturday': [0, 0, 0, 0, 0, 0, 0, 1, 3, 6, 9, 12, 15, 18, 16, 14, 11, 8, 5, 3, 2, 1, 0, 0],
-                'Sunday': [0, 0, 0, 0, 0, 0, 0, 1, 2, 4, 7, 10, 13, 15, 14, 12, 9, 6, 4, 2, 1, 0, 0, 0]
-            };
-
-            // Apply demo patterns with some randomization
-            this.dayNames.forEach(dayName => {
-                this.heatmapDataStore[dayName] = {};
-                const pattern = demoPatterns[dayName] || demoPatterns['Monday'];
-
-                for (let i = 0; i < 24; i++) {
-                    this.heatmapDataStore[dayName][i] = pattern[i] || 0;
-                }
+            this.getDayNames().forEach(dayName => {
+                this.heatmapDataStore[dayName] = Array(24).fill(0).map(() => Math.floor(Math.random() * 10));
             });
         },
 
@@ -318,34 +299,17 @@ export default {
             this.currentPeriod = period;
         },
 
-        getActualTimeIndex(visibleIndex) {
-            // Convert visible index (0-11) to actual hour index (0-23)
-            return this.currentPeriod === 'am' ? visibleIndex : visibleIndex + 12;
-        },
-
-        formatDayShort(dayName) {
-            const shortNames = {
-                'Sunday': 'SUN',
-                'Monday': 'MON',
-                'Tuesday': 'TUE',
-                'Wednesday': 'WED',
-                'Thursday': 'THU',
-                'Friday': 'FRI',
-                'Saturday': 'SAT'
-            };
-            return shortNames[dayName] || dayName.substring(0, 3).toUpperCase();
-        },
-
-        getValueForCell(timeSlotIndex, dayName) {
-            if (this.heatmapDataStore[dayName] && this.heatmapDataStore[dayName][timeSlotIndex] !== undefined) {
-                return this.heatmapDataStore[dayName][timeSlotIndex];
+        getValueForCell(visibleIndex, dayName) {
+            const actualIndex = this.currentPeriod === 'am' ? visibleIndex : visibleIndex + 12;
+            if (this.heatmapDataStore[dayName] && this.heatmapDataStore[dayName][actualIndex] !== undefined) {
+                return this.heatmapDataStore[dayName][actualIndex];
             }
             return 0;
         },
 
-        getTooltipContent(timeSlotIndex, dayName) {
-            const value = this.getValueForCell(timeSlotIndex, dayName);
-            const timeSlot = this.allTimeSlots[timeSlotIndex];
+        getTooltipContent(visibleIndex, dayName) {
+            const value = this.getValueForCell(visibleIndex, dayName);
+            const timeSlot = this.visibleTimeSlots[visibleIndex];
             return `${this.$t(dayName)} (${timeSlot}): ${value} ${value !== 1 ? this.$t('Submissions') : this.$t('Submission')}`;
         },
         getCellClass(value) {
