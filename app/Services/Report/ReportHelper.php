@@ -679,7 +679,7 @@ class ReportHelper
 
             case 'views':
                 // Count unique views by IP from analytics table if analytics enabled
-                if (!apply_filters('fluentform/disabled_analytics', false)) {
+                if (!apply_filters('fluentform/disabled_analytics', true)) {
                     $results = wpFluent()->table('fluentform_forms')
                         ->select([
                             'fluentform_forms.id',
@@ -723,7 +723,7 @@ class ReportHelper
      */
     private static function getFormViews($startDate, $endDate, $groupingMode, $formId)
     {
-        if (apply_filters('fluentform/disabled_analytics', false)) {
+        if (apply_filters('fluentform/disabled_analytics', true)) {
             return [];
         }
 

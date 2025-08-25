@@ -862,21 +862,25 @@
                 this.$set(this.data.misc, 'cleantalk_validation', 'mark_as_spam');
             }
 
-            if(!this.data.misc.geo_provider) {
+            if (!this.data.misc.geo_provider) {
                 this.$set(this.data.misc, 'geo_provider', 'ipinfo.io');
             }
-            if(!this.data.misc.file_upload_locations) {
+            if (!this.data.misc.file_upload_locations) {
                 this.$set(this.data.misc, 'file_upload_locations', 'default');
             }
-            if(!this.data.misc.admin_top_nav_status) {
+            if (!this.data.misc.admin_top_nav_status) {
                 this.$set(this.data.misc, 'admin_top_nav_status', 'yes');
             }
-            if(!this.data.misc.default_admin_date_time) {
+            if (!this.data.misc.default_admin_date_time) {
                 this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
             }
 
-            if(!this.data.misc.tokenBasedProtectionStatus) {
+            if (!this.data.misc.tokenBasedProtectionStatus) {
                 this.$set(this.data.misc, 'tokenBasedProtectionStatus', 'no');
+            }
+
+            if (!("isAnalyticsDisabled" in this.data.misc)) {
+                this.$set(this.data.misc, "isAnalyticsDisabled", true);
             }
 
             this.misc = this.data.misc;
