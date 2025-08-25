@@ -62,7 +62,7 @@
             </el-form-item>
 
             <el-form-item class="fcc_eq_line" :label="$t('Enable Scroll to Top')">
-                <el-switch active-value="yes" inactive-value="no" v-model="design_settings.enable_scroll_to_top"></el-switch>
+                 <el-switch active-value="yes" inactive-value="no" v-model="design_settings.enable_scroll_to_top"></el-switch>
             </el-form-item>
 
             <el-form-item :label="$t('Disable Branding')">
@@ -70,10 +70,10 @@
             </el-form-item>
 
             <el-form-item :label="$t('Key Hint')">
-                <el-switch 
-                    active-value="yes" 
-                    inactive-value="no" 
-                    v-model="design_settings.key_hint" 
+                <el-switch
+                    active-value="yes"
+                    inactive-value="no"
+                    v-model="design_settings.key_hint"
                 />
             </el-form-item>
 
@@ -116,6 +116,11 @@ export default {
     methods: {
         save() {
             this.$emit('save');
+        }
+    },
+    mounted() {
+        if (this.design_settings.enable_scroll_to_top == null) {
+            this.design_settings.enable_scroll_to_top = 'no';
         }
     }
 }
