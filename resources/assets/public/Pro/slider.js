@@ -200,6 +200,40 @@ class FluentFormSlider {
                             }).change();
                         });
                     });
+                } else if ($el.attr('data-type') === 'repeater_container') {
+                    // Repeater container Field
+                    $.each(value, (index, arr) => {
+                        if (index === 0) {
+                            // Update first row
+                            $el.find('.ff_repeater_cont_row:first .ff-el-form-control').each((i, el) => {
+                                $(el).val(arr[i]).change();
+                            });
+                            return;
+                        }
+
+                        // Clone the first row for additional rows
+                        let $firstRow = $el.find('.ff_repeater_cont_row:first');
+                        let $freshCopy = $firstRow.clone();
+                        
+                        $freshCopy.find('.ff_repeater_cell').each(function (i, cell) {
+                            let el = $(this).find('.ff-el-form-control:last-child');
+                            let newId = 'ffrpt-' + (new Date()).getTime() + '_' + index + '_' + i;
+                            let itemProp = {
+                                value: arr[i] || '',
+                                id: newId
+                            };
+                            el.prop(itemProp);
+                            
+                            // Update the 'for' attribute of the label
+                            $(this).find('label').attr('for', newId);
+                        });
+                        
+                        $freshCopy.insertAfter($el.find('.ff_repeater_cont_row:last'));
+                    });
+                    
+                    // Fix the names for all rows
+                    this.$theForm.trigger('repeater-container-names-update', [$el]);
+                    $el.trigger('repeat_change');
                 } else {
                     // Checkbox Groups
                     $el.each((i, $elem) => {
