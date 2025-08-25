@@ -122,7 +122,7 @@ export default {
     props: ['heatmap_data', 'global_date_params'],
     data() {
         return {
-            loading: false,
+            loading: true,
             currentPeriod: 'am', // 'am' or 'pm'
             heatmapDataStore: {},
             dateRange: null

@@ -162,7 +162,9 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 ### 6.0.5 (Date: August 13, 2025) =
 - Adds Fluent Forms Report module
 - Adds close button to payment summary items
-- Improves IP detection accepting client IP explicitly
+- Adds keyboard shortcut for delete input field in the editor
+- Adds conversational forms scroll to top options
+- Improves IP detection
 - Improves consistency of settings deletion notifications
 - Fixes form API empty title retrieval issue
 - Fixes WPForm Migrator with empty forms
@@ -172,7 +174,6 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes integrations page sidebar menu selection indication on reload
 - Fixes conversational forms GDPR checkbox implementation
 - Fixes captcha conflict when global and form-specific settings differ
-- Fixes client IP detection for Cloudflare and Nginx proxies
 - Fixes hide after submission option setting for conversational forms
 - Fixes Terms & Conditions field validation error messages for not Accepted
 - Removes non-functional Reset Form button from conversational forms
@@ -183,6 +184,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes database creation errors in WordPress Studio environments
 - Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
 - Fixes WP Text Editor sanitizer removing links in success messages with search parameters
+- Fixes Object Injection Vulnerability unserialize issue when using user profile specific shortcodes
 
 ### 6.0.4 (Date: May 29, 2025) =
 - Improve honeypot condition check
