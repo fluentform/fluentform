@@ -1,7 +1,7 @@
 <template>
     <card class="ff-pro-component">
         <card-head>
-            <h3>{{$t('Submission Timeline')}}</h3>
+            <h3>{{$t('Submission Timeline Patterns')}}</h3>
             <div class="heatmap-navigation">
                     <div class="week-item">
                         <span class="week-label">{{ $t('Viewing') }}</span>

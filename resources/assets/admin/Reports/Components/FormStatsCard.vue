@@ -91,7 +91,7 @@ export default {
         changeIcon() {
             if (this.changeType === 'up') return 'el-icon-top';
             if (this.changeType === 'down') return 'el-icon-bottom';
-            return 'el-icon-minus';
+            return 'el-icon-more';
         }
     }
 };
