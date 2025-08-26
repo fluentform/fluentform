@@ -215,7 +215,7 @@ class MailChimpIntegration extends IntegrationManagerController
                 [
                     'key'                => 'tags',
                     'require_list'       => true,
-                    'label'              => __('Tags xyz', 'fluentform'),
+                    'label'              => __('Tags', 'fluentform'),
                     'tips'               => __('Associate tags to your Mailchimp contacts with a comma separated list (e.g. new lead, FluentForms, web source). Commas within a merge tag value will be created as a single tag.', 'fluentform'),
                     'component'          => 'selection_routing',
                     'simple_component'   => 'value_text',

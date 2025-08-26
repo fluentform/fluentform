@@ -159,13 +159,15 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.0.5 (Date: August 13, 2025) =
+### 6.1.0 (Date: August 26, 2025) =
 - Adds Fluent Forms Report module
 - Adds close button to payment summary items
 - Adds keyboard shortcut for delete input field in the editor
-- Adds conversational forms scroll to top options
+- Adds conversational forms scroll to top option
+- Adds conversational forms terms and condition hide disagree button
+- Improves export entries fields by remembering last selected fields
 - Improves IP detection
-- Improves consistency of settings deletion notifications
+- Improves consistency of settings deletion captchas
 - Fixes form API empty title retrieval issue
 - Fixes WPForm Migrator with empty forms
 - Fixes radio field customization UI default value selection
@@ -176,7 +178,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes captcha conflict when global and form-specific settings differ
 - Fixes hide after submission option setting for conversational forms
 - Fixes Terms & Conditions field validation error messages for not Accepted
-- Removes non-functional Reset Form button from conversational forms
+- Removes non-functional Reset Form button from conversational forms form settings
 - Fixes payment method 'Test' Instead 'Offline' in payments shortcode
 - Fixes multiple address field autocomplete in conversational forms
 - Fixes submission on Enter key press with selected radio/checkbox using keyboard

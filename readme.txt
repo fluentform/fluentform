@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 6.0.5
+Stable tag: 6.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -442,14 +442,15 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.0.5 (Date: August 13, 2025) =
+= 6.1.0 (Date: August 26, 2025) =
 - Adds Fluent Forms Report module
 - Adds close button to payment summary items
 - Adds keyboard shortcut for delete input field in the editor
 - Adds conversational forms scroll to top option
+- Adds conversational forms terms and condition hide disagree button
 - Improves Export entries fields by remembering last selected fields
 - Improves IP detection
-- Improves consistency of settings deletion notifications
+- Improves consistency of settings deletion captchas
 - Fixes form API empty title retrieval issue
 - Fixes WPForm Migrator with empty forms
 - Fixes radio field customization UI default value selection
@@ -460,7 +461,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes captcha conflict when global and form-specific settings differ
 - Fixes hide after submission option setting for conversational forms
 - Fixes Terms & Conditions field validation error messages for not Accepted
-- Removes non-functional Reset Form button from conversational forms
+- Removes un used Reset Form button from conversational forms form settings
 - Fixes payment method 'Test' Instead 'Offline' in payments shortcode
 - Fixes multiple address field autocomplete in conversational forms
 - Fixes submission on Enter key press with selected radio/checkbox using keyboard
