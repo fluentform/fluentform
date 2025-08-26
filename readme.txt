@@ -448,6 +448,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds keyboard shortcut for delete input field in the editor
 - Adds conversational forms scroll to top option
 - Adds conversational forms terms and condition hide disagree button
+- Adds injectable custom Vue component on form editor field view
 - Improves Export entries fields by remembering last selected fields
 - Improves IP detection
 - Improves consistency of settings deletion captchas
