@@ -252,6 +252,7 @@ export default {
             // Always show demo data for non-pro users
             this.generateDemoData();
         } else if (!this.heatmap_data || !this.heatmap_data.heatmap_data) {
+            this.loading = false;
             this.generateSampleData();
         }
     },

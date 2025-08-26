@@ -14,11 +14,10 @@ use FluentForm\App\Modules\Payments\PaymentHelper;
 class ReportHandler
 {
     protected $app;
-
-    public function __construct($app)
+    
+    public function register($app)
     {
         $this->app = $app;
-
         $app->addAction('fluentform/render_report', [$this, 'renderReport']);
     }
 
@@ -28,7 +27,7 @@ class ReportHandler
         wp_enqueue_style('fluentform_reports');
 
 
-        // Maybe load intl-tel-input flags 
+        // Maybe load intl-tel-input flags
         if (Helper::hasPro()) {
             $cssSource = '';
             if (defined('FLUENTFORMPRO_DIR_URL')) {

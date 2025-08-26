@@ -72,6 +72,7 @@ add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
     (new \FluentForm\App\Modules\Ai\AiController())->boot();
+    (new \FluentForm\App\Modules\Report\ReportHandler())->register($app);
 }, 9);
 
 add_action('admin_enqueue_scripts', function () use ($app) {
@@ -838,7 +839,6 @@ $app->addAction('fluentform/schedule_feed', function ($queueId) use ($app) {
 $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
     new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
-    new \FluentForm\App\Modules\Report\ReportHandler($app);
     // Load payment module
     if (Helper::isPaymentCompatible()) {
         (new FluentForm\App\Modules\Payments\PaymentHandler())->init();
