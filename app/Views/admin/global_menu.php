@@ -99,7 +99,7 @@ $page = sanitize_text_field($_GET['page']);
     ?>
     <?php if($globalSearchActive == 'yes'):?>
         <button class="global-search-menu-button">
-            <span class="el-icon-search"></span> <span><?php _e('Search','fluentform') ?></span> <span class="shortcut"><?php echo esc_html($key)?>K </span>
+            <span class="el-icon-search"></span> <span class="shortcut"><?php echo esc_html($key)?>K </span>
         </button>
     <?php endif; ?>
     <?php
