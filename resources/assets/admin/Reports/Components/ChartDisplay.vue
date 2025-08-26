@@ -30,11 +30,11 @@
                 <chart-loader v-if="loading" :rows="12" />
                 <div v-else class="chart-wrapper">
                     <v-chart
-                        v-if="!loading"
-                        ref="chart"
-                        :option="chartOptions"
-                        style="height: 440px; width: 100%;"
-                        autoresize
+                            v-if="!loading"
+                            ref="chart"
+                            :option="chartOptions"
+                            style="height: 440px; width: 100%;"
+                            autoresize
                     />
 
                     <div class="chart-footer-info">
@@ -55,10 +55,10 @@
 </template>
 
 <script>
-import Card from '@/admin/components/Card/Card.vue';
-import CardBody from '@/admin/components/Card/CardBody.vue';
-import CardHead from "@/admin/components/Card/CardHead.vue";
-import { ChartLoader } from './shared/simple-utils.js';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from "@/admin/components/Card/CardHead.vue";
+    import { ChartLoader, COLORS, formatNumber, formatCurrency, getCurrencySymbol } from './shared/simple-utils.js';
 
 export default {
     name: "ChartDisplay",
@@ -73,18 +73,18 @@ export default {
         return {
             chartType: 'line', // Default to line chart
             statuses: {
-                success: { name: this.$t('Success'), color: '#1FC16B' },
-                pending: { name: this.$t('Processing'), color: '#335CFF' },
-                failed: { name: this.$t('Failed'), color: '#FB3748' },
-                read: { name: this.$t('Read'), color: '#335CFF' },
-                unread: { name: this.$t('Unread'), color: '#F6B51E' },
-                spam: { name: this.$t('Spam'), color: '#FB3748' },
-                trashed: { name: this.$t('Trashed'), color: '#A0AEC0' },
+                success: { name: this.$t('Success'), color: COLORS.views },
+                pending: { name: this.$t('Processing'), color: COLORS.pending },
+                failed: { name: this.$t('Failed'), color: COLORS.failed },
+                read: { name: this.$t('Read'), color: COLORS.read },
+                unread: { name: this.$t('Unread'), color: COLORS.unread },
+                spam: { name: this.$t('Spam'), color: COLORS.spam },
+                trashed: { name: this.$t('Trashed'), color: COLORS.trashed },
                 revenue: {
-                    payments: { name: this.$t('Total Revenue'), color: '#7D52F4' },
-                    paid: { name: this.$t('Paid'), color: '#23A682' },
-                    pending: { name: this.$t('Pending'), color: '#F6B51E' },
-                    refunded: { name: this.$t('Refunded'), color: '#FB4BA3' }
+                    payments: { name: this.$t('Total Revenue'), color: COLORS.revenue },
+                    paid: { name: this.$t('Paid'), color: COLORS.paid },
+                    pending: { name: this.$t('Pending'), color: COLORS.pending },
+                    refunded: { name: this.$t('Refunded'), color: COLORS.refunded }
                 }
             },
         };
@@ -123,158 +123,148 @@ export default {
                 }
             });
 
-            return series;
-        },
+                return series;
+            },
 
-        dates() {
-            return this.data?.dates || this.data?.logs_data?.categories;
-        },
+            dates() {
+                return this.data?.dates || this.data?.logs_data?.categories || [this.$t('No data')];
+            },
 
-        chartOptions() {
-            return {
-                title: {
-                    show: false
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'cross'
-                    },
-                    formatter: function(params) {
-                        let result = `${params[0].axisValue}<br/>`;
-                        params.forEach(param => {
-                            let value = param.value;
-                            if (this.type === 'revenue') {
-                                value = this.getCurrencySymbol() + (typeof value === 'number' ? value.toLocaleString() : value);
-                            }
-                            result += `${param.marker} ${param.seriesName}: ${value}<br/>`;
-                        });
-                        return result;
-                    }.bind(this)
-                },
-                legend: {
-                    show: true,
-                    top: 'top',
-                    right: '20px',
-                    orient: 'horizontal',
-                    itemGap: 20,
-                    itemWidth: 12,
-                    itemHeight: 12,
-                    icon: 'circle',
-                    textStyle: {
-                        color: '#6b7280',
-                        fontSize: 12
-                    },
-                    data: this.series.map(s => ({
-                        name: s.name,
-                        icon: 'roundRect',
-                    }))
-                },
-                color: this.series.map(s => s.color),
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '12%',
-                    top: '18%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'category',
-                    data: this.dates || [this.$t('No data')],
-                    axisTick: {
+            chartOptions() {
+                return {
+                    title: {
                         show: false
                     },
-                    axisLine: {
-                        show: false
-                    },
-                    axisLabel: {
-                        color: '#8e8da4',
-                        fontSize: 12
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    min: 0,
-                    axisLine: {
-                        show: false
-                    },
-                    axisTick: {
-                        show: false
-                    },
-                    axisLabel: {
-                        color: '#8e8da4',
-                        fontSize: 12,
-                        formatter: function(value) {
-                            if (this.type === 'revenue') {
-                                return this.getCurrencySymbol() + (value >= 1000 ? (value/1000).toFixed(1) + 'K' : value);
-                            }
-                            return value >= 1000 ? (value/1000).toFixed(1) + 'K' : value;
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        },
+                        formatter: function(params) {
+                            let result = `${params[0].axisValue}<br/>`;
+                            params.forEach(param => {
+                                let value = param.value;
+                                if (this.type === 'revenue') {
+                                    value = formatCurrency(value, getCurrencySymbol(this.data?.currency_sign));
+                                } else {
+                                    value = formatNumber(value);
+                                }
+                                result += `${param.marker} ${param.seriesName}: ${value}<br/>`;
+                            });
+                            return result;
                         }.bind(this)
                     },
-                    splitLine: {
-                        lineStyle: {
-                            color: '#f1f1f1',
-                            type: 'dashed'
+                    legend: {
+                        show: true,
+                        top: 'top',
+                        right: '20px',
+                        orient: 'horizontal',
+                        itemGap: 20,
+                        itemWidth: 12,
+                        itemHeight: 12,
+                        icon: 'circle',
+                        textStyle: {
+                            color: '#6b7280',
+                            fontSize: 12
+                        },
+                        data: this.series.map(s => ({
+                            name: s.name,
+                            icon: 'roundRect',
+                        }))
+                    },
+                    color: this.series.map(s => s.color),
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '12%',
+                        top: '18%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: this.dates,
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                        axisLabel: {
+                            color: '#8e8da4',
+                            fontSize: 12
                         }
-                    }
-                },
-                series: this.series.map(s => {
-                    const data = {
-                        name: s.name,
-                        type: this.chartType,
-                        data: s.data,
-                        itemStyle: {
-                            color: s.color
+                    },
+                    yAxis: {
+                        type: 'value',
+                        min: 0,
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            color: '#8e8da4',
+                            fontSize: 12,
+                            formatter: function(value) {
+                                if (this.type === 'revenue') {
+                                    return formatCurrency(value, getCurrencySymbol(this.data?.currency_sign));
+                                }
+                                return formatNumber(value);
+                            }.bind(this)
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: '#f1f1f1',
+                                type: 'dashed'
+                            }
                         }
-                    };
-
-                    // Line chart specific properties
-                    if (this.chartType === 'line') {
-                        data.smooth = true;
-                        data.lineStyle = {
-                            width: 3
+                    },
+                    series: this.series.map(s => {
+                        const data = {
+                            name: s.name,
+                            type: this.chartType,
+                            data: s.data,
+                            itemStyle: {
+                                color: s.color
+                            }
                         };
-                        data.symbol = "circle";
-                        data.symbolSize = 5;
 
-                        if (this.type === 'api_logs') {
-                            data.areaStyle = {
-                                opacity: 0.1
+                        // Line chart specific properties
+                        if (this.chartType === 'line') {
+                            data.smooth = true;
+                            data.lineStyle = {
+                                width: 3
                             };
+                            data.symbol = "circle";
+                            data.symbolSize = 5;
+
+                            if (this.type === 'api_logs') {
+                                data.areaStyle = {
+                                    opacity: 0.1
+                                };
+                            }
                         }
-                    }
 
-                    // Bar chart specific properties
-                    if (this.chartType === 'bar') {
-                        data.barWidth = '20%';
-                        data.itemStyle.borderRadius = [4, 4, 0, 0];
-                    }
+                        // Bar chart specific properties
+                        if (this.chartType === 'bar') {
+                            data.barWidth = '20%';
+                            data.itemStyle.borderRadius = [4, 4, 0, 0];
+                        }
 
-                    return data;
-                })
-            };
-        }
-    },
-    watch: {
-        chartType() {
-            // Chart will automatically update due to reactive chartOptions
-            this.$nextTick(() => {
-                // Force chart resize after type change
-                if (this.$refs.chart) {
-                    this.$refs.chart.resize();
-                }
-            });
-        }
-    },
-    methods: {
-        getCurrencySymbol() {
-            if (!this.data) {
-                return '$';
+                        return data;
+                    })
+                };
             }
-            const textarea = document.createElement('textarea');
-            textarea.innerHTML = this.data?.currency_sign || '$';
-            return textarea.value;
+        },
+        watch: {
+            chartType() {
+                this.$nextTick(() => {
+                    if (this.$refs.chart) {
+                        this.$refs.chart.resize();
+                    }
+                });
+            }
         }
-    }
-};
+    };
 </script>
