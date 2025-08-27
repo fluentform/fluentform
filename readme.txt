@@ -442,16 +442,16 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.1.0 (Date: August 26, 2025) =
+= 6.1.0 (Date: August 27, 2025) =
 - Adds Fluent Forms Report module
+- Adds conversational forms scroll to top option
 - Adds close button to payment summary items
 - Adds keyboard shortcut for delete input field in the editor
-- Adds conversational forms scroll to top option
 - Adds conversational forms terms and condition hide disagree button
 - Adds injectable custom Vue component on form editor field view
 - Improves Export entries fields by remembering last selected fields
 - Improves IP detection
-- Improves consistency of settings deletion captchas
+- Improves consistency of settings deletion of captcha
 - Fixes form API empty title retrieval issue
 - Fixes WPForm Migrator with empty forms
 - Fixes radio field customization UI default value selection

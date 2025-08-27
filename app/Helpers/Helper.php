@@ -174,16 +174,16 @@ class Helper
     public static function getFormMeta($formId, $metaKey, $default = '', $forced = false)
     {
         $formattedValues = self::$formMetaCache[$formId] ?? [];
-
-        if (!$formattedValues || $forced) {
+        
+        if (!isset(self::$formMetaCache[$formId]) || $forced) {
             $formMetas = FormMeta::where('form_id', $formId)
                 ->get();
 
             $formattedValues = [];
             foreach ($formMetas as $formMeta) {
                 $value = $formMeta->value;
-
-                $decoded = json_decode($value, true);
+                
+                $decoded = json_decode($value ?? '', true);
                 if (is_array($decoded)) {
                     $value = $decoded;
                 }
