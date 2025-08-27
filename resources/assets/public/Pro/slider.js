@@ -485,16 +485,8 @@ class FluentFormSlider {
                 return false;
             }
 
-            const $eligibleInputs = $step.find(':input').not(':button').filter(function () {
-                const $el = $(this);
-                return !$el.hasClass('ff_excluded') && $el.parents('.ff_excluded').length === 0;
-            });
-
-            const $eligibleInputsInGroups = $eligibleInputs.filter(function () {
-                return $(this).closest('.ff-el-group').length > 0;
-            });
-
-            return $eligibleInputsInGroups.length === 0;
+            // If the step has field groups, don't skip it - let conditional logic handle visibility
+            return false;
         }
 
         /**
