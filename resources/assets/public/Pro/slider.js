@@ -709,11 +709,11 @@ class FluentFormSlider {
                 : this.animateProgressToStep(this.activeStep, completenessTotalSteps, animDuration);
 
             const completeStepChange = function () {
-                // Skip saving the last step
-                let isLastStep = self.activeStep === totalSteps;
+                let isFormReset = goBackToStep === 0 && !isScrollTop;
+                let isFormSubmitting = self.$theForm.hasClass('ff_submitting');
 
                 // Fire ajax request to persist the step state/data
-                if (self.stepPersistency && !self.isPopulatingStepData && !isLastStep) {
+                if (self.stepPersistency && !self.isPopulatingStepData && !isFormReset && !isFormSubmitting) {
                     self.saveStepData(self.$theForm, self.activeStep).then(response => {
                         // console.log(response);
                     });
