@@ -181,7 +181,7 @@ class Helper
 
             $formattedValues = [];
             foreach ($formMetas as $formMeta) {
-                $value = $formMeta->meta_value;
+                $value = $formMeta->value;
 
                 $decoded = json_decode($value, true);
                 if (is_array($decoded)) {
