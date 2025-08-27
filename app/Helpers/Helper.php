@@ -200,6 +200,12 @@ class Helper
     public static function setFormMeta($formId, $metaKey, $value)
     {
         if ($meta = FormMeta::persist($formId, $metaKey, $value)) {
+            // Update the cache with the new value
+            if (!isset(self::$formMetaCache[$formId])) {
+                self::$formMetaCache[$formId] = [];
+            }
+            self::$formMetaCache[$formId][$metaKey] = $value;
+
             return $meta->id;
         }
         return null;
