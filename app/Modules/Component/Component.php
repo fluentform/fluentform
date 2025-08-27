@@ -533,6 +533,15 @@ class Component
             return '';
         }
 
+        $form = apply_filters_deprecated(
+            'fluentform_rendering_form',
+            [
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_form',
+            'Use fluentform/rendering_form instead of fluentform_rendering_form.'
+        );
         $form = $this->app->applyFilters('fluentform/rendering_form', $form);
         
         $isRenderable = [
