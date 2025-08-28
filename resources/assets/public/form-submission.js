@@ -1190,7 +1190,16 @@ jQuery(document).ready(function () {
                         silent: true,
                         shouldSort: false,
                         searchEnabled: true,
-                        searchResultLimit: 50
+                        searchResultLimit: 50,
+                        searchFloor: 1,
+                        searchChoices: true,
+                        fuseOptions: {
+                            threshold: 0.1,
+                            distance: 200,
+                            ignoreLocation: true,
+                            tokenize: true,
+                            matchAllTokens: false,
+                        }
                     };
 
 
