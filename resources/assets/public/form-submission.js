@@ -145,6 +145,9 @@ jQuery(document).ready(function () {
                             .find(':input').filter(function (i, el) {
                                 // Ignore repeater container
                                 if ($(el).attr('data-type') === 'repeater_container') {
+                                    if ($(el).closest('.ff-repeater-container').hasClass('ff_excluded')) {
+                                        return false;
+                                    }
                                     if ($(this).closest('.has-conditions').hasClass('ff_excluded')) {
                                         $(this).val('');
                                     }
