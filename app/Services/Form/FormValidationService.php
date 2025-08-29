@@ -728,13 +728,20 @@ class FormValidationService
             $body = wp_remote_retrieve_body($request);
             $body = \json_decode($body, true);
             $status = Arr::get($body, 'status', false) === 'success';
+            
+            if (!$status) {
+                return Helper::getCountryCodeFromHeaders();
+            }
 
-            if ($status && $country = Arr::get($body,'countryCode')) {
+            if ($country = Arr::get($body,'countryCode')) {
                 return $country;
             } else {
                 self::throwValidationException($message);
             }
         } else {
+            if ($country = Helper::getCountryCodeFromHeaders()) {
+                return $country;
+            }
             self::throwValidationException($message);
         }
     }
