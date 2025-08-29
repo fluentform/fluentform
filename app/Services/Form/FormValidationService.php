@@ -719,7 +719,7 @@ class FormValidationService
      * @throws ValidationException
      */
     private function getIpBasedOnCountry($ip) {
-        $request = wp_remote_get("http://ip-api.com/json/{$ip}");
+        $request = wp_remote_get("https://apip.cc/api-json/{$ip}");
         $code = wp_remote_retrieve_response_code($request);
 
         $message = __('Sorry! There is an error occurred in getting Country using ip-api.com. Please check form settings and try again.', 'fluentform');
@@ -733,7 +733,7 @@ class FormValidationService
                 return Helper::getCountryCodeFromHeaders();
             }
 
-            if ($country = Arr::get($body,'countryCode')) {
+            if ($country = Arr::get($body,'CountryCode')) {
                 return $country;
             } else {
                 self::throwValidationException($message);
