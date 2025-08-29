@@ -301,8 +301,8 @@ class Converter
                         if (is_rtl()) {
                             $cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput-rtl.min.css';
                         }
-                        wp_enqueue_style('intlTelInput', $cssSource, [], '18.1.1');
-                        if ( version_compare( FLUENTFORMPRO_VERSION, '6.1.0', '>' ) ) {
+                        wp_enqueue_style('intlTelInput', $cssSource, [], '25.5.2');
+                        if (version_compare( FLUENTFORMPRO_VERSION, '6.1.0', '>' ) ) {
                             wp_enqueue_script('intlTelInputWithUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInputWithUtils.min.js', [], '25.5.2', true);
                         } else {
                             wp_enqueue_script('intlTelInputUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/utils.js', [], '18.1.1', true);
