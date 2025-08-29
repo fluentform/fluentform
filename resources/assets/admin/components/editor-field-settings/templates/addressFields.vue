@@ -104,7 +104,7 @@
         </small>
 
         <small v-if="editItem.settings.autocomplete_provider === 'html5'" class="mb-3" style="display: inline-block;">
-            {{ $t("Address autocomplete with OpenStreetMap (Nominatim) is limited to 1 request per second across all users. Best for forms with low to moderate traffic. For high-traffic sites, consider Google Maps.") }}
+            {{ $t("Address autocomplete with OpenStreetMap (Nominatim) is limited to 1 request per second across all users and attribution required. Best for forms with low traffic. For high-traffic sites, consider Google Maps.") }}
         </small>
 
         <small v-if="!has_pro">
