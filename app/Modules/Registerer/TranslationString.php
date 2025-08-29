@@ -521,7 +521,6 @@ class TranslationString
             'Please Select when the email will be sent for Payment Forms' => __('Please Select when the email will be sent for Payment Forms', 'fluentform'),
             'After Payment Success' => __('After Payment Success', 'fluentform'),
             'After Form Submit' => __('After Form Submit', 'fluentform'),
-            'Please Note, for offline payment this settings will not work.Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments.' => __('Please Note, for offline payment this settings will not work.Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments.', 'fluentform'),
             'Enter the name you would like the notification email ' => __('Enter the name you would like the notification email ', 'fluentform'),
             'sent from, or select the name from available name fields.' => __('sent from, or select the name from available name fields.', 'fluentform'),
             'It will only be visible in the email if \"From Email\" value is available' => __('It will only be visible in the email if \"From Email\" value is available', 'fluentform'),
