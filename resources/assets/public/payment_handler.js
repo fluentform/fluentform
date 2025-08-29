@@ -1,4 +1,5 @@
 import formatPrice from "./formatPrice";
+import { _$t } from "@/admin/helpers";
 export class Payment_handler {
     constructor($form, instance) {
         let formId = instance.settings.id;
@@ -18,10 +19,8 @@ export class Payment_handler {
     }
 
     $t(stringKey) {
-        if (this.paymentConfig.i18n[stringKey]) {
-            return this.paymentConfig.i18n[stringKey];
-        }
-        return stringKey;
+        let transString = this.paymentConfig.i18n[stringKey] || stringKey;
+        return _$t(transString, ...arguments);
     }
 
     boot() {
