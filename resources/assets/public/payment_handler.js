@@ -171,7 +171,7 @@ export class Payment_handler {
             let html = '<div class="ffp_table_wrapper">';
 
             // Only add close button if enabled for this summary
-            const showCloseButton = this.formPaymentConfig.payment_summary_config[name]?.show_close_button || false;
+            const showCloseButton = this.formPaymentConfig?.payment_summary_config?.[name]?.show_close_button || false;
             if (showCloseButton) {
                 html += '<div class="ffp_table_close"><span class="ffp_close_icon" data-name="' + name + '">&times;</span></div>';
             }
@@ -214,7 +214,7 @@ export class Payment_handler {
 
             $summary.find('.ff_payment_summary').html(html);
         });
-        
+
         this.$form.find('.ffp_close_icon').on('click', (e) => {
             const name = jQuery(e.target).data('name');
             const $paymentSummary = this.$form.find(`.ff-el-group[data-name="${name}"] .ff_dynamic_payment_summary`);
@@ -354,7 +354,7 @@ export class Payment_handler {
         } else {
             signupLabel = this.$t('Signup Fee for %s', label);
         }
-        
+
         if (initialAmount) {
             pushItem(elementName + '_signup_fee', signupLabel, initialAmount);
             itemValue = itemValue - initialAmount;
@@ -804,7 +804,7 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-        
+
         this.stripe.confirmCardPayment(
             data.client_secret,
             {
@@ -833,7 +833,7 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-        
+
         this.formInstance.showFormSubmissionProgress(this.$form);
         this.stripe.handleCardAction(
             data.client_secret
