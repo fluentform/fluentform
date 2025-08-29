@@ -697,8 +697,7 @@ class FormValidationService
         $token = Helper::getIpinfo();
         
         if (!$token) {
-            $message = __('Sorry! Please provide valid token for ipinfo.io in global settings.', 'fluentform');
-            self::throwValidationException($message);
+            return false;
         }
         
         $url = 'https://ipinfo.io/' . $ip . '?token=' . $token;
@@ -720,16 +719,17 @@ class FormValidationService
      * @throws ValidationException
      */
     private function getIpBasedOnCountry($ip) {
-        $request = wp_remote_get("http://www.geoplugin.net/php.gp?ip={$ip}");
+        $request = wp_remote_get("http://ip-api.com/json/{$ip}");
         $code = wp_remote_retrieve_response_code($request);
 
-        $message = __('Sorry! There is an error occurred in getting Country using geoplugin.net. Please check form settings and try again.', 'fluentform');
+        $message = __('Sorry! There is an error occurred in getting Country using ip-api.com. Please check form settings and try again.', 'fluentform');
 
         if ($code === 200) {
             $body = wp_remote_retrieve_body($request);
-            $body = unserialize($body);
+            $body = \json_decode($body, true);
+            $status = Arr::get($body, 'status', false) === 'success';
 
-            if ($country = Arr::get($body,'geoplugin_countryCode')) {
+            if ($status && $country = Arr::get($body,'countryCode')) {
                 return $country;
             } else {
                 self::throwValidationException($message);
@@ -802,6 +802,10 @@ class FormValidationService
                 $message = apply_filters('fluentform/country_restriction_message', Arr::get($settings, 'fields.country.message', $defaultMessage), $this->form);
                 self::throwValidationException($message);
             }
+        } else {
+            $defaultMessage = __('Sorry! There is an error occurred in getting Country. Please check form settings and try again.', 'fluentform');
+            $message = apply_filters('fluentform/country_restriction_message', $defaultMessage, $this->form);
+            self::throwValidationException($message);
         }
     }
 
