@@ -900,19 +900,20 @@ class Converter
             $itlOptions['initialCountry'] = 'auto';
         } else {
             $itlOptions['initialCountry'] = ArrayHelper::get($data, 'settings.default_country', '');
-            $activeList = ArrayHelper::get($data, 'settings.phone_country_list.active_list');
-            
-            if ('priority_based' == $activeList) {
-                $selectCountries = ArrayHelper::get($data, 'settings.phone_country_list.priority_based', []);
-                $priorityCountries = self::getSelectedCountries($selectCountries);
-                $itlOptions['preferredCountries'] = array_keys($priorityCountries);
-            } elseif ('visible_list' == $activeList) {
-                $onlyCountries = ArrayHelper::get($data, 'settings.phone_country_list.visible_list', []);
-                $itlOptions['onlyCountries'] = $onlyCountries;
-            } elseif ('hidden_list' == $activeList) {
-                $countries = self::loadCountries($data);
-                $itlOptions['onlyCountries'] = array_keys($countries);
-            }
+        }
+
+        $activeList = ArrayHelper::get($data, 'settings.phone_country_list.active_list');
+        if ('priority_based' == $activeList) {
+            $selectCountries = ArrayHelper::get($data, 'settings.phone_country_list.priority_based', []);
+            $priorityCountries = self::getSelectedCountries($selectCountries);
+            $key = version_compare(FLUENTFORMPRO_VERSION, '6.1.0', '>') ? 'countryOrder' : 'preferredCountries';
+            $itlOptions[$key] = array_keys($priorityCountries);
+        } elseif ('visible_list' == $activeList) {
+            $onlyCountries = ArrayHelper::get($data, 'settings.phone_country_list.visible_list', []);
+            $itlOptions['onlyCountries'] = $onlyCountries;
+        } elseif ('hidden_list' == $activeList) {
+            $countries = self::loadCountries($data);
+            $itlOptions['onlyCountries'] = array_keys($countries);
         }
         
         $itlOptions = apply_filters_deprecated(
