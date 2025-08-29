@@ -1428,6 +1428,7 @@ class TranslationString
             'Specify the ordering of the dynamically populate' => __('Specify the ordering of the dynamically populate', 'fluentform'),
             'We don\'t have Subscription Field support for %s' => __('We don\'t have Subscription Field support for %s', 'fluentform'),
             '%s Image ALT Text' => __('%s Image ALT Text', 'fluentform'),
+            'Address autocomplete with OpenStreetMap (Nominatim) is limited to 1 request per second across all users. Best for forms with low to moderate traffic. For high-traffic sites, consider Google Maps.' => __('Address autocomplete with OpenStreetMap (Nominatim) is limited to 1 request per second across all users. Best for forms with low to moderate traffic. For high-traffic sites, consider Google Maps.', 'fluentform'),
         );
 
         return apply_filters('fluentform/editor_i18n', $i18n);
