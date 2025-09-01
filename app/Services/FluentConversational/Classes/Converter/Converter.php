@@ -155,7 +155,7 @@ class Converter
                             $countries = $item['options'];
                             foreach ($countries as $key => $value) {
                                 $options[] = [
-                                    'label' => $value,
+                                    'label' => html_entity_decode($value, ENT_QUOTES, 'UTF-8'),
                                     'value' => $key,
                                 ];
                             }
@@ -250,7 +250,7 @@ class Converter
                 $countries = $field['options'];
                 foreach ($countries as $key => $value) {
                     $options[] = [
-                        'label' => $value,
+                        'label' => html_entity_decode($value, ENT_QUOTES, 'UTF-8'),
                         'value' => $key,
                     ];
                 }
