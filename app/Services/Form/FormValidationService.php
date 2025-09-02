@@ -235,9 +235,10 @@ class FormValidationService
 
             $interval = date('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
 
+            $clientIp = sanitize_text_field($this->app->request->getIp());
             $submissionCount = wpFluent()->table('fluentform_submissions')
                 ->where('status', '!=', 'trashed')
-                ->where('ip', $this->app->request->getIp())
+                ->where('ip', $clientIp ?: '0.0.0.0')
                 ->where('created_at', '>=', $interval)
                 ->count();
 
@@ -350,15 +351,18 @@ class FormValidationService
             return;
         }
 
-        $ip = $this->app->request->getIp();
-        if (is_array($ip)) {
-            $ip = Arr::get($ip, '0');
+        $rawIp = $this->app->request->getIp();
+        if (is_array($rawIp)) {
+            $rawIp = Arr::get($rawIp, '0');
         }
-        $this->checkIpRestriction($settings, $ip);
+        $ip = sanitize_text_field($rawIp);
+        if ($ip) {
+            $this->checkIpRestriction($settings, $ip);
+        }
 
         $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
         if ($isCountryRestrictionEnabled) {
-            if ($ipInfo = $this->getIpInfo()) {
+            if ($ipInfo = $this->getIpInfo($ip)) {
                 $country = Arr::get($ipInfo, 'country');
             } else {
                 $country = $this->getIpBasedOnCountry($ip);
@@ -534,6 +538,11 @@ class FormValidationService
      */
     private function validateReCaptcha()
     {
+        // Check if autoload_captcha is enabled and if it's not recaptcha, skip validation
+        if ($this->shouldSkipCaptchaValidation('recaptcha')) {
+            return;
+        }
+
         $hasAutoRecap =  apply_filters_deprecated(
             'ff_has_auto_recaptcha',
             [
@@ -574,6 +583,10 @@ class FormValidationService
      */
     private function validateHCaptcha()
     {
+        // Check if autoload_captcha is enabled and if it's not hcaptcha, skip validation
+        if ($this->shouldSkipCaptchaValidation('hcaptcha')) {
+            return;
+        }
         $hasAutoHcap = apply_filters_deprecated(
             'ff_has_auto_hcaptcha',
             [
@@ -611,6 +624,11 @@ class FormValidationService
      */
     private function validateTurnstile()
     {
+        // Check if autoload_captcha is enabled and if it's not turnstile, skip validation
+        if ($this->shouldSkipCaptchaValidation('turnstile')) {
+            return;
+        }
+
         $hasAutoTurnsTile = apply_filters_deprecated(
             'ff_has_auto_turnstile',
             [
@@ -675,12 +693,14 @@ class FormValidationService
      *
      * @throws ValidationException
      */
-    private function getIpInfo() {
+    private function getIpInfo($ip) {
         $token = Helper::getIpinfo();
-        $url = 'https://ipinfo.io';
-        if ($token) {
-            $url = 'https://ipinfo.io/?token=' . $token;
+        
+        if (!$token) {
+            return false;
         }
+        
+        $url = 'https://ipinfo.io/' . $ip . '?token=' . $token;
         $data = wp_remote_get($url);
         $code = wp_remote_retrieve_response_code($data);
         $body = wp_remote_retrieve_body($data);
@@ -699,21 +719,29 @@ class FormValidationService
      * @throws ValidationException
      */
     private function getIpBasedOnCountry($ip) {
-        $request = wp_remote_get("http://www.geoplugin.net/php.gp?ip={$ip}");
+        $request = wp_remote_get("https://apip.cc/api-json/{$ip}");
         $code = wp_remote_retrieve_response_code($request);
 
-        $message = __('Sorry! There is an error occurred in getting Country using geoplugin.net. Please check form settings and try again.', 'fluentform');
+        $message = __('Sorry! There is an error occurred in getting Country using ip-api.com. Please check form settings and try again.', 'fluentform');
 
         if ($code === 200) {
             $body = wp_remote_retrieve_body($request);
-            $body = unserialize($body);
+            $body = \json_decode($body, true);
+            $status = Arr::get($body, 'status', false) === 'success';
+            
+            if (!$status) {
+                return Helper::getCountryCodeFromHeaders();
+            }
 
-            if ($country = Arr::get($body,'geoplugin_countryCode')) {
+            if ($country = Arr::get($body,'CountryCode')) {
                 return $country;
             } else {
                 self::throwValidationException($message);
             }
         } else {
+            if ($country = Helper::getCountryCodeFromHeaders()) {
+                return $country;
+            }
             self::throwValidationException($message);
         }
     }
@@ -782,6 +810,11 @@ class FormValidationService
                 self::throwValidationException($message);
             }
         }
+//        else {
+//            $defaultMessage = __('Sorry! There is an error occurred in getting Country. Please check form settings and try again.', 'fluentform');
+//            $message = apply_filters('fluentform/country_restriction_message', $defaultMessage, $this->form);
+//            self::throwValidationException($message);
+//        }
     }
 
     private function checkKeyWordRestriction($settings)
@@ -790,8 +823,15 @@ class FormValidationService
             return;
         }
 
-        $providedKeywords = explode(',', Arr::get($settings, 'fields.keywords.values'));
-        $providedKeywords =  array_map('trim', $providedKeywords);
+        $keywords = Arr::get($settings, 'fields.keywords.values');
+        if (!$keywords || !is_string($keywords)) {
+            return;
+        }
+        $providedKeywords = explode(',', $keywords);
+        $providedKeywords =  array_filter(array_map('trim', $providedKeywords));
+        if (!$providedKeywords) {
+            return;
+        }
         $inputSubmission = array_intersect_key(
             $this->formData,
             array_flip(
@@ -832,5 +872,35 @@ class FormValidationService
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Check if captcha validation should be skipped based on autoload captcha settings
+     *
+     * When autoload captcha is enabled, only the selected captcha type should be validated.
+     * This method returns true if the current captcha type is NOT the selected autoload type,
+     * preventing unnecessary validation of multiple captcha types on the same form.
+     *
+     * @param string $captchaType The captcha type to check ('recaptcha', 'hcaptcha', 'turnstile')
+     * @return bool True if validation should be skipped, false otherwise
+     */
+    private function shouldSkipCaptchaValidation($captchaType)
+    {
+        $globalSettings = get_option('_fluentform_global_form_settings');
+        $autoloadEnabled = Arr::get($globalSettings, 'misc.autoload_captcha');
+
+        // If autoload captcha is not enabled, don't skip any validation
+        if (!$autoloadEnabled) {
+            return false;
+        }
+
+        $selectedCaptchaType = Arr::get($globalSettings, 'misc.captcha_type');
+
+        // If the current captcha type matches the selected autoload type, proceed with validation
+        if ($captchaType === $selectedCaptchaType) {
+            return false;
+        }
+
+        return true; // Skip validation for non-selected captcha types
     }
 }

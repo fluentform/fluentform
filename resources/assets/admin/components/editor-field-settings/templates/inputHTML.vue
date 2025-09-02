@@ -15,7 +15,7 @@
                     <li v-html="$t('%s: to display total payment amount', `<code>{payment_total}</code>`)"></li>
                 </ul>
             </template>
-            <div v-if="!is_conversion_form">
+            <div>
                 <p>{{ $t('Dynamic SmartCodes') }}</p>
                 <ul style="list-style: disc;margin-left: 24px;margin-top: 0px;">
                     <li v-html="$t('%s: to show data from any input', `<code>{dynamic.YOUR_INPUT_NAME}</code>`)"></li>

@@ -444,8 +444,10 @@ a.lead-text{
     color: #3c3c3cb3;
     background-color: transparent;
     padding: 0 0 0 5px;
-    display: inline-block;
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    gap: 4px;
     font-weight: normal;
     border-radius: 6px;
     line-height: 1.6;
@@ -455,14 +457,14 @@ a.lead-text{
     cursor: pointer;
     .el-icon-search{
       font-weight: 600;
-      font-size: 16px;
+      font-size: 14px;
     }
     .shortcut{
       transition:all 0.3s;
       //border: 1px solid #9A9FA5;
       border-radius: 4px;
       letter-spacing: 3px;
-      padding: 5px 8px;
+      padding: 0 5px;
       font-size: 12px;
       box-shadow: 0 2px 3px 0 rgba(32, 33, 36, 0.15);
     }
@@ -475,7 +477,7 @@ a.lead-text{
     }
 
     span {
-      margin-left:5px;
+      display: block;
     }
   }
 }

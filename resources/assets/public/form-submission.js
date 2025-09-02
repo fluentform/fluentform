@@ -143,6 +143,16 @@ jQuery(document).ready(function () {
                     try {
                         var $inputs = $theForm
                             .find(':input').filter(function (i, el) {
+                                // Ignore repeater container
+                                if ($(el).attr('data-type') === 'repeater_container') {
+                                    if ($(el).closest('.ff-repeater-container').hasClass('ff_excluded')) {
+                                        return false;
+                                    }
+                                    if ($(this).closest('.has-conditions').hasClass('ff_excluded')) {
+                                        $(this).val('');
+                                    }
+                                    return true;
+                                }
                                 return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                             });
 
@@ -153,7 +163,7 @@ jQuery(document).ready(function () {
                         // data names array
                         var inputsDataNames = inputsData.map(item => item.name);
 
-                        // Ignore chekbox and radio which one inside table like checkable-grid, net-promoter-score etc
+                        // Ignore checkbox and radio which one inside table like checkable-grid, net-promoter-score etc
                         $inputs = $inputs.filter(function () {
                             return !$(this).closest('.ff-el-input--content').find('table').length;
                         });
@@ -541,6 +551,26 @@ jQuery(document).ready(function () {
 
                     $(document).on('reset', formSelector, function (e) {
                         formResetHandler($(this))
+                    });
+
+                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+
+                            // For radio buttons, just check it
+                            if ($(this).attr('type') === 'radio') {
+                                $(this).prop('checked', true);
+                            }
+                            // For checkboxes, toggle the checked state
+                            else if ($(this).attr('type') === 'checkbox') {
+                                $(this).prop('checked', !$(this).prop('checked'));
+                            }
+
+                            // Trigger change event for both types
+                            $(this).trigger('change');
+                            e.stopPropagation();
+                            return false;
+                        }
                     });
                 };
 
@@ -1518,16 +1548,17 @@ jQuery(document).ready(function () {
                         return true;
                     }
 
-                    if (typeof window.intlTelInputGlobals == 'undefined') {
-                        return true;
-                    }
-
                     if (!el || !el[0]) {
                         return;
                     }
 
+                    let iti;
+                    if (typeof window.intlTelInputGlobals !== 'undefined') {
+                        iti = window.intlTelInputGlobals.getInstance(el[0]);
+                    } else {
+                        iti = el.data('iti');
+                    }
 
-                    var iti = window.intlTelInputGlobals.getInstance(el[0]);
                     if (!iti) {
                         return true;
                     }
@@ -1606,6 +1637,47 @@ jQuery(document).ready(function () {
 
         fluentFormCommonActions.init();
 
+        // Choices.js dropdown handling
+        function initChoicesDropdownHandling() {
+            // Only target elements that actually have Choices.js
+            $('.ff_has_multi_select').each(function() {
+                const choicesInstance = $(this).data('choicesjs');
+                if (!choicesInstance || !choicesInstance.passedElement) return;
+
+                // Use Choices.js built-in events instead of global listeners
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                    const choicesContainer = this.closest('.choices');
+                    if (!choicesContainer) return;
+
+                    const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+                    if (!dropdown) return;
+
+                    // Apply dropdown styles
+                    dropdown.style.maxHeight = '300px';
+                    dropdown.style.overflowY = 'auto';
+
+                    // Find and style the scrollable list
+                    const scrollableList = 
+                        dropdown.querySelector('.choices__list[role="listbox"]') ||
+                        dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
+                    if (scrollableList) {
+                        scrollableList.style.maxHeight = '280px';
+                        scrollableList.style.overflowY = 'auto';
+                        scrollableList.style.webkitOverflowScrolling = 'touch';
+                        scrollableList.style.touchAction = 'pan-y';
+                    }
+                }, { passive: true });
+            });
+        }
+
+        // Initialize with proper timing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initChoicesDropdownHandling, 100);
+            });
+        } else {
+            setTimeout(initChoicesDropdownHandling, 100);
+        }
     })(window.fluentFormVars, jQuery);
 
     jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
@@ -1617,8 +1689,4 @@ jQuery(document).ready(function () {
             .html('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
             .insertAfter(jQuery(this));
     });
-});
-
-jQuery(document.body).on('fluentform_init', function (e, $theForm) {
-
 });
