@@ -654,6 +654,20 @@ class Converter
                 );
                 
                 if (3 === $apiVersion) {
+                    $shouldRenderBadge = ArrayHelper::get($field, 'settings.render_recaptcha_v3_badge', false);
+
+                    if (!$shouldRenderBadge) {
+                        // Add CSS to hide reCAPTCHA badge
+                        add_action('fluentform/conversational_frame_footer', function() {
+                            echo
+                            "<style>
+                                .grecaptcha-badge {
+                                    visibility: hidden;
+                                }
+                            </style>";
+                        });
+                    }
+                    
                     continue;
                 }
             } elseif (('hcaptcha' === $field['element'])) {
