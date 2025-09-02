@@ -37,12 +37,6 @@
             validationRules,
             fieldOptionSettings
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             updateColumnNumber(val) {
                 console.log(val)

@@ -1,4 +1,5 @@
 import formatPrice from "./formatPrice";
+import { _$t } from "@/admin/helpers";
 export class Payment_handler {
     constructor($form, instance) {
         let formId = instance.settings.id;
@@ -18,10 +19,8 @@ export class Payment_handler {
     }
 
     $t(stringKey) {
-        if (this.paymentConfig.i18n[stringKey]) {
-            return this.paymentConfig.i18n[stringKey];
-        }
-        return stringKey;
+        let transString = this.paymentConfig.i18n[stringKey] || stringKey;
+        return _$t(transString, ...arguments);
     }
 
     boot() {
@@ -84,15 +83,29 @@ export class Payment_handler {
 
         this.totalAmount = totalAmount;
 
-        const discounts = this.getDiscounts();
+        let discounts = this.getDiscounts();
+        const validDiscounts = [];
 
         jQuery.each(discounts, (index, discount) => {
             let discountAmount = discount.amount;
+
+            // If minimum amount isn't purchased before this discount can be used, remove the discount and show error message
+            if (discount.min_amount && discount.min_amount > this.totalAmount) {
+                delete this.appliedCoupons[discount.code];
+                this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                this.$form.find(`.ff_resp_item_${discount.code}`).remove();
+                this.recordCouponMessage(this.$form.find('.ff_coupon_wrapper'), discount.code, `${discount.code} - ${discount.min_amount_message}`, 'error');
+                return;
+            }
+
             if (discount.coupon_type === 'percent') {
                 discountAmount = (discount.amount / 100) * this.totalAmount;
             }
             this.totalAmount -= discountAmount;
+            validDiscounts.push(discount);
         });
+
+        discounts = validDiscounts;
 
         form.trigger('payment_amount_change', {
             amount: totalAmount,
@@ -122,54 +135,95 @@ export class Payment_handler {
         // skip element if hidden by conditional logic
         paymentMethods.closest('.ff-el-group:not(.ff_excluded)')[method]();
 
-        if (form.find('.ff_dynamic_payment_summary').length) {
+        // Reset all summary closed flags when amounts change
+        const $paymentSummaries = this.$form.find('.ff_dynamic_payment_summary');
+        $paymentSummaries.each((index, summary) => {
+            const name = jQuery(summary).closest('.ff-el-group').data('name') || index;
+            this.$form.data('payment_summary_' + name + '_closed', false);
+        });
+
+        if ($paymentSummaries.length) {
             this.generateSummaryTable(items, totalAmount, discounts, hidePaymentSummary);
         }
     }
 
     generateSummaryTable(items, totalAmount, discounts, hide = false) {
-        this.$form.find('.ff_dynamic_payment_summary .ff_payment_summary_fallback').hide();
-        if (hide) {
-            this.$form.find('.ff_dynamic_payment_summary .ff_payment_summary').html('');
-            this.$form.find('.ff_dynamic_payment_summary .ff_payment_summary_fallback').show();
-            return;
-        }
-        let html = '<table class="table ffp_table input_items_table">';
-        html += `<thead><tr><th>${this.$t("item")}</th><th>${this.$t("price")}</th><th>${this.$t("qty")}</th><th>${this.$t("line_total")}</th></tr></thead>`;
-        html += '<tbody>';
-        jQuery.each(items, (index, item) => {
-            if (item.price === 0 || item.price) {
-                html += '<tr>';
-                html += `<td>${item.label}</td>`;
-                html += `<td>${this.getFormattedPrice(item.price)}</td>`;
-                html += `<td>${item.quantity}</td>`;
-                html += `<td>${this.getFormattedPrice(item.line_total)}</td>`;
-                html += '</tr>';
+        // Find all payment summaries in the form
+        const $paymentSummaries = this.$form.find('.ff_dynamic_payment_summary');
+
+        $paymentSummaries.each((index, summary) => {
+            const $summary = jQuery(summary);
+            const name = $summary.closest('.ff-el-group').data('name');
+
+            // Check if this specific summary is closed
+            const isClosed = this.$form.data('payment_summary_' + name + '_closed');
+
+            $summary.find('.ff_payment_summary_fallback').hide();
+
+            // If hide flag is true or this specific summary was closed by user
+            if (hide || isClosed) {
+                $summary.find('.ff_payment_summary').html('');
+                $summary.find('.ff_payment_summary_fallback').show();
+                return;
             }
-        });
-        html += '</tbody>';
 
-        let footerRows = '';
-        if (discounts.length) {
-            footerRows += `<tr><th class="item_right" colspan="3">${this.$t("Sub Total")}</th><th>${this.getFormattedPrice(totalAmount)}</th></tr>`;
-            jQuery.each(discounts, (index, discount) => {
-                let discountAmount = discount.amount;
-                if (discount.coupon_type === 'percent') {
-                    discountAmount = (discount.amount / 100) * totalAmount;
+            // Generate the table HTML
+            let html = '<div class="ffp_table_wrapper">';
+
+            // Only add close button if enabled for this summary
+            const showCloseButton = this.formPaymentConfig?.payment_summary_config?.[name]?.show_close_button || false;
+            if (showCloseButton) {
+                html += '<div class="ffp_table_close"><span class="ffp_close_icon" data-name="' + name + '">&times;</span></div>';
+            }
+
+            html += '<table class="table ffp_table input_items_table">';
+            html += `<thead><tr><th>${this.$t("item")}</th><th>${this.$t("price")}</th><th>${this.$t("qty")}</th><th>${this.$t("line_total")}</th></tr></thead>`;
+            html += '<tbody>';
+            jQuery.each(items, (index, item) => {
+                if (item.price === 0 || item.price) {
+                    html += '<tr>';
+                    html += `<td>${item.label}</td>`;
+                    html += `<td>${this.getFormattedPrice(item.price)}</td>`;
+                    html += `<td>${item.quantity}</td>`;
+                    html += `<td>${this.getFormattedPrice(item.line_total)}</td>`;
+                    html += '</tr>';
                 }
-                if(discountAmount >= totalAmount) {
-                    discountAmount = totalAmount;
-                }
-                footerRows += `<tr><th class="item_right" colspan="3">${this.$t('discount:')} ${discount.title}</th><th>-${this.getFormattedPrice(discountAmount)}</th></tr>`;
-                totalAmount -= discountAmount;
             });
-        }
+            html += '</tbody>';
 
-        footerRows += `<tr><th class="item_right" colspan="3">${this.$t("total")}</th><th>${this.getFormattedPrice(totalAmount)}</th></tr>`;
+            let footerRows = '';
+            if (discounts.length) {
+                footerRows += `<tr><th class="item_right" colspan="3">${this.$t("Sub Total")}</th><th>${this.getFormattedPrice(totalAmount)}</th></tr>`;
+                jQuery.each(discounts, (index, discount) => {
+                    let discountAmount = discount.amount;
+                    if (discount.coupon_type === 'percent') {
+                        discountAmount = (discount.amount / 100) * totalAmount;
+                    }
+                    if (discountAmount >= totalAmount) {
+                        discountAmount = totalAmount;
+                    }
+                    footerRows += `<tr><th class="item_right" colspan="3">${this.$t('discount:')} ${discount.title}</th><th>-${this.getFormattedPrice(discountAmount)}</th></tr>`;
+                    totalAmount -= discountAmount;
+                });
+            }
 
-        html += `<tfoot>${footerRows}</tfoot>`;
-        html += '</table>';
-        this.$form.find('.ff_dynamic_payment_summary .ff_payment_summary').html(html);
+            footerRows += `<tr><th class="item_right" colspan="3">${this.$t("total")}</th><th>${this.getFormattedPrice(totalAmount)}</th></tr>`;
+
+            html += `<tfoot>${footerRows}</tfoot>`;
+            html += '</table></div>';
+
+            $summary.find('.ff_payment_summary').html(html);
+        });
+
+        this.$form.find('.ffp_close_icon').on('click', (e) => {
+            const name = jQuery(e.target).data('name');
+            const $paymentSummary = this.$form.find(`.ff-el-group[data-name="${name}"] .ff_dynamic_payment_summary`);
+
+            $paymentSummary.find('.ff_payment_summary').html('');
+
+            // Store a flag that user has manually closed this specific summary
+            this.$form.data('payment_summary_' + name + '_closed', true);
+        });
     }
 
     getPaymentItems() {
@@ -294,11 +348,15 @@ export class Payment_handler {
             planTitle = $element.data('plan_name');
         }
 
+        let signupLabel = '';
+        if (planTitle) {
+            signupLabel = this.$t('Signup Fee for %1s - %2s', label, planTitle);
+        } else {
+            signupLabel = this.$t('Signup Fee for %s', label);
+        }
+
         if (initialAmount) {
-            const signupLabel = this.$t('Signup Fee for') + ' ' + label + (planTitle ? ' - ' + planTitle : '');
-
             pushItem(elementName + '_signup_fee', signupLabel, initialAmount);
-
             itemValue = itemValue - initialAmount;
         }
 
@@ -315,7 +373,6 @@ export class Payment_handler {
             pushItem(elementName, label, parseFloat(itemValue));
 
             if (signupFee) {
-                const signupLabel = this.$t('Signup Fee for') + ' ' + label;
                 pushItem(elementName + '_signup_fee', signupLabel, signupFee);
             }
 
@@ -747,7 +804,7 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-        
+
         this.stripe.confirmCardPayment(
             data.client_secret,
             {
@@ -776,7 +833,7 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-        
+
         this.formInstance.showFormSubmissionProgress(this.$form);
         this.stripe.handleCardAction(
             data.client_secret

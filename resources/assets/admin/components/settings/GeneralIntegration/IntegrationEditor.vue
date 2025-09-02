@@ -449,18 +449,29 @@
                 };
                 this.loadIntegrationSettings();
             },
-            chainedAjax(key) {
-                for (const key in this.settings.chained_config) {
-                    if (this.settings.chained_config[key] == '') {
-                        return;
-                    }
-                }
-                if (key == 'base_id') {
-                    this.settings.chained_config['table_id'] = '';
-                }
-                this.fromChainedAjax = true;
-                this.loadIntegrationSettings();
-            },
+	        chainedAjax(key) {
+		        for (const key in this.settings.chained_config) {
+			        if (this.settings.chained_config[key] == '') {
+				        return;
+			        }
+		        }
+
+		        // Handle Google Sheets specific chaining
+		        if (this.integration_name === 'google_sheet') {
+			        if (key === 'spreadsheet_id') {
+				        this.settings.chained_config['work_sheet_id'] = '';
+			        }
+		        }
+
+		        // Handle Airtable specific chaining
+		        if (this.integration_name === 'airtable_v2') {
+			        if (key == 'base_id') {
+				        this.settings.chained_config['table_id'] = '';
+			        }
+		        }
+		        this.fromChainedAjax = true;
+		        this.loadIntegrationSettings();
+	        },
             loadMergeFields() {
                 this.loading_list = true;
                 const url = FluentFormsGlobal.$rest.route('getFormIntegrationList', this.form_id, this.integration_id)

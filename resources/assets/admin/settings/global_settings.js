@@ -108,7 +108,7 @@ if (is_payment_compatible) {
 Vue.mixin({
     methods: {
         $t(string) {
-            let transString = window.FluentFormApp.form_settings_str[string] || string
+            let transString = window.FluentFormApp.form_settings_str[string] || window.fluent_forms_global_var.payments_str[string] || string
             return _$t(transString, ...arguments);
         },
         $_n(singular, plural, count) {

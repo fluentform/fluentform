@@ -53,7 +53,7 @@
             </el-form-item>
 
             <!--After form submission behavior-->
-            <el-form-item class="ff-form-item">
+            <el-form-item class="ff-form-item" v-if="!isConversationalForm">
                 <template slot="label">
                     {{ $t('After Form Submission') }}
 
@@ -208,6 +208,9 @@
                     };
                 }
                 return freshCopy;
+            },
+            isConversationalForm() {
+                return !!window.FluentFormApp.is_conversion_form;
             }
         },
         data() {

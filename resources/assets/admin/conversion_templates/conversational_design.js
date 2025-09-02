@@ -82,7 +82,7 @@ new Vue({
     },
     beforeCreate() {
         this.$on('change-title', (module) => {
-            jQuery('title').text(`${module} - FluentForm`);
+            jQuery('title').text(`${module} - Fluent Forms`);
         });
         this.$emit('change-title', 'Conversational Form Design');
     },

@@ -97,12 +97,21 @@ class Converter
                     $fields = ArrayHelper::get($field, 'fields');
                     $field['fields'] = array_merge(array_flip($order), $fields);
                 }
+
+                $provider = ArrayHelper::get($field, 'settings.autocomplete_provider');
+                $isLegacyProvider = !ArrayHelper::has($field, 'settings.autocomplete_provider');
                 $googleAutoComplete = 'yes' === ArrayHelper::get($field, 'settings.enable_g_autocomplete');
-                if (defined('FLUENTFORMPRO') && $googleAutoComplete) {
+                if (defined('FLUENTFORMPRO') && ($provider === 'google' || ($isLegacyProvider && $googleAutoComplete))) {
                     $question['ff_map_autocomplete'] = true;
                     $question['ff_with_g_map'] = 'yes' == ArrayHelper::get($field, 'settings.enable_g_map');
                     $question['ff_with_auto_locate'] = ArrayHelper::get($field, 'settings.enable_auto_locate', false);
                     $question['GmapApiKey'] = apply_filters('fluentform/conversational_form_address_gmap_api_key', '');
+                }
+                
+                // Handle HTML5 geolocation
+                if ($provider === 'html5') {
+                    $question['ff_html5_geolocate'] = true;
+                    $question['ff_html5_locate'] = ArrayHelper::get($field, 'settings.enable_auto_locate', 'on_click');
                 }
                 
                 foreach ($field['fields'] as $item) {
@@ -292,9 +301,13 @@ class Converter
                         if (is_rtl()) {
                             $cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput-rtl.min.css';
                         }
-                        wp_enqueue_style('intlTelInput', $cssSource, [], '18.1.1');
-                        wp_enqueue_script('intlTelInputUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/utils.js', [], '18.1.1', true);
-                        wp_enqueue_script('intlTelInput', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInput.min.js', [], '18.1.1', true);
+                        wp_enqueue_style('intlTelInput', $cssSource, [], '25.5.2');
+                        if (version_compare( FLUENTFORMPRO_VERSION, '6.1.0', '>' ) ) {
+                            wp_enqueue_script('intlTelInputWithUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInputWithUtils.min.js', [], '25.5.2', true);
+                        } else {
+                            wp_enqueue_script('intlTelInputUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/utils.js', [], '18.1.1', true);
+                            wp_enqueue_script('intlTelInput', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInput.min.js', [], '18.1.1', true);
+                        }
                     }
                 }
             } elseif ('input_number' === $field['element']) {
@@ -329,10 +342,14 @@ class Converter
                 ];
                 
                 if ('terms_and_condition' === $field['element']) {
-                    $question['options'][] = [
-                        'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I don\'t accept'),
-                        'value' => 'off',
-                    ];
+                    $hideDisagreeOption = ArrayHelper::isTrue($field, 'settings.hide_disagree');
+                    
+                    if (!$hideDisagreeOption) {
+                        $question['options'][] = [
+                            'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I don\'t accept'),
+                            'value' => 'off',
+                        ];
+                    }
                 }
                 
                 $question['nextStepOnAnswer'] = true;
@@ -420,6 +437,11 @@ class Converter
                     $question['step'] = intval($step);
                 } else {
                     $question['step'] = 1;
+                }
+
+                $enabledQtyMapping = 'yes' === ArrayHelper::get($field, 'settings.enable_target_product');
+                if ($enabledQtyMapping && $targetProductName = ArrayHelper::get($field, 'settings.target_product')) {
+                    $question['targetProduct'] = $targetProductName;
                 }
                 
                 $question['is_calculable'] = true;
@@ -878,19 +900,20 @@ class Converter
             $itlOptions['initialCountry'] = 'auto';
         } else {
             $itlOptions['initialCountry'] = ArrayHelper::get($data, 'settings.default_country', '');
-            $activeList = ArrayHelper::get($data, 'settings.phone_country_list.active_list');
-            
-            if ('priority_based' == $activeList) {
-                $selectCountries = ArrayHelper::get($data, 'settings.phone_country_list.priority_based', []);
-                $priorityCountries = self::getSelectedCountries($selectCountries);
-                $itlOptions['preferredCountries'] = array_keys($priorityCountries);
-            } elseif ('visible_list' == $activeList) {
-                $onlyCountries = ArrayHelper::get($data, 'settings.phone_country_list.visible_list', []);
-                $itlOptions['onlyCountries'] = $onlyCountries;
-            } elseif ('hidden_list' == $activeList) {
-                $countries = self::loadCountries($data);
-                $itlOptions['onlyCountries'] = array_keys($countries);
-            }
+        }
+
+        $activeList = ArrayHelper::get($data, 'settings.phone_country_list.active_list');
+        if ('priority_based' == $activeList) {
+            $selectCountries = ArrayHelper::get($data, 'settings.phone_country_list.priority_based', []);
+            $priorityCountries = self::getSelectedCountries($selectCountries);
+            $key = version_compare(FLUENTFORMPRO_VERSION, '6.1.0', '>') ? 'countryOrder' : 'preferredCountries';
+            $itlOptions[$key] = array_keys($priorityCountries);
+        } elseif ('visible_list' == $activeList) {
+            $onlyCountries = ArrayHelper::get($data, 'settings.phone_country_list.visible_list', []);
+            $itlOptions['onlyCountries'] = $onlyCountries;
+        } elseif ('hidden_list' == $activeList) {
+            $countries = self::loadCountries($data);
+            $itlOptions['onlyCountries'] = array_keys($countries);
         }
         
         $itlOptions = apply_filters_deprecated(

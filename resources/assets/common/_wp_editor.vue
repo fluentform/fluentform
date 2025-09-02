@@ -125,9 +125,9 @@
             },
             customSanitize(input) {
                 // Remove potential event handlers
-                let sanitized = input.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+                let sanitized = input.replace(/\s+(on\w+)\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
                 // Remove http-equiv attributes
-                sanitized = sanitized.replace(/\s*http-equiv\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+                sanitized = sanitized.replace(/\s+http-equiv\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
                 return sanitized;
             },
         },

@@ -56,6 +56,12 @@ export default {
             supportedFields: window.FluentFormApp.conversational_form_fields
         }
     },
-    methods: NestedHandler.methods
+    methods: NestedHandler.methods,
+    mounted() {
+        FluentFormEditorEvents.$on('keyboard-delete-selected-item', this.handleKeyboardDelete);
+    },
+    beforeDestroy() {
+        FluentFormEditorEvents.$off('keyboard-delete-selected-item', this.handleKeyboardDelete);
+    }
 };
 </script>
