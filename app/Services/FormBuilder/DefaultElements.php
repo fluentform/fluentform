@@ -1743,6 +1743,18 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputHidden',
         ],
     ];
+    $defaultElements['advanced']['dynamic_field'] = [
+        'index'          => 19,
+        'element'        => 'dynamic_field',
+        'attributes'     => [],
+        'settings'       => [],
+        'options'        => [],
+        'editor_options' => [
+            'title'      => __('Dynamic Field', 'fluentform'),
+            'icon_class' => 'ff-edit-repeat',
+            'template'   => 'inputHidden',
+        ],
+    ];
     $defaultElements['advanced']['cpt_selection'] = [
         'index'          => 18,
         'element'        => 'cpt_selection',
