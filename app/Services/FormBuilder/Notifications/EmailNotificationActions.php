@@ -209,10 +209,11 @@ class EmailNotificationActions
     protected function hasPaymentMethodField($form)
     {
         $paymentFields = FormFieldsParser::getPaymentFields($form);
-        $hasPaymentMethod = false;
         foreach ($paymentFields as $field) {
-            $hasPaymentMethod = Arr::get($field, 'element') === 'payment_method';
+            if (Arr::get($field, 'element') === 'payment_method') {
+                return true;
+            }
         }
-        return $hasPaymentMethod;
+        return false;
     }
 }
