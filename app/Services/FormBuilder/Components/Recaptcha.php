@@ -66,12 +66,12 @@ class Recaptcha extends BaseComponent
             }
 
             add_filter('fluentform/form_class', function ($formClass) {
-                $formClass .= ' ff_has_v3_recptcha';
+                $formClass .= ' ff_has_v3_recaptcha';
                 return $formClass;
             });
 
             add_filter('fluentform/html_attributes', function ($atts) use ($siteKey) {
-                $atts['data-recptcha_key'] = $siteKey;
+                $atts['data-recaptcha_key'] = $siteKey;
                 return $atts;
             });
 

@@ -118,10 +118,10 @@ jQuery(document).ready(function () {
                     const processItemsDeferred = [];
                     const processFunctions = globalValidators;
 
-                    if ($theForm.hasClass('ff_has_v3_recptcha')) {
-                        processFunctions.ff_v3_recptcha = function ($theForm, formData) {
+                    if ($theForm.hasClass('ff_has_v3_recaptcha')) {
+                        processFunctions.ff_v3_recaptcha = function ($theForm, formData) {
                             var dfd = jQuery.Deferred();
-                            let siteKey = $theForm.data('recptcha_key');
+                            let siteKey = $theForm.data('recaptcha_key');
                             grecaptcha.execute(siteKey, {action: 'submit'}).then((token) => {
                                 formData['data'] += '&' + jQuery.param({
                                     'g-recaptcha-response': token
