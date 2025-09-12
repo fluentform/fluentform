@@ -169,6 +169,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                         || ArrayHelper::get($component, 'hash') == 'h_captcha'
                                         || ArrayHelper::get($component, 'hash') == 'turnstile'
                                         || ArrayHelper::get($component, 'hash') == 'cleantalk'
+                                        || ArrayHelper::get($component, 'hash') == 'friendlycaptcha'
                                     ) : ?>
 
                                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],

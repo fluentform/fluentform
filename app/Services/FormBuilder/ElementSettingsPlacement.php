@@ -354,6 +354,14 @@ return [
             'validation_rules'
         ],
     ],
+    'friendlycaptcha' => [
+        'general' => [
+            'label',
+            'label_placement',
+            'name',
+            'validation_rules'
+        ],
+    ],
     'custom_html' => [
         'general' => [
             'html_codes',

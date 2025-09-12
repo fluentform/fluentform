@@ -20,6 +20,7 @@ class Converter
         $form->reCaptcha = false;
         $form->hCaptcha = false;
         $form->turnstile = false;
+        $form->friendlyCaptcha = false;
         $form->hasCalculation = false;
         
         $questions = [];
@@ -712,6 +713,39 @@ class Converter
                 if ('interaction-only' === $appearance) {
                     continue;
                 }
+            } elseif ('friendlycaptcha' === $field['element']) {
+                $friendlyCaptchaConfig = get_option('_fluentform_friendlycaptcha_details');
+                $siteKey = ArrayHelper::get($friendlyCaptchaConfig, 'siteKey');
+                $theme = ArrayHelper::get($friendlyCaptchaConfig, 'theme', 'auto');
+                $startMode = ArrayHelper::get($friendlyCaptchaConfig, 'start_mode', 'focus');
+                $apiEndpoint = ArrayHelper::get($friendlyCaptchaConfig, 'api_endpoint', 'global');
+
+                if (! $siteKey) {
+                    continue;
+                }
+
+                $question['siteKey'] = $siteKey;
+                $question['theme'] = $theme;
+                $question['startMode'] = $startMode;
+                $question['apiEndpoint'] = $apiEndpoint;
+
+                $form->friendlyCaptcha = [
+                    'siteKey' => $siteKey,
+                    'theme' => $theme,
+                    'startMode' => $startMode,
+                    'apiEndpoint' => $apiEndpoint,
+                ];
+
+                wp_enqueue_script(
+                    'friendlycaptcha_conv',
+                    'https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.13/site.min.js',
+                    [],
+                    FLUENTFORM_VERSION,
+                    false
+                );
+
+                // Set module attribute for modern browsers
+                wp_script_add_data('friendlycaptcha_conv', 'type', 'module');
             } elseif ('payment_coupon' === $field['element']) {
                 if ($hasSaveAndResume && $saveAndResumeData) {
                     if ($coupons = ArrayHelper::get($saveAndResumeData, 'response.__ff_all_applied_coupons')) {
@@ -824,6 +858,7 @@ class Converter
             'recaptcha'                      => 'FlowFormReCaptchaType',
             'hcaptcha'                       => 'FlowFormHCaptchaType',
             'turnstile'                      => 'FlowFormTurnstileType',
+            'friendlycaptcha'                => 'FlowFormFriendlyCaptchaType',
             'address'                        => 'FlowFormAddressType',
             'input_name'                     => 'FlowFormNameType',
             'ffc_custom'                     => 'FlowFormCustomType',
