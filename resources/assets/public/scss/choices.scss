@@ -21,7 +21,7 @@ $choices-button-dimension: 8px !default;
 $choices-button-offset: 8px !default;
 $choices-icon-cross: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yLjU5Mi4wNDRsMTguMzY0IDE4LjM2NC0yLjU0OCAyLjU0OEwuMDQ0IDIuNTkyeiIvPjxwYXRoIGQ9Ik0wIDE4LjM2NEwxOC4zNjQgMGwyLjU0OCAyLjU0OEwyLjU0OCAyMC45MTJ6Ii8+PC9nPjwvc3ZnPg==) !default;
 $choices-icon-cross-inverse: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yLjU5Mi4wNDRsMTguMzY0IDE4LjM2NC0yLjU0OCAyLjU0OEwuMDQ0IDIuNTkyeiIvPjxwYXRoIGQ9Ik0wIDE4LjM2NEwxOC4zNjQgMGwyLjU0OCAyLjU0OEwyLjU0OCAyMC45MTJ6Ii8+PC9nPjwvc3ZnPg==) !default;
-$choices-z-index: 3;
+$choices-z-index: 1000 !default;
 $focus-border-color: #80bdff;
 $inner-border-color: #ced4da;
 
@@ -295,6 +295,7 @@ $inner-border-color: #ced4da;
     }
     &.is-active {
       visibility: visible;
+      display: block;
     }
     .is-open & {
       border-color: $focus-border-color;
@@ -464,6 +465,57 @@ $inner-border-color: #ced4da;
       touch-action: manipulation;
       min-height: 44px;
       padding: 8px 12px;
+    }
+  }
+}
+
+/* Fix for Elementor popup modals */
+.elementor-popup-modal {
+  .dialog-widget-content {
+    overflow: visible !important;
+  }
+  
+  .choices__list--dropdown {
+    position: absolute !important;
+    z-index: 999999 !important;
+    visibility: visible !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    width: auto !important;
+    min-width: 100% !important;
+  
+    &.is-active {
+      display: block !important;
+      visibility: visible !important;
+    }
+    
+    .choices__list {
+      max-height: 280px !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
+    
+    &.is-flipped {
+      bottom: 100% !important;
+      top: auto !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .choices__list--dropdown .choices__item {
+      padding: 14px 10px;
+      min-height: 44px;
+      
+      &:before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        z-index: -1;
+      }
     }
   }
 }
