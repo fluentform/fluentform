@@ -7,7 +7,6 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\Framework\Support\Arr;
 
 class EmailNotificationActions
 {
@@ -88,8 +87,7 @@ class EmailNotificationActions
         // then do not send while the submission's payment status is still pending.
         if (isset($form->has_payment) && $form->has_payment) {
             if (FormFieldsParser::hasElement($form, 'payment_method')) {
-                $isTriggerOnPaymentSuccess = ArrayHelper::get($feed,
-                        'processedValues.feed_trigger_event') === 'payment_success';
+                $isTriggerOnPaymentSuccess = ArrayHelper::get($feed, 'processedValues.feed_trigger_event') === 'payment_success';
                 $isPaymentPending = isset($entry->payment_status) && $entry->payment_status === 'pending';
                 if ($isTriggerOnPaymentSuccess && $isPaymentPending) {
                     return;
