@@ -323,6 +323,18 @@ class FormDataParser
     public static function formatCheckBoxValues($values, $field, $isHtml = false)
     {
         if (!$isHtml) {
+            if (
+                defined('FLUENTFORM_RENDERING_ENTRIES') &&
+                $values && is_array($values) &&
+                $options = ArrayHelper::get($field, 'raw.settings.advanced_options', [])
+            ) {
+                $options = array_column($options, 'label', 'value');
+                foreach ($values as &$value) {
+                    if ($label = ArrayHelper::get($options, $value)) {
+                        $value = $label;
+                    }
+                }
+            }
             return self::formatValue($values);
         }
 
