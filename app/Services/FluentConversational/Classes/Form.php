@@ -327,10 +327,10 @@ class Form
             'hcaptcha',
             'turnstile',
             'quiz_score',
-            'rangeslider',
             'save_progress_button',
             'dynamic_field',
-            'rangeslider'
+            'rangeslider',
+            'net_promoter_score'
         ];
 
         $acceptedFieldElements = apply_filters(

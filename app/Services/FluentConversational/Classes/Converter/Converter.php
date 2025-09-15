@@ -75,7 +75,8 @@ class Converter
                             }
                         } elseif (
                             ArrayHelper::get($field, 'element') == 'rangeslider' ||
-                            ArrayHelper::get($field, 'element') == 'subscription_payment_component'
+                            ArrayHelper::get($field, 'element') == 'subscription_payment_component' ||
+                            ArrayHelper::get($field, 'element') == 'net_promoter_score'
                         ) {
                             $question['answer'] = +$value;
                         } else {
@@ -613,6 +614,16 @@ class Converter
             } elseif ('payment_summary_component' === $field['element']) {
                 $question['title'] = __('Payment Summary', 'fluentform');
                 $question['emptyText'] = $field['settings']['cart_empty_text'];
+            } elseif ('net_promoter_score' === $field['element']) {
+                if (!ArrayHelper::exists($question, 'answer')) {
+                    $question['answer'] = +$field['attributes']['value'];
+                }
+
+                $question['start_text'] = ArrayHelper::get($field, 'settings.start_text');
+                $question['end_text'] = ArrayHelper::get($field, 'settings.end_text');
+                $question['is_calculable'] = true;
+                $question['nextStepOnAnswer'] = true;
+                $question['type'] = 'FlowFormNetPromoterScoreType';
             } elseif ('recaptcha' === $field['element']) {
                 $reCaptchaConfig = get_option('_fluentform_reCaptcha_details');
                 $siteKey = ArrayHelper::get($reCaptchaConfig, 'siteKey');
@@ -852,6 +863,7 @@ class Converter
             $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
             $fieldTypes['save_progress_button'] = 'FlowFormSaveAndResumeType';
             $fieldTypes['dynamic_field'] = 'FlowFormDynamicFieldType';
+            $fieldTypes['net_promoter_score'] = 'FlowFormNetPromoterScoreType';
         }
         
         return apply_filters('fluentform/conversational_field_types', $fieldTypes);
