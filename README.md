@@ -160,18 +160,18 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 ## Changelog
 
 ### 6.1.3 (Date: September 23, 2025) =
-
 - Fixes Elementor backend editor not working when Fluent Forms was added
 - Fixes the multiple choice field not working in Elementor popup
 - Fixes Report Page UI not properly showing in RTL
 - Fixes Stripe payment error when global auto-load CAPTCHA is enabled in conversational forms
 - Fixes the Conversational Form Phone Field to return numbers in the full International format
-- Fixes Custom User Meta Fields not populating after updates to Fluent Forms version 6.1.2
+- Fixes Custom User Meta Fields not populating
 - Fixes the phone field search input style height
 - Fixes email notification triggering for empty payment method form
-- Fixes the PDF Download link in confirmation not working correctly due to a missing ":" at the start of the URL
+- Fixes the PDF Download link in confirmation message
 - Fixes PHP 8 compatibility issues with Excel exports
 - Fixes the range slider in conversational forms causing incorrect progress percentage
+
 
 ### 6.1.0 (Date: August 26, 2025) =
 - Adds Fluent Forms Report module
