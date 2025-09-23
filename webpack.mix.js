@@ -157,7 +157,7 @@ mix.then(() => {
         }
     });
 
-    exec('rtlcss assets/css/fluent-forms-reports.css ./assets/css/luent-forms-reports-rtl.css', (error) => {
+    exec('rtlcss assets/css/fluent-forms-reports.css ./assets/css/fluent-forms-reports-rtl.css', (error) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return;
