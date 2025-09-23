@@ -87,8 +87,7 @@ class EmailNotificationActions
         // If this is a payment form and the feed is configured to run on payment_success,
         // then do not send while the submission's payment status is still pending.
         if (isset($form->has_payment) && $form->has_payment) {
-            $hasPaymentMethod = $this->hasPaymentMethodField($form);
-            if ($hasPaymentMethod) {
+            if (FormFieldsParser::hasElement($form, 'payment_method')) {
                 $isTriggerOnPaymentSuccess = ArrayHelper::get($feed,
                         'processedValues.feed_trigger_event') === 'payment_success';
                 $isPaymentPending = isset($entry->payment_status) && $entry->payment_status === 'pending';
@@ -204,16 +203,5 @@ class EmailNotificationActions
         return wpFluent()->table('fluentform_submissions')
             ->where('id', $submissionId)
             ->first();
-    }
-    
-    protected function hasPaymentMethodField($form)
-    {
-        $paymentFields = FormFieldsParser::getPaymentFields($form);
-        foreach ($paymentFields as $field) {
-            if (Arr::get($field, 'element') === 'payment_method') {
-                return true;
-            }
-        }
-        return false;
     }
 }
