@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 6.1.2
+Stable tag: 6.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -441,6 +441,20 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.1.3 (Date: September 23, 2025) =
+
+- Fixes Elementor backend editor not working when Fluent Forms was added
+- Fixes the multiple choice field not working in Elementor popup
+- Fixes Report Page UI not properly showing in RTL
+- Fixes Stripe payment error when global auto-load CAPTCHA is enabled in conversational forms
+- Fixes the Conversational Form Phone Field to return numbers in the full International format
+- Fixes Custom User Meta Fields not populating after updates to Fluent Forms version 6.1.2
+- Fixes the phone field search input style height
+- Fixes email notification triggering for empty payment method form
+- Fixes the PDF Download link in confirmation not working correctly due to a missing ":" at the start of the URL
+- Fixes PHP 8 compatibility issues with Excel exports
+- Fixes the range slider in conversational forms causing incorrect progress percentage
 
 = 6.1.2 (Date: August 29, 2025) =
 - Changes iplocation service for country restriction
