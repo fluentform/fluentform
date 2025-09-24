@@ -1433,7 +1433,22 @@ jQuery(document).ready(function () {
 
                     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-                    return re.test(val.toLowerCase());
+                    // If invalid, set customValidity-like effect via title (for native tooltip fallback) but we
+                    // rely on our own error UI. Prefer using configured message if available on the element.
+                    var isValid = re.test(val.toLowerCase());
+                    if (!isValid) {
+                        var customMsg = el.attr('data-error-email-message');
+                        var shouldOverride = (el.attr('data-override-email-message') === 'yes');
+                        if (customMsg && shouldOverride) {
+                            el.attr('title', customMsg);
+                        } else {
+                            el.removeAttr('title');
+                        }
+                    } else {
+                        el.removeAttr('title');
+                    }
+
+                    return isValid;
                 };
 
                 /**

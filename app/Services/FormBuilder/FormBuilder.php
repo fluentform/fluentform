@@ -123,6 +123,8 @@ class FormBuilder
             'class'              => $formClass,
             'data-form_instance' => $instanceCssClass,
             'method'             => 'POST',
+            // Disable browser native validation UI; use plugin JS and inline errors instead
+            'novalidate'         => 'novalidate',
         ];
     
         $data = apply_filters_deprecated(

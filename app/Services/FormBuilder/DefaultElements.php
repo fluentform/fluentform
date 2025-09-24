@@ -217,7 +217,10 @@ $defaultElements = [
                 'admin_field_label' => '',
                 'prefix_label'      => '',
                 'suffix_label'      => '',
+                // If enabled, the field's custom email validation message will be used on the frontend
+                'override_native_email_message' => 'yes',
                 'validation_rules'  => [
+
                     'required' => [
                         'value'   => false,
                         'message' => $defaultGlobalMessages['required'],

@@ -41,6 +41,7 @@ return [
             'help_message',
             'is_unique',
             'unique_validation_message',
+            'override_native_email_message',
             'prefix_label',
             'suffix_label',
             'name',

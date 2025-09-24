@@ -606,6 +606,11 @@ $element_customization_settings = [
             'operator'   => '==',
         ],
     ],
+    'override_native_email_message' => [
+        'template'  => 'inputYesNoCheckBox',
+        'label'     => __('Override native email validation message', 'fluentform'),
+        'help_text' => __('Use this field’s Email validation message in the frontend inline errors instead of the browser message.', 'fluentform'),
+    ],
     'layout_class' => [
         'template'  => 'select',
         'label'     => __('Layout', 'fluentform'),

@@ -399,6 +399,10 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }
+        // Backward compatibility: ensure the new toggle is present on existing forms
+        if (!isset($item['settings']['override_native_email_message'])) {
+            $item['settings']['override_native_email_message'] = 'yes';
+        }
         return $item;
     });
 

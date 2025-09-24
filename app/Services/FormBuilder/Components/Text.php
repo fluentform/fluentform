@@ -175,7 +175,21 @@ class Text extends BaseComponent
             $ariaRequired = 'true';
         }
 
-        $input = '<input ' . $this->buildAttributes($data['attributes'], $form) . ' aria-invalid="false" aria-required='.$ariaRequired.'>';
+        // If this is an email field and a custom email validation message is set,
+        // pass it as a data attribute so frontend can use it for client-side errors
+        if (ArrayHelper::get($data, 'attributes.type') === 'email') {
+            $customEmailMsg = ArrayHelper::get($data, 'settings.validation_rules.email.message');
+            if ($customEmailMsg) {
+                $data['attributes']['data-error-email-message'] = $customEmailMsg;
+            }
+            // Add a toggle attribute so frontend can decide whether to override
+            $overrideToggle = ArrayHelper::get($data, 'settings.override_native_email_message');
+            if ($overrideToggle === 'yes' || $overrideToggle === true) {
+                $data['attributes']['data-override-email-message'] = 'yes';
+            }
+        }
+
+        $input = '<input ' . $this->buildAttributes($data['attributes'], $form) . ' aria-invalid="false" aria-required="' . $ariaRequired . '">';
         $prefix = ArrayHelper::get($data, 'settings.prefix_label');
         $suffix = ArrayHelper::get($data, 'settings.suffix_label');
         if ($prefix || $suffix) {
