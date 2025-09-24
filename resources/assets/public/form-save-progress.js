@@ -7,6 +7,16 @@ import formSlider from "./Pro/slider";
         let hash = -1;
         let activeStep = 'no';
         let hasSaveProgress = $(formSelector).hasClass('ff-form-has-save-progress');
+
+        // Helper function to get translated save progress messages
+        function getSaveProgressMessage(key, fallback) {
+            const messagesVar = 'fluentform_save_progress_messages_' + form.id;
+            if (window[messagesVar] && window[messagesVar][key]) {
+                return window[messagesVar][key];
+            }
+            return fallback;
+        }
+        
         if (!hasSaveProgress) {
             return;
         }
@@ -96,7 +106,7 @@ import formSlider from "./Pro/slider";
                         }
 
                         //Show Link in Input
-                        const copyIcon = window.form_state_save_vars.copy_button || 'Copy';
+                        const copyIcon = getSaveProgressMessage('copy_button', window.form_state_save_vars.copy_button || 'Copy');
                         let inputDiv =
                             `<div class="ff-el-input--content">
                                 <div class="ff_input-group">
@@ -122,8 +132,8 @@ import formSlider from "./Pro/slider";
                         });
 
                         //Show Email Input
-                        const emailPlaceholderStr = window.form_state_save_vars.email_placeholder_str || 'Your Email Here';
-                        const emailIcon = window.form_state_save_vars.email_button || 'Email';
+                        const emailPlaceholderStr = getSaveProgressMessage('email_placeholder', window.form_state_save_vars.email_placeholder_str || 'Your Email Here');
+                        const emailIcon = getSaveProgressMessage('email_button', window.form_state_save_vars.email_button || 'Email');
                         if ($(this).hasClass('ff_resume_email_enabled')) {
                             let emailDiv =
                                 `<div class="ff-el-input--content">
@@ -172,7 +182,7 @@ import formSlider from "./Pro/slider";
             e.preventDefault();
             let copiedText = $(this).closest('.ff-el-input--content').find('.ff-el-form-control').val();
             navigator.clipboard.writeText(copiedText);
-            const copySuccess = window.form_state_save_vars.copy_success_button || 'Copied';
+            const copySuccess = getSaveProgressMessage('copy_success', window.form_state_save_vars.copy_success_button || 'Copied');
             $(this).html(`${copySuccess}`);
         });
 
