@@ -888,7 +888,7 @@ export class Payment_handler {
 }
 // Register payment handler events only if pro is not installed.
 // If pro is installed, payment handler events is registered from payment_handler_pro.js
-if (!window.fluentFormVars.pro_payment_script_compatible) {
+if (!window.fluentFormVars?.pro_payment_script_compatible) {
     (function ($) {
         $.each($('form.fluentform_has_payment'), function () {
             const $form = $(this);
