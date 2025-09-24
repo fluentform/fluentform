@@ -252,8 +252,10 @@ class BaseComponent
         }
         
         $forStr = '';
+        $LabelId = '';
         if (isset($data['attributes']['id'])) {
             $forStr = "for='" . esc_attr($data['attributes']['id']) . "'";
+            $LabelId = "id='" . esc_attr('label_' . $data['attributes']['id']) . "'";
         }
         
         $labelMarkup = '';
@@ -275,9 +277,10 @@ class BaseComponent
             }
             
             $labelMarkup = sprintf(
-                '<div class="%1$s"><label %2$s %3$s>%4$s</label>%5$s</div>',
+                '<div class="%1$s"><label %2$s %3$s %4$s>%5$s</label>%6$s</div>',
                 esc_attr($labelClass),
                 $forStr,
+                $LabelId,
                 $ariaLabel != '' ? 'aria-label="' . esc_attr($this->removeShortcode($label)) . '"' : '',
                 fluentform_sanitize_html($label),
                 fluentform_sanitize_html($labelHelpText)
