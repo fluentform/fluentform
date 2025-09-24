@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.1.3
+**Stable tag:** 6.1.4
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,7 +159,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.1.3 (Date: September 23, 2025) =
+### 6.1.4 (Date: September 23, 2025) =
 - Fixes Elementor backend editor not working when Fluent Forms was added
 - Fixes the multiple choice field not working in Elementor popup
 - Fixes Report Page UI not properly showing in RTL
