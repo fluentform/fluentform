@@ -915,7 +915,7 @@
                 }
             }
 
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
+            const captchas = ['recaptcha', 'hcaptcha', 'turnstile', 'friendlycaptcha'];
             if (this.isAutoloadCaptchaEnabled && captchas.includes(item.element)) {
                 this.$message({
                     message: this.$t('Captcha has been enabled globally.'),
@@ -997,7 +997,7 @@
                 return false;
             }
 
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
+            const captchas = ['recaptcha', 'hcaptcha', 'turnstile', 'friendlycaptcha'];
             if (this.isAutoloadCaptchaEnabled && captchas.includes(freshCopy.element)) {
                 this.$message({
                     message: this.$t('Captcha has been enabled globally.'),
@@ -1391,7 +1391,7 @@
         * Maybe Autoload Captcha
          */
         if (this.isAutoloadCaptchaEnabled) {
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
+            const captchas = ['recaptcha', 'hcaptcha', 'turnstile', 'friendlycaptcha'];
             setTimeout(() => {
                 this.form.dropzone = this.form.dropzone.filter(el => !captchas.includes(el.element));
             }, 100);

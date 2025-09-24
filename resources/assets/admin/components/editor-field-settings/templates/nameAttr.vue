@@ -72,7 +72,7 @@ export default {
             return !!matched.length;
         },
         isCaptcha(){
-            let isCaptcha = this.value == 'g-recaptcha-response' || this.value == 'h-captcha-response' || this.value == 'cf-turnstile-response';
+            let isCaptcha = this.value == 'g-recaptcha-response' || this.value == 'h-captcha-response' || this.value == 'cf-turnstile-response' || this.value == 'frc-captcha-response';
             return isCaptcha;
         }
 

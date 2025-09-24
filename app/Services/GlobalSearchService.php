@@ -75,6 +75,12 @@ class GlobalSearchService
                 "tags"  => ['global', 'security', 'turnstile']
             ],
             [
+                "title" => 'Global Settings > Security > Friendly Captcha',
+                "icon"  => '',
+                "path"  => '?page=fluent_forms_settings#friendlycaptcha',
+                "tags"  => ['global', 'security', 'friendlycaptcha']
+            ],
+            [
                 "title" => 'Global Settings > Managers',
                 "icon"  => '',
                 "path"  => '?page=fluent_forms_settings#managers',

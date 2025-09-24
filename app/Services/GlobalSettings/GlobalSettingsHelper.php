@@ -6,6 +6,7 @@ use FluentForm\App\Modules\Form\CleanTalkHandler;
 use FluentForm\App\Modules\HCaptcha\HCaptcha;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
+use FluentForm\App\Modules\FriendlyCaptcha\FriendlyCaptcha;
 use FluentForm\App\Services\Integrations\MailChimp\MailChimp;
 use FluentForm\Framework\Support\Arr;
 
@@ -358,5 +359,64 @@ class GlobalSettingsHelper
         }
 
         return true;
+    }
+
+    public function storeFriendlyCaptcha($attributes)
+    {
+        $data = Arr::get($attributes, 'friendlycaptcha');
+
+        if ('clear-settings' == $data) {
+            delete_option('_fluentform_friendlycaptcha_details');
+
+            update_option('_fluentform_friendlycaptcha_keys_status', false, 'no');
+
+            return([
+                'message' => __('Your Friendly Captcha settings are deleted.', 'fluentform'),
+                'status'  => true,
+            ]);
+        }
+
+        $siteKey = sanitize_text_field(Arr::get($data, 'siteKey'));
+        $apiKey = sanitize_text_field(Arr::get($data, 'apiKey'));
+        $apiEndpoint = Arr::get($data, 'api_endpoint', 'global');
+
+        // Validate required fields
+        if (empty($siteKey) || empty($apiKey)) {
+            return([
+                'message' => __('Site Key and API Key are required.', 'fluentform'),
+                'status'  => false,
+            ]);
+        }
+
+        // Test the keys using the FriendlyCaptcha API
+        $validationResult = FriendlyCaptcha::testKeys($siteKey, $apiKey, $apiEndpoint);
+
+        if (!$validationResult['success']) {
+            return([
+                'message' => $validationResult['message'],
+                'status'  => false,
+            ]);
+        }
+
+        // Keys are valid, prepare captcha data
+        $captchaData = [
+            'siteKey'      => $siteKey,
+            'apiKey'       => $apiKey,
+            'theme'        => Arr::get($data, 'theme', 'auto'),
+            'start_mode'   => Arr::get($data, 'start_mode', 'focus'),
+            'api_endpoint' => $apiEndpoint
+        ];
+
+        // Update the friendly captcha details with siteKey & apiKey
+        update_option('_fluentform_friendlycaptcha_details', $captchaData, 'no');
+
+        // Update the friendly captcha validation status
+        update_option('_fluentform_friendlycaptcha_keys_status', true, 'no');
+
+        // Send success response
+        return([
+            'message' => __('Your Friendly Captcha keys are valid and saved successfully.', 'fluentform'),
+            'status'  => true,
+        ]);
     }
 }

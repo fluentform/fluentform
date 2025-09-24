@@ -4,6 +4,7 @@ namespace FluentForm\App\Http\Controllers;
 
 use FluentForm\Framework\Validator\ValidationException;
 use FluentForm\App\Services\GlobalSettings\GlobalSettingsService;
+use FluentForm\App\Modules\FriendlyCaptcha\FriendlyCaptcha;
 
 class GlobalSettingsController extends Controller
 {
@@ -22,4 +23,6 @@ class GlobalSettingsController extends Controller
             return $this->sendError($exception->errors(), 422);
         }
     }
+
+
 }

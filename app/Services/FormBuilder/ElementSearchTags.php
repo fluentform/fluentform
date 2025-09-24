@@ -108,6 +108,9 @@ return [
     'hcaptcha' => [
         'hcaptcha',
     ],
+    'friendlycaptcha' => [
+        'friendlycaptcha',
+    ],
     'turnstile' => [
         'turnstile',
     ],

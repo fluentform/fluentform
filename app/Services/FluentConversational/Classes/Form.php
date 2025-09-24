@@ -326,6 +326,7 @@ class Form
             'recaptcha',
             'hcaptcha',
             'turnstile',
+            'friendlycaptcha',
             'quiz_score',
             'save_progress_button',
             'dynamic_field',
@@ -369,8 +370,7 @@ class Form
                         }
                         $field['settings'] = $existingSettings;
                     }
-                    //adding required settings for captcha in conversational form
-                    if ('hcaptcha' == $element || 'recaptcha' == $element || 'turnstile' == $element) {
+                    if ('hcaptcha' == $element || 'recaptcha' == $element || 'turnstile' == $element || 'friendlycaptcha' == $element) {
                         $existingSettings = $field['settings'];
                         if (empty($existingSettings['validation_rules'])) {
                             $existingSettings['validation_rules'] = [
@@ -928,6 +928,7 @@ class Form
             'reCaptcha'                 => $form->reCaptcha,
             'hCaptcha'                  => $form->hCaptcha,
             'turnstile'                 => $form->turnstile,
+            'friendlyCaptcha'           => $form->friendlyCaptcha,
             'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
             'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
             'has_save_link'             => $form->save_state?? false,

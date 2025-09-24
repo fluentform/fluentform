@@ -1546,6 +1546,22 @@ $defaultElements = [
                 'template'           => 'turnstile',
             ],
         ],
+        'friendlycaptcha' => [
+            'index'      => 4,
+            'element'    => 'friendlycaptcha',
+            'attributes' => ['name' => 'frc-captcha-response'],
+            'settings'   => [
+                'label'            => '',
+                'label_placement'  => '',
+                'validation_rules' => []
+            ],
+            'editor_options' => [
+                'title'              => __('Friendly Captcha', 'fluentform'),
+                'icon_class'         => 'ff-edit-recaptha',
+                'why_disabled_modal' => 'friendlycaptcha',
+                'template'           => 'friendlycaptcha',
+            ],
+        ],
         'shortcode' => [
             'index'      => 4,
             'element'    => 'shortcode',

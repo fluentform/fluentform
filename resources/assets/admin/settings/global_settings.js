@@ -6,6 +6,7 @@ import GlobalSettings from './GlobalSettings.vue';
 import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
 import turnstile from './turnstile.vue';
+import friendlycaptcha from './friendlycaptcha.vue';
 import cleantalk from './cleantalk.vue';
 import pdf_settings from './Pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
@@ -131,6 +132,7 @@ const components = {
     re_captcha: reCaptcha,
     h_captcha: hCaptcha,
     turnstile: turnstile,
+    friendlycaptcha: friendlycaptcha,
     cleantalk: cleantalk,
     pdf_settings: pdf_settings,
     'general-integration-settings': GeneralIntegrationSettings,

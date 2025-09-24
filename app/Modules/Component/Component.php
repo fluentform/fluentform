@@ -255,6 +255,7 @@ class Component
         $isReCaptchaDisabled = !get_option('_fluentform_reCaptcha_keys_status', false);
         $isHCaptchaDisabled = !get_option('_fluentform_hCaptcha_keys_status', false);
         $isTurnstileDisabled = !get_option('_fluentform_turnstile_keys_status', false);
+        $isFriendlyCaptchaDisabled = !get_option('_fluentform_friendlycaptcha_keys_status', false);
 
         $disabled = [
             'recaptcha' => [
@@ -274,6 +275,12 @@ class Component
                 'title'       => __('Turnstile', 'fluentform'),
                 'description' => __('Please enter a valid API key on FluentForms->Settings->Turnstile', 'fluentform'),
                 'hidePro'     => true,
+            ],
+            'friendlycaptcha' => [
+              'disabled'    => $isFriendlyCaptchaDisabled,
+              'title'       => __('Friendly Captcha', 'fluentform'),
+              'description' => __('Please enter a valid API key on FluentForms->Settings->Friendly Captcha', 'fluentform'),
+              'hidePro'     => true,
             ],
             'input_image' => [
                 'disabled'    => true,
@@ -842,6 +849,7 @@ class Component
             'Recaptcha@compile'     => ['fluentform/render_item_recaptcha'],
             'Hcaptcha@compile'      => ['fluentform/render_item_hcaptcha'],
             'Turnstile@compile'     => ['fluentform/render_item_turnstile'],
+            'FriendlyCaptcha@compile' => ['fluentform/render_item_friendlycaptcha'],
             'Container@compile'     => ['fluentform/render_item_container'],
             'CustomHtml@compile'    => ['fluentform/render_item_custom_html'],
             'SectionBreak@compile'  => ['fluentform/render_item_section_break'],
