@@ -812,7 +812,7 @@ export default {
         },
         fetchEmailTemplates() {
             FluentFormsGlobal.$get({
-                action: 'fluentform_pdf_admin_ajax_actions',
+                action: 'fluent_pdf_admin_ajax_actions',
                 form_id: window.FluentFormApp.form_id,
                 route: 'feed_lists'
             })
