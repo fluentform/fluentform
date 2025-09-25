@@ -196,7 +196,8 @@ class Entries extends EntryQuery
             'form_entries_str'    => TranslationString::getEntriesI18n(),
             'editor_shortcodes'   => $submissionShortcodes['shortcodes'],
             'input_labels'        => $inputLabels,
-            'update_status'       => isset($_REQUEST['update_status']) ? sanitize_text_field($_REQUEST['update_status']) : '',
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is just passing URL parameter to frontend for display
+            'update_status'       => isset($_REQUEST['update_status']) ? sanitize_text_field(wp_unslash($_REQUEST['update_status'])) : '',
             'address_fields'       => array_keys(FormFieldsParser::getAddressFields($form)),
         ];
     
@@ -704,8 +705,12 @@ class Entries extends EntryQuery
             ->where('id', $entryId)
             ->update(['status' => $newStatus]);
 
+        // Line 708 - Use sprintf with placeholder
+        /* translators: %s is the new status */
+        $message = sprintf(__('Item has been marked as %s', 'fluentform'), $newStatus);
+
         wp_send_json_success([
-            'message' => __('Item has been marked as ' . $newStatus, 'fluentform'),
+            'message' => $message,
             'status'  => $newStatus,
         ], 200);
     }

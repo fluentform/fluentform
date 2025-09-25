@@ -376,6 +376,13 @@ class Component
                 'image'       => fluentformMix('img/pro-fields/net-promoter-score.png'),
                 'video'       => '',
             ];
+            $disabled['dynamic_field'] = [
+                'disabled'    => true,
+                'title'       => __('Dynamic Field', 'fluentform'),
+                'description' => __('Dynamic Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
+                'image'       => '',
+                'video'       => 'https://www.youtube.com/embed/cx3N5y1ddOQ',
+            ];
             $disabled['repeater_field'] = [
                 'disabled'    => true,
                 'title'       => __('Repeat Field', 'fluentform'),
@@ -507,6 +514,7 @@ class Component
 
         if (is_feed()) {
             global $post;
+            /* translators: %s is the website URL */
             $feedText = sprintf(__('The form can be filled in the actual <a href="%s">website url</a>.', 'fluentform'), get_permalink($post));
     
             $feedText = apply_filters_deprecated(
@@ -531,7 +539,7 @@ class Component
         }
 
         $form->fields = json_decode($form->form_fields, true);
-        if (!$form->fields['fields']) {
+        if (!is_array($form->fields) || empty($form->fields['fields'])) {
             return '';
         }
 
@@ -607,6 +615,7 @@ class Component
             wp_enqueue_script('fluent-form-submission');
         }
 
+        /* translators: %activeStep% is the current step number, %totalStep% is the total number of steps, %stepTitle% is the step title */
         $stepText = __('Step %activeStep% of %totalStep% - %stepTitle%', 'fluentform');
     
         $stepText = apply_filters_deprecated(
@@ -639,7 +648,8 @@ class Component
                 'loadingText'    => __('Loading...', 'fluentform'),
                 'noChoicesText'  => __('No choices to choose from', 'fluentform'),
                 'itemSelectText' => __('Press to select', 'fluentform'),
-                'maxItemText'    => __('Only %%maxItemCount%% options can be added', 'fluentform'),
+                'maxItemTextSingular' => __('Only %%maxItemCount%% option can be added', 'fluentform'),
+                'maxItemTextPlural'   => __('Only %%maxItemCount%% options can be added', 'fluentform'),
             ],
             'input_mask_vars'               => [
                 'clearIfNotMatch' => false,
@@ -670,6 +680,11 @@ class Component
         $formSettings = $form->settings;
 
         $formSettings = ArrayHelper::only($formSettings, ['layout', 'id']);
+
+        // Ensure restrictions array exists before setting denyEmptySubmission
+        if (!isset($formSettings['restrictions']) || !is_array($formSettings['restrictions'])) {
+            $formSettings['restrictions'] = [];
+        }
 
         $formSettings['restrictions']['denyEmptySubmission'] = [
             'enabled' => false,
@@ -773,6 +788,16 @@ class Component
      */
     public function replaceEditorSmartCodes($output, $form)
     {
+        // Return early if output is null or empty
+        if ($output === null || $output === '') {
+            return $output;
+        }
+
+        // Return early if form is null to prevent errors
+        if ($form === null) {
+            return $output;
+        }
+
         // Get the patterns for default values from the output HTML string.
         // The example of a pattern would be for user ID: {user.ID}
         preg_match_all('/{(.*?)}/', $output, $matches);
@@ -897,9 +922,19 @@ class Component
         $this->app->addFilter('fluentform/is_form_renderable', function ($isRenderable, $form) {
             $checkables = ['limitNumberOfEntries', 'scheduleForm', 'requireLogin'];
 
-            foreach ($form->settings['restrictions'] as $key => $restrictions) {
+            // Ensure settings is an array
+            if (!is_array($form->settings)) {
+                $form->settings = [];
+            }
+
+            // Ensure restrictions exists and is an array before iterating
+            $restrictions = isset($form->settings['restrictions']) && is_array($form->settings['restrictions'])
+                ? $form->settings['restrictions']
+                : [];
+
+            foreach ($restrictions as $key => $restrictionSettings) {
                 if (in_array($key, $checkables)) {
-                    $isRenderable['status'] = $this->{$key}($restrictions, $form, $isRenderable);
+                    $isRenderable['status'] = $this->{$key}($restrictionSettings, $form, $isRenderable);
                     if (!$isRenderable['status']) {
                         $isRenderable['status'] = false;
                         return $isRenderable;
@@ -908,7 +943,7 @@ class Component
             }
            if($form->status == 'unpublished'){
                $isRenderable['status'] = false;
-               $isRenderable['message'] = apply_filters('fluentform/unpublished_form_submission_message',__('Invalid Form!'));
+               $isRenderable['message'] = apply_filters('fluentform/unpublished_form_submission_message',__('Invalid Form!', 'fluentform'));
            }
 
             return $isRenderable;

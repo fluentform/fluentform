@@ -42,6 +42,7 @@ class TranslationString
             'Status' => __('Status', 'fluentform'),
             'Read' => __('Read', 'fluentform'),
             'Unread' => __('Unread', 'fluentform'),
+            /* translators: %s is the time duration */
             '%s ago' => __('%s ago', 'fluentform'),
             'Click to copy shortcode' => __('Click to copy shortcode', 'fluentform'),
             'Back to Entries' => __('Back to Entries', 'fluentform'),
@@ -74,7 +75,8 @@ class TranslationString
             'Submission Logs' => __('Submission Logs', 'fluentform'),
             'General' => __('General', 'fluentform'),
             'API Calls' => __('API Calls', 'fluentform'),
-            '%s in %s at %s' => __('%s in %s at %s', 'fluentform'),
+            '%s in %s at %s' => /* translators: %1$s is the location, %2$s is the area, %3$s is the time */
+            __('%1$s in %2$s at %3$s', 'fluentform'),
             'No Logs found' => __('No Logs found', 'fluentform'),
             'Add Note' => __('Add Note', 'fluentform'),
             'Start date' => __('Start date', 'fluentform'),
@@ -143,7 +145,8 @@ class TranslationString
             'Shortcode for Classic Form' => __('Shortcode for Classic Form', 'fluentform'),
             'Meta' => __('Meta', 'fluentform'),
             'Set your social sharing meta texts and form messages here' => __('Set your social sharing meta texts and form messages here', 'fluentform'),
-            'Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post' => __('Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post', 'fluentform'),
+            'Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post' => /* translators: %1$s and %2$s are HTML tags for shortcode formatting */
+            __('Share your form by unique URL or copy and paste the %1$sshortcode%2$s to embed in your page and post', 'fluentform'),
             'Loading Design... Please wait' => __('Loading Design... Please wait', 'fluentform'),
             'File Upload Text' => __('File Upload Text', 'fluentform'),
             'File Upload Size Limit Text' => __('File Upload Size Limit Text', 'fluentform'),
@@ -223,10 +226,12 @@ class TranslationString
             'Warning' => __('Warning', 'fluentform'),
             'Yes, Delete the form' => __('Yes, Delete the form', 'fluentform'),
             'No' => __('No', 'fluentform'),
+            /* translators: %s is the form title */
             'Please type %s to confirm. All entries and integration feeds of this form will be deleted' => __('Please type %s to confirm. All entries and integration feeds of this form will be deleted.', 'fluentform'),
             'Delete Form' => __('Delete Form', 'fluentform'),
             'Confirm Delete' => __('Confirm Delete', 'fluentform'),
             'Cancel' => __('Cancel', 'fluentform'),
+            /* translators: %s is the form title */
             'You must type %s to confirm' => __('You must type %s to confirm', 'fluentform'),
             'Time' => __('Time', 'fluentform'),
         );
@@ -262,6 +267,7 @@ class TranslationString
             'Optin Email Body' => __('Optin Email Body', 'fluentform'),
             'Double Opt-in Email Body HTML' => __('Double Opt-in Email Body HTML', 'fluentform'),
             'Disable Double Optin for Logged in users' => __('Disable Double Optin for Logged in users', 'fluentform'),
+            /* translators: %s is the service name */
             'Disable Double Optin if contact email is subscribed in %s' => __('Disable Double Optin if contact email is subscribed in %s', 'fluentform'),
             'Form Layout' => __('Form Layout', 'fluentform'),
             'Learn More' => __('Learn More', 'fluentform'),
@@ -284,7 +290,8 @@ class TranslationString
             'The asterisk marker position for the required elements.' => __('The asterisk marker position for the required elements', 'fluentform'),
             'Scheduling & Restrictions' => __('Scheduling & Restrictions', 'fluentform'),
             'Advanced Form Validation' => __('Advanced Form Validation', 'fluentform'),
-            'You can set rules to the user input and based on the rules you can prevent the form submission. This is very useful feature for preventing spam / bot submissions. %sLearn More%s' =>__('You can set rules to the user input and based on the rules you can prevent the form submission. This is very useful feature for preventing spam / bot submissions. %sLearn More%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'You can set rules to the user input and based on the rules you can prevent the form submission. This is very useful feature for preventing spam / bot submissions. %1$sLearn More%2$s' =>__('You can set rules to the user input and based on the rules you can prevent the form submission. This is very useful feature for preventing spam / bot submissions. %1$sLearn More%2$s', 'fluentform'),
             'Survey Result' => __('Survey Result', 'fluentform'),
             'This feature is only available in pro version of Fluent Forms' => __('This feature is only available in pro version of Fluent Forms', 'fluentform'),
             'Compliance Settings' => __('Compliance Settings', 'fluentform'),
@@ -295,7 +302,8 @@ class TranslationString
             'Your data will be deleted on form submission so no entry data, analytics and visual reporting will be available for this form' => __('Your data will be deleted on form submission so no entry data, analytics and visual reporting will be available for this form', 'fluentform'),
             'Enable auto delete old entries' => __('Enable auto delete old entries', 'fluentform'),
             'Specify how many days old entries will be deleted for this form' => __('Specify how many days old entries will be deleted for this form', 'fluentform'),
-            'Entries older than %s%s days%s will be deleted automatically.' => __('Entries older than %s%s days%s will be deleted automatically.', 'fluentform'),
+            /* translators: 1: opening bold tag, 2: number of days, 3: closing bold tag */
+            'Entries older than %1$s%2$s days%3$s will be deleted automatically.' => __('Entries older than %1$s%2$s days%3$s will be deleted automatically.', 'fluentform'),
             'Other' => __('Other', 'fluentform'),
             'Extra CSS Form Class' => __('Extra CSS Form Class', 'fluentform'),
             'extra css class' => __('extra css class', 'fluentform'),
@@ -329,7 +337,7 @@ class TranslationString
             'Empty Submission Blocking' => __('Empty Submission Blocking', 'fluentform'),
             'Deny empty submission' => __('Deny empty submission', 'fluentform'),
             'Enabling this won\'t allow users to submit empty ' => __('Enabling this won\'t allow users to submit empty', 'fluentform'),
-            'Please note that it is recommended to not change name attributes, doing so will break conditional & integrations field mapping.You will need to recreate these with the new value.' => __('Please note that it is recommended to not change name attributes, doing so will break conditional & integrations field mapping.You will need to recreate these with the new value.', 'fluentform'),
+            'It is not recommended to change the name attribute, as this will break conditional logic and integration field mappings. If you proceed, you will need to recreate these mappings with the updated value. Additionally, the connection with submission values will be lost, meaning existing submissions containing this field will no longer be displayed.' => __('It is not recommended to change the name attribute, as this will break conditional logic and integration field mappings. If you proceed, you will need to recreate these mappings with the updated value. Additionally, the connection with submission values will be lost, meaning existing submissions containing this field will no longer be displayed.', 'fluentform'),
             'forms when there are no required form fields.' => __('forms when there are no required form fields.', 'fluentform'),
             'Message Shown Against on Empty Submission' => __('Message Shown Against on Empty Submission', 'fluentform'),
             'Enter a message to be displayed to users ' => __('Enter a message to be displayed to users ', 'fluentform'),
@@ -370,8 +378,10 @@ class TranslationString
             'Enable / Disable Advanced Form Validation Rules.' => __('Enable / Disable Advanced Form Validation Rules.', 'fluentform'),
             'Validation Type' => __('Validation Type', 'fluentform'),
             'Please select how the validation will apply.' => __('Please select how the validation will apply.', 'fluentform'),
-            'Based on your selection, submission %swill be rejected%s if %s conditions are met' => __('Based on your selection, submission %swill be rejected%s if %s conditions are met', 'fluentform'),
-            'Based on your selection, submission %swill be valid%s if %s conditions are met' => __('Based on your selection, submission %swill be valid%s if %s conditions are met', 'fluentform'),
+             /* translators: 1: opening bold tag, 2: closing bold tag, 3: condition type */
+            'Based on your selection, submission %1$swill be rejected%2$s if %3$s conditions are met' => __('Based on your selection, submission %1$swill be rejected%2$s if %3$s conditions are met', 'fluentform'),
+            /* translators: 1: opening bold tag, 2: closing bold tag, 3: condition type */
+            'Based on your selection, submission %1$swill be valid%2$s if %3$s conditions are met' => __('Based on your selection, submission %1$swill be valid%2$s if %3$s conditions are met', 'fluentform'),
             'Please write the error message if the form submission get invalid.' => __('Please write the error message if the form submission get invalid.', 'fluentform'),
             'Error Message on Failed submission' => __('Error Message on Failed submission', 'fluentform'),
             'General Operators' => __('General Operators', 'fluentform'),
@@ -391,9 +401,11 @@ class TranslationString
             'Slack Footer message' => __('Slack Footer message', 'fluentform'),
             'Slack Title' => __('Slack Title', 'fluentform'),
             'Webhook URL' => __('Webhook URL', 'fluentform'),
-            'The %sSlack webhook URL%s where Fluent Forms will send JSON payload.' => __('The %sSlack webhook URL%s where Fluent Forms will send JSON payload.', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'The %1$sSlack webhook URL%2$s where Fluent Forms will send JSON payload.' => __('The %1$sSlack webhook URL%2$s where Fluent Forms will send JSON payload.', 'fluentform'),
             'Field Selection is a pro feature.' => __('Field Selection is a pro feature.', 'fluentform'),
-            'Select Fields is a pro feature. Please %sUpgrade to Pro.%s' => __('Select Fields is a pro feature. Please %sUpgrade to Pro.%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'Select Fields is a pro feature. Please %1$sUpgrade to Pro.%2$s' => __('Select Fields is a pro feature. Please %1$sUpgrade to Pro.%2$s', 'fluentform'),
             'Zapier Integration' => __('Zapier Integration', 'fluentform'),
             'Back' => __('Back', 'fluentform'),
             'Add Webhook' => __('Add Webhook', 'fluentform'),
@@ -459,7 +471,8 @@ class TranslationString
             'update' => __('update', 'fluentform'),
             'New Post' => __('New Post', 'fluentform'),
             'Update Post' => __('Update Post', 'fluentform'),
-            'Allow guest user to %s post. If allowed post can be %s with out login in.' => __('Allow guest user to %s post. If allowed post can be %s with out login in.', 'fluentform'),
+            /* translators: 1: action (create/update), 2: action past tense (created/updated) */
+            'Allow guest user to %1$s post. If allowed post can be %2$s with out login in.' => __('Allow guest user to %1$s post. If allowed post can be %2$s with out login in.', 'fluentform'),
             'Post Status' => __('Post Status', 'fluentform'),
             'Comment Status' => __('Comment Status', 'fluentform'),
             'Post Format' => __('Post Format', 'fluentform'),
@@ -539,7 +552,8 @@ class TranslationString
             'you would like to receive a CC of the notification email.' => __('you would like to receive a CC of the notification email.', 'fluentform'),
             'WebHooks Integration' => __('WebHooks Integration', 'fluentform'),
             'Add New' => __('Add New', 'fluentform'),
-            'You don\'t have any feeds configured. Let\'s %sCreate One%s' => __('You don\'t have any feeds configured. Let\'s %sCreate One%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'You don\'t have any feeds configured. Let\'s %1$sCreate One%2$s' => __('You don\'t have any feeds configured. Let\'s %1$sCreate One%2$s', 'fluentform'),
             ' create one!' => __(' create one!', 'fluentform'),
             'WebHook URL' => __('WebHook URL', 'fluentform'),
             'Enter a feed name to uniquely identify this setup.' => __('Enter a feed name to uniquely identify this setup.', 'fluentform'),
@@ -580,12 +594,15 @@ class TranslationString
             'Save CSS and JS' => __('Save CSS and JS', 'fluentform'),
             'Custom CSS' => __('Custom CSS', 'fluentform'),
             'You can write your custom CSS here for this form.This css will be applied in this current form only.' => __('You can write your custom CSS here for this form.This css will be applied in this current form only.', 'fluentform'),
-            'You may add %s as your css selector prefix to target this specific form. Alternatively, you can use %s where %s will be replaced with your form id dynamically.' => __('You may add %s as your css selector prefix to target this specific form. Alternatively, you can use %s where %s will be replaced with your form id dynamically.', 'fluentform'),
+            /* translators: 1: CSS selector prefix, 2: dynamic placeholder, 3: form ID placeholder */
+            'You may add %1$s as your css selector prefix to target this specific form. Alternatively, you can use %2$s where %3$s will be replaced with your form id dynamically.' => __('You may add %1$s as your css selector prefix to target this specific form. Alternatively, you can use %2$s where %3$s will be replaced with your form id dynamically.', 'fluentform'),
+            /* translators: %s is the HTML tag name */
             'Please don\'t include %s tag' => __('Please don\'t include %s tag', 'fluentform'),
             'Custom Javascript' => __('Custom Javascript', 'fluentform'),
             'Your additional JS code will run after this form initialized.Please provide valid javascript code.Invalid JS code may break the Form.' => __('Your additional JS code will run after this form initialized.Please provide valid javascript code.Invalid JS code may break the Form.', 'fluentform'),
             'Please note that, In Conversational Form Style, Custom Javascript will not work' => __('Please note that, In Conversational Form Style, Custom Javascript will not work', 'fluentform'),
-            'The Following Javascript variables are available that you can use %s %s$form:%s The Javascript(jQuery) DOM object of the Form' => __('The Following Javascript variables are available that you can use %s %s$form:%s The Javascript(jQuery) DOM object of the Form', 'fluentform'),
+            /* translators: 1: line break, 2: opening code tag, 3: closing code tag */
+            'The Following Javascript variables are available that you can use %1$s %2$s$form:%3$s The Javascript(jQuery) DOM object of the Form' => __('The Following Javascript variables are available that you can use %1$s %2$s$form:%3$s The Javascript(jQuery) DOM object of the Form', 'fluentform'),
             'All Form Integrations' => __('All Form Integrations', 'fluentform'),
             'Add New Integration' => __('Add New Integration', 'fluentform'),
             'Search Integration' => __('Search Integration', 'fluentform'),
@@ -603,6 +620,7 @@ class TranslationString
             'Feed' => __('Feed', 'fluentform'),
             'PDF Feeds' => __('PDF Feeds', 'fluentform'),
             'Create PDF template feed and you can download the PDFs from each submission' => __('Create PDF template feed and you can download the PDFs from each submission', 'fluentform'),
+            /* translators: %s is the PDF feed name */
             'Edit PDF Feed - %s' => __('Edit PDF Feed - %s', 'fluentform'),
             'Add PDF Feed' => __('Add PDF Feed', 'fluentform'),
             'Template' => __('Template', 'fluentform'),
@@ -644,12 +662,16 @@ class TranslationString
             'Live Mode' => __('Live Mode', 'fluentform'),
             'test' => __('test', 'fluentform'),
             'Test Mode' => __('Test Mode', 'fluentform'),
-            'Please provide your %s API keys%s' => __('Please provide your %s API keys%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'Please provide your %1$s API keys%2$s' => __('Please provide your %1$s API keys%2$s', 'fluentform'),
             'Publishable key' => __('Publishable key', 'fluentform'),
+            /* translators: %s is the payment mode (Test/Live) */
             '%s Publishable key' => __('%s Publishable key', 'fluentform'),
+            /* translators: %s is the payment mode (Test/Live) */
             '%s Secret key' => __(' Secret key', 'fluentform'),
             'Secret key' => __('Secret key', 'fluentform'),
-            'You can find the API keys to %sStripe Dashboard%s' => __('You can find the API keys to %sStripe Dashboard%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'You can find the API keys to %1$sStripe Dashboard%2$s' => __('You can find the API keys to %1$sStripe Dashboard%2$s', 'fluentform'),
             'Stripe Payment Receipt' => __('Stripe Payment Receipt', 'fluentform'),
             'Disable Payment Receipt Email by Stripe(not recommended)' => __('Disable Payment Receipt Email by Stripe(not recommended)', 'fluentform'),
             'Statement Descriptor' => __('Statement Descriptor', 'fluentform'),
@@ -754,7 +776,6 @@ class TranslationString
             'Friday' => __('Friday', 'fluentform'),
             'Saturday' => __('Saturday', 'fluentform'),
             'Sunday' => __('Sunday', 'fluentform'),
-            'For high volume of users, you can add an API token.' => __('For high volume of users, you can add an API token.', 'fluentform'),
             'Same Page' => __('Same Page', 'fluentform'),
             'To a Page' => __('To a Page', 'fluentform'),
             'To a Custom URL' => __('To a Custom URL', 'fluentform'),
@@ -808,9 +829,13 @@ class TranslationString
             'Successfully deleted the feed.' => __('Successfully deleted the feed.', 'fluentform'),
             'enabled' => __('enabled', 'fluentform'),
             'disabled' => __('disabled', 'fluentform'),
+            /* translators: %s is the action (enabled/disabled) */
             'Successfully %s the confirmation.' => __('Successfully %s the confirmation.', 'fluentform'),
+            /* translators: %s is the action (enabled/disabled) */
             'Successfully %s the notification.' => __('Successfully %s the notification.', 'fluentform'),
+            /* translators: %s is the action (enabled/disabled) */
             'Successfully %s the feed.' => __('Successfully %s the feed.', 'fluentform'),
+            /* translators: %s is the action (created/updated/deleted) */
             'Notification %s successfully!' => __('Notification %s successfully!', 'fluentform'),
             'Notification saved successfully!' => __('Notification saved successfully!', 'fluentform'),
             'Equal' => __('Equal', 'fluentform'),
@@ -820,11 +845,13 @@ class TranslationString
             'End of page' => __('End of page', 'fluentform'),
             'PAGE BREAK' => __('PAGE BREAK', 'fluentform'),
             'Top of new page' => __('Top of new page', 'fluentform'),
+            /* translators: %s is the price amount */
             'Price: $%s' => __('Price: $%s', 'fluentform'),
             'Item 1' => __('Item 1', 'fluentform'),
             'Item 2' => __('Item 2', 'fluentform'),
             'Item 3' => __('Item 3', 'fluentform'),
-            'Press %sEnter ↵%s' => __('Press %sEnter ↵%s', 'fluentform'),
+            /* translators: 1: opening emphasis tag, 2: closing emphasis tag */
+            'Press %1$sEnter ↵%2$s' => __('Press %1$sEnter ↵%2$s', 'fluentform'),
             'Add Shortcodes' => __('Add Shortcodes', 'fluentform'),
             'Resend Email Notification' => __('Resend Email Notification', 'fluentform'),
             'Active' => __('Active', 'fluentform'),
@@ -849,7 +876,8 @@ class TranslationString
             'Select Post Type' => __('Select Post Type', 'fluentform'),
             'Continue' => __('Continue', 'fluentform'),
             'Creating Form, Please wait...' => __('Creating Form, Please wait...', 'fluentform'),
-            'Choose a pre - made form template or %screate a blank form%s' => __('Choose a pre - made form template or %screate a blank form%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'Choose a pre - made form template or %1$screate a blank form%2$s' => __('Choose a pre - made form template or %1$screate a blank form%2$s', 'fluentform'),
             'create a blank form' => __('create a blank form', 'fluentform'),
             'Category' => __('Category', 'fluentform'),
             'Search Form' => __('Search Form', 'fluentform'),
@@ -897,6 +925,7 @@ class TranslationString
             'Allow the submission if match' => __('Allow the submission if match', 'fluentform'),
             'Field Label' => __('Field Label', 'fluentform'),
             'Sample:' => __('Sample:', 'fluentform'),
+            /* translators: %s is the sample value */
             'Sample: %s' => __('Sample: %s', 'fluentform'),
             'of the following match:' => __('of the following match:', 'fluentform'),
             'Enable conditional logic' => __('Enable conditional logic', 'fluentform'),
@@ -905,12 +934,14 @@ class TranslationString
             'Desktop' => __('Desktop', 'fluentform'),
             'Mobile' => __('Mobile', 'fluentform'),
             'Select' => __('Select', 'fluentform'),
+            /* translators: %s is the field name */
             'Select %s First' => __('Select %s First', 'fluentform'),
             'Toggle Fullscreen' => __('Toggle Fullscreen', 'fluentform'),
             'yes' => __('yes', 'fluentform'),
             'no' => __('no', 'fluentform'),
             'You are using the free version of Fluent Forms.' => __('You are using the free version of Fluent Forms.', 'fluentform'),
-            'Enable admin approval email notifications to inform the admin of pending submissions from %sGlobal Settings%s. After approve form data & email notification will be processed. You can configure an email for users declined submissions.' => __('Enable admin approval email notifications to inform the admin of pending submissions from %sGlobal Settings%s. After approve form data & email notification will be processed. You can configure an email for users declined submissions.', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'Enable admin approval email notifications to inform the admin of pending submissions from %1$sGlobal Settings%2$s. After approve form data & email notification will be processed. You can configure an email for users declined submissions.' => __('Enable admin approval email notifications to inform the admin of pending submissions from %1$sGlobal Settings%2$s. After approve form data & email notification will be processed. You can configure an email for users declined submissions.', 'fluentform'),
             'None' => __('None', 'fluentform'),
             'If you enable this settings then your entry data will be deleted from database. It\'s useful for HIPPA/GDPR Compliance for some forms.' => __('If you enable this settings then your entry data will be deleted from database. It\'s useful for HIPPA/GDPR Compliance for some forms.', 'fluentform'),
             'Connect your form with more integrations with Pro' => __('Connect your form with more integrations with Pro', 'fluentform'),
@@ -941,6 +972,7 @@ class TranslationString
             'Resume from last step' => __('Resume from last step', 'fluentform'),
             'Conversation Form Per Step Save is available in the pro version' => __('Conversation Form Per Step Save is available in the pro version', 'fluentform'),
             'Click to reset the settings if any quiz inputs name has been changed from the editor' => __('Click to reset the settings if any quiz inputs name has been changed from the editor', 'fluentform'),
+            /* translators: %s is the reset action text */
             '%s Quiz Settings' => __('%s Quiz Settings', 'fluentform'),
             'This will permanently reset the quiz settings. Continue?' => __('This will permanently reset the quiz settings. Continue?', 'fluentform'),
             'Only Submitter or Admin Can View' => __('Only Submitter or Admin Can View', 'fluentform'),
@@ -964,7 +996,7 @@ class TranslationString
             'Administrators have full access to Fluent Forms. Add other managers giving specific permissions.' => __('Administrators have full access to Fluent Forms. Add other managers giving specific permissions.', 'fluentform'),
             'User Email' => __('User Email', 'fluentform'),
             'User Email Address' => __('User Email Address', 'fluentform'),
-            'Please provide email address of your existing user.' => __('Please provide email address of your existing user.', 'fluentform'),
+            'Please provide email address of your existing user. Note: Users with administrator role (manage_options capability) will automatically receive all permissions.' => __('Please provide email address of your existing user. Note: Users with administrator role (manage_options capability) will automatically receive all permissions.', 'fluentform'),
             'Permissions' => __('Permissions', 'fluentform'),
             'Administrators have full access to Fluent Forms. By selecting additional roles below, you can give access to other user roles.' => __('Administrators have full access to Fluent Forms. By selecting additional roles below, you can give access to other user roles.', 'fluentform'),
             'Global Double Optin Settings' => __('Global Double Optin Settings', 'fluentform'),
@@ -1040,7 +1072,8 @@ class TranslationString
             'You will be able to access new features and updates with your license key.' => __('You will be able to access new features and updates with your license key.', 'fluentform'),
             'License Key' => __('License Key', 'fluentform'),
             'As you are using Fluent Forms Lite, you do not require a license to use it. Enjoy!' => __('As you are using Fluent Forms Lite, you do not require a license to use it. Enjoy!', 'fluentform'),
-            'To unlock more features consider %supgrading to PRO%s.' => __('To unlock more features consider %supgrading to PRO%s.', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'To unlock more features consider %1$supgrading to PRO%2$s.' => __('To unlock more features consider %1$supgrading to PRO%2$s.', 'fluentform'),
             'Thank you for purchasing Fluent Forms Pro Add On! Please enter your license key below.' => __('Thank you for purchasing Fluent Forms Pro Add On! Please enter your license key below.', 'fluentform'),
             'Enter your license key' => __('Enter your license key', 'fluentform'),
             'Activate License' => __('Activate License', 'fluentform'),
@@ -1070,6 +1103,7 @@ class TranslationString
             'Yearly' => __('Yearly', 'fluentform'),
             'Status' => __('Status', 'fluentform'),
             'Validation Messages' => __('Validation Messages', 'fluentform'),
+            /* translators: %s is the shortcode placeholder */
             'These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom. Use %s shortcode for automatically resolve the field label.' => __('These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom. Use %s shortcode for automatically resolve the field label.', 'fluentform'),
             'Version 2 (Visible reCAPTCHA)' => __('Version 2 (Visible reCAPTCHA)', 'fluentform'),
             'Version 3 (Invisible reCAPTCHA)' => __('Version 3 (Invisible reCAPTCHA)', 'fluentform'),
@@ -1096,6 +1130,7 @@ class TranslationString
             'Out of Stock' => __('Out of Stock', 'fluentform'),
             'Use' => __('Use', 'fluentform'),
             'shortcode for automatically resolve the field label.' => __('shortcode for automatically resolve the field label.', 'fluentform'),
+            /* translators: %s is the field type */
             'Global Message For %s' => __('Global Message For %s', 'fluentform'),
             'Recommended Settings: Enabled' => __('Recommended Settings: Enabled', 'fluentform'),
             'For multiple email addresses, use comma to separate them' => __('For multiple email addresses, use comma to separate them', 'fluentform'),
@@ -1147,6 +1182,7 @@ class TranslationString
             'Read more about CleanTalk.' => __('Read more about CleanTalk.', 'fluentform'),
             'Please generate access key using CleanTalk' => __('Please generate access key using CleanTalk', 'fluentform'),
             'Access Key' => __('Access Key', 'fluentform'),
+            /* translators: %s is the link to CleanTalk registration */
             'Enter your access key from CleanTalk, if you do not have a key you can register for one at the provided %s.' => __('Enter your access key from CleanTalk, if you do not have a key you can register for one at the provided %s.', 'fluentform'),
             'Spam Validation' => __('Spam Validation', 'fluentform'),
             'Spam Validation is available in the pro version' => __('Spam Validation is available in the pro version', 'fluentform'),
@@ -1216,9 +1252,11 @@ class TranslationString
             "Use a upper case 'S' to indicate an alphabetical characters." => __("Use a upper case 'S' to indicate an alphabetical characters.", 'fluentform'),
             "Use an asterisk '*' to indicate any alphanumeric character." => __("Use an asterisk '*' to indicate any alphanumeric character.", 'fluentform'),
             "All other characters are literal values and will be displayed automatically." => __("All other characters are literal values and will be displayed automatically.", 'fluentform'),
-            '%s Mask: %s. Valid Input: %s' => __("%s Mask: %s. Valid Input: %s", 'fluentform'),
+            /* translators: 1: mask type, 2: mask pattern, 3: valid input example */
+            '%1$s Mask: %2$s. Valid Input: %3$s' => __("%1\$s Mask: %2\$s. Valid Input: %3\$s", 'fluentform'),
             'Examples' => __('Examples', 'fluentform'),
-            'View More information about %sMask Library%s' => __('View More information about %sMask Library%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'View More information about %1$sMask Library%2$s' => __('View More information about %1$sMask Library%2$s', 'fluentform'),
             'Show Values' => __('Show Values', 'fluentform'),
             'Label' => __('Label', 'fluentform'),
             'Placeholder' => __('Placeholder', 'fluentform'),
@@ -1238,9 +1276,12 @@ class TranslationString
             'Only show these' => __('Only show these', 'fluentform'),
             'Priority Based' => __('Priority Based', 'fluentform'),
             'You can use smart code for payment specific dynamic data:' => __('You can use smart code for payment specific dynamic data:', 'fluentform'),
+            /* translators: %s is the smartcode placeholder */
             '%s: to show the cart summary' => __('%s: to show the cart summary', 'fluentform'),
+            /* translators: %s is the smartcode placeholder */
             '%s: to display total payment amount' => __('%s: to display the total payment amount', 'fluentform'),
             'Dynamic SmartCodes' => __('Dynamic SmartCodes', 'fluentform'),
+            /* translators: %s is the smartcode placeholder */
             '%s: to show data from any input' => __('%s: to show the data from any input', 'fluentform'),
             'Primary Countries Label' => __('Primary Countries Label', 'fluentform'),
             'Other Countries Label' => __('Other Countries Label', 'fluentform'),
@@ -1309,8 +1350,10 @@ class TranslationString
             'Button Min-Width (Keep blank/0 for auto)'  => __('Button Min-Width (Keep blank/0 for auto)', 'fluentform'),
             'ex: 100%' => __('ex: 100%', 'fluentform'),
             'An option for developers to add dynamic elements they want. It provides the chance to add whatever input type you want to add in this form. This way, you can bind your own functions to render the form to this action hook.You\'ll be given 1 parameter to play with: $form.' => __('An option for developers to add dynamic elements they want. It provides the chance to add whatever input type you want to add in this form. This way, you can bind your own functions to render the form to this action hook.You\'ll be given 1 parameter to play with: $form.', 'fluentform'),
+            /* translators: %s is the field name */
             'This message will be shown if validation fails for %s. Configure Global Message from: Global settings > Validation Messages' => __('This message will be shown if validation fails for %s. Configure Global Message from: Global settings > Validation Messages', 'fluentform'),
             'Step' => __('Step', 'fluentform'),
+            /* translators: %d is the step number */
             'Step %d' => __('Step %d', 'fluentform'),
             'Yes' => __('Yes', 'fluentform'),
             'No' => __('No', 'fluentform'),
@@ -1336,7 +1379,8 @@ class TranslationString
             'Disable Quantity' => __('Disable Quantity', 'fluentform'),
             'File Upload' => __('File Upload', 'fluentform'),
             'Remote URL' => __('Remote URL', 'fluentform'),
-            'Drop file here or %sclick to upload%s' => __('Drop file here or %sclick to upload%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'Drop file here or %1$sclick to upload%2$s' => __('Drop file here or %1$sclick to upload%2$s', 'fluentform'),
             'Please input a remote csv url...' => __('Please input a remote csv url...', 'fluentform'),
             'Fetch' => __('Fetch', 'fluentform'),
             'Clear Data Source' => __('Clear Data Source', 'fluentform'),
@@ -1407,11 +1451,13 @@ class TranslationString
             'Basic' => __('Basic', 'fluentform'),
             'Advance' => __('Advance', 'fluentform'),
             'Only Show Unique Result' => __('Only Show Unique Result', 'fluentform'),
+            /* translators: %s is the field name */
             'Toggle to display only unique results based on the %s' => __('Toggle to display only unique results based on the %s', 'fluentform'),
             'Result Limits' => __('Result Limits', 'fluentform'),
             'Specify the result limits' => __('Specify the result limits', 'fluentform'),
             'Get Result' => __('Get Result', 'fluentform'),
-            '%s valid option of %s results' => __('%s valid option of %s results', 'fluentform'),
+            /* translators: 1: number of valid options, 2: total number of results */
+            '%1$s valid option of %2$s results' => __('%1$s valid option of %2$s results', 'fluentform'),
             'Filters' => __('Filters', 'fluentform'),
             'Refine search results by specifying database query filters. Utilize logical operators like AND/OR to group multiple filters, ensuring more precise filtering.' => __('Refine search results by specifying database query filters. Utilize logical operators like AND/OR to group multiple filters, ensuring more precise filtering.', 'fluentform'),
             'Add Filter Group' => __('Add Filter Group', 'fluentform'),
@@ -1426,7 +1472,9 @@ class TranslationString
             'Value' => __('Value', 'fluentform'),
             'Ordering' => __('Ordering', 'fluentform'),
             'Specify the ordering of the dynamically populate' => __('Specify the ordering of the dynamically populate', 'fluentform'),
+            /* translators: %s is the payment gateway name */
             'We don\'t have Subscription Field support for %s' => __('We don\'t have Subscription Field support for %s', 'fluentform'),
+            /* translators: %s is the field name */
             '%s Image ALT Text' => __('%s Image ALT Text', 'fluentform'),
             'Address autocomplete with OpenStreetMap (Nominatim) is limited to 1 request per second across all users. Best for forms with low to moderate traffic. For high-traffic sites, consider Google Maps.' => __('Address autocomplete with OpenStreetMap (Nominatim) is limited to 1 request per second across all users. Best for forms with low to moderate traffic. For high-traffic sites, consider Google Maps.', 'fluentform'),
             'If Terms and Conditions checkbox is hidden (appears unchecked), please avoid marking this field as required. This ensures your forms will submit properly without any issues.' => __('If Terms and Conditions checkbox is hidden (appears unchecked), please avoid marking this field as required. This ensures your forms will submit properly without any issues.', 'fluentform')
@@ -1438,10 +1486,10 @@ class TranslationString
     public static function getPreviewI18n()
     {
         $i18n = [
-            'Form Style Template'  => __('Form Style Template', 'fluenform'),
-            'Save Settings'        => __('Save Settings', 'fluenform'),
-            'Select Preset Styles' => __('Select Preset Styles', 'fluenform'),
-            'Success'              => __('Success', 'fluenform'),
+            'Form Style Template'  => __('Form Style Template', 'fluentform'),
+            'Save Settings'        => __('Save Settings', 'fluentform'),
+            'Select Preset Styles' => __('Select Preset Styles', 'fluentform'),
+            'Success'              => __('Success', 'fluentform'),
         ];
         return apply_filters('fluentform/preview_i18n', $i18n);
     }
@@ -1465,6 +1513,7 @@ class TranslationString
             'Search' => __('Search', 'fluentform'),
             'Export' => __('Export', 'fluentform'),
             'Export as' => __('Export as', 'fluentform'),
+            /* translators: %s is the export format (CSV, JSON, etc.) */
             'Export as %s' => __('Export as %s', 'fluentform'),
             'Advanced Filter' => __('Advanced Filter', 'fluentform'),
             'Filter By Date Range' => __('Filter By Date Range', 'fluentform'),
@@ -1535,10 +1584,12 @@ class TranslationString
             'Submission Logs' => __('Submission Logs', 'fluentform'),
             'General' => __('General', 'fluentform'),
             'API Calls' => __('API Calls', 'fluentform'),
-            '%s in %s at %s' => __('%s in %s at %s', 'fluentform'),
+            /* translators: 1: location, 2: area, 3: time */
+            '%1$s in %2$s at %3$s' => __('%1$s in %2$s at %3$s', 'fluentform'),
             'in' => __('in', 'fluentform'),
             'at' => __('at', 'fluentform'),
             'No Logs found' => __('No Logs found', 'fluentform'),
+            /* translators: %s is the field name */
             '%s is Not Editable' => __('%s is Not Editable', 'fluentform'),
             'Please select a user first' => __('Please select a user first', 'fluentform'),
             'Update Entry' => __('Update Entry', 'fluentform'),
@@ -1557,6 +1608,7 @@ class TranslationString
             'Replay' => __('Replay', 'fluentform'),
             'This feature is available on pro version of Fluent Forms.' => __('This feature is available on pro version of Fluent Forms.', 'fluentform'),
             'Select User for this submission' => __('Select User for this submission', 'fluentform'),
+            /* translators: %s is the username */
             'This entry was submitted by %s. You can change the associate user by using the following form.' => __('This entry was submitted by %s. You can change the associate user by using the following form.', 'fluentform'),
             'You can change the associate user by using the following form' => __('You can change the associate user by using the following form', 'fluentform'),
             'This entry was submitted by guest user.You can assign a new user for this entry' => __('This entry was submitted by guest user.You can assign a new user for this entry', 'fluentform'),
@@ -1585,9 +1637,11 @@ class TranslationString
             'Unit Price' => __('Unit Price', 'fluentform'),
             'Price' => __('Price', 'fluentform'),
             'Sub-Total' => __('Sub-Total', 'fluentform'),
+            /* translators: %s is the discount amount */
             'Discount: %s' => __('Discount: %s', 'fluentform'),
             'Payment Details' => __('Payment Details', 'fluentform'),
             'From Subscriptions' => __('From Subscriptions', 'fluentform'),
+            /* translators: %s is the transaction ID */
             'Transaction #%s' => __('Transaction #%s', 'fluentform'),
             'ID' => __('ID', 'fluentform'),
             'Billing Name' => __('Billing Name', 'fluentform'),
@@ -1600,15 +1654,19 @@ class TranslationString
             'Date' => __('Date', 'fluentform'),
             'Edit Transaction' => __('Edit Transaction', 'fluentform'),
             'Refunds' => __('Refunds', 'fluentform'),
+            /* translators: %s is the refund ID */
             'Refund #%s' => __('Refund #%s', 'fluentform'),
             'View' => __('View', 'fluentform'),
-            '%s has been refunded via %s at %s' => __('%s has been refunded via %s at %s', 'fluentform'),
+            /* translators: 1: amount, 2: payment method, 3: date/time */
+            '%1$s has been refunded via %2$s at %3$s' => __('%1$s has been refunded via %2$s at %3$s', 'fluentform'),
+            /* translators: %s is the note content */
             'Note: %s' => __('Note: %s', 'fluentform'),
             'Reference ID' => __('Reference ID', 'fluentform'),
             'New Refund Amount' => __('New Refund Amount', 'fluentform'),
             'Refund Note' => __('Refund Note', 'fluentform'),
             'Confirm' => __('Confirm', 'fluentform'),
             'Subscriptions (Recurring Payments)' => __('Subscriptions (Recurring Payments)', 'fluentform'),
+            /* translators: %s is the subscription ID */
             '#%s' => __('#%s', 'fluentform'),
             'Related Payments' => __('Related Payments', 'fluentform'),
             'Date (GMT)' => __('Date (GMT)', 'fluentform'),
@@ -1616,11 +1674,15 @@ class TranslationString
             'All received payments will be shown here. No payments received yet!' => __('All received payments will be shown here. No payments received yet!', 'fluentform'),
             'Confirm Subscription Cancellation' => __('Confirm Subscription Cancellation', 'fluentform'),
             'You are about to cancel this subscription' => __('You are about to cancel this subscription', 'fluentform'),
-            'This will also %scancel the subscription at stripe.%s So no further payment will be processed.' => __('This will also %scancel the subscription at stripe.%s So no further payment will be processed.', 'fluentform'),
+            /* translators: 1: opening emphasis tag, 2: closing emphasis tag */
+            'This will also %1$scancel the subscription at stripe.%2$s So no further payment will be processed.' => __('This will also %1$scancel the subscription at stripe.%2$s So no further payment will be processed.', 'fluentform'),
+            /* translators: %s is the payment gateway name */
             '%s payment gateway does not support remote cancellation at this moment.' => __('%s payment gateway does not support remote cancellation at this moment.', 'fluentform'),
+            /* translators: %s is the payment gateway name */
             'Please cancel the subscription from %s dashboard too.' => __('Please cancel the subscription from %s dashboard too.', 'fluentform'),
             'Close' => __('Close', 'fluentform'),
             'Yes, Cancel this subscription' => __('Yes, Cancel this subscription', 'fluentform'),
+            /* translators: %d is the number of bills */
             'Total Bills: %d ' => __('Total Bills: %d', 'fluentform'),
             'No entry found.' => __('No entry found.', 'fluentform'),
             'Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.' => __('Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.', 'fluentform'),
@@ -1633,7 +1695,9 @@ class TranslationString
             'This is a Pro Feature' => __('This is a Pro Feature', 'fluentform'),
             'Please upgrade to pro to unlock this feature.' => __('Please upgrade to pro to unlock this feature.', 'fluentform'),
             'Upgrade to Pro' => __('Upgrade to Pro', 'fluentform'),
-            '%s/ %s %s %s %s' => __('%s/ %s %s %s %s', 'fluentform'),
+            /* translators: 1-5: various data fields separated by slashes */
+            '%1$s/ %2$s %3$s %4$s %5$s' => __('%1$s/ %2$s %3$s %4$s %5$s', 'fluentform'),
+            /* translators: %s is the platform name */
             'View on %s' => __('View on %s', 'fluentform'),
             'Reset Form Analytics' => __('Reset Form Analytics', 'fluentform'),
             'Select a Timeframe' => __('Select a Timeframe', 'fluentform'),
@@ -1655,6 +1719,7 @@ class TranslationString
             'Back to All' => __('Back to All', 'fluentform'),
             'Next ' => __('Next ', 'fluentform'),
             ' Previous' => __(' Previous', 'fluentform'),
+            /* translators: %s is the serial number */
             'Partial Entry - Serial Number #%s' => __('Partial Entry - Serial Number #%s', 'fluentform'),
             'Submission ID: ' => __('Submission ID: ', 'fluentform'),
             'User IP: ' => __('User IP: ', 'fluentform'),
@@ -1746,6 +1811,7 @@ class TranslationString
             'Edit Form' => __('Edit Form', 'fluentform'),
             'Fluent Forms Migrator' => __('Fluent Forms Migrator', 'fluentform'),
             'Migrate other plugins\' forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.' => __('Migrate other plugins\' forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.', 'fluentform'),
+            /* translators: %s is the plugin name */
             'Import %s' => __('Import %s', 'fluentform'),
             'Import All Forms' => __('Import All Forms', 'fluentform'),
             'Form Name' => __('Form Name', 'fluentform'),
@@ -1825,10 +1891,12 @@ class TranslationString
             'Enable Fluent Forms Payment Module' => __('Enable Fluent Forms Payment Module', 'fluentform'),
             'General Settings' => __('General Settings', 'fluentform'),
             'Coupons' => __('Coupons ', 'fluentform'),
+            /* translators: %s is the payment mode (Test/Live) */
             'Stripe %s Mode' => __('Stripe %s Mode', 'fluentform'),
             'Connect Your Stripe Account to your website to accept Payments' => __('Connect Your Stripe Account to your website to accept Payments', 'fluentform'),
             'Connect With Stripe' => __('Connect With Stripe', 'fluentform'),
             'Your Stripe Account is connected' => __('Your Stripe Account is connected', 'fluentform'),
+            /* translators: %s is the account name */
             '%s - Administrator(Owner)' => __('%s - Administrator(Owner)', 'fluentform'),
             'No, Thanks' => __('No, Thanks', 'fluentform'),
             'Are you sure to disconnect this account?' => __('Are you sure to disconnect this account?', 'fluentform'),
@@ -1841,13 +1909,16 @@ class TranslationString
             'FluentForms uses the pages below for handling the display of payment history and payment receipt.Please select the pages and add the instructed shortcodes accordingly.' => __('FluentForms uses the pages below for handling the display of payment history and payment receipt.Please select the pages and add the instructed shortcodes accordingly.', 'fluentform'),
             'Please read the documentation' => __('Please read the documentation', 'fluentform'),
             ' for advanced shorcode usage' => __(' for advanced shorcode usage', 'fluentform'),
-            'Also %splease check the documentation%s to learn how to accept %sRecurring Payments%s' => __('Also %splease check the documentation%s to learn how to accept %sRecurring Payments%s', 'fluentform'),
+            /* translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for recurring payments link */
+            'Also %1$splease check the documentation%2$s to learn how to accept %3$sRecurring Payments%4$s' => __('Also %1$splease check the documentation%2$s to learn how to accept %3$sRecurring Payments%4$s', 'fluentform'),
             'Payment Management Page' => __('Payment Management Page', 'fluentform'),
             'This is where user can view their single payments and subscriptions.' => __('This is where user can view their single payments and subscriptions.', 'fluentform'),
-            'Add shortcode %s[fluentform_payments]%s in the selected page. This shortcode will show single and subscriptions to the logged-in user' => __('Add shortcode %s[fluentform_payments]%s in the selected page. This shortcode will show single and subscriptions to the logged-in user', 'fluentform'),
+            /* translators: 1: opening code tag, 2: closing code tag */
+            'Add shortcode %1$s[fluentform_payments]%2$s in the selected page. This shortcode will show single and subscriptions to the logged-in user' => __('Add shortcode %1$s[fluentform_payments]%2$s in the selected page. This shortcode will show single and subscriptions to the logged-in user', 'fluentform'),
             'Payment Receipt Page' => __('Payment Receipt Page', 'fluentform'),
             'This is where user can view their payment receipt and manage single subscription payment.' => __('This is where user can view their payment receipt and manage single subscription payment.', 'fluentform'),
-            'Add shortcode %s[fluentform_payment_view]%s in the selected page.' => __('Add shortcode %s[fluentform_payment_view]%s in the selected page.', 'fluentform'),
+            /* translators: 1: opening code tag, 2: closing code tag */
+            'Add shortcode %1$s[fluentform_payment_view]%2$s in the selected page.' => __('Add shortcode %1$s[fluentform_payment_view]%2$s in the selected page.', 'fluentform'),
             'Subscription Management' => __('Subscription Management', 'fluentform'),
             'Please enable this if you enable users to manage their own subscriptions like cancel an active subscription.' => __('Please enable this if you enable users to manage their own subscriptions like cancel an active subscription.', 'fluentform'),
             'Users can manage their own payment subscriptions(only available on Stripe)' => __('Users can manage their own payment subscriptions(only available on Stripe)', 'fluentform'),
@@ -1864,6 +1935,7 @@ class TranslationString
             'Coupon Code' => __('Coupon Code', 'fluentform'),
             'Enter a code for this discount, such as 10PERCENT. Only alphanumeric characters are allowed.' => __('Enter a code for this discount, such as 10PERCENT.Only alphanumeric characters are allowed.', 'fluentform'),
             'Discount Amount / Percent' => __('Discount Amount / Percent', 'fluentform'),
+            /* translators: Example showing that 10 equals 10 percent */
             'Enter the discount percentage. 10 = 10 %' => __('Enter the discount percentage. 10 = 10 %', 'fluentform'),
             'Discount Type' => __('Discount Type', 'fluentform'),
             'Percent based discount' => __('Percent based discount', 'fluentform'),
@@ -1914,8 +1986,10 @@ class TranslationString
             'Save PayPal Settings' => __('Save PayPal Settings', 'fluentform'),
             'PayPal IPN Settings(Recommended for Subscription Payment)' => __('PayPal IPN Settings(Recommended for Subscription Payment)', 'fluentform'),
             'In order to function completely for subscription / recurring payments, you must configure your PayPal IPN.' => __('In order to function completely for subscription / recurring payments, you must configure your PayPal IPN.', 'fluentform'),
-            '%sIPN URL:%s %s' => __('%sIPN URL:%s %s', 'fluentform'),
-            '%sPlease read the documentation%s to learn how to setup %sPayPal IPN%s' => __('%sPlease read the documentation%s to learn how to setup %sPayPal IPN%s', 'fluentform'),
+            /* translators: 1-2: HTML tags for label formatting, 3: the IPN URL */
+            '%1$sIPN URL:%2$s %3$s' => __('%1$sIPN URL:%2$s %3$s', 'fluentform'),
+            /* translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for PayPal IPN link */
+            '%1$sPlease read the documentation%2$s to learn how to setup %3$sPayPal IPN%4$s' => __('%1$sPlease read the documentation%2$s to learn how to setup %3$sPayPal IPN%4$s', 'fluentform'),
             'Enable Stripe Payment Method' => __('Enable Stripe Payment Method', 'fluentform'),
             'Stripe Test API Keys' => __('Stripe Test API Keys', 'fluentform'),
             'Test Publishable key' => __('Test Publishable key', 'fluentform'),
@@ -1927,7 +2001,8 @@ class TranslationString
             'In order for Stripe to function completely for subscription / recurring payments, you must configure your Stripe webhooks. Visit your ' => __('In order for Stripe to function completely for subscription / recurring payments, you must configure your Stripe webhooks. Visit your ', 'fluentform'),
             'account dashboard' => __('account dashboard', 'fluentform'),
             'to configure them.Please add a webhook endpoint for the URL below.' => __('to configure them.Please add a webhook endpoint for the URL below.', 'fluentform'),
-            '%sWebhook URL:%s %s' => __('%sWebhook URL:%s %s', 'fluentform'),
+            /* translators: 1-2: HTML tags for label formatting, 3: the webhook URL */
+            '%1$sWebhook URL:%2$s %3$s' => __('%1$sWebhook URL:%2$s %3$s', 'fluentform'),
             'Stripe IPN' => __('Stripe IPN', 'fluentform'),
             'Please enable the following Webhook events for this URL: ' => __('Please enable the following Webhook events for this URL:', 'fluentform'),
             'Sorry! No settings found.Maybe your payment module is disabled!' => __('Sorry! No settings found.Maybe your payment module is disabled!', 'fluentform'),
@@ -1962,7 +2037,8 @@ class TranslationString
             'cancelled' => __('cancelled', 'fluentform'),
             'Time' => __('Time', 'fluentform'),
             'Select Status' => __('Select Status', 'fluentform'),
-            'FluentForms uses the pages below for handling the display of payment history and payment receipt. Please select the pages and add the instructed shortcodes accordingly. %sPlease read the documentation%s for advanced shortcode usage.' => __('FluentForms uses the pages below for handling the display of payment history and payment receipt. Please select the pages and add the instructed shortcodes accordingly. %sPlease read the documentation%s for advanced shortcode usage.', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'FluentForms uses the pages below for handling the display of payment history and payment receipt. Please select the pages and add the instructed shortcodes accordingly. %1$sPlease read the documentation%2$s for advanced shortcode usage.' => __('FluentForms uses the pages below for handling the display of payment history and payment receipt. Please select the pages and add the instructed shortcodes accordingly. %1$sPlease read the documentation%2$s for advanced shortcode usage.', 'fluentform'),
             'yes' => __('yes', 'fluentform'),
             'no' => __('no', 'fluentform'),
             'Coupon Limit' => __('Coupon Limit', 'fluentform'),
@@ -1999,9 +2075,11 @@ class TranslationString
             'Select the payment mode. for testing purposes you should select Test Mode otherwise select Live mode.' => __('Select the payment mode. for testing purposes you should select Test Mode otherwise select Live mode.', 'fluentform'),
             'Test Mode' => __('Test Mode', 'fluentform'),
             'Live Mode' => __('Live Mode', 'fluentform'),
-            'You can find the API keys to %sStripe Dashboard%s' => __('You can find the API keys to %sStripe Dashboard%s', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'You can find the API keys to %1$sStripe Dashboard%2$s' => __('You can find the API keys to %1$sStripe Dashboard%2$s', 'fluentform'),
             'Stripe Webhook (Recommended for Recurring Payments)' => __('Stripe Webhook (Recommended for Recurring Payments)', 'fluentform'),
-            'In order for Stripe to function completely for subscription/recurring payments, you must configure your Stripe webhooks. Visit your %saccount dashboard%s to configure them. Please add a webhook endpoint for the URL below.' => __('In order for Stripe to function completely for subscription/recurring payments, you must configure your Stripe webhooks. Visit your %saccount dashboard%s to configure them. Please add a webhook endpoint for the URL below.', 'fluentform'),
+            /* translators: 1: opening link tag, 2: closing link tag */
+            'In order for Stripe to function completely for subscription/recurring payments, you must configure your Stripe webhooks. Visit your %1$saccount dashboard%2$s to configure them. Please add a webhook endpoint for the URL below.' => __('In order for Stripe to function completely for subscription/recurring payments, you must configure your Stripe webhooks. Visit your %1$saccount dashboard%2$s to configure them. Please add a webhook endpoint for the URL below.', 'fluentform'),
             'Webhook URL' => __('Webhook URL', 'fluentform'),
             'Please enable the following Webhook events for this URL' => __('Please enable the following Webhook events for this URL', 'fluentform'),
             'Enable your users to pay online as part of the Forms submission process. With Fluent Forms Powerful payment integration, you can easily accept and process payments in your Fluent Forms. Just activate this module and setup your payment methods.' => __('Enable your users to pay online as part of the Forms submission process. With Fluent Forms Powerful payment integration, you can easily accept and process payments in your Fluent Forms. Just activate this module and setup your payment methods.', 'fluentform'),
@@ -2015,7 +2093,8 @@ class TranslationString
             'General' => __('General', 'fluentform'),
             'Currency' => __('Currency', 'fluentform'),
             'Enable Debug Log (Recommended for debug purpose only)' => __('Enable Debug Log (Recommended for debug purpose only)', 'fluentform'),
-            '%sPlease read the documentation%s to learn how to setup %sStripe IPN%s' => __('%sPlease read the documentation%s to learn how to setup %sStripe IPN%s', 'fluentform'),
+            /* translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for Stripe IPN link */
+            '%1$sPlease read the documentation%2$s to learn how to setup %3$sStripe IPN%4$s' => __('%1$sPlease read the documentation%2$s to learn how to setup %3$sStripe IPN%4$s', 'fluentform'),
         );
 
         return apply_filters('fluentform/payments_i18n', $i18n);
@@ -2200,4 +2279,5 @@ class TranslationString
         ];
     }
 }
+
 

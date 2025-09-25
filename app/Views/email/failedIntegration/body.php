@@ -1,3 +1,6 @@
+<?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -117,7 +120,7 @@
                         <td class="alert alert-warning"
                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; vertical-align: top; color: #fff; font-weight: 500; text-align: center; border-radius: 3px 3px 0 0; background-color: #b7a13a; margin: 0; padding: 20px;"
                             align="center" bgcolor="#FF9F00" valign="top">
-                            <?php _e('Failed Integrations', 'fluentform'); ?>
+                            <?php esc_html_e('Failed Integrations', 'fluentform'); ?>
                         </td>
                     </tr>
                     <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -130,7 +133,7 @@
                                     <td class="content-block"
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                         valign="top">
-                                        <?php _e('You have some integrations that did not run successfully! Please take necessary steps.', 'fluentform'); ?>
+                                        <?php esc_html_e('You have some integrations that did not run successfully! Please take necessary steps.', 'fluentform'); ?>
                                     </td>
                                 </tr>
                                 <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -140,10 +143,10 @@
                                         <table class="failed_notifications_summary">
                                             <thead>
                                             <tr>
-                                                <th><?php _e('Feed', 'fluentform'); ?></th>
-                                                <th><?php _e('Form', 'fluentform'); ?></th>
-                                                <th><?php _e('Log', 'fluentform'); ?></th>
-                                                <th><?php _e('Link', 'fluentform'); ?></th>
+                                                <th><?php esc_html_e('Feed', 'fluentform'); ?></th>
+                                                <th><?php esc_html_e('Form', 'fluentform'); ?></th>
+                                                <th><?php esc_html_e('Log', 'fluentform'); ?></th>
+                                                <th><?php esc_html_e('Link', 'fluentform'); ?></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -157,10 +160,10 @@
                                                     }
                                                     ?>
                                                 <tr>
-                                                    <td><?php echo $feed->integration_name ?></td>
-                                                    <td><?php echo $feed->form->title ?></td>
-                                                    <td><?php echo $feed->note ?></td>
-                                                    <td> <a href="<?php echo $feed->submission_link?>"><?php _e('View','fluentform')?></a></td>
+                                                    <td><?php echo esc_html($feed->integration_name); ?></td>
+                                                    <td><?php echo esc_html($feed->form->title); ?></td>
+                                                    <td><?php echo esc_html($feed->note); ?></td>
+                                                    <td> <a href="<?php echo esc_url($feed->submission_link); ?>"><?php esc_html_e('View','fluentform')?></a></td>
                                                 </tr>
                                             <?php } ?>
                                             </tbody>
@@ -177,6 +180,7 @@
                                         <?php
                                         if (count($failed_feeds) > 10) {
                                             $viewAllApiLogs = sprintf(
+                                              /* translators: 1: opening anchor tag, 2: here, 3: closing anchor tag */
                                                 __('You have more error logs, please click %1$s%2$s%3$s to review.', 'fluentform'),
                                                 '<a href="' . admin_url('admin.php?page=fluent_forms_transfer&status=failed&start_date='.$first_item_time.'&end_date='.$last_item_time.'&#apilogs') . '">',
                                                 __('here', 'fluentform'),
@@ -205,6 +209,7 @@
                                 align="center" valign="top">
                                 <?php
                                 $footerText = sprintf(
+                                    /* translators: 1: opening anchor tag, 2: closing anchor tag, 3: opening anchor tag, 4: closing anchor tag */
                                     __('This email has been sent from %1$syour website%2$s via Fluent Forms. You can disable this email from %3$shere%4$s', 'fluentform'),
                                     '<a href="' .  site_url() . '">',
                                     '</a>',

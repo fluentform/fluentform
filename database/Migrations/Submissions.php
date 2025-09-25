@@ -39,13 +39,64 @@ class Submissions
 			  `total_paid` FLOAT NULL,
 			  `created_at` TIMESTAMP NULL,
 			  `updated_at` TIMESTAMP NULL,
-			  PRIMARY KEY (`id`)) $charsetCollate;";
+			  PRIMARY KEY (`id`),
+			  KEY `form_id_status` (`form_id`, `status`),
+			  KEY `form_id_created_at` (`form_id`, `created_at`),
+			  KEY `user_id` (`user_id`),
+			  KEY `serial_number` (`serial_number`)) $charsetCollate;";
 
-        $hasTable = $wpdb->get_var("SHOW TABLES LIKE '$table'") != $table;
-
-        if ($force || !$hasTable) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration file, direct query needed
+        if ($force || $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) != $table) {
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
             dbDelta($sql);
+        } else {
+            // Add indexes to existing tables
+            self::maybeAddIndexes();
+        }
+    }
+
+    /**
+     * Add indexes to existing tables for better query performance.
+     *
+     * @return void
+     */
+    private static function maybeAddIndexes()
+    {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'fluentform_submissions';
+
+        // Check if indexes already exist
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration file, checking indexes, %1s is for identifier
+        $indexes = $wpdb->get_results($wpdb->prepare("SHOW INDEX FROM %1s", $table), ARRAY_A);
+
+        $existingIndexes = [];
+        foreach ($indexes as $index) {
+            $existingIndexes[] = $index['Key_name'];
+        }
+
+        // Add composite index form_id + status if it doesn't exist
+        if (!in_array('form_id_status', $existingIndexes)) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration file, adding composite index for performance, %1s is for identifier
+            $wpdb->query($wpdb->prepare("ALTER TABLE %1s ADD KEY `form_id_status` (`form_id`, `status`)", $table));
+        }
+
+        // Add composite index form_id + created_at if it doesn't exist
+        if (!in_array('form_id_created_at', $existingIndexes)) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration file, adding composite index for performance, %1s is for identifier
+            $wpdb->query($wpdb->prepare("ALTER TABLE %1s ADD KEY `form_id_created_at` (`form_id`, `created_at`)", $table));
+        }
+
+        // Add user_id index if it doesn't exist
+        if (!in_array('user_id', $existingIndexes)) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration file, adding index for performance, %1s is for identifier
+            $wpdb->query($wpdb->prepare("ALTER TABLE %1s ADD KEY `user_id` (`user_id`)", $table));
+        }
+
+        // Add serial_number index if it doesn't exist
+        if (!in_array('serial_number', $existingIndexes)) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration file, adding index for performance, %1s is for identifier
+            $wpdb->query($wpdb->prepare("ALTER TABLE %1s ADD KEY `serial_number` (`serial_number`)", $table));
         }
     }
 }

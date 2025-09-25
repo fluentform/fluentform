@@ -689,13 +689,6 @@
     display: inline-block;
     margin: 0;
   }
-  input[type=checkbox] {
-    -webkit-appearance: checkbox;
-  }
-
-  input[type=radio] {
-    -webkit-appearance: radio;
-  }
   .text-danger {
     color: $danger;
   }

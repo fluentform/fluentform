@@ -16,7 +16,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$fileTypeOptions = [
+$fluentformFileTypeOptions = [
     [
         'label' => __('Images (jpg, jpeg, gif, png, bmp)', 'fluentform'),
         'value' => 'jpg|jpeg|gif|png|bmp',
@@ -51,19 +51,36 @@ $fileTypeOptions = [
     ],
 ];
 
-$fileTypeOptions = apply_filters_deprecated(
+$fluentformFileTypeOptions = apply_filters_deprecated(
     'fluentform_file_type_options',
     [
-        $fileTypeOptions
+        $fluentformFileTypeOptions
     ],
     FLUENTFORM_FRAMEWORK_UPGRADE,
     'fluentform/file_type_options',
     'Use fluentform/file_type_options instead of fluentform_file_type_options.'
 );
 
-$fileTypeOptions = apply_filters('fluentform/file_type_options', $fileTypeOptions);
+$fluentformFileTypeOptions = apply_filters('fluentform/file_type_options', $fluentformFileTypeOptions);
 
-$validation_rule_settings = [
+$fluentformImageTypeOptions = [
+    [
+        'label' => __('JPG', 'fluentform'),
+        'value' => 'jpg|jpeg',
+    ],
+    [
+        'label' => __('PNG', 'fluentform'),
+        'value' => 'png',
+    ],
+    [
+        'label' => __('GIF', 'fluentform'),
+        'value' => 'gif',
+    ],
+];
+
+$fluentformImageTypeOptions = apply_filters('fluentform/image_type_options', $fluentformImageTypeOptions);
+
+$fluentformValidationRuleSettings = [
     'required' => [
         'template'  => 'inputRadio',
         'label'     => __('Required', 'fluentform'),
@@ -222,7 +239,7 @@ $validation_rule_settings = [
                 'types' => ['csv'],
             ],
         ],
-        'options' => $fileTypeOptions,
+        'options' => $fluentformFileTypeOptions,
     ],
     'allowed_image_types' => [
         'template'  => 'inputCheckbox',
@@ -242,31 +259,18 @@ $validation_rule_settings = [
                 'types' => ['gif'],
             ],
         ],
-        'options' => [
-            [
-                'label' => __('JPG', 'fluentform'),
-                'value' => 'jpg|jpeg',
-            ],
-            [
-                'label' => __('PNG', 'fluentform'),
-                'value' => 'png',
-            ],
-            [
-                'label' => __('GIF', 'fluentform'),
-                'value' => 'gif',
-            ],
-        ],
+        'options' => $fluentformImageTypeOptions,
     ],
 ];
 
-$validation_rule_settings = apply_filters_deprecated(
+$fluentformValidationRuleSettings = apply_filters_deprecated(
     'fluent_editor_validation_rule_settings',
     [
-        $validation_rule_settings
+        $fluentformValidationRuleSettings
     ],
     FLUENTFORM_FRAMEWORK_UPGRADE,
     'fluentform/editor_validation_rule_settings',
     'Use fluentform/editor_validation_rule_settings instead of fluent_editor_validation_rule_settings.'
 );
 
-return apply_filters('fluentform/editor_validation_rule_settings', $validation_rule_settings);
+return apply_filters('fluentform/editor_validation_rule_settings', $fluentformValidationRuleSettings);

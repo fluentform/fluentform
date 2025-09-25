@@ -10,8 +10,7 @@ import {
     BarChart,
     LineChart,
     PieChart,
-    MapChart,
-    TreemapChart
+    MapChart
 } from 'echarts/charts';
 import {
     GridComponent,
@@ -101,7 +100,6 @@ use([
     LineChart,
     PieChart,
     MapChart,
-    TreemapChart,
     GridComponent,
     TooltipComponent,
     LegendComponent,

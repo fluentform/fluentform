@@ -15,7 +15,8 @@ if (!mix.inProduction()) {
     // During production build we'll remove the existing public
     // directory so that the source-maps are deleted as well.
     let fs = require('fs-extra');
-    fs.remove('assets');
+    fs.removeSync('assets');
+    mix.sourceMaps(false);
 }
 
 mix.webpackConfig({
@@ -74,7 +75,6 @@ mix
     .sass('resources/assets/admin/css/admin_docs.scss', `assets/css/admin_docs.css`)
     .sass('resources/assets/admin/css/add-ons.scss', 'assets/css/add-ons.css')
     .sass('resources/assets/admin/css/fluent-forms-reports.scss', 'assets/css/fluent-forms-reports.css')
-    .sass('resources/assets/admin/css/fluent_gutenblock.scss', 'assets/css/fluent_gutenblock.css')
     .sass('resources/assets/admin/css/payment_settings.scss', 'assets/css/payment_settings.css')
     .sass('resources/assets/admin/css/payment_entries.scss', 'assets/css/payment_entries.css')
     .sass('resources/assets/public/scss/fluent-forms-public.scss', `assets/css/fluent-forms-public.css`)
@@ -165,7 +165,8 @@ mix.then(() => {
     });
 });
 
-mix.js('resources/assets/admin/fluent_gutenblock.js','assets/js/fluent_gutenblock.js').react()
+mix.js('guten_block/src/index.js','assets/js/fluent_gutenblock.js').react()
+mix.sass('guten_block/src/fluent_gutenblock.scss', 'assets/css/fluent_gutenblock.css')
 
 mix
     .copyDirectory('resources/assets/libs', 'assets/libs')

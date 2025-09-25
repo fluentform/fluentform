@@ -213,15 +213,7 @@
                     <el-checkbox v-if="hasPro" true-label="yes" false-label="no" v-model="integration_failure_notification.status">
                         {{ $t('Enable Integration Failure Notification') }}
                     </el-checkbox>
-                    <notice class="ff_alert_between" type="danger-soft" v-else>
-                        <div>
-                            <h6 class="title">{{$t('Integration Failure Email Notification is available in the pro version')}}</h6>
-                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
-                        </div>
-                        <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrade to Pro')}}
-                        </a>
-                    </notice>
+                    <update-to-pro-content v-else :update-message="$t('Integration Failure Email Notification is available in the pro version')" />
                 </el-form-item>
                 <template v-if="integration_failure_notification.status == 'yes' && hasPro">
                     <el-form-item class="ff-form-item">
@@ -582,15 +574,7 @@
                             <p v-if="misc.geo_provider && geo_providers[misc.geo_provider].token_instruction" class="text-note" style="margin-top: -14px;">({{ this.$t(geo_providers[misc.geo_provider].token_instruction) }}</p>
                         </el-col>
                     </el-row>
-                    <notice class="ff_alert_between" type="danger-soft" v-else>
-                        <div>
-                            <h6 class="title">{{$t('Geo-Location provider is available in the pro version')}}</h6>
-                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
-                        </div>
-                        <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrade to Pro')}}
-                        </a>
-                    </notice>
+                    <update-to-pro-content :update-message="$t('Geo-Location provider is available in the pro version')" v-else/>
                 </el-form-item>
 
                 <!-- File Upload Location -->
@@ -617,15 +601,8 @@
                             </el-select>
                         </el-col>
                     </el-row>
-                    <notice class="ff_alert_between" type="danger-soft" v-else>
-                        <div>
-                            <h6 class="title">{{$t('File Upload Location is available in the pro version')}}</h6>
-                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
-                        </div>
-                        <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrade to Pro')}}
-                        </a>
-                    </notice>
+                    <update-to-pro-content :update-message="$t('File Upload Field & Location is available in the pro version')" v-else/>
+
                 </el-form-item>
 
                 <!-- Enable captcha in All form -->
@@ -724,6 +701,27 @@
                         </el-radio-group>
                     </el-form-item>
                 </div>
+
+                <!-- Form Editor Autosave -->
+                <div class="el-form-item-wrap">
+                    <el-form-item class="ff-form-item-flex ff-form-item mb-3 ff-form-setting-label-width">
+                        <template slot="label">
+                            <span>
+                                {{ $t('Form Editor Autosave') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{ $t('Enable this to automatically save form changes after 30 seconds of inactivity for all forms.') }}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </span>
+                        </template>
+                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg"
+                                v-model="misc.autosave_enabled"></el-switch>
+                    </el-form-item>
+                </div>
             </card-body>
         </card>
     </el-form>
@@ -736,6 +734,7 @@
     import Notice from '@/admin/components/Notice/Notice.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
     import { scrollTop } from '@/admin/helpers';
+    import UpdateToProContent from '@/admin/components/_updateToProContent.vue';
 
     export default {
         name: 'FormLayout',
@@ -744,7 +743,8 @@
             CardHead,
             CardBody,
             Notice,
-            CardHeadGroup
+            CardHeadGroup,
+            UpdateToProContent
         },
         props: {
             data: {
@@ -873,6 +873,10 @@
             }
             if (!this.data.misc.default_admin_date_time) {
                 this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
+            }
+
+            if (!this.data.misc.autosave_enabled) {
+                this.$set(this.data.misc, 'autosave_enabled', 'no');
             }
 
             if (!this.data.misc.tokenBasedProtectionStatus) {

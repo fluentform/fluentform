@@ -294,6 +294,7 @@ class Logger
 
         if (!$ids) {
             throw new ValidationException(
+               // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 __('No selections found', 'fluentform')
             );
         }

@@ -160,7 +160,7 @@ class Scheduler
         $headers = [
             'Content-Type: text/html; charset=utf-8'
         ];
-
+        /* translators: %s is the Number Email Summary Days */
         $emailSubject = sprintf(esc_html__('Email Summary of Your Forms (Last %d Days)', 'fluentform'), $days);
 
         if (isset($settings['subject']) && $settings['subject']) {

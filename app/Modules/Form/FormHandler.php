@@ -862,15 +862,14 @@ class FormHandler
                 };
 
                 if (!count($arrayFilterRecursive($filteredFormData))) {
+                    $message = Arr::get($settings, 'message');
+                    if (!$message) {
+                        $message = __('Sorry! You can\'t submit an empty form.', 'fluentform');
+                    }
                     wp_send_json([
                         'errors' => [
                             'restricted' => [
-                                __(
-                                    !($m = Arr::get($settings, 'message'))
-                                        ? 'Sorry! You can\'t submit an empty form.'
-                                        : $m,
-                                    'fluentform'
-                                ),
+                                $message,
                             ],
                         ],
                     ], 422);
@@ -1018,8 +1017,11 @@ class FormHandler
                 wp_send_json([
                     'errors' => [
                         'restricted' => [
-                            __(apply_filters('fluentform/too_many_requests', 'Too Many Requests.', $this->form->id),
-                                'fluentform'),
+                            apply_filters(
+                                'fluentform/too_many_requests',
+                                __('Too Many Requests.', 'fluentform'),
+                                $this->form->id
+                            ),
                         ],
                     ],
                 ], 429);

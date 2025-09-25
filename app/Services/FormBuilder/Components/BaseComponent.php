@@ -140,7 +140,7 @@ class BaseComponent
      */
     protected function getUniqueId($str)
     {
-        return $str . '_' . md5(uniqid(mt_rand(), true));
+        return $str . '_' . md5(uniqid(wp_rand(), true));
     }
     
     /**
@@ -192,7 +192,8 @@ class BaseComponent
     protected function buildElementLabel($data, $form)
     {
         $helpMessage = '';
-        if ('with_label' == $form->settings['layout']['helpMessagePlacement']) {
+        $helpMessagePlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
+        if ('with_label' == $helpMessagePlacement) {
             $helpMessage = $this->getLabelHelpMessage($data);
         }
         
@@ -239,8 +240,8 @@ class BaseComponent
         );
         
         $labelHelpText = $inputHelpText = '';
-        
-        $labelPlacement = $form->settings['layout']['helpMessagePlacement'];
+
+        $labelPlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
         if ('with_label' == $labelPlacement) {
             $labelHelpText = $this->getLabelHelpMessage($data);
         } elseif ('on_focus' == $labelPlacement) {
@@ -252,8 +253,10 @@ class BaseComponent
         }
         
         $forStr = '';
+        $LabelId = '';
         if (isset($data['attributes']['id'])) {
             $forStr = "for='" . esc_attr($data['attributes']['id']) . "'";
+            $LabelId = "id='" . esc_attr('label_' . $data['attributes']['id']) . "'";
         }
         
         $labelMarkup = '';
@@ -275,9 +278,10 @@ class BaseComponent
             }
             
             $labelMarkup = sprintf(
-                '<div class="%1$s"><label %2$s %3$s>%4$s</label>%5$s</div>',
+                '<div class="%1$s"><label %2$s %3$s %4$s>%5$s</label>%6$s</div>',
                 esc_attr($labelClass),
                 $forStr,
+                $LabelId,
                 $ariaLabel != '' ? 'aria-label="' . esc_attr($this->removeShortcode($label)) . '"' : '',
                 fluentform_sanitize_html($label),
                 fluentform_sanitize_html($labelHelpText)
@@ -340,8 +344,7 @@ class BaseComponent
     
     protected function printContent($hook, $html, $data, $form)
     {
-        echo apply_filters($hook, $html, $data,
-            $form); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $html is escaped before being passed in.
+        echo apply_filters($hook, $html, $data, $form); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound,WordPress.Security.EscapeOutput.OutputNotEscaped -- Dynamic hook name for component content filter. $html is escaped before being passed in.
     }
     
     /**

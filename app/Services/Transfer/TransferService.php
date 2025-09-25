@@ -60,7 +60,7 @@ class TransferService
                     } elseif ($fields = Arr::get($formItem, 'form_fields', '')) {
                         $formFields = json_encode($fields);
                     } else {
-                        throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
+                        throw new Exception(esc_html__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
                     }
                     $formTitle = sanitize_text_field(Arr::get($formItem, 'title'));
                     $form = [
@@ -123,7 +123,7 @@ class TransferService
                 ]);
             }
         }
-        throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
+        throw new Exception(esc_html__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
     }
 
     public static function exportEntries($args)
@@ -293,16 +293,32 @@ class TransferService
                 return $itemValue;
             }, $item);
         }, $data);
-        $autoloaderPath = App::getInstance()->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
-        // Check if the file is already included
-        if (!in_array(realpath($autoloaderPath), get_included_files())) {
-            // Include the autoloader file if it has not been included yet
-            require_once $autoloaderPath;
-        }
+        // Load Composer autoloader for OpenSpout
+        require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
-        $writer = \Box\Spout\Writer\WriterFactory::create($type);
+
+        // Create writer based on type using WriterEntityFactory
+        switch (strtolower($type)) {
+            case 'csv':
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCSVWriter();
+                break;
+            case 'xlsx':
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createXLSXWriter();
+                break;
+            case 'ods':
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createODSWriter();
+                break;
+            default:
+                throw new \Exception(sprintf('Unsupported file type: %s', esc_html($type)));
+        }
         $writer->openToBrowser($fileName);
-        $writer->addRows($data);
+
+        // Convert data arrays to Row objects for OpenSpout v3
+        $rows = array_map(function ($rowData) {
+            return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($rowData);
+        }, $data);
+
+        $writer->addRows($rows);
         $writer->close();
         die();
     }

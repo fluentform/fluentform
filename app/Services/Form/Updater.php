@@ -81,7 +81,7 @@ class Updater
                 $duplicateString = implode(', ', $duplicates);
 
                 throw new Exception(
-                    sprintf('Name attribute %s has duplicate value.', $duplicateString)
+                    sprintf('Name attribute %s has duplicate value.', esc_html($duplicateString))
                 );
             }
         }

@@ -63,19 +63,23 @@
                                         <img :src="form.screenshot" alt="" class="ff_form_card_img">
                                         <div
                                             :loading="creatingForm"
-                                            @click="createForm(name, form)"
                                             class="ff_form_card_overlap"
                                         >
                                             <div class="ff_form_card_overlap_inner">
-                                                <el-button>
-                                                    <template v-if="creatingForm">
-                                                        <span>{{$t('Creating Form...')}}</span>
-                                                    </template>
-                                                    <template v-else>
-                                                        <span v-if="form.is_pro && !has_pro">{{$t('Unlock in Pro')}}</span>
-                                                        <span v-else>{{ $t('Create Form') }}</span>
-                                                    </template>
-                                                </el-button>
+                                                <div class="ff_card_buttons">
+                                                  <el-button v-if="form.prev_link" @click.stop="previewForm(name, form)" class="ff_preview_btn">
+                                                    <span>{{ $t('Preview') }}</span>
+                                                  </el-button>
+                                                    <el-button @click="createForm(name, form)">
+                                                        <template v-if="creatingForm">
+                                                            <span>{{$t('Creating Form...')}}</span>
+                                                        </template>
+                                                        <template v-else>
+                                                            <span v-if="form.is_pro && !has_pro">{{$t('Unlock in Pro')}}</span>
+                                                            <span v-else>{{ $t('Create Form') }}</span>
+                                                        </template>
+                                                    </el-button>
+                                                </div>
                                                 <p v-html="form.brief"></p>
                                             </div>
                                         </div>
@@ -180,7 +184,6 @@
 
                 FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
-                    this.$success(response.message);
 
                     if (response.redirect_url) {
                         window.location.href = response.redirect_url;
@@ -222,8 +225,17 @@
                 this.$nextTick(() => {
                     this.$refs.searchInput.focus();
                 });
+            },
+            previewForm(formType, form) {
+                if (form.prev_link) {
+                    // Create a temporary link element to handle the security attributes
+                    const link = document.createElement('a');
+                    link.href = form.prev_link;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.click();
+                }
             }
-
         },
         mounted() {
 

@@ -80,7 +80,7 @@ class Bootstrap
                 break;
             default:
                 wp_send_json([
-                    'message' => __('Unsupported Form Type!'),
+                    'message' => __('Unsupported Form Type!','fluentform'),
                     'success' => false,
                 ]);
         }

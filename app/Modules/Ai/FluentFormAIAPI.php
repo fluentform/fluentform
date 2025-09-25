@@ -16,8 +16,10 @@ class FluentFormAIAPI
             'Content-Type' => 'application/json',
         ];
     
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- http_request_timeout is a WordPress core hook
         $originalTimeout = apply_filters('http_request_timeout', 5);
     
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- http_request_timeout is a WordPress core hook
         add_filter('http_request_timeout', function ($timeout) {
             return 60;
         });
@@ -27,6 +29,7 @@ class FluentFormAIAPI
             'body'    => json_encode($requestData),
         ]);
     
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- http_request_timeout is a WordPress core hook
         add_filter('http_request_timeout', function ($timeout) use ($originalTimeout) {
             return $originalTimeout;
         });
@@ -40,7 +43,7 @@ class FluentFormAIAPI
     
         $error_message = __('Something went wrong.', 'fluentform');
         if (isset($body['error']['message'])) {
-            $error_message = __($body['error']['message'], 'fluentform');
+            $error_message = $body['error']['message'];
         }
     
         if ($code !== 200) {

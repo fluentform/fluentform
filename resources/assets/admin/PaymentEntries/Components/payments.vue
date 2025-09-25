@@ -96,19 +96,6 @@
                         </el-select>
                     </div>
                 </div>
-                <div class="el-col-8 el-col-lg-5" style="padding-left: 10px; padding-right: 10px;">
-                    <div class="ff_form_group">
-                        <label class="ff_form_group_label">{{$t('Payment Types')}}</label>
-                        <el-select class="ff-input-s1" @change="fetchPayments()" clearable v-model="selectedPaymentTypes" :placeholder="$t('Select Type')">
-                            <el-option
-                                v-for="item in available_payment_types"
-                                :key="item.key"
-                                :label="item.value"
-                                :value="item.key">
-                            </el-option>
-                        </el-select>
-                    </div>
-                </div>
             </div>
         </div><!-- ff_filter_wrapper -->
 

@@ -15,7 +15,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$country_names = [
+$fluentformCountryNames = [
     'AF' => __('Afghanistan', 'fluentform'),
     'AX' => __('Aland Islands', 'fluentform'),
     'AL' => __('Albania', 'fluentform'),
@@ -74,7 +74,7 @@ $country_names = [
     'CR' => __('Costa Rica', 'fluentform'),
     'HR' => __('Croatia', 'fluentform'),
     'CU' => __('Cuba', 'fluentform'),
-    'CW' => __('Cura&ccedil;ao', 'fluentform'),
+    'CW' => __('Curaçao', 'fluentform'),
     'CY' => __('Cyprus', 'fluentform'),
     'CZ' => __('Czech Republic', 'fluentform'),
     'DK' => __('Denmark', 'fluentform'),
@@ -200,7 +200,7 @@ $country_names = [
     'RO' => __('Romania', 'fluentform'),
     'RU' => __('Russia', 'fluentform'),
     'RW' => __('Rwanda', 'fluentform'),
-    'BL' => __('Saint Barth&eacute;lemy', 'fluentform'),
+    'BL' => __('Saint Barthélemy', 'fluentform'),
     'SH' => __('Saint Helena', 'fluentform'),
     'KN' => __('Saint Kitts and Nevis', 'fluentform'),
     'LC' => __('Saint Lucia', 'fluentform'),
@@ -243,7 +243,7 @@ $country_names = [
     'TO' => __('Tonga', 'fluentform'),
     'TT' => __('Trinidad and Tobago', 'fluentform'),
     'TN' => __('Tunisia', 'fluentform'),
-    'TR' => __('Turkey', 'fluentform'),
+    'TR' => __('Türkiye', 'fluentform'),
     'TM' => __('Turkmenistan', 'fluentform'),
     'TC' => __('Turks and Caicos Islands', 'fluentform'),
     'TV' => __('Tuvalu', 'fluentform'),
@@ -268,18 +268,18 @@ $country_names = [
     'ZW' => __('Zimbabwe', 'fluentform'),
 ];
 
-$country_names = apply_filters_deprecated(
+$fluentformCountryNames = apply_filters_deprecated(
     'fluent_editor_countries',
     [
-        $country_names
+        $fluentformCountryNames
     ],
     FLUENTFORM_FRAMEWORK_UPGRADE,
     'fluentform/editor_countries',
     'Use fluentform/editor_countries instead of fluent_editor_countries.'
 );
 
-$country_names = apply_filters('fluentform/editor_countries', $country_names);
+$fluentformCountryNames = apply_filters('fluentform/editor_countries', $fluentformCountryNames);
 
-asort($country_names);
+asort($fluentformCountryNames);
 
-return $country_names;
+return $fluentformCountryNames;
