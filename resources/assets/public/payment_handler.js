@@ -116,6 +116,9 @@ export class Payment_handler {
 
         form.find('.ff_order_total').html(this.getFormattedPrice(this.totalAmount));
         form.data('payment_total', this.totalAmount);
+        
+        form.trigger('ff_render_dynamic_smartcodes', form);
+        
         const hidePaymentSummary = !Object.keys(items).length;
         this.hasPaymentItems = hidePaymentSummary;
 

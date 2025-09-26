@@ -129,6 +129,60 @@ import calculation from './Pro/calculations';
             });
         }
 
+        function updatePaymentTotalInInputs() {
+            const paymentTotal = $theForm.data('payment_total') || 0;
+            
+            // Prevent infinite loops
+            if ($theForm.data('updating_payment_total')) {
+                return;
+            }
+
+            $theForm.data('updating_payment_total', true);
+
+            $theForm.find('input').each(function() {
+                const $input = $(this);
+                const htmlValue = $input.attr('value');
+                const currentValue = $input.val();
+                
+                if (htmlValue && htmlValue.includes('{dynamic.payment_total}')) {
+                    if (paymentTotal === 0 || paymentTotal === '' || paymentTotal === null) {
+                        $input.removeData('payment_total_processed');
+                    }
+                    
+                    const lastProcessedPaymentTotal = $input.data('last_payment_total');
+                    if (lastProcessedPaymentTotal !== undefined && lastProcessedPaymentTotal === paymentTotal) {
+                        if ($input.data('payment_total_processed') && currentValue !== $input.data('payment_total_processed')) {
+                            return;
+                        }
+                    }
+                    
+                    let newValue = htmlValue.replace(/\{dynamic\.payment_total\}/g, paymentTotal);
+                    
+                    try {
+                        if (newValue.match(/[\+\-\*\/]/) && newValue.match(/^[\d\s\+\-\*\/\(\)\[\]\{\}\.\s]+$/)) {
+                            newValue = eval(newValue);
+                        }
+                    } catch (e) {
+                        // If evaluation fails, just use the string replacement
+                    }
+                    
+                    $input.data('payment_total_processed', newValue);
+                    $input.data('last_payment_total', paymentTotal);
+                    
+                    $input.val(newValue);
+                    
+                    setTimeout(() => {
+                        $input.trigger('change');
+                        $input.trigger('keyup');
+                    }, 10);
+                }
+            });
+            
+            setTimeout(() => {
+                $theForm.removeData('updating_payment_total');
+            }, 50);
+        }
+
         /*
         * Normals
          */
@@ -156,6 +210,7 @@ import calculation from './Pro/calculations';
         if($theForm.hasClass('ff_has_dynamic_smartcode')) {
             $theForm.on('ff_render_dynamic_smartcodes', function (e, selector) {
                 maybeUpdateDynamicLabels($(selector));
+                updatePaymentTotalInInputs();
             });
 
             $theForm.on('keyup change', ':input', function () {
@@ -163,6 +218,7 @@ import calculation from './Pro/calculations';
             });
 
             maybeUpdateDynamicLabels($theForm);
+            updatePaymentTotalInInputs();
         }
         
     });
