@@ -217,7 +217,10 @@ class EditorShortcodeParser
 
             if (false !== strpos($prop, 'meta.')) {
                 $metaKey = substr($prop, strlen('meta.'));
-                $metaKey = sanitize_key($metaKey);
+                $metaKey = sanitize_text_field($metaKey);
+                if (empty($metaKey)) {
+                    return '';
+                }
                 $userId = $user->ID;
                 $data = get_user_meta($userId, $metaKey, true);
                 $data = Helper::safeUnserialize($data);
