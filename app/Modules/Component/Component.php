@@ -1053,6 +1053,12 @@ class Component
     public function addFluentformSubmissionInsertedFilter()
     {
         (new EmailNotificationActions($this->app))->register();
+        
+        // Register integration notification handler for form submit
+        add_action('fluentform/notify_on_form_submit', function($submissionId, $submissionData, $form) {
+            $handler = new \FluentForm\App\Hooks\Handlers\GlobalNotificationHandler($this->app);
+            $handler->notifyOnSubmitPaymentForm($submissionId, $submissionData, $form);
+        }, 10, 3);
     }
 
     /**
