@@ -1,5 +1,19 @@
 export default function ($, $form, form, fluentFormVars, formSelector) {
     /**
+     * Get translated upload message
+     * @param {string} key - Message key
+     * @param {string} fallback - Fallback message
+     * @return {string}
+     */
+    var getUploadMessage = function(key, fallback) {
+        var messagesVar = 'fluentform_upload_messages_' + form.id;
+        if (window[messagesVar] && window[messagesVar][key]) {
+            return window[messagesVar][key];
+        }
+        return fallback;
+    };
+
+    /**
      * Register file uploaders
      * @return {void}
      */
@@ -233,7 +247,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     } else {
                         // For debugging purpose to catch devlopment erros,
                         // this check might not be needing in production.
-                        let message = 'Sorry! The upload failed for some unknown reason.';
+                        let message = getUploadMessage('upload_failed_text', 'Sorry! The upload failed for some unknown reason.');
 
                         if (data.messages) {
                             let keys = Object.keys(data.messages);
@@ -261,7 +275,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     } else if (data.jqXHR?.responseText) {
                         errors.push(data.jqXHR.responseText);
                     } else {
-                        errors.push('Something is wrong when uploading the file! Please try again');
+                        errors.push(getUploadMessage('upload_error_text', 'Something is wrong when uploading the file! Please try again'));
                     }
                     showUploadError(errors.join(', '));
                 }
