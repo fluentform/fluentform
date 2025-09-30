@@ -231,7 +231,7 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     ];
     foreach ($upgradableCheckInputs as $upgradeElement) {
         add_filter('fluentform/editor_init_element_' . $upgradeElement, function ($element) use ($upgradeElement, $form) {
-    
+
             if (!\FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.advanced_options')) {
                 $formattedOptions = [];
                 $oldOptions = \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'options', []);
@@ -509,17 +509,17 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
 
     add_filter('fluentform/editor_init_element_gdpr_agreement', function ($item, $form) {
         $isConversationalForm = Helper::isConversionForm($form->id);
-        
+
         if ($isConversationalForm) {
             $item['settings']['tc_agree_text'] = __('I accept', 'fluentform');
         }
-        
+
         return $item;
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_terms_and_condition', function ($item, $form) {
         $isConversationalForm = Helper::isConversionForm($form->id);
-        
+
         if ($isConversationalForm) {
             $item['settings']['hide_disagree'] = false;
         }
@@ -567,7 +567,7 @@ add_action('save_post', function ($post_id) use ($app) {
     if (!is_post_type_viewable(get_post_type($post_id))) {
         return;
     }
-    
+
     $post_content = isset($_REQUEST['post_content']) ? $_REQUEST['post_content'] : false;
     if ($post_content && is_string($post_content)) {
         $post_content = wp_kses_post(wp_unslash($post_content));
@@ -584,7 +584,7 @@ add_action('save_post', function ($post_id) use ($app) {
 
     $attributes = ArrayHelper::get($shortcodeIds, 'attributes', []);
     ArrayHelper::forget($shortcodeIds, 'attributes');
-    
+
     $shortcodeModalIds = Helper::getShortCodeIds(
         $post_content,
         'fluentform_modal',
@@ -796,7 +796,7 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
 
 $app->addAction('fluentform/before_form_render', function ($form, $atts) {
     $theme = ArrayHelper::get($atts, 'theme');
-    
+
     $styles = $theme ? [$theme] : [];
 
     do_action(
@@ -895,7 +895,7 @@ add_action('wp', function () {
     if (!is_a($post, 'WP_Post')) {
         return;
     }
-    
+
     $fluentFormIds = get_post_meta($post->ID, '_has_fluentform', true);
     $attributes = ArrayHelper::get($fluentFormIds, 'attributes', []);
 
@@ -952,6 +952,7 @@ add_action('fluentform/integration_action_result', function ($feed, $status, $no
         ]);
 }, 10, 3);
 
+(new \FluentForm\App\Services\Scheduler\IntegrationRetrySupervisor())->init();
 
 // Support for third party plugin who do_action this hook on previous way (before 5.0.0 way)
 // In Fluent Forms 5.0.0 'ff_integration_action_result' add_action replaced in above action named 'fluentform/integration_action_result'.
@@ -1028,20 +1029,20 @@ add_action('init', function () {
 new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();
 
 add_action('enqueue_block_editor_assets', function () {
-    
+
     wp_enqueue_script(
         'fluentform-gutenberg-block',
         fluentFormMix('js/fluent_gutenblock.js'),
         ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components','wp-server-side-render', 'wp-block-editor'],
         FLUENTFORM_VERSION
     );
-    
-    
+
+
     $forms = wpFluent()->table('fluentform_forms')
         ->select(['id', 'title'])
         ->orderBy('id', 'DESC')
         ->get();
-    
+
     array_unshift($forms, (object) [
         'id'    => '',
         'title' => __('-- Select a form --', 'fluentform'),
@@ -1059,7 +1060,7 @@ add_action('enqueue_block_editor_assets', function () {
     ];
 
     $presets = apply_filters('fluentform/block_editor_style_presets', $presets);
-   
+
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
         'logo'                    => fluentFormMix('img/fluent_icon.png'),
         'forms'                   => $forms,
@@ -1068,7 +1069,7 @@ add_action('enqueue_block_editor_assets', function () {
         'conversational_demo_img' => fluentformMix('img/conversational-form-demo.png'),
         'rest'                    => Helper::getRestInfo()
     ]);
-    
+
     wp_enqueue_style(
         'fluentform-gutenberg-block',
         fluentFormMix('css/fluent_gutenblock.css'),
@@ -1077,12 +1078,12 @@ add_action('enqueue_block_editor_assets', function () {
     );
     $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
     $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
-    
+
     if (is_rtl()) {
         $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public-rtl.css');
         $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
     }
-    
+
     wp_enqueue_style(
         'fluent-form-styles',
         $fluentFormPublicCss,
@@ -1119,13 +1120,13 @@ if (function_exists('register_block_type')) {
         register_block_type('fluentfom/guten-block', [
             'render_callback' => function ($atts) {
                 $formId = ArrayHelper::get($atts, 'formId');
-                
+
                 if (empty($formId)) {
                     return '';
                 }
-                
+
                 $className = ArrayHelper::get($atts, 'className');
-                
+
                 if ($className) {
                     $classes = explode(' ', $className);
                     $className = '';
@@ -1135,11 +1136,11 @@ if (function_exists('register_block_type')) {
                         }
                     }
                 }
-    
+
                 $themeStyle = sanitize_text_field(ArrayHelper::get($atts, 'themeStyle'));
-                
+
                 $type = Helper::isConversionForm($formId) ? 'conversational' : '';
-                
+
                 return do_shortcode('[fluentform theme="'. $themeStyle .'" css_classes="' . $className . ' ff_guten_block" id="' . $formId . '"  type="' . $type . '"]');
             },
             'attributes'      => [
