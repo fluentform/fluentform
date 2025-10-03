@@ -111,7 +111,7 @@
                     </el-col>
                     <el-col :span="24">
                         <el-input type="textarea" :rows="5" v-model="value_key_pair_text"></el-input>
-                        <p class="mt-2">{{ $t('You can simply give value only the system will convert the label as value') }}</p>
+                        <p class="mt-2">{{ $t('You can simply give value only the system will convert the label as value. To include a colon in either the label or value, use the escape sequence \\:, e.g., LABEL\\:A:VALUE') }}</p>
                     </el-col>
                 </el-row>
             </div>
@@ -214,9 +214,20 @@
             initBulkEdit() {
                 let astext = '';
                 each(this.editItem.settings.advanced_options, (item) => {
-                    astext += item.label;
+					let label = item.label;
+					let value = item.value;
+
+	                // Convert label, value ':' to escaped colons '\:'
+	                if (label.includes(':')) {
+		                label = label.replace(/:/g, '\\:');
+	                }
+					if (value.includes(':')) {
+						value = value.replace(/:/g, '\\:');
+	                }
+
+                    astext += label;
                     if (item.label && item.label != item.value) {
-                        astext += ':' + item.value;
+                        astext += ' : ' + value;
                     }
                     astext += String.fromCharCode(13, 10);
                 });
@@ -228,10 +239,18 @@
                 let lines = this.value_key_pair_text.split('\n');
                 let values = [];
                 each(lines, (line) => {
-                    let lineItem = line.split(':');
-                    let label = lineItem[0];
-                    let value = lineItem[1];
-                    if (!value) {
+	                // Split by ':' but ignore escaped colons '\:'
+	                let lineItem = line.split(/(?<!\\):/);
+
+	                // Convert label, value escaped colons '\:' to ':'
+	                let label = lineItem[0];
+					if (label) {
+						label = label.replace(/\\:/g, ':').trim();
+					}
+	                let value = lineItem[1];
+					if (value) {
+						value = value.replace(/\\:/g, ':').trim();
+					} else {
                         value = label;
                     }
                     if (label && value) {
@@ -247,8 +266,10 @@
             },
 
             isChecked(optVal) {
-                if (typeof this.editItem.attributes.value != 'number') {
+                if (Array.isArray(this.editItem.attributes.value)) {
                     return this.editItem.attributes.value.includes(optVal);
+                } else {
+                    return this.editItem.attributes.value == optVal;
                 }
             },
 
@@ -324,7 +345,7 @@
                 this.optionsToRender = this.editItem.settings.advanced_options;
             },
             showProMessage() {
-                this.$notify.error('Image type fields only available on pro version');
+                this.$notify.error('Images with options is available in the Pro version');
                 this.pro_mock = false;
             }
         },

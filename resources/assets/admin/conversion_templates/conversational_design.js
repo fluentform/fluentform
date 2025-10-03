@@ -45,15 +45,20 @@ locale.use(lang);
 import DesignSkeleton from './Parts/Skeleton.vue';
 import notifier from '@/admin/notifier'
 import globalSearch from '../global_search';
+import {_$t} from "@/admin/helpers";
 
 Vue.mixin({
     methods: {
-        $t(str) {
-            let transString = window.fluent_forms_global_var.admin_i18n[str];
-            if(transString) {
-                return transString;
+        $t(string) {
+            let transString = window.fluent_forms_global_var.admin_i18n[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
         },
         
         ...notifier
@@ -77,7 +82,7 @@ new Vue({
     },
     beforeCreate() {
         this.$on('change-title', (module) => {
-            jQuery('title').text(`${module} - FluentForm`);
+            jQuery('title').text(`${module} - Fluent Forms`);
         });
         this.$emit('change-title', 'Conversational Form Design');
     },

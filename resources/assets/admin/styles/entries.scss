@@ -84,6 +84,9 @@ table.editor_table, .ff_entry_table_field, .ff-table {
     padding: 0px 7px;
     background: whitesmoke;
   }
+  .action-buttons-group {
+    display: flex;
+  }
 }
 
 .ff-payment-table {
@@ -316,6 +319,11 @@ table.editor_table, .ff_entry_table_field, .ff-table {
 // entry info box
 .entry_info_box {
   margin-bottom: 24px;
+  &_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   &_title {
     font-weight: 600;
     font-size: 17px;
@@ -327,6 +335,9 @@ table.editor_table, .ff_entry_table_field, .ff-table {
 .ff_entry_detail_wrap{
   .ff_card{
     margin-bottom: 24px;
+  }
+  .entry_submission_log_des{
+    overflow-y: auto;
   }
 }
 
@@ -754,4 +765,44 @@ span.ff_tag {
 
 .ff_report_card + .ff_print_hide {
   margin-top: 40px;
+}
+
+.ff_as_container{
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+  margin-bottom: 20px;
+  padding: 5px 10px 5px;
+
+  .ff_rich_filters{
+    padding: 10px;
+    background: #fdfdfd;
+    border: 1px solid #efefef;
+    border-radius: 4px;
+    .ff_table{
+      background: #f0f3f7;
+      border: 1px solid #dedcdc;
+      box-shadow:none;
+      .filter_name{
+        font-weight: 500;
+      }
+    }
+  }
+  .ff_cond_or {
+    border-bottom: 1px dashed #d5dce1;
+    margin: 0 0 15px;
+    color: gray;
+    padding: 0;
+    text-align: center;
+    line-height: 100%;
+    em {
+      background: #fff;
+      font-size: 1.2em;
+      font-style: normal;
+      margin: 0 10px;
+      padding: 0 10px;
+      position: relative;
+      top: 9px;
+    }
+  }
 }

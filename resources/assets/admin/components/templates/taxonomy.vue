@@ -19,7 +19,7 @@
                         v-else
                         :type="item.attributes.type"
                         :value="item.attributes.value"
-                        :placeholder="item.attributes.placeholder">
+                        :placeholder="item.settings.placeholder">
                     </el-input>
                 </div>
             </el-form-item>

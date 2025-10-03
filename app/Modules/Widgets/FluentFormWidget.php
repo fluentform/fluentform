@@ -7,10 +7,10 @@ use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Typography;
-use Elementor\Core\Schemes\Typography as Scheme_Typography;
 use Elementor\Group_Control_Background;
-use Elementor\Core\Schemes\Color as Scheme_Color;
 use FluentForm\App\Helpers\Helper;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -98,8 +98,9 @@ class FluentFormWidget extends Widget_Base
             'form_list',
             [
                 'label'       => esc_html__('Fluent Forms', 'fluentform'),
-                'type'        => Controls_Manager::SELECT,
+                'type'        => Controls_Manager::SELECT2,
                 'label_block' => true,
+                'multiple'    => false,
                 'options'     => Helper::getForms(),
                 'default'     => '0',
             ]
@@ -144,7 +145,7 @@ class FluentFormWidget extends Widget_Base
         $this->add_control(
             'labels_switch',
             [
-                'label'        => __('Labels', 'fluentform'),
+                'label'        => __('Labels ', 'fluentform'),
                 'type'         => Controls_Manager::SWITCHER,
                 'default'      => 'yes',
                 'label_on'     => __('Show', 'fluentform'),
@@ -340,8 +341,10 @@ class FluentFormWidget extends Widget_Base
             [
                 'name'      => 'heading_description_typography',
                 'label'     => __('Typography', 'fluentform'),
-                'scheme'    => Scheme_Typography::TYPOGRAPHY_4,
                 'selector'  => '{{WRAPPER}} .fluentform-widget-description',
+                'global'    => [
+                    'default' => Global_Typography::TYPOGRAPHY_ACCENT,
+                ],
                 'condition' => [
                     'custom_title_description' => 'yes',
                 ],
@@ -532,7 +535,6 @@ class FluentFormWidget extends Widget_Base
                 'tab'   => Controls_Manager::TAB_STYLE,
             ]
         );
-
         $this->add_control(
             'form_label_text_color',
             [
@@ -543,7 +545,7 @@ class FluentFormWidget extends Widget_Base
                 ],
             ]
         );
-
+        
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
@@ -552,6 +554,42 @@ class FluentFormWidget extends Widget_Base
                 'selector' => '{{WRAPPER}} .fluentform-widget-wrapper .ff-el-input--label label',
             ]
         );
+        
+        $this->add_control(
+            'form_label_asterisk_color',
+            [
+                'label'     => __('Asterisk Color', 'fluentform'),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .ff-el-is-required.asterisk-right label:after' => 'color: {{VALUE}} !important',
+                ],
+            ]
+        );
+        $this->add_control(
+            'form_label_asterisk_size',
+            [
+                'label' => __('Asterisk Size', 'fluentform'),
+                'type'  => Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [
+                        'min'  => 0,
+                        'max'  => 30,
+                        'step' => 1,
+                    ],
+                    '%' => [
+                        'min'  => 0,
+                        'max'  => 30,
+                        'step' => 1,
+                    ],
+                ],
+                'size_units' => ['px', 'em', '%'],
+                'selectors'  => [
+                    '{{WRAPPER}} .ff-el-is-required.asterisk-right label:after' => 'font-size: {{SIZE}}{{UNIT}}',
+                ],
+                'separator' => 'before',
+            ]
+        );
+     
 
         $this->end_controls_section();
     }
@@ -561,7 +599,7 @@ class FluentFormWidget extends Widget_Base
         $this->start_controls_section(
             'section_form_fields_style',
             [
-                'label' => __('Input & Textarea', 'fluentform'),
+                'label' => __('Input & Text Area', 'fluentform'),
                 'tab'   => Controls_Manager::TAB_STYLE,
             ]
         );
@@ -1714,12 +1752,11 @@ class FluentFormWidget extends Widget_Base
                 [
                     'label'  => __('Label Color', 'fluentform'),
                     'type'   => Controls_Manager::COLOR,
-                    'scheme' => [
-                        'type'  => Scheme_Color::get_type(),
-                        'value' => Scheme_Color::COLOR_1,
-                    ],
                     'selectors' => [
                         '{{WRAPPER}} .ff-el-progress-status' => 'color: {{VALUE}}',
+                    ],
+                    'global' => [
+                        'default' => Global_Colors::COLOR_PRIMARY,
                     ],
                     'condition' => [
                         'show_label' => 'yes',
@@ -1732,8 +1769,10 @@ class FluentFormWidget extends Widget_Base
                 [
                     'name'      => 'form_progressbar_label_typography',
                     'label'     => __('Typography', 'fluentform'),
-                    'scheme'    => Scheme_Typography::TYPOGRAPHY_1,
                     'selector'  => '{{WRAPPER}} .ff-el-progress-status',
+                    'global'    => [
+                        'default' => Global_Typography::TYPOGRAPHY_PRIMARY
+                    ],
                     'condition' => [
                         'show_label' => 'yes',
                     ],
@@ -1810,12 +1849,11 @@ class FluentFormWidget extends Widget_Base
                 [
                     'label'  => __('Text Color', 'fluentform'),
                     'type'   => Controls_Manager::COLOR,
-                    'scheme' => [
-                        'type'  => Scheme_Color::get_type(),
-                        'value' => Scheme_Color::COLOR_1,
-                    ],
                     'selectors' => [
                         '{{WRAPPER}} .ff-el-progress-bar span' => 'color: {{VALUE}};',
+                    ],
+                    'global' => [
+                        'default' => Global_Colors::COLOR_PRIMARY
                     ],
                     'condition' => [
                         'show_form_progressbar' => 'yes',
@@ -1940,8 +1978,10 @@ class FluentFormWidget extends Widget_Base
                 [
                     'name'     => 'form_pagination_button_typography',
                     'label'    => __('Typography', 'fluentform'),
-                    'scheme'   => Scheme_Typography::TYPOGRAPHY_1,
                     'selector' => '{{WRAPPER}} .step-nav button',
+                    'global'   => [
+                        'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
+                    ]
                 ]
             );
 

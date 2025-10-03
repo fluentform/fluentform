@@ -15,9 +15,8 @@
                     {{ preview_url }}
                 </span>
                 <span v-else class="url-bar bar-warning white-container">
-                    {{ $t('Design Customization is only available on Pro Version of Fluent Forms.') }}<a target="_blank"
-                                                                                              rel="noopener"
-                                                                                              href="https://fluentforms.com/conversational-form">{{ $t('Buy Pro') }}</a>
+                    {{ $t('Design Customization is only available on Pro Version of Fluent Forms.') }}
+                    <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form">{{ $t('Buy Pro') }}</a>
                 </span>
             </div>
             <div style="min-height: 600px;" v-loading="loading_iframe" id="fcc_iframe_holder"></div>

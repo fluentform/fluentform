@@ -1,7 +1,7 @@
 <template>
     <div class="wp_vue_editor_wrapper">
         <popover v-if="editorShortcodes.length" class="popover-wrapper" :class="{'popover-wrapper-plaintext': !hasWpEditor}" :data="editorShortcodes" @command="handleCommand" btnType="info" :plain="true"></popover>
-        <textarea v-if="hasWpEditor" class="wp_vue_editor" :id="editor_id" v-model="value"></textarea>
+        <textarea v-if="hasWpEditor" class="wp_vue_editor" :id="editor_id" v-model="sanitizedValue"></textarea>
         <textarea v-else
                   class="wp_vue_editor wp_vue_editor_plain"
                   v-model="plain_content"
@@ -56,12 +56,12 @@
                 hasWpEditor: !!window.wp.editor,
                 hasMedia: !!FluentFormApp.hasPro,
                 plain_content: this.value,
-                cursorPos: this.value.length
+                cursorPos: this.value.length,
             }
         },
         watch: {
             plain_content() {
-                this.$emit('input', this.plain_content);
+                this.$emit('input', this.customSanitize(this.plain_content));
             }
         },
         methods: {
@@ -98,17 +98,18 @@
             },
             changeContentEvent() {
                 let content = wp.editor.getContent(this.editor_id);
-                this.$emit('input', content);
+                this.$emit('input', this.customSanitize(content));
             },
 
             handleCommand(command) {
+                const sanitizedCommand = this.customSanitize(command);
                 if(this.hasWpEditor) {
-                    tinymce.activeEditor.insertContent(command);
+                    tinymce.activeEditor.insertContent(sanitizedCommand);
                 } else {
                     var part1 = this.plain_content.slice(0, this.cursorPos);
                     var part2 = this.plain_content.slice(this.cursorPos, this.plain_content.length);
-                    this.plain_content = part1 + command + part2;
-                    this.cursorPos += command.length;
+                    this.plain_content = part1 + sanitizedCommand + part2;
+                    this.cursorPos += sanitizedCommand.length;
                 }
             },
             showInsertButtonModal(editor) {
@@ -116,11 +117,29 @@
                 this.showButtonDesigner = true;
             },
             insertHtml(content) {
-                this.currentEditor.insertContent(content);
+                this.currentEditor.insertContent(this.customSanitize(content));
             },
             updateCursorPos() {
                 var cursorPos = jQuery('.wp_vue_editor_plain').prop('selectionStart');
                 this.$set(this, 'cursorPos', cursorPos);
+            },
+            customSanitize(input) {
+                // Remove potential event handlers
+                let sanitized = input.replace(/\s+(on\w+)\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+                // Remove http-equiv attributes
+                sanitized = sanitized.replace(/\s+http-equiv\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+                return sanitized;
+            },
+        },
+        computed: {
+            sanitizedValue: {
+                get() {
+                    return this.value;
+                },
+                set(newValue) {
+                    const sanitized = this.customSanitize(newValue);
+                    this.$emit('input', sanitized);
+                }
             }
         },
         mounted() {
@@ -129,4 +148,4 @@
             }
         }
     }
-</script> 
+</script>

@@ -24,6 +24,7 @@ class SubmissionHandlerService
     protected $formData;
     protected $validationService;
     protected $submissionService;
+    protected $alreadyInsertedId;
     
     public function __construct()
     {
@@ -43,6 +44,9 @@ class SubmissionHandlerService
     {
         $this->prepareHandler($formId, $formDataRaw);
         $insertData = $this->handleValidation();
+        if ($returnData = $this->isSpamAndSkipProcessing($insertData)) {
+            return $returnData;
+        }
         $insertId = $this->insertSubmission($insertData, $formDataRaw, $formId);
     
         return $this->processSubmissionData($insertId, $this->formData, $this->form);
@@ -58,7 +62,21 @@ class SubmissionHandlerService
         if (!$this->form) {
             throw new ValidationException('', 422, null, ['errors' => 'Sorry, No corresponding form found']);
         }
-        
+
+        /**
+         * Filtering empty array inputs to normalize
+         *
+         * For unchecked checkable type, the name filled with empty value
+         * by serialized on the client-side JavaScript. This adjustment ensures filter empty array inputs to normalize- Ex: [''] -> []
+         */
+        foreach ($formDataRaw as $name => $input) {
+            if (is_array($input)) {
+                $formDataRaw[$name] = array_filter($input, function($value) {
+                    return $value !== null && $value !== false && $value !== '';
+                });
+            }
+        }
+
         // Parse the form and get the flat inputs with validations.
         $this->fields = FormFieldsParser::getEssentialInputs($this->form, $formDataRaw, ['rules', 'raw']);
     
@@ -111,7 +129,7 @@ class SubmissionHandlerService
         );
         $this->formData = apply_filters('fluentform/insert_response_data', $formData, $formId, $inputConfigs);
         
-        $ipAddress = $this->app->request->getIp();
+        $ipAddress = sanitize_text_field($this->app->request->getIp());
 
         $disableIpLog = apply_filters_deprecated(
             'fluentform_disable_ip_logging',
@@ -137,6 +155,7 @@ class SubmissionHandlerService
             'user_id'       => get_current_user_id(),
             'browser'       => $browser->getBrowser(),
             'device'        => $browser->getPlatform(),
+            'country'       => apply_filters('fluentform/disable_submission_country_detection', false, $formId) ? null : Helper::getCountryCodeFromHeaders(),
             'ip'            => $ipAddress,
             'created_at'    => current_time('mysql'),
             'updated_at'    => current_time('mysql'),
@@ -174,15 +193,17 @@ class SubmissionHandlerService
         
         if ($insertId) {
             ob_start();
+            $formData = apply_filters('fluentform/submission_form_data', $formData, $insertId, $form);
             $this->submissionService->recordEntryDetails($insertId, $form->id, $formData);
             $isError = ob_get_clean();
             if ($isError) {
                 SubmissionDetails::migrate();
             }
         }
-        $returnData = $this->getReturnData($insertId, $form, $formData);
         $error = '';
         try {
+            $formData = apply_filters('fluentform/submission_form_data', $formData, $insertId, $form);
+
             do_action('fluentform_submission_inserted', $insertId, $formData, $form);
     
             do_action('fluentform/submission_inserted', $insertId, $formData, $form);
@@ -228,7 +249,7 @@ class SubmissionHandlerService
     
         return [
             'insert_id' => $insertId,
-            'result'    => $returnData,
+            'result'    => $this->getReturnData($insertId, $form, $formData),
             'error'     => $error,
         ];
     }
@@ -335,18 +356,29 @@ class SubmissionHandlerService
                 if (strpos($redirectUrl, '&') || '=' == substr($redirectUrl, -1) || $encodeUrl) {
                     $urlArray = explode('?', $redirectUrl);
                     $baseUrl = array_shift($urlArray);
-                    
-                    $query = wp_parse_url($redirectUrl)['query'];
+
+                    $parsedUrl = wp_parse_url($redirectUrl);
+                    $query = Arr::get($parsedUrl, 'query', '');
                     $queryParams = explode('&', $query);
                     
                     $params = [];
                     foreach ($queryParams as $queryParam) {
                         $paramArray = explode('=', $queryParam);
                         if (!empty($paramArray[1])) {
-                            $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            if (strpos($paramArray[1], '%') === false) {
+                                $params[$paramArray[0]] = rawurlencode($paramArray[1]);
+                            } else {
+                                // Param string is URL-encoded
+                                $params[$paramArray[0]] = $paramArray[1];
+                            }
                         }
                     }
-                    $redirectUrl = add_query_arg($params, $baseUrl);
+                    if ($params) {
+                        $redirectUrl = add_query_arg($params, $baseUrl);
+                        if ($fragment = Arr::get($parsedUrl, 'fragment')) {
+                            $redirectUrl .= '#' . $fragment;
+                        }
+                    }
                 }
             }
             
@@ -359,9 +391,9 @@ class SubmissionHandlerService
                 true
             );
     
-            $redirectUrl = apply_filters('fluentform/redirect_url_value', wp_sanitize_redirect(urldecode($redirectUrl)), $insertId, $form, $formData);
+            $redirectUrl = apply_filters('fluentform/redirect_url_value', wp_sanitize_redirect(rawurldecode($redirectUrl)), $insertId, $form, $formData);
             $returnData = [
-                'redirectUrl' => $redirectUrl,
+                'redirectUrl' => esc_url_raw($redirectUrl),
                 'message'     => fluentform_sanitize_html($message),
             ];
         }
@@ -387,6 +419,68 @@ class SubmissionHandlerService
             $formData
         );
     }
+
+    private function isSpamAndSkipProcessing(&$insertData)
+    {
+        $spamSources = Arr::get($insertData, 'spam_from', []);
+
+        if ($spamSources) {
+            unset($insertData['spam_from']);
+        }
+        
+        if (Arr::get($insertData, 'status') !== 'spam') {
+            return false;
+        }
+
+        $insertId = Submission::insertGetId($insertData);
+
+        if (!$insertId) {
+            return false;
+        }
+
+        $shouldSkip = false;
+        
+        foreach ($spamSources as $source) {
+            if ($this->shouldSkipProcessingForSource($source)) {
+                $this->processSpamSubmission($insertId, $source);
+                $shouldSkip = true;
+            }
+        }
+    
+        if ($shouldSkip) {
+            return [
+                'insert_id' => $insertId,
+                'result'    => $this->getReturnData($insertId, $this->form, $this->formData),
+            ];
+        }
+        
+        // Set a property for already inserted data for spam
+        $this->alreadyInsertedId = $insertId;
+
+        return false;
+    }
+
+    private function shouldSkipProcessingForSource($source)
+    {
+        $settings = get_option('_fluentform_global_form_settings');
+        $cleanTalkSettings = get_option('_fluentform_cleantalk_details');
+        
+        switch ($source) {
+            case 'Akismet':
+                return $settings &&
+                       'yes' == Arr::get($settings, 'misc.akismet_status') &&
+                       'mark_as_spam_and_skip_processing' == Arr::get($settings, 'misc.akismet_validation');
+            case 'CleanTalk':
+                return $settings &&
+                       'yes' == Arr::get($settings, 'misc.cleantalk_status') &&
+                       'mark_as_spam_and_skip_processing' == Arr::get($settings, 'misc.cleantalk_validation');
+            case 'CleanTalk API':
+                return Arr::get($cleanTalkSettings, 'status') &&
+                       'mark_as_spam_and_skip_processing' == Arr::get($cleanTalkSettings, 'validation');
+            default:
+                return false;
+        }
+    }
     
     /**
      * Validates Submission
@@ -399,13 +493,34 @@ class SubmissionHandlerService
         $this->validationService->setFormData($this->formData);
 
         $this->validationService->validateSubmission($this->fields, $this->formData);
-    
-        $insertData = $this->prepareInsertData();
+        $hasSpam = false;
+        $spamFrom = [];
         
-        if ($this->validationService->isSpam($this->formData, $this->form)) {
-            $insertData['status'] = 'spam';
-            $this->validationService->handleSpamError();
+        if ($this->validationService->isAkismetSpam($this->formData, $this->form)) {
+            $hasSpam = true;
+            $this->validationService->handleAkismetSpamError();
+            $spamFrom[] = 'Akismet';
         }
+
+        if ($this->validationService->isCleanTalkSpam($this->formData, $this->form)) {
+            $hasSpam = true;
+            $this->validationService->handleCleanTalkSpamError();
+            $spamFrom[] = 'CleanTalk';
+        }
+
+        if ($this->validationService->isCleanTalkSpamUsingApi($this->formData, $this->form)) {
+            $hasSpam = true;
+            $this->validationService->handleCleanTalkSpamErrorUsingAPi();
+            $spamFrom[] = 'CleanTalk API';
+            unset($this->formData['ff_ct_form_load_time'], $this->formData['ct_bot_detector_event_token']);
+        }
+        
+        $insertData = $this->prepareInsertData();
+        if ($hasSpam) {
+            $insertData['status'] = 'spam';
+            $insertData['spam_from'] = $spamFrom;
+        }
+
         return $insertData;
     }
     
@@ -440,6 +555,11 @@ class SubmissionHandlerService
             do_action('fluentform/before_insert_payment_form', $insertData, $formDataRaw, $this->form);
         }
         
+        // Check if we already have an inserted ID from spam processing
+        if (isset($this->alreadyInsertedId) && $this->alreadyInsertedId) {
+            return $this->alreadyInsertedId;
+        }
+        
         $insertId = Submission::insertGetId($insertData);
     
         do_action('fluentform/notify_on_form_submit', $insertId, $this->formData, $this->form);
@@ -449,5 +569,26 @@ class SubmissionHandlerService
         
         return $insertId;
     }
-    
+
+    private function processSpamSubmission($insertId, $type)
+    {
+        $uidHash = md5(wp_generate_uuid4() . $insertId);
+        Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $this->form->id);
+        ob_start();
+        $this->submissionService->recordEntryDetails($insertId, $this->form->id, $this->formData);
+        $isError = ob_get_clean();
+        if ($isError) {
+            SubmissionDetails::migrate();
+        }
+        Helper::setSubmissionMeta($insertId, 'is_form_action_fired', 'yes');
+        do_action('fluentform/log_data', [
+            'parent_source_id' => $this->form->id,
+            'source_type'      => 'submission_item',
+            'source_id'        => $insertId,
+            'component'        => $type . ' Integration',
+            'status'           => 'info',
+            'title'            => __('Skip Submission Processing', 'fluentform'),
+            'description'      => __('Submission marked as spammed. And skip all actions processing', 'fluentform')
+        ]);
+    }
 }

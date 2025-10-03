@@ -52,13 +52,13 @@
                         <el-input type="password" v-model="turnstile.secretKey" @change="load"></el-input>
                     </el-form-item>
 
-                    <el-form-item class="ff-form-item-flex ff-form-item reverse">
+                    <el-form-item class="ff-form-item">
                         <template slot="label">
-                            {{ $t('Enable Invisible Option') }}
+                            {{ $t('Appearance Mode') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                 <div slot="content">
                                     <p>
-                                        {{ $t('If you enable this then the field will be invisible but works in the background') }}
+                                        {{ $t('You can select how the turnstile will appear') }}
                                     </p>
                                 </div>
 
@@ -66,7 +66,9 @@
                             </el-tooltip>
                         </template>
 
-                        <el-checkbox class="mr-3" v-model="turnstile.invisible" :true-label="$t('yes')" :false-label="$t('no')"></el-checkbox>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="always">{{$t('Managed')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="execute">{{$t('Non-interactive')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="interaction-only">{{$t('Invisible')}}</el-radio>
                     </el-form-item>
 
                     <el-form-item class="ff-form-item">
@@ -94,7 +96,6 @@
                             class="cf-turnstile"
                             id="turnstile"
                             :data-sitekey="turnstile.siteKey"
-                            data-callback="turnstileCallback"
                         ></div>
                     </el-form-item>
 
@@ -147,6 +148,7 @@ export default {
                 siteKey: "",
                 secretKey: "",
                 invisible: "no",
+                appearance: 'always',
                 theme: 'auto'
             },
             turnstile_status: false,
@@ -200,14 +202,17 @@ export default {
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
                     this.turnstile_status = response.status;
-                    this.$success(response.message);
+                    if (this.turnstile_status == 1) {
+                        this.$success(response.message);
+                    } else {
+                        this.$fail(response.message);
+                    }
                     this.siteKeyChanged = false;
                     this.turnstile.token = null;
                 })
                 .catch(error => {
                     this.turnstile_status = parseInt(error.status, 10);
-                    let method = this.turnstile_status === 1 ? '$warning' : '$error';
-                    this[method](error.message);
+                    this.$fail(error.message);
                 })
                 .finally(r => {
                     this.saving = false;
@@ -226,7 +231,11 @@ export default {
                 .then(response => {
                     this.turnstile_status = response.status;
                     this.turnstile = {siteKey: '', secretKey: ''};
-                    this.$success(response.message);
+                    if (this.turnstile_status == 1) {
+                        this.$success(response.message);
+                    } else {
+                        this.$fail(response.message);
+                    }
                 })
                 .catch(error => {
                     this.turnstile_status = error.status;
@@ -252,6 +261,9 @@ export default {
                 .then(response => {
                     const turnstile = response._fluentform_turnstile_details;
                     this.turnstile = turnstile;
+                    if (this.turnstile?.invisible == 'yes') {
+                        this.turnstile.appearance = 'interaction-only';
+                    }
                     this.turnstile_status = response._fluentform_turnstile_keys_status;
                 });
         }

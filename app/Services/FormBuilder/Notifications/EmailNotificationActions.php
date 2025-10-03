@@ -82,6 +82,16 @@ class EmailNotificationActions
 
     public function notify($feed, $formData, $entry, $form)
     {
+        // If this is a payment form and the feed is configured to run on payment_success,
+        // then do not send while the submission's payment status is still pending.
+        if (isset($form->has_payment) && $form->has_payment) {
+            $isTriggerOnPaymentSuccess = ArrayHelper::get($feed, 'processedValues.feed_trigger_event') === 'payment_success';
+            $isPaymentPending = isset($entry->payment_status) && $entry->payment_status === 'pending';
+            if ($isTriggerOnPaymentSuccess && $isPaymentPending) {
+                return;
+            }
+        }
+
         $notifier = $this->app->make(
             'FluentForm\App\Services\FormBuilder\Notifications\EmailNotification'
         );
@@ -106,19 +116,22 @@ class EmailNotificationActions
     private function getAttachments($emailData, $formData, $entry, $form)
     {
         $emailAttachments = [];
-        if (! empty($emailData['attachments']) && is_array($emailData['attachments'])) {
+
+        $uploadDir = wp_upload_dir();
+
+        if (!empty($emailData['attachments']) && is_array($emailData['attachments'])) {
             $attachments = [];
             foreach ($emailData['attachments'] as $name) {
                 $fileUrls = ArrayHelper::get($formData, $name);
                 if ($fileUrls && is_array($fileUrls)) {
                     foreach ($fileUrls as $url) {
-                        $filePath = str_replace(
-                            site_url(''),
-                            wp_normalize_path(untrailingslashit(ABSPATH)),
-                            $url
-                        );
-                        if (file_exists($filePath)) {
-                            $attachments[] = $filePath;
+                        if (strpos($url, $uploadDir['baseurl']) === 0) {
+                            $relativePath = str_replace($uploadDir['baseurl'], '', $url);
+                            $filePath = wp_normalize_path($uploadDir['basedir'] . $relativePath);
+
+                            if (file_exists($filePath)) {
+                                $attachments[] = $filePath;
+                            }
                         }
                     }
                 }
@@ -126,16 +139,14 @@ class EmailNotificationActions
             $emailAttachments = $attachments;
         }
         $mediaAttachments = ArrayHelper::get($emailData, 'media_attachments');
-        if (! empty($mediaAttachments) && is_array($mediaAttachments)) {
+        if (!empty($mediaAttachments) && is_array($mediaAttachments)) {
             $attachments = [];
             foreach ($mediaAttachments as $file) {
                 $fileUrl = ArrayHelper::get($file, 'url');
-                if ($fileUrl) {
-                    $filePath = str_replace(
-                        site_url(''),
-                        wp_normalize_path(untrailingslashit(ABSPATH)),
-                        $fileUrl
-                    );
+                if ($fileUrl && strpos($fileUrl, $uploadDir['baseurl']) === 0) {
+                    $relativePath = str_replace($uploadDir['baseurl'], '', $fileUrl);
+                    $filePath = wp_normalize_path($uploadDir['basedir'] . $relativePath);
+
                     if (file_exists($filePath)) {
                         $attachments[] = $filePath;
                     }

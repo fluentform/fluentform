@@ -65,6 +65,8 @@ import formSlider from "./Pro/slider";
                     });
                 });
 
+                hash = window.form_state_save_vars?.key;
+
                 var formData = {
                     source_url: window.form_state_save_vars.source_url,
                     action: 'fluentform_save_form_progress_with_link',
@@ -72,7 +74,8 @@ import formSlider from "./Pro/slider";
                     form_id: $theForm.data('form_id'),
                     hash: hash,
                     active_step: activeStep,
-                    nonce: window.form_state_save_vars.nonce
+                    nonce: window.form_state_save_vars.nonce,
+                    save_progress_btn_name: $($saveBttn).attr('name')
                 };
                 const saveProgressMessage = formData.form_id + '_save_progress_msg';
                 const savingResponseMsg = '#' + saveProgressMessage;
@@ -110,6 +113,14 @@ import formSlider from "./Pro/slider";
                         )
                         inputGroup.fadeIn();
 
+                        // Add Enter key handler for saved state link input
+                        inputGroup.find('input.ff-el-form-control').on('keypress', function(e) {
+                            if (e.which === 13 || e.keyCode === 13) {
+                                e.preventDefault();
+                                $(this).siblings('.ff_input-group-append').find('.ff_btn_copy_link').click();
+                            }
+                        });
+
                         //Show Email Input
                         const emailPlaceholderStr = window.form_state_save_vars.email_placeholder_str || 'Your Email Here';
                         const emailIcon = window.form_state_save_vars.email_button || 'Email';
@@ -117,7 +128,7 @@ import formSlider from "./Pro/slider";
                             let emailDiv =
                                 `<div class="ff-el-input--content">
                                     <div class="ff_input-group">
-                                        <input type="email" class="ff-el-form-control" placeholder="${emailPlaceholderStr}" class="ff-el-form-control">
+                                        <input type="email" class="ff-el-form-control" placeholder="${emailPlaceholderStr}">
                                         <div class="ff_input-group-append">
                                             <button class="ff-btn ff-btn-md ff_btn_style ff_btn_is_email ff_input-group-text">${emailIcon}</button>
                                         </div>
@@ -129,6 +140,14 @@ import formSlider from "./Pro/slider";
                                 emailGroup
                             )
                             emailGroup.fadeIn();
+
+                            // Add Enter key handler for email input
+                            emailGroup.find('input.ff-el-form-control').on('keypress', function(e) {
+                                if (e.which === 13 || e.keyCode === 13) {
+                                    e.preventDefault();
+                                    $(this).siblings('.ff_input-group-append').find('.ff_btn_is_email').click();
+                                }
+                            });
                         }
                     }
                 }).fail(error => {
@@ -219,18 +238,24 @@ import formSlider from "./Pro/slider";
         }
         $theForm.append(`<input type="hidden" value="${ hashKey }" class="__fluent_state_hash" name="__fluent_state_hash"/>`)
 
-        jQuery.getJSON(fluentFormVars.ajaxUrl, {
-            form_id: $theForm.data('form_id'),
-            action: 'fluentform_get_form_state',
-            hash: hashKey,
-            nonce: window.form_state_save_vars.nonce
-        }).then(data => {
-            if (data) {
-                const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
-                sliderInstance.populateFormDataAndSetActiveStep(data);
-            }
-        });
-    })
+        const stepPersistency = $theForm.find(
+            '.ff-step-container'
+        ).attr('data-enable_step_data_persistency') == 'yes';
+
+        if (!stepPersistency) {
+            jQuery.getJSON(fluentFormVars.ajaxUrl, {
+                form_id: $theForm.data('form_id'),
+                action: 'fluentform_get_form_state',
+                hash: hashKey,
+                nonce: window.form_state_save_vars.nonce
+            }).then(data => {
+                if (data) {
+                    const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
+                    sliderInstance.populateFormDataAndSetActiveStep(data);
+                }
+            });
+        }
+    });
 
 })(jQuery);
 

@@ -15,7 +15,7 @@
                 <i class="el-icon el-icon-upload"></i>
                 <span>{{ 'Upload Media' }}</span>
             </div>
-            <div class="mt-2" v-if="image_url.length > 0">
+            <div class="mt-2" v-if="image_url?.length > 0">
                 <div class="ff_file_upload_result">
                     <div class="ff_file_upload_preview">
                         <img :src="image_url"/>
@@ -71,7 +71,7 @@
 	    computed: {
 		    image_url : {
 				get() {
-					return this.value;
+					return this.value || '';
 				},
 			    set(value) {
 				    this.$emit('input', value);
@@ -79,10 +79,10 @@
 		    },
 		    image_name() {
 			    let url = this.image_url;
-			    let name = url.substring(url.lastIndexOf("/")+1, url.length);
+			    let name = url.substring(url.lastIndexOf("/")+1, url?.length);
 			    // 15 character for suitable visible name
-			    if (name.length > 15) {
-				    name = name.slice(0, 15) + '...' + name.substring(name.lastIndexOf(".") - 2, name.length);
+			    if (name?.length > 15) {
+				    name = name.slice(0, 15) + '...' + name.substring(name.lastIndexOf(".") - 2, name?.length);
 			    }
 				return name;
 		    }

@@ -18,6 +18,20 @@ import calculation from './Pro/calculations';
         const formId = form.form_id_selector;
         const formSelector = '.' + form.form_instance;
 
+        function sanitizeDynamicValue(input) {
+            // Remove dangerous tags and event handlers
+            input = input.replace(/<script.*?>.*?<\/script>/gis, '')
+                .replace(/<iframe.*?>.*?<\/iframe>/gis, '')
+                .replace(/<.*?\bon\w+=["'][^"']*["']/gi, '')
+                .replace(/javascript:/gi, '');
+
+            // Escape all HTML tags
+            input = input.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            // Allow <br> and convert \n to <br>
+            return input.replace(/&lt;br\s*\/?&gt;/gi, '<br/>').replace(/\n/g, '<br/>');
+        }
+
        function maybeUpdateDynamicLabels(workStep) {
             jQuery.each(workStep.find('.ff_dynamic_value'), function (index, item) {
                 var ref = $(item).data('ref');
@@ -53,8 +67,31 @@ import calculation from './Pro/calculations';
                 }
 
                 var refValues = [];
+                if (!refElement.length) {
+                    // This may repeater field
+                    let $rows = $theForm.find('.ff-el-repeater[data-name="' + ref + '"] tbody tr');
+                    $rows.each(function(index) {
+                        let $inputsInRow = $(this).find('input, select');
+                        let inputGroup = [];
+                        $inputsInRow.each(function(colIndex) {
+                            let value = $(this).val();
+                            if (value) {
+                                let label = $(this).closest('td').data('label') || 'Column-' + (colIndex + 1);
+                                inputGroup.push(label + ': ' + value);
+                            }
+                        });
+                        if (inputGroup.length) {
+                            refValues.push('#' + (index + 1) + '- ' + inputGroup.join(' | '));
+                        }
+                    });
+                    if ($rows.length) {
+                        separator = '<br/>';
+                    }
+                }
+
                 $.each(refElement, function () {
                     let inputValue = $(this).val();
+                    let conditionallyHidden = $(this).closest('.ff-el-group.has-conditions').hasClass('ff_excluded');
                     // if(inputValue) {
                     //     let tagName = $(this).prop("tagName");
                     //     if (tagName == 'OPTION') {
@@ -65,7 +102,7 @@ import calculation from './Pro/calculations';
                     //         inputValue = $(this).parent().find('span').html();
                     //     }
                     // }
-                    if (inputValue) {
+                    if (inputValue && !conditionallyHidden) {
                         refValues.push(inputValue);
                     }
                 });
@@ -77,7 +114,8 @@ import calculation from './Pro/calculations';
                     replaceValue = $(item).data('fallback');
                 }
 
-                $(this).html(replaceValue);
+                // Sanitize the replacement value before inserting it
+                $(this).html(sanitizeDynamicValue(replaceValue));
             });
         }
 

@@ -43,7 +43,7 @@
 
                 <div class="el-col el-col-12" style="padding-left: 12px; padding-right: 12px">
                     <div class="ff_card h-100">
-                        <h3 class="mb-3"><?php _e('Get Started with Fluent Form Wordpress Plugin', 'fluentform') ?></h3>
+                        <h3 class="mb-3"><?php _e('Get Started with Fluent Forms WordPress Plugin', 'fluentform') ?></h3>
                         <p class="text"><?php _e('Getting started with the Fluent Forms is easier than you could imagine. All our customers are not developers and we want to make your life easier.', 'fluentform') ?></p>
                         <div class="ff_video_wrap mt-5">
                             <img class="ff_video_img" src="<?php echo esc_url($public_url); ?>img/video-img.jpg"/>
@@ -197,7 +197,7 @@
                             <div class="ff_media_body ml-4">
                                 <h3 class="mb-2"><?php _e('Request a Feature', 'fluentform') ?></h3>
                                 <p class="text mb-4">
-                                    <?php _e('If you need any feature on fluentform, then please request a feature to us with your requirement.', 'fluentform') ?>
+                                    <?php _e('If you need any feature on Fluent Forms, then please request a feature to us with your requirement.', 'fluentform') ?>
                                 </p>
                                 <a target="_blank" class="el-button el-button--cyan el-button--soft" href="https://github.com/fluentform/fluentform/issues">
                                     <?php _e('Request Now', 'fluentform') ?>
@@ -221,25 +221,36 @@
             do_action('fluentform/after_documentation_wrapper');
 
             wp_add_inline_script('fluent_forms_global', "
-
-                // For support Page Modal
-                let btnOpenEl = document.getElementById('ff_video_btn');
-                let btnCloseEl = document.getElementById('ff_close_btn');
-                let dialogEl = document.getElementById('ff_dialog_wrapper');
-    
-                dialogEl.classList.add('hidden');
-    
-                btnOpenEl.addEventListener('click', function(e){
-                    e.preventDefault();
-                    dialogEl.parentElement.classList.add('ff_backdrop');
-                    dialogEl.classList.remove('hidden');
-                    dialogEl.classList.add('dialog-fade-enter-active');
-                });
-    
-                btnCloseEl.addEventListener('click', function(){
-                    dialogEl.parentElement.classList.remove('ff_backdrop');
+                document.addEventListener('DOMContentLoaded', function() {
+                    // For support Page Modal
+                    let btnOpenEl = document.getElementById('ff_video_btn');
+                    let btnCloseEl = document.getElementById('ff_close_btn');
+                    let dialogEl = document.getElementById('ff_dialog_wrapper');
+        
                     dialogEl.classList.add('hidden');
-                    dialogEl.classList.remove('dialog-fade-enter-active');
+        
+                    btnOpenEl.addEventListener('click', function(e){
+                        e.preventDefault();
+                        dialogEl.parentElement.classList.add('ff_backdrop');
+                        dialogEl.classList.remove('hidden');
+                        dialogEl.classList.add('dialog-fade-enter-active');
+                    });
+        
+                    btnCloseEl.addEventListener('click', function(){
+                        dialogEl.parentElement.classList.remove('ff_backdrop');
+                        dialogEl.classList.add('hidden');
+                        dialogEl.classList.remove('dialog-fade-enter-active');
+                        
+                        const videoElement = dialogEl.querySelector('video, iframe');
+                        if (videoElement) {
+                            if (videoElement.tagName === 'VIDEO') {
+                                videoElement.pause();
+                                videoElement.currentTime = 0;
+                            } else if (videoElement.tagName === 'IFRAME') {
+                                videoElement.src = videoElement.src;
+                            }
+                        }
+                    });
                 });
             ");
             ?>

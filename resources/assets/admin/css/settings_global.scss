@@ -968,6 +968,7 @@ body.ff_full_screen {
   padding-left: 10px;
   display: flex;
   align-items: center;
+  max-width: 110px;
   .el-icon-edit{
     position: absolute;
     left: 10px;
@@ -1019,6 +1020,20 @@ body.ff_full_screen {
     padding-top: 9px;
     padding-bottom: 9px;
     font-size: 14px;
+    max-width: 70px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+  }
+  .ff_shortcode_btn:hover {
+    max-width: 220px;
+    background: #4B4C4D;
+    color: #FFFFFF;
+  }
+}
+.more_menu {
+  padding: 0;
+  .ff-icon-more-vertical{
+    font-size: 24px;
   }
 }
 
@@ -1258,10 +1273,24 @@ span + .ff_payment_badge{
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 10;
   display: none;
+  background: #0000009c;
   &.active{
     display: block;
+  }
+}
+
+// integration editor chained field css
+.ff_chained_filter {
+  .el-row {
+    .wpf_each_filter {
+      margin-bottom: 18px;
+
+      label {
+        margin-bottom: 10px;
+      }
+    }
   }
 }
 

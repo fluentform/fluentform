@@ -33,17 +33,29 @@
                         <el-radio v-for="(result_type, typeName) in result_types" :key="typeName" :label="$t(typeName)">{{result_type}}</el-radio>
                     </el-radio-group>
 
-                    <p v-if="settings.validation_type == 'fail_on_condition_met'">
-                        {{ $t('Based on your selection, submission ')}}
-                        <b>{{ $t('will be rejected ') }}</b> 
-                        {{ $t('if ') }} {{ settings.type }} 
-                        {{ $t('conditions are met') }}
+                    <p
+                        v-if="settings.validation_type == 'fail_on_condition_met'"
+                        v-html="
+                            $t(
+                                'Based on your selection, submission %swill be rejected%s if %s conditions are met',
+                                '<b>',
+                                '</b>',
+                                settings.type
+                            )
+                        "
+                    >
                     </p>
-                    <p v-else>
-                        {{ $t('Based on your selection, submission ') }}
-                        <b>{{ $t('will be valid ') }}</b>
-                        {{ $t('if ') }} {{settings.type}} 
-                        {{ $t('conditions are met') }}
+                    <p
+                        v-else
+                        v-html="
+                            $t(
+                                'Based on your selection, submission %swill be valid%s if %s conditions are met',
+                                '<b>',
+                                '</b>',
+                                settings.type
+                            )
+                        "
+                    >
                     </p>
                 </el-form-item>
                 <el-form-item class="ff-form-item">

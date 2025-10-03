@@ -30,11 +30,19 @@ export default {
 	},
 	watch: {
 		selected_preset() {
-			if (this.selected_preset.trim() === 'ffs_default') {
-				jQuery('.ff_form_preview .fluentform').addClass('ff-default');
-			} else if (this.selected_preset.trim() === 'ffs_inherit_theme') {
-				jQuery('.ff_form_preview .fluentform.ff-default').removeClass('ff-default');
-			}
+            const button = document.querySelector('.ff_submit_btn_wrapper button');
+
+            if (this.selected_preset.trim() === 'ffs_default') {
+                jQuery('.ff_form_preview .fluentform').addClass('ff-default');
+                if (button) {
+                  button.classList.add('ff-btn', 'ff-btn-submit', 'ff-btn-md', 'ff_btn_style');
+                }
+            } else if (this.selected_preset.trim() === 'ffs_inherit_theme') {
+                jQuery('.ff_form_preview .fluentform.ff-default').removeClass('ff-default');
+                if (button) {
+                  button.classList.remove('ff-btn', 'ff-btn-submit', 'ff-btn-md', 'ff_btn_style');
+                }
+            }
 		}
 	},
 	methods: {

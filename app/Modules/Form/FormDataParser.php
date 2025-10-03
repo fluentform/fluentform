@@ -7,6 +7,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 class FormDataParser
 {
     protected static $data = null;
+    protected static $submissionId = null;
 
     public static function parseFormEntries($entries, $form, $fields = null)
     {
@@ -35,13 +36,17 @@ class FormDataParser
 
     public static function parseFormSubmission($submission, $form, $fields, $isHtml = false)
     {
-        if (is_null(static::$data)) {
+        // Sometimes submission will change inside loop. So we need to parse submission data for new one
+        $newSubmission = $submission->id != static::$submissionId;
+
+        if (is_null(static::$data) || $newSubmission) {
             static::$data = static::parseData(
                 json_decode($submission->response),
                 $fields,
                 $form->id,
                 $isHtml
             );
+            static::$submissionId = $submission->id;
         }
 
         $submission->user_inputs = static::$data;
@@ -275,6 +280,7 @@ class FormDataParser
         $columns = $data['settings']['grid_columns'];
 
         foreach ($rows as $rowKey => $rowValue) {
+            $rowKey = trim(sanitize_text_field($rowKey));
             $table[$rowKey] = [
                 'name'    => $rowKey,
                 'label'   => $rowValue,
@@ -283,12 +289,11 @@ class FormDataParser
 
             foreach ($columns as $columnKey => $columnValue) {
                 $table[$rowKey]['columns'][] = [
-                    'name'  => $columnKey,
+                    'name'  => trim(sanitize_text_field($columnKey)),
                     'label' => $columnValue,
                 ];
             }
         }
-
         return $table;
     }
 
@@ -302,7 +307,14 @@ class FormDataParser
     public static function formatName($value)
     {
         if (is_array($value) || is_object($value)) {
-            return fluentImplodeRecursive(' ', array_filter(array_values((array) $value)));
+            $value = (array) $value;
+            $order = ['first_name', 'middle_name', 'last_name'];
+            uksort($value, function($a, $b) use ($order) {
+                $posA = array_search($a, $order);
+                $posB = array_search($b, $order);
+                return $posA - $posB;
+            });
+            return fluentImplodeRecursive(' ', array_filter(array_values($value)));
         }
 
         return $value;
@@ -314,8 +326,12 @@ class FormDataParser
             return self::formatValue($values);
         }
 
-        if (!is_array($values) || empty($values)) {
+        if (!is_array($values)) {
             return $values;
+        }
+
+        if (empty($values)) {
+            return '';
         }
 
         if (!isset($field['options'])) {

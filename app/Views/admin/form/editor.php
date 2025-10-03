@@ -12,7 +12,7 @@
 
     ?>
 	<div id="ff_form_editor_app">
-		<ff_form_editor v-if="!loading" :form="form" :form_saving="form_saving" :save_form="saveForm"></ff_form_editor>
+		<ff_form_editor v-if="!loading" :form.sync="form" :form_saving="form_saving" :save_form="saveForm"></ff_form_editor>
         <global-search></global-search>
 	</div>
 	<?php

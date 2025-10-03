@@ -13,6 +13,7 @@
                 :label="opt.value"
                 :key="i"
             >{{ opt.label }}</el-checkbox>
+            <p class="ff_tips_warning" v-if="isTermsAndConditionElement && !model">{{ $t('If Terms and Conditions checkbox is hidden (appears unchecked), please avoid marking this field as required. This ensures your forms will submit properly without any issues.') }}</p>
         </el-checkbox-group>
     </el-form-item>
 </template>
@@ -24,15 +25,18 @@ export default {
     name: 'inputCheckbox',
     props: ['listItem', 'value'],
     components: { elLabel },
-    watch: {
-        model() {
-            this.$emit('input', this.model);
+	computed: {
+		model: {
+			get() {
+				return this.value;
+			},
+			set(value) {
+				this.$emit('input', value)
+			}
+		},
+        isTermsAndConditionElement() {
+            return this.$attrs?.editItem?.element === 'terms_and_condition';
         }
-    },
-    data() {
-        return {
-            model: this.value
-        }
-    }
+	}
 };
 </script>

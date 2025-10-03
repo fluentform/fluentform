@@ -4,6 +4,7 @@ namespace FluentForm\App\Services\Scheduler;
 
 use FluentForm\App\Models\FormAnalytics;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\Emogrifier\Emogrifier;
 
 class Scheduler
@@ -23,6 +24,8 @@ class Scheduler
         } else {
             $settings = $defaults;
         }
+        $settings = apply_filters('fluentform/email_summary_settings', $settings);
+    
         if($settings['status'] == 'no') {
             return;
         }
@@ -98,7 +101,7 @@ class Scheduler
         }
 
         $paymentCounts = [];
-        if(defined('FLUENTFORMPRO') && get_option('__fluentform_payment_module_settings')) {
+        if(PaymentHelper::hasPaymentSettings()) {
             $paymentCounts = wpFluent()->table('fluentform_transactions')
                 ->select([
                     wpFluent()->raw("SUM({$wpdb->prefix}fluentform_transactions.payment_total) as total_amount"),

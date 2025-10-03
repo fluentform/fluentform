@@ -13,14 +13,24 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
             var element = $(this),
                 uploadedList;
 
+            // max width for 4,5,6 column container image
+            let elGroup = element.closest('.ff-el-group'),
+                maxColumnWidth;
+            if (elGroup.closest('.ff-column-container').is('.ff_columns_total_6, .ff_columns_total_5, .ff_columns_total_4')) {
+                // Regular image preview width is 162px, width >= 162px image style is not broken
+                if (elGroup.width() < 162) {
+                    maxColumnWidth = elGroup.width();
+                }
+            }
+
             // Set files thumbnail list container
             uploadedList = $('<div/>', {
                 class: 'ff-uploaded-list',
-                style: 'font-size:12px; margin-top: 15px;'
+                style: 'font-size:12px; margin-top: 15px;' + (maxColumnWidth ? `max-width:${maxColumnWidth}px;` : '')
             });
             element.closest('div').append(uploadedList);
             // original width for preview filename ellipsis
-            const maxWidth = uploadedList.width();
+            let maxWidth = uploadedList.width();
 
             // Set maximum allowed files count protection
             var rules = form.rules[element.prop('name')];
@@ -83,6 +93,10 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     return false;
                 }
 
+                let elName = element.prop('name');
+                $(`[name="${elName}"]`).closest('div').find('.error').html('');
+                element.closest('div').find('.error').html('');
+
                 return true;
             }
 
@@ -117,7 +131,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     }
 
                     var previewContainer = $('<div/>', {
-                        class: 'ff-upload-preview'
+                        class: 'ff-upload-preview' + (maxColumnWidth ? ' ff-upload-container-small-column-image' : '')
                     });
                     data.context = previewContainer;
 
@@ -176,10 +190,12 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
 
                     // set width for filename container
                     // filename larger than it's container will truncate
+                    if (!maxColumnWidth) {
+                        //Not max column width meaning image on left
+                        maxWidth = maxWidth - 91;  // 91px is width of left image area
+                    }
                     fileName.css({
-                        maxWidth: maxWidth
-                            - 91 // width of left image area
-                            + 'px'
+                        maxWidth: maxWidth + 'px'
                     });
                     data.submit();
                     data.context.addClass('ff_uploading');
@@ -231,8 +247,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 },
                 fail: function (e, data) {
                     let errors = [];
-                    data.context.remove();
-                    if (data.jqXHR.responseJSON && data.jqXHR.responseJSON.errors) {
+                    data.context?.remove();
+                    if (data.jqXHR?.responseJSON && data.jqXHR?.responseJSON.errors) {
                         $.each(data.jqXHR.responseJSON.errors, function (key, error) {
                             if (typeof error == 'object') {
                                 $.each(error, function (i, msg) {
@@ -242,7 +258,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                                 errors.push(error);
                             }
                         });
-                    } else if (data.jqXHR.responseText) {
+                    } else if (data.jqXHR?.responseText) {
                         errors.push(data.jqXHR.responseText);
                     } else {
                         errors.push('Something is wrong when uploading the file! Please try again');
@@ -256,6 +272,13 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
             });
 
         });
+
+        // handling accessibility
+        $form.find('.ff_upload_btn').on('keyup', function (e) {
+            if (e.keyCode == 32) {
+                $(this).siblings('input[type=file]').trigger('click');
+            }
+        })
     };
 
     /**
@@ -314,6 +337,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 filePath = $this.attr('data-href'),
                 attachmentId = $this.attr('data-attachment-id');
             if (filePath == '#') {
+                $this.closest('.ff-el-input--content').find('.error').remove();
                 $this.closest('.ff-upload-preview').remove();
                 if (!parent.find('.ff-upload-preview').length) {
                     parent.siblings('.ff-upload-progress').addClass('ff-hidden');
@@ -328,6 +352,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     .then(function (response) {
                         var element = $this.closest('.ff-el-input--content').find('input');
                         $el.trigger('change_remaining', 1);
+                        $this.closest('.ff-el-input--content').find('.error').remove();
                         $this.closest('.ff-upload-preview').remove();
                         if (!parent.find('.ff-upload-preview').length) {
                             parent.siblings('.ff-upload-progress').addClass('ff-hidden');

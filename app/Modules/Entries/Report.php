@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\Entries;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -144,7 +145,7 @@ class Report
         $formattedReports = [];
         foreach ($reports as $report) {
             $formattedReports[$report->field_name]['reports'][] = [
-                'value'     => maybe_unserialize($report->field_value),
+                'value'     => Helper::safeUnserialize($report->field_value),
                 'count'     => $report->total_count,
                 'sub_field' => $report->sub_field_name,
             ];
@@ -213,7 +214,7 @@ class Report
 
     protected function setReportForSubInput($report, &$formattedReports)
     {
-        $filedValue = maybe_unserialize($report['field_value']);
+        $filedValue = Helper::safeUnserialize($report['field_value']);
 
         if (is_array($filedValue)) {
             foreach ($filedValue as $fVal) {
@@ -275,10 +276,10 @@ class Report
             return Helper::setFormMeta($formId, 'report_data_migrated', 'yes');
         }
 
-        $entries = new Entries();
+        $submissionService = new SubmissionService();
         foreach ($unmigratedData as $datum) {
             $value = json_decode($datum->response, true);
-            $entries->recordEntryDetails($datum->id, $formId, $value);
+            $submissionService->recordEntryDetails($datum->id, $formId, $value);
         }
 
         return true;

@@ -50,7 +50,7 @@ class Text extends BaseComponent
                 'jquery-mask',
                 fluentformMix('libs/jquery.mask.min.js'),
                 ['jquery'],
-                false,
+                '1.14.15',
                 true
             );
         }
@@ -136,7 +136,7 @@ class Text extends BaseComponent
         }
 
         // For hidden input
-        if ('hidden' == $data['attributes']['type']) {
+        if ('hidden' == ArrayHelper::get($data, 'attributes.type')) {
             $attributes = $this->buildAttributes($data['attributes'], $form);
             echo '<input ' . $attributes . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $attributes is escaped before being passed in.
             return;
@@ -146,7 +146,7 @@ class Text extends BaseComponent
             $data['attributes']['tabindex'] = $tabIndex;
         }
 
-        $data['attributes']['class'] = @trim('ff-el-form-control ' . $data['attributes']['class']);
+        $data['attributes']['class'] = @trim('ff-el-form-control ' . ArrayHelper::get($data, 'attributes.class', ''));
         $data['attributes']['id'] = $this->makeElementId($data, $form);
 
         $elMarkup = $this->buildInputGroup($data, $form);

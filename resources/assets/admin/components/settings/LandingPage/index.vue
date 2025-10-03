@@ -6,7 +6,9 @@
                     <card-head-group class="justify-between">
                         <div>
                             <h5 class="title">{{ $t('Landing Page') }}</h5>
-                            <p class="text" v-if="settings.status != 'yes'">{{ (' Publish forms on a dedicated landing page for more conversion.') }}</p>
+                            <p class="text" v-if="settings.status != 'yes'">
+                                {{ $t('Publish forms on a dedicated landing page for more conversion.') }}
+                            </p>
                         </div>
                         <btn-group v-if="!error_text" size="sm">
                             <btn-group-item>
@@ -39,7 +41,7 @@
                                     @click="saveSettings()"
                                     size="medium"
                                 >
-                                    {{saving ? $t('Saving ') : $t('Save ') }}
+                                    {{saving ? $t('Saving') : $t('Save') }}
                                 </el-button>
                             </btn-group-item>
                         </btn-group>
@@ -48,9 +50,9 @@
                 <card-body>
                     <el-checkbox 
                         v-model="settings.status" 
-                        :true-label="$t('yes')"
+                        true-label="yes"
                         @change="offFullScreen" 
-                        :false-label="$t('no')"
+                        false-label="no"
                     >
                         {{ $t('Enable Form Landing Page Mode') }}
                     </el-checkbox>
@@ -204,7 +206,7 @@
                                                 type="primary"
                                                 icon="el-icon-success"
                                                 @click="saveSettings()">
-                                                {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                                {{ $t('%s Settings', saving ? 'Saving' : 'Save') }}
                                             </el-button>
                                         </el-form-item>
                                     </div>

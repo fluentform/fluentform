@@ -242,7 +242,7 @@
       margin-left: 2px;
       vertical-align: middle;
       &:hover {
-        color: $font-color;
+        color: #000;
       }
       svg {
         fill: $primary;
@@ -253,7 +253,7 @@
       margin-top: 5px;
       font-style: italic;
       font-size: 12px;
-      color: lighten($font-color, 35%);
+      color: $text-color;
       &.ff_ahm {
         margin-bottom: 5px;
         margin-top: -3px;
@@ -308,6 +308,13 @@
     float: right;
   }
 
+  .ff-chat-gpt-loader-svg {
+    padding: 15px;
+    margin-top: 10px;
+    position: relative;
+    border: 1px solid #ced4da;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  }
 }
 
 
@@ -465,7 +472,7 @@
 
       &-preview {
         margin-top: 5px;
-        border: 1px solid $geenishGray;
+        border: 1px solid $geenish-gray;
         border-radius: 3px;
 
         &:first-child {
@@ -479,6 +486,12 @@
           height: 70px;
           background-position: center center;
         }
+      }
+      &-container-small-column-image {
+          text-align: center;
+          display: flex;
+          flex-wrap: wrap-reverse;
+          justify-content: center;
       }
 
       &-preview,
@@ -501,7 +514,7 @@
         width: 10000px;
         padding: 0px 10px;
         position: relative;
-        border-left: 1px solid lighten($geenishGray, 10%);
+        border-left: 1px solid lighten($geenish-gray, 10%);
 
         #{$prefix}-inline-block,
         #{$prefix}-upload-error {
@@ -597,6 +610,16 @@
       color: white;
       cursor: pointer;
       padding: 10px 20px;
+
+      &:hover {
+        outline: none;
+        background-color: #91959b;
+      }
+
+      &:focus-visible {
+        outline: none;
+        background-color: #91959b;
+      }
     }
   }
 
@@ -689,7 +712,7 @@
   }
   form.ff-form-has-steps {
     .ff-btn-submit {
-      display: none;
+      visibility: hidden;
     }
 
     .ff_submit_btn_wrapper {
@@ -785,8 +808,9 @@
   padding: 3px;
   &.active {
     height: auto;
+    width: 100%; // active container full width
   }
-  .ff_summary_container{
+  .ff_summary_container {
     margin-top: 10px;
     font-size: 14px;
   }
@@ -875,4 +899,8 @@
       }
     }
   }
+}
+
+.iti-mobile .iti--container {
+  z-index: 9999;
 }

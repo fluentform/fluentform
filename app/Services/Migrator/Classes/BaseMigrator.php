@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Migrator\Classes;
 
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 abstract class BaseMigrator
@@ -20,6 +21,7 @@ abstract class BaseMigrator
     {
         if (!$this->exist()) {
             wp_send_json_error([
+                //translators: %s Target Plugin Name
                 'message' => sprintf(__('%s is not installed.', 'fluentform'), $this->title),
             ]);
         }
@@ -1378,7 +1380,7 @@ abstract class BaseMigrator
                     'validation_rules'   => [
                         'required'           => [
                             'value'   => ArrayHelper::isTrue($args,'required'),
-                            'message' => __('This field is required', 'fluentformpro'),
+                            'message' => __('This field is required', 'fluentform'),
                         ]
                     ],
                     'conditional_logics' => []
@@ -1664,9 +1666,8 @@ abstract class BaseMigrator
             $uidHash = md5(wp_generate_uuid4() . $insertId);
 
             \FluentForm\App\Helpers\Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $fluentFormId);
-            $entries = new \FluentForm\App\Modules\Entries\Entries();
-            $entries->recordEntryDetails($insertId, $fluentFormId, $entry);
-
+            $submissionService = new SubmissionService();
+            $submissionService->recordEntryDetails($insertId, $fluentFormId, $entry);
         }
         wp_send_json([
             'message'          => __("Entries Imported Successfully", 'fluentform'),

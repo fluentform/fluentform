@@ -8,10 +8,6 @@
 @import "../styles/el_customize";
 @import "../styles/responsive";
 
-.v-modal {
-    display: none !important;
-}
-
 .mtb10 {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -132,5 +128,28 @@ small {
         transition: 0.2s all;
         left: 0;
         opacity: 0;
+        .el-loading-spinner .circular {
+            height: 17px;
+            width: 17px;
+            margin-top: 14px;
+        }
+    }
+}
+
+.ff_form_remove_confirm_class {
+    color: #FFFFFF;
+    background-color: #FF6154;
+    border-color: #FF6154;
+
+    &:focus {
+        color: #FFFFFF;
+        background-color: #FF6154;
+        border-color: #FF6154;
+    }
+
+    &:hover {
+        color: #FFFFFF;
+        background: #FF8176;
+        border-color: #FF8176;
     }
 }
