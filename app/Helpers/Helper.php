@@ -8,8 +8,10 @@ use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\App\Services\FormBuilder\Components\SelectCountry;
+use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Helpers\Traits\GlobalDefaultMessages;
+use FluentForm\Framework\Support\Arr;
 
 class Helper
 {
@@ -22,6 +24,9 @@ class Helper
     public static $loadedForms = [];
 
     public static $tabIndexStatus = 'na';
+
+    protected static $formMetaCache = [];
+
 
     /**
      * Sanitize form inputs recursively.
@@ -166,17 +171,54 @@ class Helper
         return apply_filters('fluentform/subfield_reportable_inputs', $grid);
     }
 
-    public static function getFormMeta($formId, $metaKey, $default = '')
+    public static function getFormMeta($formId, $metaKey, $default = '', $forced = false)
     {
-        return FormMeta::retrieve($metaKey, $formId, $default);
+        $formattedValues = self::$formMetaCache[$formId] ?? [];
+        
+        if (!isset(self::$formMetaCache[$formId]) || $forced) {
+            $formMetas = FormMeta::where('form_id', $formId)
+                ->get();
+
+            $formattedValues = [];
+            foreach ($formMetas as $formMeta) {
+                $value = $formMeta->value;
+                
+                $decoded = json_decode($value ?? '', true);
+                if (is_array($decoded)) {
+                    $value = $decoded;
+                }
+
+                $formattedValues[$formMeta->meta_key] = $value;
+            }
+            self::$formMetaCache[$formId] = $formattedValues;
+        }
+
+        return Arr::get($formattedValues, $metaKey, $default);
     }
+
 
     public static function setFormMeta($formId, $metaKey, $value)
     {
         if ($meta = FormMeta::persist($formId, $metaKey, $value)) {
+            // Update the cache with the new value
+            if (!isset(self::$formMetaCache[$formId])) {
+                self::$formMetaCache[$formId] = [];
+            }
+            self::$formMetaCache[$formId][$metaKey] = $value;
+
             return $meta->id;
         }
         return null;
+    }
+
+    public static function deleteFormMeta($formId, $metaKey)
+    {
+        try {
+            FormMeta::remove($formId, $metaKey);
+            return true;
+        } catch (\Exception $ex) {
+            return null;
+        }
     }
 
     public static function getSubmissionMeta($submissionId, $metaKey, $default = false)
@@ -192,10 +234,19 @@ class Helper
         return null;
     }
 
+    public static function setSubmissionMetaAsArrayPush($submissionId, $metaKey, $value, $formId = false)
+    {
+        if ($meta = SubmissionMeta::persistArray($submissionId, $metaKey, $value, $formId)) {
+            return $meta->id;
+        }
+        return null;
+    }
+
     public static function isEntryAutoDeleteEnabled($formId)
     {
         if (
-            'yes' == ArrayHelper::get(static::getFormMeta($formId, 'formSettings', []), 'delete_entry_on_submission', '')
+            'yes' == ArrayHelper::get(static::getFormMeta($formId, 'formSettings', []), 'delete_entry_on_submission',
+                '')
         ) {
             return true;
         }
@@ -254,7 +305,8 @@ class Helper
             'fluent_forms_add_ons',
             'fluent_forms_docs',
             'fluent_forms_payment_entries',
-            'fluent_forms_smtp'
+            'fluent_forms_smtp',
+            'fluent_forms_reports'
         ];
 
         $status = true;
@@ -300,8 +352,7 @@ class Helper
                 $result = shortcode_parse_atts($parsedCode);
 
                 if (!empty($result[$selector])) {
-
-                    if($tag == 'fluentform' && !empty($result['type']) && $result['type'] == 'conversational') {
+                    if ($tag == 'fluentform' && !empty($result['type']) && $result['type'] == 'conversational') {
                         continue;
                     }
 
@@ -349,8 +400,8 @@ class Helper
 
             $hasBlock = strpos($block['blockName'], 'fluentfom/guten-block') === 0;
             if ($hasBlock) {
-                $formId = (int) $block['attrs']['formId'];
-                
+                $formId = (int)$block['attrs']['formId'];
+
                 $ids[] = $formId;
 
                 $theme = ArrayHelper::get($block, 'attrs.themeStyle');
@@ -384,13 +435,21 @@ class Helper
     public static function isMultiStepForm($formId)
     {
         $form = Form::find($formId);
-        $fields = json_decode($form->form_fields, true);
-
-        if (ArrayHelper::get($fields, 'stepsWrapper')) {
-            return true;
+        if (!$form) {
+            return false;
         }
 
-        return false;
+        $fieldsJson = (string)($form->form_fields ?? '');
+        if ($fieldsJson === '') {
+            return false;
+        }
+
+        $fields = json_decode($fieldsJson, true);
+        if (!is_array($fields)) {
+            return false;
+        }
+
+        return (bool)ArrayHelper::get($fields, 'stepsWrapper');
     }
 
     public static function hasFormElement($formId, $elementName)
@@ -416,7 +475,7 @@ class Helper
                 if (!$exist && $form->has_payment) {
                     $allSubmission = Submission::where('form_id', $form->id)->get()->toArray();
 
-                    foreach($allSubmission as $submission) {
+                    foreach ($allSubmission as $submission) {
                         $response = json_decode(ArrayHelper::get($submission, 'response'), true);
                         $exist = $inputValue == ArrayHelper::get($response, $fieldName);
                     }
@@ -425,7 +484,8 @@ class Helper
                 if ($exist) {
                     $typeName = ArrayHelper::get($field, 'element', 'input_text');
                     return [
-                        'unique' => apply_filters('fluentform/validation_message_unique_'. $typeName, ArrayHelper::get($field, 'raw.settings.unique_validation_message'), $field),
+                        'unique' => apply_filters('fluentform/validation_message_unique_' . $typeName,
+                            ArrayHelper::get($field, 'raw.settings.unique_validation_message'), $field),
                     ];
                 }
             }
@@ -433,9 +493,8 @@ class Helper
 
         return $validation;
     }
-    
 
-    
+
     public static function hasPartialEntries($formId)
     {
         static $cache = [];
@@ -517,7 +576,8 @@ class Helper
             return $input;
         }
         $settings = $formatters[$formatterName]['settings'];
-        $number = floatval(str_replace($settings['decimal'], '.', preg_replace('/[^-?\d' . preg_quote($settings['decimal']) . ']/', '', $input)));
+        $number = floatval(str_replace($settings['decimal'], '.',
+            preg_replace('/[^-?\d' . preg_quote($settings['decimal']) . ']/', '', $input)));
 
         return number_format($number, $settings['precision'], '.', '');
     }
@@ -633,10 +693,10 @@ class Helper
             $paramKey = 'fluent-form';
         }
         if ($key) {
-            return site_url('?' . $paramKey . '=' . $formId . '&form=' . $key);
+            return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId . '&form=' . $key);
         }
 
-        return site_url('?' . $paramKey . '=' . $formId);
+        return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId);
     }
 
     public static function fileUploadLocations()
@@ -756,13 +816,22 @@ class Helper
     }
 
     // make tabular-grid value markdown format
-    public static function getTabularGridFormatValue($girdData, $field, $rowJoiner = '<br />', $colJoiner = ', ', $type = '')
+    public static function getTabularGridFormatValue(
+        $girdData,
+        $field,
+        $rowJoiner = '<br />',
+        $colJoiner = ', ',
+        $type = ''
+    )
     {
         if (!$girdData || !$field) {
             return '';
         }
-        $girdRows = ArrayHelper::get($field, 'raw.settings.grid_rows', '');
-        $girdCols = ArrayHelper::get($field, 'raw.settings.grid_columns', '');
+        $girdRows = ArrayHelper::get($field, 'raw.settings.grid_rows', []);
+        $girdRows = fluentFormSanitizer($girdRows);
+        $girdCols = ArrayHelper::get($field, 'raw.settings.grid_columns', []);
+        $girdCols = fluentFormSanitizer($girdCols);
+
         $value = '';
         $lastRow = key(array_slice($girdData, -1, 1, true));
         foreach ($girdData as $row => $column) {
@@ -844,12 +913,12 @@ class Helper
 
         return $title;
     }
-    
+
     public static function getIpinfo()
     {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.geo_provider_token');
     }
-    
+
     public static function isAutoloadCaptchaEnabled()
     {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
@@ -865,7 +934,7 @@ class Helper
         }
         return $url;
     }
-    
+
     public static function arrayFilterRecursive($arrayItems)
     {
         foreach ($arrayItems as $key => $item) {
@@ -876,11 +945,12 @@ class Helper
         }
         return $arrayItems;
     }
-    
+
     public static function isBlockEditor()
     {
-       return defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && $_REQUEST['context'] === 'edit';
+        return defined('REST_REQUEST') && REST_REQUEST && !empty($_REQUEST['context']) && $_REQUEST['context'] === 'edit';
     }
+
     public static function resolveValidationRulesGlobalOption(&$field)
     {
         if (isset($field['fields']) && is_array($field['fields'])) {
@@ -890,7 +960,7 @@ class Helper
         } else {
             if (ArrayHelper::get($field, 'settings.validation_rules')) {
                 foreach ($field['settings']['validation_rules'] as $key => &$rule) {
-                    if(!isset($rule['global'])) {
+                    if (!isset($rule['global'])) {
                         $rule['global'] = false;
                     }
                     $rule['global_message'] = static::getGlobalDefaultMessage($key);
@@ -932,11 +1002,13 @@ class Helper
             $rawField = apply_filters('fluentform/rendering_field_data_' . $fieldType, $rawField, $form);
             $options = [];
             if ("net_promoter_score" === $fieldType) {
-                $options = ArrayHelper::get($rawField, 'options', []);
+                $options = array_flip(ArrayHelper::get($rawField, 'options', []));
             } elseif ('ratings' == $fieldType) {
                 $options = array_keys(ArrayHelper::get($rawField, 'options', []));
-            } elseif ('gdpr_agreement' == $fieldType || 'terms_and_condition' == $fieldType) {
+            } elseif ('gdpr_agreement' == $fieldType) {
                 $options = ['on'];
+            } elseif ('terms_and_condition' == $fieldType) {
+                $options = ['on', 'off'];
             } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
                 if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
@@ -945,6 +1017,19 @@ class Helper
                     ArrayHelper::get($rawField, 'settings.advanced_options', []),
                     'value'
                 );
+            } elseif ("dynamic_field" == $fieldType) {
+                $dynamicFetchValue = 'yes' == ArrayHelper::get($rawField, 'settings.dynamic_fetch');
+                if ($dynamicFetchValue) {
+                    $rawField = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $rawField);
+                }
+                $dfElementType = ArrayHelper::get($rawField, 'attributes.type');
+                if (in_array($dfElementType, ['radio', 'select', 'checkbox'])) {
+                    $fieldType = 'dynamic_field_options';
+                    $options = array_column(
+                        ArrayHelper::get($rawField, 'settings.advanced_options', []),
+                        'value'
+                    );
+                }
             }
 
             if ($options) {
@@ -961,6 +1046,7 @@ class Helper
                 case 'terms_and_condition':
                 case 'input_checkbox':
                 case 'multi_select':
+                case 'dynamic_field_options':
                     $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
                     if ($skipValidationInputsWithOptions) {
                         break;
@@ -990,9 +1076,11 @@ class Helper
                     $isValid = in_array($inputValue, $validCountries);
                     break;
                 case 'repeater_field':
+                case 'repeater_container':
                     foreach (ArrayHelper::get($rawField, 'fields', []) as $index => $repeaterField) {
                         $repeaterFieldValue = array_filter(array_column($inputValue, $index));
-                        if ($repeaterFieldValue && $error = static::validateInput($repeaterField, $formData, $form, $fieldName, $repeaterFieldValue)) {
+                        if ($repeaterFieldValue && $error = static::validateInput($repeaterField, $formData, $form,
+                                $fieldName, $repeaterFieldValue)) {
                             $isValid = false;
                             break;
                         }
@@ -1000,12 +1088,23 @@ class Helper
                     break;
                 case 'tabular_grid':
                     $rows = array_keys(ArrayHelper::get($rawField, 'settings.grid_rows', []));
+                    $rows = array_map(function ($row) {
+                        return trim(sanitize_text_field($row));
+                    }, $rows);
+
                     $submittedRows = array_keys(ArrayHelper::get($formData, $fieldName, []));
+                    $submittedRows = array_map('trim', $submittedRows);
+
                     $rowDiff = array_diff($submittedRows, $rows);
+
                     $isValid = empty($rowDiff);
                     if ($isValid) {
                         $columns = array_keys(ArrayHelper::get($rawField, 'settings.grid_columns', []));
+                        $columns = array_map(function ($column) {
+                            return trim(sanitize_text_field($column));
+                        }, $columns);
                         $submittedCols = ArrayHelper::flatten(ArrayHelper::get($formData, $fieldName, []));
+                        $submittedCols = array_map('trim', $submittedCols);
                         $colDiff = array_diff($submittedCols, $columns);
                         $isValid = empty($colDiff);
                     }
@@ -1032,8 +1131,223 @@ class Helper
             '__stripe_payment_method_id',
             '__ff_all_applied_coupons',
             '__entry_intermediate_hash',
+            '__square_payment_method_id',
+            '__square_verify_buyer_id',
+            'ct_bot_detector_event_token',
+            'ff_ct_form_load_time'
         ];
 
         return apply_filters('fluentform/white_listed_fields', $whiteListedFields, $formId);
+    }
+
+    /**
+     * Shortcode parse on validation message
+     * @param string $message
+     * @param object $form
+     * @param string $fieldName
+     * @return string
+     */
+    public static function shortCodeParseOnValidationMessage($message, $form, $fieldName)
+    {
+        // For validation message there is no entry & form data
+        // Add 'current_field' name as data array to resolve {labels.current_field} shortcode if it has
+        return ShortCodeParser::parse(
+            $message,
+            (object)['response' => "", 'form_id' => $form->id],
+            ['current_field' => $fieldName],
+            $form
+        );
+    }
+
+    public static function getAjaxUrl()
+    {
+        return apply_filters('fluentform/ajax_url', admin_url('admin-ajax.php'));
+    }
+
+    public static function getDefaultDateTimeFormatForMoment()
+    {
+        $phpFormat = get_option('date_format') . ' ' . get_option('time_format');
+
+        $replacements = [
+            'A' => 'A',      // for the sake of escaping below
+            'a' => 'a',      // for the sake of escaping below
+            'B' => '',       // Swatch internet time (.beats), no equivalent
+            'c' => 'YYYY-MM-DD[T]HH:mm:ssZ', // ISO 8601
+            'D' => 'ddd',
+            'd' => 'DD',
+            'e' => 'zz',     // deprecated since version 1.6.0 of moment.js
+            'F' => 'MMMM',
+            'G' => 'H',
+            'g' => 'h',
+            'H' => 'HH',
+            'h' => 'hh',
+            'I' => '',       // Daylight Saving Time? => moment().isDST();
+            'i' => 'mm',
+            'j' => 'D',
+            'L' => '',       // Leap year? => moment().isLeapYear();
+            'l' => 'dddd',
+            'M' => 'MMM',
+            'm' => 'MM',
+            'N' => 'E',
+            'n' => 'M',
+            'O' => 'ZZ',
+            'o' => 'YYYY',
+            'P' => 'Z',
+            'r' => 'ddd, DD MMM YYYY HH:mm:ss ZZ', // RFC 2822
+            'S' => 'o',
+            's' => 'ss',
+            'T' => 'z',      // deprecated since version 1.6.0 of moment.js
+            't' => '',       // days in the month => moment().daysInMonth();
+            'U' => 'X',
+            'u' => 'SSSSSS', // microseconds
+            'v' => 'SSS',    // milliseconds (from PHP 7.0.0)
+            'W' => 'W',      // for the sake of escaping below
+            'w' => 'e',
+            'Y' => 'YYYY',
+            'y' => 'YY',
+            'Z' => '',       // time zone offset in minutes => moment().zone();
+            'z' => 'DDD',
+        ];
+
+        // Converts escaped characters.
+        foreach ($replacements as $from => $to) {
+            $replacements['\\' . $from] = '[' . $from . ']';
+        }
+
+        $format = strtr($phpFormat, $replacements);
+
+        return apply_filters('fluentform/moment_date_time_format', $format);
+    }
+
+    public static function isDefaultWPDateEnabled()
+    {
+        $globalSettings = get_option('_fluentform_global_form_settings');
+        return 'wp_default' === ArrayHelper::get($globalSettings, 'misc.default_admin_date_time');
+    }
+
+    public static function isPaymentCompatible()
+    {
+        if (!self::hasPro()) {
+            return true;
+        } else {
+            return version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '>=');
+        }
+    }
+
+    /**
+     * Determine pro payment script is compatible or not
+     * Script is compatible if pro version is greater than or equal to 6.0.4
+     *
+     * @return bool
+     */
+    public static function isProPaymentScriptCompatible()
+    {
+        if (self::hasPro()) {
+            return version_compare(FLUENTFORMPRO_VERSION, '6.0.4', '>=');
+        }
+        return false;
+    }
+
+    public static function hasPro()
+    {
+        return defined('FLUENTFORMPRO');
+    }
+
+    public static function getLandingPageEnabledForms()
+    {
+        if (class_exists(\FluentFormPro\classes\SharePage\SharePage::class)) {
+            if (method_exists(\FluentFormPro\classes\SharePage\SharePage::class, 'getLandingPageFormIds')) {
+                $sharePage = new \FluentFormPro\classes\SharePage\SharePage();
+                return $sharePage->getLandingPageFormIds();
+            }
+        }
+        return [];
+    }
+
+    public static function sanitizeArrayKeysAndValues($values)
+    {
+        if (is_array($values)) {
+            $sanitized = [];
+            foreach ($values as $key => $value) {
+                $trimmedKey = sanitize_text_field(trim($key));
+                $trimmedValue = sanitize_text_field(trim($value));
+                $sanitized[$trimmedKey] = $trimmedValue;
+            }
+            return $sanitized;
+        }
+        return sanitize_text_field(trim($values));
+    }
+
+    public static function getFrontendFacingUrl($args = '')
+    {
+        return home_url($args);
+    }
+
+    public static function getCountryCodeFromHeaders()
+    {
+        $headers = [
+            // Cloudflare (most common)
+            'HTTP_CF_IPCOUNTRY',
+            'CF-IPCountry',
+
+            // AWS CloudFront (widely used)
+            'HTTP_CLOUDFRONT_VIEWER_COUNTRY',
+            'CloudFront-Viewer-Country',
+
+            // Common standard headers
+            'HTTP_X_COUNTRY_CODE',
+            'X-Country-Code',
+            'HTTP_X_FORWARDED_COUNTRY',
+            'X-Forwarded-Country',
+
+            // GeoIP (used by many systems)
+            'HTTP_GEOIP_COUNTRY_CODE',
+            'GEOIP_COUNTRY_CODE',
+            'HTTP_X_GEOIP_COUNTRY',
+            'X-GeoIP-Country',
+
+            // General purpose country headers
+            'HTTP_X_COUNTRY',
+            'X-Country',
+            'HTTP_X_COUNTRY_ISO',
+            'X-Country-ISO'
+        ];
+
+        foreach ($headers as $header) {
+            // Try directly from $_SERVER
+            if (isset($_SERVER[$header])) {
+                $code = trim($_SERVER[$header]);
+            } // Try with HTTP_ prefix if not already present
+            elseif (strpos($header, 'HTTP_') !== 0) {
+                $httpHeader = 'HTTP_' . str_replace('-', '_', strtoupper($header));
+                if (isset($_SERVER[$httpHeader])) {
+                    $code = trim($_SERVER[$httpHeader]);
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+
+            // Basic validation - should be 2-letter country code
+            if (!empty($code) && is_string($code) && strlen($code) === 2 && ctype_alpha($code) && $code !== 'XX') {
+                return strtoupper($code);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Fixes PHP Object Injection Vulnerability
+     * @param $data
+     * @return mixed
+     */
+    public static function safeUnserialize($data)
+    {
+        if (is_serialized($data)) { // Don't attempt to unserialize data that wasn't serialized going in.
+            return @unserialize(trim($data), ['allowed_classes' => false]);
+        }
+        return $data;
     }
 }

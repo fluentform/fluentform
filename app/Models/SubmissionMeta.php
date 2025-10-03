@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Models;
 
+use FluentForm\App\Helpers\Helper;
+
 class SubmissionMeta extends Model
 {
     /**
@@ -41,7 +43,7 @@ class SubmissionMeta extends Model
             ->first();
 
         if ($meta && isset($meta->value)) {
-            return maybe_unserialize($meta->value);
+            return Helper::safeUnserialize($meta->value);
         }
 
         return $default;
@@ -60,5 +62,35 @@ class SubmissionMeta extends Model
                 'form_id'     => $formId,
             ]
         );
+    }
+
+    public static function persistArray($submissionId, $metaKey, $metaValue, $formId = null)
+    {
+        if (!$formId) {
+            $formId = Submission::select('form_id')->where('id', $submissionId)->value('form_id');
+        }
+
+        // Try to fetch an existing record.
+        $record = static::where('response_id', $submissionId)
+                        ->where('meta_key', $metaKey)
+                        ->first();
+
+        if ($record) {
+            $values = json_decode($record->value);
+            $values[] = $metaValue;
+            $record->value = json_encode($values);
+            $record->save();
+        } else {
+            $metaValue = json_encode([$metaValue]);
+
+            $record = static::create([
+                'response_id' => $submissionId,
+                'meta_key' => $metaKey,
+                'value' => $metaValue,
+                'form_id' => $formId,
+            ]);
+        }
+
+        return $record;
     }
 }

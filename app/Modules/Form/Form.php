@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\Form;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -190,7 +191,7 @@ class Form
         $defaultSettings = [
             'confirmation' => [
                 'redirectTo'           => 'samePage',
-                'messageToShow'        => __('Thank you for your message. We will get in touch with you shortly', 'fluentform'),
+                'messageToShow'        => __('Thank you for your message. We will get in touch with you shortly.', 'fluentform'),
                 'customPage'           => null,
                 'samePageFormBehavior' => 'hide_form',
                 'customUrl'            => null,
@@ -544,7 +545,7 @@ class Form
             ->delete();
 
         ob_start();
-        if (defined('FLUENTFORMPRO')) {
+        if (PaymentHelper::hasPaymentSettings()) {
             try {
                 wpFluent()->table('fluentform_order_items')
                     ->where('form_id', $formId)
@@ -714,21 +715,7 @@ class Form
         $baseUrl = admin_url('admin.php?page=fluent_forms');
         return $baseUrl . '&form_id=' . $form->id . '&route=settings&sub_route=form_settings#basic_settings';
     }
-
-    public function getAllForms()
-    {
-        $fields = $this->request->get('fields');
-
-        if ($fields) {
-            $forms = $this->model
-                ->select($fields)
-                ->orderBy('created_at', 'DESC')->get();
-        } else {
-            $forms = $this->model->orderBy('created_at', 'DESC')->get();
-        }
-
-        wp_send_json($forms, 200);
-    }
+    
 
     /**
      * Map pdf feed ID to replace with duplicated PDF feed ID when duplicating form

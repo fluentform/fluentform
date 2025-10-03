@@ -100,6 +100,7 @@
                                             :settings="settings"
                                             :editorShortcodes="editorShortcodes"
                                             :merge_model="settings[field.key]"
+                                            @merge-model="setMergeModel(field.key)"
                                             :merge_fields="merge_fields"/>
                                 </template>
 
@@ -162,6 +163,7 @@
                                     <filed-general
                                             field_type="textarea"
                                             :editorShortcodes="editorShortcodes"
+                                            :placeholder="field?.placeholder"
                                             v-model="settings[field.key]"
                                     />
                                 </template>
@@ -208,24 +210,10 @@
                                 <template v-else-if="field.component == 'chained_fields'">
                                     <chained-fields
                                             select_class="flex-grow-1"
-                                            v-if="has_pro"
                                             :settings="settings"
                                             v-model="settings[field.key]"
                                             :field="field"
                                     ></chained-fields>
-
-                                    <notice class="ff_alert_between" type="danger-soft" v-else>
-                                        <div>
-                                            <h6 class="title">{{ $t('Interest Group is a Pro Feature') }}</h6>
-                                            <p class="text">
-                                                {{ $t('Please upgrade to pro to unlock this feature.') }}</p>
-                                        </div>
-                                        <a target="_blank"
-                                           href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-                                           class="el-button el-button--danger el-button--small">
-                                            {{ $t('Upgrade to Pro') }}
-                                        </a>
-                                    </notice>
                                 </template>
 
                                 <div class="ff_chained_ajax_field" v-else-if="field.component == 'chained-ajax-fields'">
@@ -249,24 +237,10 @@
 
                                 <template v-else-if="field.component == 'chained_select'">
                                     <chained-selects
-                                            v-if="has_pro"
                                             :settings="settings"
                                             v-model="settings[field.key]"
                                             :field="field"
                                     ></chained-selects>
-
-                                    <notice class="ff_alert_between" type="danger-soft" v-else>
-                                        <div>
-                                            <h6 class="title">{{ $t('This is a Pro Feature') }}</h6>
-                                            <p class="text">
-                                                {{ $t('Please upgrade to pro to unlock this feature.') }}</p>
-                                        </div>
-                                        <a target="_blank"
-                                           href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-                                           class="el-button el-button--danger el-button--small">
-                                            {{ $t('Upgrade to Pro') }}
-                                        </a>
-                                    </notice>
                                 </template>
 
                                 <template v-else-if="field.component == 'html_info'">
@@ -299,6 +273,18 @@
                                         v-model="settings[field.key]">
                                     </wp_editor>
                                 </template>
+
+	                            <template v-else-if="field.component == 'meta_plugin_mapping'">
+                                    <post-meta-plugin-mapping
+                                        :general_settings="settings[field.key].general"
+                                        :advanced_settings="settings[field.key].advanced"
+                                        :general_fields="field.fields.general"
+                                        :advanced_fields="field.fields.advanced"
+                                        :form_fields="inputs"
+                                        :editorShortcodes="editorShortcodes"
+                                        :labels="field.labels"
+                                    ></post-meta-plugin-mapping>
+	                            </template>
 
                                 <template v-else>
                                     <p>{{
@@ -355,10 +341,12 @@
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
     import Notice from '@/admin/components/Notice/Notice.vue';
     import wpEditor from '@/common/_wp_editor';
+    import PostMetaPluginMapping from '@/admin/components/settings/_PostMetaPluginsMapping';
 
     export default {
         name: 'general_notification_edit',
         components: {
+	        PostMetaPluginMapping,
             SelectionRouting,
             ErrorView,
             inputPopover,
@@ -461,18 +449,29 @@
                 };
                 this.loadIntegrationSettings();
             },
-            chainedAjax(key) {
-                for (const key in this.settings.chained_config) {
-                    if (this.settings.chained_config[key] == '') {
-                        return;
-                    }
-                }
-                if (key == 'base_id') {
-                    this.settings.chained_config['table_id'] = '';
-                }
-                this.fromChainedAjax = true;
-                this.loadIntegrationSettings();
-            },
+	        chainedAjax(key) {
+		        for (const key in this.settings.chained_config) {
+			        if (this.settings.chained_config[key] == '') {
+				        return;
+			        }
+		        }
+
+		        // Handle Google Sheets specific chaining
+		        if (this.integration_name === 'google_sheet') {
+			        if (key === 'spreadsheet_id') {
+				        this.settings.chained_config['work_sheet_id'] = '';
+			        }
+		        }
+
+		        // Handle Airtable specific chaining
+		        if (this.integration_name === 'airtable_v2') {
+			        if (key == 'base_id') {
+				        this.settings.chained_config['table_id'] = '';
+			        }
+		        }
+		        this.fromChainedAjax = true;
+		        this.loadIntegrationSettings();
+	        },
             loadMergeFields() {
                 this.loading_list = true;
                 const url = FluentFormsGlobal.$rest.route('getFormIntegrationList', this.form_id, this.integration_id)
@@ -514,6 +513,9 @@
                             });
                         }
                         this.$success(response.message);
+						if ('openai' === this.integration_name) {
+							this.$emit('refetch-all-editor-shortcodes');
+						}
                     })
                     .catch((error) => {
                         const getError = error?.errors || error?.data?.errors
@@ -524,6 +526,9 @@
                     })
                     .finally(() => this.saving = false);
             },
+            setMergeModel(key) {
+                this.settings[key] = {};
+            }
         },
         mounted() {
             this.loadIntegrationSettings();

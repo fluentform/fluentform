@@ -53,8 +53,10 @@ jQuery(document).ready(function () {
 
         window.fluentFormApp = function ($theForm) {
             var formInstanceSelector = $theForm.attr('data-form_instance');
-            var form = window['fluent_form_' + formInstanceSelector];
-
+            // Sanitize the selector - only allow alphanumeric, underscore and hyphen
+            formInstanceSelector = formInstanceSelector ? formInstanceSelector.replace(/[^a-zA-Z0-9_-]/g, '') : '';
+            var formObj = window['fluent_form_' + formInstanceSelector];
+            var form = (formObj && typeof formObj === 'object') ? formObj : null;
             if (!form) {
                 console.log('No Fluent form JS vars found!');
                 return false;
@@ -141,13 +143,50 @@ jQuery(document).ready(function () {
                     try {
                         var $inputs = $theForm
                             .find(':input').filter(function (i, el) {
+                                // Ignore repeater container
+                                if ($(el).attr('data-type') === 'repeater_container') {
+                                    if ($(el).closest('.ff-repeater-container').hasClass('ff_excluded')) {
+                                        return false;
+                                    }
+                                    if ($(this).closest('.has-conditions').hasClass('ff_excluded')) {
+                                        $(this).val('');
+                                    }
+                                    return true;
+                                }
                                 return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                             });
 
                         validate($inputs);
 
+                        // Serialize form data
+                        var inputsData = $inputs.serializeArray();
+                        // data names array
+                        var inputsDataNames = inputsData.map(item => item.name);
+
+                        // Ignore checkbox and radio which one inside table like checkable-grid, net-promoter-score etc
+                        $inputs = $inputs.filter(function () {
+                            return !$(this).closest('.ff-el-input--content').find('table').length;
+                        });
+                        // Keep track of checkbox and radio groups that have been processed
+                        var processedGroups = {};
+                        // Add empty value for unchecked checkboxes and radio buttons
+                        $inputs.each(function() {
+                            var name = $(this).attr('name');
+                            if (!inputsDataNames.includes(name)) {
+                                if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                                    if (!processedGroups[name] && !$theForm.find('input[name="' + name + '"]:checked').length) {
+                                        inputsData.push({ name, value: '' });
+                                        processedGroups[name] = true;
+                                    }
+                                }
+                            }
+                        });
+                        // Convert inputsData array to serialized string
+                        var serializedData = $.param($.map(inputsData, function(input) {
+                            return { name: input.name, value: input.value };
+                        }));
                         var formData = {
-                            data: $inputs.serialize(),
+                            data: serializedData,
                             action: 'fluentform_submit',
                             form_id: $theForm.data('form_id')
                         };
@@ -196,30 +235,30 @@ jQuery(document).ready(function () {
 
                         // Init reCaptcha if available.
                         if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
-                            let recaptchaId = getRecaptchaClientId(formData.form_id);
-                            if (recaptchaId) {
+                            const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('g-recaptcha_widget_id');
+                            if (typeof grecaptchaWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
-                                    'g-recaptcha-response': grecaptcha.getResponse(recaptchaId)
+                                    'g-recaptcha-response': grecaptcha.getResponse(grecaptchaWidgetId)
                                 });
                             }
                         }
 
                         // Init hCaptcha if available.
                         if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
-                            let hcaptchaId = getHcaptchaClientId(formData.form_id);
-                            if (hcaptchaId) {
+                            const hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('h-captcha_widget_id');
+                            if (typeof hcaptchaWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
-                                    'h-captcha-response': hcaptcha.getResponse(hcaptchaId)
+                                    'h-captcha-response': hcaptcha.getResponse(hcaptchaWidgetId)
                                 });
                             }
                         }
 
                         // Init turnstile if available.
                         if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                            let turnstileId = getTurnstileClientId(formData.form_id);
-                            if (turnstileId) {
+                            const turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
+                            if (typeof turnstileWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
-                                    'cf-turnstile-response': turnstileId.getResponse(turnstileId)
+                                    'cf-turnstile-response': turnstile.getResponse(turnstileWidgetId)
                                 });
                             }
                         }
@@ -256,6 +295,8 @@ jQuery(document).ready(function () {
                     }
 
                     var that = this;
+                    let responseData;
+
 
                     this.isSending = true;
 
@@ -270,7 +311,7 @@ jQuery(document).ready(function () {
                                 showErrorMessages(res);
                                 return;
                             }
-
+                            responseData = res;
                             if (res.data.append_data) {
                                 addHiddenData(res.data.append_data);
                             }
@@ -299,10 +340,14 @@ jQuery(document).ready(function () {
                                 if (res.data.result.message) {
                                     $('<div/>', {
                                         'id': formId + '_success',
-                                        'class': 'ff-message-success'
+                                        'class': 'ff-message-success',
+                                        'role': 'status',
+                                        'aria-live': 'polite'
                                     })
                                         .html(res.data.result.message)
-                                        .insertAfter($theForm);
+                                        .insertAfter($theForm)
+                                        .focus()
+                                    ;
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
 
@@ -316,10 +361,14 @@ jQuery(document).ready(function () {
                                 }
                                 $('<div/>', {
                                     'id': successMsgId,
-                                    'class': 'ff-message-success'
+                                    'class': 'ff-message-success',
+                                    'role': 'status',
+                                    'aria-live': 'polite'
                                 })
                                     .html(res.data.result.message)
-                                    .insertAfter($theForm);
+                                    .insertAfter($theForm)
+                                    .focus()
+                                ;
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
@@ -351,6 +400,7 @@ jQuery(document).ready(function () {
                                 showErrorMessages(res.responseText);
                                 return;
                             }
+                            responseData = res;
 
                             if (res.responseJSON.append_data) {
                                 addHiddenData(res.responseJSON.append_data);
@@ -373,24 +423,33 @@ jQuery(document).ready(function () {
                                     );
                                 }
                             }
+
+                            hideFormSubmissionProgress($theForm);
                         })
                         .always(function (res) {
                             that.isSending = false;
+
+                            if (responseData?.data?.result?.hasOwnProperty('redirectUrl')) {
+                                return;
+                            }
                             hideFormSubmissionProgress($theForm);
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
-                                let reCaptchaId = getRecaptchaClientId(formData.form_id);
-                                if (reCaptchaId) {
-                                    grecaptcha.reset(reCaptchaId);
+                                const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('g-recaptcha_widget_id');
+                                if (typeof grecaptchaWidgetId !== "undefined") {
+                                    grecaptcha.reset(grecaptchaWidgetId);
                                 }
                             }
                             if (window.hcaptcha) {
-                                hcaptcha.reset(); //two recapthca on same page creates conflicts
+                                let hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('h-captcha_widget_id');
+                                if (typeof hcaptchaWidgetId !== "undefined") {
+                                    hcaptcha.reset(hcaptchaWidgetId);
+                                }
                             }
                             if (window.turnstile) {
-                                let turnstileId = getTurnstileClientId(formData.form_id);
-                                if (turnstileId) {
-                                    turnstileId.reset(turnstileId);
+                                let turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
+                                if (typeof turnstileWidgetId !== "undefined") {
+                                    turnstile.reset(turnstileWidgetId);
                                 }
                             }
                         });
@@ -493,54 +552,26 @@ jQuery(document).ready(function () {
                     $(document).on('reset', formSelector, function (e) {
                         formResetHandler($(this))
                     });
-                };
 
-                /**
-                 * Retrieve the recaptcha client id for current form
-                 * @param {int} formId
-                 * @return {int}
-                 */
-                var getRecaptchaClientId = function (formId) {
-                    var formIndex;
-                    $('form').has('.g-recaptcha').each(function (index, form) {
-                        if ($(this).attr('data-form_id') == formId) {
-                            formIndex = index;
+                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+
+                            // For radio buttons, just check it
+                            if ($(this).attr('type') === 'radio') {
+                                $(this).prop('checked', true);
+                            }
+                            // For checkboxes, toggle the checked state
+                            else if ($(this).attr('type') === 'checkbox') {
+                                $(this).prop('checked', !$(this).prop('checked'));
+                            }
+
+                            // Trigger change event for both types
+                            $(this).trigger('change');
+                            e.stopPropagation();
+                            return false;
                         }
                     });
-
-                    return formIndex;
-                };
-
-                /**
-                 * Retrieve the Hcaptcha client id for current form
-                 * @param {int} formId
-                 * @return {int}
-                 */
-                var getHcaptchaClientId = function (formId) {
-                    var formIndex;
-                    $('form').has('.h-captcha').each(function (index, form) {
-                        if ($(this).attr('data-form_id') == formId) {
-                            formIndex = index;
-                        }
-                    });
-
-                    return formIndex;
-                };
-
-                /**
-                 * Retrieve the Turnstile client id for current form
-                 * @param {int} formId
-                 * @return {int}
-                 */
-                var getTurnstileClientId = function (formId) {
-                    var formIndex;
-                    $('form').has('.cf-turnstile').each(function (index, form) {
-                        if ($(this).attr('data-form_id') == formId) {
-                            formIndex = index;
-                        }
-                    });
-
-                    return formIndex;
                 };
 
                 /**
@@ -612,7 +643,7 @@ jQuery(document).ready(function () {
                  */
                 var validate = function (elements) {
                     if (!elements.length) {
-                        elements = $('.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
+                        elements = $('form.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
                             return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                         });
                     }
@@ -712,6 +743,7 @@ jQuery(document).ready(function () {
                             });
                             errorHtml.attr('role', 'alert');
                             errorHtml.append(text, cross);
+                            $(document.body).trigger('fluentform_error_in_stack', {form: $theForm, element: getElement(elementName), message: text});
                             errorStack.append(errorHtml).show();
                         });
 
@@ -764,7 +796,8 @@ jQuery(document).ready(function () {
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     if (el.closest('.ff-el-input--content').length) {
                         el.closest('.ff-el-input--content').find('div.error').remove();
-                        el.closest('.ff-el-input--content').append(div.text(message));
+                        $(document.body).trigger('fluentform_error_below_element', {form: $theForm, element: el, message: message});
+                        el.closest('.ff-el-input--content').append(div.html(message));
                     } else {
                         el.find('div.error').remove();
                         el.append(div.text(message));
@@ -772,7 +805,7 @@ jQuery(document).ready(function () {
                 };
 
                 var initInlineErrorItems = function () {
-                    $theForm.find('.ff-el-group,.ff_repeater_table').on('change', 'input,select,textarea', function () {
+                    $theForm.find('.ff-el-group,.ff_repeater_table, .ff_repeater_container').on('change', 'input,select,textarea', function () {
                         if (window.ff_disable_error_clear) {
                             return;
                         }
@@ -803,22 +836,37 @@ jQuery(document).ready(function () {
                 };
 
                 var reinitExtras = function () {
-                    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
-                        var $el = $theForm.find('.ff-el-recaptcha.g-recaptcha');
-                        var siteKey = $el.data('sitekey');
-                        var id = $el.attr('id');
-                        grecaptcha.render(document.getElementById(id), {
-                            'sitekey': siteKey
+                    // reCAPTCHA
+                    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
+                        window.grecaptcha.ready(function () {
+                            $theForm.find('.ff-el-recaptcha.g-recaptcha').each(function() {
+                                var $el = $(this);
+                                if (!resetCaptcha('g-recaptcha', $el, grecaptcha.reset)) {
+                                    renderCaptcha('g-recaptcha', $el, grecaptcha.render);
+                                }
+                            });
                         });
                     }
 
-                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                        var $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
-                        var siteKey = $el.data('sitekey');
-                        var id = $el.attr('id');
-                        console.log(id);
-                        turnstile.render(document.getElementById(id), {
-                            'sitekey': siteKey
+                    // Turnstile
+                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
+                        window.turnstile.ready(function () {
+                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                                var $el = $(this);
+                                if (!resetCaptcha('cf-turnstile', $el, turnstile.reset)) {
+                                    renderCaptcha('cf-turnstile', $el, turnstile.render);
+                                }
+                            });
+                        });
+                    }
+
+                    // hCaptcha
+                    if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
+                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function() {
+                            var $el = $(this);
+                            if (!resetCaptcha('h-captcha', $el, hcaptcha.reset)) {
+                                renderCaptcha('h-captcha', $el, hcaptcha.render);
+                            }
                         });
                     }
                 };
@@ -833,8 +881,15 @@ jQuery(document).ready(function () {
                     });
                     $theForm.data('is_initialized', 'yes');
 
+                    $theForm.find('input.ff-read-only').each(function () {
+                        $(this).attr({
+                            'tabindex': '-1',
+                            'readonly': 'readonly'
+                        });
+                    });
+
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
-                        const content = $(this).data('content');
+                        let content = $(this).data('content');
                         let $popContent = $('.ff-el-pop-content');
                         if (!$popContent.length) {
                             $('<div/>', {
@@ -842,6 +897,11 @@ jQuery(document).ready(function () {
                             }).appendTo(document.body);
                             $popContent = $('.ff-el-pop-content');
                         }
+                        // Remove dangerous tags and event handlers
+                        content = content.replace(/<script.*?>.*?<\/script>/gis, '')
+                            .replace(/<iframe.*?>.*?<\/iframe>/gis, '')
+                            .replace(/<.*?\bon\w+=["'][^"']*["']/gi, '')
+                            .replace(/javascript:/gi, '');
                         $popContent.html(content);
                         const formWidth = $theForm.innerWidth() - 20;
                         $popContent.css('max-width', formWidth);
@@ -863,7 +923,113 @@ jQuery(document).ready(function () {
                     $theForm.find('.ff-el-tooltip').on('mouseleave', function () {
                         $('.ff-el-pop-content').remove();
                     });
+
+                    $(document).on('lity:open', function () {
+                        window.turnstile?.remove();
+                        mayBeRenderCaptchas();
+                    });
+
+                    $theForm.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                        $theForm.trigger('fluentform_first_interaction');
+                    });
+
+                    $theForm.on('fluentform_first_interaction', function() {
+                        mayBeRenderCaptchas();
+                    });
+
+                    $theForm.on('ff_to_next_page ff_to_prev_page', function(e) {
+                        mayBeRenderCaptchas();
+                    });
+
+                    mayBeRenderCaptchas();
                 };
+
+                let mayBeRenderCaptchas = function () {
+                    // reCAPTCHA
+                    if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
+                        window.grecaptcha.ready(function () {
+                            $theForm.find('.ff-el-recaptcha.g-recaptcha').each(function () {
+                                renderCaptcha('g-recaptcha', $(this), grecaptcha.render);
+                            });
+                        });
+                    }
+
+                    // Turnstile
+                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
+                        window.turnstile.ready(function () {
+                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                                renderCaptcha('cf-turnstile', $(this), turnstile.render);
+                            });
+                        });
+                    }
+
+                    // hCaptcha
+                    if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
+                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function() {
+                            renderCaptcha('h-captcha', $(this), hcaptcha.render);
+                        });
+                    }
+                }
+
+                let renderCaptcha = function (type, $el, renderFunction) {
+                    var siteKey = $el.data('sitekey');
+                    var id = $el.attr('id');
+                    var widgetIdAttr = `data-${type}_widget_id`;
+
+                    try {
+                        let widgetId = $el.attr(widgetIdAttr);
+                        
+                        if (type === 'g-recaptcha' || type === 'h-captcha') {
+                            if (widgetId && $el.find('iframe').length > 0) {
+                                return; // Already rendered properly
+                            }
+                        }
+                        else if (type === 'cf-turnstile') {
+                            let $responseInput = $el.find('input[name="cf-turnstile-response"]');
+
+                            if ($responseInput.length && $responseInput.val()) {
+                                return;
+                            }
+
+                            let widgetId = $el.attr(widgetIdAttr);
+                            if (widgetId && window.turnstile) {
+                                turnstile.remove(widgetId);
+                            }
+                        }
+
+                        // rendering captcha code
+                        let container = id;
+                        let options = {
+                            'sitekey': siteKey
+                        };
+
+                        // Special case for Turnstile
+                        if (type === 'cf-turnstile') {
+                            container = '#' + id;
+                        }
+
+                        // Render the captcha
+                        widgetId = renderFunction(container, options);
+                        $el.attr(widgetIdAttr, widgetId);
+                    } catch (error) {
+                        console.error(`Error rendering ${type}:`, error);
+                    }
+                }
+
+                let resetCaptcha = function (type, $el, resetFunction) {
+                    var widgetIdAttr = `data-${type}_widget_id`;
+                    var existingWidgetId = $el.attr(widgetIdAttr);
+                    if (existingWidgetId) {
+                        try {
+                            resetFunction(existingWidgetId);
+                            return true;
+                        } catch (error) {
+                            console.error(`Error resetting ${type}:`, error);
+                            $el.removeAttr(widgetIdAttr).removeData(`${type}-rendered`);
+                        }
+                    }
+                    return false;
+                }
 
                 var addGlobalValidator = function (key, callback) {
                     globalValidators[key] = callback;
@@ -921,6 +1087,88 @@ jQuery(document).ready(function () {
                 this.initMask();
                 this.initNumericFormat();
                 this.initCheckableActive();
+                this.maybeInitSpamTokenProtection();
+                this.maybeHandleCleanTalkSubmitTime();
+            },
+
+            maybeInitSpamTokenProtection: function() {
+                const formContainers = jQuery('form.frm-fluent-form');
+
+                formContainers.each((index, formElement) => {
+                    const formContainer = jQuery(formElement);
+                    const spamProtectionField = formContainer.find('.fluent-form-token-field');
+
+                    // Skip if no protection field or already processing/processed
+                    if (spamProtectionField.length === 0 ||
+                        formContainer.hasClass('ff_tokenizing') ||
+                        formContainer.hasClass('ff_tokenized')) {
+                        return;
+                    }
+
+                    // Helper function to generate token
+                    const generateTokenIfNeeded = () => {
+                        if (!formContainer.hasClass('ff_tokenized') && !formContainer.hasClass('ff_tokenizing')) {
+                            formContainer.addClass('ff_tokenizing');
+                            this.generateAndSetToken(formContainer, spamProtectionField);
+                        }
+                    };
+
+                    // Maybe generate token on step form step change
+                    formContainer.one('ff_to_next_page ff_to_prev_page', function(e) {
+                        generateTokenIfNeeded();
+                    });
+
+                    // Generate token on first user interaction with form
+                    formContainer.on('fluentform_first_interaction', function() {
+                        generateTokenIfNeeded();
+                    });
+                });
+            },
+
+            generateAndSetToken: function(formContainer, spamProtectionField, retry = true) {
+                const form_id = formContainer.data('form_id');
+                const ajaxRequestUrl = fluentFormVars.ajaxUrl + '?t=' + Date.now();
+                const _this = this;
+                jQuery.post(ajaxRequestUrl, {
+                    action: 'fluentform_generate_protection_token',
+                    form_id: form_id,
+                    nonce: fluentFormVars?.token_nonce
+                })
+                    .done(function(response) {
+                        if (response.success && response.data.token) {
+                            spamProtectionField.val(response.data.token);
+                            formContainer.addClass('ff_tokenized');
+                        } else {
+                            spamProtectionField.val(null);
+                            console.error('Token generation failed for form ID:', form_id);
+                        }
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('Error generating token for form ID:', form_id, error);
+                        // Retry
+                        if (retry) {
+                            setTimeout(() => {
+                                _this.generateAndSetToken(formContainer, spamProtectionField, false);
+                            }, 1000);
+                        }
+                    })
+                    .always(function() {
+                        formContainer.removeClass('ff_tokenizing');
+                    });
+            },
+
+            maybeHandleCleanTalkSubmitTime: function() {
+                if (!!window.fluentFormVars?.has_cleantalk) {
+                    const formContainers = jQuery('form.frm-fluent-form');
+
+                    formContainers.each((index, formElement) => {
+                        const formContainer = jQuery(formElement);
+                        const formLoadTimeField = formContainer.find('.ff_ct_form_load_time');
+                        if (formLoadTimeField.length) {
+                            formLoadTimeField.val(Math.floor(Date.now() / 1000)); // Set timestamp in seconds
+                        }
+                    });
+                }
             },
 
             /**
@@ -1005,10 +1253,8 @@ jQuery(document).ready(function () {
                     },
                 };
 
-                $('input[data-mask]').each(function (key, el) {
-                    var el = $(el),
-                        mask = el.data('mask'),
-                        maskStr = mask.mask;
+                jQuery('input[data-mask]').each(function (key, el) {
+                    var el = jQuery(el), mask = el.attr('data-mask');
 
                     let options = globalOptions;
                     if (el.attr('data-mask-reverse')) {
@@ -1017,8 +1263,11 @@ jQuery(document).ready(function () {
                     if (el.attr('data-clear-if-not-match')) {
                         options.clearIfNotMatch = true;
                     }
-                    el.mask(maskStr, options);
-                });
+
+                    if (mask) {
+                        el.mask(mask, options);
+                    }
+                })
             },
 
             initCheckableActive: function () {
@@ -1038,7 +1287,7 @@ jQuery(document).ready(function () {
             },
 
             initNumericFormat: function () {
-                var numericFields = $('.frm-fluent-form .ff_numeric');
+                var numericFields = $('form.frm-fluent-form .ff_numeric');
                 $.each(numericFields, (index, field) => {
                     let $field = $(field);
                     let formatConfig = JSON.parse($field.attr('data-formatter'));
@@ -1084,7 +1333,7 @@ jQuery(document).ready(function () {
                         el = $(element);
                         elName = el.prop('name').replace('[]', '');
 
-                        if (el.data('type') === 'repeater_item') {
+                        if (el.data('type') === 'repeater_item' || el.data('type') === 'repeater_container') {
                             elName = el.attr('data-name');
                             rules[elName] = rules[el.data('error_index')];
                         }
@@ -1299,16 +1548,17 @@ jQuery(document).ready(function () {
                         return true;
                     }
 
-                    if (typeof window.intlTelInputGlobals == 'undefined') {
-                        return true;
-                    }
-
                     if (!el || !el[0]) {
                         return;
                     }
 
+                    let iti;
+                    if (typeof window.intlTelInputGlobals !== 'undefined') {
+                        iti = window.intlTelInputGlobals.getInstance(el[0]);
+                    } else {
+                        iti = el.data('iti');
+                    }
 
-                    var iti = window.intlTelInputGlobals.getInstance(el[0]);
                     if (!iti) {
                         return true;
                     }
@@ -1337,7 +1587,7 @@ jQuery(document).ready(function () {
             }();
         };
 
-        var $allForms = $('.frm-fluent-form');
+        var $allForms = $('form.frm-fluent-form');
 
         function initSingleForm($theForm) {
             var formInstance = fluentFormApp($theForm);
@@ -1380,17 +1630,54 @@ jQuery(document).ready(function () {
             }
             formInstance.reinitExtras();
 
-            if (window.hcaptcha) {
-                hcaptcha.reset(); //two recapthca on same page creates conflicts
-            }
             initSingleForm($theForm);
             fluentFormCommonActions.init();
             $theForm.attr('data-ff_reinit', 'yes');
-
         });
 
         fluentFormCommonActions.init();
 
+        // Choices.js dropdown handling
+        function initChoicesDropdownHandling() {
+            // Only target elements that actually have Choices.js
+            $('.ff_has_multi_select').each(function() {
+                const choicesInstance = $(this).data('choicesjs');
+                if (!choicesInstance || !choicesInstance.passedElement) return;
+
+                // Use Choices.js built-in events instead of global listeners
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                    const choicesContainer = this.closest('.choices');
+                    if (!choicesContainer) return;
+
+                    const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+                    if (!dropdown) return;
+
+                    // Apply dropdown styles
+                    dropdown.style.maxHeight = '300px';
+                    dropdown.style.overflowY = 'auto';
+
+                    // Find and style the scrollable list
+                    const scrollableList = 
+                        dropdown.querySelector('.choices__list[role="listbox"]') ||
+                        dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
+                    if (scrollableList) {
+                        scrollableList.style.maxHeight = '280px';
+                        scrollableList.style.overflowY = 'auto';
+                        scrollableList.style.webkitOverflowScrolling = 'touch';
+                        scrollableList.style.touchAction = 'pan-y';
+                    }
+                }, { passive: true });
+            });
+        }
+
+        // Initialize with proper timing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initChoicesDropdownHandling, 100);
+            });
+        } else {
+            setTimeout(initChoicesDropdownHandling, 100);
+        }
     })(window.fluentFormVars, jQuery);
 
     jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {

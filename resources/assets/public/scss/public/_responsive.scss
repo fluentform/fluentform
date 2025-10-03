@@ -12,7 +12,7 @@
               vertical-align: top;
             }
           }
-    
+
           &.ff_list_2col {
             .ff-el-form-check {
               width: 50%;
@@ -24,7 +24,7 @@
               vertical-align: top;
             }
           }
-    
+
           &.ff_list_4col {
             .ff-el-form-check {
               width: 25%;
@@ -36,7 +36,7 @@
               vertical-align: top;
             }
           }
-    
+
           &.ff_list_5col {
             .ff-el-form-check {
               width: 20%;
@@ -48,7 +48,7 @@
               vertical-align: top;
             }
           }
-    
+
           &.ff_list_inline {
             .ff-el-form-check {
               width: auto !important;
@@ -150,5 +150,41 @@ table.ff_flexible_table {
   .fluentform .ff-t-container .ff-name-title{
     width: 100%;
   }
+  .ff_repeater_cont_row {
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-top: 2px solid #ced4da;
+    border-bottom: 4px solid #ced4da;
+    margin: 16px 0 10px;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    .ff_repeater_cell{
+      padding: 5px;
+      display: block;
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+    .ff-t-cell {
+      flex-basis: 100% !important;
+      width: 100%;
+      max-width: 100%;
+    }
+    .ff_repeater_body[role="rowgroup"] {
+      display: flex;
+      flex-direction: column;
+    }
+
+  }
+
+  .ff-repeater-container .ff-el-repeat-buttons-list {
+    margin-top: -28px;
+  }
+
+
+  .ff-el-repeat-buttons-list {
+    margin-top: 0;
+  }
+
 
 }

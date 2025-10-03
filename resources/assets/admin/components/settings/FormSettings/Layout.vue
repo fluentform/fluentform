@@ -25,7 +25,7 @@
 
                             <el-select class="w-100 ff-input-s1" v-model="layout.labelPlacement">
                                 <el-option v-for="(label, value) in labelPlacementOptions" :key="value"
-                                        :label="label" :value="value"
+                                        :label="$t(label)" :value="value"
                                 ></el-option>
                             </el-select>
                         </el-form-item>
@@ -50,7 +50,8 @@
                                 <el-option
                                     v-for="(label, value) in {'with_label': 'Next to Label', 'under_input': 'Below Input Element'}"
                                     :key="value"
-                                    :label="label" :value="value"
+                                    :label="$t(label)"
+                                    :value="value"
                                 ></el-option>
                             </el-select>
                         </el-form-item>
@@ -75,7 +76,8 @@
                                 <el-option
                                     v-for="(label, value) in {'stackToBottom': 'Stack to Bottom', 'inline': 'Below Input Element'}"
                                     :key="value"
-                                    :label="label" :value="value"
+                                    :label="$t(label)"
+                                    :value="value"
                                 ></el-option>
                             </el-select>
                         </el-form-item>
@@ -152,8 +154,8 @@
                                     </el-tooltip>
                                 </template>
                                 <el-select class="w-100 ff-input-s1" :placeholder="$t('Select Day')" v-model="email_report.sending_day">
-                                    <el-option v-for="(sendDay,dayKey) in sending_days" :key="dayKey" :value="dayKey"
-                                            :label="sendDay"></el-option>
+                                    <el-option v-for="(sendDay, dayKey) in sending_days" :key="dayKey" :value="dayKey"
+                                            :label="$t(sendDay)"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
@@ -253,10 +255,14 @@
         <card id="default-messages">
             <card-head>
                 <h5 class="title">{{$t('Validation Messages') }}</h5>
-                <p class="text">
-                    {{
-                        $t("These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom.")
-                    }}
+                <p
+                    class="text"
+                    v-html="
+                    $t(
+                        'These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom. Use %s shortcode for automatically resolve the field label.',
+                        `<code>{labels.current_field}</code>`
+                    )
+                ">
                 </p>
             </card-head>
             <card-body>
@@ -278,12 +284,12 @@
                             v-if="field.type === 'textarea'"
                             type="textarea"
                             :row="field.row ? field.row : 3"
-                            :placeholder="field.placeholder|| $t('Global Message For ') + field.label"
+                            :placeholder="field.placeholder|| $t('Global Message For %s', field.label)"
                             v-model="default_messages[fieldKey]"
                         />
                         <el-input
                             v-else
-                            :placeholder="field.placeholder|| $t('Global Message For ') + field.label"
+                            :placeholder="field.placeholder|| $t('Global Message For %s', field.label)"
                             v-model="default_messages[fieldKey]"
                         />
                     </el-form-item>
@@ -366,6 +372,30 @@
                                v-model="misc.honeypotStatus"></el-switch>
                 </el-form-item>
 
+                <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
+                    <template slot="label">
+                        <div>
+                            <span>
+                                {{ $t('Token Based Spam Protection') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{
+                                                $t('Token based spam protection is generated only after interacting with the form, ensuring human engagement. Please interact with the form before submitting to validate the token.')
+                                            }}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </span>
+                            <p class="text-note mt-1">{{ $t('Recommended Settings: Enabled') }}</p>
+                        </div>
+                    </template>
+
+                    <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
+                               v-model="misc.tokenBasedProtectionStatus"></el-switch>
+                </el-form-item>
+
                 <template v-if="akismet_available">
                     <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
                         <template slot="label">
@@ -406,11 +436,58 @@
                         </template>
                         <el-radio-group v-model="misc.akismet_validation">
                             <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
-                            <el-radio label="validation_failed">{{ $t('Make the form submission as failed') }}</el-radio>
+                            <el-radio label="validation_failed">{{ $t('Make the Form Submission as Failed') }}</el-radio>
+                            <el-radio label="mark_as_spam_and_skip_processing">{{ $t('Mark as Spam and Skip Processing') }}</el-radio>
                         </el-radio-group>
 
                     </el-form-item>
 
+                </template>
+
+                <template >
+                    <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width" v-if="cleantalk_available">
+                        <template slot="label">
+                            <span>
+                                <span>
+                                    {{ $t('Enable CleanTalk Integration') }}
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>
+                                                {{
+                                                    $t('Please use the CleanTalk option found in the Security submenu, which utilizes CleanTalk API and does not require the CleanTalk Anti-Spam Plugin which is recommended.')
+                                                }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </span>
+                                <p class="text-note mt-1" v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
+                            </span>
+                        </template>
+
+                        <el-switch class="el-switch-lg" :disabled="!cleantalk_available" active-value="yes" inactive-value="no"
+                                   v-model="misc.cleantalk_status"></el-switch>
+                    </el-form-item>
+
+                    <el-form-item v-if="misc.cleantalk_status == 'yes'">
+                        <template slot="label">
+                            {{ $t('Spam Validation') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <h3>{{ $t('Spam Validation') }}</h3>
+                                    <p>
+                                        {{ $t('Please select what will be happened once a submission marked as spam') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-radio-group v-model="misc.cleantalk_validation">
+                            <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
+                            <el-radio label="validation_failed">{{ $t('Make the Form Submission as Failed') }}</el-radio>
+                            <el-radio label="mark_as_spam_and_skip_processing">{{ $t('Mark as Spam and Skip Processing') }}</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
                 </template>
 
                 <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
@@ -502,7 +579,7 @@
                             </template>
                         </el-col>
                         <el-col :span="24">
-                            <p v-if="misc.geo_provider && geo_providers[misc.geo_provider].token_instruction" class="text-note" style="margin-top: -14px;">{{geo_providers[misc.geo_provider].token_instruction}}</p>
+                            <p v-if="misc.geo_provider && geo_providers[misc.geo_provider].token_instruction" class="text-note" style="margin-top: -14px;">({{ this.$t(geo_providers[misc.geo_provider].token_instruction) }}</p>
                         </el-col>
                     </el-row>
                     <notice class="ff_alert_between" type="danger-soft" v-else>
@@ -603,6 +680,7 @@
                     </el-form-item>
                 </div>
 
+                <!-- Email Footer -->
                 <el-form-item class="ff-form-item">
                     <template slot="label">
                         {{ $t('Email Footer Text') }}
@@ -625,6 +703,27 @@
                         v-model="misc.email_footer_text">
                     </el-input>
                 </el-form-item>
+
+                <!-- Date format -->
+                <div class="el-form-item-wrap">
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Date & Time Format') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Selected Time & Date format will be shown in different admin pages') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-radio-group v-model="misc.default_admin_date_time">
+                            <el-radio label="time_diff">{{ $t('Date Time difference (EG: 2 hours ago)') }}</el-radio>
+                            <el-radio label="wp_default">{{ $t('WordPress Default') }}</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </div>
             </card-body>
         </card>
     </el-form>
@@ -670,9 +769,9 @@
         data() {
             return {
                 labelPlacementOptions: {
-                    'top': 'Top Aligned',
-                    'left': 'Left Aligned',
-                    'right': 'Right Aligned'
+                    'top': 'Top aligned',
+                    'left': 'Left aligned',
+                    'right': 'Right aligned'
                 },
                 helpMessagePlacementOptions: {
                     'with_label': 'Beside Label as Tooltip',
@@ -683,6 +782,7 @@
                     'stackToBottom': 'Show all error messages after submit button as stack'
                 },
                 akismet_available: window.FluentFormApp.akismet_activated,
+                cleantalk_available: window.FluentFormApp.cleantalk_activated,
                 layout: {},
                 misc: {},
 	            default_messages: {},
@@ -758,14 +858,29 @@
                 this.$set(this.data.misc, 'akismet_validation', 'mark_as_spam');
             }
 
-            if(!this.data.misc.geo_provider) {
+            if (!this.data.misc.cleantalk_validation) {
+                this.$set(this.data.misc, 'cleantalk_validation', 'mark_as_spam');
+            }
+
+            if (!this.data.misc.geo_provider) {
                 this.$set(this.data.misc, 'geo_provider', 'ipinfo.io');
             }
-            if(!this.data.misc.file_upload_locations) {
+            if (!this.data.misc.file_upload_locations) {
                 this.$set(this.data.misc, 'file_upload_locations', 'default');
             }
-            if(!this.data.misc.admin_top_nav_status) {
+            if (!this.data.misc.admin_top_nav_status) {
                 this.$set(this.data.misc, 'admin_top_nav_status', 'yes');
+            }
+            if (!this.data.misc.default_admin_date_time) {
+                this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
+            }
+
+            if (!this.data.misc.tokenBasedProtectionStatus) {
+                this.$set(this.data.misc, 'tokenBasedProtectionStatus', 'no');
+            }
+
+            if (!("isAnalyticsDisabled" in this.data.misc)) {
+                this.$set(this.data.misc, "isAnalyticsDisabled", true);
             }
 
             this.misc = this.data.misc;

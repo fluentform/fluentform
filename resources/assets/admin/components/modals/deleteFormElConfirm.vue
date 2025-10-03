@@ -4,7 +4,7 @@
         class="el-dialog-no-header"
         :visible.sync="visibility"
         :before-close="close"
-        width="26%"
+        width="28%"
         :show-close="false"
     >
 
@@ -17,6 +17,9 @@
             <p class="text-base text-center mb-3" v-if="dataLostMsg">
                 <strong>Note:</strong>
                 {{ dataLostMsg }}
+            </p>
+            <p class="ff-tip-text text-xs text-muted mb-3" >
+                You can also press <kbd>Del</kbd> to delete a selected field. Undo with <kbd>⌘/Ctrl+Z</kbd></kbd>.
             </p>
         </div>
 
@@ -46,8 +49,13 @@ export default {
         editItem: Object
     },
     watch: {
-        visibility() {
-            if (this.visibility) {
+        visibility(val) {
+            if (val) {
+                this.$nextTick(() => {
+                    // Focus the first button in the dialog
+                    const btn = this.$el.querySelector('.el-button');
+                    if (btn) btn.focus();
+                });
                 setTimeout( _ => {
                     const zIndex = Number(jQuery('.v-modal').css('z-index'));
                     jQuery('.ff_form_wrap').css('z-index', zIndex + 1);
@@ -59,7 +67,6 @@ export default {
     computed: {
         dataLostMsg() {
             let matched = [];
-
             if (this.editItem?.attributes && window.FluentFormApp.used_name_attributes) {
                 matched = window.FluentFormApp.used_name_attributes.filter(
                     name => name.field_name === this.editItem?.attributes.name

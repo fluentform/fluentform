@@ -71,6 +71,8 @@ $app->addAction(
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
+    (new \FluentForm\App\Modules\Ai\AiController())->boot();
+    (new \FluentForm\App\Modules\Report\ReportHandler())->register($app);
 }, 9);
 
 add_action('admin_enqueue_scripts', function () use ($app) {
@@ -124,9 +126,9 @@ $app->addAction('fluentform/global_menu', function () use ($app) {
 });
 
 $app->addAction('wp_dashboard_setup', function () {
-    $roleManager = new \FluentForm\App\Modules\Acl\Acl();
+    $acl = new \FluentForm\App\Modules\Acl\Acl();
 
-    if (!$roleManager->getCurrentUserCapability()) {
+    if (!$acl::getCurrentUserCapability()) {
         return;
     }
     wp_add_dashboard_widget('fluentform_stat_widget', __('Fluent Forms Latest Form Submissions', 'fluentform'), function () {
@@ -143,7 +145,8 @@ add_action('admin_init', function () {
         'fluent_forms_docs',
         'fluent_forms_all_entries',
         'msformentries',
-        'fluent_forms_payment_entries'
+        'fluent_forms_payment_entries',
+        'fluent_forms_reports'
     ];
 
     $page = wpFluentForm('request')->get('page');
@@ -182,14 +185,30 @@ add_action('wp_print_scripts', function () {
             }
 
             $pluginUrl = plugins_url();
+            // Get an array of slugs to exclude from dequeue
+            $excludeSlugs = apply_filters('fluentform/exclude_js_slugs_from_dequeue', ['fluentform']);
+
             foreach ($wp_scripts->queue as $script) {
                 if (!isset($wp_scripts->registered[$script])) {
                     continue;
                 }
 
                 $src = $wp_scripts->registered[$script]->src;
-                if (false !== strpos($src, $pluginUrl) && false !== !strpos($src, 'fluentform')) {
-                    wp_dequeue_script($wp_scripts->registered[$script]->handle);
+
+                // Check if the script is in the plugins directory
+                if (false !== strpos($src, $pluginUrl)) {
+                    // Only dequeue if none of the exclude slugs are in the script src
+                    $shouldDequeue = true;
+                    foreach ($excludeSlugs as $slug) {
+                        if (false !== strpos($src, $slug)) {
+                            $shouldDequeue = false;
+                            break;
+                        }
+                    }
+
+                    if ($shouldDequeue) {
+                        wp_dequeue_script($wp_scripts->registered[$script]->handle);
+                    }
                 }
             }
         }
@@ -334,6 +353,10 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             $item['settings']['is_width_auto_calc'] = true;
         }
 
+        if (!isset($item['settings']['render_recaptcha_v3_badge'])) {
+            $item['settings']['render_recaptcha_v3_badge'] = false;
+        }
+
         $shouldSetWidth = !empty($item['columns']) && (!isset($item['columns'][0]['width']) || !$item['columns'][0]['width']);
 
         if ($shouldSetWidth) {
@@ -431,6 +454,22 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_address', function ($item) {
+        // Initialize autocomplete provider settings
+        if (!isset($item['settings']['autocomplete_provider'])) {
+            // If google autocomplete setting is enabled, set provider to google
+            if (ArrayHelper::get($item, 'settings.enable_g_autocomplete') === 'yes') {
+                $item['settings']['autocomplete_provider'] = 'google';
+            } else {
+                $item['settings']['autocomplete_provider'] = 'none';
+            }
+        }
+        if (!isset($item['settings']['enable_auto_locate'])) {
+            $item['settings']['enable_auto_locate'] = 'on_click'; // on_load, on_click, no
+        }
+        if (!isset($item['settings']['save_coordinates'])) {
+            $item['settings']['save_coordinates'] = 'no';
+        }
+
         foreach ($item['fields'] as &$addressField) {
             if (
                 !isset($addressField['settings']['label_placement']) &&
@@ -467,6 +506,26 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         }
         return $item;
     });
+
+    add_filter('fluentform/editor_init_element_gdpr_agreement', function ($item, $form) {
+        $isConversationalForm = Helper::isConversionForm($form->id);
+        
+        if ($isConversationalForm) {
+            $item['settings']['tc_agree_text'] = __('I accept', 'fluentform');
+        }
+        
+        return $item;
+    }, 10, 2);
+
+    add_filter('fluentform/editor_init_element_terms_and_condition', function ($item, $form) {
+        $isConversationalForm = Helper::isConversionForm($form->id);
+        
+        if ($isConversationalForm) {
+            $item['settings']['hide_disagree'] = false;
+        }
+
+        return $item;
+    }, 10, 2);
 }, 10);
 
 $app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use ($app) {
@@ -600,25 +659,27 @@ add_action('wp', function () use ($app) {
             );
             wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
                 'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-                'ajaxurl'                  => admin_url('admin-ajax.php'),
+                'ajaxurl'                  => Helper::getAjaxUrl(),
                 'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
                 'rest'                     => Helper::getRestInfo()
             ]);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($app->request->get('preview_id')));
+            $postId = get_the_ID() ?: 0;
 
             $loadPublicStyle = apply_filters_deprecated(
                 'fluentform_load_default_public',
                 [
                     true,
-                    $form
+                    $form,
+                    $postId
                 ],
                 FLUENTFORM_FRAMEWORK_UPGRADE,
                 'fluentform/load_default_public',
                 'Use fluentform/load_default_public instead of fluentform_load_default_public.'
             );
 
-            if (apply_filters('fluentform/load_default_public', $loadPublicStyle, $form)) {
+            if (apply_filters('fluentform/load_default_public', $loadPublicStyle, $form, $postId)) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
@@ -777,17 +838,37 @@ $app->addAction('fluentform/schedule_feed', function ($queueId) use ($app) {
 
 $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
+    new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
+    // Load payment module
+    if (Helper::isPaymentCompatible()) {
+        (new FluentForm\App\Modules\Payments\PaymentHandler())->init();
+    }
 });
 
 $app->addAction('fluentform/form_element_start', function ($form) use ($app) {
     $honeyPot = new \FluentForm\App\Modules\Form\HoneyPot($app);
     $honeyPot->renderHoneyPot($form);
+
+    $tokenBasedSpamProtection = new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
+    $tokenBasedSpamProtection->renderTokenField($form);
+
+    $cleanTalk = new \FluentForm\App\Modules\Form\CleanTalkHandler();
+    $cleanTalk->setCleanTalkScript();
 });
 
 $app->addAction('fluentform/before_insert_submission', function ($insertData, $requestData, $form) use ($app) {
     $honeyPot = new \FluentForm\App\Modules\Form\HoneyPot($app);
     $honeyPot->verify($insertData, $requestData, $form->id);
+
+    $tokenBasedSpamProtection = new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
+    $tokenBasedSpamProtection->verify($insertData, $requestData, $form->id);
 }, 9, 3);
+
+// Maybe update current user allowed form ids,
+// if current user has specific form permission and capable to create form
+$app->addAction('fluentform/inserted_new_form', function ($formId){
+    \FluentForm\App\Services\Manager\FormManagerService::maybeAddUserAllowedFormIds($formId);
+});
 
 add_action('fluentform/log_data', function ($data) use ($app) {
     $dataLogger = new \FluentForm\App\Modules\Logger\DataLogger($app);
@@ -991,7 +1072,8 @@ add_action('enqueue_block_editor_assets', function () {
     wp_enqueue_style(
         'fluentform-gutenberg-block',
         fluentFormMix('css/fluent_gutenblock.css'),
-        ['wp-edit-blocks']
+        ['wp-edit-blocks'],
+        FLUENTFORM_VERSION
     );
     $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
     $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
@@ -1007,13 +1089,28 @@ add_action('enqueue_block_editor_assets', function () {
         [],
         FLUENTFORM_VERSION
     );
-    
-    wp_enqueue_style(
-        'fluentform-public-default',
-        $fluentFormPublicDefaultCss,
-        [],
-        FLUENTFORM_VERSION
+
+    $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+    $loadPublicStyle = apply_filters_deprecated(
+        'fluentform_load_default_public',
+        [
+            true,
+            (object)[],
+            $post_id
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/load_default_public',
+        'Use fluentform/load_default_public instead of fluentform_load_default_public.'
     );
+
+    if (apply_filters('fluentform/load_default_public', $loadPublicStyle, (object)[], $post_id)) {
+        wp_enqueue_style(
+            'fluentform-public-default',
+            $fluentFormPublicDefaultCss,
+            [],
+            FLUENTFORM_VERSION
+        );
+    }
 });
 
 
@@ -1068,6 +1165,10 @@ if (function_exists('register_block_type')) {
     });
 }
 
+
+add_action('fluentform/before_updating_form',function ($form, $postData){
+    (new FluentForm\App\Services\Form\HistoryService())->init($form, $postData);
+},10,2);
 // require the CLI
 if (defined('WP_CLI') && WP_CLI) {
     \WP_CLI::add_command('fluentform', '\FluentForm\App\Modules\CLI\Commands');

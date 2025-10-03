@@ -122,6 +122,8 @@ import ContainerWidth from "./templates/containerWidth";
 import inventoryStock from "./templates/inventoryStock";
 import selectGroup from "./templates/selectGroup.vue";
 import CustomSettingsField from "./templates/CustomSettingsField.vue";
+import dynamicFilter from "./templates/dynamicFilter.vue";
+import repeaterContainers from "./templates/repeaterContainers.vue";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -173,6 +175,8 @@ export default {
         ff_containerWidth: ContainerWidth,
         ff_inventoryStock: inventoryStock,
         ff_selectGroup: selectGroup,
+        ff_dynamicFilter: dynamicFilter,
+        ff_repeaterContainers: repeaterContainers,
         ff_CustomSettingsField: CustomSettingsField
     },
     data() {
@@ -263,6 +267,14 @@ export default {
         dependancyPass(listItem) {
             if (listItem.dependency) {
                 let optionPaths = listItem.dependency.depends_on.split('/');
+                
+                // Special handling for parent_container check
+                if (listItem.dependency.depends_on === 'parent_container') {
+                    const isInsideRepeater = this.isInsideRepeaterContainer(this.editItem);
+                    const parentType = isInsideRepeater ? 'repeater_container' : '';
+                    
+                    return this.compare(parentType, listItem.dependency.operator, listItem.dependency.value);
+                }
 
                 let dependencyVal = optionPaths.reduce((obj, prop) => {
                     return obj[prop]
@@ -300,6 +312,23 @@ export default {
             }
 
             return unsupportedSettings.indexOf(key) === -1;
+        },
+        isInsideRepeaterContainer(item) {
+            for (const formItem of this.form_items) {
+                if (formItem.element === 'repeater_container' && formItem.columns) {
+                    for (const column of formItem.columns) {
+                        if (column.fields) {
+                            for (const field of column.fields) {
+                                if (field.uniqElKey === item.uniqElKey) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     },
 };

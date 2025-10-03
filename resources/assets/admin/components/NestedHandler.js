@@ -5,6 +5,7 @@ import taxonomy from './templates/taxonomy.vue'
 import chainedSelect from './templates/chainedSelect.vue'
 import ratings from './templates/ratings.vue'
 import netPromoter from './templates/netPromoter.vue'
+import dynamicField from './templates/dynamicField.vue'
 import formStep from './templates/formStep.vue'
 import recaptcha from './templates/recaptcha.vue'
 import hcaptcha from './templates/hcaptcha.vue'
@@ -37,7 +38,12 @@ import paymentMethodHolder from './templates/paymentMethodHolder.vue'
 import inputMultiPayment from './templates/inputMultiPayment.vue';
 import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
 import inputCalendar from './templates/inputCalendar.vue';
+import CustomEditorField from './editor-field-settings/templates/CustomSettingsField.vue';
+
 import { Splitpanes, Pane } from 'splitpanes'
+import ActionBtn from "@/admin/components/ActionBtn/ActionBtn";
+import ActionBtnRemove from "@/admin/components/ActionBtn/ActionBtnRemove";
+import ActionBtnAdd from "@/admin/components/ActionBtn/ActionBtnAdd";
 
 export default {
     name: 'list',
@@ -51,6 +57,9 @@ export default {
         'allElements',
         'handleDragend',
         'handleDragstart',
+        'editorInserterInContainer',
+        'editorInserterInContainerRepeater',
+        'fieldNotSupportInContainerRepeater',
     ],
     components: {
         ff_select: select,
@@ -58,6 +67,7 @@ export default {
         ff_chainedSelect: chainedSelect,
         ff_ratings: ratings,
         ff_net_promoter: netPromoter,
+        ff_dynamic_field: dynamicField,
         ff_formStep: formStep,
         ff_inputFile: inputFile,
         ff_inputText: inputText,
@@ -91,6 +101,8 @@ export default {
         ff_inputSubscriptionPayment: inputSubscriptionPayment,
         ff_fieldsRepeatSettings: repeatFields,
         ff_inputCalendar: inputCalendar,
+        ff_CustomEditorField: CustomEditorField,
+        ActionBtn, ActionBtnRemove, ActionBtnAdd,
         Splitpanes, Pane
     },
     data() {
@@ -134,7 +146,18 @@ export default {
          * Remove the moved item from it's old place
          * @param {Object} vddl options
          */
-        handleMoved({index, list}) {
+        handleMoved({index, list, draggable}) {
+            if (('container' === draggable?.element || 'repeater_container' === draggable?.element) && this.editorInserterInContainer) {
+                FluentFormEditorEvents.$emit('editor-inserter-in-container', false);
+                FluentFormEditorEvents.$emit('editor-inserter-in-container-repeater', false);
+                return;
+            }
+
+            if (this.fieldNotSupportInContainerRepeater) {
+                FluentFormEditorEvents.$emit('not-supported-in-container-repeater', false);
+                return;
+            }
+
             list.splice(index, 1);
         },
 
@@ -147,6 +170,7 @@ export default {
         editSelected(index, item) {
             this.editorInserterDismiss();
             this.handleEdit(item);
+            this.resetContextMenu();
         },
 
         /**
@@ -161,6 +185,7 @@ export default {
             if (index > -1) {
                 this.wrapper.splice(index + 1, 0, freshCopy);
             }
+            this.contextMenuIndex = {};
         },
 
         /**
@@ -202,7 +227,10 @@ export default {
             FluentFormEditorEvents.$emit('editor-inserter-popup', index, wrapper, this.$el);
 
             if (jQuery(event.target).closest('.item-container').length) {
-                FluentFormEditorEvents.$emit('editor-inserter-in-container');
+                FluentFormEditorEvents.$emit('editor-inserter-in-container', true);
+            }
+            if (jQuery(event.target).closest('.repeater-item-container').length) {
+                FluentFormEditorEvents.$emit('editor-inserter-in-container-repeater', true);
             }
         },
 
@@ -210,20 +238,93 @@ export default {
             this.item.columns.forEach((item, i) => {
                 item.width = this.getNumber(event[i].size);
             })
+            // Update modified flag
+            const perColumnWidth = this.getNumber(100 / this.item.columns.length);
+            this.item.modified = false;
+            this.item.columns.forEach(column => {
+                if ( column.width != perColumnWidth ){
+                    this.item.modified = true;
+                }
+            })
         },
 
         resetContainer() {
             const perColumnWidth = this.getNumber(100 / this.item.columns.length);
-
             this.item.columns.forEach(column => {
                 column.width = perColumnWidth;
             })
+            this.item.modified = false;
         },
 
         getNumber(value) {
             value = value || 0;
 
             return parseFloat(parseFloat(value).toFixed(2));
+        },
+        maybeHideContainerActions(e) {
+            let element = e.target;
+            if (element.classList.contains('hover-action-middle')) {
+                const topRightElements = document.querySelectorAll('.hover-action-top-right');
+                topRightElements.forEach((el) => {
+                    el.style.opacity = '0';
+                });
+            }
+            this.resetContextMenu();
+        },
+        maybeShowContainerActions(e) {
+            let element = e.target;
+            if (element.classList.contains('hover-action-middle')) {
+                const topRightElements = document.querySelectorAll('.hover-action-top-right');
+                topRightElements.forEach((el) => {
+                    el.style.opacity = '1';
+                });
+            }
+            //re adjust pane css for context menu
+            if (jQuery(e.target).closest('.splitpanes__pane').length) {
+                let selectedPane = jQuery(e.target).closest('.splitpanes__pane')[0];
+                selectedPane.style.overflow = 'hidden';
+            }
+        },
+        showContextMenu(index, e){
+
+            this.$set(this.contextMenuIndex, index, !this.contextMenuIndex[index]);
+
+            if (this.contextMenuIndex[index]) {
+                const rect = e.target.getBoundingClientRect();
+                this.$set(this.contextMenuStyle, index, {
+                    display: 'flex',
+                    position: 'absolute',
+                    left: `${e.clientX - rect.left}px`,
+                    top: `${e.clientY - rect.top}px`,
+                });
+            } else {
+                this.resetContextMenu(index);
+            }
+            this.adjustPaneCssForContextMenu(e,index);
+        },
+        resetContextMenu(index = false){
+            if (index){
+                this.$set(this.contextMenuStyle, index, {
+                    display: 'none'
+                });
+            }
+            this.contextMenuIndex = {};
+            this.contextMenuStyle = {};
+        },
+        adjustPaneCssForContextMenu(e, index = false){
+            if (jQuery(e.target).closest('.splitpanes__pane').length) {
+                let selectedPane = jQuery(e.target).closest('.splitpanes__pane')[0];
+                selectedPane.style.overflow = this.contextMenuIndex[index] ? 'visible' : 'hidden';
+            }
+        },
+
+        /**
+         * Handle keyboard delete event for selected item
+         */
+        handleKeyboardDelete(selectedItem) {
+            if (this.item.uniqElKey === selectedItem.uniqElKey) {
+                this.askRemoveConfirm(this.index);
+            }
         }
     }
 };

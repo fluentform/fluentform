@@ -24,6 +24,8 @@ $router->prefix('forms')->withPolicy('FormPolicy')->group(function ($router) {
         $router->get('fields', 'FormController@fields');
         $router->get('shortcodes', 'FormController@shortcodes');
         $router->get('findShortCodePage', 'FormController@findShortCodePage');
+        $router->get('editHistory', 'FormController@formEditHistory');
+        $router->post('clearHistory', 'FormController@clearEditHistory');
     });
 });
 
@@ -57,6 +59,7 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
     $router->get('/', 'SubmissionController@index');
     $router->get('resources', 'SubmissionController@resources');
     $router->post('bulk-actions', 'SubmissionController@handleBulkActions');
+    $router->get('print', 'SubmissionController@print');
     $router->get('all', 'SubmissionController@all');
     $router->delete('/{entry_id}', 'SubmissionController@remove');
 
@@ -90,7 +93,7 @@ $router->prefix('logs')->withPolicy('SubmissionPolicy')->group(function ($router
 */
 $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($router) {
     $router->get('/', 'GlobalIntegrationController@index');
-    $router->post('/', 'GlobalIntegrationController@update');
+    $router->post('/', 'GlobalIntegrationController@updateIntegration');
     $router->post('update-status', 'GlobalIntegrationController@updateModuleStatus');
     
     /*
@@ -142,7 +145,23 @@ $router->post('form-submit', 'SubmissionHandlerController@submit')->withPolicy('
 * Form Report
 */
 $router->prefix('report')->withPolicy('ReportPolicy')->group(function ($router) {
-    $router->get('/submissions', 'ReportController@submissions');
+    // Component-specific endpoints
+    $router->get('/overview-chart', 'ReportController@getOverviewChart');
+    $router->get('/revenue-chart', 'ReportController@getRevenueChart');
+    $router->get('/completion-rate', 'ReportController@getCompletionRate');
+    $router->get('/form-stats', 'ReportController@getFormStats');
+    $router->get('/heatmap-data', 'ReportController@getHeatmapData');
+    $router->get('/country-heatmap', 'ReportController@getCountryHeatmap');
+    $router->get('/api-logs', 'ReportController@getApiLogs');
+    $router->get('/top-performing-forms', 'ReportController@getTopPerformingForms');
+    $router->get('/subscriptions', 'ReportController@getSubscriptions');
+    $router->get('/payment-types', 'ReportController@getPaymentTypes');
+
+    // Existing endpoints
+    $router->get('/select-forms', 'ReportController@getFormsDropdown');
+    $router->get('/net-revenue', 'ReportController@netRevenue');
+    $router->get('/submissions-analysis', 'ReportController@submissionsAnalysis');
+    $router->post('/submissions', 'ReportController@submissions');
     $router->get('/forms/{form_id}', 'ReportController@form');
 });
 /*

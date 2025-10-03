@@ -2,12 +2,12 @@
 
 namespace FluentForm\App\Services\Integrations\MailChimp;
 
-use FluentForm\App\Services\Integrations\IntegrationManager;
+use FluentForm\App\Http\Controllers\IntegrationManagerController;
 use FluentForm\App\Services\Integrations\MailChimp\MailChimpSubscriber as Subscriber;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
-class MailChimpIntegration extends IntegrationManager
+class MailChimpIntegration extends IntegrationManagerController
 {
     /**
      * MailChimp Subscriber that handles & process all the subscribing logics.
@@ -118,7 +118,7 @@ class MailChimpIntegration extends IntegrationManager
         update_option($this->optionKey, $mailChimpSettings, 'no`');
 
         wp_send_json_success([
-            'message' => __('Your mailchimp api key has been verfied and successfully set', 'fluentform'),
+            'message' => __('Your mailchimp api key has been verified and successfully set', 'fluentform'),
             'status'  => true,
         ], 200);
     }
@@ -187,7 +187,7 @@ class MailChimpIntegration extends IntegrationManager
                     'key'                => 'merge_fields',
                     'require_list'       => true,
                     'label'              => __('Map Fields', 'fluentform'),
-                    'tips'               => __('Associate your Mailchimp merge tags to the appropriate Fluent Forms fields by selecting the appropriate form field from the list.', 'fluentform'),
+                    'tips'               => __('Associate your Mailchimp merge tags to the appropriate Fluent Forms fields by selecting the appropriate form field from the list. Also, Mailchimp Date fields supports only MM/DD/YYYY and DD/MM/YYYY format.', 'fluentform'),
                     'component'          => 'map_fields',
                     'field_label_remote' => __('Mailchimp Field', 'fluentform'),
                     'field_label_local'  => __('Form Field', 'fluentform'),
@@ -278,13 +278,6 @@ class MailChimpIntegration extends IntegrationManager
             'button_require_list' => true,
             'integration_title'   => __('Mailchimp', 'fluentform'),
         ];
-    }
-
-    public function setFeedAtributes($feed, $formId)
-    {
-        $feed['provider'] = 'mailchimp';
-        $feed['provider_logo'] = $this->logo;
-        return $feed;
     }
 
     public function prepareIntegrationFeed($setting, $feed, $formId)
@@ -468,8 +461,8 @@ class MailChimpIntegration extends IntegrationManager
             'tags'                   => 'sanitize_text_field',
             'tag_ids_selection_type' => 'sanitize_text_field',
             'fieldEmailAddress'      => 'sanitize_text_field',
-            'doubleOptIn'            => 'rest_sanitize_bolean',
-            'resubscribe'            => 'rest_sanitize_bolean',
+            'doubleOptIn'            => 'rest_sanitize_boolean',
+            'resubscribe'            => 'rest_sanitize_boolean',
             'note'                   => 'sanitize_text_field',
         ];
         return fluentform_backend_sanitizer($integration, $sanitizeMap);
@@ -489,6 +482,13 @@ class MailChimpIntegration extends IntegrationManager
             $message = __('Mailchimp feed has been failed to deliver feed', 'fluentform');
             if (is_wp_error($response)) {
                 $message = $response->get_error_message();
+                if (is_array($message)) {
+                    $messageArray = $message;
+                    $message = '';
+                    foreach ($messageArray as $error) {
+                        $message .= ArrayHelper::get($error, 'message');
+                    }
+                }
             }
             do_action('fluentform/integration_action_result', $feed, 'failed', $message);
         }

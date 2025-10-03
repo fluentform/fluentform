@@ -102,9 +102,11 @@
                             <span @click="closeSmtp()" class="ff_smtp_close">
                                 <i class="el-icon el-icon-close"></i>
                             </span>
-                            <p>{{
-                                    $t('For better email deliver ability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered ')
-                                }} 💯. {{ $t('Built by Fluent Forms devs for you.') }}</p>
+                            <p>
+                                {{
+                                    $t('For better email deliverability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered 💯. Built by Fluent Forms Devs for you.')
+                                }}
+                            </p>
                             <a class="el-button el-button--info el-button--medium"
                                :href="smtp_page_url">{{ $t('Setup SMTP') }}</a>
                         </div>
@@ -163,8 +165,9 @@
                                 :label="$t('Send to Email')"
                                 class="conditional-items ff-form-item"
                                 :class="errors.has('sendTo.email') ? 'is-error' : ''"
+
                             >
-                                <el-input v-model="selected.value.sendTo.email"></el-input>
+                                <el-input  :placeholder="$t('Use comma for multiple emails')" v-model="selected.value.sendTo.email"></el-input>
 
                                 <error-view field="sendTo.email" :errors="errors"></error-view>
                             </el-form-item>
@@ -238,7 +241,7 @@
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t('Allow this feed conditionally') }}
+	                                        {{ $t('Allow this feed notification conditionally. Select to match whether all rules are required, any rule is sufficient, or use group logic. If the conditions match, the notification will be sent. For groups, if any group\'s conditions are fully met, the notification will be sent.') }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -371,11 +374,6 @@
                                 <el-radio label="payment_success">{{ $t('After Payment Success') }}</el-radio>
                                 <el-radio label="payment_form_submit">{{ $t('After Form Submit') }}</el-radio>
                             </el-radio-group>
-
-                            <p class="mt-2 text-note" style="max-width: 700px;">{{
-                                    $t('Please Note, for offline payment this settings will not work. Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments.')
-                                }}</p>
-
                         </el-form-item>
 
                         <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
@@ -515,7 +513,7 @@
                     @click="store"
                     type="primary"
                     icon="el-icon-success">
-                    {{ loading ? $t('Saving ') : $t('Save ') }} {{ $t('Notification') }}
+                    {{ $t('%s Notification', loading ? 'Saving' : 'Save') }}
                 </el-button>
             </div>
         </el-form>
@@ -777,7 +775,7 @@ export default {
 
                     let handle = notification.value.enabled ? 'enabled' : 'disabled';
 
-                    this.$success(this.$t('Successfully ' + handle + ' the notification.'));
+                    this.$success(this.$t('Successfully %s the notification.', handle));
                 })
                 .catch(e => {
                     notification.id = id;
@@ -851,7 +849,7 @@ export default {
                     this.selectedIndex = null;
                 })
                 .catch(errors => {
-                    this.errors.record(errors);
+                    this.errors.record(errors?.responseJSON);
                     this.selected.id = id;
                 })
                 .always(() => {

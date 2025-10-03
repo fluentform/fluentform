@@ -91,7 +91,7 @@
 
                         <div>
                             <el-input
-                                :placeholder="$t('label')"
+                                :placeholder="$t('Label')"
                                 v-model="option.label"
                                 @input="updateValue(option)"
                             />
@@ -260,7 +260,7 @@
                 this.optionsToRender = this.editItem.settings.pricing_options;
             },
             showProMessage() {
-                this.$notify.error('Image type fields only available on pro version');
+                this.$notify.error('Images with options is available in the Pro version');
                 this.pro_mock = false;
             }
         },

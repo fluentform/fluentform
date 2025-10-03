@@ -19,3 +19,4 @@ public/js/*.css
 .prettierrc
 jsconfig.json
 composer.lock
+assets/report.html

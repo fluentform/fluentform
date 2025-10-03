@@ -41,13 +41,18 @@ class Turnstile extends BaseComponent
             return $atts;
         });
 
-        wp_enqueue_script(
-            'turnstile',
-            'https://challenges.cloudflare.com/turnstile/v0/api.js',
-            [],
-            FLUENTFORM_VERSION,
-            true
-        );
+        if (!wp_script_is('turnstile')) {
+            wp_enqueue_script(
+                'turnstile',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                [],
+                FLUENTFORM_VERSION,
+                true
+            );
+
+            // for WP Rocket compatibility
+            wp_script_add_data('turnstile', 'data-cfasync', 'false');
+        }
 
         $appearance = esc_attr(ArrayHelper::get($turnstile, 'appearance', 'always'));
 
@@ -58,7 +63,7 @@ class Turnstile extends BaseComponent
         $turnstileBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
 		data-theme='" . esc_attr(ArrayHelper::get($turnstile, 'theme', 'auto')) . "'
-		id='fluentform-turnstile-{$form->id}'
+		id='fluentform-turnstile-{$form->id}-{$form->instance_index}'
 		class='ff-el-turnstile cf-turnstile'
 		data-appearance='" . $appearance . "'></div>";
 
@@ -75,6 +80,9 @@ class Turnstile extends BaseComponent
         $el = "<div class='ff-el-input--content'><div data-fluent_id='" . $form->id . "' name='cf-turnstile-response'>{$turnstileBlock}</div></div>";
 
         $html = "<div class='ff-el-group " . esc_attr($containerClass) . "' >{$label}{$el}</div>";
+        if ($appearance == 'interaction-only') {
+            $html = str_replace("<div class='ff-el-group ' >", "<div class='ff-el-group ' style='margin-bottom: 0;'>", $html);
+        }
     
         $html = apply_filters_deprecated(
             'fluentform_rendering_field_html_' . $elementName,

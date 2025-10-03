@@ -105,17 +105,23 @@ class SettingsService
             FormMeta::remove($formId, 'auto_delete_days');
         }
 
-        do_action_deprecated(
-            'fluentform_after_save_form_settings',
-            [
-                $formId,
-                $attributes
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/after_save_form_settings',
-            'Use fluentform/after_save_form_settings instead of fluentform_after_save_form_settings.'
-        );
+        $convFormPerStepSave = Arr::get($formSettings, 'conv_form_per_step_save') && Helper::isConversionForm($formId);
 
+        if ($convFormPerStepSave) {
+            FormMeta::persist($formId, 'conv_form_per_step_save', true);
+        } else {
+            FormMeta::remove($formId, 'conv_form_per_step_save');
+        }
+
+        $convFormResumeFromLastStep = $convFormPerStepSave && Arr::get($formSettings, 'conv_form_resume_from_last_step');
+        if ($convFormResumeFromLastStep) {
+            FormMeta::persist($formId, 'conv_form_resume_from_last_step', true);
+        } else {
+            FormMeta::remove($formId, 'conv_form_resume_from_last_step');
+        }
+      
+    
+    
         do_action('fluentform/after_save_form_settings', $formId, $attributes);
     }
 
@@ -167,6 +173,7 @@ class SettingsService
             'url'                        => 'sanitize_url',
             'webhook'                    => 'sanitize_url',
             'textTitle'                  => 'sanitize_text_field',
+            'conv_form_per_step_save'    => 'rest_sanitize_boolean'
         ];
 
         return fluentform_backend_sanitizer($settings, $sanitizerMap);
@@ -254,6 +261,7 @@ class SettingsService
         $metaKey = "ffc_form_settings";
         $formId = intval($formId);
 
+        $attributes = fluentFormSanitizer($attributes);
         $settings = Arr::get($attributes, 'design_settings');
         FormMeta::persist($formId, $metaKey . '_design', $settings);
 
@@ -263,6 +271,20 @@ class SettingsService
         }
 
         $meta = Arr::get($attributes, 'meta_settings', []);
+        $metaSanitizationMap = [
+            'title'             =>  'sanitize_text_field',
+            'description'       =>  [$this, 'secureMetaDescription'],
+            'featured_image'    =>  'esc_url_raw',
+            'share_key'         =>  'sanitize_text_field',
+            'google_font_href'  =>  'esc_url_raw',
+            'font_css'          =>  'wp_kses_post',
+        ];
+        foreach ($metaSanitizationMap as $key => $sanitizer) {
+            if (isset($meta[$key])) {
+                $meta[$key] = call_user_func($sanitizer, $meta[$key]);
+            }
+        }
+        
         if ($meta) {
             FormMeta::persist($formId, $metaKey . '_meta', $meta);
         }
@@ -274,7 +296,7 @@ class SettingsService
             $params['form'] = $meta['share_key'];
         }
 
-        $shareUrl = add_query_arg($params, site_url());
+        $shareUrl = add_query_arg($params, Helper::getFrontendFacingUrl());
         return [
             'message'   => __('Settings successfully updated'),
             'share_url' => $shareUrl,
@@ -288,7 +310,7 @@ class SettingsService
         $selectedPreset = $selectedPreset ?: 'ffs_default';
         $presets = [
             'ffs_default' => [
-                'label' => __('Default', ''),
+                'label' => __('Default', 'fluentform'),
                 'style' => '[]',
             ],
             'ffs_inherit_theme' => [
@@ -315,5 +337,22 @@ class SettingsService
             ];
         }
         throw new \Exception(__('Settings save failed', 'fluentform'));
+    }
+    
+    public function secureMetaDescription($description) {
+        $clean = preg_replace(
+            [
+                '/url\s*=/',          // Remove URL assignments
+                '/http-equiv\s*=/',   // Remove HTTP equiv
+                '/refresh/',          // Remove refresh attempts
+            ],
+            '',
+            $description
+        );
+        
+        $clean = wp_strip_all_tags($clean);
+        $clean = sanitize_text_field($clean);
+        
+        return trim($clean);
     }
 }

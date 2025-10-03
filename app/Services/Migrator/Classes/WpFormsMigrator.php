@@ -9,6 +9,11 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 
 class WpFormsMigrator extends BaseMigrator
 {
+    /**
+     * @var bool
+     */
+    protected $hasStep = false;
+
     public function __construct()
     {
         $this->key = 'wpforms';
@@ -76,6 +81,7 @@ class WpFormsMigrator extends BaseMigrator
 
         if ($this->hasStep && defined('FLUENTFORMPRO')) {
             $returnData['stepsWrapper'] = $this->getStepWrapper();
+            $this->hasStep = false;
         }
         return $returnData;
     }

@@ -4,6 +4,7 @@
             :visible.sync="visibility"
             width="100%"
             top= "50px"
+            @open="focusSearch"
             :before-close="close"
         >
             <template slot="title">
@@ -14,17 +15,17 @@
 
             <div class="ff_predefined_options mt-6">
                 <div class="ff_predefined_sidebar">
-                    <h5 class="ff_predefined_title mb-3">{{$t('Categoires')}}</h5>
+                    <h5 class="ff_predefined_title mb-3">{{$t('Categories')}}</h5>
                     <ul class="ff_list_button ff_list_button_s1">
-                        <li 
-                            class="ff_list_button_item" 
-                            v-for="(item, index) in categories" 
+                        <li
+                            class="ff_list_button_item"
+                            v-for="(item, index) in categories"
                             :key="index"
                             :class="{'active': index === 0}"
                         >
                             <a
-                                @click.prevent="scollTo" 
-                                :href="'#' + item.toLocaleLowerCase()" 
+                                @click.prevent="scollTo"
+                                :href="'#' + item.toLocaleLowerCase()"
                                 class="ff_list_button_link"
                             >
                                 {{item}}
@@ -35,6 +36,7 @@
                 <div class="ff_predefined_main">
                     <div class="form_item_group form_item_group_search mb-5">
                         <el-input
+                            ref="searchInput"
                             v-model="search"
                             :placeholder="$t('Search a form template')"
                             class="el-input-search el-input-border"
@@ -48,10 +50,10 @@
                         v-loading="creatingForm"
                         class="ff_predefined_form_wrap"
                     >
-                        <div 
-                            v-for="(forms, category) in filteredForms" 
-                            :id="category.toLocaleLowerCase()" 
-                            class="ff_form_group" 
+                        <div
+                            v-for="(forms, category) in filteredForms"
+                            :id="category.toLocaleLowerCase()"
+                            class="ff_form_group"
                             :key="category"
                         >
                             <h5 class="ff_form_group_title">{{category}}</h5>
@@ -137,7 +139,7 @@
                     });
 
                     this.category = '';
-                    
+
                     return allForms;
                 } else {
                     if (this.category) {
@@ -175,7 +177,7 @@
             },
             doCreateForm(data) {
                 const url = FluentFormsGlobal.$rest.route('getForms');
-                
+
                 FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
                     this.$success(response.message);
@@ -202,12 +204,12 @@
                         jQuery(listItem[i]).removeClass('active');
                     }
                 }
-    
+
                 jQuery('.ff_predefined_form_wrap').animate({
                     scrollTop: jQuery(targetHash).offset().top - 54 - jQuery('.ff_predefined_form_wrap').position().top + jQuery('.ff_predefined_form_wrap').scrollTop()
 
                 }, 'slow');
-                
+
             },
             goToImportPage() {
                 let path = window.location.href;
@@ -215,28 +217,16 @@
                 path = path.substring(0, index);
                 path += 'fluent_forms_transfer#importforms';
                 window.location.href = path;
+            },
+            focusSearch() {
+                this.$nextTick(() => {
+                    this.$refs.searchInput.focus();
+                });
             }
-            // stickyMenu(){
-            //     let stickyElem = jQuery('#sticky-menu');
-            //     let stickyTop = stickyElem.offset().top;
-
-            //     jQuery(window).on('scroll', function() {
-            //         let windowTop = jQuery(window).scrollTop();
-            //         if (stickyTop < windowTop) {
-            //             stickyElem.addClass('is-sticky');
-            //         } else {
-            //             stickyElem.removeClass("is-sticky");
-            //         }
-            //     });
-            // }
 
         },
         mounted() {
-            // this.createForm();
-            // this.fetchPredefinedForms();
-            // this.forms = this.predefinedForms;
-            // this.categories = this.categories;
-            
+
         }
     };
 </script>

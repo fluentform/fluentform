@@ -171,20 +171,79 @@
   right: 14px;
   border-radius: 6px;
   overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  span{
+    display: none;
+  }
+  .action-menu-item:hover {
+    //background-color: #3A3A3C;
+    background-color: $primary;
+  }
   .el-icon {
     color: $white;
     cursor: pointer;
     padding: 10px;
-    &:hover {
-      background-color: $--color-primary;
-    }
+    //&:hover {
+    //  background-color: $--color-primary;
+    //}
   }
 }
+
+.context-menu-active {
+  z-index: 5;
+  span{
+    display: block;
+  }
+  .item-actions {
+    flex-direction: column;
+    max-width: 100px;
+    background-color: #2C2C2E;
+    border: 1px solid #3A3A3C;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 6px 0;
+    min-width: 220px;
+    position: absolute;
+    z-index: 1000;
+  }
+  .action-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    color: #e9e6e6;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    user-select: none;
+    .el-icon {
+      color: #c1bfbf;
+    }
+  }
+
+  .action-menu-item:active {
+    background-color: #4A4A4C;
+  }
+  .context-menu__separator {
+    height: 1px;
+    background-color: #3A3A3C;
+    margin: 6px 0;
+  }
+
+  .action-menu-item-danger {
+    color: #FF453A;
+  }
+
+  .action-menu-item-danger:hover {
+    background-color: #3A2A2A;
+  }
+}
+
+
 
 .hover-action-top-right {
   top: -10px;
   right: 10px;
-  width: 25%;
+  width: 38%;
   .item-actions{
     position: inherit;
     top: auto;
@@ -422,7 +481,7 @@
   margin-bottom: 10px;
   padding-bottom: 10px;
   width: 100%;
-  > .el-icon-caret-bottom, 
+  > .el-icon-caret-bottom,
   .el-icon-caret-top {
     font-size: 18px;
     border-radius: 3px;

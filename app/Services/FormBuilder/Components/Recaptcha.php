@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
+use FluentForm\Framework\Helpers\ArrayHelper;
+
 class Recaptcha extends BaseComponent
 {
     /**
@@ -46,13 +48,22 @@ class Recaptcha extends BaseComponent
         }
 
         if ('v3_invisible' == $apiVersion) {
-            wp_enqueue_script(
-                'google-recaptcha',
-                'https://www.google.com/recaptcha/api.js?render=' . $siteKey,
-                [],
-                FLUENTFORM_VERSION,
-                true
-            );
+            if (!wp_script_is('google-recaptcha')) {
+                $apiUrl = 'https://www.google.com/recaptcha/api.js?render=' . $siteKey;
+
+                $locale = apply_filters('fluentform/recaptcha_lang', '');
+                if ($locale) {
+                    $apiUrl .= '&hl=' . $locale;
+                }
+
+                wp_enqueue_script(
+                    'google-recaptcha',
+                    $apiUrl,
+                    [],
+                    FLUENTFORM_VERSION,
+                    true
+                );
+            }
 
             add_filter('fluentform/form_class', function ($formClass) {
                 $formClass .= ' ff_has_v3_recptcha';
@@ -64,20 +75,42 @@ class Recaptcha extends BaseComponent
                 return $atts;
             });
 
+            $shouldRenderBadge = ArrayHelper::get($data, 'settings.render_recaptcha_v3_badge', false);
+            
+            if (!$shouldRenderBadge) {
+                // Add CSS to hide reCAPTCHA badge
+                add_action('wp_footer', function() {
+                    echo "<style>
+                    .grecaptcha-badge {
+                        visibility: hidden;
+                    }
+                </style>";
+                });
+            }
+
             return;
         }
 
-        wp_enqueue_script(
-            'google-recaptcha',
-            'https://www.google.com/recaptcha/api.js',
-            [],
-            FLUENTFORM_VERSION,
-            true
-        );
+        if (!wp_script_is('google-recaptcha')) {
+            $apiUrl = 'https://www.google.com/recaptcha/api.js?render=explicit';
+
+            $locale = apply_filters('fluentform/recaptcha_lang', '');
+            if ($locale) {
+                $apiUrl .= '&hl=' . $locale;
+            }
+
+            wp_enqueue_script(
+                'google-recaptcha',
+                $apiUrl,
+                [],
+                FLUENTFORM_VERSION,
+                true
+            );
+        }
 
         $recaptchaBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
-		id='fluentform-recaptcha-" . $form->id . "'
+		id='fluentform-recaptcha-{$form->id}-{$form->instance_index}'
 		class='ff-el-recaptcha g-recaptcha'
 		data-callback='fluentFormrecaptchaSuccessCallback'></div>";
 

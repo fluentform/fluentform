@@ -27,7 +27,7 @@
 
                 <div class="ff_card_wrap mt-5 mb-4">
                     <el-row :gutter="32">
-                        <el-col :sm="has_post_feature ? 6 : 8">
+                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5">
                             <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
@@ -44,7 +44,7 @@
                                 </template>
                             </el-skeleton>
                         </el-col>
-                        <el-col :sm="has_post_feature ? 6 : 8">
+                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5">
                             <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
@@ -61,7 +61,7 @@
                                 </template>
                             </el-skeleton>
                         </el-col>
-                        <el-col :sm="has_post_feature ? 6 : 8">
+                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5">
                             <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
@@ -78,7 +78,7 @@
                                 </template>
                             </el-skeleton>
                         </el-col>
-                        <el-col :sm="has_post_feature ? 6 : 8" v-if="has_post_feature">
+                        <el-col :sm="has_post_feature ? 6 : 8" v-if="has_post_feature" class="mb-5">
                             <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
@@ -88,8 +88,25 @@
                                 <template>
                                     <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showPostType" :img="postTypeFormImg" imgClass="mb-3">
                                         <card-body>
-                                            <h6 class="mb-2 ff_card_title">{{$t('Create A Post Form')}}</h6>
+                                            <h6 class="mb-2 ff_card_title">{{$t('Create a Post Form')}}</h6>
                                             <p class="ff_card_text">{{$t('Create a Post type form from scratch.')}}</p>
+                                        </card-body>
+                                    </card>
+                                </template>
+                            </el-skeleton>
+                        </el-col>
+                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5">
+                            <el-skeleton :loading="loading" animated class="h-100">
+                                <template slot="template">
+                                    <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
+                                    <el-skeleton-item variant="h3" style="width: 80%;"/>
+                                    <el-skeleton-item variant="text" style="width: 60%; margin-top: 10px;" />
+                                </template>
+                                <template>
+                                    <card class="ff_card_form_action ff_card_shadow_lg hover-zoom"  @click="showChatGPT" :img="chatGptImg" imgClass="mb-3">
+                                        <card-body>
+                                            <h6 class="mb-2 ff_card_title">{{$t('Create Using AI')}}</h6>
+                                            <p class="ff_card_text">{{$t('Create a form with AI')}}</p>
                                         </card-body>
                                     </card>
                                 </template>
@@ -116,6 +133,9 @@
             :hasPro="has_pro"
         />
 
+        <ChatGPTModal :visibility.sync="showChatGPTModal"/>
+
+
     </div>
 </template>
 
@@ -123,6 +143,7 @@
     import Card from '../Card/Card.vue';
     import CardBody from '../Card/CardBody.vue';
     import ChooseTemplateModal from './ChooseTemplateModal.vue';
+    import ChatGPTModal from './ChatGPTModal.vue';
     import PostTypeSelectionModal from './PostTypeSelectionModal.vue';
     import ImportForms from '@/admin/transfer/ImportForms';
 
@@ -133,13 +154,16 @@
             CardBody,
             ChooseTemplateModal,
             PostTypeSelectionModal,
-            ImportForms
+            ImportForms,
+            ChatGPTModal
         },
         props: {
             visibility: Boolean
         },
         data() {
             return {
+                innerVisible: false,
+                chatQuery: '',
                 has_post_feature: !!window.FluentFormApp.has_post_feature,
                 postFormData: {
                     type: 'post',
@@ -154,10 +178,12 @@
                 search: '',
                 has_pro: !!window.FluentFormApp.hasPro,
                 blankFormImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
+                chatGptImg:  window.FluentFormApp.plugin_public_url + 'img/ff-ai-form.png',
                 chooseTemplateImg:  window.FluentFormApp.plugin_public_url + 'img/choose-template.png',
                 conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
                 postTypeFormImg:  window.FluentFormApp.plugin_public_url + 'img/post-type-form.png',
                 showChooseTemplateModal: false,
+                showChatGPTModal: false,
                 postTypeSelectionDialogVisibility: false,
                 showFormsImport : false,
                 formsImported : false,
@@ -166,6 +192,10 @@
             }
         },
         methods: {
+            chatGptModal(){
+                console.log('x')
+                this.showChat = true;
+            },
             getPredefinedForms() {
                 this.loading = true;
 
@@ -188,6 +218,10 @@
             },
             showChooseTemplate(){
                 this.showChooseTemplateModal = true;
+                this.$emit('update:visibility', false);
+            },
+            showChatGPT(){
+                this.showChatGPTModal = true;
                 this.$emit('update:visibility', false);
             },
             showPostType(){

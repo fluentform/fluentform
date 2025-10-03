@@ -328,6 +328,10 @@ span + .ff-icon,
   color: $base-text;
   font-weight: 400;
 }
+.ff-disabled{
+  opacity: 0.5;
+  pointer-events: none;
+}
 .mx-auto{
   margin-right: auto;
   margin-left: auto;
@@ -440,8 +444,10 @@ a.lead-text{
     color: #3c3c3cb3;
     background-color: transparent;
     padding: 0 0 0 5px;
-    display: inline-block;
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    gap: 4px;
     font-weight: normal;
     border-radius: 6px;
     line-height: 1.6;
@@ -451,14 +457,14 @@ a.lead-text{
     cursor: pointer;
     .el-icon-search{
       font-weight: 600;
-      font-size: 16px;
+      font-size: 14px;
     }
     .shortcut{
       transition:all 0.3s;
       //border: 1px solid #9A9FA5;
       border-radius: 4px;
       letter-spacing: 3px;
-      padding: 5px 8px;
+      padding: 0 5px;
       font-size: 12px;
       box-shadow: 0 2px 3px 0 rgba(32, 33, 36, 0.15);
     }
@@ -471,7 +477,7 @@ a.lead-text{
     }
 
     span {
-      margin-left:5px;
+      display: block;
     }
   }
 }
@@ -794,8 +800,9 @@ label.el-radio, label.el-checkbox {
   background: #fff;
   display: inline-flex;
   border-radius: $border-radius;
+  max-width: 100%;
   padding: 12px 20px;
-  box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+  box-shadow: 0 1px 3px rgba(30, 31, 33, 0.08);
   font-weight: 500;
   .el-input__inner{
     background: #f2f2f2;
@@ -995,10 +1002,11 @@ label.el-radio, label.el-checkbox {
 }
 
 // global setting
-.ff_global_setting_wrap{
-  .ff_layout_section_sidebar{
-   height: 100%;
-  } 
+.ff_global_setting_wrap,
+.ff_tools_wrap {
+  .ff_layout_section_sidebar {
+    height: 100%;
+  }
 }
 
 .ff_global_settings_option{
@@ -1010,7 +1018,7 @@ label.el-radio, label.el-checkbox {
   .el-form-item,
   .el-form-item-wrap {
     margin-bottom: 24px;
-    &:last-child{
+    &:last-child:not(.payment-methods-item){
         margin-bottom: 0;
     }
   }
@@ -1486,6 +1494,7 @@ label.el-radio, label.el-checkbox {
     border: 0 !important;
     background-color: transparent;
     border-radius: 0 !important;
+    //padding: 6px 8px;
     &:hover{
       color: $radio-group-button-hover-color;
     }
@@ -1637,6 +1646,9 @@ label.el-radio, label.el-checkbox {
   background-color: #fff;
   border-radius: 4px;
   border: 1px solid $border-color;
+  .el-radio-button__inner{
+    padding: 6px 9px;
+  }
   .el-radio-button{
       &__inner{
           background: transparent;
@@ -1851,6 +1863,50 @@ label.el-radio, label.el-checkbox {
   }
 }
 
+// ai form creating loading modal
+.ff-ai-creating-form-loading{
+  &-wrap .el-dialog__header{
+     display: none;
+  }
+  &-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    .typing-indicator {
+      display: inline-block;
+    }
+
+    .typing-indicator span {
+      opacity: 0;
+      animation: typingDots 3s infinite;
+      margin-left: 2px;
+      font-weight: bold;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.9s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 2s;
+    }
+
+    @keyframes typingDots {
+      0%, 25% { opacity: 0; }
+      50%, 75% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  }
+  &-image{
+    max-width: 200px;
+    max-height: 200px;
+    margin-bottom: 20px;
+  }
+}
+
 // ff_settings_container
 .ff_settings_container{
   .notice{
@@ -1940,4 +1996,174 @@ label.el-radio, label.el-checkbox {
   color: #000;
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
   display: none;
+}
+
+.text-capitalize {
+    text-transform: capitalize;
+}
+
+
+
+.ff_conditions_warp {
+  .group-container {
+    background: #f5f7fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #e4e7ed;
+    .preview-section{
+      text-align: center;
+    }
+    .group-preview {
+      background: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #606266;
+      margin-top: 10px;
+      border: 1px dashed #dcdfe6;
+      line-height: 1.5;
+
+      .preview-label {
+        color: #909399;
+        margin-right: 5px;
+        font-weight: normal;
+      }
+      .preview-operator {
+        font-weight: 600;
+        color: #303133;
+      }
+      .preview-and {
+        font-weight: 600;
+        color: #409EFF;
+        margin: 0 5px;
+      }
+
+      .preview-field {
+        color: #606266;
+      }
+      .preview-value {
+        color: #606266;
+        &.empty-value {
+          color: #606266aa;
+        }
+      }
+    }
+
+    .conditional-logic {
+      .action-btns {
+        flex-grow: 1;
+        justify-content: end;
+      }
+    }
+  }
+
+  .group-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+
+    span {
+      color: #909399;
+      padding: 0 15px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px dashed #efefef;
+      transition: all 0.3s ease;
+    }
+  }
+
+  .add-group-btn {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .conditional-logic {
+    transition: all 0.3s ease;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+
+    .action-btns {
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .group-header + .conditional-logic {
+    margin-top: 15px;
+    color: red;
+  }
+  .group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4e7ed;
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .group-title {
+        color: #606266;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          color: #409EFF;
+        }
+
+        .title-input {
+          width: 150px;
+          margin-right: 10px;
+        }
+      }
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .ff_cond_or {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    margin: 10px 0;
+    text-transform: uppercase;
+    padding: 0 12px;
+    span{
+      color: #555;
+    }
+    &::before,
+    &::after {
+      content: "";
+      flex-grow: 1;
+      height: 1px;
+      border-top: 2px dotted #ccc;
+      position: relative;
+      top: 50%;
+    }
+    &::before {
+      margin-right: 10px;
+    }
+
+    &::after {
+      margin-left: 10px;
+    }
+  }
 }

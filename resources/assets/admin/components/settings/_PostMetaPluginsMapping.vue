@@ -1,6 +1,6 @@
 <template>
 <div class="post_meta_plugins_mappings">
-    <div class="meta_fields_mapping_head">
+    <div class="meta_fields_mapping_head" v-if="labels.section_title">
         <h6>{{ labels.section_title }}</h6>
     </div>
     <div class="meta_fields_mapping_head no_border">
@@ -95,7 +95,7 @@
                         </el-select>
                     </td>
                     <td>
-                        <p v-if="!mapField.field_key">{{ $t('Select') }} {{ labels.remote_label }} First</p>
+                        <p v-if="!mapField.field_key">{{ $t('Select %s First', labels.remote_label) }}</p>
                         <template v-else>
                             <el-select 
                                 class="w-100" 

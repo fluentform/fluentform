@@ -65,7 +65,7 @@
              <el-col :span="24">
                 <div class="fcc_card">
                     <h5 class="mb-2">{{ $t('Embed via HTML Code') }}</h5>
-                    <p class="mb-3">{{ $t('Want to use this form in another domain or another site or even outside WordPress ? Use the following code') }}</p>
+                    <p class="mb-3">{{ $t('Want to use this form in another domain or another site or even outside WordPress? Use the following code') }}</p>
 
                     <textarea 
                         :value="textareaValue"

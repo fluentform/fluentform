@@ -98,6 +98,8 @@ class SubmissionController extends Controller
     {
         try {
             $submission::remove([$submissionId]);
+	        do_action( 'fluentform/submission_deleted', $submissionId );;
+
             return $this->sendSuccess([
                 'message' => __('Selected submission successfully deleted Permanently', 'fluentform'),
             ]);
@@ -163,6 +165,23 @@ class SubmissionController extends Controller
         try {
             return $this->sendSuccess(
                 $submission->allSubmissions($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+    /**
+     * Get printable content
+     * @param SubmissionService $submissionService
+     * @return \WP_REST_Response
+     */
+    public function print(SubmissionService $submissionService)
+    {
+        try {
+            return $this->sendSuccess(
+                $submissionService->getPrintContent($this->request->all())
             );
         } catch (Exception $e) {
             return $this->sendError([

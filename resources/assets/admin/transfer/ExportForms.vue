@@ -27,11 +27,17 @@
                             </el-tooltip>
                         </template>
 
-                        <el-select class="ff_input_width" v-model="selected" multiple filterable>
+                        <el-select class="ff_input_width" v-model="selected" multiple filterable :placeholder="$t('Select Forms')">
                             <el-option v-for="(form, index) in forms" :key="index"
                                     :label="'#'+ form.id +' - ' +form.title" :value="form.id"
                             ></el-option>
                         </el-select>
+                        <el-button @click="selectAll()">
+                            <span v-if="!allSelected">{{$t('Select All')}}</span>
+                            <span v-else>{{$t('Deselect All')}}</span>
+                        </el-button>
+
+
                     </el-form-item>
 
                     <el-button type="primary" icon="el-icon-success" @click="exportForms">
@@ -52,14 +58,15 @@
         name: "ExportForms",
         props: ['app'],
         components: {
-            Card, 
-            CardHead, 
-            CardBody 
+            Card,
+            CardHead,
+            CardBody
         },
         data() {
             return {
                 forms: this.app.forms,
                 selected: [],
+                allSelected :false,
             }
         },
         methods: {
@@ -73,6 +80,16 @@
                     };
 	                location.href = ajaxurl + '?' + jQuery.param(data);
                 }
+            },
+            selectAll(){
+                this.allSelected = !this.allSelected;
+
+                if (this.allSelected){
+                    this.selected = this.forms.map(form => form.id);;
+                }else{
+                    this.selected = [];
+                }
+
             }
         }
     }

@@ -1,0 +1,47 @@
+
+.payments_wrapper {
+  padding: 24px;
+}
+.payments_wrapper * {
+  box-sizing: border-box;
+}
+.payment_header {
+  .payment_title {
+    display: inline-block;
+    margin-right: 20px;
+    font-size: 23px;
+  }
+}
+
+.ff_brand {
+  display: inline-flex;
+  img{
+    height: 24px;
+    border-radius: 4px;
+  }
+}
+.ff_badge + .ff_brand{
+  margin-left: 8px;
+}
+
+tr.el-table__row td {
+  padding: 18px 0px;
+}
+
+.ff_form_group{
+  .el-select{
+    width: 100%;
+    display: block;
+  }
+}
+.ff_form_group_label{
+  display: block;
+  margin-bottom: 8px;
+  color: #1e1f21;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+
+

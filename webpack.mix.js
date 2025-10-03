@@ -1,6 +1,8 @@
 let mix = require('laravel-mix');
 const exec = require('child_process').exec;
 const path = require('path');
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 
 mix.setPublicPath('assets');
 mix.setResourceRoot('../');
@@ -8,7 +10,7 @@ mix.setResourceRoot('../');
 if (!mix.inProduction()) {
     mix.webpackConfig({
         devtool: 'source-map'
-    }).sourceMaps(false);
+    }).sourceMaps(true, 'source-map');
 } else {
     // During production build we'll remove the existing public
     // directory so that the source-maps are deleted as well.
@@ -21,7 +23,13 @@ mix.webpackConfig({
         alias: {
             '@': path.resolve('resources/assets')
         }
-    }
+    },
+    plugins: [
+        // new BundleAnalyzerPlugin({
+        //     analyzerMode: 'static',
+        //     openAnalyzer: mix.inProduction()
+        // })
+    ],
 });
 
 // mix.js('resources/assets/admin/editor_app.js', `public/js/fluent-forms-editor.js`);
@@ -35,10 +43,13 @@ mix
     .js('resources/assets/admin/form_settings_app.js', `assets/js/form_settings_app.js`)
     .js('resources/assets/admin/editor_app.js', `assets/js/fluent-forms-editor.js`)
     .js('resources/assets/admin/form_entries_app.js', `assets/js/form_entries.js`)
+    .js('resources/assets/admin/payment_entries.js', `assets/js/payment_entries.js`)
     .js('resources/assets/admin/all_forms_app.js', `assets/js/fluent-all-forms-admin.js`)
 
     .js('resources/assets/public/fluentform-advanced.js', `assets/js/fluentform-advanced.js`)
     .js('resources/assets/public/form-submission.js', `assets/js/form-submission.js`)
+    .js('resources/assets/public/payment_handler.js', `assets/js/payment_handler.js`)
+    .js('resources/assets/public/transactions_ui.js', `assets/js/fluentform_transactions_ui.js`)
     .js('resources/assets/public/form-save-progress.js', `assets/js/form-save-progress.js`)
     .js('resources/assets/admin/fluentform_editor_script.js', `assets/js/fluentform_editor_script.js`)
     .js('resources/assets/admin/copier.js', `assets/js/copier.js`)
@@ -47,6 +58,7 @@ mix
     .js('resources/assets/admin/documentation.js', `assets/js/docs.js`)
     .js('resources/assets/admin/form_preview_app.js', `assets/js/form_preview_app.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `assets/js/all_entries.js`)
+    .js('resources/assets/admin/Reports/reports.js', `assets/js/reports.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `assets/js/conversational_design.js`)
     .vue({
         version: 2,
@@ -61,13 +73,19 @@ mix
     .sass('resources/assets/admin/css/admin_notices.scss', `assets/css/admin_notices.css`)
     .sass('resources/assets/admin/css/admin_docs.scss', `assets/css/admin_docs.css`)
     .sass('resources/assets/admin/css/add-ons.scss', 'assets/css/add-ons.css')
+    .sass('resources/assets/admin/css/fluent-forms-reports.scss', 'assets/css/fluent-forms-reports.css')
     .sass('resources/assets/admin/css/fluent_gutenblock.scss', 'assets/css/fluent_gutenblock.css')
+    .sass('resources/assets/admin/css/payment_settings.scss', 'assets/css/payment_settings.css')
+    .sass('resources/assets/admin/css/payment_entries.scss', 'assets/css/payment_entries.css')
     .sass('resources/assets/public/scss/fluent-forms-public.scss', `assets/css/fluent-forms-public.css`)
     .sass('resources/assets/public/scss/fluentform-public-default.scss', `assets/css/fluentform-public-default.css`)
     .sass('resources/assets/preview/preview.scss', `assets/css/preview.css`)
     .sass('resources/assets/public/scss/choices.scss', `assets/css/choices.css`)
     .sass('resources/assets/elementor/fluent-forms-elementor-widget.scss', `assets/css/fluent-forms-elementor-widget.css`)
     .sass('resources/assets/admin/conversion_templates/design_css.scss', `assets/css/conversational_design.css`)
+    .sass('resources/assets/public/scss/skins/_payment.scss', 'assets/css/payment_skin.css')
+    .sass('resources/assets/public/scss/skins/_transactions.scss', 'assets/css/fluentform_transactions.css')
+    .sass('resources/assets/public/scss/frameless.scss', 'assets/css/frameless.css')
 
     .less('resources/assets/admin/styles/index.less', `assets/css/fluent-forms-admin.css`, {
         lessOptions: {
@@ -133,6 +151,13 @@ mix.then(() => {
     });
 
     exec('rtlcss assets/css/admin_docs.css ./assets/css/admin_docs_rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
+
+    exec('rtlcss assets/css/fluent-forms-reports.css ./assets/css/luent-forms-reports-rtl.css', (error) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return;

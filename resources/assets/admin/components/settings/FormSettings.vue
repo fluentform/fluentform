@@ -19,7 +19,7 @@
                                         @click="saveSettings"
                                         size="medium"
                                     >
-                                        {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                        {{ $t('%s Settings', loading ? 'Saving' : 'Save') }}
                                     </el-button>
                                 </btn-group-item>
                             </btn-group>
@@ -93,7 +93,7 @@
                                         :editor-shortcodes="editorShortcodes"
                                         v-model="double_optin.confirmation_message"/>
 
-                                    <p class="mt-1 fs-14">{{ $t('This message will be shown after the intial form submission') }}</p>
+                                    <p class="mt-1 fs-14">{{ $t('This message will be shown after the initial form submission') }}</p>
                                 </el-form-item>
 
                                 <el-form-item class="ff-form-item" :label="$t('Email Type')">
@@ -157,7 +157,8 @@
 
                                 <div v-if="hasFluentCRM" class="form_item">
                                     <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_fc_subscribed">
-                                        {{ $t('Disable Double Optin if contact email is subscribed in ')}}<b>FluentCRM</b>
+                                        <span v-html="$t('Disable Double Optin if contact email is subscribed in %s', '<b>FluentCRM</b>')">
+                                        </span>
                                     </el-checkbox>
                                 </div>
                             </template>
@@ -166,12 +167,110 @@
                     </card-body>
                 </card>
 
+              <!--Entry Frontend View-->
+              <card  id="front_end_view" v-if="front_end_entry_view">
+                <card-head>
+                  <h5 class="title">{{ $t('Front End Entry View') }}</h5>
+                </card-head>
+                <card-body>
+
+                  <el-form label-position="top">
+                    <el-row :gutter="24">
+                      <el-col>
+                        <el-checkbox true-label="yes" false-label="no"  v-model="front_end_entry_view.status">
+                          {{ $t('Enable Front End View of User Submission')}}
+                        </el-checkbox>
+                      </el-col>
+                      <el-col v-if="front_end_entry_view.status =='yes'">
+
+                        <el-row :gutter="24">
+
+                          <el-col :sm="24" :md="24">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('Content') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <wp-editor
+                                  :height="15"
+                                  :editor-shortcodes="editorShortcodes"
+                                  v-model="front_end_entry_view.content"/>
+                              </div>
+                            </div>
+                          </el-col>
+
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t("Enable Restriction") }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-checkbox true-label="yes" false-label="no"
+                                             v-model="front_end_entry_view.for_logged_in_user">
+                                  {{ $t("Only Submitter or Admin Can View") }}
+                                </el-checkbox>
+                                <p class="mt-1 fs-12 text-muted">
+                                    <span v-if="front_end_entry_view.for_logged_in_user === 'yes'">
+                                      {{ $t("Current: Only the logged in submitter or admin can view this submission") }}
+                                    </span>
+                                          <span v-else>
+                                      {{ $t("Current: Anyone with the link can view this submission") }}
+                                    </span>
+                                </p>
+                              </div>
+                            </div>
+                          </el-col>
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('Background Color') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-color-picker v-model="front_end_entry_view.bg_color"
+                                                 size="mini"></el-color-picker>
+                              </div>
+                            </div>
+                          </el-col>
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('SEO Settings') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-checkbox true-label="yes" false-label="no"
+                                             v-model="front_end_entry_view.no_index">
+                                  {{ $t('Add noindex meta tag') }}
+                                </el-checkbox>
+                                <p class="mt-1 fs-12 text-muted">
+                                  {{ $t('Prevents search engines from indexing') }}
+                                </p>
+                              </div>
+                            </div>
+                          </el-col>
+                        </el-row>
+
+                      </el-col>
+
+                    </el-row>
+                  </el-form>
+                </card-body>
+              </card>
+
                 <!--Admin approval settings-->
                 <card v-if="admin_approval" id="admin_approval">
                     <card-head>
                         <h5 class="title">{{ $t('Admin approval') }}</h5>
-                        <p class="text">
-                            {{ $t('Enable admin approval email notifications to inform the admin of pending submissions from') }} <a href="?page=fluent_forms_settings#admin_approval">{{ $t('Global Settings') }}</a>. {{$t('After approve form data & email notification will be processed.You can configure an email for users declined submissions.') }}</p>
+                        <p
+                            class="text"
+                            v-html="
+                                $t(
+                                    'Enable admin approval email notifications to inform the admin of pending submissions from %sGlobal Settings%s. After approve form data & email notification will be processed. You can configure an email for users declined submissions.',
+                                    `<a target='_blank' href='?page=fluent_forms_settings#admin_approval'>`,
+                                    '</a>'
+                                )
+                            "
+                        >
+                        </p>
                     </card-head>
                     <card-body>
 
@@ -436,11 +535,16 @@
                 <card id="advanced-form-validation">
                     <card-head>
                         <h5 class="title">{{ $t('Advanced Form Validation') }}</h5>
-                        <p class="text">
-                            {{$t('You can set rules to the user input and based on the rules you can prevent the form submission. This is very useful feature for preventing spam / bot submissions.')}}
-                            <a target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/advanced-form-validation-in-wp-fluent-forms-wordpress-plugin/">
-                                {{ $t('Learn More here')}}
-                            </a>
+                        <p
+                            class="text"
+                            v-html="
+                                $t(
+                                    'You can set rules to the user input and based on the rules you can prevent the form submission. This is very useful feature for preventing spam / bot submissions. %sLearn More%s',
+                                    `<a target='_blank' rel='noopener' href='https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/advanced-form-validation-in-wp-fluent-forms-wordpress-plugin/'>`,
+                                    '</a>'
+                                )
+                            "
+                        >
                         </p>
                     </card-head>
 
@@ -525,10 +629,18 @@
                                     <div class="el-form-item__content">
                                         <el-input-number :min="1" v-model="formSettings.auto_delete_days"/>
                                     </div>
-                                    <p class="mt-2 text-danger" v-if="formSettings.auto_delete_days">
-                                        {{ $t('Entries older than ') }}
-                                        <b>{{formSettings.auto_delete_days}} {{ $t(' days ') }}</b>
-                                        {{ $t('will be deleted automatically') }}
+                                    <p
+                                        class="mt-2 text-danger"
+                                        v-if="formSettings.auto_delete_days"
+                                        v-html="
+                                            $t(
+                                                'Entries older than %s%s days%s will be deleted automatically.',
+                                                '<b>',
+                                                formSettings.auto_delete_days,
+                                                '</b>'
+                                            )
+                                        "
+                                    >
                                     </p>
                                 </div>
                             </div>
@@ -626,6 +738,54 @@
                     </card-body>
                 </card>
 
+                <!-- per step save data for conversation form -->
+                <card v-if="is_conversion_form && hasConvFormSaveAndResume" id="conv_form_per_step_save">
+                    <card-head>
+                        <card-head-group>
+                            <h5 class="title">{{ $t('Conversational Form Per Step Save') }}</h5>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('If you enable this setting than this conversational form per step data will be saved') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary ml-1"></i>
+                            </el-tooltip>
+                        </card-head-group>
+                    </card-head>
+                    <card-body class="el-form--label-top">
+                        <div v-if="hasPro">
+                            <div class="el-form-item ff-form-item ff-form-item-flex">
+                                <label class="el-form-item__label" style="width: 390px;">
+                                    {{ $t('Enable per step save') }}
+                                </label>
+                                <div class="el-form-item__content">
+                                    <el-switch class="el-switch-lg" v-model="formSettings.conv_form_per_step_save" v-if="hasPro"/>
+                                </div>
+                            </div>
+                            <transition name="slide-down">
+                                <div v-if="formSettings.conv_form_per_step_save" class="el-form-item ff-form-item ff-form-item-flex">
+                                    <label class="el-form-item__label" style="width: 390px;">
+                                        {{ $t('Resume from last step') }}
+                                    </label>
+                                    <div class="el-form-item__content">
+                                        <el-switch class="el-switch-lg" v-model="formSettings.conv_form_resume_from_last_step" v-if="hasPro"/>
+                                    </div>
+                                </div>
+                            </transition>
+                        </div>
+                        <notice class="ff_alert_between" type="danger-soft" v-else>
+                            <div>
+                                <h6 class="title">{{$t('Conversation Form Per Step Save is available in the pro version')}}</h6>
+                                <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
+                            </div>
+                            <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+                                {{$t('Upgrade to Pro')}}
+                            </a>
+                        </notice>
+                    </card-body>
+                </card>
+
                 <div>
                     <el-button
                         :loading="loading"
@@ -633,7 +793,7 @@
                         icon="el-icon-success"
                         @click="saveSettings"
                     >
-                        {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                        {{ $t('%s Settings', loading ? 'Saving' : 'Save') }}
                     </el-button>
                 </div>
             </template>
@@ -657,6 +817,8 @@
     import Notice from '@/admin/components/Notice/Notice.vue';
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import TabItem from "@/admin/components/Tab/TabItem.vue";
+    import TabLink from "@/admin/components/Tab/TabLink.vue";
 
     export default {
         name: 'FormSettings',
@@ -737,6 +899,11 @@
                 double_optin: false,
                 affiliate_wp: false,
                 admin_approval : false,
+                is_conversion_form: !!window.FluentFormApp.is_conversion_form,
+                conv_form_per_step_save: false,
+                conv_form_resume_from_last_step: false,
+                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume,
+                front_end_entry_view: false
             }
         },
         computed: {
@@ -844,7 +1011,6 @@
                                     showCount: false
                                 }
                             }
-
                             this.formSettings = settings;
                         } else {
                             this.setDefaultSettings();
@@ -854,7 +1020,7 @@
                         this.double_optin = response.double_optin;
                         this.admin_approval = response.admin_approval;
                         this.affiliate_wp = response.affiliate_wp;
-
+                        this.front_end_entry_view = response?.front_end_entry_view
                     })
                     .catch(e => {
                         this.setDefaultSettings();
@@ -884,9 +1050,13 @@
                     double_optin: JSON.stringify(this.double_optin),
                     admin_approval: JSON.stringify(this.admin_approval),
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
+	                  front_end_entry_view: JSON.stringify(this.front_end_entry_view)
                 }
                 FluentFormsGlobal.$post(data)
                     .then(response => {
+                        if(this.front_end_entry_view?.status){
+                             this.$emit('refetch-all-editor-shortcodes');
+                        }
                         this.$success(response.message);
                     })
                     .catch(error => {

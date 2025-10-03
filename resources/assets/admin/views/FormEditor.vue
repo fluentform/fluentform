@@ -1,6 +1,6 @@
 <template>
     <div class="form-editor" id="form-editor">
-        <div class="form-editor-main">
+        <div class="form-editor-main"  >
             <div id="js-form-editor--body" class="form-editor--body"
              :style="{width: editorConfig.bodyWidth ? editorConfig.bodyWidth + 'px' : ''}">
                 <div class="form-editor__body-content">
@@ -56,6 +56,8 @@
                                     :wrapper="form.dropzone"
                                     :key="item.uniqElKey"
                                     :editItem="editItem"
+                                    :editorInserterInContainer="editorInserterInContainer"
+                                    :editorInserterInContainerRepeater="editorInserterInContainerRepeater"
                                     :index="index"
                                     :item="item">
                                     </list-conversion>
@@ -70,6 +72,9 @@
                                         :wrapper="form.dropzone"
                                         :key="item.uniqElKey"
                                         :editItem="editItem"
+                                        :editorInserterInContainer="editorInserterInContainer"
+                                        :editorInserterInContainerRepeater="editorInserterInContainerRepeater"
+                                        :fieldNotSupportInContainerRepeater="fieldNotSupportInContainerRepeater"
                                         :index="index"
                                         :item="item">
                                     </list>
@@ -103,7 +108,7 @@
                             >
                                 <div slot="title">
                                     <h5 class="mb-2">{{$t('How to create a form')}}</h5>
-                                    <p>Watch our fluentform's video to better understand.</p>
+                                    <p>{{ $t('Watch our Fluent Form\'s video to understand better.') }}</p>
                                 </div>
                                 <div v-if="introVisible" class="videoWrapper mt-4">
                                     <iframe class="w-100" height="530" style="border-radius: 10px;" src="https://www.youtube.com/embed/ebZUein_foM?autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -149,6 +154,12 @@
                         <li :class="fieldMode == 'edit' ? 'active' : ''">
                             <a href="#" @click.prevent="changeSidebarMode('edit')">{{ $t('Input Customization') }}</a>
                         </li>
+                        <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
+                            <a href="#" @click.prevent="changeSidebarMode('history')">{{ $t('History') }}</a>
+                        </li>
+                        <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
+
+                        </li>
                     </ul>
 
                     <div style="min-height: 420px;" class="panel-full-height nav-tab-items">
@@ -160,7 +171,7 @@
                                 <template v-if="fieldMode == 'add'">
                                     <div class="search-element-wrap">
                                         <searchElement
-                                        :placeholder="$t('Search name, address, mask input etc.')"
+                                        :placeholder="$t('Search (press \'/\' to focus)')"
                                         :isSidebarSearch.sync="isSidebarSearch"
                                         :moved="moved"
                                         :isDisabled="isDisabled"
@@ -275,8 +286,9 @@
                                                     class="option-fields-section--content">
                                                     <div v-for="(itemMockList, i) in itemMockListChunked" :key="i"
                                                         class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                        <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
+                                                        <div @keydown.enter.prevent="insertItemOnClick(itemMock,$event.target.querySelector('span'))"   class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
                                                             <vddl-draggable
+                                                                 tabindex="0"
                                                                 class="btn-element"
                                                                 :class="{ 'disabled': isDisabled(itemMock) }"
                                                                 :draggable="itemMock"
@@ -416,6 +428,13 @@
                                         </el-skeleton>
                                     </div>
                                 </template>
+
+                                <!-- =========================
+                                    History
+                                ============================== -->
+                                <template v-if="fieldMode == 'history' && Object.keys(editItem).length">
+                                    <FormHistory :form_saving="form_saving" :history="{}" />
+                                </template>
                             </template>
                         </el-skeleton>
                     </div>
@@ -433,15 +452,16 @@
             :dropzone="dropzone"
             :postMockList="postMockList"
             :taxonomyMockList="taxonomyMockList"
-            :generalMockList="generalMockList"
+            :generalMockList="filteredGeneralMockList"
             :paymentsMockList="paymentsMockList"
-            :advancedMockList="advancedMockList"
+            :advancedMockList="filteredAdvancedMockList"
             :visible.sync="editorInserterVisible"
             :containerMockList="containerMockList"
+            :isInserterInContainerRepeater="editorInserterInContainerRepeater"
+            :isInserterInContainer="editorInserterInContainer"
             :insertItemOnClick="insertItemOnClick"/>
 
         <RenameForm
-            v-if="form.title"
             :formTitle="form.title"
             @rename-success="formRenameSuccess"
             :visible.sync="renameFormVisibility"/>
@@ -449,19 +469,21 @@
 </template>
 
 <script type="text/babel">
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import List from '../components/nested-list.vue';
-import ListConversion from '../components/nested-list-conversion.vue';
-import recaptcha from '../components/modals/Recaptcha.vue';
-import hcaptcha from '../components/modals/Hcaptcha.vue';
-import searchElement from '../components/searchElement.vue';
-import EditorSidebar from '../components/EditorSidebar.vue';
-import RenameForm from '../components/modals/RenameForm.vue';
-import ItemDisabled from '../components/modals/ItemDisabled.vue';
-import submitButton from '../components/templates/submitButton.vue';
-import editorInserter from '../components/includes/editor-inserter.vue';
+    import {mapGetters, mapMutations} from 'vuex';
+    import List from '../components/nested-list.vue';
+    import ListConversion from '../components/nested-list-conversion.vue';
+    import recaptcha from '../components/modals/Recaptcha.vue';
+    import hcaptcha from '../components/modals/Hcaptcha.vue';
+    import searchElement from '../components/searchElement.vue';
+    import EditorSidebar from '../components/EditorSidebar.vue';
+    import RenameForm from '../components/modals/RenameForm.vue';
+    import ItemDisabled from '../components/modals/ItemDisabled.vue';
+    import submitButton from '../components/templates/submitButton.vue';
+    import editorInserter from '../components/includes/editor-inserter.vue';
+    import FormHistory from "@/admin/views/FormHistory";
+    import UndoRedo from "@/admin/views/Editor/UndoRedo.js";
 
-export default {
+    export default {
     name: 'FormEditor',
     props: [
         'form',
@@ -469,10 +491,9 @@ export default {
         'form_saving'
     ],
     components: {
+        FormHistory,
         List,
         ListConversion,
-        recaptcha,
-        hcaptcha,
         RenameForm,
         ItemDisabled,
         submitButton,
@@ -505,11 +526,33 @@ export default {
             },
             renameFormVisibility: false,
             editorInserterInContainer: false,
+            editorInserterInContainerRepeater: false,
+	        fieldNotSupportInContainerRepeater: false,
             instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
             has_payment_features: FluentFormApp.has_payment_features,
-            introVisible: false
+            introVisible: false,
+            isCommandKeyPressed : false,
+            undoRedoManager: null,
+            canUndo: false,
+            canRedo: false,
+            isPerformingUndoRedo: false,
+            containerSupportedFields : [
+                { key: 'input_text', label: 'Text Field' },
+                { key: 'input_email', label: 'Email Field' },
+                { key: 'select', label: 'Select Field', condition: field => !field.attributes.multiple }, // Only allow non-multiple select
+                { key: 'input_mask', label: 'Mask Field' },
+                { key: 'custom_html', label: 'Custom HTML' },
+                { key: 'textarea', label: 'Text Area' },
+                { key: 'input_number', label: 'Number' },
+                { key: 'input_url', label: 'Url' },
+                { key: 'select_country', label: 'Country' },
+                { key: 'section_break', label: 'Section' },
+                { key: 'input_password', label: 'Password' },
+            ]
+
         }
     },
+
     computed: {
         ...mapGetters({
             fieldMode: 'fieldMode',
@@ -523,6 +566,40 @@ export default {
             containerMockList: 'containerMockList',
             isMockLoaded: 'isMockLoaded',
         }),
+
+	    filteredGeneralMockList() {
+		    if (this.editorInserterInContainerRepeater) {
+			    return this.generalMockList.filter(item => {
+				    const supportedField = this.containerSupportedFields.find(field => field.key === item.element);
+
+				    if (!supportedField) return false;
+
+				    if (supportedField.condition && typeof supportedField.condition === 'function') {
+					    return supportedField.condition(item);
+				    }
+
+				    return true;
+			    });
+		    }
+		    return this.generalMockList;
+	    },
+
+	    filteredAdvancedMockList() {
+		    if (this.editorInserterInContainerRepeater) {
+			    return this.advancedMockList.filter(item => {
+				    const supportedField = this.containerSupportedFields.find(field => field.key === item.element);
+
+				    if (!supportedField) return false;
+
+				    if (supportedField.condition && typeof supportedField.condition === 'function') {
+					    return supportedField.condition(item);
+				    }
+
+				    return true;
+			    });
+		    }
+		    return this.advancedMockList;
+	    },
 
         /**
          * Make chunks of item draggable
@@ -637,17 +714,33 @@ export default {
         },
         isAutoloadCaptchaEnabled() {
             return !!window.FluentFormApp.is_autoload_captcha;
-        }
+        },
     },
     watch: {
+        form: {
+            handler(newValue) {
+                // Create a clean copy without Vue reactivity
+                const cleanCopy = JSON.parse(JSON.stringify(newValue));
+
+                // Only push changes if manager exists and not currently performing undo/redo
+                if (this.undoRedoManager && !this.isPerformingUndoRedo) {
+                    this.undoRedoManager.pushChange(cleanCopy);
+                }
+            },
+            deep: true
+        },
         form_saving() {
             const saveBtn = jQuery('#saveFormData');
+
             if (this.form_saving) {
+                FluentFormEditorEvents.$emit('editor-form-saving',this.form);
+
                 this.clearEditableObject(); // Empty {editItem} after form saved
                 saveBtn.html('<i class="el-icon-loading mr-1"></i> Save Form');
             } else {
-                saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form');
+                saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>');
             }
+            this.undoRedoManager.clear();
         },
 
         formStepsCount() {
@@ -670,7 +763,8 @@ export default {
                 this.$delete(this.form.stepsWrapper, 'stepStart');
                 this.$delete(this.form.stepsWrapper, 'stepEnd');
             }
-        }
+        },
+
     },
     methods: {
         ...mapMutations({
@@ -678,6 +772,51 @@ export default {
             updateSidebar: 'updateSidebar'
         }),
 
+        undo() {
+            if (this.undoRedoManager?.canUndo()) {
+                this.undoRedoManager.undo();
+            }
+        },
+
+        redo() {
+            if (this.undoRedoManager?.canRedo()) {
+                this.undoRedoManager.redo();
+            }
+        },
+
+        initUndoRedo() {
+            this.undoRedoManager = new UndoRedo();
+
+            this.undoRedoManager.on('undo', ({ state }) => {
+                this.handleUndoRedoStateChange(state);
+            });
+
+            this.undoRedoManager.on('redo', ({ state }) => {
+                this.handleUndoRedoStateChange(state);
+            });
+
+            this.undoRedoManager.on('update', ({ canUndo, canRedo }) => {
+                this.canUndo = canUndo;
+                this.canRedo = canRedo;
+                jQuery(document).trigger('updateUndoState');
+            });
+        },
+
+        handleUndoRedoStateChange(newState) {
+			// Sync input customization sidebar
+	        if (Object.keys(this.editItem).length) {
+		        let editItem = newState?.dropzone.find(item => item.attributes.name === this.editItem.attributes.name);
+		        if (editItem) {
+			        this.editItem = editItem
+		        }
+	        }
+            this.isPerformingUndoRedo = true;
+            this.$emit('update:form', newState);
+
+            setTimeout(() => {
+                this.isPerformingUndoRedo = false;
+            }, 400);
+        },
         moved(o) {
             // vddl has issue with this method.
             // we can remove this method once fixed.
@@ -721,13 +860,59 @@ export default {
         handleDrop({index, list, item, type}) {
             if (type != 'existingElement') {
                 this.makeUniqueNameAttr(this.form.dropzone, item);
+
+	            // Make save & resume button right align by default for conversation form
+	            if (this.is_conversion_form && 'save_progress_button' === item.element) {
+		            item.settings.align = 'right';
+	            }
             }
-            if (item.element == 'container' && this.form.dropzone != list) {
+
+	        let $containerElement = jQuery(event.target).closest('.item-container');
+	        if ($containerElement.length) {
+		        this.editorInserterInContainer = true;
+	        }
+
+            if ((item.element == 'repeater_container' || item.element == 'container') && this.form.dropzone != list) {
                 this.$message({
                     message: this.$t('You can not insert a container into another.'),
                     type: 'warning',
                 });
                 return false;
+            }
+
+            let $repeaterContainerElement = jQuery(event.target).closest('.repeater-item-container');
+            if ($repeaterContainerElement.length) {
+                // Check if it's a multi-select
+                if (item.element === 'select' && item.attributes && item.attributes.multiple) {
+                    this.$message({
+                        message: this.$t('Multi-select fields are not supported in container repeaters.'),
+                        type: 'warning',
+                    });
+                    return false;
+                }
+
+                const isSupportedField = this.containerSupportedFields.some(field => {
+                    if (field.key === item.element) {
+                        if (field.condition && typeof field.condition === 'function') {
+                            return field.condition(item);
+                        }
+                        return true;
+                    }
+                    return false;
+                });
+
+                if (!isSupportedField && this.form.dropzone != list) {
+                    this.fieldNotSupportInContainerRepeater = true;
+                    const supportedFieldsList = this.containerSupportedFields
+                        .filter(field => !field.condition)
+                        .map(field => field.label)
+                        .join(', ');
+                    this.$message({
+                        message: this.$t(`This field is not supported in the container. Supported fields are: ${supportedFieldsList}`),
+                        type: 'warning',
+                    });
+                    return false;
+                }
             }
 
             const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
@@ -739,7 +924,7 @@ export default {
                 return false;
             }
 
-            let isCaptchaExists = this.isCaptchaExists(captchas, item.element);
+            let isCaptchaExists = type != 'existingElement' && this.isCaptchaExists(captchas, item.element);
 
             if (isCaptchaExists) {
                 return;
@@ -769,13 +954,47 @@ export default {
                 return this.showWhyDisabled(item);
             }
 
-            if (this.editorInserterInContainer && freshCopy.element == 'container') {
+            if (this.editorInserterInContainer && (freshCopy.element === 'container' || freshCopy.element === 'repeater_container')) {
                 this.$message({
                     message: this.$t('You can not insert a container into another.'),
                     type: 'warning',
                 });
 
                 return;
+            }
+
+            // Check if it's a multi-select being added to a repeater container
+            if (this.editorInserterInContainerRepeater &&
+                freshCopy.element === 'select' &&
+                freshCopy.attributes &&
+                freshCopy.attributes.multiple) {
+                this.$message({
+                    message: this.$t('Multi-select fields are not supported in container repeaters.'),
+                    type: 'warning',
+                });
+                return;
+            }
+
+            const isSupportedField = this.containerSupportedFields.some(field => {
+                if (field.key === item.element) {
+                    if (field.condition && typeof field.condition === 'function') {
+                        return field.condition(item);
+                    }
+                    return true;
+                }
+                return false;
+            });
+
+            if (this.editorInserterInContainerRepeater && !isSupportedField) {
+                const supportedFieldsList = this.containerSupportedFields
+                    .filter(field => !field.condition)
+                    .map(field => field.label)
+                    .join(', ');
+                this.$message({
+                    message: this.$t(`This field is not supported in the container repeater. Supported fields are: ${supportedFieldsList}`),
+                    type: 'warning',
+                });
+                return false;
             }
 
             const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
@@ -795,6 +1014,11 @@ export default {
             }
 
             this.makeUniqueNameAttr(this.form.dropzone, freshCopy);
+
+			// Make save & resume button right align by default for conversation form
+			if (this.is_conversion_form && 'save_progress_button' === freshCopy.element) {
+				freshCopy.settings.align = 'right';
+			}
 
             if (this.insertNext.index != null) {
                 this.insertNext.wrapper.splice(this.insertNext.index + 1, 0, freshCopy);
@@ -930,8 +1154,8 @@ export default {
             const self = this;
             var saveButton = jQuery('<button />', {
                 id: 'saveFormData',
-                class: 'el-button el-button--primary',
-                html: '<i class="el-icon-success mr-1"></i> Save Form'
+                class: 'el-button el-button--primary ff-keyboard-shortcut-tooltip',
+                html: '<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>'
             });
             saveButton.on('click', function () {
                 const $this = jQuery(this);
@@ -972,6 +1196,42 @@ export default {
 
             jQuery('.ff-navigation-right').append(screenButton);
         },
+        initUndoRedoBttn(){
+            const self = this;
+
+            let buttonContainer = jQuery('<div />', {
+                class: 'ff-undo-redo-container' // Custom container class
+            });
+
+            let undoButton = jQuery('<button />', {
+                type: 'button',
+                class: 'ff-undo-button ff-keyboard-shortcut-tooltip', // Custom undo button class
+                'aria-label': 'Undo',
+	            html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M18.3 11.7c-.6-.6-1.4-.9-2.3-.9H6.7l2.9-3.3-1.1-1-4.5 5L8.5 16l1-1-2.7-2.7H16c.5 0 .9.2 1.3.5 1 1 1 3.4 1 4.5v.3h1.5v-.2c0-1.5 0-4.3-1.5-5.7z"></path></svg> <span class="ff-tooltip">Undo ⌘Z</span>`
+            }).on('click', function(e) {
+                e.preventDefault();
+                if (self.canUndo) {
+                    self.undo();
+                }
+            });
+
+            let redoButton = jQuery('<button />', {
+                type: 'button',
+                class: 'ff-redo-button ff-keyboard-shortcut-tooltip',
+                'aria-label': 'Redo',
+	            html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15.6 6.5l-1.1 1 2.9 3.3H8c-.9 0-1.7.3-2.3.9-1.4 1.5-1.4 4.2-1.4 5.6v.2h1.5v-.3c0-1.1 0-3.5 1-4.5.3-.3.7-.5 1.3-.5h9.2L14.5 15l1.1 1.1 4.6-4.6-4.6-5z"></path></svg><span class="ff-tooltip">Redo ⇧⌘Z</span>`
+            }).on('click', function(e) {
+                e.preventDefault();
+                if (self.canRedo) {
+                    self.redo();
+                }
+            });
+
+            buttonContainer.append(undoButton, redoButton);
+
+            jQuery('.ff_menu_back').after(buttonContainer);
+        },
+
 
         /**
          * Hide editor inserter popup
@@ -982,6 +1242,7 @@ export default {
             this.insertNext.wrapper = null;
             this.editorInserterVisible = false;
             this.editorInserterInContainer = false;
+            this.editorInserterInContainerRepeater = false;
             jQuery('.js-editor-item').removeClass('is-editor-inserter');
         },
 
@@ -1028,6 +1289,43 @@ export default {
             });
 
             return isCaptchaExists;
+        },
+        initKeyboardSave(e) {
+            if ((window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                this.save_form();
+            }
+        },
+        initKeyboardUndoRedo(e) {
+            const isMac = window.navigator.platform.match('Mac');
+            const modifierKey = isMac ? e.metaKey : e.ctrlKey;
+
+            if (modifierKey && e.key === 'z') {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    this.redo();
+                } else {
+                    this.undo();
+                }
+            }
+        },
+
+        initKeyboardDelete(e) {
+			if (this.editorInserterVisible || this.fieldMode !== 'edit') {
+				return;
+			}
+
+            // only trigger delete if no input is focused
+            const activeElement = document.activeElement;
+            if (activeElement && activeElement.tagName !== 'BODY') {
+                return;
+            }
+
+            const isDelete = e.key === 'Backspace' || e.key === 'Delete';
+            if (isDelete && Object.keys(this.editItem).length > 0) {
+                e.preventDefault();
+                FluentFormEditorEvents.$emit('keyboard-delete-selected-item', this.editItem);
+            }
         }
     },
 
@@ -1055,38 +1353,62 @@ export default {
          * Event listener
          * If the editor inserter popup is triggered from a container element
          */
-        FluentFormEditorEvents.$on('editor-inserter-in-container', _ => {
-            this.editorInserterInContainer = true;
+        FluentFormEditorEvents.$on('editor-inserter-in-container', newVal => {
+            this.editorInserterInContainer = newVal;
+        });
+        FluentFormEditorEvents.$on('editor-inserter-in-container-repeater', newVal => {
+            this.editorInserterInContainerRepeater = newVal;
+        });
+
+		FluentFormEditorEvents.$on('not-supported-in-container-repeater', newValue => {
+            this.fieldNotSupportInContainerRepeater = newValue;
         });
     },
 
     mounted() {
         this.fetchSettings();
-
         this.garbageCleaner();
         this.initSaveBtn();
         this.initRenameForm();
+        this.initUndoRedo();
+        this.initUndoRedoBttn();
+
+
+        jQuery(document).on('updateUndoState', () => {
+            jQuery('.ff-undo-button').toggleClass('active', this.canUndo);
+            jQuery('.ff-redo-button').toggleClass('active', this.canRedo);
+        });
 
         /**
          * Dismiss editor inserter popup when clicked outside
          */
         jQuery(document).on('click', this.editorInserterDismiss);
 
-        /**
-         * Copy to clip board
-         * @type {Clipboard}
-         */
         (new ClipboardJS('.copy')).on('success', (e) => {
             this.$copy();
         });
-
+        /*
+        * Maybe Autoload Captcha
+         */
         if (this.isAutoloadCaptchaEnabled) {
             const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
             setTimeout(() => {
                 this.form.dropzone = this.form.dropzone.filter(el => !captchas.includes(el.element));
             }, 100);
         }
+        document.addEventListener('keydown', this.initKeyboardSave);
+        document.addEventListener('keydown', this.initKeyboardUndoRedo);
+        document.addEventListener('keydown', this.initKeyboardDelete);
+    },
+    beforeDestroy() {
+        document.removeEventListener('keydown', this.initKeyboardSave);
+        document.removeEventListener('keydown', this.initKeyboardUndoRedo);
+        document.removeEventListener('keydown', this.initKeyboardDelete);
+        if (this.undoRedoManager) {
+            this.undoRedoManager.off('undo');
+            this.undoRedoManager.off('redo');
+            this.undoRedoManager.off('update');
+        }
     }
 };
 </script>
-

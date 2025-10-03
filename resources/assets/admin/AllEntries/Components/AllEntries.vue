@@ -2,7 +2,7 @@
     <div class="ff_entries_wrapper">
         <section-head class="ff_section_head_between mb-0">
             <section-head-content>
-                <h1 class="ff_section_title">{{$t('Entries from All Forms')}}</h1>
+                <h1 class="ff_section_title">{{selectedFormName ? $t('Entries from ' + selectedFormName) : $t('Entries from All Forms')}}</h1>
             </section-head-content>
             <section-head-content>
                 <btn-group as="div">
@@ -66,9 +66,9 @@
                     <el-col :span="24">
                         <div class="lead-title mb-3">Form</div>
                     </el-col>
-                    <el-col :span="17">
+                    <el-col :xs="24" :span="17">
                         <el-row :gutter="18">
-                            <el-col :span="8">
+                            <el-col :xs="24" :span="8">
                                 <div class="ff_entries_select">
                                     <el-select
                                         class="ff_filter_form_select ff-input-s1 w-100"
@@ -87,7 +87,7 @@
                                     </el-select>
                                 </div>
                             </el-col>
-                            <el-col :span="13">
+                            <el-col :xs="24" :span="13">
                                 <div class="ff_radio_group_wrap">
                                     <el-radio-group class="ff_radio_group_s2" @change="fetchEntries('reset')" v-model="entry_status">
                                         <el-radio-button label="">{{ $t('All') }}</el-radio-button>
@@ -98,7 +98,7 @@
                             </el-col>
                         </el-row>
                     </el-col>
-                    <el-col :span="7">
+                    <el-col :xs="24" :span="7">
                         <div class="ff_entries_search_wrap">
                             <el-input
                                 @keyup.enter.native="fetchEntries()"
@@ -125,7 +125,7 @@
                                     </a>
                                 </template>
                             </el-table-column>
-                            <el-table-column :label="$t('Form')" sortable prop="form.title" width="400"></el-table-column>
+                            <el-table-column :label="$t('Form')" sortable prop="form.title" ></el-table-column>
                             <el-table-column width="150" prop="status" sortable :label="$t('Status')">
                                 <template slot-scope="scope">
                                     <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
@@ -134,9 +134,16 @@
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
-                            <el-table-column width="150" :label="$t('Time')">
+                            <el-table-column :width="dateColWidth" :label="$t('Time')">
                                 <template slot-scope="scope">
-                                    {{scope.row.human_date}} {{$t('ago')}}
+
+                                    <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            {{tooltipDateTime(scope.row.created_at)}}
+                                        </div>
+
+                                        <span>{{humanDiffTime(scope.row.created_at)}}</span>
+                                    </el-tooltip>
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Action')">
@@ -160,7 +167,7 @@
                         :current-page.sync="paginate.current_page"
                         :page-sizes="[5, 10, 20, 50, 100]"
                         :page-size="parseInt(paginate.per_page)"
-                        layout="total, sizes, prev, pager, next"
+                        layout="total, sizes, prev, pager, next, jumper"
                         :total="paginate.total"
                     ></el-pagination>
                 </div>
@@ -177,7 +184,6 @@ import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
 import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
 import {scrollTop} from '@/admin/helpers';
 import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
-
 export default {
     name: 'AllEntries',
     components: {
@@ -246,7 +252,7 @@ export default {
             chart_status: 'yes',
             entry_status: '',
             search: '',
-            radioOption: 'all',
+            radioOption: localStorage.getItem('ff_entries_date_filter') || 'all',
             showImportEntriesModal: false,
             app: window.fluent_forms_global_var
         }
@@ -329,47 +335,57 @@ export default {
         },
         resetAdvancedFilter() {
             this.radioOption = "";
-			this.filter_date_range = null;
+			this.filter_date_range = 'all';
             this.fetchEntries();
         }
     },
     computed: {
 	    hasEnabledDateFilter() {
-			return !!(this.radioOption && this.radioOption != 'all' ||
+			return !!(this.radioOption ||
 				(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
             );
-        }
+        },
+	    dateColWidth() {
+			return window.fluent_forms_global_var.disable_time_diff ? '195' : '150';
+		},
+	    selectedFormName() {
+			return this.available_forms?.find(f => f.id === this.selectedFormId)?.title || '';
+	    }
     },
     watch: {
-        radioOption() {
-            const start = new Date();
-            const end = new Date();
-            let number = 1;
-            switch (this.radioOption) {
-                case 'today' :
-					number = 0;
-					break;
-                case 'yesterday':
-                    end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
-                    break;
-                case 'last-week':
-                    number = 7;
-                    break;
-                case 'last-month':
-                    number = 30;
-                    break;
-                case 'all':
-                    this.filter_date_range = null;
-                    this.fetchEntries();
-                    return;
-                default:
-                    return;
-            }
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
-            const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();
-            const endDate = end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
-            this.filter_date_range = [startDate, endDate];
-            this.fetchEntries();
+        radioOption: {
+	        handler() {
+		        const start = new Date();
+		        const end = new Date();
+		        let number = 1;
+		        localStorage.setItem('ff_entries_date_filter', this.radioOption);
+		        switch (this.radioOption) {
+			        case 'today' :
+				        number = 0;
+				        break;
+			        case 'yesterday':
+				        end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
+				        break;
+			        case 'last-week':
+				        number = 7;
+				        break;
+			        case 'last-month':
+				        number = 30;
+				        break;
+			        case 'all':
+				        this.filter_date_range = 'all';
+				        this.fetchEntries();
+				        return;
+			        default:
+				        return;
+		        }
+		        start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
+		        const startDate = start.getFullYear() + '/' + (start.getMonth() + 1) + '/' + start.getDate();
+		        const endDate = end.getFullYear() + '/' + (end.getMonth() + 1) + '/' + end.getDate();
+		        this.filter_date_range = [startDate, endDate];
+		        this.fetchEntries();
+	        },
+	        immediate: true
         }
     },
     filters: {
@@ -384,6 +400,7 @@ export default {
         if (status) {
             this.chart_status = status;
         }
+        localStorage.removeItem('entriesCurrentPage');
         this.fetchEntries();
     }
 };

@@ -89,17 +89,24 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
             $input = strtolower(sanitize_text_field($input));
         } elseif ('input_url' === $element) {
             $input = sanitize_url($input);
+        } elseif ('input_password' === $element) {
+            $input = trim($input);
         } else {
             $input = sanitize_text_field($input);
         }
     } elseif (is_array($input)) {
+        $sanitizedInput = [];
+        
         foreach ($input as $key => &$value) {
+            $key = fluentFormSanitizer($key);
             $attribute = $attribute ? $attribute . '[' . $key . ']' : $key;
 
             $value = fluentFormSanitizer($value, $attribute, $fields);
-
             $attribute = null;
+            $sanitizedInput[$key] = $value;
         }
+        
+        $input = $sanitizedInput;
     }
 
     return $input;
@@ -339,16 +346,18 @@ function fluentform_iframe_srcdoc_sanitize($value)
     return wp_kses($value, $tags);
 }
 
+
 function fluentform_sanitize_html($html)
 {
     if (!$html) {
         return $html;
     }
 
-    // Return $html if it's just a plain text
-    if (!preg_match('/<[^>]*>/', $html)) {
-        return $html;
-    }
+    // Remove event handlers (e.g., onerror, onclick, onmouseover)
+    $html = preg_replace('/\s+on[a-z]+\s*=\s*([\'"])[^\'"]*\1/i', '', $html);
+
+    // Remove JavaScript protocol (e.g., `href="javascript:alert(1)"`)
+    $html = preg_replace('/\bjavascript\s*:/i', '', $html);
 
     $tags = wp_kses_allowed_html('post');
     $tags['style'] = [
@@ -370,6 +379,7 @@ function fluentform_sanitize_html($html)
         'allowfullscreen' => [],
         'style'           => [],
     ];
+    
     //button
     $tags['button']['onclick'] = [];
 

@@ -37,7 +37,7 @@
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t('For post update only one feed is avaiable, if you have more than one feed the first one will work.') }}
+                                            {{ $t('For post update only one feed is available, if you have more than one feed the first one will work.') }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -51,11 +51,18 @@
 
                         <el-form-item class="ff-form-item">
                             <template slot="label">
-                                {{ $t('Allow Guest') }}
+                                {{ $t('Allow Logged out user to create posts') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
-                                        <p>
-                                            {{ $t(`Permission guest user to ${isUpdate? 'update' : 'create'} post. If allowed post can be ${isUpdate? 'updatable' : 'creatable'} from logout session.`)}}
+                                        <p
+                                            v-html="
+                                                $t(
+                                                    'Allow guest user to %s post. If allowed post can be %s with out login in.',
+                                                    isUpdate ? 'update' : 'create',
+                                                    isUpdate? 'updatable' : 'creatable'
+                                                )
+                                            "
+                                        >
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -224,6 +231,22 @@
                                 <hr class="mt-4 mb-4">
                         </template>
 
+	                    <template v-if="post_settings.has_jetengine">
+                            <post-meta-plugin-mapping
+                                :general_settings="feed.value.jetengine_mappings"
+                                :advanced_settings="feed.value.advanced_jetengine_mappings"
+                                :labels="{
+                                section_title: $t('Jetengine Meta Mapping'),
+                                remote_label: $t('Jetengine Field'),
+                                local_label: $t('Form Field (Value)')
+                            }"
+                                :general_fields="post_settings.jetengine_fields"
+                                :advanced_fields="post_settings.jetengine_fields_advanced"
+                                :form_fields="form_fields"
+                                :editorShortcodes="editorShortcodes" />
+                                <hr class="mt-4 mb-4">
+                        </template>
+
                         <template v-if="post_settings.has_metabox">
                             <post-meta-plugin-mapping
                                 :general_settings="feed.value.metabox_mappings"
@@ -243,6 +266,11 @@
                         <filter-fields :fields="form_fields"
                             :conditionals="feed.value.conditionals"
                             :hasPro="hasPro"
+                            :labels="{
+                                status_label: 'Enable conditional logic',
+                                notification_if_start: 'Run this integration if',
+                                notification_if_end: 'of the following match:'
+                            }"
                         />
 
                         <div class="mt-4">
@@ -251,7 +279,7 @@
                                 @click="saveFeed"
                                 icon="el-icon-success"
                             >
-                                {{ saving ? $t('Saving') : 'Save' }} {{'Feed'}}
+                                {{ $t('%s Feed', saving ? 'Saving' : 'Save') }}
                             </el-button>
                         </div>
                     </el-form>
