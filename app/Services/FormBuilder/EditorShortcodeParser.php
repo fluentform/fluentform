@@ -129,6 +129,10 @@ class EditorShortcodeParser
                     return fluentform_sanitize_html('<div class="ff_dynamic_value ff_dynamic_payment_summary" data-ref="payment_summary"><div class="ff_payment_summary"></div><div class="ff_payment_summary_fallback">' . $fallBack . '</div></div>');
                 }
 
+                if ($ref === 'payment_total') {
+                    return '{' . $handler . '}';
+                }
+                
                 return fluentform_sanitize_html('<span class="ff_dynamic_value" data-ref="' . $ref . '" data-fallback="' . $fallBack . '">' . $fallBack . '</span>');
             }
 
