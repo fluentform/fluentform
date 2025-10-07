@@ -899,7 +899,6 @@ if (!window.fluentFormVars?.pro_payment_script_compatible) {
 
         $(document).on('ff_reinit', function (e, formItem) {
             var $form = $(formItem);
-            $form.attr('data-ff_reinit', 'yes');
             const instance = fluentFormApp($form);
             if (!instance) {
                 return false;
