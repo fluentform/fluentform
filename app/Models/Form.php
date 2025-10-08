@@ -143,7 +143,7 @@ class Form extends Model
                 ],
                 'requireLogin' => [
                     'enabled'         => false,
-                    'requireLoginMsg' => __('You must be logged in to submit the form.', 'flunetform'),
+                    'requireLoginMsg' => __('You must be logged in to submit the form.', 'fluentform'),
                 ],
                 'denyEmptySubmission' => [
                     'enabled' => false,

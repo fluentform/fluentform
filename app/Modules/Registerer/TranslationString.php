@@ -1438,10 +1438,10 @@ class TranslationString
     public static function getPreviewI18n()
     {
         $i18n = [
-            'Form Style Template'  => __('Form Style Template', 'fluenform'),
-            'Save Settings'        => __('Save Settings', 'fluenform'),
-            'Select Preset Styles' => __('Select Preset Styles', 'fluenform'),
-            'Success'              => __('Success', 'fluenform'),
+            'Form Style Template'  => __('Form Style Template', 'fluentform'),
+            'Save Settings'        => __('Save Settings', 'fluentform'),
+            'Select Preset Styles' => __('Select Preset Styles', 'fluentform'),
+            'Success'              => __('Success', 'fluentform'),
         ];
         return apply_filters('fluentform/preview_i18n', $i18n);
     }
