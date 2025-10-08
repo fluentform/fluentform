@@ -4,7 +4,7 @@
  */
 import FluentSeparator from './components/controls/FluentSeparator';
 const { __ } = wp.i18n;
-const { InspectorControls } = wp.blockEditor;
+const { InspectorControls, useBlockProps } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
 const { apiFetch } = wp;
 const {
@@ -13,7 +13,7 @@ const {
     Button,
     Spinner
 } = wp.components;
-const { Component, React } = wp.element;
+const { Component, React, useState, useEffect } = wp.element;
 
 // Import components
 import Tabs from './components/tabs/Tabs';
@@ -31,7 +31,7 @@ const getFormMeta = async (formId, metaKey) => {
     return (response.length && response[0].value) || false;
 };
 
-class Edit extends Component {
+class EditComponent extends Component {
     constructor() {
         super(...arguments);
         this.state = {
@@ -411,6 +411,19 @@ class Edit extends Component {
             </div>
         );
     }
+}
+
+// Functional wrapper component that uses useBlockProps for API Version 3
+function Edit(props) {
+    const blockProps = useBlockProps({
+        className: 'fluentform-guten-wrapper'
+    });
+
+    return (
+        <div {...blockProps}>
+            <EditComponent {...props} />
+        </div>
+    );
 }
 
 export default Edit;

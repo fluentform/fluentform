@@ -4,6 +4,7 @@ namespace FluentForm\App\Services\Blocks;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Support\Arr;
+use FluentFormPro\classes\FormStyler;
 
 /**
  * GutenbergBlock class for handling Fluent Forms Gutenberg block functionality
@@ -23,8 +24,24 @@ class GutenbergBlock
 
         register_block_type('fluentfom/guten-block', [
             'render_callback' => [self::class, 'render'],
-            'attributes'      => BlockAttributes::getAttributes()
+            'attributes'      => BlockAttributes::getAttributes(),
+            'api_version'     => 3
         ]);
+    }
+
+    /**
+     * Get available preset styles for the block
+     *
+     * @return array Available preset styles
+     */
+    public static function getPresetStyles()
+    {
+        if (!class_exists('FluentFormPro\classes\FormStyler')) {
+            return [];
+        }
+
+        $formStyler = new FormStyler();
+        return $formStyler->getBlockPresets();
     }
 
     /**
@@ -63,10 +80,42 @@ class GutenbergBlock
         }
 
         $themeStyle = sanitize_text_field(Arr::get($atts, 'themeStyle', ''));
+        $selectedPreset = sanitize_text_field(Arr::get($atts, 'selectedPreset', ''));
+        $customizePreset = Arr::get($atts, 'customizePreset', false);
+        $presetStyles = Arr::get($atts, 'presetStyles', []);
         $type = Helper::isConversionForm($formId) ? 'conversational' : '';
 
-        // Generate custom CSS using the StyleProcessor
-        $customCSS = StyleProcessor::generateBlockStyles($atts, $formId);
+        // Handle preset styles
+        if (!empty($selectedPreset) && !$customizePreset) {
+            $themeStyle = $selectedPreset;
+        } elseif (!empty($presetStyles) && $customizePreset) {
+            $themeStyle = 'ffs_custom';
+        }
+
+        // Generate CSS - order matters for specificity
+        $customCSS = '';
+        
+        // First, add preset styles as base styles (lower specificity)
+        if (!empty($selectedPreset) && !$customizePreset) {
+            $presetCSS = StyleProcessor::processPresetStyles($atts, $formId);
+            if ($presetCSS) {
+                $customCSS .= $presetCSS;
+            }
+        }
+        
+        // Then, add individual custom styles (higher specificity, overrides presets)
+        $individualCSS = StyleProcessor::generateBlockStyles($atts, $formId);
+        if ($individualCSS) {
+            $customCSS .= $individualCSS;
+        }
+        
+        // If customizing a preset, add the customized preset styles
+        if (!empty($presetStyles) && $customizePreset) {
+            $presetCSS = StyleProcessor::processPresetStyles($atts, $formId);
+            if ($presetCSS) {
+                $customCSS .= $presetCSS;
+            }
+        }
 
         // Custom CSS for block styling
         $inlineStyle = '';
@@ -83,8 +132,6 @@ class GutenbergBlock
             $customCSS .= StyleProcessor::processSpacing($buttonMargin, $buttonSelectorsStr, 'margin');
         }
 
-        // Button box shadow and hover are now handled in StyleProcessor
-
         // Process label typography
         $labelTypo = Arr::get($atts, 'labelTypography', []);
 
@@ -98,11 +145,6 @@ class GutenbergBlock
         if (!empty($inputTypo)) {
             $customCSS .= StyleProcessor::processTypography($inputTypo, $inputBGSelectorsStr);
         }
-
-        // Process placeholder styles - now handled in StyleProcessor
-
-
-        // Process placeholder typography - now handled in StyleProcessor
 
         // Process input spacing
         $inputSpacing = Arr::get($atts, 'inputSpacing', []);

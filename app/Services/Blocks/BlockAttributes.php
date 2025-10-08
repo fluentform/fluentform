@@ -48,6 +48,18 @@ class BlockAttributes
                 'type' => 'string',
                 'default' => '',
             ],
+            'selectedPreset' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'customizePreset' => [
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            'presetStyles' => [
+                'type' => 'object',
+                'default' => [],
+            ],
             'isConversationalForm' => [
                 'type' => 'boolean',
                 'default' => false,
@@ -171,6 +183,38 @@ class BlockAttributes
                 'default' => '',
             ],
             'radioCheckboxLabelColor' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'checkboxSize' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'checkboxBorderColor' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'checkboxBgColor' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'checkboxCheckedColor' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'radioSize' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'radioBorderColor' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'radioBgColor' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'radioCheckedColor' => [
                 'type' => 'string',
                 'default' => '',
             ],
@@ -441,6 +485,14 @@ class BlockAttributes
                 'default' => [],
             ],
             'containerMargin' => [
+                'type' => 'object',
+                'default' => [],
+            ],
+            'containerBoxShadow' => [
+                'type' => 'object',
+                'default' => [],
+            ],
+            'containerBoxShadowHover' => [
                 'type' => 'object',
                 'default' => [],
             ],
