@@ -19,6 +19,16 @@ import calculation from './Pro/calculations';
         const formSelector = '.' + form.form_instance;
 
         function sanitizeDynamicValue(input) {
+            // Convert input to string if it's not already a string
+            if (input === null || input === undefined) {
+                return '';
+            }
+
+            // Convert to string if it's not already
+            if (typeof input !== 'string') {
+                input = String(input);
+            }
+            
             // Remove dangerous tags and event handlers
             input = input.replace(/<script.*?>.*?<\/script>/gis, '')
                 .replace(/<iframe.*?>.*?<\/iframe>/gis, '')

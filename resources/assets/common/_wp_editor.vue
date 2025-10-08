@@ -98,6 +98,12 @@
             },
             changeContentEvent() {
                 let content = wp.editor.getContent(this.editor_id);
+
+                // Remove auto inserted http:// for {pdf.download_link.id} shortcodes. The shortcode will handle the protocol.
+                if (content && content.includes('http://{pdf.download_link.')) {
+                    content = content.replace(/http:\/\/{pdf.download_link./g, '{pdf.download_link.');
+                }
+
                 this.$emit('input', this.customSanitize(content));
             },
 
@@ -125,9 +131,9 @@
             },
             customSanitize(input) {
                 // Remove potential event handlers
-                let sanitized = input.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+                let sanitized = input.replace(/\s+(on\w+)\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
                 // Remove http-equiv attributes
-                sanitized = sanitized.replace(/\s*http-equiv\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+                sanitized = sanitized.replace(/\s+http-equiv\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
                 return sanitized;
             },
         },
@@ -148,4 +154,4 @@
             }
         }
     }
-</script> 
+</script>

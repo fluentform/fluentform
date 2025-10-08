@@ -77,7 +77,20 @@
                             <el-option
                                 v-for="item in available_methods"
                                 :key="item.key"
-                                :label="item.value"
+                                :label="$t(item.value)"
+                                :value="item.key">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+                <div class="el-col-8 el-col-lg-5" style="padding-left: 10px; padding-right: 10px;">
+                    <div class="ff_form_group">
+                        <label class="ff_form_group_label">{{$t('Payment Types')}}</label>
+                        <el-select class="ff-input-s1" @change="fetchPayments()" clearable v-model="selectedPaymentTypes" :placeholder="$t('Select Type')">
+                            <el-option
+                                v-for="item in available_payment_types"
+                                :key="item.key"
+                                :label="$t(item.value)"
                                 :value="item.key">
                             </el-option>
                         </el-select>
@@ -98,23 +111,23 @@
                         fixed
                         width="40">
                     </el-table-column>
-                    <el-table-column width="120" label="Submission ID">
+                    <el-table-column width="120" :label="$t('Submission ID')">
                         <template slot-scope="scope">
                             <a class="payment_sub_url" :href="scope.row.entry_url">{{scope.row.submission_id}}</a>
                         </template>
                     </el-table-column>
-                    <el-table-column width="200" label="Form" prop="title"></el-table-column>
+                    <el-table-column width="200" :label="$t('Form')" prop="title"></el-table-column>
 
-                    <el-table-column width="100" label="Type">
+                    <el-table-column width="100" :label="$t('Type')">
                         <template slot-scope="scope">
                             <span v-if="scope.row.transaction_type == 'refund'">{{$t('Refund')}}</span>
                             <span v-else-if="scope.row.transaction_type == 'onetime'">{{$t('Charge')}}</span>
-                            <span v-else>{{scope.row.transaction_type}}</span>
+                            <span v-else>{{scope.row.transaction_type|ucFirst}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Customer" prop="payer_name"></el-table-column>
+                    <el-table-column :label="$t('Customer')" prop="payer_name"></el-table-column>
 
-                    <el-table-column width="160" label="Amount">
+                    <el-table-column width="160" :label="$t('Amount')">
                         <template slot-scope="scope">
                             <span v-if="scope.row.transaction_type == 'refund'">
                                 -<span v-html="scope.row.formatted_payment_total"></span>
@@ -122,7 +135,7 @@
                             <span v-else v-html="scope.row.formatted_payment_total"></span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="180" label="Source">
+                    <el-table-column width="180" :label="$t('Source')">
                         <template slot-scope="scope">
                             <div class="ff_badge_wrap">
                                 <span class="ff_badge" :class="'ff_badge_' + scope.row.payment_method">
@@ -142,7 +155,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" label="Status">
+                    <el-table-column width="120" :label="$t('Status')">
                         <template slot-scope="scope">
                             <span :class="`ff_badge ff_badge_${scope.row.status == 'pending' ? 'pending' :
                             scope.row.status == 'refunded' ? 'refund' :
@@ -205,12 +218,14 @@ import moment from 'moment';
                 selectedFormId: '',
                 selectedPaymentMethods: [],
                 selectedPaymentStatuses: [],
+                selectedPaymentTypes: [],
                 entrySelections:[],
                 bulkAction:[],
                 actionType:'',
                 available_statuses:'',
                 available_forms:'',
                 available_methods:'',
+                available_payment_types:'',
                 paginate: {
                     total: 0,
                     current_page: 1,
@@ -229,6 +244,7 @@ import moment from 'moment';
                     form_id: this.selectedFormId,
                     payment_methods: this.selectedPaymentMethods,
                     payment_statuses: this.selectedPaymentStatuses,
+                    payment_types: this.selectedPaymentTypes,
                     with_report: withReports,
                     page: this.paginate.current_page,
                     per_page: this.paginate.per_page
@@ -318,16 +334,17 @@ import moment from 'moment';
             },
             getAvailableFilters() {
               FluentFormsGlobal.$get({
-                action: 'fluentform_get_all_payments_entries_filters'
+                action: "fluentform_get_all_payments_entries_filters"
               })
-                  .then(response => {
-                    this.available_statuses = response.data.available_statuses;
-                    this.available_forms = response.data.available_forms;
-                    this.available_methods = response.data.available_methods;
-                  })
-                  .fail(error => {
-                    console.log(error);
-                  });
+                .then(response => {
+                  this.available_statuses = response.data.available_statuses;
+                  this.available_forms = response.data.available_forms;
+                  this.available_methods = response.data.available_methods;
+                  this.available_payment_types = response.data.available_payment_types;
+                })
+                .fail(error => {
+                  console.log(error);
+                });
             },
         },
 	    computed:{

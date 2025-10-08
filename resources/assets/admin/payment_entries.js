@@ -24,6 +24,7 @@ import {
 } from 'element-ui';
 import App from './PaymentEntries/App.vue';
 import globalSearch from './global_search';
+import {_$t} from "@/admin/helpers";
 let tooltipDateTime = function(dateTime) {
     return dateTime;
 };
@@ -61,8 +62,16 @@ Vue.use(Tooltip);
 locale.use(lang);
 Vue.mixin({
     methods: {
-        $t(str) {
-            return str;
+        $t(string) {
+            let transString = window.fluent_forms_global_var.payments_str[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
+            }
+            return this.$t(singular, count);
         },
 
         hasPermission(permission) {

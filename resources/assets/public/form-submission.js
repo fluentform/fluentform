@@ -53,8 +53,10 @@ jQuery(document).ready(function () {
 
         window.fluentFormApp = function ($theForm) {
             var formInstanceSelector = $theForm.attr('data-form_instance');
-            var form = window['fluent_form_' + formInstanceSelector];
-
+            // Sanitize the selector - only allow alphanumeric, underscore and hyphen
+            formInstanceSelector = formInstanceSelector ? formInstanceSelector.replace(/[^a-zA-Z0-9_-]/g, '') : '';
+            var formObj = window['fluent_form_' + formInstanceSelector];
+            var form = (formObj && typeof formObj === 'object') ? formObj : null;
             if (!form) {
                 console.log('No Fluent form JS vars found!');
                 return false;
@@ -141,6 +143,16 @@ jQuery(document).ready(function () {
                     try {
                         var $inputs = $theForm
                             .find(':input').filter(function (i, el) {
+                                // Ignore repeater container
+                                if ($(el).attr('data-type') === 'repeater_container') {
+                                    if ($(el).closest('.ff-repeater-container').hasClass('ff_excluded')) {
+                                        return false;
+                                    }
+                                    if ($(this).closest('.has-conditions').hasClass('ff_excluded')) {
+                                        $(this).val('');
+                                    }
+                                    return true;
+                                }
                                 return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                             });
 
@@ -151,7 +163,7 @@ jQuery(document).ready(function () {
                         // data names array
                         var inputsDataNames = inputsData.map(item => item.name);
 
-                        // Ignore chekbox and radio which one inside table like checkable-grid, net-promoter-score etc
+                        // Ignore checkbox and radio which one inside table like checkable-grid, net-promoter-score etc
                         $inputs = $inputs.filter(function () {
                             return !$(this).closest('.ff-el-input--content').find('table').length;
                         });
@@ -540,6 +552,26 @@ jQuery(document).ready(function () {
                     $(document).on('reset', formSelector, function (e) {
                         formResetHandler($(this))
                     });
+
+                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+
+                            // For radio buttons, just check it
+                            if ($(this).attr('type') === 'radio') {
+                                $(this).prop('checked', true);
+                            }
+                            // For checkboxes, toggle the checked state
+                            else if ($(this).attr('type') === 'checkbox') {
+                                $(this).prop('checked', !$(this).prop('checked'));
+                            }
+
+                            // Trigger change event for both types
+                            $(this).trigger('change');
+                            e.stopPropagation();
+                            return false;
+                        }
+                    });
                 };
 
                 /**
@@ -611,7 +643,7 @@ jQuery(document).ready(function () {
                  */
                 var validate = function (elements) {
                     if (!elements.length) {
-                        elements = $('.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
+                        elements = $('form.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
                             return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                         });
                     }
@@ -857,7 +889,7 @@ jQuery(document).ready(function () {
                     });
 
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
-                        const content = $(this).data('content');
+                        let content = $(this).data('content');
                         let $popContent = $('.ff-el-pop-content');
                         if (!$popContent.length) {
                             $('<div/>', {
@@ -865,6 +897,11 @@ jQuery(document).ready(function () {
                             }).appendTo(document.body);
                             $popContent = $('.ff-el-pop-content');
                         }
+                        // Remove dangerous tags and event handlers
+                        content = content.replace(/<script.*?>.*?<\/script>/gis, '')
+                            .replace(/<iframe.*?>.*?<\/iframe>/gis, '')
+                            .replace(/<.*?\bon\w+=["'][^"']*["']/gi, '')
+                            .replace(/javascript:/gi, '');
                         $popContent.html(content);
                         const formWidth = $theForm.innerWidth() - 20;
                         $popContent.css('max-width', formWidth);
@@ -1055,7 +1092,7 @@ jQuery(document).ready(function () {
             },
 
             maybeInitSpamTokenProtection: function() {
-                const formContainers = jQuery('.frm-fluent-form');
+                const formContainers = jQuery('form.frm-fluent-form');
 
                 formContainers.each((index, formElement) => {
                     const formContainer = jQuery(formElement);
@@ -1122,7 +1159,7 @@ jQuery(document).ready(function () {
 
             maybeHandleCleanTalkSubmitTime: function() {
                 if (!!window.fluentFormVars?.has_cleantalk) {
-                    const formContainers = jQuery('.frm-fluent-form');
+                    const formContainers = jQuery('form.frm-fluent-form');
 
                     formContainers.each((index, formElement) => {
                         const formContainer = jQuery(formElement);
@@ -1156,7 +1193,16 @@ jQuery(document).ready(function () {
                         silent: true,
                         shouldSort: false,
                         searchEnabled: true,
-                        searchResultLimit: 50
+                        searchResultLimit: 50,
+                        searchFloor: 1,
+                        searchChoices: true,
+                        fuseOptions: {
+                            threshold: 0.1,
+                            distance: 200,
+                            ignoreLocation: true,
+                            tokenize: true,
+                            matchAllTokens: false,
+                        }
                     };
 
 
@@ -1166,7 +1212,12 @@ jQuery(document).ready(function () {
                     if (parseInt(maxSelection)) {
                         args.maxItemCount = parseInt(maxSelection);
                         args.maxItemText = function (maxItemCount) {
-                            let message = window.fluentFormVars.choice_js_vars.maxItemText;
+                            let message;
+                            if (maxItemCount === 1) {
+                                message = window.fluentFormVars.choice_js_vars.maxItemTextSingular;
+                            } else {
+                                message = window.fluentFormVars.choice_js_vars.maxItemTextPlural;
+                            }
                             message = message.replace('%%maxItemCount%%', maxItemCount);
                             return message;
                         }
@@ -1250,7 +1301,7 @@ jQuery(document).ready(function () {
             },
 
             initNumericFormat: function () {
-                var numericFields = $('.frm-fluent-form .ff_numeric');
+                var numericFields = $('form.frm-fluent-form .ff_numeric');
                 $.each(numericFields, (index, field) => {
                     let $field = $(field);
                     let formatConfig = JSON.parse($field.attr('data-formatter'));
@@ -1511,16 +1562,17 @@ jQuery(document).ready(function () {
                         return true;
                     }
 
-                    if (typeof window.intlTelInputGlobals == 'undefined') {
-                        return true;
-                    }
-
                     if (!el || !el[0]) {
                         return;
                     }
 
+                    let iti;
+                    if (typeof window.intlTelInputGlobals !== 'undefined') {
+                        iti = window.intlTelInputGlobals.getInstance(el[0]);
+                    } else {
+                        iti = el.data('iti');
+                    }
 
-                    var iti = window.intlTelInputGlobals.getInstance(el[0]);
                     if (!iti) {
                         return true;
                     }
@@ -1549,7 +1601,7 @@ jQuery(document).ready(function () {
             }();
         };
 
-        var $allForms = $('.frm-fluent-form');
+        var $allForms = $('form.frm-fluent-form');
 
         function initSingleForm($theForm) {
             var formInstance = fluentFormApp($theForm);
@@ -1599,6 +1651,47 @@ jQuery(document).ready(function () {
 
         fluentFormCommonActions.init();
 
+        // Choices.js dropdown handling
+        function initChoicesDropdownHandling() {
+            // Only target elements that actually have Choices.js
+            $('.ff_has_multi_select').each(function() {
+                const choicesInstance = $(this).data('choicesjs');
+                if (!choicesInstance || !choicesInstance.passedElement) return;
+
+                // Use Choices.js built-in events instead of global listeners
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                    const choicesContainer = this.closest('.choices');
+                    if (!choicesContainer) return;
+
+                    const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+                    if (!dropdown) return;
+
+                    // Apply dropdown styles
+                    dropdown.style.maxHeight = '300px';
+                    dropdown.style.overflowY = 'auto';
+
+                    // Find and style the scrollable list
+                    const scrollableList = 
+                        dropdown.querySelector('.choices__list[role="listbox"]') ||
+                        dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
+                    if (scrollableList) {
+                        scrollableList.style.maxHeight = '280px';
+                        scrollableList.style.overflowY = 'auto';
+                        scrollableList.style.webkitOverflowScrolling = 'touch';
+                        scrollableList.style.touchAction = 'pan-y';
+                    }
+                }, { passive: true });
+            });
+        }
+
+        // Initialize with proper timing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initChoicesDropdownHandling, 100);
+            });
+        } else {
+            setTimeout(initChoicesDropdownHandling, 100);
+        }
     })(window.fluentFormVars, jQuery);
 
     jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
@@ -1610,8 +1703,4 @@ jQuery(document).ready(function () {
             .html('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
             .insertAfter(jQuery(this));
     });
-});
-
-jQuery(document.body).on('fluentform_init', function (e, $theForm) {
-
 });

@@ -34,11 +34,14 @@ export default {
 
             if (this.selected_preset.trim() === 'ffs_default') {
                 jQuery('.ff_form_preview .fluentform').addClass('ff-default');
-                button.classList.add('ff-btn', 'ff-btn-submit', 'ff-btn-md', 'ff_btn_style');
-
+                if (button) {
+                  button.classList.add('ff-btn', 'ff-btn-submit', 'ff-btn-md', 'ff_btn_style');
+                }
             } else if (this.selected_preset.trim() === 'ffs_inherit_theme') {
                 jQuery('.ff_form_preview .fluentform.ff-default').removeClass('ff-default');
-                button.classList.remove('ff-btn', 'ff-btn-submit', 'ff-btn-md', 'ff_btn_style');
+                if (button) {
+                  button.classList.remove('ff-btn', 'ff-btn-submit', 'ff-btn-md', 'ff_btn_style');
+                }
             }
 		}
 	},

@@ -123,6 +123,7 @@ class Form
             'disable_branding'      => 'no',
             'hide_media_on_mobile'  => 'no',
             'key_hint'              => 'yes',
+            'enable_scroll_to_top'  => 'no',
             'asteriskPlacement'     => $this->getAsteriskPlacement($formId)
         ];
 
@@ -326,10 +327,10 @@ class Form
             'hcaptcha',
             'turnstile',
             'quiz_score',
-            'rangeslider',
             'save_progress_button',
             'dynamic_field',
-            'rangeslider'
+            'rangeslider',
+            'net_promoter_score'
         ];
 
         $acceptedFieldElements = apply_filters(
@@ -364,6 +365,7 @@ class Form
                         $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
                         if ('terms_and_condition' == $element) {
                             $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
+                            $existingSettings['hide_disagree'] = false;
                         }
                         $field['settings'] = $existingSettings;
                     }
@@ -600,7 +602,7 @@ class Form
 
     public function maybeAlterPlacement($placements, $form)
     {
-        if (!Helper::isConversionForm($form->id) || empty($placements['terms_and_condition'])) {
+        if (!Helper::isConversionForm($form->id) || empty($placements['terms_and_condition']) || empty($placements['gdpr_agreement'])) {
             return $placements;
         }
 
@@ -620,6 +622,22 @@ class Form
             'tc_dis_agree_text' => [
                 'template' => 'inputText',
                 'label'    => 'Disagree Button Text',
+            ],
+            'hide_disagree' => [
+                'template' => 'inputCheckbox',
+                'options'  => [
+                    [
+                        'value' => false,
+                        'label' => __('Hide Disagree Button', 'fluentform'),
+                    ],
+                ],
+            ],
+        ];
+
+        $placements['gdpr_agreement']['generalExtras'] = [
+            'tc_agree_text'     => [
+                'template' => 'inputText',
+                'label'    => 'Agree Option Text',
             ],
         ];
 
@@ -913,7 +931,7 @@ class Form
             'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
             'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
             'has_save_link'             => $form->save_state?? false,
-            'has_save_and_resume_button'=> $form->hasSaveAndRusemeButton ?? false,
+            'has_save_and_resume_button'=> $form->hasSaveAndResumeButton ?? false,
             'step_completed'            => $form->stepCompleted ?? 0
         ];
     }

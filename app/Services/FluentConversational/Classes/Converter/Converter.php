@@ -11,6 +11,18 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 
 class Converter
 {
+    /**
+     * Get Component instance
+     */
+    private static function getComponent()
+    {
+        static $component = null;
+        if ($component === null) {
+            $component = new Component(wpFluentForm());
+        }
+        return $component;
+    }
+
     public static function convert($form)
     {
         $fields = $form->fields['fields'];
@@ -60,20 +72,28 @@ class Converter
             if ($hasSaveAndResume && $saveAndResumeData) {
                 $response = ArrayHelper::get($saveAndResumeData, 'response');
                 $questionId = ArrayHelper::get($question, 'id');
-                $value = $questionId ? ArrayHelper::get($response, $questionId) : null;
-                if (!empty($value)) {
-                    if (ArrayHelper::get($field, 'element') == 'input_file') {
-                        $files = ArrayHelper::get($response, $questionId);
-                        foreach ($files as $file) {
-                            $question['answer'][] = ArrayHelper::get($file, 'data_src');
+
+                // Special handling for section breaks and custom HTML
+                if (ArrayHelper::get($field, 'element') == 'section_break' || ArrayHelper::get($field, 'element') == 'custom_html') {
+                    $question['answered'] = true;
+                    $question['answer'] = 'section_viewed';
+                } else {
+                    $value = $questionId ? ArrayHelper::get($response, $questionId) : null;
+                    if (!empty($value)) {
+                        if (ArrayHelper::get($field, 'element') == 'input_file') {
+                            $files = ArrayHelper::get($response, $questionId);
+                            foreach ($files as $file) {
+                                $question['answer'][] = ArrayHelper::get($file, 'data_src');
+                            }
+                        } elseif (
+                            ArrayHelper::get($field, 'element') == 'rangeslider' ||
+                            ArrayHelper::get($field, 'element') == 'subscription_payment_component' ||
+                            ArrayHelper::get($field, 'element') == 'net_promoter_score'
+                        ) {
+                            $question['answer'] = +$value;
+                        } else {
+                            $question['answer'] = $value;
                         }
-                    } elseif (
-                        ArrayHelper::get($field, 'element') == 'rangeslider' ||
-                        ArrayHelper::get($field, 'element') == 'subscription_payment_component'
-                    ) {
-                        $question['answer'] = +$value;
-                    } else {
-                        $question['answer'] = $value;
                     }
                 }
             }
@@ -90,12 +110,21 @@ class Converter
                     $fields = ArrayHelper::get($field, 'fields');
                     $field['fields'] = array_merge(array_flip($order), $fields);
                 }
+
+                $provider = ArrayHelper::get($field, 'settings.autocomplete_provider');
+                $isLegacyProvider = !ArrayHelper::has($field, 'settings.autocomplete_provider');
                 $googleAutoComplete = 'yes' === ArrayHelper::get($field, 'settings.enable_g_autocomplete');
-                if (defined('FLUENTFORMPRO') && $googleAutoComplete) {
+                if (defined('FLUENTFORMPRO') && ($provider === 'google' || ($isLegacyProvider && $googleAutoComplete))) {
                     $question['ff_map_autocomplete'] = true;
                     $question['ff_with_g_map'] = 'yes' == ArrayHelper::get($field, 'settings.enable_g_map');
                     $question['ff_with_auto_locate'] = ArrayHelper::get($field, 'settings.enable_auto_locate', false);
                     $question['GmapApiKey'] = apply_filters('fluentform/conversational_form_address_gmap_api_key', '');
+                }
+                
+                // Handle HTML5 geolocation
+                if ($provider === 'html5') {
+                    $question['ff_html5_geolocate'] = true;
+                    $question['ff_html5_locate'] = ArrayHelper::get($field, 'settings.enable_auto_locate', 'on_click');
                 }
                 
                 foreach ($field['fields'] as $item) {
@@ -106,7 +135,7 @@ class Converter
                         }
                         $validationsRules = self::resolveValidationsRules($item, $form, $itemName);
                         $itemQuestion = [
-                            'title'           => ArrayHelper::get($item, 'settings.label'),
+                            'title'           => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($item, 'settings.label'), $form),
                             'container_class' => ArrayHelper::get($item, 'settings.container_class'),
                             'required'        => ArrayHelper::get($validationsRules, 'required.value'),
                             'requiredMsg'     => ArrayHelper::get($validationsRules, 'required.message'),
@@ -139,7 +168,7 @@ class Converter
                             $countries = $item['options'];
                             foreach ($countries as $key => $value) {
                                 $options[] = [
-                                    'label' => $value,
+                                    'label' => html_entity_decode($value, ENT_QUOTES, 'UTF-8'),
                                     'value' => $key,
                                 ];
                             }
@@ -154,8 +183,8 @@ class Converter
                             $question['required'] = true;
                         }
                         
-                        if (!$hasSaveAndResume && $defaultValue = self::setDefaultValue(ArrayHelper::get($item, 'attributes.value'), $item, $form)) {
-                            $item['attributes']['value'] = $defaultValue;
+                        if (!$hasSaveAndResume) {
+                            $item['attributes']['value'] = self::setDefaultValue(ArrayHelper::get($item, 'attributes.value', ''), $item, $form);;
                         }
                         $question['fields'][] = wp_parse_args($itemQuestion, $item);
                     }
@@ -170,7 +199,7 @@ class Converter
                         }
                         $validationsRules = self::resolveValidationsRules($item, $form, $itemName);
                         $itemQuestion = [
-                            'title'           => ArrayHelper::get($item, 'settings.label'),
+                            'title'           => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($item, 'settings.label'), $form),
                             'container_class' => ArrayHelper::get($item, 'settings.container_class'),
                             'required'        => ArrayHelper::get($validationsRules, 'required.value'),
                             'requiredMsg'     => ArrayHelper::get($validationsRules, 'required.message'),
@@ -186,7 +215,7 @@ class Converter
                             $question['required'] = true;
                         }
                         
-                        $item['attributes']['value'] = (new Component(wpFluentForm()))->replaceEditorSmartCodes(ArrayHelper::get($item, 'attributes.value'), $form);
+                        $item['attributes']['value'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($item, 'attributes.value'), $form);
                         
                         $question['fields'][] = wp_parse_args($itemQuestion, $item);
                     }
@@ -201,18 +230,18 @@ class Converter
                 }
             } elseif ('welcome_screen' === $field['element']) {
                 $question['settings'] = ArrayHelper::get($field, 'settings', []);
-                $question['subtitle'] = ArrayHelper::get($field, 'settings.description');
+                $question['subtitle'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.description'), $form);
                 $question['required'] = false;
                 //				$question['css'] = (new \FluentConversational\Form)->getSubmitBttnStyle($field);
             } elseif ('select' === $field['element']) {
-                $question['options'] = self::getAdvancedOptions($field);
-                $question['placeholder'] = ArrayHelper::get($field, 'settings.placeholder', null);
+                $question['options'] = self::getAdvancedOptions($field, $form);
+                $question['placeholder'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.placeholder', null), $form);
                 $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
                 $isMultiple = ArrayHelper::get($field, 'attributes.multiple', false);
                 
                 if ($isMultiple) {
                     $question['multiple'] = true;
-                    $question['placeholder'] = ArrayHelper::get($field, 'attributes.placeholder', false);
+                    $question['placeholder'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'attributes.placeholder', false), $form);
                     $question['max_selection'] = ArrayHelper::get($field, 'settings.max_selection');
                     $question['max_selection'] = $question['max_selection'] ? intval($question['max_selection']) : 0;
                 }
@@ -234,29 +263,29 @@ class Converter
                 $countries = $field['options'];
                 foreach ($countries as $key => $value) {
                     $options[] = [
-                        'label' => $value,
+                        'label' => html_entity_decode($value, ENT_QUOTES, 'UTF-8'),
                         'value' => $key,
                     ];
                 }
                 $question['options'] = $options;
-                $question['placeholder'] = ArrayHelper::get($field, 'attributes.placeholder', null);
+                $question['placeholder'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'attributes.placeholder', null), $form);
                 $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
             } elseif ('dynamic_field' === $field['element']) {
                 $dynamicFetchValue = 'yes' == ArrayHelper::get($field, 'settings.dynamic_fetch');
                 if ($dynamicFetchValue) {
                     $field = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $field);
-                    $question['answer'] = ArrayHelper::get($field, 'attributes.value');
+                    $question['answer'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'attributes.value'), $form);
                 }
                 $type = ArrayHelper::get($field, 'settings.field_type', 'select');
                 if (in_array($type, ['checkbox', 'radio'])) {
                     $question['type'] = 'FlowFormMultipleChoiceType';
-                    $question['options'] = self::getAdvancedOptions($field);
+                    $question['options'] = self::getAdvancedOptions($field, $form);
                     if ('checkbox' == $type) {
                         $question['multiple'] = true;
                     }
                 } elseif (in_array($type, ['select', 'multi_select'])) {
                     $question['type'] = 'FlowFormDropdownType';
-                    $question['options'] = self::getAdvancedOptions($field);
+                    $question['options'] = self::getAdvancedOptions($field, $form);
                     $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
                     $question['multiple'] = ArrayHelper::isTrue($field, 'attributes.multiple');
                 } else {
@@ -264,17 +293,17 @@ class Converter
                 }
                 $question['nextStepOnAnswer'] = true;
             } elseif ('input_checkbox' === $field['element']) {
-                $question['options'] = self::getAdvancedOptions($field);
+                $question['options'] = self::getAdvancedOptions($field, $form);
                 $question['multiple'] = true;
                 $question = static::hasPictureMode($field, $question);
             } elseif ('input_radio' === $field['element']) {
-                $question['options'] = self::getAdvancedOptions($field);
+                $question['options'] = self::getAdvancedOptions($field, $form);
                 $question['nextStepOnAnswer'] = true;
                 $question = static::hasPictureMode($field, $question);
             } elseif ('custom_html' === $field['element']) {
-                $question['content'] = ArrayHelper::get($field, 'settings.html_codes', '');
+                $question['content'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.html_codes', ''), $form);
             } elseif ('section_break' === $field['element']) {
-                $question['content'] = ArrayHelper::get($field, 'settings.description', '');
+                $question['content'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.description', ''), $form);
                 $question['contentAlign'] = ArrayHelper::get($field, 'settings.align', '');
             } elseif ('phone' === $field['element']) {
                 if (defined('FLUENTFORMPRO')) {
@@ -285,9 +314,13 @@ class Converter
                         if (is_rtl()) {
                             $cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput-rtl.min.css';
                         }
-                        wp_enqueue_style('intlTelInput', $cssSource, [], '18.1.1');
-                        wp_enqueue_script('intlTelInputUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/utils.js', [], '18.1.1', true);
-                        wp_enqueue_script('intlTelInput', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInput.min.js', [], '18.1.1', true);
+                        wp_enqueue_style('intlTelInput', $cssSource, [], '25.5.2');
+                        if (version_compare( FLUENTFORMPRO_VERSION, '6.1.0', '>' ) ) {
+                            wp_enqueue_script('intlTelInputWithUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInputWithUtils.min.js', [], '25.5.2', true);
+                        } else {
+                            wp_enqueue_script('intlTelInputUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/utils.js', [], '18.1.1', true);
+                            wp_enqueue_script('intlTelInput', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInput.min.js', [], '18.1.1', true);
+                        }
                     }
                 }
             } elseif ('input_number' === $field['element']) {
@@ -316,20 +349,24 @@ class Converter
             } elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
                 $question['options'] = [
                     [
-                        'label' => ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'),
+                        'label' => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'), $form),
                         'value' => 'on',
                     ],
                 ];
                 
                 if ('terms_and_condition' === $field['element']) {
-                    $question['options'][] = [
-                        'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I don\'t accept'),
-                        'value' => 'off',
-                    ];
+                    $hideDisagreeOption = ArrayHelper::isTrue($field, 'settings.hide_disagree');
+                    
+                    if (!$hideDisagreeOption) {
+                        $question['options'][] = [
+                            'label' => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I don\'t accept'), $form),
+                            'value' => 'off',
+                        ];
+                    }
                 }
                 
                 $question['nextStepOnAnswer'] = true;
-                $question['title'] = ArrayHelper::get($field, 'settings.tnc_html');
+                $question['title'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.tnc_html'), $form);
                 if ('gdpr_agreement' === $field['element']) {
                     $question['required'] = true;
                 }
@@ -398,14 +435,6 @@ class Converter
                 
                 $question['requiredPerRow'] = ArrayHelper::get($field, 'settings.validation_rules.required.per_row');
             } elseif ('rangeslider' === $field['element']) {
-                if (!ArrayHelper::exists($question, 'answer')) {
-                    if ($field['attributes']['value'] == '') {
-                        $question['answer'] = 0;
-                    } else {
-                        $question['answer'] = +$field['attributes']['value'];
-                    }
-                }
-                
                 $question['min'] = intval($field['attributes']['min']);
                 $question['max'] = intval($field['attributes']['max']);
                 
@@ -413,6 +442,11 @@ class Converter
                     $question['step'] = intval($step);
                 } else {
                     $question['step'] = 1;
+                }
+
+                $enabledQtyMapping = 'yes' === ArrayHelper::get($field, 'settings.enable_target_product');
+                if ($enabledQtyMapping && $targetProductName = ArrayHelper::get($field, 'settings.target_product')) {
+                    $question['targetProduct'] = $targetProductName;
                 }
                 
                 $question['is_calculable'] = true;
@@ -423,12 +457,12 @@ class Converter
                     $lastQuestion = &$questions[count($questions) - 1];
                     $question['id'] = ArrayHelper::get($field, 'attributes.name');
                     $question['parent_id'] = $lastQuestion['id'];
-                    $question['title'] = ArrayHelper::get($field, 'editor_options.title');
+                    $question['title'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'editor_options.title'), $form);
                     $question['settings'] = ArrayHelper::get($field, 'settings');
                     $question['counter'] = count($questions) - 1;
                     $lastQuestion['has_save_and_resume_button'] = true;
                     $lastQuestion['save_and_resume_button'] = $question;
-                    $form->hasSaveAndRusemeButton = true;
+                    $form->hasSaveAndResumeButton = true;
                 }
                 // Skip Save Progress Button as a separate question
                 continue;
@@ -436,7 +470,7 @@ class Converter
                 $type = $field['attributes']['type'];
                 
                 if ('single' == $type) {
-                    $question['priceLabel'] = $field['settings']['price_label'];
+                    $question['priceLabel'] = self::getComponent()->replaceEditorSmartCodes($field['settings']['price_label'], $form);
                 } else {
                     $question['nextStepOnAnswer'] = true;
                     
@@ -453,7 +487,11 @@ class Converter
                         $question['type'] = 'FlowFormDropdownType';
                     }
                     
-                    $question['options'] = ArrayHelper::get($field, 'settings.pricing_options');
+                    $pricingOptions = ArrayHelper::get($field, 'settings.pricing_options');
+                    foreach ($pricingOptions as &$option) {
+                        $option['label'] = self::getComponent()->replaceEditorSmartCodes($option['label'], $form);
+                    }
+                    $question['options'] = $pricingOptions;
                 }
                 
                 $question['is_payment_field'] = true;
@@ -487,7 +525,7 @@ class Converter
                     $planValue = 'single' == $type ? $option['subscription_amount'] : $index;
                     
                     $field['plans'][] = [
-                        'label'               => $option['name'],
+                        'label'               => self::getComponent()->replaceEditorSmartCodes($option['name'], $form),
                         'value'               => $planValue,
                         'sub'                 => strip_tags($paymentSummaryText),
                         'subscription_amount' => $planValue,
@@ -563,7 +601,7 @@ class Converter
                 foreach ($field['settings']['payment_methods'] as $methodName => $paymentMethod) {
                     if ('yes' === $paymentMethod['enabled']) {
                         $question['options'][] = [
-                            'label' => $paymentMethod['settings']['option_label']['value'],
+                            'label' => self::getComponent()->replaceEditorSmartCodes($paymentMethod['settings']['option_label']['value'], $form),
                             'value' => $paymentMethod['method_value'],
                         ];
                         
@@ -590,8 +628,18 @@ class Converter
                     }
                 }
             } elseif ('payment_summary_component' === $field['element']) {
-                $question['title'] = __('Payment Summary', 'fluentform');
+                $question['title'] = self::getComponent()->replaceEditorSmartCodes(__('Payment Summary', 'fluentform'), $form);
                 $question['emptyText'] = $field['settings']['cart_empty_text'];
+            } elseif ('net_promoter_score' === $field['element']) {
+                if (!ArrayHelper::exists($question, 'answer')) {
+                    $question['answer'] = +$field['attributes']['value'];
+                }
+
+                $question['start_text'] = ArrayHelper::get($field, 'settings.start_text');
+                $question['end_text'] = ArrayHelper::get($field, 'settings.end_text');
+                $question['is_calculable'] = true;
+                $question['nextStepOnAnswer'] = true;
+                $question['type'] = 'FlowFormNetPromoterScoreType';
             } elseif ('recaptcha' === $field['element']) {
                 $reCaptchaConfig = get_option('_fluentform_reCaptcha_details');
                 $siteKey = ArrayHelper::get($reCaptchaConfig, 'siteKey');
@@ -625,6 +673,20 @@ class Converter
                 );
                 
                 if (3 === $apiVersion) {
+                    $shouldRenderBadge = ArrayHelper::get($field, 'settings.render_recaptcha_v3_badge', false);
+
+                    if (!$shouldRenderBadge) {
+                        // Add CSS to hide reCAPTCHA badge
+                        add_action('fluentform/conversational_frame_footer', function() {
+                            echo
+                            "<style>
+                                .grecaptcha-badge {
+                                    visibility: hidden;
+                                }
+                            </style>";
+                        });
+                    }
+                    
                     continue;
                 }
             } elseif (('hcaptcha' === $field['element'])) {
@@ -666,6 +728,7 @@ class Converter
                 
                 $form->turnstile = [
                     'siteKey' => $siteKey,
+                    'appearance' => $appearance,
                 ];
                 
                 wp_enqueue_script(
@@ -675,6 +738,13 @@ class Converter
                     FLUENTFORM_VERSION,
                     false
                 );
+
+                // for WP Rocket compatibility
+                wp_script_add_data('turnstile_conv', 'data-cfasync', 'false');
+                
+                if ('interaction-only' === $appearance) {
+                    continue;
+                }
             } elseif ('payment_coupon' === $field['element']) {
                 if ($hasSaveAndResume && $saveAndResumeData) {
                     if ($coupons = ArrayHelper::get($saveAndResumeData, 'response.__ff_all_applied_coupons')) {
@@ -737,17 +807,17 @@ class Converter
         return [
             'id'              => ArrayHelper::get($field, 'attributes.name'),
             'name'            => ArrayHelper::get($field, 'attributes.name'),
-            'title'           => ArrayHelper::get($field, 'settings.label'),
+            'title'           => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.label'), $form),
             'type'            => ArrayHelper::get(static::fieldTypes(), $field['element']),
             'ff_input_type'   => ArrayHelper::get($field, 'element'),
             'container_class' => ArrayHelper::get($field, 'settings.container_class'),
-            'placeholder'     => ArrayHelper::get($field, 'attributes.placeholder'),
+            'placeholder'     => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'attributes.placeholder'), $form),
             'maxLength'       => ArrayHelper::get($field, 'attributes.maxlength'),
             'required'        => ArrayHelper::get($validationsRules, 'required.value'),
             'requiredMsg'     => ArrayHelper::get($validationsRules, 'required.message'),
             'errorMessage'    => ArrayHelper::get($validationsRules, 'required.message'),
             'validationRules' => $validationsRules,
-            'tagline'         => ArrayHelper::get($field, 'settings.help_message'),
+            'tagline'         => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.help_message'), $form),
             'style_pref'      => ArrayHelper::get($field, 'style_pref', [
                 'layout'           => 'default',
                 'media'            => '',
@@ -809,6 +879,7 @@ class Converter
             $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
             $fieldTypes['save_progress_button'] = 'FlowFormSaveAndResumeType';
             $fieldTypes['dynamic_field'] = 'FlowFormDynamicFieldType';
+            $fieldTypes['net_promoter_score'] = 'FlowFormNetPromoterScoreType';
         }
         
         return apply_filters('fluentform/conversational_field_types', $fieldTypes);
@@ -863,19 +934,20 @@ class Converter
             $itlOptions['initialCountry'] = 'auto';
         } else {
             $itlOptions['initialCountry'] = ArrayHelper::get($data, 'settings.default_country', '');
-            $activeList = ArrayHelper::get($data, 'settings.phone_country_list.active_list');
-            
-            if ('priority_based' == $activeList) {
-                $selectCountries = ArrayHelper::get($data, 'settings.phone_country_list.priority_based', []);
-                $priorityCountries = self::getSelectedCountries($selectCountries);
-                $itlOptions['preferredCountries'] = array_keys($priorityCountries);
-            } elseif ('visible_list' == $activeList) {
-                $onlyCountries = ArrayHelper::get($data, 'settings.phone_country_list.visible_list', []);
-                $itlOptions['onlyCountries'] = $onlyCountries;
-            } elseif ('hidden_list' == $activeList) {
-                $countries = self::loadCountries($data);
-                $itlOptions['onlyCountries'] = array_keys($countries);
-            }
+        }
+
+        $activeList = ArrayHelper::get($data, 'settings.phone_country_list.active_list');
+        if ('priority_based' == $activeList) {
+            $selectCountries = ArrayHelper::get($data, 'settings.phone_country_list.priority_based', []);
+            $priorityCountries = self::getSelectedCountries($selectCountries);
+            $key = version_compare(FLUENTFORMPRO_VERSION, '6.1.0', '>') ? 'countryOrder' : 'preferredCountries';
+            $itlOptions[$key] = array_keys($priorityCountries);
+        } elseif ('visible_list' == $activeList) {
+            $onlyCountries = ArrayHelper::get($data, 'settings.phone_country_list.visible_list', []);
+            $itlOptions['onlyCountries'] = $onlyCountries;
+        } elseif ('hidden_list' == $activeList) {
+            $countries = self::loadCountries($data);
+            $itlOptions['onlyCountries'] = array_keys($countries);
         }
         
         $itlOptions = apply_filters_deprecated(
@@ -965,7 +1037,7 @@ class Converter
     public static function setDefaultValue($value, $field, $form)
     {
         if ($dynamicValue = ArrayHelper::get($field, 'settings.dynamic_default_value')) {
-            $dynamicVal = (new Component(wpFluentForm()))->replaceEditorSmartCodes($dynamicValue, $form);
+            $dynamicVal = self::getComponent()->replaceEditorSmartCodes($dynamicValue, $form);
             
             $element = $field['element'];
             
@@ -983,8 +1055,9 @@ class Converter
         if (! $value) {
             return $value;
         }
+
         if (is_string($value)) {
-            return (new Component(wpFluentForm()))->replaceEditorSmartCodes($value, $form);
+            return self::getComponent()->replaceEditorSmartCodes($value, $form);
         }
         
         return $value;
@@ -1051,9 +1124,13 @@ class Converter
         });
     }
     
-    private static function getAdvancedOptions($field)
+    private static function getAdvancedOptions($field, $form)
     {
         $options = ArrayHelper::get($field, 'settings.advanced_options', []);
+        
+        foreach ($options as &$option) {
+            $option['label'] = self::getComponent()->replaceEditorSmartCodes($option['label'], $form);
+        }
         
         if ($options && 'yes' == ArrayHelper::get($field, 'settings.randomize_options')) {
             shuffle($options);

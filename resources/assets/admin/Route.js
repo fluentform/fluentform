@@ -102,9 +102,24 @@ class Route {
     resetFormAnalytics = this.analytics + '/{param}/reset/'
 
     report = 'report';
+    selectFormsForReport = this.report + '/select-forms';
     formsReport = this.report + '/forms'
     formReport = this.formsReport + '/{param}'
     submissionsReport = this.report + '/submissions';
+    submissionsAnalysisReport = this.report + '/submissions-analysis';
+    netRevenueReport = this.report + '/net-revenue';
+
+    // Component-specific report endpoints
+    reportOverviewChart = this.report + '/overview-chart';
+    reportRevenueChart = this.report + '/revenue-chart';
+    reportCompletionRate = this.report + '/completion-rate';
+    reportFormStats = this.report + '/form-stats';
+    reportHeatmapData = this.report + '/heatmap-data';
+    reportCountryHeatmap = this.report + '/country-heatmap';
+    reportApiLogs = this.report + '/api-logs';
+    reportTopPerformingForms = this.report + '/top-performing-forms';
+    reportSubscriptions = this.report + '/subscriptions';
+    reportPaymentTypes = this.report + '/payment-types';
 
     //pro routes
     inventory ='inventory';

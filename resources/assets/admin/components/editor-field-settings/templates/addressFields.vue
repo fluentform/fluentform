@@ -14,7 +14,7 @@
                 v-for="(field, index) in editItem.settings.field_order"
                 :moved="handleMoved"
                 class="dragable-address-fields"
-                :key="field.id"
+                :key="field.id || field.value"
                 :draggable="field"
                 :index="index"
                 :wrapper="editItem.settings.field_order"
@@ -88,46 +88,52 @@
                     </div>
                 </vddl-nodrag>
             </vddl-draggable>
-
-
         </vddl-list>
 
-
-        <el-form-item v-if="has_gmap_api" :label="$t('Autocomplete Feature')">
-            <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_autocomplete">{{
-                    $t('Enable Autocomplete(Google API)')
-                }}
-            </el-checkbox>
+        <!-- Autocomplete Provider Dropdown (manual) -->
+        <el-form-item :label="$t('Autocomplete Provider')" style="width: 100%;" class="ff-full-width-select">
+            <el-select v-model="editItem.settings.autocomplete_provider" placeholder="Select provider" style="width: 100%;">
+                <el-option label="None" value="none" />
+                <el-option label="Google Maps" value="google" :disabled="!has_gmap_api" />
+                <el-option label="OpenStreetMap Geolocation (Nominatim)" value="html5" :disabled="!has_pro" />
+            </el-select>
         </el-form-item>
-        <el-form-item v-if="has_gmap_api  && editItem.settings.enable_g_autocomplete =='yes'" :label="$t('Show Map')">
+
+        <small v-if="!has_gmap_api && editItem.settings.autocomplete_provider === 'google'">
+           {{$t('Google Maps API key required. Configure in FluentForm Pro settings.')}}
+        </small>
+
+        <small v-if="editItem.settings.autocomplete_provider === 'html5'" class="mb-3" style="display: inline-block;">
+            {{ $t("Address autocomplete with OpenStreetMap (Nominatim) is limited to 1 request per second across all users and attribution required. Best for forms with low traffic. For high-traffic sites, consider Google Maps.") }}
+        </small>
+
+        <small v-if="!has_pro">
+           {{$t('Autocomplete with Coordinates is available in Fluent Forms Pro.')}}
+        </small>
+
+        <!-- HTML5 Locate Radio (manual) -->
+        <el-form-item v-if="editItem.settings.autocomplete_provider === 'html5'" :label="$t('OpenStreetMap Locate')">
+            <el-radio-group size="small" v-model="editItem.settings.enable_auto_locate">
+                <el-radio-button label="on_load">{{ $t('On Page Load') }}</el-radio-button>
+                <el-radio-button label="on_click">{{ $t('On Click') }}</el-radio-button>
+                <el-radio-button label="no">{{ $t('Disable') }}</el-radio-button>
+            </el-radio-group>
+        </el-form-item>
+
+        <!-- Google Maps Options: Only show when provider is google and API key is present -->
+        <el-form-item v-if="has_gmap_api  && editItem.settings.autocomplete_provider =='google'" :label="$t('Show Map')">
             <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_map">
                 {{ $t('Enable Map(Google Map)') }}
             </el-checkbox>
         </el-form-item>
 
-        <el-form-item v-if="has_gmap_api  && editItem.settings.enable_g_autocomplete =='yes'" >
-            <div slot="label">
-                {{$t('Save Coordinates')}}
-                <el-tooltip poper-class="ff_tooltip_wrap" :content="$t(' Please enable Geolocation API. First it will try HTML API if Fails it will use Google Geolocation API.')" placement="top">
-                    <i class="tooltip-icon el-icon-info"></i>
-                </el-tooltip>
-            </div>
-            <el-checkbox  true-label="yes" false-label="no" v-model="editItem.settings.save_coordinates">
-                {{ $t('See User Location on Map (Latitude & Longitude)') }}
-            </el-checkbox>
-
-        </el-form-item>
-
-
-
-        <el-form-item v-if="has_gmap_api && editItem.settings.enable_g_autocomplete =='yes'">
+        <el-form-item v-if="has_gmap_api && editItem.settings.autocomplete_provider =='google'">
             <div slot="label">
                 {{ $t('Auto locate') }}
                 <el-tooltip poper-class="ff_tooltip_wrap" :content="$t('When map is enabled Please enable Geocoding API if you want to populate address after map marker drag end')" placement="top">
                     <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
             </div>
-
             <el-radio-group
                     size="small"
                     v-model="editItem.settings.enable_auto_locate"
@@ -144,7 +150,17 @@
             </el-radio-group>
         </el-form-item>
 
-
+        <el-form-item v-if="has_pro && ((editItem.settings.autocomplete_provider === 'google' && has_gmap_api) || editItem.settings.autocomplete_provider === 'html5')">
+            <div slot="label">
+                {{$t('Save Coordinates')}}
+                <el-tooltip poper-class="ff_tooltip_wrap" :content="$t('If enabled, the user\'s latitude and longitude will be saved with the address field.')" placement="top">
+                    <i class="tooltip-icon el-icon-info"></i>
+                </el-tooltip>
+            </div>
+            <el-checkbox  true-label="yes" false-label="no" v-model="editItem.settings.save_coordinates">
+                {{ $t('Save User Location (Latitude & Longitude)') }}
+            </el-checkbox>
+        </el-form-item>
     </div>
 </template>
 
@@ -165,7 +181,8 @@ export default {
     },
     data() {
         return {
-            has_gmap_api: !!window.FluentFormApp.has_address_gmap_api
+            has_gmap_api: !!window.FluentFormApp.has_address_gmap_api,
+            has_pro: !!window.FluentFormApp.hasPro
         }
     },
     methods: {
@@ -214,7 +231,7 @@ export default {
         }
     },
     mounted() {
-        this.createDragableList()
+        this.createDragableList();
     }
 }
 </script>

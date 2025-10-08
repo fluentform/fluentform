@@ -487,7 +487,7 @@ export default {
                 type: 'warning',
                 confirmButtonClass: 'ff_form_remove_confirm_class'
             }).then(() => {
-                this.$prompt(this.$t('Please type %s" to confirm. All entries and integration feeds of this form will be deleted', '"DELETE"'), this.$t('Delete Form'), {
+                this.$prompt(this.$t('Please type %s to confirm. All entries and integration feeds of this form will be deleted', '"DELETE"'), this.$t('Delete Form'), {
                     confirmButtonText: this.$t('Confirm Delete'),
                     cancelButtonText: this.$t('Cancel'),
                     confirmButtonClass: 'ff_form_remove_confirm_class'
