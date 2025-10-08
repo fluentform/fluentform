@@ -3,6 +3,8 @@
 namespace FluentForm\App\Services\Blocks;
 
 use FluentForm\Framework\Support\Arr;
+use FluentForm\App\Helpers\Helper;
+use FluentFormPro\classes\FormStyler;
 
 /**
  * StyleProcessor class for processing different style attributes for Fluent Forms Gutenberg blocks
@@ -15,6 +17,94 @@ class StyleProcessor
     const MOBILE_BREAKPOINT = '480px';
 
     /**
+     * Process preset styles for the block
+     *
+     * @param array  $atts   Block attributes
+     * @param string $formId Form ID
+     *
+     * @return string Generated CSS for preset styles
+     */
+    public static function processPresetStyles($atts, $formId)
+    {
+        $selectedPreset = Arr::get($atts, 'selectedPreset', '');
+        $customizePreset = Arr::get($atts, 'customizePreset', false);
+        $presetStyles = Arr::get($atts, 'presetStyles', []);
+
+        if (empty($selectedPreset) && empty($presetStyles)) {
+            return '';
+        }
+
+        if (!class_exists('FluentFormPro\classes\FormStyler')) {
+            return '';
+        }
+
+        $formStyler = new FormStyler();
+        $presets = $formStyler->getPresets();
+
+        $css = '';
+
+        if ($customizePreset && !empty($presetStyles)) {
+            // Use customized preset styles
+            $css = self::generatePresetCSS($presetStyles, $formId);
+        } elseif (!empty($selectedPreset) && isset($presets[$selectedPreset])) {
+            // Use selected preset
+            $presetData = $presets[$selectedPreset];
+            $styles = Arr::get($presetData, 'style', '{}');
+            
+            if (is_string($styles) && Helper::isJson($styles)) {
+                $styles = json_decode($styles, true);
+                $css = self::generatePresetCSS($styles, $formId);
+            }
+        }
+
+        return $css;
+    }
+
+    /**
+     * Generate CSS from preset styles
+     *
+     * @param array  $styles Preset styles
+     * @param string $formId Form ID
+     *
+     * @return string Generated CSS
+     */
+    private static function generatePresetCSS($styles, $formId)
+    {
+        if (empty($styles)) {
+            return '';
+        }
+
+        $baseSelector = '.ff_guten_block.ff_guten_block-' . $formId;
+        $css = '';
+
+        // Process container styles
+        if (isset($styles['container_styles'])) {
+            $containerStyles = $styles['container_styles'];
+            $css .= self::processPresetContainerStyles($containerStyles, $baseSelector);
+        }
+
+        // Process label styles
+        if (isset($styles['label_styles'])) {
+            $labelStyles = $styles['label_styles'];
+            $css .= self::processPresetLabelStyles($labelStyles, $baseSelector);
+        }
+
+        // Process input styles
+        if (isset($styles['input_styles'])) {
+            $inputStyles = $styles['input_styles'];
+            $css .= self::processPresetInputStyles($inputStyles, $baseSelector);
+        }
+
+        // Process button styles
+        if (isset($styles['submit_button_style'])) {
+            $buttonStyles = $styles['submit_button_style'];
+            $css .= self::processPresetButtonStyles($buttonStyles, $baseSelector);
+        }
+
+        return $css;
+    }
+
+    /**
      * Helper method to generate CSS rule
      *
      * @param string $selector CSS selector
@@ -24,13 +114,33 @@ class StyleProcessor
      *
      * @return string Generated CSS rule
      */
-    public static function generateCssRule($selector, $property, $value, $suffix = '')
+    public static function generateCssRule($selector, $property, $value, $suffix = '', $important = false)
     {
         if (empty($value) && $value !== '0') {
             return '';
         }
 
-        return "{$selector} { {$property}: {$value}{$suffix}; }\n";
+        $importantFlag = $important ? ' !important' : '';
+        return "{$selector} { {$property}: {$value}{$suffix}{$importantFlag}; }\n";
+    }
+
+    /**
+     * Generate CSS rule for individual custom styles (with higher specificity)
+     *
+     * @param string $selector CSS selector
+     * @param string $property CSS property
+     * @param string $value    CSS value
+     * @param string $suffix   Optional suffix for the value (e.g., 'px')
+     *
+     * @return string Generated CSS rule with !important
+     */
+    public static function generateCustomCssRule($selector, $property, $value, $suffix = '')
+    {
+        if (empty($value) && $value !== '0') {
+            return '';
+        }
+
+        return "{$selector} { {$property}: {$value}{$suffix} !important; }\n";
     }
 
     /**
@@ -198,6 +308,34 @@ class StyleProcessor
             $css .= self::generateBoxShadow($containerSelector, $boxShadow);
         }
 
+        // Process container box shadow (alternative attribute)
+        $containerBoxShadow = Arr::get($atts, 'containerBoxShadow', []);
+        if (!empty($containerBoxShadow) && Arr::get($containerBoxShadow, 'enable', false)) {
+            $inset = Arr::get($containerBoxShadow, 'inset', false) ? 'inset ' : '';
+            $horizontal = Arr::get($containerBoxShadow, 'horizontal', 0);
+            $vertical = Arr::get($containerBoxShadow, 'vertical', 0);
+            $blur = Arr::get($containerBoxShadow, 'blur', 0);
+            $spread = Arr::get($containerBoxShadow, 'spread', 0);
+            $color = Arr::get($containerBoxShadow, 'color', 'rgba(0,0,0,0.5)');
+            
+            $boxShadowValue = "{$inset}{$horizontal}px {$vertical}px {$blur}px {$spread}px {$color}";
+            $css .= self::generateCssRule($containerSelector, 'box-shadow', $boxShadowValue);
+        }
+
+        // Process container box shadow hover
+        $containerBoxShadowHover = Arr::get($atts, 'containerBoxShadowHover', []);
+        if (!empty($containerBoxShadowHover) && Arr::get($containerBoxShadowHover, 'enable', false)) {
+            $inset = Arr::get($containerBoxShadowHover, 'inset', false) ? 'inset ' : '';
+            $horizontal = Arr::get($containerBoxShadowHover, 'horizontal', 0);
+            $vertical = Arr::get($containerBoxShadowHover, 'vertical', 0);
+            $blur = Arr::get($containerBoxShadowHover, 'blur', 0);
+            $spread = Arr::get($containerBoxShadowHover, 'spread', 0);
+            $color = Arr::get($containerBoxShadowHover, 'color', 'rgba(0,0,0,0.5)');
+            
+            $boxShadowValue = "{$inset}{$horizontal}px {$vertical}px {$blur}px {$spread}px {$color}";
+            $css .= self::generateCssRule($containerSelector . ':hover', 'box-shadow', $boxShadowValue);
+        }
+
         // Process form border
         // Convert to boolean to ensure proper type comparison
         $enableFormBorder = (bool) Arr::get($atts, 'enableFormBorder', false);
@@ -247,7 +385,7 @@ class StyleProcessor
 
         // Apply label color if set
         if ($labelColor = Arr::get($atts, 'labelColor')) {
-            $css .= self::generateCssRule($labelSelector, 'color', $labelColor);
+            $css .= self::generateCustomCssRule($labelSelector, 'color', $labelColor);
         }
 
         if ($labelTypography = Arr::get($atts, 'labelTypography')) {
@@ -280,11 +418,11 @@ class StyleProcessor
 
         // Text and background colors
         if ($inputTextColor = Arr::get($atts, 'inputTextColor')) {
-            $css .= self::generateCssRule($inputSelector, 'color', $inputTextColor);
+            $css .= self::generateCustomCssRule($inputSelector, 'color', $inputTextColor);
         }
 
         if ($inputBgColor = Arr::get($atts, 'inputBackgroundColor')) {
-            $css .= self::generateCssRule($inputBGSelectorsStr, 'background-color', $inputBgColor);
+            $css .= self::generateCustomCssRule($inputBGSelectorsStr, 'background-color', $inputBgColor);
         }
 
         // Typography
@@ -426,11 +564,17 @@ class StyleProcessor
 
         // Input styles - FOCUS state
         if ($inputTextFocusColor = Arr::get($atts, 'inputTextFocusColor')) {
-            $css .= self::generateCssRule($inputFocusSelector, 'color', $inputTextFocusColor);
+            $css .= self::generateCustomCssRule($inputFocusSelector, 'color', $inputTextFocusColor);
         }
 
         if ($inputBgFocusColor = Arr::get($atts, 'inputBackgroundFocusColor')) {
-            $css .= self::generateCssRule($inputFocusSelector, 'background-color', $inputBgFocusColor);
+            $css .= self::generateCustomCssRule($inputFocusSelector, 'background-color', $inputBgFocusColor);
+        }
+
+        // Input focus spacing
+        $inputFocusSpacing = Arr::get($atts, 'inputFocusSpacing', []);
+        if (!empty($inputFocusSpacing)) {
+            $css .= self::processSpacing($inputFocusSpacing, $inputFocusSelector, 'padding');
         }
 
         // Input border - FOCUS
@@ -535,11 +679,24 @@ class StyleProcessor
                     $groupedSelectors[] = "{$containerSelector} {$inputType}{$pseudo}";
                 }
                 $selectorStr = implode(', ', $groupedSelectors);
-                $css .= self::generateCssRule($selectorStr, 'color', $placeholderColor);
+                $css .= self::generateCustomCssRule($selectorStr, 'color', $placeholderColor);
 
                 if (Arr::get($atts, 'enableTransition', true)) {
                     $css .= self::generateCssRule($selectorStr, 'transition', 'color 0.3s ease');
                 }
+            }
+        }
+
+        // Process placeholder focus color
+        if ($placeholderFocusColor = Arr::get($atts, 'placeholderFocusColor')) {
+            // Group selectors by pseudo-element type for more efficient CSS
+            foreach ($placeholderPseudos as $pseudo) {
+                $groupedSelectors = [];
+                foreach ($inputTypes as $inputType) {
+                    $groupedSelectors[] = "{$containerSelector} {$inputType}:focus{$pseudo}";
+                }
+                $selectorStr = implode(', ', $groupedSelectors);
+                $css .= self::generateCustomCssRule($selectorStr, 'color', $placeholderFocusColor);
             }
         }
 
@@ -634,6 +791,52 @@ class StyleProcessor
             }
         }
 
+        // Process checkbox specific styling
+        if ($checkboxSize = Arr::get($atts, 'checkboxSize')) {
+            $checkboxSelector = $containerSelector . ' .ff-el-form-check-input[type="checkbox"]';
+            $css .= self::generateCssRule($checkboxSelector, 'width', $checkboxSize, 'px');
+            $css .= self::generateCssRule($checkboxSelector, 'height', $checkboxSize, 'px');
+        }
+
+        if ($checkboxBorderColor = Arr::get($atts, 'checkboxBorderColor')) {
+            $checkboxSelector = $containerSelector . ' .ff-el-form-check-input[type="checkbox"]';
+            $css .= self::generateCssRule($checkboxSelector, 'border-color', $checkboxBorderColor);
+        }
+
+        if ($checkboxBgColor = Arr::get($atts, 'checkboxBgColor')) {
+            $checkboxSelector = $containerSelector . ' .ff-el-form-check-input[type="checkbox"]';
+            $css .= self::generateCssRule($checkboxSelector, 'background-color', $checkboxBgColor);
+        }
+
+        if ($checkboxCheckedColor = Arr::get($atts, 'checkboxCheckedColor')) {
+            $checkboxSelector = $containerSelector . ' .ff-el-form-check-input[type="checkbox"]:checked';
+            $css .= self::generateCssRule($checkboxSelector, 'background-color', $checkboxCheckedColor);
+            $css .= self::generateCssRule($checkboxSelector, 'border-color', $checkboxCheckedColor);
+        }
+
+        // Process radio specific styling
+        if ($radioSize = Arr::get($atts, 'radioSize')) {
+            $radioSelector = $containerSelector . ' .ff-el-form-check-input[type="radio"]';
+            $css .= self::generateCssRule($radioSelector, 'width', $radioSize, 'px');
+            $css .= self::generateCssRule($radioSelector, 'height', $radioSize, 'px');
+        }
+
+        if ($radioBorderColor = Arr::get($atts, 'radioBorderColor')) {
+            $radioSelector = $containerSelector . ' .ff-el-form-check-input[type="radio"]';
+            $css .= self::generateCssRule($radioSelector, 'border-color', $radioBorderColor);
+        }
+
+        if ($radioBgColor = Arr::get($atts, 'radioBgColor')) {
+            $radioSelector = $containerSelector . ' .ff-el-form-check-input[type="radio"]';
+            $css .= self::generateCssRule($radioSelector, 'background-color', $radioBgColor);
+        }
+
+        if ($radioCheckedColor = Arr::get($atts, 'radioCheckedColor')) {
+            $radioSelector = $containerSelector . ' .ff-el-form-check-input[type="radio"]:checked';
+            $css .= self::generateCssRule($radioSelector, 'background-color', $radioCheckedColor);
+            $css .= self::generateCssRule($radioSelector, 'border-color', $radioCheckedColor);
+        }
+
         // Handle transitions for all input elements if enabled
         if (Arr::get($atts, 'enableTransition', true)) {
             $transitionSelectors = [
@@ -680,11 +883,11 @@ class StyleProcessor
         // NORMAL STATE STYLES
         // Button colors
         if ($buttonColor = Arr::get($atts, 'buttonColor')) {
-            $css .= self::generateCssRule($buttonSelector, 'color', $buttonColor);
+            $css .= self::generateCssRule($buttonSelector, 'color', $buttonColor, '', true);
         }
 
         if ($buttonBgColor = Arr::get($atts, 'buttonBGColor')) {
-            $css .= self::generateCssRule($buttonSelector, 'background-color', $buttonBgColor);
+            $css .= self::generateCssRule($buttonSelector, 'background-color', $buttonBgColor, '', true);
         }
 
         // Button typography
@@ -703,11 +906,11 @@ class StyleProcessor
 
         // HOVER STATE STYLES
         if ($buttonHoverColor = Arr::get($atts, 'buttonHoverColor')) {
-            $css .= self::generateCssRule($buttonHoverSelector, 'color', $buttonHoverColor);
+            $css .= self::generateCssRule($buttonHoverSelector, 'color', $buttonHoverColor, '', true);
         }
 
         if ($buttonHoverBgColor = Arr::get($atts, 'buttonHoverBGColor')) {
-            $css .= self::generateCssRule($buttonHoverSelector, 'background-color', $buttonHoverBgColor);
+            $css .= self::generateCssRule($buttonHoverSelector, 'background-color', $buttonHoverBgColor, '', true);
         }
 
         // Button hover typography
@@ -822,7 +1025,7 @@ class StyleProcessor
         $buttonBoxShadowHover = Arr::get($atts, 'buttonBoxShadowHover', []);
 
         // Always add a box shadow for testing
-        if ($buttonHoverBGColor) {
+        if ($buttonHoverBgColor) {
             $css .= self::generateCssRule($buttonHoverSelector, 'box-shadow', '0 0 10px 0 rgba(0,0,0,0.3)', '');
         }
 
@@ -1688,6 +1891,253 @@ class StyleProcessor
                 $backgroundAttachment = Arr::get($atts, 'backgroundAttachment', 'scroll');
                 $css .= self::generateCssRule($selector, 'background-attachment', $backgroundAttachment);
             }
+        }
+
+        // Process background overlay color
+        $backgroundOverlayColor = Arr::get($atts, 'backgroundOverlayColor', '');
+        $backgroundOverlayOpacity = Arr::get($atts, 'backgroundOverlayOpacity', 0.5);
+        
+        if (!empty($backgroundOverlayColor)) {
+            // Create overlay using ::before pseudo-element
+            $overlaySelector = $selector . '::before';
+            $css .= self::generateCssRule($overlaySelector, 'content', '""');
+            $css .= self::generateCssRule($overlaySelector, 'position', 'absolute');
+            $css .= self::generateCssRule($overlaySelector, 'top', '0');
+            $css .= self::generateCssRule($overlaySelector, 'left', '0');
+            $css .= self::generateCssRule($overlaySelector, 'right', '0');
+            $css .= self::generateCssRule($overlaySelector, 'bottom', '0');
+            $css .= self::generateCssRule($overlaySelector, 'background-color', $backgroundOverlayColor);
+            $css .= self::generateCssRule($overlaySelector, 'opacity', $backgroundOverlayOpacity);
+            $css .= self::generateCssRule($overlaySelector, 'pointer-events', 'none');
+            $css .= self::generateCssRule($overlaySelector, 'z-index', '1');
+            
+            // Ensure the container has relative positioning for the overlay
+            $css .= self::generateCssRule($selector, 'position', 'relative');
+        }
+
+        return $css;
+    }
+
+    /**
+     * Process container styles from preset
+     *
+     * @param array  $containerStyles Container styles
+     * @param string $baseSelector    Base CSS selector
+     *
+     * @return string Generated CSS
+     */
+    private static function processPresetContainerStyles($containerStyles, $baseSelector)
+    {
+        $css = '';
+        $selector = $baseSelector;
+
+        // Background color
+        if (isset($containerStyles['backgroundColor']['value']) && !empty($containerStyles['backgroundColor']['value'])) {
+            $css .= self::generateCssRule($selector, 'background-color', $containerStyles['backgroundColor']['value']);
+        }
+
+        // Text color
+        if (isset($containerStyles['color']['value']) && !empty($containerStyles['color']['value'])) {
+            $css .= self::generateCssRule($selector, 'color', $containerStyles['color']['value']);
+        }
+
+        // Margin
+        if (isset($containerStyles['margin']['value'])) {
+            $margin = $containerStyles['margin']['value'];
+            if (isset($margin['top']) && $margin['top'] !== '') {
+                $css .= self::generateCssRule($selector, 'margin-top', $margin['top'], 'px');
+            }
+            if (isset($margin['bottom']) && $margin['bottom'] !== '') {
+                $css .= self::generateCssRule($selector, 'margin-bottom', $margin['bottom'], 'px');
+            }
+            if (isset($margin['left']) && $margin['left'] !== '') {
+                $css .= self::generateCssRule($selector, 'margin-left', $margin['left'], 'px');
+            }
+            if (isset($margin['right']) && $margin['right'] !== '') {
+                $css .= self::generateCssRule($selector, 'margin-right', $margin['right'], 'px');
+            }
+        }
+
+        // Padding
+        if (isset($containerStyles['padding']['value'])) {
+            $padding = $containerStyles['padding']['value'];
+            if (isset($padding['top']) && $padding['top'] !== '') {
+                $css .= self::generateCssRule($selector, 'padding-top', $padding['top'], 'px');
+            }
+            if (isset($padding['bottom']) && $padding['bottom'] !== '') {
+                $css .= self::generateCssRule($selector, 'padding-bottom', $padding['bottom'], 'px');
+            }
+            if (isset($padding['left']) && $padding['left'] !== '') {
+                $css .= self::generateCssRule($selector, 'padding-left', $padding['left'], 'px');
+            }
+            if (isset($padding['right']) && $padding['right'] !== '') {
+                $css .= self::generateCssRule($selector, 'padding-right', $padding['right'], 'px');
+            }
+        }
+
+        return $css;
+    }
+
+    /**
+     * Process label styles from preset
+     *
+     * @param array  $labelStyles Label styles
+     * @param string $baseSelector Base CSS selector
+     *
+     * @return string Generated CSS
+     */
+    private static function processPresetLabelStyles($labelStyles, $baseSelector)
+    {
+        $css = '';
+        $selector = $baseSelector . ' .ff-el-input--label label';
+
+        // Label color
+        if (isset($labelStyles['color']['value']) && !empty($labelStyles['color']['value'])) {
+            $css .= self::generateCssRule($selector, 'color', $labelStyles['color']['value']);
+        }
+
+        // Label typography
+        if (isset($labelStyles['typography']['value'])) {
+            $typography = $labelStyles['typography']['value'];
+            $css .= self::processTypography($typography, $selector);
+        }
+
+        return $css;
+    }
+
+    /**
+     * Process input styles from preset
+     *
+     * @param array  $inputStyles Input styles
+     * @param string $baseSelector Base CSS selector
+     *
+     * @return string Generated CSS
+     */
+    private static function processPresetInputStyles($inputStyles, $baseSelector)
+    {
+        $css = '';
+        $inputSelector = $baseSelector . ' .ff-el-form-control, ' . $baseSelector . ' input, ' . $baseSelector . ' textarea, ' . $baseSelector . ' select';
+
+        if (isset($inputStyles['all_tabs']['tabs'])) {
+            $tabs = $inputStyles['all_tabs']['tabs'];
+
+            // Normal state
+            if (isset($tabs['normal']['value'])) {
+                $normalStyles = $tabs['normal']['value'];
+                $css .= self::processInputStateStyles($normalStyles, $inputSelector);
+            }
+
+            // Focus state
+            if (isset($tabs['focus']['value'])) {
+                $focusStyles = $tabs['focus']['value'];
+                $focusSelector = $inputSelector . ':focus';
+                $css .= self::processInputStateStyles($focusStyles, $focusSelector);
+            }
+        }
+
+        return $css;
+    }
+
+    /**
+     * Process input state styles (normal/focus)
+     *
+     * @param array  $styles Input state styles
+     * @param string $selector CSS selector
+     *
+     * @return string Generated CSS
+     */
+    private static function processInputStateStyles($styles, $selector)
+    {
+        $css = '';
+
+        // Background color
+        if (isset($styles['backgroundColor']['value']) && !empty($styles['backgroundColor']['value'])) {
+            $css .= self::generateCssRule($selector, 'background-color', $styles['backgroundColor']['value']);
+        }
+
+        // Text color
+        if (isset($styles['color']['value']) && !empty($styles['color']['value'])) {
+            $css .= self::generateCssRule($selector, 'color', $styles['color']['value']);
+        }
+
+        // Typography
+        if (isset($styles['typography']['value'])) {
+            $css .= self::processTypography($styles['typography']['value'], $selector);
+        }
+
+        // Border
+        if (isset($styles['border']['value']) && isset($styles['border']['value']['status']) && $styles['border']['value']['status'] === 'yes') {
+            $border = $styles['border']['value'];
+            $css .= self::processBorder($border, $selector, false);
+        }
+
+        return $css;
+    }
+
+    /**
+     * Process button styles from preset
+     *
+     * @param array  $buttonStyles Button styles
+     * @param string $baseSelector Base CSS selector
+     *
+     * @return string Generated CSS
+     */
+    private static function processPresetButtonStyles($buttonStyles, $baseSelector)
+    {
+        $css = '';
+        $buttonSelector = $baseSelector . ' .ff-btn-submit';
+
+        if (isset($buttonStyles['all_tabs']['tabs'])) {
+            $tabs = $buttonStyles['all_tabs']['tabs'];
+
+            // Normal state
+            if (isset($tabs['normal']['value'])) {
+                $normalStyles = $tabs['normal']['value'];
+                $css .= self::processButtonStateStyles($normalStyles, $buttonSelector);
+            }
+
+            // Hover state
+            if (isset($tabs['hover']['value'])) {
+                $hoverStyles = $tabs['hover']['value'];
+                $hoverSelector = $buttonSelector . ':hover';
+                $css .= self::processButtonStateStyles($hoverStyles, $hoverSelector);
+            }
+        }
+
+        return $css;
+    }
+
+    /**
+     * Process button state styles (normal/hover)
+     *
+     * @param array  $styles Button state styles
+     * @param string $selector CSS selector
+     *
+     * @return string Generated CSS
+     */
+    private static function processButtonStateStyles($styles, $selector)
+    {
+        $css = '';
+
+        // Background color
+        if (isset($styles['backgroundColor']['value']) && !empty($styles['backgroundColor']['value'])) {
+            $css .= self::generateCssRule($selector, 'background-color', $styles['backgroundColor']['value'], '', true);
+        }
+
+        // Text color
+        if (isset($styles['color']['value']) && !empty($styles['color']['value'])) {
+            $css .= self::generateCssRule($selector, 'color', $styles['color']['value'], '', true);
+        }
+
+        // Typography
+        if (isset($styles['typography']['value'])) {
+            $css .= self::processTypography($styles['typography']['value'], $selector);
+        }
+
+        // Border
+        if (isset($styles['border']['value']) && isset($styles['border']['value']['status']) && $styles['border']['value']['status'] === 'yes') {
+            $border = $styles['border']['value'];
+            $css .= self::processBorder($border, $selector, false);
         }
 
         return $css;
