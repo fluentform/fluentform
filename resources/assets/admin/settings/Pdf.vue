@@ -59,7 +59,7 @@
             save() {
                 this.saving = true;
                 FluentFormsGlobal.$post({
-                    action: 'fluentform_pdf_admin_ajax_actions',
+                    action: 'fluent_pdf_admin_ajax_actions',
                     route: 'save_global_settings',
                     settings: this.settings
                 })
@@ -76,7 +76,7 @@
             getGlobalPdfSettings() {
                 this.loading = true;
                 FluentFormsGlobal.$get({
-                    action: 'fluentform_pdf_admin_ajax_actions',
+                    action: 'fluent_pdf_admin_ajax_actions',
                     route: 'get_global_settings'
                 })
                     .then(response => {

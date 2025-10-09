@@ -66,7 +66,7 @@
                 FluentFormsGlobal.$get({
                     form_id: this.form_id,
                     feed_id: this.edit_id,
-                    action: 'fluentform_pdf_admin_ajax_actions',
+                    action: 'fluent_pdf_admin_ajax_actions',
                     route: 'get_feed'
                 })
                     .then(response => {
@@ -86,7 +86,7 @@
                 FluentFormsGlobal.$post({
                     form_id: this.form_id,
                     feed_id: this.edit_id,
-                    action: 'fluentform_pdf_admin_ajax_actions',
+                    action: 'fluent_pdf_admin_ajax_actions',
                     route: 'save_feed',
                     feed: this.feed
                 })

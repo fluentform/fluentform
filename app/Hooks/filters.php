@@ -15,6 +15,7 @@
 
 add_filter('fluentform/addons_extra_menu', function ($menus) {
     $menus['fluentform_pdf'] = __('Fluent Forms PDF', 'fluentform');
+    $menus['fluent_pdf'] = __('Fluent PDF', 'fluentform');
 
     return $menus;
 }, 99, 1);
