@@ -138,18 +138,7 @@
                                             :conditionals="settings[field.key]"
                                             :hasPro="has_pro"/>
 
-                                    <notice class="ff_alert_between" type="danger-soft" v-if="!has_pro">
-                                        <div>
-                                            <h6 class="title">{{ $t('Conditional Logics is a Pro Feature') }}</h6>
-                                            <p class="text">
-                                                {{ $t('Please upgrade to pro to unlock this feature.') }}</p>
-                                        </div>
-                                        <a target="_blank"
-                                           href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-                                           class="el-button el-button--danger el-button--small">
-                                            {{ $t('Upgrade to Pro') }}
-                                        </a>
-                                    </notice>
+                                    <update-to-pro-content :update-message="$t('Upgrade to get access to import entries.')" v-if="!has_pro"/>
                                 </template>
 
                                 <template v-else-if="field.component == 'value_text'">
@@ -342,10 +331,12 @@
     import Notice from '@/admin/components/Notice/Notice.vue';
     import wpEditor from '@/common/_wp_editor';
     import PostMetaPluginMapping from '@/admin/components/settings/_PostMetaPluginsMapping';
+    import UpdateToProContent from "@/admin/components/_updateToProContent.vue";
 
     export default {
         name: 'general_notification_edit',
         components: {
+            UpdateToProContent,
 	        PostMetaPluginMapping,
             SelectionRouting,
             ErrorView,

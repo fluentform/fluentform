@@ -61,7 +61,15 @@
                                         </button>
                                     </div>
                                     <div class="el-dialog__body">
-                                        <iframe class="w-100" style="height: 340px; border-radius: 8px;" src="https://www.youtube.com/embed/vH0GuhqHA7I?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                        <iframe
+                                                class="w-100"
+                                                style="height: 340px; border-radius: 8px;"
+                                                src="https://www.youtube.com/embed/geJ9ZQGZz2o?si=PYY7lYWilINmngUV"
+                                                title="YouTube video player"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowfullscreen>
+                                        </iframe>
                                     </div>
                                 </div>
                             </div><!-- .el-dialog__wrapper -->
@@ -199,7 +207,7 @@
                                 <p class="text mb-4">
                                     <?php _e('If you need any feature on Fluent Forms, then please request a feature to us with your requirement.', 'fluentform') ?>
                                 </p>
-                                <a target="_blank" class="el-button el-button--cyan el-button--soft" href="https://github.com/fluentform/fluentform/issues">
+                                <a target="_blank" class="el-button el-button--cyan el-button--soft" href="https://fluentforms.com/contact-us/">
                                     <?php _e('Request Now', 'fluentform') ?>
                                 </a>
                             </div>
