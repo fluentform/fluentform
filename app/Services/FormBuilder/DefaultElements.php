@@ -1838,6 +1838,18 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputText',
         ],
     ];
+    $defaultElements['container']['accordion'] = [
+        'index'          => 18,
+        'element'        => 'accordion',
+        'attributes'     => [],
+        'settings'       => [],
+        'options'        => [],
+        'editor_options' => [
+            'title'      => __('Accordion/Tab', 'fluentform'),
+            'icon_class' => 'ff-edit-section-break',
+            'template'   => 'CustomEditorField',
+        ],
+    ];
 }
 
 // Add coordinate fields to address elements when FluentFormPro is active

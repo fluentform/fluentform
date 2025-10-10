@@ -1061,7 +1061,7 @@ add_action('enqueue_block_editor_assets', function () {
     $presets = apply_filters('fluentform/block_editor_style_presets', $presets);
    
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
-        'logo'                    => fluentFormMix('img/fluent_icon.png'),
+        'logo'                    => fluentFormMix('img/fluent_icon.svg'),
         'forms'                   => $forms,
         'style_presets'           => $presets,
         'theme_style'             => apply_filters('fluentform/load_theme_style', false) ? 'ffs_inherit_theme' : '',

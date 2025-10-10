@@ -405,6 +405,7 @@ jQuery(document).ready(function () {
                                 response: res
                             });
 
+
                             const customFailedEvent = new CustomEvent('fluentform_submission_failed', {
                                 detail: {
                                     form: $theForm[0],
@@ -414,7 +415,9 @@ jQuery(document).ready(function () {
                             });
                             document.dispatchEvent(customFailedEvent);
 
-                            if (!res || !res.responseJSON || !res.responseJSON || !res.responseJSON.errors) {
+
+                            if (!res || !res.responseJSON || !(res.responseJSON.data || res.responseJSON.errors)) {
+
                                 showErrorMessages(res.responseText);
                                 return;
                             }
@@ -424,7 +427,7 @@ jQuery(document).ready(function () {
                                 addHiddenData(res.responseJSON.append_data);
                             }
 
-                            showErrorMessages(res.responseJSON.errors);
+                            showErrorMessages(res.responseJSON.errors || res.responseJSON.data);
 
                             scrollToFirstError(350);
 
