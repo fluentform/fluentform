@@ -1,11 +1,11 @@
 <template>
     <span class="fluent_form_doc_video" v-if="current_doc">
-        <el-button 
-            class="el-button--soft" 
-            v-if="btn_text" 
-            :title="$t('Show Video')" 
-            @click="introVisible=true" 
-            :size="btn_size" 
+        <el-button
+            class="el-button--soft"
+            v-if="btn_text"
+            :title="$t('Show Video')"
+            @click="introVisible=true"
+            :size="btn_size"
             icon="ff-icon ff-icon-play-circle-filled"
             type="primary"
         >
@@ -102,6 +102,11 @@ export default {
                     video_id: 'wzQpEkVQifw',
                     title: 'How to connect GetResponse',
                     read_more: 'https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/getresponse-integration/'
+                },
+                advancedValidation: {
+                    video_id: 'mx48ikS4fXw',
+                    title: 'Fluent Forms Advanced Form validation',
+                    read_more: 'https://fluentforms.com/how-to-use-advanced-form-validation-in-wordpress-forms/'
                 }
             },
             current_doc: null

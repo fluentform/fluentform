@@ -14,10 +14,8 @@ do_action('fluentform/global_menu'); ?>
 
             <div class="ff_card ff_update_card el-row is-align-middle mb-4">
                 <div class="ff-update-icon">
-                    <span><i class="el-icon-success el-icon-info"></i>
-                    
+                    <span><i class="el-icon-warning el-icon-warning"></i>
                 </div>
-
                 <div class="ff-update-body">
                     <h5 class="title mb-1">
                         <?php _e('You are using the free version of Fluent Forms.', 'fluentform'); ?>
