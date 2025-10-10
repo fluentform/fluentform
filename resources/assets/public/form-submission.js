@@ -817,6 +817,7 @@ jQuery(document).ready(function () {
                             var $parent = $(this).closest('.ff-el-group');
                             if ($parent.hasClass('ff-el-is-error')) {
                                 $parent.removeClass('ff-el-is-error').find('.error.text-danger').remove();
+                                $(document.body).trigger('fluentform_error_cleared', {form: $theForm, element: $(this)});
                             }
                         }
                     });
