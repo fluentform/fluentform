@@ -99,6 +99,12 @@ trait GlobalDefaultMessages
                 'value'     => __('Validation fails for maximum file count', 'fluentform'),
                 'help_text' => __("This message will be shown if validation fails for maximum file count.", 'fluentform'),
             ],
+            'min_length' => [
+                'label'     => __('Minimum Length', 'fluentform'),
+                'value'     => __('This field must be at least :min characters long', 'fluentform'),
+                'help_text' => __("This message will be shown if minimum length validation fails.", 'fluentform'),
+            ],
+
         ];
 
         if (defined('FLUENTFORMPRO')) {

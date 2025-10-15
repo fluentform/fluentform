@@ -234,6 +234,7 @@ $rules = [
     "max_file_size",
     "max_file_count",
     "valid_phone_number",
+    "min_length"
 ];
 foreach ($rules as $ruleName) {
     $app->addFilter('fluentform/get_global_message_' . $ruleName,
@@ -317,6 +318,43 @@ $app->addFilter('fluentform/current_user_allowed_forms', function ($form){
 $app->addFilter('fluentform/validate_input_item_input_email', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
 
 $app->addFilter('fluentform/validate_input_item_input_text', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
+
+
+// Register custom password validation rules
+add_filter('fluentform/validate_input_item_input_password', function ($validation, $field, $formData, $fields, $form, $errors) {
+    $isStrongPassword = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.require_strong_password', false);
+
+    if (!$isStrongPassword) {
+        return $validation;
+    }
+
+    $fieldName = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'name');
+
+    if (!$fieldName) {
+        return $validation;
+    }
+
+    $value = \FluentForm\Framework\Helpers\ArrayHelper::get($formData, $fieldName);
+
+    if (!$value) {
+        return $validation;
+    }
+
+    $hasUppercase = preg_match('/[A-Z]/', $value);
+    $hasLowercase = preg_match('/[a-z]/', $value);
+    $hasNumbers = preg_match('/[0-9]/', $value);
+    $hasSpecialChars = preg_match('/[^A-Za-z0-9]/', $value);
+
+    $isValid = $hasUppercase && $hasLowercase && $hasNumbers && $hasSpecialChars;
+
+    if ($isValid) {
+        return $validation;
+    }
+
+    return [
+        'validate_strong_password' => apply_filters('fluentform/validation_message_strong_password', __('Password must contain a mix of uppercase letters, lowercase letters, numbers, and special characters', 'fluentform'), $field),
+    ];
+}, 10, 6);
 
 $app->addFilter('fluentform/will_return_html', function ($result, $integration, $key) {
     $dictionary = [
