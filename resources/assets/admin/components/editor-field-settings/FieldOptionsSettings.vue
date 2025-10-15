@@ -124,6 +124,7 @@ import selectGroup from "./templates/selectGroup.vue";
 import CustomSettingsField from "./templates/CustomSettingsField.vue";
 import dynamicFilter from "./templates/dynamicFilter.vue";
 import repeaterContainers from "./templates/repeaterContainers.vue";
+import selectProductIds from "./templates/selectProductIds.vue";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -177,7 +178,8 @@ export default {
         ff_selectGroup: selectGroup,
         ff_dynamicFilter: dynamicFilter,
         ff_repeaterContainers: repeaterContainers,
-        ff_CustomSettingsField: CustomSettingsField
+        ff_CustomSettingsField: CustomSettingsField,
+        ff_selectProductIds: selectProductIds
     },
     data() {
         return {
@@ -267,12 +269,12 @@ export default {
         dependancyPass(listItem) {
             if (listItem.dependency) {
                 let optionPaths = listItem.dependency.depends_on.split('/');
-                
+
                 // Special handling for parent_container check
                 if (listItem.dependency.depends_on === 'parent_container') {
                     const isInsideRepeater = this.isInsideRepeaterContainer(this.editItem);
                     const parentType = isInsideRepeater ? 'repeater_container' : '';
-                    
+
                     return this.compare(parentType, listItem.dependency.operator, listItem.dependency.value);
                 }
 

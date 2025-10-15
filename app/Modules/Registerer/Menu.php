@@ -1090,7 +1090,7 @@ class Menu
             'fluentform/global_settings_components',
             'Use fluentform/global_settings_components instead of fluentform_global_settings_components.'
         );
-        
+        /** Global Settings Menu Items which uses do_action('fluentform/global_settings_component_' . $currentComponent); for menu content **/
         $components = apply_filters('fluentform/global_settings_components', $components);
 
         $components['reCAPTCHA'] = [

@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react-jsx-runtime.development.js":
-/*!*************************************************************************************************!*\
-  !*** ./node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react-jsx-runtime.development.js ***!
-  \*************************************************************************************************/
+/***/ "./node_modules/react/cjs/react-jsx-runtime.development.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/react/cjs/react-jsx-runtime.development.js ***!
+  \*****************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 /**
@@ -24,7 +24,7 @@ if (true) {
   (function() {
 'use strict';
 
-var React = __webpack_require__(/*! react */ "./node_modules/.pnpm/react@18.3.1/node_modules/react/index.js");
+var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 // ATTENTION
 // When adding new symbols to this file,
@@ -1218,7 +1218,6 @@ function validateFragmentProps(fragment) {
   }
 }
 
-var didWarnAboutKeySpread = {};
 function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
   {
     var validType = isValidElementType(type); // We warn in this case but don't throw. We expect the element creation to
@@ -1289,24 +1288,6 @@ function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
       }
     }
 
-    {
-      if (hasOwnProperty.call(props, 'key')) {
-        var componentName = getComponentNameFromType(type);
-        var keys = Object.keys(props).filter(function (k) {
-          return k !== 'key';
-        });
-        var beforeExample = keys.length > 0 ? '{key: someKey, ' + keys.join(': ..., ') + ': ...}' : '{key: someKey}';
-
-        if (!didWarnAboutKeySpread[componentName + beforeExample]) {
-          var afterExample = keys.length > 0 ? '{' + keys.join(': ..., ') + ': ...}' : '{}';
-
-          error('A props object containing a "key" prop is being spread into JSX:\n' + '  let props = %s;\n' + '  <%s {...props} />\n' + 'React keys must be passed directly to JSX without using spread:\n' + '  let props = %s;\n' + '  <%s key={someKey} {...props} />', beforeExample, componentName, afterExample, componentName);
-
-          didWarnAboutKeySpread[componentName + beforeExample] = true;
-        }
-      }
-    }
-
     if (type === REACT_FRAGMENT_TYPE) {
       validateFragmentProps(element);
     } else {
@@ -1345,10 +1326,10 @@ exports.jsxs = jsxs;
 
 /***/ }),
 
-/***/ "./node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js":
-/*!*************************************************************************************!*\
-  !*** ./node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js ***!
-  \*************************************************************************************/
+/***/ "./node_modules/react/cjs/react.development.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/react/cjs/react.development.js ***!
+  \*****************************************************/
 /***/ ((module, exports, __webpack_require__) => {
 
 /* module decorator */ module = __webpack_require__.nmd(module);
@@ -1377,7 +1358,7 @@ if (
 ) {
   __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
 }
-          var ReactVersion = '18.3.1';
+          var ReactVersion = '18.2.0';
 
 // ATTENTION
 // When adding new symbols to this file,
@@ -4053,7 +4034,6 @@ exports.PureComponent = PureComponent;
 exports.StrictMode = REACT_STRICT_MODE_TYPE;
 exports.Suspense = REACT_SUSPENSE_TYPE;
 exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
-exports.act = act;
 exports.cloneElement = cloneElement$1;
 exports.createContext = createContext;
 exports.createElement = createElement$1;
@@ -4096,33 +4076,31 @@ if (
 
 /***/ }),
 
-/***/ "./node_modules/.pnpm/react@18.3.1/node_modules/react/index.js":
-/*!*********************************************************************!*\
-  !*** ./node_modules/.pnpm/react@18.3.1/node_modules/react/index.js ***!
-  \*********************************************************************/
+/***/ "./node_modules/react/index.js":
+/*!*************************************!*\
+  !*** ./node_modules/react/index.js ***!
+  \*************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 
 
-if (false) // removed by dead control flow
-{} else {
-  module.exports = __webpack_require__(/*! ./cjs/react.development.js */ "./node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js");
+if (false) {} else {
+  module.exports = __webpack_require__(/*! ./cjs/react.development.js */ "./node_modules/react/cjs/react.development.js");
 }
 
 
 /***/ }),
 
-/***/ "./node_modules/.pnpm/react@18.3.1/node_modules/react/jsx-runtime.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/.pnpm/react@18.3.1/node_modules/react/jsx-runtime.js ***!
-  \***************************************************************************/
+/***/ "./node_modules/react/jsx-runtime.js":
+/*!*******************************************!*\
+  !*** ./node_modules/react/jsx-runtime.js ***!
+  \*******************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 
 
-if (false) // removed by dead control flow
-{} else {
-  module.exports = __webpack_require__(/*! ./cjs/react-jsx-runtime.development.js */ "./node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react-jsx-runtime.development.js");
+if (false) {} else {
+  module.exports = __webpack_require__(/*! ./cjs/react-jsx-runtime.development.js */ "./node_modules/react/cjs/react-jsx-runtime.development.js");
 }
 
 
@@ -4180,227 +4158,70 @@ if (false) // removed by dead control flow
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!*****************************************************!*\
-  !*** ./resources/assets/admin/fluent_gutenblock.js ***!
-  \*****************************************************/
+/*!**********************************!*\
+  !*** ./guten_block/src/index.js ***!
+  \**********************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/.pnpm/react@18.3.1/node_modules/react/jsx-runtime.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { if (r) i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n;else { var o = function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); }; o("next", 0), o("throw", 1), o("return", 2); } }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+
 var __ = wp.i18n.__;
 var registerBlockType = wp.blocks.registerBlockType;
-var InspectorControls = wp.blockEditor.InspectorControls;
-var _wp = wp,
-  _wp$serverSideRender = _wp.serverSideRender,
-  ServerSideRender = _wp$serverSideRender === void 0 ? wp.components.ServerSideRender : _wp$serverSideRender;
-var apiFetch = window.wp.apiFetch;
-var _wp$components = wp.components,
-  SelectControl = _wp$components.SelectControl,
-  PanelBody = _wp$components.PanelBody;
-var Component = window.wp.element.Component;
-var getFormMeta = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(formId, metaKey) {
-    var path, response;
-    return _regenerator().w(function (_context) {
-      while (1) switch (_context.n) {
-        case 0:
-          if (formId) {
-            _context.n = 1;
-            break;
-          }
-          return _context.a(2);
-        case 1:
-          path = "".concat(window.fluentform_block_vars.rest.namespace, "/").concat(window.fluentform_block_vars.rest.version, "/settings/").concat(formId, "?meta_key=").concat(metaKey);
-          _context.n = 2;
-          return apiFetch({
-            path: path
-          });
-        case 2:
-          response = _context.v;
-          return _context.a(2, response.length && response[0].value || false);
-      }
-    }, _callee);
-  }));
-  return function getFormMeta(_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-}();
-var fluentLogo = wp.element.createElement("svg", {
+var SelectControl = wp.components.SelectControl;
+var fluentLogo = wp.element.createElement('svg', {
   width: 20,
   height: 20
-}, wp.element.createElement("path", {
+}, wp.element.createElement('path', {
   d: "M15.57,0H4.43A4.43,4.43,0,0,0,0,4.43V15.57A4.43,4.43,0,0,0,4.43,20H15.57A4.43,4.43,0,0,0,20,15.57V4.43A4.43,4.43,0,0,0,15.57,0ZM12.82,14a2.36,2.36,0,0,1-1.66.68H6.5A2.31,2.31,0,0,1,7.18,13a2.36,2.36,0,0,1,1.66-.68l4.66,0A2.34,2.34,0,0,1,12.82,14Zm3.3-3.46a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,10.53Zm0-3.73a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,6.81Z"
 }));
-var Edit = /*#__PURE__*/function (_Component) {
-  function Edit() {
-    var _this;
-    _classCallCheck(this, Edit);
-    _this = _callSuper(this, Edit, arguments);
-    _defineProperty(_this, "checkIfConversationalForm", /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(formId) {
-        var isConversationalForm;
-        return _regenerator().w(function (_context2) {
-          while (1) switch (_context2.n) {
-            case 0:
-              if (formId) {
-                _context2.n = 1;
-                break;
-              }
-              return _context2.a(2);
-            case 1:
-              _context2.n = 2;
-              return getFormMeta(formId, "is_conversion_form");
-            case 2:
-              isConversationalForm = _context2.v;
-              _this.props.setAttributes({
-                isConversationalForm: isConversationalForm === "yes"
-              });
-            case 3:
-              return _context2.a(2);
-          }
-        }, _callee2);
-      }));
-      return function (_x3) {
-        return _ref2.apply(this, arguments);
-      };
-    }());
-    _defineProperty(_this, "handleFormChange", function (formId) {
-      _this.props.setAttributes({
-        formId: formId
-      });
-      if (!formId) {
-        _this.props.setAttributes({
-          themeStyle: "",
-          isThemeChange: false,
-          isConversationalForm: false
-        });
-      } else {
-        _this.checkIfConversationalForm(formId);
-      }
-    });
-    return _this;
-  }
-  _inherits(Edit, _Component);
-  return _createClass(Edit, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var maybeSetStyle = !this.props.attributes.themeStyle && window.fluentform_block_vars.theme_style;
-      if (maybeSetStyle) {
-        this.props.setAttributes({
-          themeStyle: window.fluentform_block_vars.theme_style
-        });
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$props = this.props,
-        attributes = _this$props.attributes,
-        setAttributes = _this$props.setAttributes;
-      var config = window.fluentform_block_vars;
-      var presets = config.style_presets;
-      var settings;
-      var blockContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-        className: "flueform-guten-wrapper",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-          className: "fluentform-logo",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
-            src: config.logo,
-            alt: "Fluent Forms Logo"
-          })
-        }), settings]
-      }, "ff-form-sub-wrapper");
-      settings = [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(InspectorControls, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
-          title: "Select your Fluent Forms",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-            label: __("Select a Form"),
-            value: attributes.formId,
-            options: config.forms.map(function (form) {
-              return {
-                value: form.id,
-                label: form.title
-              };
-            }),
-            onChange: this.handleFormChange
-          }, "sub_select_form"), attributes.formId && attributes.hasOwnProperty("isConversationalForm") && attributes.isConversationalForm != true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-            label: __("Select a Theme Style"),
-            value: attributes.themeStyle,
-            options: presets,
-            onChange: function onChange(themeStyle) {
-              setAttributes({
-                themeStyle: themeStyle,
-                isThemeChange: true
-              });
-            }
-          }, "ff-sub_select_theme")]
-        })
-      }, "ff-select-form")];
-      if (attributes.formId) {
-        if (attributes.isConversationalForm == true) {
-          settings.push(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-            className: "conv-demo",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
-              src: config.conversational_demo_img,
-              alt: "Fluent Forms Conversational Form"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("strong", {
-                children: __("This is a demo! The actual Conversational Form may look different in live pages.")
-              })
-            })]
-          }, "ff-conv-sub-wrapper"));
-        } else {
-          settings.push(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ServerSideRender, {
-            block: "fluentfom/guten-block",
-            attributes: attributes
-          }, "ff-preview"));
-        }
-      } else {
-        settings.push(blockContent);
-        settings.push(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-          label: __("Select a Form"),
-          value: "",
-          options: config.forms.map(function (form) {
-            return {
-              value: form.id,
-              label: form.title
-            };
-          }),
-          onChange: this.handleFormChange
-        }, "ff-main-select-form"));
-      }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-        className: "flueform-guten-wrapper",
-        children: settings
-      });
-    }
-  }]);
-}(Component);
-registerBlockType("fluentfom/guten-block", {
-  title: __("Fluent Forms"),
+registerBlockType('fluentfom/guten-block', {
+  title: __('Fluent Forms'),
   icon: fluentLogo,
-  category: "formatting",
-  keywords: [__("Contact Form"), __("Fluent Forms"), __("Forms"), __("Advanced Forms"), __("fluentforms-gutenberg-block")],
-  edit: Edit
+  category: 'formatting',
+  keywords: [__('Contact Form'), __('Fluent Forms'), __('Forms'), __('Advanced Forms'), __('fluentforms-gutenberg-block')],
+  attributes: {
+    formId: {
+      type: 'string'
+    },
+    className: {
+      type: 'string'
+    }
+  },
+  edit: function edit(_ref) {
+    var attributes = _ref.attributes,
+      setAttributes = _ref.setAttributes;
+    var config = window.fluentform_block_vars;
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      className: "flueform-guten-wrapper",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        className: "fluentform-logo",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
+          src: config.logo,
+          alt: "Fluent Forms Logo"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+        label: __("Select a Form"),
+        value: attributes.formId,
+        options: config.forms.map(function (form) {
+          return {
+            value: form.id,
+            label: form.title
+          };
+        }),
+        onChange: function onChange(formId) {
+          return setAttributes({
+            formId: formId
+          });
+        }
+      })]
+    });
+  },
+  save: function save(_ref2) {
+    var attributes = _ref2.attributes;
+    return '[fluentform id="' + attributes.formId + '"]';
+  }
 });
 })();
 

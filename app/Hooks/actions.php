@@ -838,6 +838,10 @@ $app->addAction('fluentform/schedule_feed', function ($queueId) use ($app) {
 
 $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
+
+    // Load FluentCart Integration
+    (new \FluentForm\App\Services\Integrations\FluentCart\Bootstrap())->boot($app);
+
     new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
     // Load payment module
     if (Helper::isPaymentCompatible()) {

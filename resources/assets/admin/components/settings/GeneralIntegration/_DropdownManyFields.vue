@@ -13,6 +13,7 @@
                 <td>
                     <el-select class="w-100" v-model="item.label">
                         <el-option
+                            filterable
                             v-for="(optionLabel, optionValue) in field.options"
                             :key="optionValue"
                             :label="optionLabel"

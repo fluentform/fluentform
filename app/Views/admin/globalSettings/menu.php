@@ -344,6 +344,14 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 
             <div class="ff_settings_container ff_layout_section_container" id="ff_settings_container">
                 <?php
+                /**
+                 * Renders custom content for a specific global settings component.
+                 * This dynamic action hook fires when rendering the content area of a global settings page.
+                 * The {$currentComponent} portion is replaced with the actual component name (e.g., 'settings',
+                 * 're_captcha', 'license_page', etc.). using `fluentform/global_settings_components` filter
+                 * Use this hook to add custom settings pages to the Fluent Forms global settings area.
+                 * */
+                
                 do_action('fluentform/global_settings_component_' . $currentComponent);
                 ?>
             </div>
