@@ -60,6 +60,10 @@ add_action('fluentform/before_form_validation',function (){
             'type'        => 'turnstile',
             'is_disabled' => !get_option('_fluentform_turnstile_keys_status', false),
         ],
+        [
+            'type'        => 'friendlycaptcha',
+            'is_disabled' => !get_option('_fluentform_friendlycaptcha_keys_status', false),
+        ],
     ];
     foreach ($autoIncludeRecaptcha as $input) {
         if ($input['is_disabled']) {
@@ -108,6 +112,12 @@ $app->addFilter('fluentform/rendering_form', function ($form) {
             'name' => 'turnstile',
         ],
     ];
+    $friendlyCaptcha = [
+        'element'    => 'friendlycaptcha',
+        'attributes' => [
+            'name' => 'friendlycaptcha',
+        ],
+    ];
 
     if ('recaptcha' == $type) {
         $captcha = $reCaptcha;
@@ -115,6 +125,8 @@ $app->addFilter('fluentform/rendering_form', function ($form) {
         $captcha = $hCaptcha;
     } elseif ('turnstile' == $type) {
         $captcha = $turnstile;
+    } elseif ('friendlycaptcha' == $type) {
+        $captcha = $friendlyCaptcha;
     }
     if (!isset($captcha)) {
         return $form;
@@ -122,7 +134,7 @@ $app->addFilter('fluentform/rendering_form', function ($form) {
     // place recaptcha below custom submit button
     $hasCustomSubmit = false;
     foreach ($form->fields['fields'] as $index => $field) {
-        if (in_array($field['element'], ['recaptcha', 'hcaptcha', 'turnstile'])) {
+        if (in_array($field['element'], ['recaptcha', 'hcaptcha', 'turnstile', 'friendlycaptcha'])) {
             \FluentForm\Framework\Helpers\ArrayHelper::forget($form->fields['fields'], $index);
         }
         if ('custom_submit_button' == $field['element']) {

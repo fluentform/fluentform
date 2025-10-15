@@ -11,6 +11,7 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Modules\HCaptcha\HCaptcha;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
+use FluentForm\App\Modules\FriendlyCaptcha\FriendlyCaptcha;
 use FluentForm\App\Services\FormBuilder\Components\SelectCountry;
 use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
@@ -56,6 +57,7 @@ class FormValidationService
         $this->validateReCaptcha();
         $this->validateHCaptcha();
         $this->validateTurnstile();
+        $this->validateFriendlyCaptcha();
 
         foreach ($fields as $fieldName => $field) {
             if (isset($formData[$fieldName])) {
@@ -659,6 +661,39 @@ class FormValidationService
         }
     }
 
+    /**
+     * Validate Friendly Captcha.
+     *
+     * @throws ValidationException
+     */
+    private function validateFriendlyCaptcha()
+    {
+        // Check if autoload_captcha is enabled and if it's not friendlycaptcha, skip validation
+        if ($this->shouldSkipCaptchaValidation('friendlycaptcha')) {
+            return;
+        }
+
+        $autoInclude = apply_filters('fluentform/has_friendlycaptcha', false);
+        $disableFriendlyCaptcha = apply_filters('fluentform/disable_captcha', false, $this->form, 'friendlycaptcha');
+
+        if (!$disableFriendlyCaptcha && (FormFieldsParser::hasElement($this->form, 'friendlycaptcha') || $autoInclude)) {
+            $keys = get_option('_fluentform_friendlycaptcha_details');
+            $token = Arr::get($this->formData, 'frc-captcha-response');
+
+            $isValid = FriendlyCaptcha::validate($token, $keys['apiKey']);
+
+            if (!$isValid) {
+                throw new ValidationException('', 422, null, [
+                    'errors' => [
+                        'frc-captcha-response' => [
+                            __('Friendly Captcha verification failed, please try again.', 'fluentform'),
+                        ],
+                    ],
+                ]);
+            }
+        }
+    }
+
 
     /**
      * Delegate the validation rules & messages to the
@@ -881,7 +916,7 @@ class FormValidationService
      * This method returns true if the current captcha type is NOT the selected autoload type,
      * preventing unnecessary validation of multiple captcha types on the same form.
      *
-     * @param string $captchaType The captcha type to check ('recaptcha', 'hcaptcha', 'turnstile')
+     * @param string $captchaType The captcha type to check ('recaptcha', 'hcaptcha', 'turnstile', 'friendlycaptcha')
      * @return bool True if validation should be skipped, false otherwise
      */
     private function shouldSkipCaptchaValidation($captchaType)

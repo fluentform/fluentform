@@ -44,6 +44,7 @@ class GlobalSettingsService
             'storeReCaptcha',
             'storeHCaptcha',
             'storeTurnstile',
+            'storeFriendlyCaptcha',
             'storeCleantalk',
             'storeSaveGlobalLayoutSettings',
             'storeMailChimpSettings',

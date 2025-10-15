@@ -1108,6 +1108,11 @@ class Menu
             'title' => 'Turnstile',
         ];
 
+        $components['Friendly Captcha'] = [
+            'hash'  => 'friendlycaptcha',
+            'title' => 'Friendly Captcha',
+        ];
+
         $components['CleanTalk'] = [
             'hash'  => 'cleantalk',
             'title' => 'CleanTalk',

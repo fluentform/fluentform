@@ -253,6 +253,24 @@ jQuery(document).ready(function () {
                             }
                         }
 
+                        // Init FriendlyCaptcha if available.
+                        if ($theForm.find('.ff-el-friendlycaptcha.frc-captcha').length) {
+                            const $frcInput = $theForm.find('input[name="frc-captcha-response"]');
+                            let frcResponse = null;
+                            
+                            if ($frcInput.length && $frcInput.val()) {
+                                frcResponse = $frcInput.val();
+                            } else if (window.friendlyCaptchaResponse) {
+                                frcResponse = window.friendlyCaptchaResponse;
+                            }
+                            
+                            if (frcResponse) {
+                                formData['data'] += '&' + $.param({
+                                    'frc-captcha-response': frcResponse
+                                });
+                            }
+                        }
+
                         // Init turnstile if available.
                         if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
                             const turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
@@ -466,6 +484,12 @@ jQuery(document).ready(function () {
                                 if (typeof hcaptchaWidgetId !== "undefined") {
                                     hcaptcha.reset(hcaptchaWidgetId);
                                 }
+                            }
+                            // Reset FriendlyCaptcha
+                            let $frcElement = $theForm.find('.ff-el-friendlycaptcha.frc-captcha');
+                            if ($frcElement.length) {
+                                window.friendlyCaptchaResponse = null;
+                                $theForm.find('input[name="frc-captcha-response"]').val('');
                             }
                             if (window.turnstile) {
                                 let turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
@@ -947,6 +971,18 @@ jQuery(document).ready(function () {
                             }
                         });
                     }
+
+                    // Friendly Captcha v2
+                    if ($theForm.find('.ff-el-friendlycaptcha.frc-captcha').length) {
+                        $theForm.find('.ff-el-friendlycaptcha.frc-captcha').each(function() {
+                            var $el = $(this);
+                            if (!$el.hasClass('frc-captcha')) {
+                                $el.addClass('frc-captcha');
+                            }
+                            window.friendlyCaptchaResponse = null;
+                            $theForm.find('input[name="frc-captcha-response"]').val('');
+                        });
+                    }
                 };
 
                 var initTriggers = function () {
@@ -1052,6 +1088,16 @@ jQuery(document).ready(function () {
                             renderCaptcha('h-captcha', $(this), hcaptcha.render);
                         });
                     }
+
+                    // Friendly Captcha v2
+                    if ($theForm.find('.ff-el-friendlycaptcha.frc-captcha').length) {
+                        $theForm.find('.ff-el-friendlycaptcha.frc-captcha').each(function() {
+                            var $el = $(this);
+                            if (!$el.hasClass('frc-captcha')) {
+                                $el.addClass('frc-captcha');
+                            }
+                        });
+                    }
                 }
 
                 let renderCaptcha = function (type, $el, renderFunction) {
@@ -1079,6 +1125,23 @@ jQuery(document).ready(function () {
                                 turnstile.remove(widgetId);
                             }
                         }
+                        else if (type === 'frc-captcha') {
+                            // Check if FriendlyCaptcha widget already exists
+                            let existingWidget = $el.data('frc-widget');
+                            if (existingWidget && $el.find('.frc-captcha').length > 0) {
+                                return; // Already rendered properly
+                            }
+
+                            // Clean up existing widget if any
+                            if (existingWidget && existingWidget.destroy) {
+                                try {
+                                    existingWidget.destroy();
+                                } catch (e) {
+                                    console.log('FriendlyCaptcha cleanup error:', e);
+                                }
+                                $el.removeData('frc-widget');
+                            }
+                        }
 
                         // rendering captcha code
                         let container = id;
@@ -1089,6 +1152,16 @@ jQuery(document).ready(function () {
                         // Special case for Turnstile
                         if (type === 'cf-turnstile') {
                             container = '#' + id;
+                        }
+                        // Special case for FriendlyCaptcha
+                        else if (type === 'frc-captcha') {
+                            container = $el[0];
+                            options = {
+                                sitekey: siteKey,
+                                theme: $el.data('theme') || 'auto',
+                                startMode: $el.data('start-mode') || 'focus',
+                                apiEndpoint: ($el.data('api-endpoint') === 'eu') ? 'https://eu.frcapi.com' : 'https://global.frcapi.com'
+                            };
                         }
 
                         // Render the captcha
