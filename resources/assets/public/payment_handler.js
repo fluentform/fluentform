@@ -805,7 +805,6 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-
         this.stripe.confirmCardPayment(
             data.client_secret,
             {
@@ -834,7 +833,6 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-
         this.formInstance.showFormSubmissionProgress(this.$form);
         this.stripe.handleCardAction(
             data.client_secret

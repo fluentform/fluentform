@@ -695,7 +695,6 @@ class Helper
         if ($key) {
             return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId . '&form=' . $key);
         }
-
         return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId);
     }
 
@@ -1277,7 +1276,6 @@ class Helper
         }
         return sanitize_text_field(trim($values));
     }
-
     public static function getFrontendFacingUrl($args = '')
     {
         return home_url($args);

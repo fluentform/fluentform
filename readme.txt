@@ -545,6 +545,35 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Improves Honeypot Security for better bot detection
 - Improves Turnstile appearance option names for clarity
 
+= 6.0.2 (Date: April 7, 2025) =
+- Fixes Stripe 3DS payment issue
+- Fixes form entry delete issue
+- Fixes textdomain load issue
+
+= 6.0.1 (Date: March 20, 2025) =
+- Fixes container conditional logic issue
+
+= 6.0.0 (Date: March 19, 2025) =
+- Adds Payment fields with Subscription
+- Adds Stripe payment gateway
+- Adds Advanced Conditionals group for enhanced form logic
+- Adds FluentFormAI for creating AI assisted forms
+- Adds New Form Templates
+- Improves hCaptcha settings saving method
+- Improves Captchas Loading after first interactions on Popups
+- Improves CleanTalk API
+- Improves spam processing logs
+- Fixes Stripe fields language issues
+- Fixes "customer_name" issue for Stripe
+- Fixes conditional {dynamic.} shortcode in Custom HTML fields
+- Fixes front end facing site_url with home_url
+
+= 5.2.12 (Date: February 18, 2025) =
+- Adds token-based spam protection for enhanced form security
+- Adds Italian Language Translation
+- Improves Honeypot Security for better bot detection
+- Improves Turnstile appearance option names for clarity
+
 = 5.2.11 (Date: February 10, 2025) =
 - Adds CleanTalk Spam Protection with API
 - Adds Hungarian Language Translation
