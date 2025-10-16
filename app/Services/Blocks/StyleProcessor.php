@@ -120,6 +120,10 @@ class StyleProcessor
             return '';
         }
 
+        if (is_array($value)) {
+            $value = implode(' ', $value);
+        }
+
         $importantFlag = $important ? ' !important' : '';
         return "{$selector} { {$property}: {$value}{$suffix}{$importantFlag}; }\n";
     }
@@ -138,6 +142,10 @@ class StyleProcessor
     {
         if (empty($value) && $value !== '0') {
             return '';
+        }
+
+        if (is_array($value)) {
+            $value = implode(' ', $value);
         }
 
         return "{$selector} { {$property}: {$value}{$suffix} !important; }\n";
@@ -1676,11 +1684,6 @@ class StyleProcessor
     private static function getSpacingRules($values, $property, $unit = 'px')
     {
         $rules = [];
-
-        // Debug the values
-        error_log('StyleProcessor::getSpacingRules - Values: ' . print_r($values, true));
-        error_log('StyleProcessor::getSpacingRules - Property: ' . $property);
-        error_log('StyleProcessor::getSpacingRules - Unit: ' . $unit);
 
         // Special handling for border-radius
         if ($property === 'border-radius') {
