@@ -336,6 +336,15 @@ jQuery(document).ready(function () {
                                 response: res
                             });
 
+                            const customSuccessEvent = new CustomEvent('fluentform_submission_success', {
+                                detail: {
+                                    form: $theForm[0],
+                                    config: form,
+                                    response: res
+                                }
+                            });
+                            document.dispatchEvent(customSuccessEvent);
+
                             if ('redirectUrl' in res.data.result) {
                                 if (res.data.result.message) {
                                     $('<div/>', {
@@ -396,7 +405,19 @@ jQuery(document).ready(function () {
                                 response: res
                             });
 
-                            if (!res || !res.responseJSON || !res.responseJSON || !res.responseJSON.errors) {
+
+                            const customFailedEvent = new CustomEvent('fluentform_submission_failed', {
+                                detail: {
+                                    form: $theForm[0],
+                                    response: res,
+                                    config: form
+                                }
+                            });
+                            document.dispatchEvent(customFailedEvent);
+
+
+                            if (!res || !res.responseJSON || !(res.responseJSON.data || res.responseJSON.errors)) {
+
                                 showErrorMessages(res.responseText);
                                 return;
                             }
@@ -406,7 +427,7 @@ jQuery(document).ready(function () {
                                 addHiddenData(res.responseJSON.append_data);
                             }
 
-                            showErrorMessages(res.responseJSON.errors);
+                            showErrorMessages(res.responseJSON.errors || res.responseJSON.data);
 
                             scrollToFirstError(350);
 

@@ -487,6 +487,13 @@ class FormService
                 'image'       => fluentformMix('img/pro-fields/coupon.png'),
                 'video'       => '',
             ];
+            $disabled['accordion'] = [
+                'disabled'    => true,
+                'title'       => __('Accordion/Tab', 'fluentform'),
+                'description' => __('Accordion/Tab is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
+                'image'       => fluentformMix('img/pro-fields/accordion-tab.png'),
+                'video'       => '',
+            ];
         }
         
         $disabled = apply_filters_deprecated(
