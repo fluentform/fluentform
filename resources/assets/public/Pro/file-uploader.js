@@ -275,10 +275,12 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
 
         // handling accessibility
         $form.find('.ff_upload_btn').on('keyup click', function (e) {
-            if (e.keyCode == 32 || e.type == 'click') {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.type === 'click' || (e.type === 'keyup' && e.keyCode === 32)) {
                 $(this).siblings('input[type=file]').trigger('click');
             }
-        })
+        });
     };
 
     /**
