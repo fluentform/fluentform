@@ -89,7 +89,7 @@ const formConditional = function ($, $theForm, form) {
                             // Check if this container has range sliders that need reinitialization
                             if ($parent.find('input[type="range"]').length > 0) {
                                 setTimeout(function() {
-                                    $theForm.trigger('reInitExtras');
+                                    $theForm.trigger('reInitRangeSliders');
                                 }, 50);
                             }
                         });
