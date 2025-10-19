@@ -1852,7 +1852,6 @@ if (! defined('FLUENTFORMPRO')) {
     ];
 }
 
-// Add coordinate fields to address elements when FluentFormPro is active
 if (defined('FLUENTFORMPRO')) {
     $defaultElements['general']['address']['fields']['latitude'] = [
         'element'    => 'input_hidden',
