@@ -392,11 +392,7 @@ export class Payment_handler {
         }
 
         if ($quantityDom.closest('.ff-el-group.has-conditions.ff_excluded').length) {
-            if ($quantityDom.hasClass('ff_quantity_item_slider')) {
-                return 0;
-            } else {
-                $quantityDom.val('');
-            }
+            return 0;
         }
 
         var qty = $quantityDom.val();
