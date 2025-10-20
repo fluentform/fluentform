@@ -445,14 +445,13 @@ You can get support from our official support thread at <a href="https://wpmanag
 = 6.1.5 (Date: October 28, 2025) =
 - Adds Gutenberg Block Form Style Customization
 - Adds AI Custom CSS support for form creation
-- Adds Conversational Form Editor shortcode support ({get.text}, {ip}, etc.)
+- Adds Conversational Form Editor shortcode support
 - Adds warning message for Name Attribute changes to prevent entry data loss
-- Adds Dynamic field greyed-out (Pro Feature) visibility
-- Improves many untranslatable strings throughout the plugin. eg: ("for each month", "Signup Fee for", etc.)
+- Improves translations
 - Improves Design Preview color handling with block themes
 - Fixes Payment Form submission failures inside Elementor popups
 - Fixes Custom style CSS backtick insertion issue
-- Fixes country name from "Turkey" to "Türkiye" across all references
+- Fixes country name from "Turkey" to "Türkiye"
 - Fixes {user.meta.meta_key} shortcode for non-English languages
 - Fixes Advanced Filter UX issue with persistent dialog box
 - Fixes textarea line break in entry import/export
