@@ -632,7 +632,7 @@ class Converter
                 $question['emptyText'] = $field['settings']['cart_empty_text'];
             } elseif ('net_promoter_score' === $field['element']) {
                 if (!ArrayHelper::exists($question, 'answer')) {
-                    $question['answer'] = +$field['attributes']['value'];
+                    $question['answer'] = (int) $field['attributes']['value'];
                 }
 
                 $question['start_text'] = ArrayHelper::get($field, 'settings.start_text');
