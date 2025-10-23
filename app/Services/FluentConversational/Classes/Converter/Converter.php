@@ -215,6 +215,13 @@ class Converter
                 if ($mask) {
                     $question['mask'] = $mask;
                 }
+            } elseif ('input_password' === $field['element']) {
+                $question['require_strong_password'] = ArrayHelper::get($field, 'settings.require_strong_password', false);
+                $question['show_strength_indicator'] = ArrayHelper::get($field, 'settings.show_strength_indicator', false);
+                $question['show_toggle_button'] = ArrayHelper::get($field, 'settings.show_toggle_button', false);
+                $question['show_generate_button'] = ArrayHelper::get($field, 'settings.show_generate_button', false);
+                $question['show_requirements_list'] = ArrayHelper::get($field, 'settings.show_requirements_list', false);
+                $question['minLength'] = ArrayHelper::get($field, 'settings.validation_rules.min_length.value', 8);
             } elseif ('welcome_screen' === $field['element']) {
                 $question['settings'] = ArrayHelper::get($field, 'settings', []);
                 $question['subtitle'] = ArrayHelper::get($field, 'settings.description');

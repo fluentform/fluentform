@@ -151,6 +151,7 @@ class Text extends BaseComponent
 
         // Handle password field specific rendering
         if ($data['element'] === 'input_password') {
+            wp_enqueue_script('fluentform-password-field');
             $elMarkup = $this->buildPasswordField($data, $form);
         } else {
             $elMarkup = $this->buildInputGroup($data, $form);

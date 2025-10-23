@@ -860,15 +860,66 @@
           display: inline-block;
           width: 18px;
           height: 18px;
+          position: relative;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          user-select: none;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          -webkit-transform: translateZ(0);
+          -moz-transform: translateZ(0);
+          transform: translateZ(0);
 
           &.ff-eye-icon::before {
-            content: "👁";
-            font-size: 16px;
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 12px;
+            border: 2px solid currentColor;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: transparent;
+          }
+
+          &.ff-eye-icon::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: currentColor;
+            border-radius: 50%;
+            box-shadow: 0 0 0 1px currentColor;
           }
 
           &.ff-eye-slash-icon::before {
-            content: "🙈";
-            font-size: 16px;
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 12px;
+            border: 2px solid currentColor;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: transparent;
+          }
+
+          &.ff-eye-slash-icon::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            width: 2px;
+            height: 24px;
+            background: currentColor;
+            border-radius: 1px;
+            box-shadow: 0 0 0 1px currentColor;
           }
         }
 
@@ -881,11 +932,7 @@
           .ff-password-toggle-icon {
             width: 20px;
             height: 20px;
-
-            &.ff-eye-icon::before,
-            &.ff-eye-slash-icon::before {
-              font-size: 18px;
-            }
+            font-size: 18px;
           }
         }
       }
@@ -963,15 +1010,19 @@
             background-color: #28a745;
           }
 
-          // Add subtle animation
           &::after {
-            content: '';
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(
+              90deg,
+              transparent,
+              rgba(255, 255, 255, 0.3),
+              transparent
+            );
             animation: shimmer 2s infinite;
           }
         }
@@ -984,18 +1035,31 @@
         text-align: center;
         font-weight: 500;
 
-        // Color coding for strength text
-        &.very-weak { color: #dc3545; }
-        &.weak { color: #fd7e14; }
-        &.fair { color: #ffc107; }
-        &.good { color: #20c997; }
-        &.strong { color: #28a745; }
+        &.very-weak {
+          color: #dc3545;
+        }
+        &.weak {
+          color: #fd7e14;
+        }
+        &.fair {
+          color: #ffc107;
+        }
+        &.good {
+          color: #20c997;
+        }
+        &.strong {
+          color: #28a745;
+        }
       }
     }
 
     @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
     }
 
     .ff-password-requirements {
@@ -1070,12 +1134,16 @@
         }
       }
 
-      .ff_input-group-prepend + .ff-password-input-container .ff-el-form-control {
+      .ff_input-group-prepend
+        + .ff-password-input-container
+        .ff-el-form-control {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
       }
 
-      .ff-password-input-container + .ff_input-group-append .ff_input-group-text {
+      .ff-password-input-container
+        + .ff_input-group-append
+        .ff_input-group-text {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
       }
