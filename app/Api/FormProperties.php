@@ -160,6 +160,6 @@ class FormProperties
 
     public function __get($name)
     {
-        return $this->form->{$name};
+        return $this->form->{$name} ?? null;
     }
 }

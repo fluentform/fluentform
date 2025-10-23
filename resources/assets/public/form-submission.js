@@ -145,6 +145,9 @@ jQuery(document).ready(function () {
                             .find(':input').filter(function (i, el) {
                                 // Ignore repeater container
                                 if ($(el).attr('data-type') === 'repeater_container') {
+                                    if ($(el).closest('.ff-repeater-container').hasClass('ff_excluded')) {
+                                        return false;
+                                    }
                                     if ($(this).closest('.has-conditions').hasClass('ff_excluded')) {
                                         $(this).val('');
                                     }
@@ -333,6 +336,15 @@ jQuery(document).ready(function () {
                                 response: res
                             });
 
+                            const customSuccessEvent = new CustomEvent('fluentform_submission_success', {
+                                detail: {
+                                    form: $theForm[0],
+                                    config: form,
+                                    response: res
+                                }
+                            });
+                            document.dispatchEvent(customSuccessEvent);
+
                             if ('redirectUrl' in res.data.result) {
                                 if (res.data.result.message) {
                                     $('<div/>', {
@@ -393,7 +405,19 @@ jQuery(document).ready(function () {
                                 response: res
                             });
 
-                            if (!res || !res.responseJSON || !res.responseJSON || !res.responseJSON.errors) {
+
+                            const customFailedEvent = new CustomEvent('fluentform_submission_failed', {
+                                detail: {
+                                    form: $theForm[0],
+                                    response: res,
+                                    config: form
+                                }
+                            });
+                            document.dispatchEvent(customFailedEvent);
+
+
+                            if (!res || !res.responseJSON || !(res.responseJSON.data || res.responseJSON.errors)) {
+
                                 showErrorMessages(res.responseText);
                                 return;
                             }
@@ -403,7 +427,7 @@ jQuery(document).ready(function () {
                                 addHiddenData(res.responseJSON.append_data);
                             }
 
-                            showErrorMessages(res.responseJSON.errors);
+                            showErrorMessages(res.responseJSON.errors || res.responseJSON.data);
 
                             scrollToFirstError(350);
 
@@ -1191,7 +1215,16 @@ jQuery(document).ready(function () {
                         silent: true,
                         shouldSort: false,
                         searchEnabled: true,
-                        searchResultLimit: 50
+                        searchResultLimit: 50,
+                        searchFloor: 1,
+                        searchChoices: true,
+                        fuseOptions: {
+                            threshold: 0.1,
+                            distance: 200,
+                            ignoreLocation: true,
+                            tokenize: true,
+                            matchAllTokens: false,
+                        }
                     };
 
 
@@ -1201,7 +1234,12 @@ jQuery(document).ready(function () {
                     if (parseInt(maxSelection)) {
                         args.maxItemCount = parseInt(maxSelection);
                         args.maxItemText = function (maxItemCount) {
-                            let message = window.fluentFormVars.choice_js_vars.maxItemText;
+                            let message;
+                            if (maxItemCount === 1) {
+                                message = window.fluentFormVars.choice_js_vars.maxItemTextSingular;
+                            } else {
+                                message = window.fluentFormVars.choice_js_vars.maxItemTextPlural;
+                            }
                             message = message.replace('%%maxItemCount%%', maxItemCount);
                             return message;
                         }
@@ -1664,6 +1702,47 @@ jQuery(document).ready(function () {
 
         fluentFormCommonActions.init();
 
+        // Choices.js dropdown handling
+        function initChoicesDropdownHandling() {
+            // Only target elements that actually have Choices.js
+            $('.ff_has_multi_select').each(function() {
+                const choicesInstance = $(this).data('choicesjs');
+                if (!choicesInstance || !choicesInstance.passedElement) return;
+
+                // Use Choices.js built-in events instead of global listeners
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                    const choicesContainer = this.closest('.choices');
+                    if (!choicesContainer) return;
+
+                    const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+                    if (!dropdown) return;
+
+                    // Apply dropdown styles
+                    dropdown.style.maxHeight = '300px';
+                    dropdown.style.overflowY = 'auto';
+
+                    // Find and style the scrollable list
+                    const scrollableList = 
+                        dropdown.querySelector('.choices__list[role="listbox"]') ||
+                        dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
+                    if (scrollableList) {
+                        scrollableList.style.maxHeight = '280px';
+                        scrollableList.style.overflowY = 'auto';
+                        scrollableList.style.webkitOverflowScrolling = 'touch';
+                        scrollableList.style.touchAction = 'pan-y';
+                    }
+                }, { passive: true });
+            });
+        }
+
+        // Initialize with proper timing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initChoicesDropdownHandling, 100);
+            });
+        } else {
+            setTimeout(initChoicesDropdownHandling, 100);
+        }
     })(window.fluentFormVars, jQuery);
 
     jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {

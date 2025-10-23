@@ -357,7 +357,7 @@ window.fluentFormEditorApp = new Vue({
 
     beforeCreate() {
         this.$on("change-title", module => {
-            jQuery("title").text(`${module} - Fluentform`);
+            jQuery("title").text(`${module} - Fluent Forms`);
         });
         this.$emit("change-title", "Editor");
     },

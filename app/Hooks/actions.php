@@ -72,6 +72,7 @@ add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
     (new \FluentForm\App\Modules\Ai\AiController())->boot();
+    (new \FluentForm\App\Modules\Report\ReportHandler())->register($app);
 }, 9);
 
 add_action('admin_enqueue_scripts', function () use ($app) {
@@ -144,7 +145,8 @@ add_action('admin_init', function () {
         'fluent_forms_docs',
         'fluent_forms_all_entries',
         'msformentries',
-        'fluent_forms_payment_entries'
+        'fluent_forms_payment_entries',
+        'fluent_forms_reports'
     ];
 
     $page = wpFluentForm('request')->get('page');
@@ -229,7 +231,7 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     ];
     foreach ($upgradableCheckInputs as $upgradeElement) {
         add_filter('fluentform/editor_init_element_' . $upgradeElement, function ($element) use ($upgradeElement, $form) {
-    
+
             if (!\FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.advanced_options')) {
                 $formattedOptions = [];
                 $oldOptions = \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'options', []);
@@ -598,7 +600,7 @@ add_action('save_post', function ($post_id) use ($app) {
     if (!is_post_type_viewable(get_post_type($post_id))) {
         return;
     }
-    
+
     $post_content = isset($_REQUEST['post_content']) ? $_REQUEST['post_content'] : false;
     if ($post_content && is_string($post_content)) {
         $post_content = wp_kses_post(wp_unslash($post_content));
@@ -615,7 +617,7 @@ add_action('save_post', function ($post_id) use ($app) {
 
     $attributes = ArrayHelper::get($shortcodeIds, 'attributes', []);
     ArrayHelper::forget($shortcodeIds, 'attributes');
-    
+
     $shortcodeModalIds = Helper::getShortCodeIds(
         $post_content,
         'fluentform_modal',
@@ -827,7 +829,7 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
 
 $app->addAction('fluentform/before_form_render', function ($form, $atts) {
     $theme = ArrayHelper::get($atts, 'theme');
-    
+
     $styles = $theme ? [$theme] : [];
 
     do_action(
@@ -926,7 +928,7 @@ add_action('wp', function () {
     if (!is_a($post, 'WP_Post')) {
         return;
     }
-    
+
     $fluentFormIds = get_post_meta($post->ID, '_has_fluentform', true);
     $attributes = ArrayHelper::get($fluentFormIds, 'attributes', []);
 
@@ -1059,20 +1061,26 @@ add_action('init', function () {
 new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();
 
 add_action('enqueue_block_editor_assets', function () {
-    
+
     wp_enqueue_script(
         'fluentform-gutenberg-block',
         fluentFormMix('js/fluent_gutenblock.js'),
         ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components','wp-server-side-render', 'wp-block-editor'],
         FLUENTFORM_VERSION
     );
-    
-    
+    wp_enqueue_style(
+        'fluentform-gutenberg-block',
+        fluentFormMix('css/fluent_gutenblock.css'),
+        ['wp-edit-blocks'],
+        FLUENTFORM_VERSION
+    );
+
+
     $forms = wpFluent()->table('fluentform_forms')
         ->select(['id', 'title'])
         ->orderBy('id', 'DESC')
         ->get();
-    
+
     array_unshift($forms, (object) [
         'id'    => '',
         'title' => __('-- Select a form --', 'fluentform'),
@@ -1090,16 +1098,16 @@ add_action('enqueue_block_editor_assets', function () {
     ];
 
     $presets = apply_filters('fluentform/block_editor_style_presets', $presets);
-   
+
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
-        'logo'                    => fluentFormMix('img/fluent_icon.png'),
+        'logo'                    => fluentFormMix('img/fluent_icon.svg'),
         'forms'                   => $forms,
         'style_presets'           => $presets,
         'theme_style'             => apply_filters('fluentform/load_theme_style', false) ? 'ffs_inherit_theme' : '',
         'conversational_demo_img' => fluentformMix('img/conversational-form-demo.png'),
         'rest'                    => Helper::getRestInfo()
     ]);
-    
+
     wp_enqueue_style(
         'fluentform-gutenberg-block',
         fluentFormMix('css/fluent_gutenblock.css'),
@@ -1108,12 +1116,12 @@ add_action('enqueue_block_editor_assets', function () {
     );
     $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
     $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
-    
+
     if (is_rtl()) {
         $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public-rtl.css');
         $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
     }
-    
+
     wp_enqueue_style(
         'fluent-form-styles',
         $fluentFormPublicCss,
@@ -1147,52 +1155,8 @@ add_action('enqueue_block_editor_assets', function () {
 
 if (function_exists('register_block_type')) {
     add_action('init', function () {
-        register_block_type('fluentfom/guten-block', [
-            'render_callback' => function ($atts) {
-                $formId = ArrayHelper::get($atts, 'formId');
-                
-                if (empty($formId)) {
-                    return '';
-                }
-                
-                $className = ArrayHelper::get($atts, 'className');
-                
-                if ($className) {
-                    $classes = explode(' ', $className);
-                    $className = '';
-                    if (!empty($classes)) {
-                        foreach ($classes as $class) {
-                            $className .= sanitize_html_class($class) . ' ';
-                        }
-                    }
-                }
-    
-                $themeStyle = sanitize_text_field(ArrayHelper::get($atts, 'themeStyle'));
-                
-                $type = Helper::isConversionForm($formId) ? 'conversational' : '';
-                
-                return do_shortcode('[fluentform theme="'. $themeStyle .'" css_classes="' . $className . ' ff_guten_block" id="' . $formId . '"  type="' . $type . '"]');
-            },
-            'attributes'      => [
-                'formId'               => [
-                    'type' => 'string',
-                ],
-                'className'            => [
-                    'type' => 'string',
-                ],
-                'themeStyle'           => [
-                    'type'    => 'string',
-                ],
-                'isConversationalForm' => [
-                    'type'    => 'boolean',
-                    'default' => false,
-                ],
-                'isThemeChange'        => [
-                    'type'    => 'boolean',
-                    'default' => false,
-                ],
-            ],
-        ]);
+        // Use the dedicated GutenbergBlock class for block registration and rendering
+        \FluentForm\App\Services\Blocks\GutenbergBlock::register();
     });
 }
 

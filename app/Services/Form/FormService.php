@@ -448,6 +448,13 @@ class FormService
                 'image'       => fluentformMix('img/pro-fields/net-promoter-score.png'),
                 'video'       => '',
             ];
+            $disabled['dynamic_field'] = [
+                'disabled'    => true,
+                'title'       => __('Dynamic Field', 'fluentform'),
+                'description' => __('Dynamic Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
+                'image'       => '',
+                'video'       => 'https://www.youtube.com/embed/cx3N5y1ddOQ',
+            ];
             $disabled['repeater_field'] = [
                 'disabled'    => true,
                 'title'       => __('Repeat Field', 'fluentform'),
@@ -478,6 +485,13 @@ class FormService
                 'description' => __('Coupon is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => fluentformMix('img/pro-fields/coupon.png'),
+                'video'       => '',
+            ];
+            $disabled['accordion'] = [
+                'disabled'    => true,
+                'title'       => __('Accordion/Tab', 'fluentform'),
+                'description' => __('Accordion/Tab is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
+                'image'       => fluentformMix('img/pro-fields/accordion-tab.png'),
                 'video'       => '',
             ];
         }

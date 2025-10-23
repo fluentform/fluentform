@@ -123,6 +123,7 @@ class Form
             'disable_branding'      => 'no',
             'hide_media_on_mobile'  => 'no',
             'key_hint'              => 'yes',
+            'enable_scroll_to_top'  => 'no',
             'asteriskPlacement'     => $this->getAsteriskPlacement($formId)
         ];
 
@@ -326,10 +327,10 @@ class Form
             'hcaptcha',
             'turnstile',
             'quiz_score',
-            'rangeslider',
             'save_progress_button',
             'dynamic_field',
-            'rangeslider'
+            'rangeslider',
+            'net_promoter_score'
         ];
 
         $acceptedFieldElements = apply_filters(

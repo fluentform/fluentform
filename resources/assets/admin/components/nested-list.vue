@@ -104,7 +104,7 @@
 
             <template v-if="item.element != 'container' && hasRegistered(item)">
                 <div class="ff_condition_icon" v-html="maybeConditionIcon(item.settings)"></div>
-                <component :is="guessElTemplate(item)" :item="item"></component>
+                <component :is="guessElTemplate(item)" :item="item" :allElements="allElements"></component>
                 <p style="font-style: italic;" v-if="item.settings.help_message" class="help-text"
                    v-html="item.settings.help_message"></p>
             </template>
