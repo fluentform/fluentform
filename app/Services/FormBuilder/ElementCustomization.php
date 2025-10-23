@@ -575,6 +575,31 @@ $element_customization_settings = [
         'label'     => __('Validate as Unique', 'fluentform'),
         'help_text' => __('If you make it unique then it will validate as unique from previous submissions of this form', 'fluentform'),
     ],
+    'show_character_counter' => [
+        'template'  => 'inputYesNoCheckBox',
+        'label'     => __('Show Character Counter', 'fluentform'),
+        'help_text' => __('Display a live character counter when max length is set', 'fluentform'),
+    ],
+    'character_counter_format' => [
+        'template'  => 'select',
+        'label'     => __('Counter Format', 'fluentform'),
+        'help_text' => __('Choose how to display the character counter', 'fluentform'),
+        'dependency' => [
+            'depends_on' => 'settings/show_character_counter',
+            'value'      => 'yes',
+            'operator'   => '==',
+        ],
+        'options'   => [
+            [
+                'value' => 'count_remaining',
+                'label' => __('Remaining (e.g., "55 remaining")', 'fluentform'),
+            ],
+            [
+                'value' => 'count_used',
+                'label' => __('Used / Total (e.g., "45 / 100")', 'fluentform'),
+            ],
+        ],
+    ],
     'show_text' => [
         'template'  => 'select',
         'label'     => __('Show Text', 'fluentform'),

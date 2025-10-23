@@ -271,6 +271,8 @@ $defaultElements = [
                 'conditional_logics'        => [],
                 'is_unique'                 => 'no',
                 'unique_validation_message' => __('This value need to be unique.', 'fluentform'),
+                'show_character_counter'    => false,
+                'character_counter_format'  => 'count_remaining',
             ],
             'editor_options' => [
                 'title'      => __('Simple Text', 'fluentform'),
@@ -344,6 +346,8 @@ $defaultElements = [
                     ],
                 ],
                 'conditional_logics' => [],
+                'show_character_counter'    => false,
+                'character_counter_format'  => 'count_remaining',
             ],
             'editor_options' => [
                 'title'      => __('Text Area', 'fluentform'),
@@ -1403,6 +1407,8 @@ $defaultElements = [
                     ],
                 ],
                 'conditional_logics' => [],
+                'show_character_counter'    => false,
+                'character_counter_format'  => 'count_remaining',
             ],
             'editor_options' => [
                 'title'      => __('Password', 'fluentform'),

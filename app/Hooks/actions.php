@@ -322,12 +322,37 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($element['attributes']['maxlength'])) {
             $element['attributes']['maxlength'] = '';
         }
+        if (!isset($element['settings']['show_character_counter'])) {
+            $element['settings']['show_character_counter'] = false;
+        }
+        if (!isset($element['settings']['character_counter_format'])) {
+            $element['settings']['character_counter_format'] = 'count_remaining';
+        }
         return $element;
     });
 
     add_filter('fluentform/editor_init_element_textarea', function ($element) {
         if (!isset($element['attributes']['maxlength'])) {
             $element['attributes']['maxlength'] = '';
+        }
+        if (!isset($element['settings']['show_character_counter'])) {
+            $element['settings']['show_character_counter'] = false;
+        }
+        if (!isset($element['settings']['character_counter_format'])) {
+            $element['settings']['character_counter_format'] = 'count_remaining';
+        }
+        return $element;
+    });
+
+    add_filter('fluentform/editor_init_element_input_password', function ($element) {
+        if (!isset($element['attributes']['maxlength'])) {
+            $element['attributes']['maxlength'] = '';
+        }
+        if (!isset($element['settings']['show_character_counter'])) {
+            $element['settings']['show_character_counter'] = true;
+        }
+        if (!isset($element['settings']['character_counter_format'])) {
+            $element['settings']['character_counter_format'] = 'count_remaining';
         }
         return $element;
     });

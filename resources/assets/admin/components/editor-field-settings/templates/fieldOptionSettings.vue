@@ -13,6 +13,28 @@
 
             <inputText v-if="childFields.indexOf('maxlength') != -1 && field.attributes.maxlength" :listItem="{type: 'number', label: $t('Max text length')}" v-model="field.attributes.maxlength"></inputText>
 
+            <input-yes-no-checkbox 
+                v-if="childFields.indexOf('show_character_counter') != -1 && field.attributes.maxlength" 
+                :listItem="{
+                    label: $t('Show Character Counter'),
+                    help_text: $t('Display live character count below the field')
+                }" 
+                v-model="field.settings.show_character_counter">
+            </input-yes-no-checkbox>
+
+            <customSelect
+                v-if="field.settings.show_character_counter && childFields.indexOf('character_counter_format') != -1"
+                :listItem="{
+                    label: $t('Counter Format'),
+                    help_text: $t('Choose how to display the counter'),
+                    options: [
+                        {value: 'count_remaining', label: $t('Remaining (e.g., "55 remaining")')},
+                        {value: 'count_used', label: $t('Used / Total (e.g., "45 / 100")')}
+                    ]
+                }"
+                v-model="field.settings.character_counter_format">
+            </customSelect>
+
             <customSelect v-if="childFields.indexOf('temp_mask_list') != -1" :listItem="{label: $t('Mask Input'), options: field.settings.temp_mask_list}" v-model="field.settings.temp_mask"></customSelect>
 
             <template v-if="field.settings.temp_mask == 'custom'">

@@ -1,3 +1,5 @@
+import initCharacterCounter from './character-counter';
+
 jQuery(document).ready(function () {
 
     // ios hack to keep the recaptcha on viewport on success
@@ -897,6 +899,9 @@ jQuery(document).ready(function () {
                     jQuery(document.body).trigger('fluentform_init', [$theForm, form]);
                     jQuery(document.body).trigger('fluentform_init_' + form.id, [$theForm, form]);
                     $theForm.trigger('fluentform_init_single', [this, form]);
+                    
+                    // Initialize character counter
+                    initCharacterCounter($theForm);
                     $theForm.find('input.ff-el-form-control').on('keypress', function (e) {
                         return e.which !== 13;
                     });
