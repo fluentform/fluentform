@@ -702,6 +702,67 @@ $element_customization_settings = [
                 'label' => __('No', 'fluentform'),
             ],
         ],
+    ],
+    'show_strength_indicator' => [
+        'template'  => 'inputCheckbox',
+        'label'     => __('Show Password Strength Indicator', 'fluentform'),
+        'help_text' => __('Display a visual indicator showing password strength', 'fluentform'),
+        'options'   => [
+            [
+                'value' => true,
+                'label' => __('Enable strength indicator', 'fluentform'),
+            ],
+        ],
+    ],
+    'show_toggle_button' => [
+        'template'  => 'inputCheckbox',
+        'label'     => __('Show Toggle Button', 'fluentform'),
+        'help_text' => __('Allow users to show/hide password text', 'fluentform'),
+        'options'   => [
+            [
+                'value' => true,
+                'label' => __('Enable toggle button', 'fluentform'),
+            ],
+        ],
+    ],
+    'show_generate_button' => [
+        'template'  => 'inputCheckbox',
+        'label'     => __('Show Generate Button', 'fluentform'),
+        'help_text' => __('Provide a button to auto-generate strong passwords', 'fluentform'),
+        'options'   => [
+            [
+                'value' => true,
+                'label' => __('Enable generate button', 'fluentform'),
+            ],
+        ],
+    ],
+    'show_requirements_list' => [
+        'template'  => 'inputCheckbox',
+        'label'     => __('Show Requirements List', 'fluentform'),
+        'help_text' => __('Display a list of password requirements', 'fluentform'),
+        'options'   => [
+            [
+                'value' => true,
+                'label' => __('Enable requirements list', 'fluentform'),
+            ],
+        ],
+    ],
+    'require_strong_password' => [
+        'template'  => 'inputCheckbox',
+        'label'     => __('Require Strong Password', 'fluentform'),
+        'help_text' => __('Password must contain a mix of uppercase letters, lowercase letters, numbers, and special characters', 'fluentform'),
+        'options'   => [
+            [
+                'value' => true,
+                'label' => __('Enable strong password', 'fluentform'),
+            ],
+        ],
+    ],
+    'min_length' => [
+        'template'  => 'inputText',
+        'type'      => 'number',
+        'label'     => __('Minimum Length', 'fluentform'),
+        'help_text' => __('Minimum number of characters required for the password', 'fluentform'),
     ]
 ];
 

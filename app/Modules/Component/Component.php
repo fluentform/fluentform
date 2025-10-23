@@ -124,6 +124,14 @@ class Component
             true
         );
 
+        wp_register_script(
+            'fluentform-password-field',
+            fluentFormMix('js/password-field.js'),
+            ['jquery'],
+            FLUENTFORM_VERSION,
+            true
+        );
+
         do_action_deprecated(
             'fluentform_scripts_registered',
             [

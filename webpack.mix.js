@@ -48,6 +48,7 @@ mix
 
     .js('resources/assets/public/fluentform-advanced.js', `assets/js/fluentform-advanced.js`)
     .js('resources/assets/public/form-submission.js', `assets/js/form-submission.js`)
+    .js('resources/assets/public/js/password-field.js', `assets/js/password-field.js`)
     .js('resources/assets/public/payment_handler.js', `assets/js/payment_handler.js`)
     .js('resources/assets/public/transactions_ui.js', `assets/js/fluentform_transactions_ui.js`)
     .js('resources/assets/public/form-save-progress.js', `assets/js/form-save-progress.js`)

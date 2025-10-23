@@ -542,7 +542,7 @@ class Form
     {
         $formId = $form->id;
         $form = Converter::convert($form);
-        $this->enqueueScripts();
+        $this->enqueueScripts($form);
         $submitCss = $this->getSubmitBttnStyle($form);
         $metaSettings = $this->getMetaSettings($formId);
         $designSettings = $this->getDesignSettings($formId);
@@ -719,7 +719,7 @@ class Form
 
         $form = wpFluentForm()->applyFilters('fluentform/rendering_form', $form);
         $form = Converter::convert($form);
-        $this->enqueueScripts();
+        $this->enqueueScripts($form);
 
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
@@ -810,7 +810,7 @@ class Form
     /**
      * Enqueue proper stylesheet based on rtl & JS script.
      */
-    private function enqueueScripts()
+    private function enqueueScripts($form)
     {
         $cssFileName = 'conversationalForm';
 
@@ -832,6 +832,22 @@ class Form
             FLUENTFORM_VERSION,
             true
         );
+
+        $this->maybeEnqueuePasswordFieldScript($form);
+    }
+
+    /**
+     * Check if form has password fields and enqueue password field script
+     */
+    private function maybeEnqueuePasswordFieldScript($form)
+    {
+        if (!$form || !isset($form->id)) {
+            return;
+        }
+
+        if (\FluentForm\App\Modules\Form\FormFieldsParser::hasElement($form, 'input_password')) {
+            wp_enqueue_script('fluentform-password-field');
+        }
     }
 
     /**

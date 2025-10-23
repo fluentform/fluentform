@@ -1108,6 +1108,7 @@ jQuery(document).ready(function () {
                 this.initMask();
                 this.initNumericFormat();
                 this.initCheckableActive();
+                this.initPasswordFields();
                 this.maybeInitSpamTokenProtection();
                 this.maybeHandleCleanTalkSubmitTime();
             },
@@ -1265,11 +1266,18 @@ jQuery(document).ready(function () {
                 });
             },
 
+            initPasswordFields: function () {
+                if (window.FluentFormPasswordField) {
+                    window.FluentFormPasswordField.initPasswordFields();
+                }
+            },
+
             /**
              * Init jQuery mask plugin
              *
              * @return void
              */
+
             initMask: function () {
 
                 if (jQuery.fn.mask == undefined) {
@@ -1304,6 +1312,7 @@ jQuery(document).ready(function () {
                     }
                 })
             },
+
 
             initCheckableActive: function () {
                 $(document).on('change', '.ff-el-form-check input[type=radio]', function () {
@@ -1570,6 +1579,27 @@ jQuery(document).ready(function () {
                  */
                 this.force_failed = function () {
                     return false;
+                };
+
+                /**
+                 * Handle min_length rule (check minimum text length)
+                 */
+                this.min_length = function (el, rule) {
+                    var val = el.val();
+                    if (!val) {
+                        return true;
+                    }
+                    if (!rule.value) {
+                        return true;
+                    }
+                    var isValid = val.length >= Number(rule.value);
+
+                    // Fix the message if validation fails
+                    if (!isValid && rule.global && rule.global_message && !rule.message) {
+                        rule.message = rule.global_message.replace(':min', rule.value);
+                    }
+
+                    return isValid;
                 };
 
                 /**

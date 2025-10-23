@@ -1378,9 +1378,9 @@ $defaultElements = [
             ],
         ],
         'input_password' => [
-            'index'      => 11,
-            'element'    => 'input_password',
-            'attributes' => [
+            'index'          => 11,
+            'element'        => 'input_password',
+            'attributes'     => [
                 'type'        => 'password',
                 'name'        => 'password',
                 'value'       => '',
@@ -1388,21 +1388,32 @@ $defaultElements = [
                 'class'       => '',
                 'placeholder' => '',
             ],
-            'settings' => [
-                'container_class'   => '',
-                'label'             => __('Password', 'fluentform'),
-                'admin_field_label' => '',
-                'label_placement'   => '',
-                'help_message'      => '',
-                'validation_rules'  => [
-                    'required' => [
-                        'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
+            'settings'       => [
+                'container_class'         => '',
+                'label'                   => __('Password', 'fluentform'),
+                'admin_field_label'       => '',
+                'label_placement'         => '',
+                'help_message'            => '',
+                'require_strong_password' => false,
+                'show_strength_indicator' => false,
+                'show_toggle_button'      => false,
+                'show_generate_button'    => false,
+                'show_requirements_list'  => false,
+                'validation_rules'        => [
+                    'required'   => [
+                        'value'          => false,
+                        'message'        => $defaultGlobalMessages['required'],
                         'global_message' => $defaultGlobalMessages['required'],
-                        'global'  => true,
+                        'global'         => true,
+                    ],
+                    'min_length' => [
+                        'value'          => '8',
+                        'message'        => $defaultGlobalMessages['min_length'],
+                        'global_message' => $defaultGlobalMessages['min_length'],
+                        'global'         => true,
                     ],
                 ],
-                'conditional_logics' => [],
+                'conditional_logics'      => [],
             ],
             'editor_options' => [
                 'title'      => __('Password', 'fluentform'),
