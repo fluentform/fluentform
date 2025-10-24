@@ -699,7 +699,15 @@ class SubmissionService
         }
 
         foreach ($entryItems as $entryItem) {
-            EntryDetails::insert($entryItem);
+            try {
+                EntryDetails::insert($entryItem);
+            } catch (\Exception $e) {
+                wp_send_json([
+                    'errors' => [],
+                    'message' => 'Entry details table insertion failed. Please try again.',
+                    'success' => false
+                ], 500);
+            }
         }
 
         return true;

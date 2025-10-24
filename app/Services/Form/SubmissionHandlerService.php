@@ -557,7 +557,15 @@ class SubmissionHandlerService
             return $this->alreadyInsertedId;
         }
         
-        $insertId = Submission::insertGetId($insertData);
+        try {
+            $insertId = Submission::insertGetId($insertData);
+        } catch (\Exception $e) {
+            wp_send_json([
+                'errors' => [],
+                'message' => 'Form submission failed. Please try again or contact support if the issue persists.',
+                'success' => false
+            ], 500);
+        }
     
         do_action('fluentform/notify_on_form_submit', $insertId, $this->formData, $this->form);
         
