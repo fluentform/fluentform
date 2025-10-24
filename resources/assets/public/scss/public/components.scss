@@ -906,3 +906,13 @@
 .iti-mobile .iti--container {
   z-index: 9999;
 }
+
+.fluentform .ff-t-cell input[type=email] {
+  &[dir="rtl"] {
+    text-align: right;
+  }
+}
+
+[dir="rtl"] .fluentform .ff-t-cell input[type=email] {
+  text-align: right;
+}

@@ -13,6 +13,18 @@
     }
   }
 
+  input[type=email] {
+    &[dir="rtl"] {
+      text-align: right;
+    }
+  }
+
+  [dir="rtl"] & {
+    input[type=email] {
+      text-align: right;
+    }
+  }
+
 
   .iti--allow-dropdown input {
     padding-right: 6px;
