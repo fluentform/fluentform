@@ -1360,4 +1360,25 @@ class Helper
             isset(\Elementor\Plugin::$instance) &&
             \Elementor\Plugin::$instance->editor->is_edit_mode();
     }
+
+    /**
+     * Check if we're in Site Editor context
+     * Covers both Site Editor and Template Editor with proper fallbacks
+     * @return bool
+     */
+    public static function isSiteEditor()
+    {
+        if (!is_admin() || !function_exists('get_current_screen')) {
+            return false;
+        }
+
+        $screen = get_current_screen();
+
+        if ($screen && in_array($screen->base, [ 'site-editor', 'edit-site', 'appearance_page_gutenberg-edit-site'], true )) {
+            return true;
+        }
+
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        return isset( $_GET['_wp-find-template'] ) || strpos( $request_uri, 'site-editor.php' ) !== false;
+    }
 }
