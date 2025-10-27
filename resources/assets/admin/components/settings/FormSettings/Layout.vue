@@ -213,7 +213,7 @@
                     <el-checkbox v-if="hasPro" true-label="yes" false-label="no" v-model="integration_failure_notification.status">
                         {{ $t('Enable Integration Failure Notification') }}
                     </el-checkbox>
-                    <update-to-pro-content else :update-message="$t('Integration Failure Email Notification is available in the pro version')" />
+                    <update-to-pro-content v-else :update-message="$t('Integration Failure Email Notification is available in the pro version')" />
                 </el-form-item>
                 <template v-if="integration_failure_notification.status == 'yes' && hasPro">
                     <el-form-item class="ff-form-item">
