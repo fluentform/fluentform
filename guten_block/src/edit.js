@@ -4,14 +4,16 @@
  */
 import FluentSeparator from './components/controls/FluentSeparator';
 const { __ } = wp.i18n;
-const { InspectorControls, useBlockProps } = wp.blockEditor;
+const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
 const { apiFetch } = wp;
 const {
     SelectControl,
     PanelBody,
     Button,
-    Spinner
+    Spinner,
+    ToolbarGroup,
+    ToolbarButton
 } = wp.components;
 const { Component, React, useState, useEffect } = wp.element;
 
@@ -94,7 +96,7 @@ class EditComponent extends Component {
 
                 // Set loading state briefly to show user something is happening
                 this.setState({ isPreviewLoading: true });
-                
+
                 if (isUpdatingBgImage) {
                     this.injectBackgroundStyles();
                 }
@@ -392,6 +394,7 @@ class EditComponent extends Component {
                                 label={item.label}
                             />
                         ))}
+
                     </div>
 
                     <ServerSideRender
@@ -406,6 +409,17 @@ class EditComponent extends Component {
         return (
             <div className="fluentform-guten-wrapper">
                 {inspectorControls}
+                {attributes.formId && (
+                    <BlockControls>
+                        <ToolbarGroup>
+                            <ToolbarButton
+                                icon="edit"
+                                label={__('Edit Form')}
+                                onClick={() => window.open(`admin.php?page=fluent_forms&route=editor&form_id=${attributes.formId}`, '_blank', 'noopener')}
+                            />
+                        </ToolbarGroup>
+                    </BlockControls>
+                )}
                 {mainContent}
                 {loadingOverlay}
             </div>
