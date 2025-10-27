@@ -44,7 +44,7 @@ class TextArea extends BaseComponent
             $ariaRequired = 'true';
         }
 
-        $elMarkup = '<textarea aria-invalid="false" aria-required='. $ariaRequired .' %s>%s</textarea>';
+        $elMarkup = '<textarea aria-required="'. $ariaRequired .'" %s>%s</textarea>';
 
         $atts = $this->buildAttributes($data['attributes']);
 
