@@ -132,7 +132,7 @@
                     <error-view field="email" :errors="errors"/>
 
                     <p class="text-note mt-2" v-show="!manager.id">
-                        {{ $t('Please provide email address of your existing user.') }}
+                        {{ $t('Please provide email address of your existing user. Note: Users with administrator role (manage_options capability) will automatically receive all permissions.') }}
                     </p>
                 </el-form-item>
 

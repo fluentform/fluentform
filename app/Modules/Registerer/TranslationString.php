@@ -964,7 +964,7 @@ class TranslationString
             'Administrators have full access to Fluent Forms. Add other managers giving specific permissions.' => __('Administrators have full access to Fluent Forms. Add other managers giving specific permissions.', 'fluentform'),
             'User Email' => __('User Email', 'fluentform'),
             'User Email Address' => __('User Email Address', 'fluentform'),
-            'Please provide email address of your existing user.' => __('Please provide email address of your existing user.', 'fluentform'),
+            'Please provide email address of your existing user. Note: Users with administrator role (manage_options capability) will automatically receive all permissions.' => __('Please provide email address of your existing user. Note: Users with administrator role (manage_options capability) will automatically receive all permissions.', 'fluentform'),
             'Permissions' => __('Permissions', 'fluentform'),
             'Administrators have full access to Fluent Forms. By selecting additional roles below, you can give access to other user roles.' => __('Administrators have full access to Fluent Forms. By selecting additional roles below, you can give access to other user roles.', 'fluentform'),
             'Global Double Optin Settings' => __('Global Double Optin Settings', 'fluentform'),
