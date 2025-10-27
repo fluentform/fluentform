@@ -3881,6 +3881,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var __ = wp.i18n.__;
 var _wp$blockEditor = wp.blockEditor,
   InspectorControls = _wp$blockEditor.InspectorControls,
+  BlockControls = _wp$blockEditor.BlockControls,
   useBlockProps = _wp$blockEditor.useBlockProps;
 var _wp = wp,
   ServerSideRender = _wp.serverSideRender;
@@ -3890,7 +3891,9 @@ var _wp$components = wp.components,
   SelectControl = _wp$components.SelectControl,
   PanelBody = _wp$components.PanelBody,
   Button = _wp$components.Button,
-  Spinner = _wp$components.Spinner;
+  Spinner = _wp$components.Spinner,
+  ToolbarGroup = _wp$components.ToolbarGroup,
+  ToolbarButton = _wp$components.ToolbarButton;
 var _wp$element = wp.element,
   Component = _wp$element.Component,
   React = _wp$element.React,
@@ -4364,7 +4367,17 @@ var EditComponent = /*#__PURE__*/function (_Component) {
       }
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
         className: "fluentform-guten-wrapper",
-        children: [inspectorControls, mainContent, loadingOverlay]
+        children: [inspectorControls, attributes.formId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(BlockControls, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToolbarGroup, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToolbarButton, {
+              icon: "edit",
+              label: __('Edit Form'),
+              onClick: function onClick() {
+                return window.open("admin.php?page=fluent_forms&route=editor&form_id=".concat(attributes.formId), '_blank', 'noopener');
+              }
+            })
+          })
+        }), mainContent, loadingOverlay]
       });
     }
   }]);
@@ -8576,6 +8589,7 @@ registerBlockType("fluentfom/guten-block", {
   icon: fluentLogo,
   category: "formatting",
   keywords: [__("Contact Form"), __("Fluent Forms"), __("Forms"), __("Advanced Forms"), __("fluentforms-gutenberg-block")],
+  apiVersion: 2,
   edit: _edit__WEBPACK_IMPORTED_MODULE_0__["default"]
 });
 })();
