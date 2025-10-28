@@ -498,7 +498,7 @@ $ff-prefix: 'ffblock'; // Prefix namespace for our components
 .fluentform-guten-wrapper {
   position: relative;
   min-height: 100px;
-  
+
   &:hover{
     border: none;
     outline: none;
@@ -561,7 +561,7 @@ $ff-prefix: 'ffblock'; // Prefix namespace for our components
 
 /* Preview Device Controls */
 .fluent-form-preview-controls {
-  @include flex(center, center, row, 8px);
+  @include flex(flex-start, center, row, 6px);
   margin-bottom: 16px;
 }
 
