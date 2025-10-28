@@ -1070,7 +1070,10 @@ jQuery(document).ready(function () {
                     showFormSubmissionProgress,
                     addFieldValidationRule,
                     removeFieldValidationRule,
-                    hideFormSubmissionProgress
+                    hideFormSubmissionProgress,
+                    triggerSubmission: function() {
+                        submissionAjaxHandler($theForm);
+                    }
                 }
 
                 fluentFormAppStore[formInstanceSelector] = appInstance;
@@ -1637,6 +1640,36 @@ jQuery(document).ready(function () {
         });
 
         fluentFormCommonActions.init();
+
+        // Global function to trigger form submission programmatically
+        window.fluentFormTriggerSubmission = function(formId) {
+            const $fluentFormDiv = jQuery('[data-form_id="' + formId + '"]');
+            if (!$fluentFormDiv.length) {
+                console.warn('FluentForm: Form with ID ' + formId + ' not found');
+                return false;
+            }
+
+            const formInstanceSelector = $fluentFormDiv.attr('data-form_instance');
+            if (!formInstanceSelector) {
+                console.warn('FluentForm: Form instance selector not found for form ID ' + formId);
+                return false;
+            }
+
+            const formInstance = fluentFormAppStore[formInstanceSelector];
+            
+            if (formInstance && typeof formInstance.triggerSubmission === 'function') {
+                try {
+                    formInstance.triggerSubmission();
+                    return true;
+                } catch (error) {
+                    console.error('FluentForm: Error triggering submission for form ID ' + formId, error);
+                    return false;
+                }
+            } else {
+                console.warn('FluentForm: Form instance not found or triggerSubmission method not available for form ID ' + formId);
+                return false;
+            }
+        };
 
     })(window.fluentFormVars, jQuery);
 
