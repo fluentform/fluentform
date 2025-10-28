@@ -205,12 +205,14 @@ class CustomSubmitButton extends BaseFieldManager
         // ADDED IN v1.2.6 - updated in 1.4.4
         if (isset($data['settings']['button_ui'])) {
             if ('default' == $data['settings']['button_ui']['type']) {
-                $html .= '<button ' . $atts . '>' . fluentform_sanitize_html($data['settings']['button_ui']['text']) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
+                $buttonText = $data['settings']['button_ui']['text'];
+                $html .= '<button ' . $atts . ' aria-label="' . esc_attr($buttonText) . '">' . fluentform_sanitize_html($buttonText) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
             } else {
-                $html .= "<button class='ff-btn-submit' type='submit'><img style='max-width: 200px;' src='" . esc_url($data['settings']['button_ui']['img_url']) . "' alt='Submit Form'></button>";
+                $html .= "<button class='ff-btn-submit' type='submit' aria-label='Submit The Form'><img style='max-width: 200px;' src='" . esc_url($data['settings']['button_ui']['img_url']) . "' alt='Submit Form'></button>";
             }
         } else {
-            $html .= '<button ' . $atts . '>' . fluentform_sanitize_html($data['settings']['btn_text']) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
+            $buttonText = $data['settings']['btn_text'];
+            $html .= '<button ' . $atts . ' aria-label="' . esc_attr($buttonText) . '">' . fluentform_sanitize_html($buttonText) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
         }
 
         if ($styles) {

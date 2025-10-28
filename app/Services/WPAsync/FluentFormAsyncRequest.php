@@ -129,7 +129,7 @@ class FluentFormAsyncRequest
 
         foreach ($actionFeeds as $actionFeed) {
             $action = $actionFeed->action;
-            $feed = maybe_unserialize($actionFeed->data);
+            $feed = Helper::safeUnserialize($actionFeed->data);
             $feed['scheduled_action_id'] = $actionFeed->id;
             if(isset($submissionCache[$actionFeed->origin_id])) {
                 $submission = $submissionCache[$actionFeed->origin_id];
@@ -188,7 +188,7 @@ class FluentFormAsyncRequest
         }
 
         $action = $queue->action;
-        $feed = maybe_unserialize($queue->data);
+        $feed = Helper::safeUnserialize($queue->data);
         $feed['scheduled_action_id'] = $queue->id;
 
         if (isset(static::$submissionCache[$queue->origin_id])) {

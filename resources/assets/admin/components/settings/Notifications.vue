@@ -374,11 +374,6 @@
                                 <el-radio label="payment_success">{{ $t('After Payment Success') }}</el-radio>
                                 <el-radio label="payment_form_submit">{{ $t('After Form Submit') }}</el-radio>
                             </el-radio-group>
-
-                            <p class="mt-2 text-note" style="max-width: 700px;">{{
-                                    $t('Please Note, for offline payment this settings will not work. Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments.')
-                                }}</p>
-
                         </el-form-item>
 
                         <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">

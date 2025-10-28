@@ -129,7 +129,7 @@ class SubmissionHandlerService
         );
         $this->formData = apply_filters('fluentform/insert_response_data', $formData, $formId, $inputConfigs);
         
-        $ipAddress = $this->app->request->getIp();
+        $ipAddress = sanitize_text_field($this->app->request->getIp());
 
         $disableIpLog = apply_filters_deprecated(
             'fluentform_disable_ip_logging',
@@ -155,6 +155,7 @@ class SubmissionHandlerService
             'user_id'       => get_current_user_id(),
             'browser'       => $browser->getBrowser(),
             'device'        => $browser->getPlatform(),
+            'country'       => apply_filters('fluentform/disable_submission_country_detection', false, $formId) ? null : Helper::getCountryCodeFromHeaders(),
             'ip'            => $ipAddress,
             'created_at'    => current_time('mysql'),
             'updated_at'    => current_time('mysql'),

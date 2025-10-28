@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.0.5
+**Stable tag:** 6.1.5
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,11 +159,46 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.0.5 (Date: July 8, 2025) =
+### 6.1.5 (Date: October 28, 2025) =
+- Adds Gutenberg Block Form Style Customization
+- Adds AI Custom CSS support for form creation
+- Adds Conversational Form Editor shortcode support ({get.text}, {ip}, etc.)
+- Adds warning message for Name Attribute changes to prevent entry data loss
+- Adds Dynamic field greyed-out (Pro Feature) visibility
+- Improves many untranslatable strings throughout the plugin. eg: ("for each month", "Signup Fee for", etc.)
+- Improves Design Preview color handling with block themes
+- Fixes Payment Form submission failures inside Elementor popups
+- Fixes Custom style CSS backtick insertion issue
+- Fixes country name from "Turkey" to "Türkiye" across all references
+- Fixes {user.meta.meta_key} shortcode for non-English languages
+- Fixes Advanced Filter UX issue with persistent dialog box
+- Fixes textarea line break in entry import/export
+- Fixes Entries table showing option values instead of labels for radio/select fields
+- Fixes Quantity field default value not working with conditional logic
+
+### 6.1.4 (Date: September 23, 2025) =
+- Fixes Elementor backend editor not working when Fluent Forms was added
+- Fixes the multiple choice field not working in Elementor popup
+- Fixes Report Page UI not properly showing in RTL
+- Fixes Stripe payment error when global auto-load CAPTCHA is enabled in conversational forms
+- Fixes the Conversational Form Phone Field to return numbers in the full International format
+- Fixes Custom User Meta Fields not populating
+- Fixes the phone field search input style height
+- Fixes email notification triggering for empty payment method form
+- Fixes the PDF Download link in confirmation message
+- Fixes PHP 8 compatibility issues with Excel exports
+- Fixes the range slider in conversational forms causing incorrect progress percentage
+
+
+### 6.1.0 (Date: August 26, 2025) =
 - Adds Fluent Forms Report module
 - Adds close button to payment summary items
-- Improves IP detection accepting client IP explicitly
-- Improves consistency of settings deletion notifications
+- Adds keyboard shortcut for delete input field in the editor
+- Adds conversational forms scroll to top option
+- Adds conversational forms terms and condition hide disagree button
+- Improves export entries fields by remembering last selected fields
+- Improves IP detection
+- Improves consistency of settings deletion captchas
 - Fixes form API empty title retrieval issue
 - Fixes WPForm Migrator with empty forms
 - Fixes radio field customization UI default value selection
@@ -172,16 +207,17 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes integrations page sidebar menu selection indication on reload
 - Fixes conversational forms GDPR checkbox implementation
 - Fixes captcha conflict when global and form-specific settings differ
-- Fixes client IP detection for Cloudflare and Nginx proxies
 - Fixes hide after submission option setting for conversational forms
 - Fixes Terms & Conditions field validation error messages for not Accepted
-- Removes non-functional Reset Form button from conversational forms
+- Removes non-functional Reset Form button from conversational forms form settings
 - Fixes payment method 'Test' Instead 'Offline' in payments shortcode
 - Fixes multiple address field autocomplete in conversational forms
 - Fixes submission on Enter key press with selected radio/checkbox using keyboard
 - Fixes entries chart date range filtering
 - Fixes database creation errors in WordPress Studio environments
 - Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
+- Fixes WP Text Editor sanitizer removing links in success messages with search parameters
+- Fixes Object Injection Vulnerability unserialize issue when using user profile specific shortcodes
 
 ### 6.0.4 (Date: May 29, 2025) =
 - Improve honeypot condition check

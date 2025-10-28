@@ -363,6 +363,8 @@ $defaultElements = [
             'settings' => [
                 'label'                 => __('Address', 'fluentform'),
                 'enable_g_autocomplete' => 'no',
+                'autocomplete_provider' => 'none',
+                'enable_auto_locate'    => 'on_click',
                 'admin_field_label'     => 'Address',
                 'field_order'           => [
                     ['id' => 1, 'value' => 'address_line_1'],
@@ -1741,6 +1743,18 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputHidden',
         ],
     ];
+    $defaultElements['advanced']['dynamic_field'] = [
+        'index'          => 19,
+        'element'        => 'dynamic_field',
+        'attributes'     => [],
+        'settings'       => [],
+        'options'        => [],
+        'editor_options' => [
+            'title'      => __('Dynamic Field', 'fluentform'),
+            'icon_class' => 'ff-edit-repeat',
+            'template'   => 'inputHidden',
+        ],
+    ];
     $defaultElements['advanced']['cpt_selection'] = [
         'index'          => 18,
         'element'        => 'cpt_selection',
@@ -1824,9 +1838,20 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputText',
         ],
     ];
+    $defaultElements['container']['accordion'] = [
+        'index'          => 18,
+        'element'        => 'accordion',
+        'attributes'     => [],
+        'settings'       => [],
+        'options'        => [],
+        'editor_options' => [
+            'title'      => __('Accordion/Tab', 'fluentform'),
+            'icon_class' => 'ff-edit-section-break',
+            'template'   => 'CustomEditorField',
+        ],
+    ];
 }
 
-// Add coordinate fields to address elements when FluentFormPro is active
 if (defined('FLUENTFORMPRO')) {
     $defaultElements['general']['address']['fields']['latitude'] = [
         'element'    => 'input_hidden',
@@ -1837,7 +1862,7 @@ if (defined('FLUENTFORMPRO')) {
         ],
         'settings' => [
             'label'   => 'Latitude',
-            'visible' => false, // Hidden by default, only for shortcodes
+            'visible' => false,
         ],
     ];
     $defaultElements['general']['address']['fields']['longitude'] = [
@@ -1849,7 +1874,7 @@ if (defined('FLUENTFORMPRO')) {
         ],
         'settings' => [
             'label'   => 'Longitude',
-            'visible' => false, // Hidden by default, only for shortcodes
+            'visible' => false,
         ],
     ];
 }

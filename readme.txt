@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 6.0.5
+Stable tag: 6.1.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -442,11 +442,52 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.0.5 (Date: July 8, 2025) =
-- Adds Fluent Forms Report module
+= 6.1.5 (Date: October 28, 2025) =
+- Adds Gutenberg Block Form Style Customization
+- Adds AI Custom CSS support for form creation
+- Adds Conversational Form Editor shortcode support
+- Adds warning message for Name Attribute changes to prevent entry data loss
+- Improves translations
+- Improves Design Preview color handling with block themes
+- Fixes Payment Form submission failures inside Elementor popups
+- Fixes Custom style CSS backtick insertion issue
+- Fixes country name from "Turkey" to "Türkiye"
+- Fixes {user.meta.meta_key} shortcode for non-English languages
+- Fixes Advanced Filter UX issue with persistent dialog box
+- Fixes textarea line break in entry import/export
+- Fixes Entries table showing option values instead of labels for radio/select fields
+- Fixes Quantity field default value not working with conditional logic
+
+= 6.1.4 (Date: September 23, 2025) =
+- Updates language files
+
+= 6.1.3 (Date: September 23, 2025) =
+- Fixes Elementor backend editor not working when Fluent Forms was added
+- Fixes the multiple choice field not working in Elementor popup
+- Fixes Report Page UI not properly showing in RTL
+- Fixes Stripe payment error when global auto-load CAPTCHA is enabled in conversational forms
+- Fixes the Conversational Form Phone Field to return numbers in the full International format
+- Fixes Custom User Meta Fields not populating
+- Fixes the phone field search input style height
+- Fixes email notification triggering for empty payment method form
+- Fixes the PDF Download link in confirmation message
+- Fixes PHP 8 compatibility issues with Excel exports
+- Fixes the range slider in conversational forms causing incorrect progress percentage
+
+= 6.1.2 (Date: August 29, 2025) =
+- Changes iplocation service for country restriction
+- Fixes subscription payment translation issue
+
+= 6.1.1 (Date: August 27, 2025) =
+- Adds Report module
+- Adds conversational forms scroll to top option
 - Adds close button to payment summary items
-- Improves IP detection accepting client IP explicitly
-- Improves consistency of settings deletion notifications
+- Adds keyboard shortcut for delete input field in the editor
+- Adds conversational forms terms and condition hide disagree button
+- Adds injectable custom Vue component on form editor field view
+- Improves Export entries fields by remembering last selected fields
+- Improves IP detection
+- Improves consistency of settings deletion of captcha
 - Fixes form API empty title retrieval issue
 - Fixes WPForm Migrator with empty forms
 - Fixes radio field customization UI default value selection
@@ -455,16 +496,17 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes integrations page sidebar menu selection indication on reload
 - Fixes conversational forms GDPR checkbox implementation
 - Fixes captcha conflict when global and form-specific settings differ
-- Fixes client IP detection for Cloudflare and Nginx proxies
 - Fixes hide after submission option setting for conversational forms
 - Fixes Terms & Conditions field validation error messages for not Accepted
-- Removes non-functional Reset Form button from conversational forms
+- Removes un used Reset Form button from conversational forms form settings
 - Fixes payment method 'Test' Instead 'Offline' in payments shortcode
 - Fixes multiple address field autocomplete in conversational forms
 - Fixes submission on Enter key press with selected radio/checkbox using keyboard
 - Fixes entries chart date range filtering
 - Fixes database creation errors in WordPress Studio environments
 - Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
+- Fixes WP Text Editor sanitizer removing links in success messages with search parameters
+- Fixes Object Injection Vulnerability unserialize issue when using user profile specific shortcodes
 
 = 6.0.4 (Date: May 29, 2025) =
 - Fixes the net promoter score field's zero (0) value in the visual report
@@ -495,6 +537,35 @@ You can get support from our official support thread at <a href="https://wpmanag
 = 6.0.2 (Date: April 7, 2025) =
 - Fixes Stripe 3DS payment issue
 - Fixes form entry delete issue
+
+= 6.0.1 (Date: March 20, 2025) =
+- Fixes container conditional logic issue
+
+= 6.0.0 (Date: March 19, 2025) =
+- Adds Payment fields with Subscription
+- Adds Stripe payment gateway
+- Adds Advanced Conditionals group for enhanced form logic
+- Adds FluentFormAI for creating AI assisted forms
+- Adds New Form Templates
+- Improves hCaptcha settings saving method
+- Improves Captchas Loading after first interactions on Popups
+- Improves CleanTalk API
+- Improves spam processing logs
+- Fixes Stripe fields language issues
+- Fixes "customer_name" issue for Stripe
+- Fixes conditional {dynamic.} shortcode in Custom HTML fields
+- Fixes front end facing site_url with home_url
+
+= 5.2.12 (Date: February 18, 2025) =
+- Adds token-based spam protection for enhanced form security
+- Adds Italian Language Translation
+- Improves Honeypot Security for better bot detection
+- Improves Turnstile appearance option names for clarity
+
+= 6.0.2 (Date: April 7, 2025) =
+- Fixes Stripe 3DS payment issue
+- Fixes form entry delete issue
+- Fixes textdomain load issue
 
 = 6.0.1 (Date: March 20, 2025) =
 - Fixes container conditional logic issue

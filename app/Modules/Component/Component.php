@@ -150,7 +150,7 @@ class Component
         $fluentFormIds = get_post_meta($postId, '_has_fluentform', true);
         $hasFluentformMeta = is_a($post, 'WP_Post') && $fluentFormIds;
 
-        $loadStyle =  apply_filters_deprecated(
+        $loadStyle = apply_filters_deprecated(
             'fluentform_load_styles',
             [
                 false,
@@ -191,7 +191,9 @@ class Component
 
             $this->app->doAction('fluentform/pre_load_scripts', $post);
 
-            wp_enqueue_script('fluent-form-submission');
+            if (!Helper::isElementorEditor()) {
+                wp_enqueue_script('fluent-form-submission');
+            }
         }
     }
 
@@ -374,6 +376,13 @@ class Component
                 'image'       => fluentformMix('img/pro-fields/net-promoter-score.png'),
                 'video'       => '',
             ];
+            $disabled['dynamic_field'] = [
+                'disabled'    => true,
+                'title'       => __('Dynamic Field', 'fluentform'),
+                'description' => __('Dynamic Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
+                'image'       => '',
+                'video'       => 'https://www.youtube.com/embed/cx3N5y1ddOQ',
+            ];
             $disabled['repeater_field'] = [
                 'disabled'    => true,
                 'title'       => __('Repeat Field', 'fluentform'),
@@ -522,13 +531,9 @@ class Component
             return $feedText;
         }
         
-        $formSettings = wpFluent()
-            ->table('fluentform_form_meta')
-            ->where('form_id', $form->id)
-            ->where('meta_key', 'formSettings')
-            ->first();
+        $form->settings = Helper::getFormMeta($form->id, 'formSettings', []);
 
-        if (!$formSettings) {
+        if (empty($form->settings)) {
             return '';
         }
 
@@ -537,8 +542,6 @@ class Component
             return '';
         }
 
-        $form->settings = json_decode($formSettings->value, true);
-    
         $form = apply_filters_deprecated(
             'fluentform_rendering_form',
             [
@@ -548,13 +551,12 @@ class Component
             'fluentform/rendering_form',
             'Use fluentform/rendering_form instead of fluentform_rendering_form.'
         );
-
         $form = $this->app->applyFilters('fluentform/rendering_form', $form);
+        
         $isRenderable = [
             'status'  => true,
             'message' => '',
         ];
-        /* This filter is deprecated and will be removed soon */
         $isRenderable = apply_filters('fluentform_is_form_renderable', $isRenderable, $form);
         
         $isRenderable = $this->app->applyFilters('fluentform/is_form_renderable', $isRenderable, $form);
@@ -569,7 +571,9 @@ class Component
         $form->instance_index = Helper::$formInstance;
 
         if ('conversational' == $atts['type']) {
-            $this->addInlineVars();
+            if (!Helper::isElementorEditor()) {
+                $this->addInlineVars();
+            }
             return (new \FluentForm\App\Services\FluentConversational\Classes\Form())->renderShortcode($form);
         }
 
@@ -606,7 +610,9 @@ class Component
          * We will load fluentform-advanced if the form has certain fields or feature
          */
         $this->maybeHasAdvandedFields($form, $formBuilder);
-        wp_enqueue_script('fluent-form-submission');
+        if (!Helper::isElementorEditor()) {
+            wp_enqueue_script('fluent-form-submission');
+        }
 
         $stepText = __('Step %activeStep% of %totalStep% - %stepTitle%', 'fluentform');
     
@@ -640,7 +646,8 @@ class Component
                 'loadingText'    => __('Loading...', 'fluentform'),
                 'noChoicesText'  => __('No choices to choose from', 'fluentform'),
                 'itemSelectText' => __('Press to select', 'fluentform'),
-                'maxItemText'    => __('Only %%maxItemCount%% options can be added', 'fluentform'),
+                'maxItemTextSingular' => __('Only %%maxItemCount%% option can be added', 'fluentform'),
+                'maxItemTextPlural'   => __('Only %%maxItemCount%% options can be added', 'fluentform'),
             ],
             'input_mask_vars'               => [
                 'clearIfNotMatch' => false,
@@ -664,7 +671,9 @@ class Component
 
         $vars = apply_filters('fluentform/global_form_vars', $data);
 
-        wp_localize_script('fluent-form-submission', 'fluentFormVars', $vars);
+        if (!Helper::isElementorEditor()) {
+            wp_localize_script('fluent-form-submission', 'fluentFormVars', $vars);
+        }
 
         $formSettings = $form->settings;
 
@@ -713,26 +722,31 @@ class Component
         if (!$otherScriptsRenderImmediately) {
             ob_start();
         }
-        ?>
-        <script type="text/javascript">
-            window.fluent_form_<?php echo esc_attr($instanceCssClass); ?> = <?php echo wp_json_encode($form_vars); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form_vars is escaped before being passed in.?>;
-            <?php if (wp_doing_ajax()): ?>
-            function initFFInstance_<?php echo esc_attr($form_vars['id']); ?>() {
-                if (!window.fluentFormApp) {
-                    console.log('No fluentFormApp found');
-                    return;
+          
+        if (!Helper::isElementorEditor()) {
+            ?>
+            <script type="text/javascript">
+                window.fluent_form_<?php echo esc_attr($instanceCssClass); ?> = <?php echo wp_json_encode($form_vars); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form_vars is escaped before being passed in.?>;
+                <?php if (wp_doing_ajax()): ?>
+                function initFFInstance_<?php echo esc_attr($form_vars['id']); ?>() {
+                    if (!window.fluentFormApp) {
+                        console.log('No fluentFormApp found');
+                        return;
+                    }
+                    var ajax_formInstance = window.fluentFormApp(jQuery('form.<?php echo esc_attr($form_vars['form_instance']); ?>'));
+                    if (ajax_formInstance) {
+                        ajax_formInstance.initFormHandlers();
+                    }
                 }
-                var ajax_formInstance = window.fluentFormApp(jQuery('form.<?php echo esc_attr($form_vars['form_instance']); ?>'));
-                if (ajax_formInstance) {
-                    ajax_formInstance.initFormHandlers();
-                }
-            }
-
-            initFFInstance_<?php echo esc_attr($form_vars['id']); ?>();
-            <?php endif; ?>
-        </script>
-        <?php
-        $this->addInlineVars();
+                
+                initFFInstance_<?php echo esc_attr($form_vars['id']); ?>();
+                <?php endif; ?>
+            </script>
+            <?php
+        }
+        if (!Helper::isElementorEditor()) {
+            $this->addInlineVars();
+        }
         if (!$otherScriptsRenderImmediately) {
             $otherScripts .= ob_get_clean();
         }
@@ -1196,7 +1210,8 @@ class Component
         ];
         $advancedFields = apply_filters('fluentform/fields_requiring_advanced_script', $advancedFields);
         
-        if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
+        // Only enqueue advanced script if NOT in Elementor editor mode
+        if (!Helper::isElementorEditor() && ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields))) {
             wp_enqueue_script('fluentform-advanced');
         }
     }

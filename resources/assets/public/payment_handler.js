@@ -1,4 +1,5 @@
 import formatPrice from "./formatPrice";
+import { _$t } from "@/admin/helpers";
 export class Payment_handler {
     constructor($form, instance) {
         let formId = instance.settings.id;
@@ -18,10 +19,8 @@ export class Payment_handler {
     }
 
     $t(stringKey) {
-        if (this.paymentConfig.i18n[stringKey]) {
-            return this.paymentConfig.i18n[stringKey];
-        }
-        return stringKey;
+        let transString = this.paymentConfig.i18n[stringKey] || stringKey;
+        return _$t(transString, ...arguments);
     }
 
     boot() {
@@ -172,7 +171,7 @@ export class Payment_handler {
             let html = '<div class="ffp_table_wrapper">';
 
             // Only add close button if enabled for this summary
-            const showCloseButton = this.formPaymentConfig.payment_summary_config[name]?.show_close_button || false;
+            const showCloseButton = this.formPaymentConfig?.payment_summary_config?.[name]?.show_close_button || false;
             if (showCloseButton) {
                 html += '<div class="ffp_table_close"><span class="ffp_close_icon" data-name="' + name + '">&times;</span></div>';
             }
@@ -193,6 +192,7 @@ export class Payment_handler {
             html += '</tbody>';
 
             let footerRows = '';
+            let runningTotal = totalAmount;
             if (discounts.length) {
                 footerRows += `<tr><th class="item_right" colspan="3">${this.$t("Sub Total")}</th><th>${this.getFormattedPrice(totalAmount)}</th></tr>`;
                 jQuery.each(discounts, (index, discount) => {
@@ -200,22 +200,22 @@ export class Payment_handler {
                     if (discount.coupon_type === 'percent') {
                         discountAmount = (discount.amount / 100) * totalAmount;
                     }
-                    if (discountAmount >= totalAmount) {
-                        discountAmount = totalAmount;
+                    if (discountAmount >= runningTotal) {
+                        discountAmount = runningTotal;
                     }
                     footerRows += `<tr><th class="item_right" colspan="3">${this.$t('discount:')} ${discount.title}</th><th>-${this.getFormattedPrice(discountAmount)}</th></tr>`;
-                    totalAmount -= discountAmount;
+                    runningTotal -= discountAmount;
                 });
             }
 
-            footerRows += `<tr><th class="item_right" colspan="3">${this.$t("total")}</th><th>${this.getFormattedPrice(totalAmount)}</th></tr>`;
+            footerRows += `<tr><th class="item_right" colspan="3">${this.$t("total")}</th><th>${this.getFormattedPrice(runningTotal)}</th></tr>`;
 
             html += `<tfoot>${footerRows}</tfoot>`;
             html += '</table></div>';
 
             $summary.find('.ff_payment_summary').html(html);
         });
-        
+
         this.$form.find('.ffp_close_icon').on('click', (e) => {
             const name = jQuery(e.target).data('name');
             const $paymentSummary = this.$form.find(`.ff-el-group[data-name="${name}"] .ff_dynamic_payment_summary`);
@@ -355,7 +355,7 @@ export class Payment_handler {
         } else {
             signupLabel = this.$t('Signup Fee for %s', label);
         }
-        
+
         if (initialAmount) {
             pushItem(elementName + '_signup_fee', signupLabel, initialAmount);
             itemValue = itemValue - initialAmount;
@@ -392,11 +392,7 @@ export class Payment_handler {
         }
 
         if ($quantityDom.closest('.ff-el-group.has-conditions.ff_excluded').length) {
-            if ($quantityDom.hasClass('ff_quantity_item_slider')) {
-                return 0;
-            } else {
-                $quantityDom.val('');
-            }
+            return 0;
         }
 
         var qty = $quantityDom.val();
@@ -805,7 +801,6 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-        
         this.stripe.confirmCardPayment(
             data.client_secret,
             {
@@ -834,7 +829,6 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-        
         this.formInstance.showFormSubmissionProgress(this.$form);
         this.stripe.handleCardAction(
             data.client_secret
@@ -889,7 +883,7 @@ export class Payment_handler {
 }
 // Register payment handler events only if pro is not installed.
 // If pro is installed, payment handler events is registered from payment_handler_pro.js
-if (!window.fluentFormVars.pro_payment_script_compatible) {
+if (!window.fluentFormVars?.pro_payment_script_compatible) {
     (function ($) {
         $.each($('form.fluentform_has_payment'), function () {
             const $form = $(this);
@@ -900,7 +894,6 @@ if (!window.fluentFormVars.pro_payment_script_compatible) {
 
         $(document).on('ff_reinit', function (e, formItem) {
             var $form = $(formItem);
-            $form.attr('data-ff_reinit', 'yes');
             const instance = fluentFormApp($form);
             if (!instance) {
                 return false;

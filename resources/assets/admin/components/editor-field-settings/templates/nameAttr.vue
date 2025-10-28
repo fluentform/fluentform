@@ -18,7 +18,7 @@
                 <div class="ff_alert_group">
                     <i class="ff_alert_icon el-icon-warning"></i>
                     <div class="ff_alert_content">
-                        <span>{{ $t('Please note that it is recommended to not change name attributes, doing so will break conditional & integrations field mapping.You will need to recreate these with the new value.') }}</span>
+                        <span>{{ $t('It is not recommended to change the name attribute, as this will break conditional logic and integration field mappings. If you proceed, you will need to recreate these mappings with the updated value. Additionally, the connection with submission values will be lost, meaning existing submissions containing this field will no longer be displayed.') }}</span>
                     </div>
                 </div>
             </notice>

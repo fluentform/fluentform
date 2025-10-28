@@ -63,6 +63,23 @@ $fileTypeOptions = apply_filters_deprecated(
 
 $fileTypeOptions = apply_filters('fluentform/file_type_options', $fileTypeOptions);
 
+$imageTypeOptions = [
+    [
+        'label' => __('JPG', 'fluentform'),
+        'value' => 'jpg|jpeg',
+    ],
+    [
+        'label' => __('PNG', 'fluentform'),
+        'value' => 'png',
+    ],
+    [
+        'label' => __('GIF', 'fluentform'),
+        'value' => 'gif',
+    ],
+];
+
+$imageTypeOptions = apply_filters('fluentform/image_type_options', $imageTypeOptions);
+
 $validation_rule_settings = [
     'required' => [
         'template'  => 'inputRadio',
@@ -242,20 +259,7 @@ $validation_rule_settings = [
                 'types' => ['gif'],
             ],
         ],
-        'options' => [
-            [
-                'label' => __('JPG', 'fluentform'),
-                'value' => 'jpg|jpeg',
-            ],
-            [
-                'label' => __('PNG', 'fluentform'),
-                'value' => 'png',
-            ],
-            [
-                'label' => __('GIF', 'fluentform'),
-                'value' => 'gif',
-            ],
-        ],
+        'options' => $imageTypeOptions,
     ],
 ];
 

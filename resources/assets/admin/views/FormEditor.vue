@@ -359,11 +359,13 @@
                                                         <div class="v-col--50" v-for="(mockItem, i) in containerMockList" :key="i">
                                                             <vddl-draggable
                                                                 class="btn-element mb15"
+                                                                :class="{ 'disabled': isDisabled(mockItem) }"
                                                                 :draggable="mockItem"
                                                                 :wrapper="containerMockList"
                                                                 :index="i"
                                                                 :selected="insertItemOnClick"
                                                                 :moved="moved"
+                                                                :disable-if="isDisabled(mockItem)"
                                                                 effect-allowed="copy"
                                                             ><i :class="mockItem.editor_options.icon_class"></i>
                                                             <span>{{mockItem.editor_options.title}}</span>
@@ -872,9 +874,13 @@
 		        this.editorInserterInContainer = true;
 	        }
 
-            if ((item.element == 'repeater_container' || item.element == 'container') && this.form.dropzone != list) {
+            if ((item.element == 'repeater_container' || item.element == 'container' || item.element == 'accordion') && this.form.dropzone != list) {
+                let message = this.$t('You can not insert a container into another.');
+                if (item.element == 'accordion') {
+                    message = this.$t('You can not insert an accordion into container.');
+                }
                 this.$message({
-                    message: this.$t('You can not insert a container into another.'),
+                    message: message,
                     type: 'warning',
                 });
                 return false;
@@ -954,9 +960,13 @@
                 return this.showWhyDisabled(item);
             }
 
-            if (this.editorInserterInContainer && (freshCopy.element === 'container' || freshCopy.element === 'repeater_container')) {
+            if (this.editorInserterInContainer && (freshCopy.element === 'container' || freshCopy.element === 'repeater_container' || freshCopy.element === 'accordion')) {
+                let message = this.$t('You can not insert a container into another.');
+                if (freshCopy.element === 'accordion') {
+                    message = this.$t('You can not insert an accordion into container.');
+                }
                 this.$message({
-                    message: this.$t('You can not insert a container into another.'),
+                    message: message,
                     type: 'warning',
                 });
 

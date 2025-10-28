@@ -4,6 +4,7 @@
 .git
 .gitattributes
 .gitignore
+pnpm-lock.yaml
 README.md
 .idea
 node_modules

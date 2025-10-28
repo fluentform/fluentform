@@ -11,19 +11,31 @@ do_action('fluentform/global_menu'); ?>
 <div class="ff_form_wrap">
     <div class="ff_form_wrap_area">
         <?php if(!$hasPro){ ?>
-            <div class="ff_card ff_card_alert mb-4 el-row justify-between items-center">
-                <div class="el-col el-col-12">
-                    <h5 class='title mb-2'><?php _e('You are using the free version of Fluent Forms.', 'fluentform'); ?></h5>
-                    <p class='text'>
+
+            <div class="ff_card ff_update_card el-row is-align-middle mb-4">
+                <div class="ff-update-icon">
+                    <span><i class="el-icon-warning el-icon-warning"></i>
+                </div>
+                <div class="ff-update-body">
+                    <h5 class="title mb-1">
+                        <?php _e('You are using the free version of Fluent Forms.', 'fluentform'); ?>
+                    </h5>
+                    <p class="text">
                         <?php _e('Upgrade to get access to all the advanced features.', 'fluentform'); ?>
                     </p>
                 </div>
-                <div class="el-col el-col-12 text-right">
-                    <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" class="el-button el-button--danger">
+
+                <div class="ff-update-action">
+                    <a
+                            target="_blank"
+                            href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade"
+                            class="el-button el-button--primary"
+                    >
                         <?php _e('Upgrade to Pro', 'fluentform'); ?>
                     </a>
                 </div>
             </div>
+        
         <?php }?>
 
         <div class="ff_card">

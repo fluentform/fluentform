@@ -1,0 +1,696 @@
+/**
+ * Fluent Forms Gutenberg Block - Admin Editor Styles
+ * These styles apply to the block settings in the WordPress editor
+ */
+
+@import "@/admin/styles/_variables.scss";
+
+// =========================================
+// VARIABLES
+// =========================================
+$ff-prefix: 'ffblock'; // Prefix namespace for our components
+
+// =========================================
+// MIXINS
+// =========================================
+@mixin flex($justify: flex-start, $align: stretch, $direction: row, $gap: 0) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  flex-direction: $direction;
+  @if $gap != 0 {
+    gap: $gap;
+  }
+}
+
+@mixin grid($columns, $gap: 8px) {
+  display: grid;
+  grid-template-columns: $columns;
+  gap: $gap;
+}
+
+@mixin transition($props: all, $duration: 0.3s, $timing: ease) {
+  transition: $props $duration $timing;
+}
+
+// =========================================
+// BASE COMPONENTS
+// =========================================
+
+/* Typography and Labels */
+.#{$ff-prefix}-label {
+  font-weight: $--font-weight-primary;
+  font-size: $--font-size-small;
+  color: $base-text;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.#{$ff-prefix}-separator-label {
+  font-size: $--font-size-extra-small;
+  font-weight: $--font-weight-primary;
+  color: $base-text;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.components-base-control__help {
+  font-size: $--font-size-extra-small;
+  font-style: italic;
+  color: $--color-text-secondary;
+}
+
+/* Control Fields and Containers */
+.#{$ff-prefix}-control-field {
+  margin-bottom: 16px;
+}
+
+.components-panel__body > .components-flex {
+  margin-top: 8px;
+}
+
+/* Buttons */
+.#{$ff-prefix}-reset-button,
+.fluent-typography-edit-btn {
+  padding: 2px !important;
+  min-width: auto !important;
+  height: auto !important;
+  color: $base-text;
+}
+
+.#{$ff-prefix}-linked-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+/* Input Controls */
+.components-text-control__input {
+  font-size: $--font-size-small;
+
+  &[type="number"] {
+    width: 50px !important;
+    text-align: center;
+  }
+}
+
+/* Popovers */
+.#{$ff-prefix}-popover-content {
+  padding: 12px;
+  width: 270px;
+}
+
+.#{$ff-prefix}-popover {
+  min-width: 260px;
+}
+
+// =========================================
+// LAYOUT UTILITIES
+// =========================================
+
+/* Flex layout helpers */
+.#{$ff-prefix}-flex-between {
+  @include flex(space-between, center);
+}
+
+.#{$ff-prefix}-flex-gap {
+  @include flex(flex-start, center, row, 8px);
+}
+
+/* Separators */
+.#{$ff-prefix}-separator {
+  margin: 16px 0;
+  border: none;
+  border-bottom: 1px solid $border-color;
+}
+
+.#{$ff-prefix}-unit-control {
+  display: flex;
+  gap: 8px;
+  input.components-text-control__input {
+    width: 70% !important;
+  }
+  .components-base-control__field {
+    margin-bottom: 0;
+  }
+}
+
+/* Fluent Separator Component */
+.fluent-separator {
+  position: relative;
+  height: 1px;
+  background-color: $border-color;
+  margin: 16px 0;
+  text-align: center;
+  clear: both;
+
+  // Separator variants
+  &-dashed {
+    background: repeating-linear-gradient(
+      to right,
+      $border-color,
+      $border-color 5px,
+      transparent 5px,
+      transparent 10px
+    );
+  }
+
+  &-dotted {
+    background: repeating-linear-gradient(
+      to right,
+      $border-color,
+      $border-color 1px,
+      transparent 1px,
+      transparent 5px
+    );
+  }
+
+  &-primary {
+    background-color: $primary;
+
+    .fluent-separator-label {
+      color: $primary;
+    }
+  }
+
+  // Separator sizes
+  &-sm {
+    margin: 12px 0;
+  }
+
+  &-label {
+    position: relative;
+    display: inline-block;
+    padding: 0 10px;
+    background-color: $white;
+    color: $base-text;
+    font-size: $--font-size-extra-small;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    top: -6px;
+  }
+}
+
+
+// =========================================
+// COMPONENT-SPECIFIC STYLES
+// =========================================
+
+/* FluentColorPicker */
+.#{$ff-prefix}-control-color-wrap {
+  margin-bottom: 16px;
+}
+
+.#{$ff-prefix}-color-button {
+  cursor: pointer;
+}
+
+.#{$ff-prefix}-color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: $--border-radius-small;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.#{$ff-prefix}-color-transparent-pattern {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC");
+  background-position: 0 0;
+  background-size: 10px 10px;
+  background-repeat: repeat;
+}
+
+.#{$ff-prefix}-color-popover .components-popover__content {
+  min-width: 260px;
+}
+
+.#{$ff-prefix}-color-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 8px;
+
+  span {
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .#{$ff-prefix}-color-picker-close {
+    padding: 0;
+    height: 24px;
+    min-width: 24px;
+
+    &:hover {
+      color: #cc1818;
+    }
+  }
+}
+
+.#{$ff-prefix}-color-picker-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 12px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 8px;
+
+  .#{$ff-prefix}-color-picker-clear {
+    font-size: 12px;
+    height: 28px;
+    padding: 0 10px;
+  }
+}
+
+.#{$ff-prefix}-color-ball {
+  cursor: pointer;
+}
+
+/* FluentSpaceControl */
+.#{$ff-prefix}-space-header {
+  @include flex(space-between, center);
+  margin-bottom: 12px;
+}
+
+.#{$ff-prefix}-label-container {
+  @include flex(flex-start, center, row, 8px);
+}
+
+.#{$ff-prefix}-space-label {
+  font-size: $--font-size-extra-small;
+  margin-top: 4px;
+  text-transform: uppercase;
+  color: $base-text;
+}
+
+.#{$ff-prefix}-space-controls {
+  @include flex(flex-start, center, row, 8px);
+}
+
+.#{$ff-prefix}-space-input-row {
+  @include grid(repeat(4, 1fr) auto, 4px);
+  margin-bottom: 4px;
+}
+
+.#{$ff-prefix}-space-input-row > div {
+  @include flex(flex-start, center, column);
+  .block-editor-block-inspector
+    .components-base-control:where(:not(:last-child)),
+  .block-editor-block-inspector
+    .components-radio-control:where(:not(:last-child)) {
+    margin-bottom: 2px;
+  }
+}
+
+.#{$ff-prefix}-space-labels {
+  @include grid(repeat(4, 1fr), 8px);
+  font-size: $--font-size-extra-small;
+  color: $base-text;
+  text-align: center;
+}
+
+/* Device selector and responsive controls */
+.#{$ff-prefix}-device-dropdown button.components-dropdown-menu__toggle {
+  padding: 4px !important;
+  height: 30px !important;
+  width: 40px !important;
+  min-width: 0 !important;
+}
+
+.#{$ff-prefix}-device-dropdown .components-dropdown-menu__toggle svg {
+  margin: 0 !important;
+}
+
+.#{$ff-prefix}-device-dropdown .components-dropdown-menu__menu {
+  min-width: 50px !important;
+  padding: 4px !important;
+}
+
+.#{$ff-prefix}-device-dropdown .components-button.has-icon {
+  justify-content: center;
+  padding: 8px !important;
+  width: 100%;
+}
+
+.#{$ff-prefix}-device-dropdown .components-menu-item__button svg {
+  margin-right: 0 !important;
+}
+
+.#{$ff-prefix}-device-selector {
+  @include flex(flex-start, center, row, 4px);
+}
+
+/* Device-specific preview styles */
+.#{$ff-prefix}-space-inputs.device-desktop {
+  max-width: 100%;
+}
+
+.#{$ff-prefix}-space-inputs.device-tablet {
+  max-width: 768px;
+  margin: 0 auto;
+  border-left: 1px dashed $border-color;
+  border-right: 1px dashed $border-color;
+}
+
+.#{$ff-prefix}-space-inputs.device-mobile {
+  max-width: 480px;
+  margin: 0 auto;
+  border-left: 1px dashed $border-color;
+  border-right: 1px dashed $border-color;
+}
+
+/* FluentTypography */
+.#{$ff-prefix}-control-typography-wrap {
+  margin-bottom: 16px;
+}
+
+.fluent-typography-popover .components-popover__content {
+  min-width: 270px;
+}
+
+.fluent-typography-control-section {
+  margin-bottom: 12px;
+}
+
+.fluent-typography-control-section label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: $--font-size-extra-small;
+  font-weight: $--font-weight-primary;
+}
+
+.fluent-typography-preview {
+  padding: 8px 12px;
+  background: $bg-gray;
+  border-radius: $--border-radius-small;
+  margin-top: 8px;
+  font-size: $--font-size-extra-small;
+}
+
+/* FluentBoxShadowControl */
+.#{$ff-prefix}-box-shadow-control {
+  margin-bottom: 16px;
+}
+
+.#{$ff-prefix}-control-header {
+  margin-bottom: 12px;
+}
+
+.#{$ff-prefix}-shadow-controls {
+  margin-top: 12px;
+}
+
+.#{$ff-prefix}-shadow-color {
+  margin-bottom: 12px;
+}
+
+.#{$ff-prefix}-shadow-preview {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+/* State tabs styling */
+.#{$ff-prefix}-state-tabs-container {
+  margin-top: 8px;
+}
+
+.#{$ff-prefix}-state-tabs .components-tab-panel__tabs {
+  display: flex;
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 16px;
+}
+
+.#{$ff-prefix}-state-tabs .components-tab-panel__tabs-item {
+  flex: 1;
+  text-align: center;
+  margin-bottom: -1px;
+  padding: 8px 12px;
+  border-bottom: 2px solid transparent;
+}
+
+.#{$ff-prefix}-state-tabs .components-tab-panel__tabs-item.is-active {
+  border-bottom-color: $primary;
+}
+
+/* Tab panel styling */
+.fluent-form-block-style-tabs {
+  .components-tab-panel__tab-content {
+    padding: 0;
+  }
+
+  .components-tab-panel__tabs-item {
+    flex: 1;
+    background: #fff;
+    border: 1px solid rgba($primary, 0.1);
+    justify-content: center;
+
+    &.is-active {
+      background: rgba($primary, 0.1);
+    }
+  }
+}
+
+.fluent-form-style-tabs {
+  .components-tab-panel__tabs {
+    display: flex;
+    justify-content: stretch;
+    border-bottom: 1px solid $border-color;
+  }
+
+  .components-tab-panel__tab-content {
+    padding: 5px;
+  }
+
+  .components-tab-panel__tabs-item {
+    padding: 6px 4px;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+    justify-content: center;
+
+    &.is-active {
+      box-shadow: inset 0 0 0 1.5px transparent, inset 0 -3px 0 0 $primary;
+      color: $primary;
+    }
+  }
+}
+
+/* Alignment Control Styles */
+.#{$ff-prefix}-alignment-buttons {
+  .components-button-group {
+    display: flex;
+    width: 100%;
+  }
+
+  .components-button {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+.#{$ff-prefix}-alignment-control {
+  margin-bottom: 12px;
+}
+
+/* Gutenberg Block Wrapper */
+.fluentform-guten-wrapper {
+  position: relative;
+  min-height: 100px;
+
+  &:hover{
+    border: none;
+    outline: none;
+    box-shadow: none !important;
+  }
+
+  .ff_guten_block {
+    pointer-events: none;
+  }
+
+  .components-base-control__label {
+    padding-right: 12px;
+  }
+
+  .ff-btn-submit {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .fluentform-step.active {
+    width: 100%;
+  }
+}
+
+/* Loading Overlay */
+.fluent-form-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex(center, center, column);
+  background-color: rgba(255, 255, 255, 0.85);
+  z-index: 100;
+  border-radius: $--border-radius-small;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05) inset;
+  @include transition();
+  animation: fluent-form-fade-in 0.3s ease-in-out;
+
+  .components-spinner {
+    width: 50px;
+    height: 50px;
+    animation: fluent-form-spin 1.5s linear infinite;
+  }
+
+  p {
+    margin: 16px 0;
+    font-weight: $--font-weight-primary;
+    color: $base-color;
+    animation: fluent-form-pulse 2s ease-in-out infinite;
+  }
+
+  .fluent-separator {
+    width: 80px;
+    margin: 0 auto;
+  }
+}
+
+/* Preview Device Controls */
+.fluent-form-preview-controls {
+  @include flex(flex-start, center, row, 6px);
+  margin-bottom: 16px;
+}
+
+.fluent-form-preview-wrapper {
+  position: relative;
+  width: 100%;
+
+  &.preview-device-tablet {
+    max-width: 768px;
+    margin: 0 auto;
+  }
+
+  &.preview-device-mobile {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+/* Form Demo and Initial Wrapper */
+.fluent-form-initial-wrapper,
+.fluent-form-conv-demo {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: $bg-gray;
+  border-radius: $--border-radius-small;
+  margin-bottom: 16px;
+}
+
+.fluent-form-logo {
+  margin-bottom: 16px;
+
+  img {
+    margin: 0 auto;
+    max-width: 48px;
+    display: block;
+  }
+}
+
+.fluent-form-logo-img {
+  max-width: 200px;
+}
+
+.fluent-form-conv-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.fluent-form-conv-message {
+  margin-top: 16px;
+  font-style: italic;
+}
+
+.conv-demo {
+  text-align: center;
+  margin: 0 auto;
+
+  img {
+    max-height: 400px;
+    margin: 0 auto 12px;
+  }
+}
+
+/* FluentRadioControl Toggle Style for Background Type */
+.ffblock-bg-gradient {
+  background-color: rgb(237, 237, 237);
+  border: 2px dashed #ccc;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 16px;
+  .ffblock-control-field {
+    margin-bottom: 12px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* Media Upload Button Style */
+.ffblock-media-upload {
+  margin-bottom: 16px;
+  .components-button.has-icon.has-text {
+    justify-content: center;
+    padding-right: 0;
+  }
+
+  .ffblock-upload-button {
+    background-color: rgb(237, 237, 237);
+    border: 2px dashed #ccc;
+    width: 100%;
+    height: 80px;
+    border: 2px dashed #ccc;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+
+    .dashicon {
+      margin-bottom: 8px;
+      opacity: 0.7;
+    }
+  }
+}
+
+/* Animations */
+@keyframes fluent-form-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fluent-form-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fluent-form-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

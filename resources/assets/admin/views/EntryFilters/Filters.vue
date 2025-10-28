@@ -15,12 +15,12 @@
                 width="450"
                 class="ff_contact_filter_pop"
                 v-model="addVisible"
-                trigger="manual">
+                trigger="click">
                 <el-cascader-panel @change="maybeSelected"
                                    style="width: 100%"
                                    :options="filterOptions"
                                    v-model="new_item"/>
-                <el-button slot="reference" @click="addVisible = !addVisible" size="small" icon="el-icon-plus">
+                <el-button slot="reference"  size="small" icon="el-icon-plus">
                     {{ $t('Add') }}
                 </el-button>
             </el-popover>
@@ -34,12 +34,12 @@
                 :placement="isRTL ? 'left' : 'right'"
                 width="450"
                 v-model="addVisible"
-                trigger="manual">
+                trigger="click">
                 <el-cascader-panel @change="maybeSelected"
                                    style="width: 100%"
                                    :options="filterOptions"
                                    v-model="new_item"/>
-                <el-button @click="addVisible = !addVisible" slot="reference" size="small" icon="el-icon-plus">
+                <el-button slot="reference" size="small" icon="el-icon-plus">
                     {{ $t('Add') }}
                 </el-button>
             </el-popover>
