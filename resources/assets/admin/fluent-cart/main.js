@@ -31,15 +31,18 @@ class FluentCartCheckoutIntegration {
         jQuery(document.body).on('fluentform_init', (event, $theForm, form) => {
             this.handleFluentFormInit($theForm, form);
         });
+
+        jQuery(document).on('submit', '.fluent-cart-checkout-form, [data-fluent-cart-checkout-form="true"]', function(e) {
+            e.preventDefault();
+            return false;
+        });
     }
 
     /**
      * Handle FluentForm initialization event
      */
     handleFluentFormInit($theForm, form) {
-        // Check if this is a checkout form
         if ($theForm.hasClass('fluent-cart-checkout-form') || $theForm.closest('.fluent-cart-checkout-form').length) {
-            // Store the form instance for later use
             this.checkoutFormInstance = $theForm;
         }
     }
@@ -77,17 +80,14 @@ class FluentCartCheckoutIntegration {
      * Ensure all FluentForm services are properly initialized
      */
     ensureFluentFormServices($form, formInstance) {
-        // Initialize all form handlers (includes tooltips, validation, etc.)
         if (typeof formInstance.initFormHandlers === 'function') {
             formInstance.initFormHandlers();
         }
         
-        // Initialize all triggers (includes tooltips, captchas, etc.)
         if (typeof formInstance.initTriggers === 'function') {
             formInstance.initTriggers();
         }
         
-        // Initialize common actions (multi-select, masks, numeric formatting, etc.)
         if (window.fluentFormCommonActions && typeof window.fluentFormCommonActions.init === 'function') {
             window.fluentFormCommonActions.init();
         }
@@ -150,17 +150,15 @@ class FluentCartCheckoutIntegration {
             return;
         }
 
-        // Add form validation before checkout (backup validation)
         window.fluentCartCheckout['beforeCheckoutCallbacks'].push(async (data) => {
             return true;
         });
 
-        // Add form submission after checkout
         window.fluentCartCheckout['afterCheckoutCallbacks'].push(async () => {
             try {
                 await this.submitFluentFormViaAjax();
             } catch (error) {
-                // Silent fail - form submission is optional
+                console.error('FluentCart: Form submission failed:', error);
             }
         });
     }
@@ -169,35 +167,39 @@ class FluentCartCheckoutIntegration {
      * Submit a Fluent Form using the native form submission handler
      */
     submitFluentFormViaAjax() {
-        const $checkoutForm = jQuery('.fluent-cart-checkout-form');
+        let $checkoutForm = jQuery('[data-fluent-cart-checkout-form="true"]');   
         if (!$checkoutForm.length) {
             return Promise.resolve();
         }
 
         const formId = $checkoutForm.attr('data-form_id');
         if (!formId) {
-            return Promise.resolve();
-        }
-
-        if (typeof window.fluentFormTriggerSubmission !== 'function') {
+            console.error('FluentCart: No form ID found, returning resolved promise');
             return Promise.resolve();
         }
 
         return new Promise((resolve, reject) => {
             try {
-                const success = window.fluentFormTriggerSubmission(formId);
-                if (success) {
-                    jQuery(document.body).one('fluentform_submission_success', (event, data) => {
-                        resolve(data);
-                    });
-                    
-                    jQuery(document.body).one('fluentform_submission_failed', (event, data) => {
-                        reject(data);
-                    });
-                } else {
-                    reject(new Error('Failed to trigger form submission'));
-                }
+                // Trigger the form submission event
+                jQuery(document).trigger('fluentform_trigger_submission', [formId]);
+                
+                // Listen for submission results
+                jQuery(document.body).one('fluentform_submission_success', (event, data) => {
+                    resolve(data);
+                });
+                
+                jQuery(document.body).one('fluentform_submission_failed', (event, data) => {
+                    reject(data);
+                });
+                
+                // Add timeout
+                setTimeout(() => {
+                    console.warn('FluentCart: Form submission timeout - no success/failed event received');
+                    reject(new Error('Form submission timeout'));
+                }, 5000);
+                
             } catch (error) {
+                console.error('FluentCart: Error in form submission', error);
                 reject(error);
             }
         });

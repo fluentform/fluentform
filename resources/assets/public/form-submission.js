@@ -98,7 +98,10 @@ jQuery(document).ready(function () {
                 var getTheForm = function () {
                     let $form = $('body').find('form' + formSelector);
                     if (!$form.length) {
-                        $form = $('body').find('div' + formSelector).closest('form');
+                        $form = $('body').find('div' + formSelector);
+                        if ($form.length && !$form.attr('data-form_id')) {
+                            $form = $form.closest('form');
+                        }
                     }
                     return $form;
                 };
@@ -1679,35 +1682,27 @@ jQuery(document).ready(function () {
 
         fluentFormCommonActions.init();
 
-        // Global function to trigger form submission programmatically
-        window.fluentFormTriggerSubmission = function(formId) {
-            const $fluentFormDiv = jQuery('[data-form_id="' + formId + '"]');
-            if (!$fluentFormDiv.length) {
-                console.warn('FluentForm: Form with ID ' + formId + ' not found');
-                return false;
+        // Listen for custom form submission trigger events
+        jQuery(document).on('fluentform_trigger_submission', function(event, formId) {
+            const $theForm = jQuery('[data-form_id="' + formId + '"]');
+            
+            if (!$theForm.length) {
+                console.warn('FluentForm: Form not found for ID ' + formId);
+                return;
             }
-
-            const formInstanceSelector = $fluentFormDiv.attr('data-form_instance');
-            if (!formInstanceSelector) {
-                console.warn('FluentForm: Form instance selector not found for form ID ' + formId);
-                return false;
-            }
-
-            const formInstance = fluentFormAppStore[formInstanceSelector];
+            
+            const formInstance = window.fluentFormApp($theForm);
             
             if (formInstance && typeof formInstance.triggerSubmission === 'function') {
                 try {
                     formInstance.triggerSubmission();
-                    return true;
                 } catch (error) {
                     console.error('FluentForm: Error triggering submission for form ID ' + formId, error);
-                    return false;
                 }
             } else {
                 console.warn('FluentForm: Form instance not found or triggerSubmission method not available for form ID ' + formId);
-                return false;
             }
-        };
+        });
 
         // Choices.js dropdown handling
         function initChoicesDropdownHandling() {
