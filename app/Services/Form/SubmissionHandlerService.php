@@ -75,6 +75,21 @@ class SubmissionHandlerService
                     return $value !== null && $value !== false && $value !== '';
                 });
             }
+            
+            // Process "Other" options for checkboxes
+            if (strpos($name, '__ff_other_input__') !== false && !empty($input)) {
+                $checkboxFieldName = str_replace('__ff_other_input__', '', $name);
+                
+                if (isset($formDataRaw[$checkboxFieldName]) && is_array($formDataRaw[$checkboxFieldName])) {
+                    $selectedValues = $formDataRaw[$checkboxFieldName];
+                    $key = array_search('__ff_other__', $selectedValues);
+                    if ($key !== false) {
+                        $selectedValues[$key] = 'Other: ' . sanitize_text_field($input);
+                        $formDataRaw[$checkboxFieldName] = $selectedValues;
+                    }
+                }
+                unset($formDataRaw[$name]);
+            }
         }
 
         // Parse the form and get the flat inputs with validations.
