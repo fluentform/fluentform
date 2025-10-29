@@ -153,7 +153,9 @@ add_action('admin_init', function () {
 
     if ($page && in_array($page, $disablePages)) {
         remove_all_actions('admin_notices');
-        (new \FluentForm\App\Modules\Registerer\ReviewQuery())->register();
+        
+        \FluentForm\App\Modules\Registerer\ReviewQuery::register();
+        \FluentForm\App\Modules\Registerer\MigrationNotice::register();
     }
 });
 
