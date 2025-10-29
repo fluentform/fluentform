@@ -25,6 +25,7 @@ class GutenbergBlock
         register_block_type('fluentfom/guten-block', [
             'render_callback' => [self::class, 'render'],
             'attributes'      => BlockAttributes::getAttributes(),
+            'api_version'     => 3,
         ]);
     }
 
