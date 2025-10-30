@@ -95,26 +95,18 @@ class GutenbergBlock
         // Generate CSS - order matters for specificity
         $customCSS = '';
         
-        // First, add preset styles as base styles (lower specificity)
-        if (!empty($selectedPreset) && !$customizePreset) {
+        // Always add preset styles first (lower specificity)
+        if (!empty($selectedPreset) || (!empty($presetStyles) && $customizePreset)) {
             $presetCSS = StyleProcessor::processPresetStyles($atts, $formId);
             if ($presetCSS) {
                 $customCSS .= $presetCSS;
             }
         }
-        
-        // Then, add individual custom styles (higher specificity, overrides presets)
+
+        // Then, add individual custom styles (higher specificity, should override presets)
         $individualCSS = StyleProcessor::generateBlockStyles($atts, $formId);
         if ($individualCSS) {
             $customCSS .= $individualCSS;
-        }
-        
-        // If customizing a preset, add the customized preset styles
-        if (!empty($presetStyles) && $customizePreset) {
-            $presetCSS = StyleProcessor::processPresetStyles($atts, $formId);
-            if ($presetCSS) {
-                $customCSS .= $presetCSS;
-            }
         }
 
         // Custom CSS for block styling
@@ -179,13 +171,23 @@ class GutenbergBlock
             }
         }
 
-        // Add the custom CSS inline with the form
+        // Add the custom CSS inline with the form and via wp_add_inline_style for frontend
         if ($customCSS) {
             // Create a unique ID for this form's styles
             $styleId = 'fluentform-block-styles-' . $formId;
 
-            // Add the styles inline with the form
+            // Add the styles inline with the form (fallback for editor/preview)
             $inlineStyle = '<style id="' . esc_attr($styleId) . '">' . $customCSS . '</style>';
+
+            // Also attach to frontend style handles to ensure it renders outside the editor
+            // Base public CSS
+            if (wp_style_is('fluent-form-styles', 'enqueued') || wp_style_is('fluent-form-styles', 'registered')) {
+                wp_add_inline_style('fluent-form-styles', $customCSS);
+            }
+            // Default skin CSS if loaded
+            if (wp_style_is('fluentform-public-default', 'enqueued') || wp_style_is('fluentform-public-default', 'registered')) {
+                wp_add_inline_style('fluentform-public-default', $customCSS);
+            }
         }
 
         // Return the form with inline styles

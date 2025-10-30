@@ -173,21 +173,19 @@ class StyleProcessor
         ];
         $labelSelector = implode(', ', $labelSelectors);
 
-        // Input selectors
+        // Input selectors (textual inputs only: inputs where user types + textarea/select)
         $inputSelectors = [
             ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-label",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff_t_c",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-input"
+            ".ff_guten_block.ff_guten_block-{$formId} textarea",
+            ".ff_guten_block.ff_guten_block-{$formId} select"
         ];
         $inputSelectorsStr = implode(', ', $inputSelectors);
 
-        // Input background selectors
+        // Input background selectors (textual inputs only)
         $inputBGSelectors = [
             ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
             ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--multiple",
-            ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--single",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-input"
+            ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--single"
         ];
         $inputBGSelectorsStr = implode(', ', $inputBGSelectors);
 
@@ -431,6 +429,11 @@ class StyleProcessor
 
         if ($inputBgColor = Arr::get($atts, 'inputBackgroundColor')) {
             $css .= self::generateCustomCssRule($inputBGSelectorsStr, 'background-color', $inputBgColor);
+            // Ensure checkboxes/radios don't inherit input background color
+            $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check-input', 'background-color', 'transparent');
+            // Unchecked visual boxes via span:before remain transparent
+            $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check input[type=checkbox]:not(:checked) + span:before', 'background-color', 'transparent');
+            $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check input[type=radio]:not(:checked) + span:before', 'background-color', 'transparent');
         }
 
         // Typography
@@ -438,50 +441,8 @@ class StyleProcessor
             $css .= self::processTypography($inputTypography, $inputSelector);
         }
 
-        // Input spacing - using the approach from BlocksPrev
-        $inputSpacing = Arr::get($atts, 'inputSpacing', []);
-
-        if (!empty($inputSpacing)) {
-            // Get the unit from the spacing object or default to px
-            $globalUnit = Arr::get($inputSpacing, 'unit', 'px');
-
-            // Apply desktop spacing to input fields (no media query needed)
-            if (isset($inputSpacing['desktop'])) {
-                $desktop = $inputSpacing['desktop'];
-                $desktopUnit = Arr::get($desktop, 'unit', $globalUnit);
-
-                // Start building CSS rules for this selector
-                $rules = [];
-
-                // Process top spacing
-                if (isset($desktop['top']) && $desktop['top'] !== '') {
-                    $rules[] = 'padding-top: ' . $desktop['top'] . $desktopUnit;
-                }
-
-                // Process right spacing
-                if (isset($desktop['right']) && $desktop['right'] !== '') {
-                    $rules[] = 'padding-right: ' . $desktop['right'] . $desktopUnit;
-                }
-
-                // Process bottom spacing
-                if (isset($desktop['bottom']) && $desktop['bottom'] !== '') {
-                    $rules[] = 'padding-bottom: ' . $desktop['bottom'] . $desktopUnit;
-                }
-
-                // Process left spacing
-                if (isset($desktop['left']) && $desktop['left'] !== '') {
-                    $rules[] = 'padding-left: ' . $desktop['left'] . $desktopUnit;
-                }
-
-                // Only generate CSS if we have rules
-                if (!empty($rules)) {
-                    $css .= $inputSelector . ' { ' . implode('; ', $rules) . '; }' . "\n";
-                }
-            }
-        } else {
-            // Set default padding if no spacing is defined
-            $css .= $inputSelector . ' { padding: 10px; }' . "\n";
-        }
+        // Input spacing is now handled in GutenbergBlock.php using processSpacing()
+        // This ensures consistent spacing processing across all elements
 
         // Input Border - NORMAL
         $enableInputBorder = Arr::get($atts, 'enableInputBorder', false);
@@ -688,10 +649,6 @@ class StyleProcessor
                 }
                 $selectorStr = implode(', ', $groupedSelectors);
                 $css .= self::generateCustomCssRule($selectorStr, 'color', $placeholderColor);
-
-                if (Arr::get($atts, 'enableTransition', true)) {
-                    $css .= self::generateCssRule($selectorStr, 'transition', 'color 0.3s ease');
-                }
             }
         }
 
@@ -725,13 +682,56 @@ class StyleProcessor
         // Placeholder typography is now handled above
 
         // Radio & Checkbox styles
+        // Hide native browser rendering but keep inputs accessible for the custom span:before styling
+        $typeSelector = $containerSelector . ' input[type="checkbox"], ' . $containerSelector . ' input[type="radio"]';
+        $css .= self::generateCssRule($typeSelector, '-webkit-appearance', 'none');
+        $css .= self::generateCssRule($typeSelector, '-moz-appearance', 'none');
+        $css .= self::generateCssRule($typeSelector, 'appearance', 'none');
+        // Make input invisible but keep it in the layout for the adjacent sibling selector (input + span:before)
+        $css .= self::generateCssRule($typeSelector, 'position', 'absolute');
+        $css .= self::generateCssRule($typeSelector, 'opacity', '0');
+        $css .= self::generateCssRule($typeSelector, 'width', '1px');
+        $css .= self::generateCssRule($typeSelector, 'height', '1px');
+        $css .= self::generateCssRule($typeSelector, 'margin', '0');
+        $css .= self::generateCssRule($typeSelector, 'padding', '0');
+
+        // Make labels clickable
+        $labelSelector = $containerSelector . ' .ff-el-form-check-label';
+        $css .= self::generateCssRule($labelSelector, 'cursor', 'pointer');
+        $css .= self::generateCssRule($labelSelector, 'display', 'inline-flex');
+        $css .= self::generateCssRule($labelSelector, 'align-items', 'center');
+
+        // Always generate base checkbox/radio span:before styles for custom rendering
+        $cbSpanSelectors = $containerSelector . ' .ff-el-form-check input[type=checkbox] + span:before, ' . $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=checkbox] + span:before';
+        $rbSpanSelectors = $containerSelector . ' .ff-el-form-check input[type=radio] + span:before, ' . $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=radio] + span:before';
+
+        // Checkbox base styles
+        $css .= $cbSpanSelectors . ' { content: ""; display: inline-block; vertical-align: middle; width: 14px; height: 14px; margin-right: 6px; box-sizing: border-box; border: 1px solid currentColor; background-color: transparent; }' . "\n";
+
+        // Checkbox checked state
+        $cbCheckedSelectors = $containerSelector . ' .ff-el-form-check input[type=checkbox]:checked + span:before, ' . $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=checkbox]:checked + span:before';
+        $css .= $cbCheckedSelectors . ' { background-color: currentColor; border-color: currentColor; background-image: url(\'data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"%3E%3Cpath fill="%23fff" d="M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z"/%3E%3C/svg%3E\'); background-repeat: no-repeat; background-position: center; background-size: 60%; }' . "\n";
+
+        // Radio base styles
+        $css .= $rbSpanSelectors . ' { content: ""; display: inline-block; vertical-align: middle; width: 14px; height: 14px; margin-right: 6px; box-sizing: border-box; border: 1px solid currentColor; border-radius: 50%; }' . "\n";
+
+        // Radio checked state
+        $rbCheckedSelectors = $containerSelector . ' .ff-el-form-check input[type=radio]:checked + span:before, ' . $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=radio]:checked + span:before';
+        $css .= $rbCheckedSelectors . ' { background-image: radial-gradient(circle at center, currentColor 45%, transparent 47%); }' . "\n";
+
         if ($radioCheckboxItemsColor = Arr::get($atts, 'radioCheckboxItemsColor')) {
+            // Text/label color (include terms & conditions wrapper .ff_t_c)
             $radioCheckboxSelectors = [
                 $containerSelector . ' .ff-el-form-check-label',
-                $containerSelector . ' .ff_list_buttons .ff-el-form-check label>span'
+                $containerSelector . ' .ff_list_buttons .ff-el-form-check label>span',
+                $containerSelector . ' .ff_t_c'
             ];
             $radioCheckboxSelectorsStr = implode(', ', $radioCheckboxSelectors);
             $css .= self::generateCssRule($radioCheckboxSelectorsStr, 'color', $radioCheckboxItemsColor);
+
+            // Native input tint (modern browsers)
+            $inputAccentSelector = $containerSelector . ' .ff-el-form-check-input';
+            $css .= self::generateCssRule($inputAccentSelector, 'accent-color', $radioCheckboxItemsColor);
         }
 
         if ($radioCheckboxLabelColor = Arr::get($atts, 'radioCheckboxLabelColor')) {
@@ -746,7 +746,8 @@ class StyleProcessor
         if ($radioCheckboxTypography = Arr::get($atts, 'radioCheckboxTypography')) {
             $radioCheckboxSelectors = [
                 $containerSelector . ' .ff-el-form-check-label',
-                $containerSelector . ' .ff_list_buttons .ff-el-form-check label>span'
+                $containerSelector . ' .ff_list_buttons .ff-el-form-check label>span',
+                $containerSelector . ' .ff_t_c'
             ];
             $radioCheckboxSelectorsStr = implode(', ', $radioCheckboxSelectors);
             $css .= self::processTypography($radioCheckboxTypography, $radioCheckboxSelectorsStr);
@@ -754,6 +755,13 @@ class StyleProcessor
 
         // Process radio checkbox items size
         if ($itemsSize = Arr::get($atts, 'radioCheckboxItemsSize')) {
+            // Colors for checked and borders if provided
+            $cbCheckedColor = Arr::get($atts, 'checkboxCheckedColor', '');
+            $rbCheckedColor = Arr::get($atts, 'radioCheckedColor', '');
+            $cbBorderColor = Arr::get($atts, 'checkboxBorderColor', '');
+            $rbBorderColor = Arr::get($atts, 'radioBorderColor', '');
+            // Common type selector for presets targeting raw inputs
+            $typeSelector = $containerSelector . ' input[type="checkbox"], ' . $containerSelector . ' input[type="radio"]';
             // Handle device-specific sizes
             if (is_array($itemsSize) && (isset($itemsSize['desktop']) || isset($itemsSize['tablet']) || isset($itemsSize['mobile']))) {
                 $desktopSize = Arr::get($itemsSize, 'desktop', '');
@@ -763,47 +771,175 @@ class StyleProcessor
 
                 // Desktop size
                 if ($desktopSize !== '') {
-                    $css .= self::generateCssRule($checkboxSelector, 'width', $desktopSize, 'px');
-                    $css .= self::generateCssRule($checkboxSelector, 'height', $desktopSize, 'px');
+                    $css .= self::generateCustomCssRule($checkboxSelector, 'width', $desktopSize, 'px');
+                    $css .= self::generateCustomCssRule($checkboxSelector, 'height', $desktopSize, 'px');
+                    // Improve cross-browser sizing
+                    $css .= self::generateCustomCssRule($typeSelector, '-webkit-appearance', 'none');
+                    $css .= self::generateCustomCssRule($typeSelector, '-moz-appearance', 'none');
+                    $css .= self::generateCustomCssRule($typeSelector, 'appearance', 'none');
+                    $css .= self::generateCustomCssRule($typeSelector, 'width', $desktopSize, 'px');
+                    $css .= self::generateCustomCssRule($typeSelector, 'height', $desktopSize, 'px');
+                    // Preset custom box drawn via input:after (e.g., Modern, Classic, Bootstrap)
+                    $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check-input:after', 'width', $desktopSize, 'px');
+                    $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check-input:after', 'height', $desktopSize, 'px');
+                    $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check-input:after', 'background-size', '60%');
+                    $css .= self::generateCustomCssRule($containerSelector . ' input[type="checkbox"]:after', 'width', $desktopSize, 'px');
+                    $css .= self::generateCustomCssRule($containerSelector . ' input[type="checkbox"]:after', 'height', $desktopSize, 'px');
+                    $css .= self::generateCustomCssRule($containerSelector . ' input[type="radio"]:after', 'width', $desktopSize, 'px');
+                    $css .= self::generateCustomCssRule($containerSelector . ' input[type="radio"]:after', 'height', $desktopSize, 'px');
                 }
 
                 // Tablet size
                 if ($tabletSize !== '') {
                     $css .= "@media (max-width: " . self::TABLET_BREAKPOINT . ") {\n";
-                    $css .= "    " . $checkboxSelector . " { width: " . $tabletSize . "px; }\n";
-                    $css .= "    " . $checkboxSelector . " { height: " . $tabletSize . "px; }\n";
+                    $css .= "    " . $checkboxSelector . " { width: " . $tabletSize . "px !important; }\n";
+                    $css .= "    " . $checkboxSelector . " { height: " . $tabletSize . "px !important; }\n";
+                    $css .= "    " . $typeSelector . " { width: " . $tabletSize . "px !important; height: " . $tabletSize . "px !important; }\n";
+                    $css .= "    " . $containerSelector . " .ff-el-form-check-input:after { width: " . $tabletSize . "px !important; height: " . $tabletSize . "px !important; background-size: 60% !important; }\n";
+                    $css .= "    " . $containerSelector . " input[type=\"checkbox\"]:after { width: " . $tabletSize . "px !important; height: " . $tabletSize . "px !important; }\n";
+                    $css .= "    " . $containerSelector . " input[type=\"radio\"]:after { width: " . $tabletSize . "px !important; height: " . $tabletSize . "px !important; }\n";
                     $css .= "}\n";
                 }
 
                 // Mobile size
                 if ($mobileSize !== '') {
                     $css .= "@media (max-width: " . self::MOBILE_BREAKPOINT . ") {\n";
-                    $css .= "    " . $checkboxSelector . " { width: " . $mobileSize . "px; }\n";
-                    $css .= "    " . $checkboxSelector . " { height: " . $mobileSize . "px; }\n";
+                    $css .= "    " . $checkboxSelector . " { width: " . $mobileSize . "px !important; }\n";
+                    $css .= "    " . $checkboxSelector . " { height: " . $mobileSize . "px !important; }\n";
+                    $css .= "    " . $typeSelector . " { width: " . $mobileSize . "px !important; height: " . $mobileSize . "px !important; }\n";
+                    $css .= "    " . $containerSelector . " .ff-el-form-check-input:after { width: " . $mobileSize . "px !important; height: " . $mobileSize . "px !important; background-size: 60% !important; }\n";
+                    $css .= "    " . $containerSelector . " input[type=\"checkbox\"]:after { width: " . $mobileSize . "px !important; height: " . $mobileSize . "px !important; }\n";
+                    $css .= "    " . $containerSelector . " input[type=\"radio\"]:after { width: " . $mobileSize . "px !important; height: " . $mobileSize . "px !important; }\n";
+                    $css .= "}\n";
+                }
+                // Firefox/Safari: render box via span:before (base box style)
+                $peSpanA = $containerSelector . ' .ff-el-form-check input[type=checkbox] + span:before';
+                $peSpanB = $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=checkbox] + span:before';
+                $css .= self::generateCssRule($peSpanA . ', ' . $peSpanB, 'border', ($cbBorderColor ?: '1px solid currentColor'));
+                $css .= self::generateCssRule($peSpanA . ', ' . $peSpanB, 'background-color', 'transparent');
+                // Checked state (checkbox): fill and tick using inline SVG
+                $tickColor = '#fff';
+                $cbFill = $cbCheckedColor ?: 'currentColor';
+                $cbCheckedSel = $containerSelector . ' .ff-el-form-check input[type=checkbox]:checked + span:before, ' . $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=checkbox]:checked + span:before';
+                $css .= self::generateCssRule($cbCheckedSel, 'background-color', $cbFill);
+                $css .= self::generateCssRule($cbCheckedSel, 'border-color', $cbFill);
+                $css .= self::generateCssRule($cbCheckedSel, 'background-image', "url('data:image/svg+xml;utf8,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 8 8\"%3E%3Cpath fill=\"" . rawurlencode($tickColor) . "\" d=\"M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z\"/%3E%3C/svg%3E')");
+                $css .= self::generateCssRule($cbCheckedSel, 'background-repeat', 'no-repeat');
+                $css .= self::generateCssRule($cbCheckedSel, 'background-position', 'center');
+                $css .= self::generateCssRule($cbCheckedSel, 'background-size', '60%');
+
+                // Avoid double-circle on radios: fully disable span pseudo-elements for radios
+                $rbSpanABefore = $containerSelector . ' .ff-el-form-check input[type=radio] + span:before';
+                $rbSpanBBefore = $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=radio] + span:before';
+                $rbSpanAAfter = $containerSelector . ' .ff-el-form-check input[type=radio] + span:after';
+                $rbSpanBAfter = $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=radio] + span:after';
+                $rbSpanBeforeSelectors = $rbSpanABefore . ', ' . $rbSpanBBefore;
+                $rbSpanAfterSelectors = $rbSpanAAfter . ', ' . $rbSpanBAfter;
+                foreach ([$rbSpanBeforeSelectors, $rbSpanAfterSelectors] as $rbSpanSel) {
+                    $css .= self::generateCustomCssRule($rbSpanSel, 'content', 'none');
+                    $css .= self::generateCustomCssRule($rbSpanSel, 'border', 'none');
+                    $css .= self::generateCustomCssRule($rbSpanSel, 'background', 'none');
+                    $css .= self::generateCustomCssRule($rbSpanSel, 'background-image', 'none');
+                    $css .= self::generateCustomCssRule($rbSpanSel, 'width', '0');
+                    $css .= self::generateCustomCssRule($rbSpanSel, 'height', '0');
+                    $css .= self::generateCustomCssRule($rbSpanSel, 'margin-right', '0');
+                    $css .= self::generateCustomCssRule($rbSpanSel, 'box-shadow', 'none');
+                }
+                // Also handle template pseudo-elements used by some presets (and create cross-browser box)
+                $peSpanA = $containerSelector . ' .ff-el-form-check label > span';
+                $peSpanB = $containerSelector . ' .ff_list_buttons .ff-el-form-check label > span';
+                if ($desktopSize !== '') {
+                    $css .= self::generateCustomCssRule($peSpanA . ', ' . $peSpanB, 'line-height', $desktopSize, 'px');
+                    // Ensure the box renders in Firefox/Safari
+                    $css .= $peSpanA . ':before, ' . $peSpanB . ':before { content: ""; display: inline-block; vertical-align: middle; width: ' . $desktopSize . 'px !important; height: ' . $desktopSize . "px !important; margin-right: 6px; box-sizing: border-box; }\n";
+                    $css .= $peSpanA . ':after, ' . $peSpanB . ':after { width: ' . $desktopSize . 'px !important; height: ' . $desktopSize . "px !important; }\n";
+                    // Circle for radio
+                    $css .= $containerSelector . ' .ff-el-form-check input[type=radio] + span:before { border-radius: 50% !important; }\n';
+                }
+                if ($tabletSize !== '') {
+                    $css .= "@media (max-width: " . self::TABLET_BREAKPOINT . ") {\n";
+                    $css .= "    " . $peSpanA . ", " . $peSpanB . " { line-height: " . $tabletSize . "px !important; }\n";
+                    $css .= "    " . $peSpanA . ":before, " . $peSpanB . ":before { content: \"\"; display: inline-block; vertical-align: middle; width: " . $tabletSize . "px !important; height: " . $tabletSize . "px !important; margin-right: 6px; box-sizing: border-box; }\n";
+                    $css .= "    " . $peSpanA . ":after, " . $peSpanB . ":after { width: " . $tabletSize . "px !important; height: " . $tabletSize . "px !important; }\n";
+                    $css .= "}\n";
+                }
+                if ($mobileSize !== '') {
+                    $css .= "@media (max-width: " . self::MOBILE_BREAKPOINT . ") {\n";
+                    $css .= "    " . $peSpanA . ", " . $peSpanB . " { line-height: " . $mobileSize . "px !important; }\n";
+                    $css .= "    " . $peSpanA . ":before, " . $peSpanB . ":before { content: \"\"; display: inline-block; vertical-align: middle; width: " . $mobileSize . "px !important; height: " . $mobileSize . "px !important; margin-right: 6px; box-sizing: border-box; }\n";
+                    $css .= "    " . $peSpanA . ":after, " . $peSpanB . ":after { width: " . $mobileSize . "px !important; height: " . $mobileSize . "px !important; }\n";
                     $css .= "}\n";
                 }
             } else {
                 // Simple non-responsive size
-                $css .= self::generateCssRule(
+                $css .= self::generateCustomCssRule(
                     $containerSelector . ' .ff-el-form-check-input',
                     'width',
                     $itemsSize,
                     'px'
                 );
-                $css .= self::generateCssRule(
+                $css .= self::generateCustomCssRule(
                     $containerSelector . ' .ff-el-form-check-input',
                     'height',
                     $itemsSize,
                     'px'
                 );
+                $css .= self::generateCustomCssRule($typeSelector, 'width', $itemsSize, 'px');
+                $css .= self::generateCustomCssRule($typeSelector, 'height', $itemsSize, 'px');
+                // Preset custom box drawn via input:after
+                $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check-input:after', 'width', $itemsSize, 'px');
+                $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check-input:after', 'height', $itemsSize, 'px');
+                $css .= self::generateCustomCssRule($containerSelector . ' .ff-el-form-check-input:after', 'background-size', '60%');
+                $css .= self::generateCustomCssRule($containerSelector . ' input[type="checkbox"]:after', 'width', $itemsSize, 'px');
+                $css .= self::generateCustomCssRule($containerSelector . ' input[type="checkbox"]:after', 'height', $itemsSize, 'px');
+                $css .= self::generateCustomCssRule($containerSelector . ' input[type="radio"]:after', 'width', $itemsSize, 'px');
+                $css .= self::generateCustomCssRule($containerSelector . ' input[type="radio"]:after', 'height', $itemsSize, 'px');
+
+                // Also handle template pseudo-elements used by some presets
+                $peSpanA = $containerSelector . ' .ff-el-form-check label > span';
+                $peSpanB = $containerSelector . ' .ff_list_buttons .ff-el-form-check label > span';
+                $css .= self::generateCustomCssRule($peSpanA . ', ' . $peSpanB, 'line-height', $itemsSize, 'px');
+                $css .= $peSpanA . ':before, ' . $peSpanB . ':before { content: ""; display: inline-block; vertical-align: middle; width: ' . $itemsSize . 'px !important; height: ' . $itemsSize . "px !important; margin-right: 6px; box-sizing: border-box; }\n";
+                $css .= $peSpanA . ':after, ' . $peSpanB . ':after { width: ' . $itemsSize . 'px !important; height: ' . $itemsSize . "px !important; }\n";
+                // Circle for radio
+                $css .= $containerSelector . ' .ff-el-form-check input[type=radio] + span:before { border-radius: 50% !important; }\n';
+
+                // Firefox/Safari base and checked visuals
+                $peSpanABox = $containerSelector . ' .ff-el-form-check input[type=checkbox] + span:before';
+                $peSpanBBox = $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=checkbox] + span:before';
+                $css .= self::generateCssRule($peSpanABox . ', ' . $peSpanBBox, 'border', ($cbBorderColor ?: '1px solid currentColor'));
+                $css .= self::generateCssRule($peSpanABox . ', ' . $peSpanBBox, 'background-color', 'transparent');
+                $cbFill = Arr::get($atts, 'checkboxCheckedColor', 'currentColor');
+                $cbCheckedSelSimple = $containerSelector . ' .ff-el-form-check input[type=checkbox]:checked + span:before, ' . $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=checkbox]:checked + span:before';
+                $css .= self::generateCssRule($cbCheckedSelSimple, 'background-color', $cbFill);
+                $css .= self::generateCssRule($cbCheckedSelSimple, 'border-color', $cbFill);
+                $css .= self::generateCssRule($cbCheckedSelSimple, 'background-image', "url('data:image/svg+xml;utf8,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 8 8\"%3E%3Cpath fill=\"%23fff\" d=\"M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z\"/%3E%3C/svg%3E')");
+                $css .= self::generateCssRule($cbCheckedSelSimple, 'background-repeat', 'no-repeat');
+                $css .= self::generateCssRule($cbCheckedSelSimple, 'background-position', 'center');
+                $css .= self::generateCssRule($cbCheckedSelSimple, 'background-size', '60%');
+
+                $rbSpanABox = $containerSelector . ' .ff-el-form-check input[type=radio] + span:before';
+                $rbSpanBBox = $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=radio] + span:before';
+                $css .= self::generateCssRule($rbSpanABox . ', ' . $rbSpanBBox, 'border', ($rbBorderColor ?: '1px solid currentColor'));
+                $css .= self::generateCssRule($rbSpanABox . ', ' . $rbSpanBBox, 'border-radius', '50%');
+                $rbFill = Arr::get($atts, 'radioCheckedColor', 'currentColor');
+                $rbCheckedSelSimple = $containerSelector . ' .ff-el-form-check input[type=radio]:checked + span:before, ' . $containerSelector . ' .ff_list_buttons .ff-el-form-check input[type=radio]:checked + span:before';
+                $css .= self::generateCssRule($rbCheckedSelSimple, 'background-image', 'radial-gradient(circle at center, ' . $rbFill . ' 45%, transparent 47%)');
+
+                // Ensure label content aligns and pseudo does not block clicks
+                $css .= self::generateCssRule($containerSelector . ' .ff-el-form-check-label span', 'display', 'inline-flex');
+                $css .= self::generateCssRule($containerSelector . ' .ff-el-form-check-label span', 'align-items', 'center');
+                $css .= self::generateCssRule($peSpanA . ', ' . $peSpanB, 'display', 'inline-flex');
+                $css .= self::generateCssRule($peSpanA . ', ' . $peSpanB, 'align-items', 'center');
+                $css .= self::generateCssRule($peSpanA . ', ' . $peSpanB, 'pointer-events', 'none');
             }
         }
 
         // Process checkbox specific styling
         if ($checkboxSize = Arr::get($atts, 'checkboxSize')) {
             $checkboxSelector = $containerSelector . ' .ff-el-form-check-input[type="checkbox"]';
-            $css .= self::generateCssRule($checkboxSelector, 'width', $checkboxSize, 'px');
-            $css .= self::generateCssRule($checkboxSelector, 'height', $checkboxSize, 'px');
+            $css .= self::generateCustomCssRule($checkboxSelector, 'width', $checkboxSize, 'px');
+            $css .= self::generateCustomCssRule($checkboxSelector, 'height', $checkboxSize, 'px');
         }
 
         if ($checkboxBorderColor = Arr::get($atts, 'checkboxBorderColor')) {
@@ -825,8 +961,8 @@ class StyleProcessor
         // Process radio specific styling
         if ($radioSize = Arr::get($atts, 'radioSize')) {
             $radioSelector = $containerSelector . ' .ff-el-form-check-input[type="radio"]';
-            $css .= self::generateCssRule($radioSelector, 'width', $radioSize, 'px');
-            $css .= self::generateCssRule($radioSelector, 'height', $radioSize, 'px');
+            $css .= self::generateCustomCssRule($radioSelector, 'width', $radioSize, 'px');
+            $css .= self::generateCustomCssRule($radioSelector, 'height', $radioSize, 'px');
         }
 
         if ($radioBorderColor = Arr::get($atts, 'radioBorderColor')) {
@@ -843,16 +979,6 @@ class StyleProcessor
             $radioSelector = $containerSelector . ' .ff-el-form-check-input[type="radio"]:checked';
             $css .= self::generateCssRule($radioSelector, 'background-color', $radioCheckedColor);
             $css .= self::generateCssRule($radioSelector, 'border-color', $radioCheckedColor);
-        }
-
-        // Handle transitions for all input elements if enabled
-        if (Arr::get($atts, 'enableTransition', true)) {
-            $transitionSelectors = [
-                $inputSelector,
-                $containerSelector . ' .ff-btn-submit'
-            ];
-            $transitionSelectorsStr = implode(', ', $transitionSelectors);
-            $css .= self::generateCssRule($transitionSelectorsStr, 'transition', 'all 0.3s ease-in-out');
         }
 
         return $css;
@@ -1471,11 +1597,6 @@ class StyleProcessor
             if (isset($bottomLeft) || $bottomLeft === 0 || $bottomLeft === '0') {
                 $rules[] = 'border-bottom-left-radius: ' . $bottomLeft . 'px';
             }
-        }
-
-        // Add transitions if enabled and not in hover state
-        if (Arr::get($values, 'enableTransition', true)) {
-            $rules[] = 'transition: border-color 0.3s ease, border-width 0.3s ease, border-style 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease, color 0.3s ease';
         }
 
         return $rules;

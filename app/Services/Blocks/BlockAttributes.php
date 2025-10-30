@@ -868,10 +868,6 @@ class BlockAttributes
                 'type' => 'string',
                 'default' => '',
             ],
-            'enableTransition' => [
-                'type' => 'boolean',
-                'default' => true,
-            ],
             'hideOnDesktop' => [
                 'type' => 'boolean',
                 'default' => false,

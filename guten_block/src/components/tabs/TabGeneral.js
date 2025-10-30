@@ -696,6 +696,7 @@ const GENERAL_TAB_ATTRIBUTES = [
     'radioCheckboxLabelColor',
     'radioCheckboxTypography',
     'radioCheckboxItemsColor',
+    'radioCheckboxItemsSize',
     'checkboxSize',
     'checkboxBorderColor',
     'checkboxBgColor',
