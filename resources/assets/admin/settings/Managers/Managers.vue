@@ -123,16 +123,31 @@
                     <template slot="label">
                         <h6>{{$t('User Email')}}</h6>
                     </template>
-                    <el-input
-                            type="email"
-                            :placeholder="$t('User Email Address')"
-                            v-model="manager.email"
-                    />
+                    <el-select
+                        class="rich_select el-fluid"
+                        filterable
+                        remote
+                        :loading="dropdownLoading"
+                        :remote-method="fetchUsers"
+                        :placeholder="$t('Select User')"
+                        v-model="manager.email"
+                    >
+                        <el-option
+                            v-for="user in users"
+                            :key="user.ID"
+                            :label="user.display_name + ' ('+user.user_email + ')'"
+                            :value="user.user_email"
+                        >
+                            <span style="float: left">{{ user.display_name }}</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">{{ user.user_email }}</span>
+                        </el-option>
+                    </el-select>
 
                     <error-view field="email" :errors="errors"/>
 
                     <p class="text-note mt-2" v-show="!manager.id">
-                        {{ $t('Please provide email address of your existing user.') }}
+                        {{ $t('Please provide email address of your existing user.') }}<br>
+                        {{ $t('Note: Users with administrator role will automatically receive all permissions.') }}
                     </p>
                 </el-form-item>
 
@@ -224,10 +239,12 @@
         data() {
             return {
                 loading: false,
+                dropdownLoading: false, 
                 modal: false,
                 managers: [],
                 permissions: [],
                 forms: [],
+                users: [],
                 manager: {},
                 pagination: {
                     total: 0,
@@ -335,6 +352,23 @@
             handleSizeChange(value) {
                 this.pagination.per_page = value;
                 this.fetchManagers();
+            },
+
+            fetchUsers(search = '') {
+                this.dropdownLoading = true;
+                const url = FluentFormsGlobal.$rest.route('getUsers');
+                FluentFormsGlobal.$rest.get(url, {
+                    search: search
+                })
+                    .then(response => {
+                        this.users = response.users;
+                    })
+                    .catch(e => {
+                        console.error(e);
+                    })
+                    .finally(() => {
+                        this.dropdownLoading = false;
+                    });
             }
         },
         mounted() {

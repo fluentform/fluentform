@@ -129,7 +129,10 @@ $router->prefix('managers')->withPolicy('RoleManagerPolicy')->group(function ($r
     $router->get('/', 'ManagersController@index');
     $router->post('/', 'ManagersController@addManager');
     $router->delete('/', 'ManagersController@removeManager');
+    $router->get('users', 'ManagersController@getUsers');
 });
+
+
 /*
 * Form Analytics
 */
