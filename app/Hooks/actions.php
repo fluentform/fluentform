@@ -1153,9 +1153,6 @@ add_action('enqueue_block_assets', function() {
         wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'));
        
         wp_enqueue_style('fluentform-gutenblock', fluentFormMix('css/fluent_gutenblock.css'));
-        
-        // Enqueue Fluent Forms JavaScript for Site Editor iframe
-        wp_enqueue_script('fluentform-submission', fluentFormMix('js/form-submission.js'));
     }
 });
 
