@@ -5,7 +5,7 @@ const {
     Button,
     Flex,
     Popover,
-    ColorPicker
+    ColorPalette
 } = wp.components;
 const { useState, useRef, useEffect } = wp.element;
 
@@ -51,6 +51,11 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
         if (!isOpen) return;
 
         const handleOutsideClick = (event) => {
+            // Don't close if clicking on WordPress color picker elements
+            if (event.target.closest('.components-color-picker, .components-color-palette')) {
+                return;
+            }
+
             // Check if the click is outside both the button and popover content
             if (
                 buttonRef.current &&
@@ -62,10 +67,11 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
             }
         };
 
-        document.addEventListener('mousedown', handleOutsideClick);
+        // Use capture phase to handle before other handlers
+        document.addEventListener('mousedown', handleOutsideClick, true);
 
         return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
+            document.removeEventListener('mousedown', handleOutsideClick, true);
         };
     }, [isOpen]);
 
@@ -99,46 +105,54 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
             </Flex>
 
             {isOpen && (
-                <div className="ffblock-color-popover-wrapper" style={{ position: "relative" }}>
-                    <Popover
-                        onClose={() => {}}  // Remove auto-close functionality
-                        anchor={buttonRef.current}
-                        focusOnMount={false}
-                        noArrow={true}
-                        position="bottom right"
-                        expandOnMobile={true}
-                        className="ffblock-color-popover"
-                        onFocusOutside={(e) => {
-                            e.close();
-                        }}
-                    >
-                        <div
-                            className="ffblock-popover-content"
-                            ref={popoverRef}
-                        >
-                            {/* Close button */}
-                            <div className="ffblock-color-picker-header">
-                                <span>Select Color</span>
-                                <Button
-                                    className="ffblock-color-picker-close"
-                                    onClick={() => setIsOpen(false)}
-                                    icon="no-alt"
-                                    isSmall
-                                    label="Close"
-                                />
-                            </div>
-
-                            <ColorPicker
-                                color={currentColor}
-                                onChange={(color) => {
-                                    setCurrentColor(color);
-                                    onChange(color);
-                                }}
-                                enableAlpha={true}
+                <Popover
+                    onClose={() => {}}
+                    anchor={buttonRef.current}
+                    focusOnMount={false}
+                    noArrow={false}
+                    position="middle right"
+                    expandOnMobile={true}
+                    className="ffblock-color-popover"
+                    offset={16}
+                    flip={true}
+                    resize={true}
+                    __unstableSlotName="ffblock-popover-content"
+                >
+                    <div className="ffblock-popover-content" ref={popoverRef}>
+                        {/* Close button */}
+                        <div className="ffblock-color-picker-header">
+                            <span>Select Color</span>
+                            <Button
+                                className="ffblock-color-picker-close"
+                                onClick={() => setIsOpen(false)}
+                                icon="no-alt"
+                                isSmall
+                                label="Close"
                             />
                         </div>
-                    </Popover>
-                </div>
+
+                        <ColorPalette
+                            colors={[
+                                { name: 'Theme Blue', color: '#72aee6' },
+                                { name: 'Theme Red', color: '#e65054' },
+                                { name: 'Theme Green', color: '#68de7c' },
+                                { name: 'Black', color: '#000000' },
+                                { name: 'White', color: '#ffffff' },
+                                { name: 'Gray', color: '#dddddd' }
+                            ]}
+                            value={currentColor}
+                            onChange={(color) => {
+                                setCurrentColor(color);
+                                onChange(color);
+                                setTimeout(() => {
+                                    setIsOpen(false);
+                                }, 100);
+                            }}
+                            enableAlpha={true}
+                            clearable={true}
+                        />
+                    </div>
+                </Popover>
             )}
         </div>
     );

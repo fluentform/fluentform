@@ -5,8 +5,8 @@ const {
     Button,
     Flex,
     Popover,
-    SelectControl,
-    RangeControl
+    FontSizePicker,
+    SelectControl
 } = wp.components;
 const { useState, useEffect } = wp.element;
 
@@ -163,56 +163,24 @@ const FluentTypography = ({ label, settings, onChange }) => {
               key="typo-popover"
             >
                 <div className="ffblock-popover-content">
+                    <FontSizePicker
+                        fontSizes={[
+                            { name: 'Small', slug: 'small', size: 12 },
+                            { name: 'Medium', slug: 'medium', size: 16 },
+                            { name: 'Large', slug: 'large', size: 24 },
+                            { name: 'Extra Large', slug: 'x-large', size: 32 }
+                        ]}
+                        value={localFontSize}
+                        onChange={(value) => updateSetting('fontSize', value)}
+                        withSlider={true}
+                    />
 
-                    <div className="fluent-typography-control-section">
-                        <label>Font Size (px)</label>
-                        <RangeControl
-                          value={localFontSize ? parseInt(localFontSize) : undefined}
-                          min={8}
-                          max={72}
-                          onChange={(value) => updateSetting('fontSize', value)}
-                        />
-                    </div>
-
-                    <div className="fluent-typography-control-section">
-                        <label>Font Weight</label>
-                        <SelectControl
-                          value={localFontWeight}
-                          options={fontWeightOptions}
-                          onChange={(value) => updateSetting('fontWeight', value)}
-                        />
-                    </div>
-
-                    <div className="fluent-typography-control-section">
-                        <label>Line Height</label>
-                        <RangeControl
-                          value={localLineHeight ? parseFloat(localLineHeight) : undefined}
-                          min={0.1}
-                          max={3}
-                          step={0.1}
-                          onChange={(value) => updateSetting('lineHeight', value)}
-                        />
-                    </div>
-
-                    <div className="fluent-typography-control-section">
-                        <label>Letter Spacing (px)</label>
-                        <RangeControl
-                          value={localLetterSpacing ? parseFloat(localLetterSpacing) : undefined}
-                          min={-5}
-                          max={10}
-                          step={0.1}
-                          onChange={(value) => updateSetting('letterSpacing', value)}
-                        />
-                    </div>
-
-                    <div className="fluent-typography-control-section">
-                        <label>Text Transform</label>
-                        <SelectControl
-                          value={localTextTransform}
-                          options={textTransformOptions}
-                          onChange={(value) => updateSetting('textTransform', value)}
-                        />
-                    </div>
+                    <SelectControl
+                        label="Font Weight"
+                        value={localFontWeight}
+                        options={fontWeightOptions}
+                        onChange={(value) => updateSetting('fontWeight', value)}
+                    />
                 </div>
             </Popover>
           )}
