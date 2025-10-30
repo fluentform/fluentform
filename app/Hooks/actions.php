@@ -1147,18 +1147,15 @@ add_action('enqueue_block_assets', function() {
         // Enqueue Fluent Forms CSS for Site Editor iframe
         wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'));
         wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'));
-        wp_enqueue_style('fluentform-admin', fluentFormMix('css/fluentform-admin.css'));
-        if (is_rtl()) {
-            wp_enqueue_style('fluentform-admin-rtl', fluentFormMix('css/fluentform-admin-rtl.css'));
-        }
-        wp_enqueue_style('fluentform-preview', fluentFormMix('css/preview.css'));
+       
         wp_enqueue_style('fluentform-gutenblock', fluentFormMix('css/fluent_gutenblock.css'));
         
         // Enqueue Fluent Forms JavaScript for Site Editor iframe
         wp_enqueue_script('fluentform-submission', fluentFormMix('js/form-submission.js'));
-        wp_enqueue_script('fluentform-advanced', fluentFormMix('js/fluentform-advanced.js'));
     }
 });
+
+
 
 // require the CLI
 if (defined('WP_CLI') && WP_CLI) {
