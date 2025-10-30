@@ -99,18 +99,6 @@ class BlockAttributes
                 'type' => 'object',
                 'default' => [],
             ],
-            'errorMessageTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'successMessageTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'submitErrorMessageTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
             'radioCheckboxTypography' => [
                 'type' => 'object',
                 'default' => [],
@@ -211,6 +199,10 @@ class BlockAttributes
                 'default' => '',
             ],
             'errorMessageColor' => [
+                'type' => 'string',
+                'default' => '',
+            ],
+            'errorMessageBgColor' => [
                 'type' => 'string',
                 'default' => '',
             ],
@@ -324,48 +316,6 @@ class BlockAttributes
                 'default' => [],
             ],
             'buttonBorderRadius' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            // Success message border
-            'enableSuccessMessageBorder' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'successMessageBorderType' => [
-                'type' => 'string',
-                'default' => 'solid',
-            ],
-            'successMessageBorderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageBorderWidth' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'successMessageBorderRadius' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            // Submit error message border
-            'enableSubmitErrorMessageBorder' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'submitErrorMessageBorderType' => [
-                'type' => 'string',
-                'default' => 'solid',
-            ],
-            'submitErrorMessageBorderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageBorderWidth' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'submitErrorMessageBorderRadius' => [
                 'type' => 'object',
                 'default' => [],
             ],
@@ -504,18 +454,6 @@ class BlockAttributes
                 'type' => 'object',
                 'default' => [],
             ],
-            'errorMessagePadding' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'successMessagePadding' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'successMessageMargin' => [
-                'type' => 'object',
-                'default' => [],
-            ],
             'formWidth' => [
                     'type' => 'string',
                 'default' => '',
@@ -523,30 +461,6 @@ class BlockAttributes
             'formAlignment' => [
                 'type' => 'string',
                 'default' => '',
-            ],
-            'submitErrorMessageWidth' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageWidthUnit' => [
-                'type' => 'string',
-                'default' => '%',
-            ],
-            'submitErrorMessagePadding' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'submitErrorMessageMargin' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'successMessageWidth' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageWidthUnit' => [
-                'type' => 'string',
-                'default' => '%',
             ],
         ];
     }
@@ -738,109 +652,13 @@ class BlockAttributes
                 'type' => 'string',
                 'default' => '',
             ],
-            'errorMessageAlignmentTablet' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'errorMessageAlignmentMobile' => [
-                'type' => 'string',
-                'default' => '',
-            ],
             'successMessageAlignment' => [
                 'type' => 'string',
                 'default' => '',
             ],
-            'enableSuccessMessageBoxShadow' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'successMessageBoxShadowColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageBoxShadowPosition' => [
-                'type' => 'string',
-                'default' => 'outline',
-            ],
-            'successMessageBoxShadowHorizontal' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageBoxShadowHorizontalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'successMessageBoxShadowVertical' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageBoxShadowVerticalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'successMessageBoxShadowBlur' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageBoxShadowBlurUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'successMessageBoxShadowSpread' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageBoxShadowSpreadUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
             'submitErrorMessageAlignment' => [
                 'type' => 'string',
                 'default' => '',
-            ],
-            'enableSubmitErrorMessageBoxShadow' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'submitErrorMessageBoxShadowColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageBoxShadowPosition' => [
-                'type' => 'string',
-                'default' => 'outline',
-            ],
-            'submitErrorMessageBoxShadowHorizontal' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageBoxShadowHorizontalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'submitErrorMessageBoxShadowVertical' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageBoxShadowVerticalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'submitErrorMessageBoxShadowBlur' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageBoxShadowBlurUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'submitErrorMessageBoxShadowSpread' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageBoxShadowSpreadUnit' => [
-                'type' => 'string',
-                'default' => 'px',
             ],
         ];
     }
