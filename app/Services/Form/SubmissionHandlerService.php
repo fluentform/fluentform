@@ -82,7 +82,12 @@ class SubmissionHandlerService
                 
                 if (isset($formDataRaw[$checkboxFieldName]) && is_array($formDataRaw[$checkboxFieldName])) {
                     $selectedValues = $formDataRaw[$checkboxFieldName];
-                    $key = array_search('__ff_other__', $selectedValues);
+                    
+                    // Handle field-specific "Other" values
+                    $otherValue = '__ff_other_' . $checkboxFieldName . '__';
+                    
+                    $key = array_search($otherValue, $selectedValues);
+                    
                     if ($key !== false) {
                         $selectedValues[$key] = 'Other: ' . sanitize_text_field($input);
                         $formDataRaw[$checkboxFieldName] = $selectedValues;

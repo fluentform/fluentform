@@ -1212,14 +1212,17 @@ jQuery(document).ready(function () {
                     }
                 });
 
-                // Clear "Other" checkbox when text input is empty
+                // Clear "Other" checkbox when text input is empty scoped to specific field
                 jQuery(document).on('blur', '.ff-other-input-wrapper .ff-el-form-control', function() {
                     var $textInput = jQuery(this);
-                    var $checkbox = $textInput.closest('.ff-el-form-check').find('.ff-other-option input[type="checkbox"]');
+                    var $wrapper = $textInput.closest('.ff-other-input-wrapper');
+                    var fieldName = $wrapper.data('field');
+                    var $checkbox = $textInput.closest('.ff-el-input--content').find('.ff-other-option input[value*="' + fieldName + '"]');
 
                     if ($textInput.val().trim() === '') {
                         $checkbox.prop('checked', false);
-                        $textInput.closest('.ff-other-input-wrapper').hide();
+                        $checkbox.closest('.ff-el-form-check').removeClass('ff_item_selected');
+                        $wrapper.hide();
                     }
                 });
             },

@@ -82,10 +82,11 @@ class Checkable extends BaseComponent
         // Add "Other" option if enabled
         $enableOtherOption = ArrayHelper::get($data, 'settings.enable_other_option') === 'yes';
         if ($enableOtherOption && $data['attributes']['type'] === 'checkbox' && defined('FLUENTFORMPRO')) {
+            $fieldName = sanitize_text_field(str_replace(['[', ']'], '', $data['attributes']['name']));
             $otherLabel = ArrayHelper::get($data, 'settings.other_option_label', __('Other', 'fluentform'));
             $formattedOptions[] = [
                 'label'      => $otherLabel,
-                'value'      => '__ff_other__',
+                'value'      => '__ff_other_' . $fieldName . '__',
                 'calc_value' => '',
                 'image'      => '',
                 'is_other'   => true,
@@ -151,7 +152,8 @@ class Checkable extends BaseComponent
             // Add text input for "Other" option
             if ($isOtherOption && defined('FLUENTFORMPRO')) {
                 $otherPlaceholder = ArrayHelper::get($data, 'settings.other_option_placeholder', __('Please specify...', 'fluentform'));
-                $otherInputName = str_replace('[]', '__ff_other_input__', $data['attributes']['name']);
+                $fieldName = str_replace(['[', ']'], '', $data['attributes']['name']);
+                $otherInputName = $fieldName . '__ff_other_input__';
                 $otherValue = '';
                 
                 // Check if there's a saved "other" value
@@ -159,7 +161,7 @@ class Checkable extends BaseComponent
                     $otherValue = sanitize_text_field($_POST[$otherInputName]);
                 }
                 
-                $elMarkup .= "<div class='ff-other-input-wrapper' style='display: none;'>";
+                $elMarkup .= "<div class='ff-other-input-wrapper' style='display: none;' data-field='{$fieldName}'>";
                 $elMarkup .= "<input type='text' name='" . esc_attr($otherInputName) . "' class='ff-el-form-control' placeholder='" . esc_attr($otherPlaceholder) . "' value='" . esc_attr($otherValue) . "'>";
                 $elMarkup .= "</div>";
             }

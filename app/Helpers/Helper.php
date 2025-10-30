@@ -1017,10 +1017,11 @@ class Helper
                     'value'
                 );
                 
-                // Add __ff_other__ to options if "Other" option is enabled
-                if ($fieldType === 'input_checkbox' &&
+                // Add field-specific __ff_other__ to options if "Other" option is enabled
+                if (in_array($fieldType, ['input_checkbox', 'input_radio']) &&
                     ArrayHelper::get($rawField, 'settings.enable_other_option') === 'yes') {
-                    $options[] = '__ff_other__';
+                    $fieldName = sanitize_key(str_replace(['[', ']'], '', ArrayHelper::get($rawField, 'attributes.name', '')));
+                    $options[] = '__ff_other_' . $fieldName . '__';
                 }
             } elseif ("dynamic_field" == $fieldType) {
                 $dynamicFetchValue = 'yes' == ArrayHelper::get($rawField, 'settings.dynamic_fetch');
@@ -1052,22 +1053,24 @@ class Helper
                 case 'input_checkbox':
                 case 'multi_select':
                 case 'dynamic_field_options':
-               
             
                     $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
                     if ($skipValidationInputsWithOptions) {
                         break;
                     }
                     if (is_array($inputValue)) {
-                        // Handle "Other" option for checkboxes
+                        // Handle field-specific "Other" options for checkboxes
                         $filteredValues = array_filter($inputValue, function($value) {
-                            return $value !== '__ff_other__' && !preg_match('/^Other:\s/', $value);
+                            // Skip field-specific other values and processed other values
+                            return !preg_match('/^__ff_other_.*__$/', $value) &&
+                                   !preg_match('/^Other:\s/', $value);
                         });
                         $isValid = array_diff($filteredValues, $options);
                         $isValid = empty($isValid);
                     } else {
-                        // Handle "Other" option for single values
-                        if ($inputValue === '__ff_other__' || preg_match('/^Other:\s/', $inputValue)) {
+                        // Handle field-specific "Other" option for single values
+                        if (preg_match('/^__ff_other_.*__$/', $inputValue) ||
+                            preg_match('/^Other:\s/', $inputValue)) {
                             $isValid = true;
                         } else {
                             $isValid = in_array($inputValue, $options);
