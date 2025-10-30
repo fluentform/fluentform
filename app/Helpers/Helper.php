@@ -1360,4 +1360,39 @@ class Helper
             isset(\Elementor\Plugin::$instance) &&
             \Elementor\Plugin::$instance->editor->is_edit_mode();
     }
+
+    /**
+     * Check if we're in block editor context (Site Editor, Template Editor, or Post/Page Editor)
+     * Covers all Gutenberg block editor contexts including mobile/tablet preview iframes
+     * @return bool
+     */
+    public static function isSiteEditor()
+    {
+        if (!is_admin() || !function_exists('get_current_screen')) {
+            return false;
+        }
+
+        $screen = get_current_screen();
+
+        // Check for Site Editor and Template Editor contexts
+        if ($screen && in_array($screen->base, ['site-editor', 'edit-site', 'appearance_page_gutenberg-edit-site'], true )) {
+            return true;
+        }
+
+        // Check for Post/Page block editor contexts
+        if ($screen && in_array($screen->base, ['post', 'page'], true) && $screen->is_block_editor()) {
+            return true;
+        }
+
+        // Check for custom post types with block editor
+        if ($screen && $screen->is_block_editor()) {
+            return true;
+        }
+
+        // Fallback checks for various block editor contexts
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        return isset( $_GET['_wp-find-template'] ) || 
+               strpos( $request_uri, 'site-editor.php' ) !== false ||
+               (defined('REST_REQUEST') && REST_REQUEST && !empty($_REQUEST['context']) && $_REQUEST['context'] === 'edit');
+    }
 }

@@ -8589,7 +8589,7 @@ registerBlockType("fluentfom/guten-block", {
   icon: fluentLogo,
   category: "formatting",
   keywords: [__("Contact Form"), __("Fluent Forms"), __("Forms"), __("Advanced Forms"), __("fluentforms-gutenberg-block")],
-  apiVersion: 2,
+  apiVersion: 3,
   edit: _edit__WEBPACK_IMPORTED_MODULE_0__["default"]
 });
 })();

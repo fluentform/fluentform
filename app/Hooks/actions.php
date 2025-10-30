@@ -1133,6 +1133,32 @@ if (function_exists('register_block_type')) {
 add_action('fluentform/before_updating_form',function ($form, $postData){
     (new FluentForm\App\Services\Form\HistoryService())->init($form, $postData);
 },10,2);
+
+
+// Site Editor compatibility - enqueue assets for iframe context
+add_action('enqueue_block_assets', function() {
+    if (\FluentForm\App\Helpers\Helper::isSiteEditor()) {
+        // Enqueue WordPress admin CSS for Site Editor iframe
+        wp_enqueue_style('wp-admin-common', admin_url('css/common.css'));
+        if (is_rtl()) {
+            wp_enqueue_style('wp-admin-common-rtl', admin_url('css/common-rtl.css'));
+        }
+        wp_enqueue_style('dashicons', admin_url('css/dashicons.css'));
+        wp_enqueue_style('wp-components', admin_url('css/dist/components/style.css'));
+        
+        // Enqueue Fluent Forms CSS for Site Editor iframe
+        wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'));
+        wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'));
+       
+        wp_enqueue_style('fluentform-gutenblock', fluentFormMix('css/fluent_gutenblock.css'));
+        
+        // Enqueue Fluent Forms JavaScript for Site Editor iframe
+        wp_enqueue_script('fluentform-submission', fluentFormMix('js/form-submission.js'));
+    }
+});
+
+
+
 // require the CLI
 if (defined('WP_CLI') && WP_CLI) {
     \WP_CLI::add_command('fluentform', '\FluentForm\App\Modules\CLI\Commands');
