@@ -8,7 +8,6 @@ const { Component, memo, PureComponent } = wp.element;
 
 // Import tab content components
 import TabGeneral from './TabGeneral';
-import TabAdvanced from './TabAdvanced';
 import TabMisc from './TabMisc';
 import { arePropsEqual } from '../utils/ComponentUtils';
 
@@ -24,7 +23,6 @@ class Tabs extends PureComponent {
                 tabs={[
                     { name: 'general', title: __('General'), key: 'general-tab' },
                     { name: 'misc', title: __('Misc'), key: 'misc-tab' },
-                    { name: 'advanced', title: __('Advanced'), key: 'advanced-tab' },
                 ]}
             >
                 {(tab) => {
@@ -41,16 +39,7 @@ class Tabs extends PureComponent {
                                 />
                             </div>
                         );
-                    } else if (tab.name === 'advanced') {
-                        return (
-                            <div key="advanced-tab-content">
-                                <TabAdvanced
-                                    attributes={attributes}
-                                    setAttributes={setAttributes}
-                                />
-                            </div>
-                        );
-                    }  else if (tab.name === 'misc') {
+                    } else if (tab.name === 'misc') {
                         return (
                             <div key="misc-tab-content">
                                 <TabMisc

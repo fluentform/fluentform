@@ -68,10 +68,6 @@ class BlockAttributes
                 'type' => 'boolean',
                 'default' => false,
             ],
-            'customCssClass' => [
-                'type' => 'string',
-                'default' => '',
-            ],
             'selectedPreset' => [
                 'type' => 'string',
                 'default' => 'default',
@@ -863,10 +859,6 @@ class BlockAttributes
         return [
             'radioCheckboxItemsSize' => [
                 'type' => 'number',
-            ],
-            'customCss' => [
-                'type' => 'string',
-                'default' => '',
             ],
             'hideOnDesktop' => [
                 'type' => 'boolean',
