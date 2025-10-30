@@ -28,7 +28,7 @@ import calculation from './Pro/calculations';
             if (typeof input !== 'string') {
                 input = String(input);
             }
-            
+
             // Remove dangerous tags and event handlers
             input = input.replace(/<script.*?>.*?<\/script>/gis, '')
                 .replace(/<iframe.*?>.*?<\/iframe>/gis, '')
@@ -164,7 +164,7 @@ import calculation from './Pro/calculations';
 
             maybeUpdateDynamicLabels($theForm);
         }
-        
+
     });
 })(jQuery);
 

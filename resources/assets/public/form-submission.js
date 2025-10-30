@@ -999,7 +999,7 @@ jQuery(document).ready(function () {
 
                     try {
                         let widgetId = $el.attr(widgetIdAttr);
-                        
+
                         if (type === 'g-recaptcha' || type === 'h-captcha') {
                             if (widgetId && $el.find('iframe').length > 0) {
                                 return; // Already rendered properly
@@ -1110,6 +1110,7 @@ jQuery(document).ready(function () {
                 this.initCheckableActive();
                 this.maybeInitSpamTokenProtection();
                 this.maybeHandleCleanTalkSubmitTime();
+                this.initOtherOptionHandlers();
             },
 
             maybeInitSpamTokenProtection: function() {
@@ -1190,6 +1191,40 @@ jQuery(document).ready(function () {
                         }
                     });
                 }
+            },
+
+            // Handle "Other" option for checkboxes
+            initOtherOptionHandlers: function() {
+                jQuery(document).on('change', '.ff-other-option input[type="checkbox"]', function() {
+                    var $checkbox = jQuery(this);
+                    var $wrapper = $checkbox.closest('.ff-el-form-check').find('.ff-other-input-wrapper');
+
+                    if (!$wrapper.length) {
+                        return;
+                    }
+
+                    if ($checkbox.is(':checked')) {
+                        $wrapper.show();
+                        $wrapper.find('.ff-el-form-control').focus();
+                    } else {
+                        $wrapper.hide();
+                        $wrapper.find('.ff-el-form-control').val('');
+                    }
+                });
+
+                // Clear "Other" checkbox when text input is empty scoped to specific field
+                jQuery(document).on('blur', '.ff-other-input-wrapper .ff-el-form-control', function() {
+                    var $textInput = jQuery(this);
+                    var $wrapper = $textInput.closest('.ff-other-input-wrapper');
+                    var fieldName = $wrapper.data('field');
+                    var $checkbox = $textInput.closest('.ff-el-input--content').find('.ff-other-option input[value*="' + fieldName + '"]');
+
+                    if ($textInput.val().trim() === '') {
+                        $checkbox.prop('checked', false);
+                        $checkbox.closest('.ff-el-form-check').removeClass('ff_item_selected');
+                        $wrapper.hide();
+                    }
+                });
             },
 
             /**
@@ -1692,7 +1727,7 @@ jQuery(document).ready(function () {
                     dropdown.style.overflowY = 'auto';
 
                     // Find and style the scrollable list
-                    const scrollableList = 
+                    const scrollableList =
                         dropdown.querySelector('.choices__list[role="listbox"]') ||
                         dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
                     if (scrollableList) {

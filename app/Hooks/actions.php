@@ -293,6 +293,8 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
                 $element['settings']['values_visible'] = false;
             }
 
+      
+
             return $element;
         });
     }

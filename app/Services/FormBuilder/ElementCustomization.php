@@ -702,7 +702,32 @@ $element_customization_settings = [
                 'label' => __('No', 'fluentform'),
             ],
         ],
-    ]
+    ],
+    'enable_other_option' => [
+        'template'  => 'inputYesNoCheckBox',
+        'label'     => __('Enable "Other" Option', 'fluentform'),
+        'help_text' => __('Allow users to add a custom option by selecting "Other"', 'fluentform'),
+    ],
+    'other_option_label' => [
+        'template'   => 'inputText',
+        'label'      => __('Other Option Label', 'fluentform'),
+        'help_text'  => __('Label for the "Other" option', 'fluentform'),
+        'dependency' => [
+            'depends_on' => 'settings/enable_other_option',
+            'value'      => 'yes',
+            'operator'   => '==',
+        ],
+    ],
+    'other_option_placeholder' => [
+        'template'   => 'inputText',
+        'label'      => __('Other Option Placeholder', 'fluentform'),
+        'help_text'  => __('Placeholder text for the "Other" input field', 'fluentform'),
+        'dependency' => [
+            'depends_on' => 'settings/enable_other_option',
+            'value'      => 'yes',
+            'operator'   => '==',
+        ],
+    ],
 ];
 
 $element_customization_settings = apply_filters_deprecated(

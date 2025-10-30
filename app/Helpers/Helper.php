@@ -1016,6 +1016,13 @@ class Helper
                     ArrayHelper::get($rawField, 'settings.advanced_options', []),
                     'value'
                 );
+                
+                // Add field-specific __ff_other__ to options if "Other" option is enabled
+                if (in_array($fieldType, ['input_checkbox', 'input_radio']) &&
+                    ArrayHelper::get($rawField, 'settings.enable_other_option') === 'yes') {
+                    $fieldName = sanitize_key(str_replace(['[', ']'], '', ArrayHelper::get($rawField, 'attributes.name', '')));
+                    $options[] = '__ff_other_' . $fieldName . '__';
+                }
             } elseif ("dynamic_field" == $fieldType) {
                 $dynamicFetchValue = 'yes' == ArrayHelper::get($rawField, 'settings.dynamic_fetch');
                 if ($dynamicFetchValue) {
@@ -1046,15 +1053,28 @@ class Helper
                 case 'input_checkbox':
                 case 'multi_select':
                 case 'dynamic_field_options':
+            
                     $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
                     if ($skipValidationInputsWithOptions) {
                         break;
                     }
                     if (is_array($inputValue)) {
-                        $isValid = array_diff($inputValue, $options);
+                        // Handle field-specific "Other" options for checkboxes
+                        $filteredValues = array_filter($inputValue, function($value) {
+                            // Skip field-specific other values and processed other values
+                            return !preg_match('/^__ff_other_.*__$/', $value) &&
+                                   !preg_match('/^Other:\s/', $value);
+                        });
+                        $isValid = array_diff($filteredValues, $options);
                         $isValid = empty($isValid);
                     } else {
-                        $isValid = in_array($inputValue, $options);
+                        // Handle field-specific "Other" option for single values
+                        if (preg_match('/^__ff_other_.*__$/', $inputValue) ||
+                            preg_match('/^Other:\s/', $inputValue)) {
+                            $isValid = true;
+                        } else {
+                            $isValid = in_array($inputValue, $options);
+                        }
                     }
                     break;
                 case 'input_number':
@@ -1355,8 +1375,8 @@ class Helper
 	 */
     public static function isElementorEditor()
     {
-        return defined('ELEMENTOR_VERSION') && 
-            class_exists('\Elementor\Plugin') && 
+        return defined('ELEMENTOR_VERSION') &&
+            class_exists('\Elementor\Plugin') &&
             isset(\Elementor\Plugin::$instance) &&
             \Elementor\Plugin::$instance->editor->is_edit_mode();
     }
