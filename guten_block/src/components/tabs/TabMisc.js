@@ -97,7 +97,7 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
         mediaUploader.open();
     };
 
-    // Handle media removal 
+    // Handle media removal
     const removeBackgroundImage = () => {
         console.log('Removing background image');
 
@@ -300,14 +300,6 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
                 label={__("Background Color")}
                 value={attributes.backgroundColor || ''}
                 onChange={(value) => updateStyles({ backgroundColor: value })}
-                defaultColor=""
-              />
-
-              {/* Text Color */}
-              <FluentColorPicker
-                label={__("Color")}
-                value={attributes.textColor || ''}
-                onChange={(value) => updateStyles({ textColor: value })}
                 defaultColor=""
               />
 

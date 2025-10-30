@@ -71,15 +71,7 @@ class BlockAttributes
             'customCssClass' => [
                 'type' => 'string',
                 'default' => '',
-            ],
-            'selectedPreset' => [
-                'type' => 'string',
-                'default' => 'default',
-            ],
-            'customizePreset' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
+            ]
         ];
     }
 
@@ -974,5 +966,27 @@ class BlockAttributes
                 'default' => 'px',
             ],
         ];
+    }
+
+    /**
+     * Check if any style attributes are present in the given attributes
+     *
+     * @param array $atts Block attributes to check
+     * @return bool True if style attributes exist, false otherwise
+     */
+    public static function hasStyleAttributes($atts)
+    {
+        $styleAttributes = array_merge(
+            array_keys(self::getTypographyAttributes()),
+            array_keys(self::getColorAttributes()),
+            array_keys(self::getBorderAttributes()),
+            array_keys(self::getSpacingAttributes()),
+            array_keys(self::getButtonAttributes()),
+            array_keys(self::getMessageAttributes())
+        );
+
+        return !empty(array_filter($atts, function($value, $key) use ($styleAttributes) {
+            return in_array($key, $styleAttributes) && !empty($value);
+        }, ARRAY_FILTER_USE_BOTH));
     }
 }
