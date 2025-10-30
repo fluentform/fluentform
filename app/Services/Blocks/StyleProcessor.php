@@ -233,12 +233,6 @@ class StyleProcessor
         // Process responsive visibility
         $css .= self::processResponsiveVisibility($atts, $selectors);
 
-        // Add custom CSS from advanced tab
-        $userCustomCss = Arr::get($atts, 'customCss', '');
-        if ($userCustomCss) {
-            $css .= $userCustomCss;
-        }
-
         return $css;
     }
 
@@ -1194,7 +1188,7 @@ class StyleProcessor
         // Extract selectors
         $containerSelector = $selectors['container'];
 
-        // Error message styles
+        // Error message styles (Inline Error Message)
         $errorSelector = $containerSelector . ' .ff-el-is-error .ff-el-form-control';
         $errorLabelSelector = $containerSelector . ' .ff-el-is-error label';
         $errorMessageSelector = $containerSelector . ' .ff-el-is-error .text-danger';
@@ -1203,16 +1197,12 @@ class StyleProcessor
             $css .= self::generateCssRule($errorMessageSelector, 'color', $errorColor);
         }
 
-        if ($errorTypography = Arr::get($atts, 'errorMessageTypography')) {
-            $css .= self::processTypography($errorTypography, $errorMessageSelector);
+        if ($errorBgColor = Arr::get($atts, 'errorMessageBgColor')) {
+            $css .= self::generateCssRule($errorMessageSelector, 'background-color', $errorBgColor);
         }
 
         if ($alignment = Arr::get($atts, 'errorMessageAlignment')) {
             $css .= self::generateCssRule($errorMessageSelector, 'text-align', $alignment);
-        }
-
-        if ($padding = Arr::get($atts, 'errorMessagePadding')) {
-            $css .= self::processSpacing($padding, $errorMessageSelector, 'padding');
         }
 
         // Success message styles
@@ -1226,66 +1216,8 @@ class StyleProcessor
             $css .= self::generateCssRule($successSelector, 'background-color', $successBgColor);
         }
 
-        if ($successTypography = Arr::get($atts, 'successMessageTypography')) {
-            $css .= self::processTypography($successTypography, $successSelector);
-        }
-
         if ($alignment = Arr::get($atts, 'successMessageAlignment')) {
             $css .= self::generateCssRule($successSelector, 'text-align', $alignment);
-        }
-
-        if ($width = Arr::get($atts, 'successMessageWidth')) {
-            $unit = Arr::get($atts, 'successMessageWidthUnit', '%');
-            $css .= self::generateCssRule($successSelector, 'width', $width, $unit);
-        }
-
-        if ($padding = Arr::get($atts, 'successMessagePadding')) {
-            $css .= self::processSpacing($padding, $successSelector, 'padding');
-        }
-
-        if ($margin = Arr::get($atts, 'successMessageMargin')) {
-            $css .= self::processSpacing($margin, $successSelector, 'margin');
-        }
-
-        // Success message box shadow
-        // Convert to boolean to ensure proper type comparison
-        $enableSuccessMessageBoxShadow = (bool) Arr::get($atts, 'enableSuccessMessageBoxShadow', false);
-        if ($enableSuccessMessageBoxShadow) {
-            $boxShadow = [
-                'Position' => Arr::get($atts, 'successMessageBoxShadowPosition', 'outline'),
-                'Horizontal' => Arr::get($atts, 'successMessageBoxShadowHorizontal', ''),
-                'HorizontalUnit' => Arr::get($atts, 'successMessageBoxShadowHorizontalUnit', 'px'),
-                'Vertical' => Arr::get($atts, 'successMessageBoxShadowVertical', ''),
-                'VerticalUnit' => Arr::get($atts, 'successMessageBoxShadowVerticalUnit', 'px'),
-                'Blur' => Arr::get($atts, 'successMessageBoxShadowBlur', ''),
-                'BlurUnit' => Arr::get($atts, 'successMessageBoxShadowBlurUnit', 'px'),
-                'Spread' => Arr::get($atts, 'successMessageBoxShadowSpread', ''),
-                'SpreadUnit' => Arr::get($atts, 'successMessageBoxShadowSpreadUnit', 'px'),
-                'Color' => Arr::get($atts, 'successMessageBoxShadowColor', ''),
-            ];
-
-            $css .= self::generateBoxShadow($successSelector, $boxShadow);
-        }
-
-        // Success message border
-        // Convert to boolean to ensure proper type comparison
-        $enableSuccessMessageBorder = (bool) Arr::get($atts, 'enableSuccessMessageBorder', false);
-        if ($enableSuccessMessageBorder) {
-            $borderType = Arr::get($atts, 'successMessageBorderType', 'solid');
-            $borderColor = Arr::get($atts, 'successMessageBorderColor', '');
-
-            if ($borderType && $borderColor) {
-                $css .= self::generateCssRule($successSelector, 'border-style', $borderType);
-                $css .= self::generateCssRule($successSelector, 'border-color', $borderColor);
-            }
-
-            if ($borderWidth = Arr::get($atts, 'successMessageBorderWidth')) {
-                $css .= self::processSpacing($borderWidth, $successSelector, 'border-width');
-            }
-
-            if ($borderRadius = Arr::get($atts, 'successMessageBorderRadius')) {
-                $css .= self::processSpacing($borderRadius, $successSelector, 'border-radius');
-            }
         }
 
         // Submit error message styles
@@ -1305,66 +1237,8 @@ class StyleProcessor
             $css .= self::generateCssRule($submitErrorSelector, 'background-color', $submitErrorBgColor);
         }
 
-        if ($submitErrorTypography = Arr::get($atts, 'submitErrorMessageTypography')) {
-            $css .= self::processTypography($submitErrorTypography, $submitErrorSelector);
-        }
-
         if ($alignment = Arr::get($atts, 'submitErrorMessageAlignment')) {
             $css .= self::generateCssRule($submitErrorSelector, 'text-align', $alignment);
-        }
-
-        if ($width = Arr::get($atts, 'submitErrorMessageWidth')) {
-            $unit = Arr::get($atts, 'submitErrorMessageWidthUnit', '%');
-            $css .= self::generateCssRule($submitErrorSelector, 'width', $width, $unit);
-        }
-
-        if ($padding = Arr::get($atts, 'submitErrorMessagePadding')) {
-            $css .= self::processSpacing($padding, $submitErrorSelector, 'padding');
-        }
-
-        if ($margin = Arr::get($atts, 'submitErrorMessageMargin')) {
-            $css .= self::processSpacing($margin, $submitErrorSelector, 'margin');
-        }
-
-        // Submit error message box shadow
-        // Convert to boolean to ensure proper type comparison
-        $enableSubmitErrorMessageBoxShadow = (bool) Arr::get($atts, 'enableSubmitErrorMessageBoxShadow', false);
-        if ($enableSubmitErrorMessageBoxShadow) {
-            $boxShadow = [
-                'Position' => Arr::get($atts, 'submitErrorMessageBoxShadowPosition', 'outline'),
-                'Horizontal' => Arr::get($atts, 'submitErrorMessageBoxShadowHorizontal', ''),
-                'HorizontalUnit' => Arr::get($atts, 'submitErrorMessageBoxShadowHorizontalUnit', 'px'),
-                'Vertical' => Arr::get($atts, 'submitErrorMessageBoxShadowVertical', ''),
-                'VerticalUnit' => Arr::get($atts, 'submitErrorMessageBoxShadowVerticalUnit', 'px'),
-                'Blur' => Arr::get($atts, 'submitErrorMessageBoxShadowBlur', ''),
-                'BlurUnit' => Arr::get($atts, 'submitErrorMessageBoxShadowBlurUnit', 'px'),
-                'Spread' => Arr::get($atts, 'submitErrorMessageBoxShadowSpread', ''),
-                'SpreadUnit' => Arr::get($atts, 'submitErrorMessageBoxShadowSpreadUnit', 'px'),
-                'Color' => Arr::get($atts, 'submitErrorMessageBoxShadowColor', ''),
-            ];
-
-            $css .= self::generateBoxShadow($submitErrorSelector, $boxShadow);
-        }
-
-        // Submit error message border
-        // Convert to boolean to ensure proper type comparison
-        $enableSubmitErrorMessageBorder = (bool) Arr::get($atts, 'enableSubmitErrorMessageBorder', false);
-        if ($enableSubmitErrorMessageBorder) {
-            $borderType = Arr::get($atts, 'submitErrorMessageBorderType', 'solid');
-            $borderColor = Arr::get($atts, 'submitErrorMessageBorderColor', '');
-
-            if ($borderType && $borderColor) {
-                $css .= self::generateCssRule($submitErrorSelector, 'border-style', $borderType);
-                $css .= self::generateCssRule($submitErrorSelector, 'border-color', $borderColor);
-            }
-
-            if ($borderWidth = Arr::get($atts, 'submitErrorMessageBorderWidth')) {
-                $css .= self::processSpacing($borderWidth, $submitErrorSelector, 'border-width');
-            }
-
-            if ($borderRadius = Arr::get($atts, 'submitErrorMessageBorderRadius')) {
-                $css .= self::processSpacing($borderRadius, $submitErrorSelector, 'border-radius');
-            }
         }
 
         return $css;

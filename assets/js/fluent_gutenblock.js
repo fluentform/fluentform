@@ -1507,74 +1507,6 @@ var FluentUnitControl = function FluentUnitControl(_ref) {
 
 /***/ }),
 
-/***/ "./guten_block/src/components/tabs/TabAdvanced.js":
-/*!********************************************************!*\
-  !*** ./guten_block/src/components/tabs/TabAdvanced.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-
-
-/**
- * Fluent Forms Gutenberg Block Advanced Tab Component
- */
-var __ = wp.i18n.__;
-var _wp$components = wp.components,
-  PanelBody = _wp$components.PanelBody,
-  TextControl = _wp$components.TextControl;
-var TabAdvanced = function TabAdvanced(_ref) {
-  var attributes = _ref.attributes,
-    setAttributes = _ref.setAttributes;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
-      title: __('Custom CSS'),
-      initialOpen: true,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
-        children: "Add custom CSS to further customize your form appearance."
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
-        label: "CSS Class",
-        value: attributes.customCssClass || '',
-        onChange: function onChange(value) {
-          return setAttributes({
-            customCssClass: value
-          });
-        },
-        help: "Add custom CSS class to the form container"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-        style: {
-          marginTop: '16px'
-        },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
-          className: "ffblock-label",
-          children: "Custom CSS"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("textarea", {
-          className: "components-textarea-control__input",
-          value: attributes.customCss || '',
-          onChange: function onChange(e) {
-            return setAttributes({
-              customCss: e.target.value
-            });
-          },
-          rows: 8,
-          style: {
-            width: '100%'
-          },
-          placeholder: ".fluent-form .ff-el-form-control { /* Your custom styles */\n}"
-        })]
-      })]
-    })
-  });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabAdvanced);
-
-/***/ }),
-
 /***/ "./guten_block/src/components/tabs/TabGeneral.js":
 /*!*******************************************************!*\
   !*** ./guten_block/src/components/tabs/TabGeneral.js ***!
@@ -2579,8 +2511,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -2646,7 +2576,6 @@ var DEFAULT_COLORS = [{
  * Main TabMisc component
  */
 var TabMisc = function TabMisc(_ref) {
-  var _attributes$errorMess, _attributes$successMe, _attributes$successMe2, _attributes$successMe3, _attributes$successMe4, _attributes$successMe5, _attributes$submitErr, _attributes$submitErr2, _attributes$submitErr3, _attributes$submitErr4, _attributes$submitErr5;
   var attributes = _ref.attributes,
     setAttributes = _ref.setAttributes,
     updateStyles = _ref.updateStyles,
@@ -2688,7 +2617,7 @@ var TabMisc = function TabMisc(_ref) {
     });
   };
 
-  // Handle media upload - FIXED VERSION
+  // Handle media upload
   var uploadBackgroundImage = function uploadBackgroundImage() {
     var mediaUploader = wp.media({
       title: __('Select Background Image'),
@@ -2702,16 +2631,8 @@ var TabMisc = function TabMisc(_ref) {
     });
     mediaUploader.on('select', function () {
       var attachment = mediaUploader.state().get('selection').first().toJSON();
-
-      // Debug log
-      console.log('Image selected:', attachment.url);
-
-      // Update local state immediately for instant UI feedback
       setLocalBgImage(attachment.url);
-
-      // Try both methods to ensure compatibility
       if (typeof setAttributes === 'function') {
-        // Direct setAttributes (more reliable)
         setAttributes({
           backgroundImage: attachment.url,
           backgroundImageId: attachment.id
@@ -2723,19 +2644,16 @@ var TabMisc = function TabMisc(_ref) {
         backgroundImage: attachment.url,
         backgroundImageId: attachment.id
       });
-      console.log('Image should now be set');
     });
     mediaUploader.open();
   };
 
-  // Handle media removal - FIXED VERSION
+  // Handle media removal 
   var removeBackgroundImage = function removeBackgroundImage() {
     console.log('Removing background image');
 
     // Clear local state immediately
     setLocalBgImage('');
-
-    // Try both methods
     if (typeof setAttributes === 'function') {
       setAttributes({
         backgroundImage: '',
@@ -2797,13 +2715,6 @@ var TabMisc = function TabMisc(_ref) {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
             className: "ffblock-label",
             children: __('Background Image')
-          }),  true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-            style: {
-              fontSize: '10px',
-              color: '#666',
-              marginTop: '4px'
-            },
-            children: ["Debug: ", currentBgImage ? 'Image set' : 'No image']
           }), !currentBgImage ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(Button, {
             className: "ffblock-upload-button",
             icon: "upload",
@@ -3159,7 +3070,16 @@ var TabMisc = function TabMisc(_ref) {
       title: __("Inline Error Message Styles"),
       initialOpen: false,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
-        label: __("Error Message Color"),
+        label: __("Background Color"),
+        value: attributes.errorMessageBgColor || '',
+        onChange: function onChange(value) {
+          return updateStyles({
+            errorMessageBgColor: value
+          });
+        },
+        defaultColor: ""
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+        label: __("Text Color"),
         value: attributes.errorMessageColor || '',
         onChange: function onChange(value) {
           return updateStyles({
@@ -3168,7 +3088,7 @@ var TabMisc = function TabMisc(_ref) {
         },
         defaultColor: "#ff0000"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(BaseControl, {
-        label: __("Error Message Alignment"),
+        label: __("Alignment"),
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
           value: attributes.errorMessageAlignment || 'left',
           onChange: function onChange(value) {
@@ -3190,43 +3110,6 @@ var TabMisc = function TabMisc(_ref) {
             title: __('Align Right')
           }]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: __("Padding"),
-        values: attributes.errorMessagePadding,
-        onChange: function onChange(value) {
-          return updateStyles({
-            errorMessagePadding: value
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(FontSizePicker, {
-        fontSizes: [{
-          name: 'Small',
-          slug: 'small',
-          size: 12
-        }, {
-          name: 'Medium',
-          slug: 'medium',
-          size: 16
-        }, {
-          name: 'Large',
-          slug: 'large',
-          size: 24
-        }, {
-          name: 'Extra Large',
-          slug: 'x-large',
-          size: 32
-        }],
-        value: ((_attributes$errorMess = attributes.errorMessageTypography) === null || _attributes$errorMess === void 0 || (_attributes$errorMess = _attributes$errorMess.size) === null || _attributes$errorMess === void 0 ? void 0 : _attributes$errorMess.lg) || 16,
-        onChange: function onChange(value) {
-          return updateStyles({
-            errorMessageTypography: _objectSpread(_objectSpread({}, attributes.errorMessageTypography), {}, {
-              size: {
-                lg: value
-              }
-            })
-          });
-        },
-        withSlider: true
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(PanelBody, {
       title: __("After Submit Success Message Styles"),
@@ -3251,184 +3134,27 @@ var TabMisc = function TabMisc(_ref) {
         defaultColor: "#3c763d"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(BaseControl, {
         label: __("Alignment"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-          className: "fluent-form-responsive-control-header",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-            value: attributes.successMessageAlignment || 'left',
-            onChange: function onChange(value) {
-              return updateStyles({
-                successMessageAlignment: value
-              });
-            },
-            options: [{
-              value: 'left',
-              icon: 'editor-alignleft',
-              title: __('Align Left')
-            }, {
-              value: 'center',
-              icon: 'editor-aligncenter',
-              title: __('Align Center')
-            }, {
-              value: 'right',
-              icon: 'editor-alignright',
-              title: __('Align Right')
-            }]
-          })
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+          value: attributes.successMessageAlignment || 'left',
+          onChange: function onChange(value) {
+            return updateStyles({
+              successMessageAlignment: value
+            });
+          },
+          options: [{
+            value: 'left',
+            icon: 'editor-alignleft',
+            title: __('Align Left')
+          }, {
+            value: 'center',
+            icon: 'editor-aligncenter',
+            title: __('Align Center')
+          }, {
+            value: 'right',
+            icon: 'editor-alignright',
+            title: __('Align Right')
+          }]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentUnitControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        label: __("Width"),
-        value: attributes.successMessageWidth || '',
-        onChange: function onChange(value) {
-          return updateStyles({
-            successMessageWidth: value
-          });
-        },
-        unit: attributes.successMessageWidthUnit || '%',
-        onUnitChange: function onUnitChange(value) {
-          return updateStyles({
-            successMessageWidthUnit: value
-          });
-        },
-        min: 0,
-        placeholder: "100",
-        units: [{
-          label: 'px',
-          value: 'px'
-        }, {
-          label: 'em',
-          value: 'em'
-        }, {
-          label: '%',
-          value: '%'
-        }]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: __("Padding"),
-        values: attributes.successMessagePadding,
-        onChange: function onChange(value) {
-          return updateStyles({
-            successMessagePadding: value
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: __("Margin"),
-        values: attributes.successMessageMargin,
-        onChange: function onChange(value) {
-          return updateStyles({
-            successMessageMargin: value
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        label: __("Typography"),
-        onChange: function onChange(changedTypo) {
-          return handleTypographyChange(changedTypo, 'successMessageTypography');
-        },
-        settings: {
-          fontSize: ((_attributes$successMe = attributes.successMessageTypography) === null || _attributes$successMe === void 0 || (_attributes$successMe = _attributes$successMe.size) === null || _attributes$successMe === void 0 ? void 0 : _attributes$successMe.lg) || '',
-          fontWeight: ((_attributes$successMe2 = attributes.successMessageTypography) === null || _attributes$successMe2 === void 0 ? void 0 : _attributes$successMe2.weight) || '400',
-          lineHeight: ((_attributes$successMe3 = attributes.successMessageTypography) === null || _attributes$successMe3 === void 0 ? void 0 : _attributes$successMe3.lineHeight) || '',
-          letterSpacing: ((_attributes$successMe4 = attributes.successMessageTypography) === null || _attributes$successMe4 === void 0 ? void 0 : _attributes$successMe4.letterSpacing) || '',
-          textTransform: ((_attributes$successMe5 = attributes.successMessageTypography) === null || _attributes$successMe5 === void 0 ? void 0 : _attributes$successMe5.textTransform) || 'none'
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_6__["default"], {
-        label: __("Box Shadow"),
-        enabled: attributes.enableSuccessMessageBoxShadow || false,
-        onToggle: function onToggle(value) {
-          return updateStyles({
-            enableSuccessMessageBoxShadow: value
-          });
-        },
-        color: attributes.successMessageBoxShadowColor,
-        onColorChange: function onColorChange(value) {
-          return updateStyles({
-            successMessageBoxShadowColor: value
-          });
-        },
-        position: attributes.successMessageBoxShadowPosition,
-        onPositionChange: function onPositionChange(value) {
-          return updateStyles({
-            successMessageBoxShadowPosition: value
-          });
-        },
-        horizontal: attributes.successMessageBoxShadowHorizontal,
-        onHorizontalChange: function onHorizontalChange(value) {
-          return updateStyles({
-            successMessageBoxShadowHorizontal: value
-          });
-        },
-        horizontalUnit: attributes.successMessageBoxShadowHorizontalUnit,
-        onHorizontalUnitChange: function onHorizontalUnitChange(value) {
-          return updateStyles({
-            successMessageBoxShadowHorizontalUnit: value
-          });
-        },
-        vertical: attributes.successMessageBoxShadowVertical,
-        onVerticalChange: function onVerticalChange(value) {
-          return updateStyles({
-            successMessageBoxShadowVertical: value
-          });
-        },
-        verticalUnit: attributes.successMessageBoxShadowVerticalUnit,
-        onVerticalUnitChange: function onVerticalUnitChange(value) {
-          return updateStyles({
-            successMessageBoxShadowVerticalUnit: value
-          });
-        },
-        blur: attributes.successMessageBoxShadowBlur,
-        onBlurChange: function onBlurChange(value) {
-          return updateStyles({
-            successMessageBoxShadowBlur: value
-          });
-        },
-        blurUnit: attributes.successMessageBoxShadowBlurUnit,
-        onBlurUnitChange: function onBlurUnitChange(value) {
-          return updateStyles({
-            successMessageBoxShadowBlurUnit: value
-          });
-        },
-        spread: attributes.successMessageBoxShadowSpread,
-        onSpreadChange: function onSpreadChange(value) {
-          return updateStyles({
-            successMessageBoxShadowSpread: value
-          });
-        },
-        spreadUnit: attributes.successMessageBoxShadowSpreadUnit,
-        onSpreadUnitChange: function onSpreadUnitChange(value) {
-          return updateStyles({
-            successMessageBoxShadowSpreadUnit: value
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        label: __("Border"),
-        enabled: attributes.enableSuccessMessageBorder || false,
-        onToggle: function onToggle(value) {
-          return updateStyles({
-            enableSuccessMessageBorder: value
-          });
-        },
-        borderType: attributes.successMessageBorderType,
-        onBorderTypeChange: function onBorderTypeChange(value) {
-          return updateStyles({
-            successMessageBorderType: value
-          });
-        },
-        borderColor: attributes.successMessageBorderColor,
-        onBorderColorChange: function onBorderColorChange(value) {
-          return updateStyles({
-            successMessageBorderColor: value
-          });
-        },
-        borderWidth: attributes.successMessageBorderWidth,
-        onBorderWidthChange: function onBorderWidthChange(value) {
-          return updateStyles({
-            successMessageBorderWidth: value
-          });
-        },
-        borderRadius: attributes.successMessageBorderRadius,
-        onBorderRadiusChange: function onBorderRadiusChange(value) {
-          return updateStyles({
-            successMessageBorderRadius: value
-          });
-        }
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(PanelBody, {
       title: __("After Submit Error Message Styles"),
@@ -3474,160 +3200,6 @@ var TabMisc = function TabMisc(_ref) {
             title: __('Align Right')
           }]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentUnitControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        label: __("Width"),
-        value: attributes.submitErrorMessageWidth || '',
-        onChange: function onChange(value) {
-          return updateStyles({
-            submitErrorMessageWidth: value
-          });
-        },
-        unit: attributes.submitErrorMessageWidthUnit || '%',
-        onUnitChange: function onUnitChange(value) {
-          return updateStyles({
-            submitErrorMessageWidthUnit: value
-          });
-        },
-        min: 0,
-        placeholder: "100",
-        units: [{
-          label: 'px',
-          value: 'px'
-        }, {
-          label: 'em',
-          value: 'em'
-        }, {
-          label: '%',
-          value: '%'
-        }]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: __("Padding"),
-        values: attributes.submitErrorMessagePadding,
-        onChange: function onChange(value) {
-          return updateStyles({
-            submitErrorMessagePadding: value
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: __("Margin"),
-        values: attributes.submitErrorMessageMargin,
-        onChange: function onChange(value) {
-          return updateStyles({
-            submitErrorMessageMargin: value
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        label: __("Typography"),
-        onChange: function onChange(changedTypo) {
-          return handleTypographyChange(changedTypo, 'submitErrorMessageTypography');
-        },
-        settings: {
-          fontSize: ((_attributes$submitErr = attributes.submitErrorMessageTypography) === null || _attributes$submitErr === void 0 || (_attributes$submitErr = _attributes$submitErr.size) === null || _attributes$submitErr === void 0 ? void 0 : _attributes$submitErr.lg) || '',
-          fontWeight: ((_attributes$submitErr2 = attributes.submitErrorMessageTypography) === null || _attributes$submitErr2 === void 0 ? void 0 : _attributes$submitErr2.weight) || '400',
-          lineHeight: ((_attributes$submitErr3 = attributes.submitErrorMessageTypography) === null || _attributes$submitErr3 === void 0 ? void 0 : _attributes$submitErr3.lineHeight) || '',
-          letterSpacing: ((_attributes$submitErr4 = attributes.submitErrorMessageTypography) === null || _attributes$submitErr4 === void 0 ? void 0 : _attributes$submitErr4.letterSpacing) || '',
-          textTransform: ((_attributes$submitErr5 = attributes.submitErrorMessageTypography) === null || _attributes$submitErr5 === void 0 ? void 0 : _attributes$submitErr5.textTransform) || 'none'
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_6__["default"], {
-        label: __("Box Shadow"),
-        enabled: attributes.enableSubmitErrorMessageBoxShadow || false,
-        onToggle: function onToggle(value) {
-          return updateStyles({
-            enableSubmitErrorMessageBoxShadow: value
-          });
-        },
-        color: attributes.submitErrorMessageBoxShadowColor,
-        onColorChange: function onColorChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowColor: value
-          });
-        },
-        position: attributes.submitErrorMessageBoxShadowPosition,
-        onPositionChange: function onPositionChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowPosition: value
-          });
-        },
-        horizontal: attributes.submitErrorMessageBoxShadowHorizontal,
-        onHorizontalChange: function onHorizontalChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowHorizontal: value
-          });
-        },
-        horizontalUnit: attributes.submitErrorMessageBoxShadowHorizontalUnit,
-        onHorizontalUnitChange: function onHorizontalUnitChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowHorizontalUnit: value
-          });
-        },
-        vertical: attributes.submitErrorMessageBoxShadowVertical,
-        onVerticalChange: function onVerticalChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowVertical: value
-          });
-        },
-        verticalUnit: attributes.submitErrorMessageBoxShadowVerticalUnit,
-        onVerticalUnitChange: function onVerticalUnitChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowVerticalUnit: value
-          });
-        },
-        blur: attributes.submitErrorMessageBoxShadowBlur,
-        onBlurChange: function onBlurChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowBlur: value
-          });
-        },
-        blurUnit: attributes.submitErrorMessageBoxShadowBlurUnit,
-        onBlurUnitChange: function onBlurUnitChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowBlurUnit: value
-          });
-        },
-        spread: attributes.submitErrorMessageBoxShadowSpread,
-        onSpreadChange: function onSpreadChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowSpread: value
-          });
-        },
-        spreadUnit: attributes.submitErrorMessageBoxShadowSpreadUnit,
-        onSpreadUnitChange: function onSpreadUnitChange(value) {
-          return updateStyles({
-            submitErrorMessageBoxShadowSpreadUnit: value
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        label: __("Border"),
-        enabled: attributes.enableSubmitErrorMessageBorder || false,
-        onToggle: function onToggle(value) {
-          return updateStyles({
-            enableSubmitErrorMessageBorder: value
-          });
-        },
-        borderType: attributes.submitErrorMessageBorderType,
-        onBorderTypeChange: function onBorderTypeChange(value) {
-          return updateStyles({
-            submitErrorMessageBorderType: value
-          });
-        },
-        borderColor: attributes.submitErrorMessageBorderColor,
-        onBorderColorChange: function onBorderColorChange(value) {
-          return updateStyles({
-            submitErrorMessageBorderColor: value
-          });
-        },
-        borderWidth: attributes.submitErrorMessageBorderWidth,
-        onBorderWidthChange: function onBorderWidthChange(value) {
-          return updateStyles({
-            submitErrorMessageBorderWidth: value
-          });
-        },
-        borderRadius: attributes.submitErrorMessageBorderRadius,
-        onBorderRadiusChange: function onBorderRadiusChange(value) {
-          return updateStyles({
-            submitErrorMessageBorderRadius: value
-          });
-        }
       })]
     })]
   });
@@ -3636,7 +3208,7 @@ var TabMisc = function TabMisc(_ref) {
 /**
  * Compare function to determine if component should update
  */
-var MISC_TAB_ATTRIBUTES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'textColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'containerBoxShadowHover', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'formAlignment', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageColor', 'errorMessageAlignment', 'errorMessageAlignmentTablet', 'errorMessageAlignmentMobile', 'errorMessagePadding', 'errorMessageTypography', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'successMessageWidth', 'successMessageWidthUnit', 'successMessagePadding', 'successMessageMargin', 'successMessageTypography', 'enableSuccessMessageBoxShadow', 'successMessageBoxShadowColor', 'successMessageBoxShadowPosition', 'successMessageBoxShadowHorizontal', 'successMessageBoxShadowHorizontalUnit', 'successMessageBoxShadowVertical', 'successMessageBoxShadowVerticalUnit', 'successMessageBoxShadowBlur', 'successMessageBoxShadowBlurUnit', 'successMessageBoxShadowSpread', 'successMessageBoxShadowSpreadUnit', 'enableSuccessMessageBorder', 'successMessageBorderType', 'successMessageBorderColor', 'successMessageBorderWidth', 'successMessageBorderRadius', 'submitErrorMessageColor', 'submitErrorMessageBgColor', 'submitErrorMessageAlignment', 'submitErrorMessageWidth', 'submitErrorMessageWidthUnit', 'submitErrorMessagePadding', 'submitErrorMessageMargin', 'submitErrorMessageTypography', 'enableSubmitErrorMessageBoxShadow', 'submitErrorMessageBoxShadowColor', 'submitErrorMessageBoxShadowPosition', 'submitErrorMessageBoxShadowHorizontal', 'submitErrorMessageBoxShadowHorizontalUnit', 'submitErrorMessageBoxShadowVertical', 'submitErrorMessageBoxShadowVerticalUnit', 'submitErrorMessageBoxShadowBlur', 'submitErrorMessageBoxShadowBlurUnit', 'submitErrorMessageBoxShadowSpread', 'submitErrorMessageBoxShadowSpreadUnit', 'enableSubmitErrorMessageBorder', 'submitErrorMessageBorderType', 'submitErrorMessageBorderColor', 'submitErrorMessageBorderWidth', 'submitErrorMessageBorderRadius'];
+var MISC_TAB_ATTRIBUTES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'textColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'containerBoxShadowHover', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'formAlignment', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageBgColor', 'errorMessageColor', 'errorMessageAlignment', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'submitErrorMessageBgColor', 'submitErrorMessageColor', 'submitErrorMessageAlignment'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabMisc, function (prevProps, nextProps) {
   return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_9__.arePropsEqual)(prevProps, nextProps, MISC_TAB_ATTRIBUTES, true);
 }));
@@ -3654,10 +3226,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _TabGeneral__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TabGeneral */ "./guten_block/src/components/tabs/TabGeneral.js");
-/* harmony import */ var _TabAdvanced__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TabAdvanced */ "./guten_block/src/components/tabs/TabAdvanced.js");
-/* harmony import */ var _TabMisc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TabMisc */ "./guten_block/src/components/tabs/TabMisc.js");
-/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _TabMisc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TabMisc */ "./guten_block/src/components/tabs/TabMisc.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -3687,7 +3258,6 @@ var _wp$element = wp.element,
 
 
 
-
 // Use PureComponent to automatically implement shouldComponentUpdate
 
 var Tabs = /*#__PURE__*/function (_PureComponent) {
@@ -3704,7 +3274,7 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
         setAttributes = _this$props.setAttributes,
         updateStyles = _this$props.updateStyles,
         state = _this$props.state;
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(TabPanel, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TabPanel, {
         className: "fluent-form-block-style-tabs",
         activeClass: "is-active",
         tabs: [{
@@ -3715,15 +3285,11 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
           name: 'misc',
           title: __('Misc'),
           key: 'misc-tab'
-        }, {
-          name: 'advanced',
-          title: __('Advanced'),
-          key: 'advanced-tab'
         }],
         children: function children(tab) {
           if (tab.name === 'general') {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
                 attributes: attributes,
                 setAttributes: setAttributes,
                 updateStyles: updateStyles,
@@ -3732,16 +3298,9 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
                 toggleCustomizePreset: state.toggleCustomizePreset
               })
             }, "general-tab-content");
-          } else if (tab.name === 'advanced') {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_TabAdvanced__WEBPACK_IMPORTED_MODULE_1__["default"], {
-                attributes: attributes,
-                setAttributes: setAttributes
-              })
-            }, "advanced-tab-content");
           } else if (tab.name === 'misc') {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_TabMisc__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabMisc__WEBPACK_IMPORTED_MODULE_1__["default"], {
                 attributes: attributes,
                 setAttributes: setAttributes,
                 updateStyles: updateStyles,
@@ -3757,7 +3316,7 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
   return Tabs;
 }(PureComponent);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(Tabs, function (prevProps, nextProps) {
-  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_3__.arePropsEqual)(prevProps, nextProps, [], true);
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__.arePropsEqual)(prevProps, nextProps, [], true);
 }));
 
 /***/ }),

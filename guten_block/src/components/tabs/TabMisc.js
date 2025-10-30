@@ -397,13 +397,20 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
           {/* Inline Error Message Styles Panel */}
           <PanelBody title={__("Inline Error Message Styles")} initialOpen={false}>
               <FluentColorPicker
-                label={__("Error Message Color")}
+                label={__("Background Color")}
+                value={attributes.errorMessageBgColor || ''}
+                onChange={(value) => updateStyles({ errorMessageBgColor: value })}
+                defaultColor=""
+              />
+
+              <FluentColorPicker
+                label={__("Text Color")}
                 value={attributes.errorMessageColor || ''}
                 onChange={(value) => updateStyles({ errorMessageColor: value })}
                 defaultColor="#ff0000"
               />
 
-              <BaseControl label={__("Error Message Alignment")}>
+              <BaseControl label={__("Alignment")}>
                   <FluentAlignmentControl
                     value={attributes.errorMessageAlignment || 'left'}
                     onChange={(value) => updateStyles({ errorMessageAlignment: value })}
@@ -414,29 +421,6 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
                     ]}
                   />
               </BaseControl>
-
-              <FluentSpaceControl
-                label={__("Padding")}
-                values={attributes.errorMessagePadding}
-                onChange={(value) => updateStyles({ errorMessagePadding: value })}
-              />
-
-              <FontSizePicker
-                fontSizes={[
-                    { name: 'Small', slug: 'small', size: 12 },
-                    { name: 'Medium', slug: 'medium', size: 16 },
-                    { name: 'Large', slug: 'large', size: 24 },
-                    { name: 'Extra Large', slug: 'x-large', size: 32 }
-                ]}
-                value={attributes.errorMessageTypography?.size?.lg || 16}
-                onChange={(value) => updateStyles({
-                    errorMessageTypography: {
-                        ...attributes.errorMessageTypography,
-                        size: { lg: value }
-                    }
-                })}
-                withSlider={true}
-              />
           </PanelBody>
 
           {/* After Submit Success Message Styles */}
@@ -456,97 +440,16 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
               />
 
               <BaseControl label={__("Alignment")}>
-                  <div className="fluent-form-responsive-control-header">
-                      <FluentAlignmentControl
-                        value={attributes.successMessageAlignment || 'left'}
-                        onChange={(value) => updateStyles({ successMessageAlignment: value })}
-                        options={[
-                            { value: 'left', icon: 'editor-alignleft', title: __('Align Left') },
-                            { value: 'center', icon: 'editor-aligncenter', title: __('Align Center') },
-                            { value: 'right', icon: 'editor-alignright', title: __('Align Right') }
-                        ]}
-                      />
-                  </div>
+                  <FluentAlignmentControl
+                    value={attributes.successMessageAlignment || 'left'}
+                    onChange={(value) => updateStyles({ successMessageAlignment: value })}
+                    options={[
+                        { value: 'left', icon: 'editor-alignleft', title: __('Align Left') },
+                        { value: 'center', icon: 'editor-aligncenter', title: __('Align Center') },
+                        { value: 'right', icon: 'editor-alignright', title: __('Align Right') }
+                    ]}
+                  />
               </BaseControl>
-
-              <FluentUnitControl
-                label={__("Width")}
-                value={attributes.successMessageWidth || ''}
-                onChange={(value) => updateStyles({ successMessageWidth: value })}
-                unit={attributes.successMessageWidthUnit || '%'}
-                onUnitChange={(value) => updateStyles({ successMessageWidthUnit: value })}
-                min={0}
-                placeholder="100"
-                units={[
-                    { label: 'px', value: 'px' },
-                    { label: 'em', value: 'em' },
-                    { label: '%', value: '%' }
-                ]}
-              />
-
-              <FluentSpaceControl
-                label={__("Padding")}
-                values={attributes.successMessagePadding}
-                onChange={(value) => updateStyles({ successMessagePadding: value })}
-              />
-
-              <FluentSpaceControl
-                label={__("Margin")}
-                values={attributes.successMessageMargin}
-                onChange={(value) => updateStyles({ successMessageMargin: value })}
-              />
-
-              <FluentTypography
-                label={__("Typography")}
-                onChange={(changedTypo) => handleTypographyChange(changedTypo, 'successMessageTypography')}
-                settings={{
-                    fontSize: attributes.successMessageTypography?.size?.lg || '',
-                    fontWeight: attributes.successMessageTypography?.weight || '400',
-                    lineHeight: attributes.successMessageTypography?.lineHeight || '',
-                    letterSpacing: attributes.successMessageTypography?.letterSpacing || '',
-                    textTransform: attributes.successMessageTypography?.textTransform || 'none'
-                }}
-              />
-
-              <FluentBoxShadowControl
-                label={__("Box Shadow")}
-                enabled={attributes.enableSuccessMessageBoxShadow || false}
-                onToggle={(value) => updateStyles({ enableSuccessMessageBoxShadow: value })}
-                color={attributes.successMessageBoxShadowColor}
-                onColorChange={(value) => updateStyles({ successMessageBoxShadowColor: value })}
-                position={attributes.successMessageBoxShadowPosition}
-                onPositionChange={(value) => updateStyles({ successMessageBoxShadowPosition: value })}
-                horizontal={attributes.successMessageBoxShadowHorizontal}
-                onHorizontalChange={(value) => updateStyles({ successMessageBoxShadowHorizontal: value })}
-                horizontalUnit={attributes.successMessageBoxShadowHorizontalUnit}
-                onHorizontalUnitChange={(value) => updateStyles({ successMessageBoxShadowHorizontalUnit: value })}
-                vertical={attributes.successMessageBoxShadowVertical}
-                onVerticalChange={(value) => updateStyles({ successMessageBoxShadowVertical: value })}
-                verticalUnit={attributes.successMessageBoxShadowVerticalUnit}
-                onVerticalUnitChange={(value) => updateStyles({ successMessageBoxShadowVerticalUnit: value })}
-                blur={attributes.successMessageBoxShadowBlur}
-                onBlurChange={(value) => updateStyles({ successMessageBoxShadowBlur: value })}
-                blurUnit={attributes.successMessageBoxShadowBlurUnit}
-                onBlurUnitChange={(value) => updateStyles({ successMessageBoxShadowBlurUnit: value })}
-                spread={attributes.successMessageBoxShadowSpread}
-                onSpreadChange={(value) => updateStyles({ successMessageBoxShadowSpread: value })}
-                spreadUnit={attributes.successMessageBoxShadowSpreadUnit}
-                onSpreadUnitChange={(value) => updateStyles({ successMessageBoxShadowSpreadUnit: value })}
-              />
-
-              <FluentBorderControl
-                label={__("Border")}
-                enabled={attributes.enableSuccessMessageBorder || false}
-                onToggle={(value) => updateStyles({ enableSuccessMessageBorder: value })}
-                borderType={attributes.successMessageBorderType}
-                onBorderTypeChange={(value) => updateStyles({ successMessageBorderType: value })}
-                borderColor={attributes.successMessageBorderColor}
-                onBorderColorChange={(value) => updateStyles({ successMessageBorderColor: value })}
-                borderWidth={attributes.successMessageBorderWidth}
-                onBorderWidthChange={(value) => updateStyles({ successMessageBorderWidth: value })}
-                borderRadius={attributes.successMessageBorderRadius}
-                onBorderRadiusChange={(value) => updateStyles({ successMessageBorderRadius: value })}
-              />
           </PanelBody>
 
           {/* After Submit Error Message Styles */}
@@ -576,85 +479,6 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
                     ]}
                   />
               </BaseControl>
-
-              <FluentUnitControl
-                label={__("Width")}
-                value={attributes.submitErrorMessageWidth || ''}
-                onChange={(value) => updateStyles({ submitErrorMessageWidth: value })}
-                unit={attributes.submitErrorMessageWidthUnit || '%'}
-                onUnitChange={(value) => updateStyles({ submitErrorMessageWidthUnit: value })}
-                min={0}
-                placeholder="100"
-                units={[
-                    { label: 'px', value: 'px' },
-                    { label: 'em', value: 'em' },
-                    { label: '%', value: '%' }
-                ]}
-              />
-
-              <FluentSpaceControl
-                label={__("Padding")}
-                values={attributes.submitErrorMessagePadding}
-                onChange={(value) => updateStyles({ submitErrorMessagePadding: value })}
-              />
-
-              <FluentSpaceControl
-                label={__("Margin")}
-                values={attributes.submitErrorMessageMargin}
-                onChange={(value) => updateStyles({ submitErrorMessageMargin: value })}
-              />
-
-              <FluentTypography
-                label={__("Typography")}
-                onChange={(changedTypo) => handleTypographyChange(changedTypo, 'submitErrorMessageTypography')}
-                settings={{
-                    fontSize: attributes.submitErrorMessageTypography?.size?.lg || '',
-                    fontWeight: attributes.submitErrorMessageTypography?.weight || '400',
-                    lineHeight: attributes.submitErrorMessageTypography?.lineHeight || '',
-                    letterSpacing: attributes.submitErrorMessageTypography?.letterSpacing || '',
-                    textTransform: attributes.submitErrorMessageTypography?.textTransform || 'none'
-                }}
-              />
-
-              <FluentBoxShadowControl
-                label={__("Box Shadow")}
-                enabled={attributes.enableSubmitErrorMessageBoxShadow || false}
-                onToggle={(value) => updateStyles({ enableSubmitErrorMessageBoxShadow: value })}
-                color={attributes.submitErrorMessageBoxShadowColor}
-                onColorChange={(value) => updateStyles({ submitErrorMessageBoxShadowColor: value })}
-                position={attributes.submitErrorMessageBoxShadowPosition}
-                onPositionChange={(value) => updateStyles({ submitErrorMessageBoxShadowPosition: value })}
-                horizontal={attributes.submitErrorMessageBoxShadowHorizontal}
-                onHorizontalChange={(value) => updateStyles({ submitErrorMessageBoxShadowHorizontal: value })}
-                horizontalUnit={attributes.submitErrorMessageBoxShadowHorizontalUnit}
-                onHorizontalUnitChange={(value) => updateStyles({ submitErrorMessageBoxShadowHorizontalUnit: value })}
-                vertical={attributes.submitErrorMessageBoxShadowVertical}
-                onVerticalChange={(value) => updateStyles({ submitErrorMessageBoxShadowVertical: value })}
-                verticalUnit={attributes.submitErrorMessageBoxShadowVerticalUnit}
-                onVerticalUnitChange={(value) => updateStyles({ submitErrorMessageBoxShadowVerticalUnit: value })}
-                blur={attributes.submitErrorMessageBoxShadowBlur}
-                onBlurChange={(value) => updateStyles({ submitErrorMessageBoxShadowBlur: value })}
-                blurUnit={attributes.submitErrorMessageBoxShadowBlurUnit}
-                onBlurUnitChange={(value) => updateStyles({ submitErrorMessageBoxShadowBlurUnit: value })}
-                spread={attributes.submitErrorMessageBoxShadowSpread}
-                onSpreadChange={(value) => updateStyles({ submitErrorMessageBoxShadowSpread: value })}
-                spreadUnit={attributes.submitErrorMessageBoxShadowSpreadUnit}
-                onSpreadUnitChange={(value) => updateStyles({ submitErrorMessageBoxShadowSpreadUnit: value })}
-              />
-
-              <FluentBorderControl
-                label={__("Border")}
-                enabled={attributes.enableSubmitErrorMessageBorder || false}
-                onToggle={(value) => updateStyles({ enableSubmitErrorMessageBorder: value })}
-                borderType={attributes.submitErrorMessageBorderType}
-                onBorderTypeChange={(value) => updateStyles({ submitErrorMessageBorderType: value })}
-                borderColor={attributes.submitErrorMessageBorderColor}
-                onBorderColorChange={(value) => updateStyles({ submitErrorMessageBorderColor: value })}
-                borderWidth={attributes.submitErrorMessageBorderWidth}
-                onBorderWidthChange={(value) => updateStyles({ submitErrorMessageBorderWidth: value })}
-                borderRadius={attributes.submitErrorMessageBorderRadius}
-                onBorderRadiusChange={(value) => updateStyles({ submitErrorMessageBorderRadius: value })}
-              />
           </PanelBody>
       </>
     );
@@ -703,60 +527,15 @@ const MISC_TAB_ATTRIBUTES = [
     'boxShadowSpread',
     'boxShadowSpreadUnit',
     'asteriskColor',
+    'errorMessageBgColor',
     'errorMessageColor',
     'errorMessageAlignment',
-    'errorMessageAlignmentTablet',
-    'errorMessageAlignmentMobile',
-    'errorMessagePadding',
-    'errorMessageTypography',
     'successMessageBgColor',
     'successMessageColor',
     'successMessageAlignment',
-    'successMessageWidth',
-    'successMessageWidthUnit',
-    'successMessagePadding',
-    'successMessageMargin',
-    'successMessageTypography',
-    'enableSuccessMessageBoxShadow',
-    'successMessageBoxShadowColor',
-    'successMessageBoxShadowPosition',
-    'successMessageBoxShadowHorizontal',
-    'successMessageBoxShadowHorizontalUnit',
-    'successMessageBoxShadowVertical',
-    'successMessageBoxShadowVerticalUnit',
-    'successMessageBoxShadowBlur',
-    'successMessageBoxShadowBlurUnit',
-    'successMessageBoxShadowSpread',
-    'successMessageBoxShadowSpreadUnit',
-    'enableSuccessMessageBorder',
-    'successMessageBorderType',
-    'successMessageBorderColor',
-    'successMessageBorderWidth',
-    'successMessageBorderRadius',
-    'submitErrorMessageColor',
     'submitErrorMessageBgColor',
-    'submitErrorMessageAlignment',
-    'submitErrorMessageWidth',
-    'submitErrorMessageWidthUnit',
-    'submitErrorMessagePadding',
-    'submitErrorMessageMargin',
-    'submitErrorMessageTypography',
-    'enableSubmitErrorMessageBoxShadow',
-    'submitErrorMessageBoxShadowColor',
-    'submitErrorMessageBoxShadowPosition',
-    'submitErrorMessageBoxShadowHorizontal',
-    'submitErrorMessageBoxShadowHorizontalUnit',
-    'submitErrorMessageBoxShadowVertical',
-    'submitErrorMessageBoxShadowVerticalUnit',
-    'submitErrorMessageBoxShadowBlur',
-    'submitErrorMessageBoxShadowBlurUnit',
-    'submitErrorMessageBoxShadowSpread',
-    'submitErrorMessageBoxShadowSpreadUnit',
-    'enableSubmitErrorMessageBorder',
-    'submitErrorMessageBorderType',
-    'submitErrorMessageBorderColor',
-    'submitErrorMessageBorderWidth',
-    'submitErrorMessageBorderRadius'
+    'submitErrorMessageColor',
+    'submitErrorMessageAlignment'
 ];
 
 export default memo(TabMisc, (prevProps, nextProps) => {
