@@ -226,6 +226,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -243,62 +249,53 @@ var __ = wp.i18n.__;
 
 
 var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
+  var _localShadow$horizont2, _localShadow$horizont3, _localShadow$vertical2, _localShadow$vertical3, _localShadow$blur2, _localShadow$blur3, _localShadow$spread2, _localShadow$spread3;
   var _ref$label = _ref.label,
     label = _ref$label === void 0 ? __("Box Shadow") : _ref$label,
-    enabled = _ref.enabled,
-    onToggle = _ref.onToggle,
-    color = _ref.color,
-    onColorChange = _ref.onColorChange,
-    position = _ref.position,
-    onPositionChange = _ref.onPositionChange,
-    horizontal = _ref.horizontal,
-    onHorizontalChange = _ref.onHorizontalChange,
-    horizontalUnit = _ref.horizontalUnit,
-    onHorizontalUnitChange = _ref.onHorizontalUnitChange,
-    vertical = _ref.vertical,
-    onVerticalChange = _ref.onVerticalChange,
-    verticalUnit = _ref.verticalUnit,
-    onVerticalUnitChange = _ref.onVerticalUnitChange,
-    blur = _ref.blur,
-    onBlurChange = _ref.onBlurChange,
-    blurUnit = _ref.blurUnit,
-    onBlurUnitChange = _ref.onBlurUnitChange,
-    spread = _ref.spread,
-    onSpreadChange = _ref.onSpreadChange,
-    spreadUnit = _ref.spreadUnit,
-    onSpreadUnitChange = _ref.onSpreadUnitChange,
+    _ref$shadow = _ref.shadow,
+    shadow = _ref$shadow === void 0 ? {} : _ref$shadow,
+    onChange = _ref.onChange,
     _ref$defaultColor = _ref.defaultColor,
     defaultColor = _ref$defaultColor === void 0 ? "rgba(0,0,0,0.5)" : _ref$defaultColor;
-  // Use internal state to track the enabled state and values
-  var _useState = useState(!!enabled),
+  // Use internal state to track the shadow object
+  var _useState = useState(_objectSpread({
+      enable: false,
+      color: '',
+      position: 'outline',
+      horizontal: {
+        value: '0',
+        unit: 'px'
+      },
+      vertical: {
+        value: '0',
+        unit: 'px'
+      },
+      blur: {
+        value: '5',
+        unit: 'px'
+      },
+      spread: {
+        value: '0',
+        unit: 'px'
+      }
+    }, shadow)),
     _useState2 = _slicedToArray(_useState, 2),
-    isEnabled = _useState2[0],
-    setIsEnabled = _useState2[1];
-  var _useState3 = useState(horizontal || ''),
-    _useState4 = _slicedToArray(_useState3, 2),
-    localHorizontal = _useState4[0],
-    setLocalHorizontal = _useState4[1];
-  var _useState5 = useState(vertical || ''),
-    _useState6 = _slicedToArray(_useState5, 2),
-    localVertical = _useState6[0],
-    setLocalVertical = _useState6[1];
-  var _useState7 = useState(blur || ''),
-    _useState8 = _slicedToArray(_useState7, 2),
-    localBlur = _useState8[0],
-    setLocalBlur = _useState8[1];
-  var _useState9 = useState(spread || ''),
-    _useState0 = _slicedToArray(_useState9, 2),
-    localSpread = _useState0[0],
-    setLocalSpread = _useState0[1];
+    localShadow = _useState2[0],
+    setLocalShadow = _useState2[1];
 
   // Update internal state when props change
   useEffect(function () {
-    setIsEnabled(!!enabled);
-    setLocalHorizontal(horizontal || '');
-    setLocalVertical(vertical || '');
-    setLocalBlur(blur || '');
-    setLocalSpread(spread || '');
-  }, [enabled, horizontal, vertical, blur, spread]);
+    setLocalShadow(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), shadow);
+    });
+  }, [shadow]);
+  var updateShadow = function updateShadow(updates) {
+    var newShadow = _objectSpread(_objectSpread({}, localShadow), updates);
+    setLocalShadow(newShadow);
+    if (onChange) {
+      onChange(newShadow);
+    }
+  };
   var positionOptions = [{
     label: __("Outline"),
     value: 'outline'
@@ -320,49 +317,55 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     label: label,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ToggleControl, {
       label: __("Enable Box Shadow"),
-      checked: isEnabled,
+      checked: localShadow.enable,
       onChange: function onChange(value) {
-        // Update internal state first
-        setIsEnabled(!!value);
-        // Then notify parent
-        onToggle(!!value);
+        var updates = {
+          enable: value
+        };
 
-        // If enabling, make sure all values are set with defaults if needed
+        // Set defaults when enabling
         if (value) {
-          // Set color (use provided color or default)
-          onColorChange(color || defaultColor);
-
-          // Set position if not already set
-          if (!position) onPositionChange('outline');
-
-          // Set horizontal with default if not set
-          onHorizontalChange(horizontal || '0');
-          if (!horizontalUnit) onHorizontalUnitChange('px');
-
-          // Set vertical with default if not set
-          onVerticalChange(vertical || '0');
-          if (!verticalUnit) onVerticalUnitChange('px');
-
-          // Set blur with default if not set
-          onBlurChange(blur || '5');
-          if (!blurUnit) onBlurUnitChange('px');
-
-          // Set spread with default if not set
-          onSpreadChange(spread || '0');
-          if (!spreadUnit) onSpreadUnitChange('px');
+          var _localShadow$horizont, _localShadow$vertical, _localShadow$blur, _localShadow$spread;
+          if (!localShadow.color) updates.color = defaultColor;
+          if (!localShadow.position) updates.position = 'outline';
+          if (!((_localShadow$horizont = localShadow.horizontal) !== null && _localShadow$horizont !== void 0 && _localShadow$horizont.value)) updates.horizontal = {
+            value: '0',
+            unit: 'px'
+          };
+          if (!((_localShadow$vertical = localShadow.vertical) !== null && _localShadow$vertical !== void 0 && _localShadow$vertical.value)) updates.vertical = {
+            value: '0',
+            unit: 'px'
+          };
+          if (!((_localShadow$blur = localShadow.blur) !== null && _localShadow$blur !== void 0 && _localShadow$blur.value)) updates.blur = {
+            value: '5',
+            unit: 'px'
+          };
+          if (!((_localShadow$spread = localShadow.spread) !== null && _localShadow$spread !== void 0 && _localShadow$spread.value)) updates.spread = {
+            value: '0',
+            unit: 'px'
+          };
         }
+        updateShadow(updates);
       }
-    }), isEnabled && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+    }), localShadow.enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Shadow Color"),
-        value: color || '',
-        onChange: onColorChange,
+        value: localShadow.color || '',
+        onChange: function onChange(value) {
+          return updateShadow({
+            color: value
+          });
+        },
         defaultColor: defaultColor
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
         label: __("Shadow Position"),
-        value: position || 'outline',
+        value: localShadow.position || 'outline',
         options: positionOptions,
-        onChange: onPositionChange
+        onChange: function onChange(value) {
+          return updateShadow({
+            position: value
+          });
+        }
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BaseControl, {
         label: __("Horizontal Offset"),
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
@@ -370,19 +373,27 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
             type: "number",
             className: "components-text-control__input",
-            value: localHorizontal,
+            value: ((_localShadow$horizont2 = localShadow.horizontal) === null || _localShadow$horizont2 === void 0 ? void 0 : _localShadow$horizont2.value) || '',
             onChange: function onChange(e) {
-              var value = e.target.value;
-              setLocalHorizontal(value);
-              onHorizontalChange(value);
+              return updateShadow({
+                horizontal: _objectSpread(_objectSpread({}, localShadow.horizontal), {}, {
+                  value: e.target.value
+                })
+              });
             },
             min: "-50",
             max: "50",
             placeholder: "0"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
-            value: horizontalUnit || 'px',
+            value: ((_localShadow$horizont3 = localShadow.horizontal) === null || _localShadow$horizont3 === void 0 ? void 0 : _localShadow$horizont3.unit) || 'px',
             options: unitOptions,
-            onChange: onHorizontalUnitChange
+            onChange: function onChange(unit) {
+              return updateShadow({
+                horizontal: _objectSpread(_objectSpread({}, localShadow.horizontal), {}, {
+                  unit: unit
+                })
+              });
+            }
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BaseControl, {
@@ -392,19 +403,27 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
             type: "number",
             className: "components-text-control__input",
-            value: localVertical,
+            value: ((_localShadow$vertical2 = localShadow.vertical) === null || _localShadow$vertical2 === void 0 ? void 0 : _localShadow$vertical2.value) || '',
             onChange: function onChange(e) {
-              var value = e.target.value;
-              setLocalVertical(value);
-              onVerticalChange(value);
+              return updateShadow({
+                vertical: _objectSpread(_objectSpread({}, localShadow.vertical), {}, {
+                  value: e.target.value
+                })
+              });
             },
             min: "-50",
             max: "50",
             placeholder: "0"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
-            value: verticalUnit || 'px',
+            value: ((_localShadow$vertical3 = localShadow.vertical) === null || _localShadow$vertical3 === void 0 ? void 0 : _localShadow$vertical3.unit) || 'px',
             options: unitOptions,
-            onChange: onVerticalUnitChange
+            onChange: function onChange(unit) {
+              return updateShadow({
+                vertical: _objectSpread(_objectSpread({}, localShadow.vertical), {}, {
+                  unit: unit
+                })
+              });
+            }
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BaseControl, {
@@ -414,19 +433,27 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
             type: "number",
             className: "components-text-control__input",
-            value: localBlur,
+            value: ((_localShadow$blur2 = localShadow.blur) === null || _localShadow$blur2 === void 0 ? void 0 : _localShadow$blur2.value) || '',
             onChange: function onChange(e) {
-              var value = e.target.value;
-              setLocalBlur(value);
-              onBlurChange(value);
+              return updateShadow({
+                blur: _objectSpread(_objectSpread({}, localShadow.blur), {}, {
+                  value: e.target.value
+                })
+              });
             },
             min: "0",
             max: "100",
             placeholder: "0"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
-            value: blurUnit || 'px',
+            value: ((_localShadow$blur3 = localShadow.blur) === null || _localShadow$blur3 === void 0 ? void 0 : _localShadow$blur3.unit) || 'px',
             options: unitOptions,
-            onChange: onBlurUnitChange
+            onChange: function onChange(unit) {
+              return updateShadow({
+                blur: _objectSpread(_objectSpread({}, localShadow.blur), {}, {
+                  unit: unit
+                })
+              });
+            }
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BaseControl, {
@@ -436,19 +463,27 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
             type: "number",
             className: "components-text-control__input",
-            value: localSpread,
+            value: ((_localShadow$spread2 = localShadow.spread) === null || _localShadow$spread2 === void 0 ? void 0 : _localShadow$spread2.value) || '',
             onChange: function onChange(e) {
-              var value = e.target.value;
-              setLocalSpread(value);
-              onSpreadChange(value);
+              return updateShadow({
+                spread: _objectSpread(_objectSpread({}, localShadow.spread), {}, {
+                  value: e.target.value
+                })
+              });
             },
             min: "-50",
             max: "50",
             placeholder: "0"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
-            value: spreadUnit || 'px',
+            value: ((_localShadow$spread3 = localShadow.spread) === null || _localShadow$spread3 === void 0 ? void 0 : _localShadow$spread3.unit) || 'px',
             options: unitOptions,
-            onChange: onSpreadUnitChange
+            onChange: function onChange(unit) {
+              return updateShadow({
+                spread: _objectSpread(_objectSpread({}, localShadow.spread), {}, {
+                  unit: unit
+                })
+              });
+            }
           })]
         })
       })]
@@ -1750,70 +1785,10 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
-              enabled: attributes.styles.enableInputBoxShadow || false,
-              onToggle: function onToggle(value) {
+              shadow: attributes.styles.inputBoxShadow || {},
+              onChange: function onChange(shadowObj) {
                 return updateStyles({
-                  enableInputBoxShadow: value
-                });
-              },
-              color: attributes.styles.inputBoxShadowColor,
-              onColorChange: function onColorChange(value) {
-                return updateStyles({
-                  inputBoxShadowColor: value
-                });
-              },
-              position: attributes.styles.inputBoxShadowPosition,
-              onPositionChange: function onPositionChange(value) {
-                return updateStyles({
-                  inputBoxShadowPosition: value
-                });
-              },
-              horizontal: attributes.styles.inputBoxShadowHorizontal,
-              onHorizontalChange: function onHorizontalChange(value) {
-                return updateStyles({
-                  inputBoxShadowHorizontal: value
-                });
-              },
-              horizontalUnit: attributes.styles.inputBoxShadowHorizontalUnit,
-              onHorizontalUnitChange: function onHorizontalUnitChange(value) {
-                return updateStyles({
-                  inputBoxShadowHorizontalUnit: value
-                });
-              },
-              vertical: attributes.styles.inputBoxShadowVertical,
-              onVerticalChange: function onVerticalChange(value) {
-                return updateStyles({
-                  inputBoxShadowVertical: value
-                });
-              },
-              verticalUnit: attributes.styles.inputBoxShadowVerticalUnit,
-              onVerticalUnitChange: function onVerticalUnitChange(value) {
-                return updateStyles({
-                  inputBoxShadowVerticalUnit: value
-                });
-              },
-              blur: attributes.styles.inputBoxShadowBlur,
-              onBlurChange: function onBlurChange(value) {
-                return updateStyles({
-                  inputBoxShadowBlur: value
-                });
-              },
-              blurUnit: attributes.styles.inputBoxShadowBlurUnit,
-              onBlurUnitChange: function onBlurUnitChange(value) {
-                return updateStyles({
-                  inputBoxShadowBlurUnit: value
-                });
-              },
-              spread: attributes.styles.inputBoxShadowSpread,
-              onSpreadChange: function onSpreadChange(value) {
-                return updateStyles({
-                  inputBoxShadowSpread: value
-                });
-              },
-              spreadUnit: attributes.styles.inputBoxShadowSpreadUnit,
-              onSpreadUnitChange: function onSpreadUnitChange(value) {
-                return updateStyles({
-                  inputBoxShadowSpreadUnit: value
+                  inputBoxShadow: shadowObj
                 });
               }
             })]
@@ -1881,70 +1856,10 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
-              enabled: attributes.styles.enableInputBoxShadowFocus || false,
-              onToggle: function onToggle(value) {
+              shadow: attributes.styles.inputBoxShadowFocus || {},
+              onChange: function onChange(shadowObj) {
                 return updateStyles({
-                  enableInputBoxShadowFocus: value
-                });
-              },
-              color: attributes.styles.inputBoxShadowColorFocus,
-              onColorChange: function onColorChange(value) {
-                return updateStyles({
-                  inputBoxShadowColorFocus: value
-                });
-              },
-              position: attributes.styles.inputBoxShadowPositionFocus,
-              onPositionChange: function onPositionChange(value) {
-                return updateStyles({
-                  inputBoxShadowPositionFocus: value
-                });
-              },
-              horizontal: attributes.styles.inputBoxShadowHorizontalFocus,
-              onHorizontalChange: function onHorizontalChange(value) {
-                return updateStyles({
-                  inputBoxShadowHorizontalFocus: value
-                });
-              },
-              horizontalUnit: attributes.styles.inputBoxShadowHorizontalUnitFocus,
-              onHorizontalUnitChange: function onHorizontalUnitChange(value) {
-                return updateStyles({
-                  inputBoxShadowHorizontalUnitFocus: value
-                });
-              },
-              vertical: attributes.styles.inputBoxShadowVerticalFocus,
-              onVerticalChange: function onVerticalChange(value) {
-                return updateStyles({
-                  inputBoxShadowVerticalFocus: value
-                });
-              },
-              verticalUnit: attributes.styles.inputBoxShadowVerticalUnitFocus,
-              onVerticalUnitChange: function onVerticalUnitChange(value) {
-                return updateStyles({
-                  inputBoxShadowVerticalUnitFocus: value
-                });
-              },
-              blur: attributes.styles.inputBoxShadowBlurFocus,
-              onBlurChange: function onBlurChange(value) {
-                return updateStyles({
-                  inputBoxShadowBlurFocus: value
-                });
-              },
-              blurUnit: attributes.styles.inputBoxShadowBlurUnitFocus,
-              onBlurUnitChange: function onBlurUnitChange(value) {
-                return updateStyles({
-                  inputBoxShadowBlurUnitFocus: value
-                });
-              },
-              spread: attributes.styles.inputBoxShadowSpreadFocus,
-              onSpreadChange: function onSpreadChange(value) {
-                return updateStyles({
-                  inputBoxShadowSpreadFocus: value
-                });
-              },
-              spreadUnit: attributes.styles.inputBoxShadowSpreadUnitFocus,
-              onSpreadUnitChange: function onSpreadUnitChange(value) {
-                return updateStyles({
-                  inputBoxShadowSpreadUnitFocus: value
+                  inputBoxShadowFocus: shadowObj
                 });
               }
             })]
@@ -1965,16 +1880,6 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
   var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
     var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_7__.getUpdatedTypography)(changedTypo, attributes, key);
     updateStyles(_defineProperty({}, key, updatedTypography));
-  };
-  var handleBoxShadowChange = function handleBoxShadowChange(value) {
-    updateStyles({
-      buttonBoxShadow: value
-    });
-  };
-  var handleBoxShadowHoverChange = function handleBoxShadowHoverChange(value) {
-    updateStyles({
-      buttonBoxShadowHover: value
-    });
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
     title: __('Button Styles'),
@@ -2081,70 +1986,10 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
-              enabled: attributes.styles.enableButtonBoxShadow || false,
-              onToggle: function onToggle(value) {
+              shadow: attributes.styles.buttonBoxShadow || {},
+              onChange: function onChange(shadowObj) {
                 return updateStyles({
-                  enableButtonBoxShadow: value
-                });
-              },
-              color: attributes.styles.buttonBoxShadowColor,
-              onColorChange: function onColorChange(value) {
-                return updateStyles({
-                  buttonBoxShadowColor: value
-                });
-              },
-              position: attributes.styles.buttonBoxShadowPosition,
-              onPositionChange: function onPositionChange(value) {
-                return updateStyles({
-                  buttonBoxShadowPosition: value
-                });
-              },
-              horizontal: attributes.styles.buttonBoxShadowHorizontal,
-              onHorizontalChange: function onHorizontalChange(value) {
-                return updateStyles({
-                  buttonBoxShadowHorizontal: value
-                });
-              },
-              horizontalUnit: attributes.styles.buttonBoxShadowHorizontalUnit,
-              onHorizontalUnitChange: function onHorizontalUnitChange(value) {
-                return updateStyles({
-                  buttonBoxShadowHorizontalUnit: value
-                });
-              },
-              vertical: attributes.styles.buttonBoxShadowVertical,
-              onVerticalChange: function onVerticalChange(value) {
-                return updateStyles({
-                  buttonBoxShadowVertical: value
-                });
-              },
-              verticalUnit: attributes.styles.buttonBoxShadowVerticalUnit,
-              onVerticalUnitChange: function onVerticalUnitChange(value) {
-                return updateStyles({
-                  buttonBoxShadowVerticalUnit: value
-                });
-              },
-              blur: attributes.styles.buttonBoxShadowBlur,
-              onBlurChange: function onBlurChange(value) {
-                return updateStyles({
-                  buttonBoxShadowBlur: value
-                });
-              },
-              blurUnit: attributes.styles.buttonBoxShadowBlurUnit,
-              onBlurUnitChange: function onBlurUnitChange(value) {
-                return updateStyles({
-                  buttonBoxShadowBlurUnit: value
-                });
-              },
-              spread: attributes.styles.buttonBoxShadowSpread,
-              onSpreadChange: function onSpreadChange(value) {
-                return updateStyles({
-                  buttonBoxShadowSpread: value
-                });
-              },
-              spreadUnit: attributes.styles.buttonBoxShadowSpreadUnit,
-              onSpreadUnitChange: function onSpreadUnitChange(value) {
-                return updateStyles({
-                  buttonBoxShadowSpreadUnit: value
+                  buttonBoxShadow: shadowObj
                 });
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
@@ -2232,70 +2077,10 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
-              enabled: attributes.styles.enableButtonHoverBoxShadow || false,
-              onToggle: function onToggle(value) {
+              shadow: attributes.styles.buttonHoverBoxShadow || {},
+              onChange: function onChange(shadowObj) {
                 return updateStyles({
-                  enableButtonHoverBoxShadow: value
-                });
-              },
-              color: attributes.styles.buttonHoverBoxShadowColor,
-              onColorChange: function onColorChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowColor: value
-                });
-              },
-              position: attributes.styles.buttonHoverBoxShadowPosition,
-              onPositionChange: function onPositionChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowPosition: value
-                });
-              },
-              horizontal: attributes.styles.buttonHoverBoxShadowHorizontal,
-              onHorizontalChange: function onHorizontalChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowHorizontal: value
-                });
-              },
-              horizontalUnit: attributes.styles.buttonHoverBoxShadowHorizontalUnit,
-              onHorizontalUnitChange: function onHorizontalUnitChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowHorizontalUnit: value
-                });
-              },
-              vertical: attributes.styles.buttonHoverBoxShadowVertical,
-              onVerticalChange: function onVerticalChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowVertical: value
-                });
-              },
-              verticalUnit: attributes.styles.buttonHoverBoxShadowVerticalUnit,
-              onVerticalUnitChange: function onVerticalUnitChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowVerticalUnit: value
-                });
-              },
-              blur: attributes.styles.buttonHoverBoxShadowBlur,
-              onBlurChange: function onBlurChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowBlur: value
-                });
-              },
-              blurUnit: attributes.styles.buttonHoverBoxShadowBlurUnit,
-              onBlurUnitChange: function onBlurUnitChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowBlurUnit: value
-                });
-              },
-              spread: attributes.styles.buttonHoverBoxShadowSpread,
-              onSpreadChange: function onSpreadChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowSpread: value
-                });
-              },
-              spreadUnit: attributes.styles.buttonHoverBoxShadowSpreadUnit,
-              onSpreadUnitChange: function onSpreadUnitChange(value) {
-                return updateStyles({
-                  buttonHoverBoxShadowSpreadUnit: value
+                  buttonHoverBoxShadow: shadowObj
                 });
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
@@ -2469,7 +2254,7 @@ var GENERAL_TAB_ATTRIBUTES = [
 // Label attributes
 'labelColor', 'labelTypography',
 // Input attributes
-'inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'enableInputBorder', 'inputBorderType', 'inputBorderColor', 'inputBorderWidth', 'inputBorderRadius', 'enableInputBorderFocus', 'inputBorderTypeFocus', 'inputBorderColorFocus', 'inputBorderWidthFocus', 'inputBorderRadiusFocus', 'enableInputBoxShadow', 'inputBoxShadowColor', 'inputBoxShadowPosition', 'inputBoxShadowHorizontal', 'inputBoxShadowHorizontalUnit', 'inputBoxShadowVertical', 'inputBoxShadowVerticalUnit', 'inputBoxShadowBlur', 'inputBoxShadowBlurUnit', 'inputBoxShadowSpread', 'inputBoxShadowSpreadUnit', 'enableInputBoxShadowFocus', 'inputBoxShadowColorFocus', 'inputBoxShadowPositionFocus', 'inputBoxShadowHorizontalFocus', 'inputBoxShadowHorizontalUnitFocus', 'inputBoxShadowVerticalFocus', 'inputBoxShadowVerticalUnitFocus', 'inputBoxShadowBlurFocus', 'inputBoxShadowBlurUnitFocus', 'inputBoxShadowSpreadFocus', 'inputBoxShadowSpreadUnitFocus',
+'inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'enableInputBorder', 'inputBorderType', 'inputBorderColor', 'inputBorderWidth', 'inputBorderRadius', 'enableInputBorderFocus', 'inputBorderTypeFocus', 'inputBorderColorFocus', 'inputBorderWidthFocus', 'inputBorderRadiusFocus', 'inputBoxShadow', 'inputBoxShadowFocus',
 // Placeholder attributes
 'placeholderColor', 'placeholderFocusColor', 'placeholderTypography',
 // Radio/Checkbox attributes
@@ -2477,9 +2262,9 @@ var GENERAL_TAB_ATTRIBUTES = [
 // Common Button attributes
 'buttonWidth', 'buttonAlignment',
 // Normal Button attributes
-'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'enableButtonBoxShadow', 'buttonBoxShadowColor', 'buttonBoxShadowPosition', 'buttonBoxShadowHorizontal', 'buttonBoxShadowHorizontalUnit', 'buttonBoxShadowVertical', 'buttonBoxShadowVerticalUnit', 'buttonBoxShadowBlur', 'buttonBoxShadowBlurUnit', 'buttonBoxShadowSpread', 'buttonBoxShadowSpreadUnit', 'enableButtonBorder', 'buttonBorderType', 'buttonBorderColor', 'buttonBorderWidth', 'buttonBorderRadius',
+'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'enableButtonBorder', 'buttonBorderType', 'buttonBorderColor', 'buttonBorderWidth', 'buttonBorderRadius',
 // Hover Button attributes
-'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonBoxShadowHover', 'buttonBoxShadowHoverColor', 'buttonBoxShadowHoverPosition', 'enableButtonHoverBoxShadow', 'buttonHoverBoxShadowColor', 'buttonHoverBoxShadowPosition', 'buttonHoverBoxShadowHorizontal', 'buttonHoverBoxShadowHorizontalUnit', 'buttonHoverBoxShadowVertical', 'buttonHoverBoxShadowVerticalUnit', 'buttonHoverBoxShadowBlur', 'buttonHoverBoxShadowBlurUnit', 'buttonHoverBoxShadowSpread', 'buttonHoverBoxShadowSpreadUnit', 'enableButtonHoverBorder', 'buttonHoverBorderType', 'buttonHoverBorderColor', 'buttonHoverBorderWidth', 'buttonHoverBorderRadius'];
+'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'enableButtonHoverBorder', 'buttonHoverBorderType', 'buttonHoverBorderColor', 'buttonHoverBorderWidth', 'buttonHoverBorderRadius'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabGeneral, function (prevProps, nextProps) {
   return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_8__.arePropsEqual)(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES, true);
 }));
@@ -2508,8 +2293,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -2573,7 +2356,6 @@ var DEFAULT_COLORS = [{
  * Main TabMisc component
  */
 var TabMisc = function TabMisc(_ref) {
-  var _attributes$styles$co, _attributes$styles$co2, _attributes$styles$co3, _attributes$styles$co4;
   var attributes = _ref.attributes,
     setAttributes = _ref.setAttributes,
     updateStyles = _ref.updateStyles,
@@ -2925,94 +2707,10 @@ var TabMisc = function TabMisc(_ref) {
         label: __("Box Shadow")
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_6__["default"], {
         label: __("Box Shadow"),
-        enabled: attributes.styles.enableBoxShadow || false,
-        onToggle: function onToggle(value) {
-          if (value) {
-            updateStyles({
-              enableBoxShadow: value,
-              boxShadowColor: attributes.styles.boxShadowColor || 'rgba(0,0,0,0.5)',
-              boxShadowPosition: attributes.styles.boxShadowPosition || 'outline',
-              boxShadowHorizontal: attributes.styles.boxShadowHorizontal || '0',
-              boxShadowHorizontalUnit: attributes.styles.boxShadowHorizontalUnit || 'px',
-              boxShadowVertical: attributes.styles.boxShadowVertical || '0',
-              boxShadowVerticalUnit: attributes.styles.boxShadowVerticalUnit || 'px',
-              boxShadowBlur: attributes.styles.boxShadowBlur || '5',
-              boxShadowBlurUnit: attributes.styles.boxShadowBlurUnit || 'px',
-              boxShadowSpread: attributes.styles.boxShadowSpread || '0',
-              boxShadowSpreadUnit: attributes.styles.boxShadowSpreadUnit || 'px'
-            });
-          } else {
-            updateStyles({
-              containerBoxShadow: value
-            });
-          }
-        },
-        color: ((_attributes$styles$co = attributes.styles.containerBoxShadow) === null || _attributes$styles$co === void 0 ? void 0 : _attributes$styles$co.color) || '',
-        onColorChange: function onColorChange(value) {
+        shadow: attributes.styles.containerBoxShadow || {},
+        onChange: function onChange(shadowObj) {
           return updateStyles({
-            containerBoxShadow: _objectSpread(_objectSpread({}, attributes.styles.containerBoxShadow), {}, {
-              color: value
-            })
-          });
-        },
-        position: ((_attributes$styles$co2 = attributes.styles.containerBoxShadow) === null || _attributes$styles$co2 === void 0 ? void 0 : _attributes$styles$co2.position) || 'outline',
-        onPositionChange: function onPositionChange(value) {
-          return updateStyles({
-            containerBoxShadow: _objectSpread(_objectSpread({}, attributes.styles.containerBoxShadow), {}, {
-              position: value
-            })
-          });
-        },
-        horizontal: ((_attributes$styles$co3 = attributes.styles.containerBoxShadow) === null || _attributes$styles$co3 === void 0 ? void 0 : _attributes$styles$co3.horizontal.value) || '',
-        onHorizontalChange: function onHorizontalChange(value) {
-          return updateStyles({
-            containerBoxShadow: _objectSpread(_objectSpread({}, attributes.styles.containerBoxShadow), {}, {
-              horizontal: {
-                value: value
-              }
-            })
-          });
-        },
-        horizontalUnit: ((_attributes$styles$co4 = attributes.styles.containerBoxShadow) === null || _attributes$styles$co4 === void 0 ? void 0 : _attributes$styles$co4.horizontal.unit) || 'px',
-        onHorizontalUnitChange: function onHorizontalUnitChange(value) {
-          return updateStyles({
-            boxShadowHorizontalUnit: value
-          });
-        },
-        vertical: attributes.styles.boxShadowVertical,
-        onVerticalChange: function onVerticalChange(value) {
-          return updateStyles({
-            boxShadowVertical: value
-          });
-        },
-        verticalUnit: attributes.styles.boxShadowVerticalUnit,
-        onVerticalUnitChange: function onVerticalUnitChange(value) {
-          return updateStyles({
-            boxShadowVerticalUnit: value
-          });
-        },
-        blur: attributes.styles.boxShadowBlur,
-        onBlurChange: function onBlurChange(value) {
-          return updateStyles({
-            boxShadowBlur: value
-          });
-        },
-        blurUnit: attributes.styles.boxShadowBlurUnit,
-        onBlurUnitChange: function onBlurUnitChange(value) {
-          return updateStyles({
-            boxShadowBlurUnit: value
-          });
-        },
-        spread: attributes.styles.boxShadowSpread,
-        onSpreadChange: function onSpreadChange(value) {
-          return updateStyles({
-            boxShadowSpread: value
-          });
-        },
-        spreadUnit: attributes.styles.boxShadowSpreadUnit,
-        onSpreadUnitChange: function onSpreadUnitChange(value) {
-          return updateStyles({
-            boxShadowSpreadUnit: value
+            containerBoxShadow: shadowObj
           });
         }
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -3205,7 +2903,7 @@ var TabMisc = function TabMisc(_ref) {
 /**
  * Compare function to determine if component should update
  */
-var MISC_TAB_ATTRIBUTES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'textColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'containerBoxShadowHover', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'formAlignment', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageBgColor', 'errorMessageColor', 'errorMessageAlignment', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'submitErrorMessageBgColor', 'submitErrorMessageColor', 'submitErrorMessageAlignment'];
+var MISC_TAB_ATTRIBUTES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'textColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'formAlignment', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageBgColor', 'errorMessageColor', 'errorMessageAlignment', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'submitErrorMessageBgColor', 'submitErrorMessageColor', 'submitErrorMessageAlignment'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabMisc, function (prevProps, nextProps) {
   return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_9__.arePropsEqual)(prevProps, nextProps, MISC_TAB_ATTRIBUTES, true);
 }));
@@ -3966,8 +3664,17 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       // Input styles
       css += this.generateInputStyles(styles);
 
+      // Placeholder styles
+      css += this.generatePlaceholderStyles(styles);
+
       // Button styles
       css += this.generateButtonStyles(styles);
+
+      // Radio/Checkbox styles
+      css += this.generateRadioCheckboxStyles(styles);
+
+      // Message styles
+      css += this.generateMessageStyles(styles);
       return css;
     }
   }, {
@@ -3982,6 +3689,12 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (styles.containerPadding) {
         var padding = this.generateSpacing(styles.containerPadding);
         if (padding) styleRules.push(padding);
+      }
+
+      // Container box shadow
+      if (styles.containerBoxShadow && styles.containerBoxShadow.enable) {
+        var boxShadow = this.generateBoxShadow(styles.containerBoxShadow);
+        if (boxShadow) styleRules.push("box-shadow: ".concat(boxShadow));
       }
       if (styleRules.length > 0) {
         css += "".concat(selector, " { ").concat(styleRules.join('; '), "; }\n");
@@ -4033,6 +3746,12 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
         var spacing = this.generateSpacing(attributes.inputSpacing);
         if (spacing) normalStyles.push(spacing);
       }
+
+      // Input box shadow
+      if (attributes.inputBoxShadow && attributes.inputBoxShadow.enable) {
+        var boxShadow = this.generateBoxShadow(attributes.inputBoxShadow);
+        if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
+      }
       if (normalStyles.length > 0) {
         css += "".concat(inputSelector, " { ").concat(normalStyles.join('; '), "; }\n");
       }
@@ -4051,6 +3770,12 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (attributes.inputBorderFocus) {
         var borderFocus = this.generateBorder(attributes.inputBorderFocus);
         if (borderFocus) focusStyles.push(borderFocus);
+      }
+
+      // Input box shadow focus
+      if (attributes.inputBoxShadowFocus && attributes.inputBoxShadowFocus.enable) {
+        var boxShadowFocus = this.generateBoxShadow(attributes.inputBoxShadowFocus);
+        if (boxShadowFocus) focusStyles.push("box-shadow: ".concat(boxShadowFocus));
       }
       if (focusStyles.length > 0) {
         css += "".concat(focusSelector, " { ").concat(focusStyles.join('; '), "; }\n");
@@ -4105,6 +3830,12 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
         var spacing = this.generateSpacing(attributes.buttonSpacing);
         if (spacing) normalStyles.push(spacing);
       }
+
+      // Button box shadow
+      if (attributes.buttonBoxShadow && attributes.buttonBoxShadow.enable) {
+        var boxShadow = this.generateBoxShadow(attributes.buttonBoxShadow);
+        if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
+      }
       if (normalStyles.length > 0) {
         css += "".concat(buttonSelector, " { ").concat(normalStyles.join('; '), "; }\n");
       }
@@ -4117,6 +3848,12 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       }
       if (attributes.buttonBGColorHover) {
         hoverStyles.push("background-color: ".concat(attributes.buttonBGColorHover));
+      }
+
+      // Button hover box shadow
+      if (attributes.buttonHoverBoxShadow && attributes.buttonHoverBoxShadow.enable) {
+        var boxShadowHover = this.generateBoxShadow(attributes.buttonHoverBoxShadow);
+        if (boxShadowHover) hoverStyles.push("box-shadow: ".concat(boxShadowHover));
       }
       if (hoverStyles.length > 0) {
         css += "".concat(hoverSelector, " { ").concat(hoverStyles.join('; '), "; }\n");
@@ -4217,6 +3954,23 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
         styles.push("".concat(property, "-left: ").concat(spacing.left, "px"));
       }
       return styles.join('; ');
+    }
+  }, {
+    key: "generateBoxShadow",
+    value: function generateBoxShadow(boxShadow) {
+      var _boxShadow$horizontal, _boxShadow$horizontal2, _boxShadow$vertical, _boxShadow$vertical2, _boxShadow$blur, _boxShadow$blur2, _boxShadow$spread, _boxShadow$spread2;
+      if (!boxShadow || !boxShadow.enable || !boxShadow.color) return '';
+
+      // Get position (inset or outline)
+      var position = boxShadow.position === 'inset' ? 'inset ' : '';
+
+      // Get values with units
+      var horizontal = "".concat(((_boxShadow$horizontal = boxShadow.horizontal) === null || _boxShadow$horizontal === void 0 ? void 0 : _boxShadow$horizontal.value) || '0').concat(((_boxShadow$horizontal2 = boxShadow.horizontal) === null || _boxShadow$horizontal2 === void 0 ? void 0 : _boxShadow$horizontal2.unit) || 'px');
+      var vertical = "".concat(((_boxShadow$vertical = boxShadow.vertical) === null || _boxShadow$vertical === void 0 ? void 0 : _boxShadow$vertical.value) || '0').concat(((_boxShadow$vertical2 = boxShadow.vertical) === null || _boxShadow$vertical2 === void 0 ? void 0 : _boxShadow$vertical2.unit) || 'px');
+      var blur = "".concat(((_boxShadow$blur = boxShadow.blur) === null || _boxShadow$blur === void 0 ? void 0 : _boxShadow$blur.value) || '5').concat(((_boxShadow$blur2 = boxShadow.blur) === null || _boxShadow$blur2 === void 0 ? void 0 : _boxShadow$blur2.unit) || 'px');
+      var spread = "".concat(((_boxShadow$spread = boxShadow.spread) === null || _boxShadow$spread === void 0 ? void 0 : _boxShadow$spread.value) || '0').concat(((_boxShadow$spread2 = boxShadow.spread) === null || _boxShadow$spread2 === void 0 ? void 0 : _boxShadow$spread2.unit) || 'px');
+      // Build the box-shadow value
+      return "".concat(position).concat(horizontal, " ").concat(vertical, " ").concat(blur, " ").concat(spread, " ").concat(boxShadow.color);
     }
   }, {
     key: "destroy",

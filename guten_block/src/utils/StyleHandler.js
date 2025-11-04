@@ -8,13 +8,7 @@ class FluentFormStyleHandler {
         this.formId = formId;
         this.styleElementId = `fluentform-block-custom-styles-${formId}`;
         this.baseSelector = `.fluentform-guten-wrapper .ff_guten_block.ff_guten_block-${formId}`;
-        this.initStyleElement();
-    }
-
-    initStyleElement() {
-        if (this.styleElement) {
-            this.styleElement.innerHTML = '';
-        }
+        this.setStyleElement();
     }
 
     setStyleElement() {
@@ -34,7 +28,9 @@ class FluentFormStyleHandler {
         if (!this.styleElement) {
             this.setStyleElement();
         }
-        this.styleElement.innerHTML = this.generateAllStyles(styles);
+        if (this.styleElement) {
+            this.styleElement.innerHTML = this.generateAllStyles(styles);
+        }
     }
 
     generateAllStyles(styles) {
@@ -49,8 +45,17 @@ class FluentFormStyleHandler {
         // Input styles
         css += this.generateInputStyles(styles);
         
+        // Placeholder styles
+        css += this.generatePlaceholderStyles(styles);
+        
         // Button styles
         css += this.generateButtonStyles(styles);
+        
+        // Radio/Checkbox styles
+        css += this.generateRadioCheckboxStyles(styles);
+        
+        // Message styles
+        css += this.generateMessageStyles(styles);
 
         return css;
     }
@@ -67,6 +72,12 @@ class FluentFormStyleHandler {
         if (styles.containerPadding) {
             const padding = this.generateSpacing(styles.containerPadding);
             if (padding) styleRules.push(padding);
+        }
+
+        // Container box shadow
+        if (styles.containerBoxShadow && styles.containerBoxShadow.enable) {
+            const boxShadow = this.generateBoxShadow(styles.containerBoxShadow);
+            if (boxShadow) styleRules.push(`box-shadow: ${boxShadow}`);
         }
 
         if (styleRules.length > 0) {
@@ -133,6 +144,12 @@ class FluentFormStyleHandler {
             if (spacing) normalStyles.push(spacing);
         }
 
+        // Input box shadow
+        if (attributes.inputBoxShadow && attributes.inputBoxShadow.enable) {
+            const boxShadow = this.generateBoxShadow(attributes.inputBoxShadow);
+            if (boxShadow) normalStyles.push(`box-shadow: ${boxShadow}`);
+        }
+
         if (normalStyles.length > 0) {
             css += `${inputSelector} { ${normalStyles.join('; ')}; }\n`;
         }
@@ -152,6 +169,12 @@ class FluentFormStyleHandler {
         if (attributes.inputBorderFocus) {
             const borderFocus = this.generateBorder(attributes.inputBorderFocus);
             if (borderFocus) focusStyles.push(borderFocus);
+        }
+
+        // Input box shadow focus
+        if (attributes.inputBoxShadowFocus && attributes.inputBoxShadowFocus.enable) {
+            const boxShadowFocus = this.generateBoxShadow(attributes.inputBoxShadowFocus);
+            if (boxShadowFocus) focusStyles.push(`box-shadow: ${boxShadowFocus}`);
         }
 
         if (focusStyles.length > 0) {
@@ -222,6 +245,12 @@ class FluentFormStyleHandler {
             if (spacing) normalStyles.push(spacing);
         }
 
+        // Button box shadow
+        if (attributes.buttonBoxShadow && attributes.buttonBoxShadow.enable) {
+            const boxShadow = this.generateBoxShadow(attributes.buttonBoxShadow);
+            if (boxShadow) normalStyles.push(`box-shadow: ${boxShadow}`);
+        }
+
         if (normalStyles.length > 0) {
             css += `${buttonSelector} { ${normalStyles.join('; ')}; }\n`;
         }
@@ -236,6 +265,12 @@ class FluentFormStyleHandler {
         
         if (attributes.buttonBGColorHover) {
             hoverStyles.push(`background-color: ${attributes.buttonBGColorHover}`);
+        }
+
+        // Button hover box shadow
+        if (attributes.buttonHoverBoxShadow && attributes.buttonHoverBoxShadow.enable) {
+            const boxShadowHover = this.generateBoxShadow(attributes.buttonHoverBoxShadow);
+            if (boxShadowHover) hoverStyles.push(`box-shadow: ${boxShadowHover}`);
         }
 
         if (hoverStyles.length > 0) {
@@ -357,10 +392,19 @@ class FluentFormStyleHandler {
         return styles.join('; ');
     }
 
-    destroy() {
-        if (this.styleElement) {
-            this.styleElement.remove();
-        }
+    generateBoxShadow(boxShadow) {
+        if (!boxShadow || !boxShadow.enable || !boxShadow.color) return '';
+
+        // Get position (inset or outline)
+        const position = boxShadow.position === 'inset' ? 'inset ' : '';
+
+        // Get values with units
+        const horizontal = `${ boxShadow.horizontal?.value || '0' }${ boxShadow.horizontal?.unit || 'px' }`;
+        const vertical = `${ boxShadow.vertical?.value || '0' }${ boxShadow.vertical?.unit || 'px' }`;
+        const blur = `${ boxShadow.blur?.value || '5' }${ boxShadow.blur?.unit || 'px' }`;
+        const spread = `${ boxShadow.spread?.value || '0' }${ boxShadow.spread?.unit || 'px' }`;
+        // Build the box-shadow value
+        return `${ position }${ horizontal } ${ vertical } ${ blur } ${ spread } ${ boxShadow.color }`;
     }
 }
 

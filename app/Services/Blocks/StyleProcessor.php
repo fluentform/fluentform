@@ -294,70 +294,28 @@ class StyleProcessor
             $css .= self::processSpacing($containerMargin, $containerSelector, 'margin');
         }
 
-        // Process box shadow
-        $enableBoxShadow = (bool) Arr::get($styles, 'enableBoxShadow', false);
-        if ($enableBoxShadow) {
-            $boxShadow = [
-                'Position' => Arr::get($styles, 'boxShadowPosition', 'outline'),
-                'Horizontal' => Arr::get($styles, 'boxShadowHorizontal', ''),
-                'HorizontalUnit' => Arr::get($styles, 'boxShadowHorizontalUnit', 'px'),
-                'Vertical' => Arr::get($styles, 'boxShadowVertical', ''),
-                'VerticalUnit' => Arr::get($styles, 'boxShadowVerticalUnit', 'px'),
-                'Blur' => Arr::get($styles, 'boxShadowBlur', ''),
-                'BlurUnit' => Arr::get($styles, 'boxShadowBlurUnit', 'px'),
-                'Spread' => Arr::get($styles, 'boxShadowSpread', ''),
-                'SpreadUnit' => Arr::get($styles, 'boxShadowSpreadUnit', 'px'),
-                'Color' => Arr::get($styles, 'boxShadowColor', ''),
-            ];
-
-            $css .= self::generateBoxShadow($containerSelector, $boxShadow);
-        }
-
         // Process container box shadow (alternative attribute)
         $containerBoxShadow = Arr::get($styles, 'containerBoxShadow', []);
         if (!empty($containerBoxShadow) && Arr::get($containerBoxShadow, 'enable', false)) {
-            $inset = Arr::get($containerBoxShadow, 'inset', false) ? 'inset ' : '';
-            $horizontal = Arr::get($containerBoxShadow, 'horizontal', 0);
-            $vertical = Arr::get($containerBoxShadow, 'vertical', 0);
-            $blur = Arr::get($containerBoxShadow, 'blur', 0);
-            $spread = Arr::get($containerBoxShadow, 'spread', 0);
-            $color = Arr::get($containerBoxShadow, 'color', 'rgba(0,0,0,0.5)');
-            
-            $boxShadowValue = "{$inset}{$horizontal}px {$vertical}px {$blur}px {$spread}px {$color}";
-            $css .= self::generateCssRule($containerSelector, 'box-shadow', $boxShadowValue);
+            $css .= self::generateBoxShadow($containerSelector, $containerBoxShadow);
         }
 
-        // Process container box shadow hover
-        $containerBoxShadowHover = Arr::get($styles, 'containerBoxShadowHover', []);
-        if (!empty($containerBoxShadowHover) && Arr::get($containerBoxShadowHover, 'enable', false)) {
-            $inset = Arr::get($containerBoxShadowHover, 'inset', false) ? 'inset ' : '';
-            $horizontal = Arr::get($containerBoxShadowHover, 'horizontal', 0);
-            $vertical = Arr::get($containerBoxShadowHover, 'vertical', 0);
-            $blur = Arr::get($containerBoxShadowHover, 'blur', 0);
-            $spread = Arr::get($containerBoxShadowHover, 'spread', 0);
-            $color = Arr::get($containerBoxShadowHover, 'color', 'rgba(0,0,0,0.5)');
-            
-            $boxShadowValue = "{$inset}{$horizontal}px {$vertical}px {$blur}px {$spread}px {$color}";
-            $css .= self::generateCssRule($containerSelector . ':hover', 'box-shadow', $boxShadowValue);
-        }
-
-        // Process form border
-        // Convert to boolean to ensure proper type comparison
-        $enableFormBorder = (bool) Arr::get($atts, 'enableFormBorder', false);
+        // Convert too boolean to ensure proper type comparison
+        $enableFormBorder = (bool) Arr::get($styles, 'enableFormBorder', false);
         if ($enableFormBorder) {
-            $borderType = Arr::get($atts, 'borderType', 'solid');
-            $borderColor = Arr::get($atts, 'borderColor', '#dddddd');
+            $borderType = Arr::get($styles, 'borderType', 'solid');
+            $borderColor = Arr::get($styles, 'borderColor', '#dddddd');
 
             if ($borderType && $borderColor) {
                 $css .= self::generateCssRule($containerSelector, 'border-style', $borderType);
                 $css .= self::generateCssRule($containerSelector, 'border-color', $borderColor);
             }
 
-            if ($borderWidth = Arr::get($atts, 'borderWidth', [])) {
+            if ($borderWidth = Arr::get($styles, 'borderWidth', [])) {
                 $css .= self::processSpacing($borderWidth, $containerSelector, 'border-width');
             }
 
-            if ($borderRadius = Arr::get($atts, 'borderRadius', [])) {
+            if ($borderRadius = Arr::get($styles, 'borderRadius', [])) {
                 $css .= self::processSpacing($borderRadius, $containerSelector, 'border-radius');
             }
         }
@@ -456,6 +414,19 @@ class StyleProcessor
             }
         }
 
+        // Process input box shadow
+        $inputBoxShadow = Arr::get($styles, 'inputBoxShadow', []);
+        if (!empty($inputBoxShadow) && Arr::get($inputBoxShadow, 'enable', false)) {
+            $css .= self::generateBoxShadow($inputSelector, $inputBoxShadow);
+        }
+
+        // Process input box shadow focus
+        $inputBoxShadowFocus = Arr::get($styles, 'inputBoxShadowFocus', []);
+        if (!empty($inputBoxShadowFocus) && Arr::get($inputBoxShadowFocus, 'enable', false)) {
+            $focusSelector = self::generateFocusSelectors($inputSelector);
+            $css .= self::generateBoxShadow($focusSelector, $inputBoxShadowFocus);
+        }
+
         return $css;
     }
 
@@ -538,87 +509,16 @@ class StyleProcessor
         if (!empty($buttonBorderHover)) {
             $css .= self::processBorder($buttonBorderHover, $buttonSelector, true);
         }
-
-        // Button box shadow
-        $enableButtonBoxShadow = (bool) Arr::get($styles, 'enableButtonBoxShadow', false);
-        if ($enableButtonBoxShadow) {
-            $buttonBoxShadow = [
-                'Position' => Arr::get($styles, 'buttonBoxShadowPosition', 'outline'),
-                'Horizontal' => Arr::get($styles, 'buttonBoxShadowHorizontal', ''),
-                'HorizontalUnit' => Arr::get($styles, 'buttonBoxShadowHorizontalUnit', 'px'),
-                'Vertical' => Arr::get($styles, 'buttonBoxShadowVertical', ''),
-                'VerticalUnit' => Arr::get($styles, 'buttonBoxShadowVerticalUnit', 'px'),
-                'Blur' => Arr::get($styles, 'buttonBoxShadowBlur', ''),
-                'BlurUnit' => Arr::get($styles, 'buttonBoxShadowBlurUnit', 'px'),
-                'Spread' => Arr::get($styles, 'buttonBoxShadowSpread', ''),
-                'SpreadUnit' => Arr::get($styles, 'buttonBoxShadowSpreadUnit', 'px'),
-                'Color' => Arr::get($styles, 'buttonBoxShadowColor', ''),
-            ];
-
+        // Process button box shadow using new format
+        $buttonBoxShadow = Arr::get($styles, 'buttonBoxShadow', []);
+        if (!empty($buttonBoxShadow) && Arr::get($buttonBoxShadow, 'enable', false)) {
             $css .= self::generateBoxShadow($buttonSelector, $buttonBoxShadow);
         }
 
-        // Process legacy button box shadow format
-        $buttonBoxShadowLegacy = Arr::get($styles, 'buttonBoxShadow', []);
-
-        // Always add a box shadow for testing
-        if ($buttonHoverBgColor) {
-            $css .= self::generateCssRule($buttonHoverSelector, 'box-shadow', '0 0 10px 0 rgba(0,0,0,0.3)', '');
-        }
-
-        // Process the actual buttonBoxShadowLegacy settings if they exist
-        if (!empty($buttonBoxShadowLegacy) && Arr::get($buttonBoxShadowLegacy, 'enable', false)) {
-            // Process the actual buttonBoxShadowLegacy settings
-            $inset = Arr::get($buttonBoxShadowLegacy, 'inset', false) ? 'inset ' : '';
-            $horizontal = Arr::get($buttonBoxShadowLegacy, 'horizontal', 0);
-            $vertical = Arr::get($buttonBoxShadowLegacy, 'vertical', 0);
-            $blur = Arr::get($buttonBoxShadowLegacy, 'blur', 0);
-            $spread = Arr::get($buttonBoxShadowLegacy, 'spread', 0);
-            $color = Arr::get($buttonBoxShadowLegacy, 'color', 'rgba(0,0,0,0.5)');
-
-            $shadowValue = $inset . $horizontal . 'px ' . $vertical . 'px ' . $blur . 'px ' . $spread . 'px ' . $color;
-            $css .= self::generateCssRule($buttonSelector, 'box-shadow', $shadowValue, '');
-        }
-
-        // HOVER STATE - Button box shadow
-        $enableButtonHoverBoxShadow = (bool) Arr::get($styles, 'enableButtonHoverBoxShadow', false);
-        if ($enableButtonHoverBoxShadow) {
-            $boxShadow = [
-                'Position' => Arr::get($styles, 'buttonHoverBoxShadowPosition', 'outline'),
-                'Horizontal' => Arr::get($styles, 'buttonHoverBoxShadowHorizontal', ''),
-                'HorizontalUnit' => Arr::get($styles, 'buttonHoverBoxShadowHorizontalUnit', 'px'),
-                'Vertical' => Arr::get($styles, 'buttonHoverBoxShadowVertical', ''),
-                'VerticalUnit' => Arr::get($styles, 'buttonHoverBoxShadowVerticalUnit', 'px'),
-                'Blur' => Arr::get($styles, 'buttonHoverBoxShadowBlur', ''),
-                'BlurUnit' => Arr::get($styles, 'buttonHoverBoxShadowBlurUnit', 'px'),
-                'Spread' => Arr::get($styles, 'buttonHoverBoxShadowSpread', ''),
-                'SpreadUnit' => Arr::get($styles, 'buttonHoverBoxShadowSpreadUnit', 'px'),
-                'Color' => Arr::get($styles, 'buttonHoverBoxShadowColor', ''),
-            ];
-
-            $css .= self::generateBoxShadow($buttonHoverSelector, $boxShadow);
-        }
-
-        // Process legacy button box shadow hover format
-        $buttonBoxShadowHover = Arr::get($styles, 'buttonBoxShadowHover', []);
-
-        // Always add a box shadow for testing
-        if ($buttonHoverBgColor) {
-            $css .= self::generateCssRule($buttonHoverSelector, 'box-shadow', '0 0 10px 0 rgba(0,0,0,0.3)', '');
-        }
-
-        // Process the actual buttonBoxShadowHover settings if they exist
-        if (!empty($buttonBoxShadowHover) && Arr::get($buttonBoxShadowHover, 'enable', false)) {
-            // Process the actual buttonBoxShadowHover settings
-            $inset = Arr::get($buttonBoxShadowHover, 'inset', false) ? 'inset ' : '';
-            $horizontal = Arr::get($buttonBoxShadowHover, 'horizontal', 0);
-            $vertical = Arr::get($buttonBoxShadowHover, 'vertical', 0);
-            $blur = Arr::get($buttonBoxShadowHover, 'blur', 0);
-            $spread = Arr::get($buttonBoxShadowHover, 'spread', 0);
-            $color = Arr::get($buttonBoxShadowHover, 'color', 'rgba(0,0,0,0.5)');
-
-            $shadowValue = $inset . $horizontal . 'px ' . $vertical . 'px ' . $blur . 'px ' . $spread . 'px ' . $color;
-            $css .= self::generateCssRule($buttonHoverSelector, 'box-shadow', $shadowValue, '');
+        // Process button hover box shadow using new format
+        $buttonHoverBoxShadow = Arr::get($styles, 'buttonHoverBoxShadow', []);
+        if (!empty($buttonHoverBoxShadow) && Arr::get($buttonHoverBoxShadow, 'enable', false)) {
+            $css .= self::generateBoxShadow($buttonHoverSelector, $buttonHoverBoxShadow);
         }
 
         return $css;
@@ -709,25 +609,25 @@ class StyleProcessor
         $containerSelector = $selectors['container'];
 
         // Desktop visibility
-        if (Arr::get($atts, 'hideOnDesktop', false)) {
-            $css .= "@media (min-width: " . self::TABLET_BREAKPOINT . ") {\n";
-//            $css .= "    {$containerSelector} { display: none !important; }\n";
-            $css .= "}\n";
-        }
-
-        // Tablet visibility
-        if (Arr::get($atts, 'hideOnTablet', false)) {
-            $css .= "@media (min-width: " . self::MOBILE_BREAKPOINT . ") and (max-width: " . self::TABLET_BREAKPOINT . ") {\n";
-//            $css .= "    {$containerSelector} { display: none !important; }\n";
-            $css .= "}\n";
-        }
-
-        // Mobile visibility
-        if (Arr::get($atts, 'hideOnMobile', false)) {
-            $css .= "@media (max-width: " . self::MOBILE_BREAKPOINT . ") {\n";
-//            $css .= "    {$containerSelector} { display: none !important; }\n";
-            $css .= "}\n";
-        }
+//        if (Arr::get($atts, 'hideOnDesktop', false)) {
+//            $css .= "@media (min-width: " . self::TABLET_BREAKPOINT . ") {\n";
+////            $css .= "    {$containerSelector} { display: none !important; }\n";
+//            $css .= "}\n";
+//        }
+//
+//        // Tablet visibility
+//        if (Arr::get($atts, 'hideOnTablet', false)) {
+//            $css .= "@media (min-width: " . self::MOBILE_BREAKPOINT . ") and (max-width: " . self::TABLET_BREAKPOINT . ") {\n";
+////            $css .= "    {$containerSelector} { display: none !important; }\n";
+//            $css .= "}\n";
+//        }
+//
+//        // Mobile visibility
+//        if (Arr::get($atts, 'hideOnMobile', false)) {
+//            $css .= "@media (max-width: " . self::MOBILE_BREAKPOINT . ") {\n";
+////            $css .= "    {$containerSelector} { display: none !important; }\n";
+//            $css .= "}\n";
+//        }
 
         return $css;
     }
@@ -1189,61 +1089,6 @@ class StyleProcessor
     }
 
     /**
-     * Generate box shadow CSS
-     *
-     * @param string $selector CSS selector
-     * @param array $boxShadow Box shadow properties
-     *
-     * @return string Generated CSS rules
-     */
-    public static function generateBoxShadow($selector, $boxShadow)
-    {
-        // Check if we have all required values
-        if (empty($boxShadow) || empty($selector)) {
-            return '';
-        }
-
-        // Get position (inset or outline)
-        $position = Arr::get($boxShadow, 'Position', 'outline');
-        $inset = $position === 'inset' ? 'inset ' : '';
-
-        // Get horizontal offset
-        $horizontal = Arr::get($boxShadow, 'Horizontal', '0');
-        $horizontalUnit = Arr::get($boxShadow, 'HorizontalUnit', 'px');
-
-        // Get vertical offset
-        $vertical = Arr::get($boxShadow, 'Vertical', '0');
-        $verticalUnit = Arr::get($boxShadow, 'VerticalUnit', 'px');
-
-        // Get blur radius
-        $blur = Arr::get($boxShadow, 'Blur', '0');
-        $blurUnit = Arr::get($boxShadow, 'BlurUnit', 'px');
-
-        // Get spread radius
-        $spread = Arr::get($boxShadow, 'Spread', '0');
-        $spreadUnit = Arr::get($boxShadow, 'SpreadUnit', 'px');
-
-        // Get color
-        $color = Arr::get($boxShadow, 'Color', 'rgba(0,0,0,0.5)');
-
-        // Skip if no color is provided
-        if (empty($color)) {
-            return '';
-        }
-
-        // Build the box-shadow value
-        $value = $inset .
-                 $horizontal . $horizontalUnit . ' ' .
-                 $vertical . $verticalUnit . ' ' .
-                 $blur . $blurUnit . ' ' .
-                 $spread . $spreadUnit . ' ' .
-                 $color;
-
-        // Generate and return the CSS rule
-        return self::generateCssRule($selector, 'box-shadow', $value);
-    }
-
-    /**
      * Generate focus selectors for a given selector
      *
      * @param string $selector CSS selector
@@ -1588,5 +1433,60 @@ class StyleProcessor
         }
 
         return $css;
+    }
+
+    /**
+     * Generate box shadow CSS from structured format
+     *
+     * @param string $selector CSS selector
+     * @param array $boxShadow Structured box shadow object
+     *
+     * @return string Generated CSS rules
+     */
+    public static function generateBoxShadow($selector, $boxShadow)
+    {
+        // Check if we have all required values
+        if (empty($boxShadow) || empty($selector) || !Arr::get($boxShadow, 'enable', false)) {
+            return '';
+        }
+
+        // Get position (inset or outline)
+        $position = Arr::get($boxShadow, 'position', 'outline');
+        $inset = $position === 'inset' ? 'inset ' : '';
+
+        // Get horizontal offset
+        $horizontal = Arr::get($boxShadow, 'horizontal.value', '0');
+        $horizontalUnit = Arr::get($boxShadow, 'horizontal.unit', 'px');
+
+        // Get vertical offset
+        $vertical = Arr::get($boxShadow, 'vertical.value', '0');
+        $verticalUnit = Arr::get($boxShadow, 'vertical.unit', 'px');
+
+        // Get blur radius
+        $blur = Arr::get($boxShadow, 'blur.value', '0');
+        $blurUnit = Arr::get($boxShadow, 'blur.unit', 'px');
+
+        // Get spread radius
+        $spread = Arr::get($boxShadow, 'spread.value', '0');
+        $spreadUnit = Arr::get($boxShadow, 'spread.unit', 'px');
+
+        // Get color
+        $color = Arr::get($boxShadow, 'color', 'rgba(0,0,0,0.5)');
+
+        // Skip if no color is provided
+        if (empty($color)) {
+            return '';
+        }
+
+        // Build the box-shadow value
+        $value = $inset .
+                 $horizontal . $horizontalUnit . ' ' .
+                 $vertical . $verticalUnit . ' ' .
+                 $blur . $blurUnit . ' ' .
+                 $spread . $spreadUnit . ' ' .
+                 $color;
+
+        // Generate and return the CSS rule
+        return self::generateCssRule($selector, 'box-shadow', $value);
     }
 }

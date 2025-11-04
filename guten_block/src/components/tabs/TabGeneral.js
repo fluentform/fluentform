@@ -172,28 +172,8 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
 
                                 <FluentBoxShadowControl
                                     label={__("Box Shadow")}
-                                    enabled={attributes.styles.enableInputBoxShadow || false}
-                                    onToggle={(value) => updateStyles({ enableInputBoxShadow: value })}
-                                    color={attributes.styles.inputBoxShadowColor}
-                                    onColorChange={(value) => updateStyles({ inputBoxShadowColor: value })}
-                                    position={attributes.styles.inputBoxShadowPosition}
-                                    onPositionChange={(value) => updateStyles({ inputBoxShadowPosition: value })}
-                                    horizontal={attributes.styles.inputBoxShadowHorizontal}
-                                    onHorizontalChange={(value) => updateStyles({ inputBoxShadowHorizontal: value })}
-                                    horizontalUnit={attributes.styles.inputBoxShadowHorizontalUnit}
-                                    onHorizontalUnitChange={(value) => updateStyles({ inputBoxShadowHorizontalUnit: value })}
-                                    vertical={attributes.styles.inputBoxShadowVertical}
-                                    onVerticalChange={(value) => updateStyles({ inputBoxShadowVertical: value })}
-                                    verticalUnit={attributes.styles.inputBoxShadowVerticalUnit}
-                                    onVerticalUnitChange={(value) => updateStyles({ inputBoxShadowVerticalUnit: value })}
-                                    blur={attributes.styles.inputBoxShadowBlur}
-                                    onBlurChange={(value) => updateStyles({ inputBoxShadowBlur: value })}
-                                    blurUnit={attributes.styles.inputBoxShadowBlurUnit}
-                                    onBlurUnitChange={(value) => updateStyles({ inputBoxShadowBlurUnit: value })}
-                                    spread={attributes.styles.inputBoxShadowSpread}
-                                    onSpreadChange={(value) => updateStyles({ inputBoxShadowSpread: value })}
-                                    spreadUnit={attributes.styles.inputBoxShadowSpreadUnit}
-                                    onSpreadUnitChange={(value) => updateStyles({ inputBoxShadowSpreadUnit: value })}
+                                    shadow={attributes.styles.inputBoxShadow || {}}
+                                    onChange={(shadowObj) => updateStyles({ inputBoxShadow: shadowObj })}
                                 />
                             </>
                         );
@@ -242,28 +222,8 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
 
                                 <FluentBoxShadowControl
                                     label={__("Box Shadow")}
-                                    enabled={attributes.styles.enableInputBoxShadowFocus || false}
-                                    onToggle={(value) => updateStyles({ enableInputBoxShadowFocus: value })}
-                                    color={attributes.styles.inputBoxShadowColorFocus}
-                                    onColorChange={(value) => updateStyles({ inputBoxShadowColorFocus: value })}
-                                    position={attributes.styles.inputBoxShadowPositionFocus}
-                                    onPositionChange={(value) => updateStyles({ inputBoxShadowPositionFocus: value })}
-                                    horizontal={attributes.styles.inputBoxShadowHorizontalFocus}
-                                    onHorizontalChange={(value) => updateStyles({ inputBoxShadowHorizontalFocus: value })}
-                                    horizontalUnit={attributes.styles.inputBoxShadowHorizontalUnitFocus}
-                                    onHorizontalUnitChange={(value) => updateStyles({ inputBoxShadowHorizontalUnitFocus: value })}
-                                    vertical={attributes.styles.inputBoxShadowVerticalFocus}
-                                    onVerticalChange={(value) => updateStyles({ inputBoxShadowVerticalFocus: value })}
-                                    verticalUnit={attributes.styles.inputBoxShadowVerticalUnitFocus}
-                                    onVerticalUnitChange={(value) => updateStyles({ inputBoxShadowVerticalUnitFocus: value })}
-                                    blur={attributes.styles.inputBoxShadowBlurFocus}
-                                    onBlurChange={(value) => updateStyles({ inputBoxShadowBlurFocus: value })}
-                                    blurUnit={attributes.styles.inputBoxShadowBlurUnitFocus}
-                                    onBlurUnitChange={(value) => updateStyles({ inputBoxShadowBlurUnitFocus: value })}
-                                    spread={attributes.styles.inputBoxShadowSpreadFocus}
-                                    onSpreadChange={(value) => updateStyles({ inputBoxShadowSpreadFocus: value })}
-                                    spreadUnit={attributes.styles.inputBoxShadowSpreadUnitFocus}
-                                    onSpreadUnitChange={(value) => updateStyles({ inputBoxShadowSpreadUnitFocus: value })}
+                                    shadow={attributes.styles.inputBoxShadowFocus || {}}
+                                    onChange={(shadowObj) => updateStyles({ inputBoxShadowFocus: shadowObj })}
                                 />
                             </>
                         );
@@ -287,14 +247,6 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
         );
 
         updateStyles({ [key]: updatedTypography });
-    };
-
-    const handleBoxShadowChange = (value) => {
-        updateStyles({ buttonBoxShadow: value });
-    };
-
-    const handleBoxShadowHoverChange = (value) => {
-        updateStyles({ buttonBoxShadowHover: value });
     };
 
     return (
@@ -383,28 +335,8 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                               {/* Box Shadow */}
                               <FluentBoxShadowControl
                                   label={__("Box Shadow")}
-                                  enabled={attributes.styles.enableButtonBoxShadow || false}
-                                  onToggle={(value) => updateStyles({ enableButtonBoxShadow: value })}
-                                  color={attributes.styles.buttonBoxShadowColor}
-                                  onColorChange={(value) => updateStyles({ buttonBoxShadowColor: value })}
-                                  position={attributes.styles.buttonBoxShadowPosition}
-                                  onPositionChange={(value) => updateStyles({ buttonBoxShadowPosition: value })}
-                                  horizontal={attributes.styles.buttonBoxShadowHorizontal}
-                                  onHorizontalChange={(value) => updateStyles({ buttonBoxShadowHorizontal: value })}
-                                  horizontalUnit={attributes.styles.buttonBoxShadowHorizontalUnit}
-                                  onHorizontalUnitChange={(value) => updateStyles({ buttonBoxShadowHorizontalUnit: value })}
-                                  vertical={attributes.styles.buttonBoxShadowVertical}
-                                  onVerticalChange={(value) => updateStyles({ buttonBoxShadowVertical: value })}
-                                  verticalUnit={attributes.styles.buttonBoxShadowVerticalUnit}
-                                  onVerticalUnitChange={(value) => updateStyles({ buttonBoxShadowVerticalUnit: value })}
-                                  blur={attributes.styles.buttonBoxShadowBlur}
-                                  onBlurChange={(value) => updateStyles({ buttonBoxShadowBlur: value })}
-                                  blurUnit={attributes.styles.buttonBoxShadowBlurUnit}
-                                  onBlurUnitChange={(value) => updateStyles({ buttonBoxShadowBlurUnit: value })}
-                                  spread={attributes.styles.buttonBoxShadowSpread}
-                                  onSpreadChange={(value) => updateStyles({ buttonBoxShadowSpread: value })}
-                                  spreadUnit={attributes.styles.buttonBoxShadowSpreadUnit}
-                                  onSpreadUnitChange={(value) => updateStyles({ buttonBoxShadowSpreadUnit: value })}
+                                  shadow={attributes.styles.buttonBoxShadow || {}}
+                                  onChange={(shadowObj) => updateStyles({ buttonBoxShadow: shadowObj })}
                               />
 
                               {/* Button Border */}
@@ -470,28 +402,8 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                               {/* Box Shadow */}
                               <FluentBoxShadowControl
                                   label={__("Box Shadow")}
-                                  enabled={attributes.styles.enableButtonHoverBoxShadow || false}
-                                  onToggle={(value) => updateStyles({ enableButtonHoverBoxShadow: value })}
-                                  color={attributes.styles.buttonHoverBoxShadowColor}
-                                  onColorChange={(value) => updateStyles({ buttonHoverBoxShadowColor: value })}
-                                  position={attributes.styles.buttonHoverBoxShadowPosition}
-                                  onPositionChange={(value) => updateStyles({ buttonHoverBoxShadowPosition: value })}
-                                  horizontal={attributes.styles.buttonHoverBoxShadowHorizontal}
-                                  onHorizontalChange={(value) => updateStyles({ buttonHoverBoxShadowHorizontal: value })}
-                                  horizontalUnit={attributes.styles.buttonHoverBoxShadowHorizontalUnit}
-                                  onHorizontalUnitChange={(value) => updateStyles({ buttonHoverBoxShadowHorizontalUnit: value })}
-                                  vertical={attributes.styles.buttonHoverBoxShadowVertical}
-                                  onVerticalChange={(value) => updateStyles({ buttonHoverBoxShadowVertical: value })}
-                                  verticalUnit={attributes.styles.buttonHoverBoxShadowVerticalUnit}
-                                  onVerticalUnitChange={(value) => updateStyles({ buttonHoverBoxShadowVerticalUnit: value })}
-                                  blur={attributes.styles.buttonHoverBoxShadowBlur}
-                                  onBlurChange={(value) => updateStyles({ buttonHoverBoxShadowBlur: value })}
-                                  blurUnit={attributes.styles.buttonHoverBoxShadowBlurUnit}
-                                  onBlurUnitChange={(value) => updateStyles({ buttonHoverBoxShadowBlurUnit: value })}
-                                  spread={attributes.styles.buttonHoverBoxShadowSpread}
-                                  onSpreadChange={(value) => updateStyles({ buttonHoverBoxShadowSpread: value })}
-                                  spreadUnit={attributes.styles.buttonHoverBoxShadowSpreadUnit}
-                                  onSpreadUnitChange={(value) => updateStyles({ buttonHoverBoxShadowSpreadUnit: value })}
+                                  shadow={attributes.styles.buttonHoverBoxShadow || {}}
+                                  onChange={(shadowObj) => updateStyles({ buttonHoverBoxShadow: shadowObj })}
                               />
 
                               {/* Button Border */}
@@ -671,28 +583,8 @@ const GENERAL_TAB_ATTRIBUTES = [
     'inputBorderColorFocus',
     'inputBorderWidthFocus',
     'inputBorderRadiusFocus',
-    'enableInputBoxShadow',
-    'inputBoxShadowColor',
-    'inputBoxShadowPosition',
-    'inputBoxShadowHorizontal',
-    'inputBoxShadowHorizontalUnit',
-    'inputBoxShadowVertical',
-    'inputBoxShadowVerticalUnit',
-    'inputBoxShadowBlur',
-    'inputBoxShadowBlurUnit',
-    'inputBoxShadowSpread',
-    'inputBoxShadowSpreadUnit',
-    'enableInputBoxShadowFocus',
-    'inputBoxShadowColorFocus',
-    'inputBoxShadowPositionFocus',
-    'inputBoxShadowHorizontalFocus',
-    'inputBoxShadowHorizontalUnitFocus',
-    'inputBoxShadowVerticalFocus',
-    'inputBoxShadowVerticalUnitFocus',
-    'inputBoxShadowBlurFocus',
-    'inputBoxShadowBlurUnitFocus',
-    'inputBoxShadowSpreadFocus',
-    'inputBoxShadowSpreadUnitFocus',
+    'inputBoxShadow',
+    'inputBoxShadowFocus',
 
     // Placeholder attributes
     'placeholderColor',
@@ -724,17 +616,6 @@ const GENERAL_TAB_ATTRIBUTES = [
     'buttonPadding',
     'buttonMargin',
     'buttonBoxShadow',
-    'enableButtonBoxShadow',
-    'buttonBoxShadowColor',
-    'buttonBoxShadowPosition',
-    'buttonBoxShadowHorizontal',
-    'buttonBoxShadowHorizontalUnit',
-    'buttonBoxShadowVertical',
-    'buttonBoxShadowVerticalUnit',
-    'buttonBoxShadowBlur',
-    'buttonBoxShadowBlurUnit',
-    'buttonBoxShadowSpread',
-    'buttonBoxShadowSpreadUnit',
     'enableButtonBorder',
     'buttonBorderType',
     'buttonBorderColor',
@@ -747,20 +628,7 @@ const GENERAL_TAB_ATTRIBUTES = [
     'buttonHoverTypography',
     'buttonHoverPadding',
     'buttonHoverMargin',
-    'buttonBoxShadowHover',
-    'buttonBoxShadowHoverColor',
-    'buttonBoxShadowHoverPosition',
-    'enableButtonHoverBoxShadow',
-    'buttonHoverBoxShadowColor',
-    'buttonHoverBoxShadowPosition',
-    'buttonHoverBoxShadowHorizontal',
-    'buttonHoverBoxShadowHorizontalUnit',
-    'buttonHoverBoxShadowVertical',
-    'buttonHoverBoxShadowVerticalUnit',
-    'buttonHoverBoxShadowBlur',
-    'buttonHoverBoxShadowBlurUnit',
-    'buttonHoverBoxShadowSpread',
-    'buttonHoverBoxShadowSpreadUnit',
+    'buttonHoverBoxShadow',
     'enableButtonHoverBorder',
     'buttonHoverBorderType',
     'buttonHoverBorderColor',

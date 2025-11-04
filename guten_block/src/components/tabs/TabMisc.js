@@ -323,46 +323,8 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
               {/* Box Shadow Checkbox */}
               <FluentBoxShadowControl
                 label={__("Box Shadow")}
-                enabled={attributes.styles.enableBoxShadow || false}
-                onToggle={(value) => {
-                    if (value) {
-                        updateStyles({
-                            enableBoxShadow: value,
-                            boxShadowColor: attributes.styles.boxShadowColor || 'rgba(0,0,0,0.5)',
-                            boxShadowPosition: attributes.styles.boxShadowPosition || 'outline',
-                            boxShadowHorizontal: attributes.styles.boxShadowHorizontal || '0',
-                            boxShadowHorizontalUnit: attributes.styles.boxShadowHorizontalUnit || 'px',
-                            boxShadowVertical: attributes.styles.boxShadowVertical || '0',
-                            boxShadowVerticalUnit: attributes.styles.boxShadowVerticalUnit || 'px',
-                            boxShadowBlur: attributes.styles.boxShadowBlur || '5',
-                            boxShadowBlurUnit: attributes.styles.boxShadowBlurUnit || 'px',
-                            boxShadowSpread: attributes.styles.boxShadowSpread || '0',
-                            boxShadowSpreadUnit: attributes.styles.boxShadowSpreadUnit || 'px'
-                        });
-                    } else {
-                        updateStyles({ containerBoxShadow: value });
-                    }
-                }}
-                color={attributes.styles.containerBoxShadow?.color || ''}
-                onColorChange={(value) => updateStyles({ containerBoxShadow: { ...attributes.styles.containerBoxShadow, color: value } })}
-                position={attributes.styles.containerBoxShadow?.position || 'outline'}
-                onPositionChange={(value) => updateStyles({ containerBoxShadow: { ...attributes.styles.containerBoxShadow, position: value } })}
-                horizontal={attributes.styles.containerBoxShadow?.horizontal.value || ''}
-                onHorizontalChange={(value) => updateStyles({ containerBoxShadow: { ...attributes.styles.containerBoxShadow, horizontal: { value } } })}
-                horizontalUnit={attributes.styles.containerBoxShadow?.horizontal.unit || 'px'}
-                onHorizontalUnitChange={(value) => updateStyles({ boxShadowHorizontalUnit: value })}
-                vertical={attributes.styles.boxShadowVertical}
-                onVerticalChange={(value) => updateStyles({ boxShadowVertical: value })}
-                verticalUnit={attributes.styles.boxShadowVerticalUnit}
-                onVerticalUnitChange={(value) => updateStyles({ boxShadowVerticalUnit: value })}
-                blur={attributes.styles.boxShadowBlur}
-                onBlurChange={(value) => updateStyles({ boxShadowBlur: value })}
-                blurUnit={attributes.styles.boxShadowBlurUnit}
-                onBlurUnitChange={(value) => updateStyles({ boxShadowBlurUnit: value })}
-                spread={attributes.styles.boxShadowSpread}
-                onSpreadChange={(value) => updateStyles({ boxShadowSpread: value })}
-                spreadUnit={attributes.styles.boxShadowSpreadUnit}
-                onSpreadUnitChange={(value) => updateStyles({ boxShadowSpreadUnit: value })}
+                shadow={attributes.styles.containerBoxShadow || {}}
+                onChange={(shadowObj) => updateStyles({ containerBoxShadow: shadowObj })}
               />
 
               {/* Form Border Settings */}
@@ -498,7 +460,6 @@ const MISC_TAB_ATTRIBUTES = [
     'containerPadding',
     'containerMargin',
     'containerBoxShadow',
-    'containerBoxShadowHover',
     'borderType',
     'borderColor',
     'borderWidth',

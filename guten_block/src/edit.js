@@ -91,33 +91,20 @@ class EditComponent extends Component {
         // Initialize style handler
         if (attributes.formId && attributes.styles) {
             this.styleHandler = new FluentFormStyleHandler(attributes.formId);
+            if (attributes.styles) {
+                this.styleHandler.updateStyles(attributes.styles);
+            }
         }
     }
 
     componentDidUpdate(prevProps) {
         const { attributes } = this.props;
-
-        const styleChanged = JSON.stringify(prevProps.attributes.styles || {}) !== JSON.stringify(attributes.styles || {});
-        
         // Initialize or update style handler
-        if (attributes.formId !== prevProps.attributes.formId) {
-            if (this.styleHandler) {
-                this.styleHandler.destroy();
+        if (attributes.formId !== prevProps.attributes.formId && attributes.formId) {
+            this.styleHandler = new FluentFormStyleHandler(attributes.formId);
+            if (attributes.styles) {
+                this.styleHandler.updateStyles(attributes.styles);
             }
-            if (attributes.formId) {
-                this.styleHandler = new FluentFormStyleHandler(attributes.formId);
-            }
-        }
-        
-        // Handle style changes with JavaScript only
-        if (styleChanged && this.styleHandler && attributes.formId) {
-            this.styleHandler.updateStyles(attributes.styles);
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.styleHandler) {
-            this.styleHandler.destroy();
         }
     }
 
