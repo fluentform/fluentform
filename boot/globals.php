@@ -238,7 +238,7 @@ function fluentFormHandleScheduledTasks()
         }
     }
 
-    $rand = mt_rand(1, 10);
+    $rand = wp_rand(1, 10);
     if ($rand >= 5) {
         do_action('fluentform/maybe_scheduled_jobs');
     }
@@ -267,7 +267,7 @@ function fluentFormApi($module = 'forms')
         return new \FluentForm\App\Api\Submission();
     }
 
-    throw new \Exception('No Module found with name ' . $module);
+    throw new \Exception(esc_html('No Module found with name ' . $module));
 }
 
 function fluentFormGetRandomPhoto()

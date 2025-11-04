@@ -1838,6 +1838,7 @@ class FluentFormWidget extends Widget_Base
                     'condition' => [
                         'show_form_progressbar' => 'yes',
                     ],
+                    // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Elementor widget parameter, not WP_Query
                     'exclude' => [
                         'image',
                     ],
@@ -1932,6 +1933,7 @@ class FluentFormWidget extends Widget_Base
                     'condition' => [
                         'show_form_progressbar' => 'yes',
                     ],
+                    // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Elementor widget parameter, not WP_Query
                     'exclude' => [
                         'image',
                     ],

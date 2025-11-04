@@ -105,6 +105,7 @@ class Sheet
         if (!is_string($name)) {
             $actualType = gettype($name);
             $errorMessage = "The sheet's name is invalid. It must be a string ($actualType given).";
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new InvalidSheetNameException($errorMessage);
         }
 
@@ -134,6 +135,7 @@ class Sheet
         if (count($failedRequirements) !== 0) {
             $errorMessage = "The sheet's name (\"$name\") is invalid. It did not respect these rules:\n - ";
             $errorMessage .= implode("\n - ", $failedRequirements);
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new InvalidSheetNameException($errorMessage);
         }
     }

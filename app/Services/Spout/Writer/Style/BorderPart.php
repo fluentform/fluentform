@@ -94,6 +94,7 @@ class BorderPart
     public function setName($name)
     {
         if (!in_array($name, self::$allowedNames)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new InvalidNameException($name);
         }
         $this->name = $name;
@@ -115,6 +116,7 @@ class BorderPart
     public function setStyle($style)
     {
         if (!in_array($style, self::$allowedStyles)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new InvalidStyleException($style);
         }
         $this->style = $style;
@@ -153,6 +155,7 @@ class BorderPart
     public function setWidth($width)
     {
         if (!in_array($width, self::$allowedWidths)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new InvalidWidthException($width);
         }
         $this->width = $width;

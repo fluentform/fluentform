@@ -81,11 +81,11 @@ class EditorShortcodeParser
             }
 
             if (false !== strpos($handler, 'user.')) {
-                $value = self::parseUserProperties($handler);
-                if (is_array($value) || is_object($value)) {
+                $parsedValue = self::parseUserProperties($handler);
+                if (is_array($parsedValue) || is_object($parsedValue)) {
                     return '';
                 }
-                return esc_html($value);
+                return esc_html($parsedValue);
             }
 
             if (false !== strpos($handler, 'date.')) {
@@ -96,9 +96,9 @@ class EditorShortcodeParser
                 $key = substr(str_replace(['{', '}'], '', $value), 16);
                 global $post;
                 if ($post) {
-                    $value = get_post_meta($post->ID, $key, true);
-                    if (!is_array($value) && !is_object($value)) {
-                        return esc_html($value);
+                    $metaValue = get_post_meta($post->ID, $key, true);
+                    if (!is_array($metaValue) && !is_object($metaValue)) {
+                        return esc_html($metaValue);
                     }
                 }
                 return '';
@@ -123,7 +123,9 @@ class EditorShortcodeParser
                 if (count($dynamicKey) > 1) {
                     $fallBack = $dynamicKey[1];
                 }
-                $ref = $dynamicKey[0];
+                if (isset($dynamicKey[0])) {
+                    $ref = $dynamicKey[0];
+                }
 
                 if ('payment_summary' == $ref) {
                     return fluentform_sanitize_html('<div class="ff_dynamic_value ff_dynamic_payment_summary" data-ref="payment_summary"><div class="ff_payment_summary"></div><div class="ff_payment_summary_fallback">' . $fallBack . '</div></div>');
@@ -360,7 +362,7 @@ class EditorShortcodeParser
     private static function parseDate($value, $form = null)
     {
         $format = substr(str_replace(['}', '{'], '', $value), 5);
-        $date = date($format, strtotime(current_time('mysql')));
+        $date = gmdate($format, strtotime(current_time('mysql')));
         return $date ? esc_html($date) : '';
     }
 

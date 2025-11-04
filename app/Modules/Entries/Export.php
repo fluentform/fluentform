@@ -151,7 +151,7 @@ class Export
 
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
 
-        $fileName = sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d');
+        $fileName = sanitize_title($form->title, 'export', 'view') . '-' . wp_date('Y-m-d');
 
         $this->downloadOfficeDoc($data, $type, $fileName);
     }
@@ -167,7 +167,7 @@ class Export
             }, $item);
         }, $data);
         require_once $this->app->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
-        $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
+        $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . wp_date('d-m-Y') . '.' . $type;
         $writer = \Box\Spout\Writer\WriterFactory::create($type);
         $writer->openToBrowser($fileName);
         $writer->addRows($data);
@@ -190,7 +190,7 @@ class Export
             $submission->response = json_decode($submission->response, true);
         }
 
-        header('Content-disposition: attachment; filename=' . sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d') . '.json');
+        header('Content-disposition: attachment; filename=' . sanitize_title($form->title, 'export', 'view') . '-' . wp_date('Y-m-d') . '.json');
         header('Content-type: application/json');
         echo json_encode($submissions); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $submissions is escaped before being passed in.
         exit();

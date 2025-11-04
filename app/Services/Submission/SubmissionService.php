@@ -115,6 +115,7 @@ class SubmissionService
             return apply_filters('fluentform/find_submission', $submission, $form->id)->makeHidden('form');
         } catch (Exception $e) {
             throw new Exception(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 __('No Entry found.', 'fluentform')
             );
         }
@@ -212,7 +213,11 @@ class SubmissionService
             return apply_filters('fluentform/find_submission', $submission, $form->id);
         } catch (Exception $e) {
             throw new Exception(
-                __('No Entry found.' . $e->getMessage(), 'fluentform')
+                sprintf(
+                    /* translators: %s: error message */
+                    esc_html__('No Entry found. Error: %s', 'fluentform'),
+                    esc_html($e->getMessage())
+                )
             );
         }
     }
@@ -263,6 +268,7 @@ class SubmissionService
                 $submission = $this->model->with('form')->findOrFail($submissionId);
             } catch (Exception $e) {
                 throw new Exception(
+                    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                     __('No Entry found.', 'fluentform')
                 );
             }
@@ -324,6 +330,7 @@ class SubmissionService
             $submission = $this->model->findOrFail($submissionId);
         } catch (Exception $e) {
             throw new Exception(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 __('No Entry found.', 'fluentform')
             );
         }
@@ -357,6 +364,7 @@ class SubmissionService
         $actionType = sanitize_text_field(Arr::get($attributes, 'action_type'));
 
         if (!$formId || !count($submissionIds)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new Exception(__('Please select entries first', 'fluentform'));
         }
 
@@ -455,7 +463,7 @@ class SubmissionService
                 $file = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/' . basename($file);
 
                 if (is_readable($file) && !is_dir($file)) {
-                    @unlink($file);
+                    wp_delete_file($file);
                 }
             }
             // Empty Temp Uploads
@@ -465,7 +473,7 @@ class SubmissionService
                 if(!empty($files)){
                     foreach ($files as $file) {
                         if (basename($file) !== 'index.php') {
-                            unlink($file);
+                            wp_delete_file($file);
                         }
                     }
                 }
@@ -604,6 +612,7 @@ class SubmissionService
     public function updateSubmissionUser($userId, $submissionId)
     {
         if (!$userId || !$submissionId) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new Exception(__('Submission ID and User ID is required', 'fluentform'));
         }
 
@@ -611,6 +620,7 @@ class SubmissionService
         $user = get_user_by('ID', $userId);
 
         if (!$submission || $submission->user_id == $userId || !$user) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new Exception(__('Invalid Request', 'fluentform'));
         }
 

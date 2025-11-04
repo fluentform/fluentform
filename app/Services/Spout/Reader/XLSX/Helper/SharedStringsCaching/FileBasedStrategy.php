@@ -131,7 +131,7 @@ class FileBasedStrategy implements CachingStrategyInterface
         $indexInFile = $sharedStringIndex % $this->maxNumStringsPerTempFile;
 
         if (!$this->globalFunctionsHelper->file_exists($tempFilePath)) {
-            throw new SharedStringNotFoundException("Shared string temp file not found: $tempFilePath ; for index: $sharedStringIndex");
+            throw new SharedStringNotFoundException(esc_html("Shared string temp file not found: $tempFilePath ; for index: $sharedStringIndex"));
         }
 
         if ($this->inMemoryTempFilePath !== $tempFilePath) {
@@ -151,7 +151,7 @@ class FileBasedStrategy implements CachingStrategyInterface
         }
 
         if ($sharedString === null) {
-            throw new SharedStringNotFoundException("Shared string not found for index: $sharedStringIndex");
+            throw new SharedStringNotFoundException(esc_html("Shared string not found for index: $sharedStringIndex"));
         }
 
         return rtrim($sharedString, PHP_EOL);

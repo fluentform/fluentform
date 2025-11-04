@@ -90,7 +90,7 @@ class SharedStringsHelper
         $sharedStringIndex = 0;
 
         if ($xmlReader->openFileInZip($this->filePath, self::SHARED_STRINGS_XML_FILE_PATH) === false) {
-            throw new IOException('Could not open "' . self::SHARED_STRINGS_XML_FILE_PATH . '".');
+            throw new IOException(esc_html('Could not open "' . self::SHARED_STRINGS_XML_FILE_PATH . '".'));
         }
 
         try {
@@ -110,7 +110,7 @@ class SharedStringsHelper
             $this->cachingStrategy->closeCache();
 
         } catch (XMLProcessingException $exception) {
-            throw new IOException("The sharedStrings.xml file is invalid and cannot be read. [{$exception->getMessage()}]");
+            throw new IOException(esc_html("The sharedStrings.xml file is invalid and cannot be read. [{$exception->getMessage()}]"));
         }
 
         $xmlReader->close();

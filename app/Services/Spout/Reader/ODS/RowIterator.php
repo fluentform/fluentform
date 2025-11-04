@@ -173,7 +173,7 @@ class RowIterator implements IteratorInterface
         try {
             $this->xmlProcessor->readUntilStopped();
         } catch (XMLProcessingException $exception) {
-            throw new IOException("The sheet's data cannot be read. [{$exception->getMessage()}]");
+            throw new IOException(esc_html("The sheet's data cannot be read. [{$exception->getMessage()}]"));
         }
 
         $this->rowDataBuffer = $this->currentlyProcessedRowData;

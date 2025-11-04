@@ -156,11 +156,6 @@ class Checkable extends BaseComponent
                 $otherInputName = $fieldName . '__ff_other_input__';
                 $otherValue = '';
                 
-                // Check if there's a saved "other" value
-                if (isset($_POST[$otherInputName])) {
-                    $otherValue = sanitize_text_field($_POST[$otherInputName]);
-                }
-                
                 $elMarkup .= "<div class='ff-other-input-wrapper' style='display: none;' data-field='{$fieldName}'>";
                 $elMarkup .= "<input type='text' name='" . esc_attr($otherInputName) . "' class='ff-el-form-control' placeholder='" . esc_attr($otherPlaceholder) . "' value='" . esc_attr($otherValue) . "'>";
                 $elMarkup .= "</div>";

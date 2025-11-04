@@ -42,6 +42,7 @@ class ShortCodeParser
             return static::parseShortCodeFromString($parsable, $isUrl, $providerOrIsHTML);
         } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging only when WP_DEBUG is enabled, helps developers troubleshoot shortcode parsing issues
                 error_log($e->getTraceAsString());
             }
             return '';
@@ -394,7 +395,7 @@ class ShortCodeParser
     {
         if (0 === strpos($key, 'date.')) {
             $format = str_replace('date.', '', $key);
-            return date($format, strtotime(current_time('mysql')));
+            return gmdate($format, strtotime(current_time('mysql')));
         } elseif ('admin_email' == $key) {
             return get_option('admin_email', false);
         } elseif ('ip' == $key) {

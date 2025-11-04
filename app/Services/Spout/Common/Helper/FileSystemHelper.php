@@ -40,6 +40,7 @@ class FileSystemHelper
 
         $wasCreationSuccessful = mkdir($folderPath, 0777, true);
         if (!$wasCreationSuccessful) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new IOException("Unable to create folder: $folderPath");
         }
 
@@ -64,6 +65,7 @@ class FileSystemHelper
 
         $wasCreationSuccessful = file_put_contents($filePath, $fileContents);
         if ($wasCreationSuccessful === false) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new IOException("Unable to create file: $filePath");
         }
 
@@ -127,6 +129,7 @@ class FileSystemHelper
         $operationFolderRealPath = realpath($operationFolderPath);
         $isInBaseFolder = (strpos($operationFolderRealPath, $this->baseFolderRealPath) === 0);
         if (!$isInBaseFolder) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new IOException("Cannot perform I/O operation outside of the base folder: {$this->baseFolderRealPath}");
         }
     }

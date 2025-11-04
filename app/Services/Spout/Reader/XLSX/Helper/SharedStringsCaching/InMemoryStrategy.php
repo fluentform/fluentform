@@ -66,7 +66,7 @@ class InMemoryStrategy implements CachingStrategyInterface
         try {
             return $this->inMemoryCache->offsetGet($sharedStringIndex);
         } catch (\RuntimeException $e) {
-            throw new SharedStringNotFoundException("Shared string not found for index: $sharedStringIndex");
+            throw new SharedStringNotFoundException(esc_html("Shared string not found for index: $sharedStringIndex"));
         }
     }
 

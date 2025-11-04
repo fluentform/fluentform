@@ -38,6 +38,7 @@ class WriterFactory
                 $writer = new ODS\Writer();
                 break;
             default:
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 throw new UnsupportedTypeException('No writers supporting the given type: ' . $writerType);
         }
 

@@ -33,7 +33,7 @@ class TransferService
             $forms[] = $form;
         }
     
-        $fileName = 'fluentform-export-forms-' . count($forms) . '-' . date('d-m-Y') . '.json';
+        $fileName = 'fluentform-export-forms-' . count($forms) . '-' . gmdate('d-m-Y') . '.json';
 
         header('Content-disposition: attachment; filename=' . $fileName);
 
@@ -60,7 +60,7 @@ class TransferService
                     } elseif ($fields = Arr::get($formItem, 'form_fields', '')) {
                         $formFields = json_encode($fields);
                     } else {
-                        throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
+                        throw new Exception(esc_html__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
                     }
                     $formTitle = sanitize_text_field(Arr::get($formItem, 'title'));
                     $form = [
@@ -123,7 +123,7 @@ class TransferService
                 ]);
             }
         }
-        throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
+        throw new Exception(esc_html__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
     }
 
     public static function exportEntries($args)
@@ -239,7 +239,7 @@ class TransferService
         $data = array_merge([array_values($inputLabels)], $exportData);
         
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
-        $fileName = sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d');
+        $fileName = sanitize_title($form->title, 'export', 'view') . '-' . gmdate('Y-m-d');
         self::downloadOfficeDoc($data, $type, $fileName);
     }
 
@@ -262,7 +262,7 @@ class TransferService
         foreach ($submissions as $submission) {
             $submission->response = json_decode($submission->response, true);
         }
-        header('Content-disposition: attachment; filename=' . sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d') . '.json');
+        header('Content-disposition: attachment; filename=' . sanitize_title($form->title, 'export', 'view') . '-' . gmdate('Y-m-d') . '.json');
         header('Content-type: application/json');
         echo json_encode($submissions); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $submissions is escaped before being passed in.
         exit();
@@ -299,7 +299,7 @@ class TransferService
             // Include the autoloader file if it has not been included yet
             require_once $autoloaderPath;
         }
-        $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
+        $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . gmdate('d-m-Y') . '.' . $type;
         $writer = \Box\Spout\Writer\WriterFactory::create($type);
         $writer->openToBrowser($fileName);
         $writer->addRows($data);

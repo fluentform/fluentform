@@ -187,6 +187,7 @@ abstract class AbstractWriter implements WriterInterface
     protected function throwIfWriterAlreadyOpened($message)
     {
         if ($this->isWriterOpened) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new WriterAlreadyOpenedException($message);
         }
     }

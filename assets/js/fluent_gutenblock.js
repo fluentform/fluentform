@@ -1523,51 +1523,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
 /**
  * Fluent Forms Gutenberg Block Advanced Tab Component
  */
 var __ = wp.i18n.__;
 var _wp$components = wp.components,
   PanelBody = _wp$components.PanelBody,
-  TextControl = _wp$components.TextControl,
-  ToggleControl = _wp$components.ToggleControl,
-  Flex = _wp$components.Flex,
-  FlexItem = _wp$components.FlexItem;
-
-// Import custom components
-
-
-
-
+  TextControl = _wp$components.TextControl;
 var TabAdvanced = function TabAdvanced(_ref) {
   var attributes = _ref.attributes,
     setAttributes = _ref.setAttributes;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(PanelBody, {
-      title: __('Animation & Effects'),
-      initialOpen: true,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Flex, {
-        direction: "column",
-        gap: 4,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ToggleControl, {
-          label: __('Enable Hover Transitions'),
-          checked: attributes.enableTransition !== false,
-          onChange: function onChange(value) {
-            return setAttributes({
-              enableTransition: value
-            });
-          },
-          help: __('Add smooth transitions when hovering over form elements')
-        })
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
       title: __('Custom CSS'),
       initialOpen: true,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
         children: "Add custom CSS to further customize your form appearance."
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
         label: "CSS Class",
         value: attributes.customCssClass || '',
         onChange: function onChange(value) {
@@ -1576,14 +1552,14 @@ var TabAdvanced = function TabAdvanced(_ref) {
           });
         },
         help: "Add custom CSS class to the form container"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
         style: {
           marginTop: '16px'
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
           className: "ffblock-label",
           children: "Custom CSS"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("textarea", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("textarea", {
           className: "components-textarea-control__input",
           value: attributes.customCss || '',
           onChange: function onChange(e) {
@@ -1598,7 +1574,7 @@ var TabAdvanced = function TabAdvanced(_ref) {
           placeholder: ".fluent-form .ff-el-form-control { /* Your custom styles */\n}"
         })]
       })]
-    })]
+    })
   });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabAdvanced);
@@ -2574,7 +2550,7 @@ var GENERAL_TAB_ATTRIBUTES = [
 // Placeholder attributes
 'placeholderColor', 'placeholderFocusColor', 'placeholderTypography',
 // Radio/Checkbox attributes
-'radioCheckboxLabelColor', 'radioCheckboxTypography', 'radioCheckboxItemsColor', 'checkboxSize', 'checkboxBorderColor', 'checkboxBgColor', 'checkboxCheckedColor', 'radioSize', 'radioBorderColor', 'radioBgColor', 'radioCheckedColor',
+'radioCheckboxLabelColor', 'radioCheckboxTypography', 'radioCheckboxItemsColor', 'radioCheckboxItemsSize', 'checkboxSize', 'checkboxBorderColor', 'checkboxBgColor', 'checkboxCheckedColor', 'radioSize', 'radioBorderColor', 'radioBgColor', 'radioCheckedColor',
 // Common Button attributes
 'buttonWidth', 'buttonAlignment',
 // Normal Button attributes
@@ -8589,7 +8565,7 @@ registerBlockType("fluentfom/guten-block", {
   icon: fluentLogo,
   category: "formatting",
   keywords: [__("Contact Form"), __("Fluent Forms"), __("Forms"), __("Advanced Forms"), __("fluentforms-gutenberg-block")],
-  apiVersion: 3,
+  apiVersion: 2,
   edit: _edit__WEBPACK_IMPORTED_MODULE_0__["default"]
 });
 })();

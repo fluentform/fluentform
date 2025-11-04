@@ -58,6 +58,7 @@ class Color
     protected static function throwIfInvalidColorComponentValue($colorComponent)
     {
         if (!is_int($colorComponent) || $colorComponent < 0 || $colorComponent > 255) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new InvalidColorException("The RGB components must be between 0 and 255. Received: $colorComponent");
         }
     }

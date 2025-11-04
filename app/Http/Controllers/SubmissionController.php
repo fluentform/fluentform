@@ -52,8 +52,11 @@ class SubmissionController extends Controller
         try {
             $status = $submissionService->updateStatus($this->request->all());
 
+            /* translators: %s is the submission status */
+            $message = sprintf(__('The submission has been marked as %s', 'fluentform'), $status);
+
             return $this->sendSuccess([
-                'message' => __('The submission has been marked as ' . $status, 'fluentform'),
+                'message' => $message,
                 'status'  => $status,
             ]);
         } catch (Exception $e) {

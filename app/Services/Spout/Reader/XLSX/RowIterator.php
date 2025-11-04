@@ -129,7 +129,7 @@ class RowIterator implements IteratorInterface
         $this->xmlReader->close();
 
         if ($this->xmlReader->openFileInZip($this->filePath, $this->sheetDataXMLFilePath) === false) {
-            throw new IOException("Could not open \"{$this->sheetDataXMLFilePath}\".");
+            throw new IOException(esc_html("Could not open \"{$this->sheetDataXMLFilePath}\"."));
         }
 
         $this->numReadRows = 0;
@@ -205,7 +205,7 @@ class RowIterator implements IteratorInterface
         try {
             $this->xmlProcessor->readUntilStopped();
         } catch (XMLProcessingException $exception) {
-            throw new IOException("The {$this->sheetDataXMLFilePath} file cannot be read. [{$exception->getMessage()}]");
+            throw new IOException(esc_html("The {$this->sheetDataXMLFilePath} file cannot be read. [{$exception->getMessage()}]"));
         }
 
         $this->rowDataBuffer = $this->currentlyProcessedRowData;

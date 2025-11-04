@@ -90,6 +90,7 @@ class TransactionShortcodes
 
     public function registerReceiptShortcode($atts, $content = '')
     {
+       // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a public shortcode for displaying receipt
        $data = $_REQUEST;
        return $this->renderPaymentReceiptPage($data, false);
     }
@@ -103,7 +104,7 @@ class TransactionShortcodes
         if(!$transaction) {
             if($echo) {
                 status_header(200);
-                echo __('Sorry no transaction found', 'fluentform');
+                echo esc_html__('Sorry no transaction found', 'fluentform');
                 exit(200);
             }
             return '';
@@ -146,12 +147,14 @@ class TransactionShortcodes
         extract($data);
         ob_start();
         include($file);
-        echo  ob_get_clean();
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Complete HTML template output with pre-sanitized content from view file
+        echo ob_get_clean();
         exit(200);
     }
 
     public function routeAjaxEndpoints()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by verifyNonce() method below
         $route = sanitize_text_field(ArrayHelper::get($_REQUEST, 'route'));
         $this->verifyNonce();
         if ($route == 'get_subscription_transactions') {
@@ -182,6 +185,7 @@ class TransactionShortcodes
 
             if ($subscription->status == 'active') {
                 if ($subscription->bill_times) {
+                    /* translators: 1: number of payments */
                     $billingText = sprintf(esc_html__('Will be cancelled after %d payments', 'fluentform'), $subscription->bill_times);
                 } else {
                     $billingText = __('will be billed until cancelled', 'fluentform');
@@ -222,7 +226,7 @@ class TransactionShortcodes
             $transaction->formatted_date = date_i18n($viewConfig['date_time_format'], strtotime($transaction->created_at));
 
             if (!$transaction->transaction_hash) {
-                $hash = md5(wp_generate_uuid4() . mt_rand(0, 1000));
+                $hash = md5(wp_generate_uuid4() . wp_rand(0, 1000));
                 wpFluent()->table('fluentform_transactions')
                     ->where('id', $transaction->id)
                     ->update([
@@ -251,6 +255,7 @@ class TransactionShortcodes
 
     public function sendSubscriptionPayments()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by verifyNonce() in routeAjaxEndpoints()
         $subscriptionId = intval(ArrayHelper::get($_REQUEST, 'subscription_id'));
 
         if (!$subscriptionId) {
@@ -286,7 +291,7 @@ class TransactionShortcodes
 
         foreach ($transactions as $transaction) {
             if (!$transaction->transaction_hash) {
-                $hash = md5(wp_generate_uuid4() . mt_rand(0, 1000));
+                $hash = md5(wp_generate_uuid4() . wp_rand(0, 1000));
                 wpFluent()->table('fluentform_transactions')
                     ->where('id', $transaction->id)
                     ->update([
@@ -383,7 +388,8 @@ class TransactionShortcodes
 
     private function verifyNonce()
     {
-        $nonce = sanitize_text_field($_REQUEST['_nonce']);
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce verification happens immediately below
+        $nonce = isset($_REQUEST['_nonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_nonce'])) : '';
         if (!wp_verify_nonce($nonce, 'fluentform_transactions')) {
             wp_send_json_error([
                 'message' => __('Security validation failed. Please try again', 'fluentform')
@@ -431,6 +437,7 @@ class TransactionShortcodes
 
     public function cancelSubscriptionAjax()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by verifyNonce() in routeAjaxEndpoints()
         $subscriptionId = ArrayHelper::get($_REQUEST, 'subscription_id');
 
         if (!$subscriptionId) {

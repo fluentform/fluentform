@@ -41,7 +41,8 @@ class Submissions
 			  `updated_at` TIMESTAMP NULL,
 			  PRIMARY KEY (`id`)) $charsetCollate;";
 
-        $hasTable = $wpdb->get_var("SHOW TABLES LIKE '$table'") != $table;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration file, direct query needed
+        $hasTable = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) != $table;
 
         if ($force || !$hasTable) {
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';

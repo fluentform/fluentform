@@ -17,7 +17,8 @@ class MigrationNotice
 
     protected static function shouldRegister()
     {
-        if (isset($_GET['page']) && sanitize_text_field($_GET['page']) === 'fluent_forms_transfer') {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking admin page parameter
+        if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'fluent_forms_transfer') {
             return false;
         }
 

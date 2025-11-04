@@ -11,6 +11,7 @@ namespace FluentForm\App\Services\Integrations\MailChimp;
  *
  * @version 2.4
  */
+// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init, WordPress.WP.AlternativeFunctions.curl_curl_setopt, WordPress.WP.AlternativeFunctions.curl_curl_exec, WordPress.WP.AlternativeFunctions.curl_curl_getinfo, WordPress.WP.AlternativeFunctions.curl_curl_close, WordPress.WP.AlternativeFunctions.curl_curl_error -- Third-party MailChimp API library, requires cURL for advanced features
 class MailChimp
 {
     private $api_key;
@@ -43,6 +44,7 @@ class MailChimp
 
         if (null === $api_endpoint) {
             if (false === strpos($this->api_key, '-')) {
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message for internal library error, not user output
                 throw new \Exception("Invalid Mailchimp API key `{$api_key}` supplied.");
             }
             list(, $data_center) = explode('-', $this->api_key);

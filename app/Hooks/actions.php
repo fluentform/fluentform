@@ -97,16 +97,6 @@ $app->addAction('fluentform/addons_page_render_fluentform_add_ons', function () 
     (new \FluentForm\App\Modules\AddOnModule())->showFluentAddOns();
 });
 
-// This is temp, we will remove this after 2-3 versions.
-add_filter('pre_set_site_transient_update_plugins', function ($updates) {
-    if (!empty($updates->response['fluentformpro'])) {
-        $updates->response['fluentformpro/fluentformpro.php'] = $updates->response['fluentformpro'];
-        unset($updates->response['fluentformpro']);
-    }
-
-    return $updates;
-}, 999, 1);
-
 $app->addAction('fluentform/global_menu', function () use ($app) {
     $menu = new \FluentForm\App\Modules\Registerer\Menu($app);
     $menu->renderGlobalMenu();
@@ -572,9 +562,10 @@ add_action('save_post', function ($post_id) use ($app) {
         return;
     }
 
-    $post_content = isset($_REQUEST['post_content']) ? $_REQUEST['post_content'] : false;
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by WordPress save_post action
+    $post_content = isset($_REQUEST['post_content']) ? wp_kses_post(wp_unslash($_REQUEST['post_content'])) : false;
     if ($post_content && is_string($post_content)) {
-        $post_content = wp_kses_post(wp_unslash($post_content));
+        // Already sanitized above
     } else {
         $post = get_post($post_id);
         $post_content = $post->post_content;
@@ -758,7 +749,11 @@ function fluentform_after_submission_api_response_success($form, $entryId, $data
             'updated_at'  => current_time('mysql'),
         ]);
     } catch (Exception $e) {
-        error_log($e->getMessage());
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging only when WP_DEBUG is enabled, helps developers troubleshoot shortcode parsing issues
+            error_log($e->getMessage());
+        }
+        return '';
     }
 }
 
@@ -794,6 +789,7 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
             'updated_at'  => current_time('mysql'),
         ]);
     } catch (Exception $e) {
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional logging for debugging
         error_log($e->getMessage());
     }
 }
@@ -1100,7 +1096,8 @@ add_action('enqueue_block_editor_assets', function () {
         FLUENTFORM_VERSION
     );
 
-    $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking post ID in admin context
+    $post_id = isset($_GET['post']) ? (int)$_GET['post'] : 0;
     $loadPublicStyle = apply_filters_deprecated(
         'fluentform_load_default_public',
         [

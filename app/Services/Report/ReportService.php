@@ -41,7 +41,7 @@ class ReportService
         try {
             return Submission::report($args);
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new Exception(esc_html($e->getMessage()));
         }
     }
 

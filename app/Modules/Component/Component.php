@@ -514,6 +514,7 @@ class Component
 
         if (is_feed()) {
             global $post;
+            /* translators: %s is the website URL */
             $feedText = sprintf(__('The form can be filled in the actual <a href="%s">website url</a>.', 'fluentform'), get_permalink($post));
     
             $feedText = apply_filters_deprecated(
@@ -614,6 +615,7 @@ class Component
             wp_enqueue_script('fluent-form-submission');
         }
 
+        /* translators: %activeStep% is the current step number, %totalStep% is the total number of steps, %stepTitle% is the step title */
         $stepText = __('Step %activeStep% of %totalStep% - %stepTitle%', 'fluentform');
     
         $stepText = apply_filters_deprecated(
@@ -921,7 +923,7 @@ class Component
             }
            if($form->status == 'unpublished'){
                $isRenderable['status'] = false;
-               $isRenderable['message'] = apply_filters('fluentform/unpublished_form_submission_message',__('Invalid Form!'));
+               $isRenderable['message'] = apply_filters('fluentform/unpublished_form_submission_message',__('Invalid Form!', 'fluentform'));
            }
 
             return $isRenderable;
@@ -1019,7 +1021,7 @@ class Component
             return false;
         }
 
-        $weekDayToday = date('l');   //day of the week
+        $weekDayToday = wp_date('l');   //day of the week
         $selectedWeekDays = ArrayHelper::get($restrictions, 'selectedDays');
         //skip if it was not set initially and $selectedWeekDays is null
         if ($selectedWeekDays && is_array($selectedWeekDays) && !in_array($weekDayToday, $selectedWeekDays)) {
@@ -1300,14 +1302,14 @@ class Component
                 } else {
                     $dateFormat = get_option('date_format') . ' ' . get_option('time_format');
                 }
-                return date($dateFormat, strtotime($form->created_at));
+                return wp_date($dateFormat, strtotime($form->created_at));
             } elseif ('updated_at' == $atts['info']) {
                 if ($atts['date_format']) {
                     $dateFormat = $atts['date_format'];
                 } else {
                     $dateFormat = get_option('date_format') . ' ' . get_option('time_format');
                 }
-                return date($dateFormat, strtotime($form->updated_at));
+                return wp_date($dateFormat, strtotime($form->updated_at));
             } elseif ('payment_total' == $atts['info']) {
                 if (!defined('FLUENTFORMPRO')) {
                     return '';

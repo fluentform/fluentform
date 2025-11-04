@@ -191,7 +191,7 @@ class FormDataParser
                         <thead>
                             <tr>
                                 <?php foreach ($repeatColumns as $repeatColumn) : ?>
-                                <th><?php echo fluentform_sanitize_html(ArrayHelper::get($repeatColumn, 'settings.label')); ?>
+                                <th><?php echo fluentform_sanitize_html(ArrayHelper::get($repeatColumn, 'settings.label')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentform_sanitize_html() removes XSS vectors and uses wp_kses() with allowed tags ?>
                                 </th>
                                 <?php endforeach; ?>
                             </tr>
@@ -202,7 +202,7 @@ class FormDataParser
                             <tr>
                                 <?php for ($j = 0; $j < $columns; $j++) : ?>
                                 <td>
-                                    <?php echo fluentform_sanitize_html($value[$j][$i]); ?>
+                                    <?php echo fluentform_sanitize_html($value[$j][$i]); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentform_sanitize_html() removes XSS vectors and uses wp_kses() with allowed tags ?>
                                 </td>
                                 <?php endfor; ?>
                             </tr>

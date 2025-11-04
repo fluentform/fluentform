@@ -142,10 +142,12 @@ class EncodingHelper
         } else if ($this->canUseMbString()) {
             $convertedString = $this->globalFunctionsHelper->mb_convert_encoding($string, $sourceEncoding, $targetEncoding);
         } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new EncodingConversionException("The conversion from $sourceEncoding to $targetEncoding is not supported. Please install \"iconv\" or \"PHP Intl\".");
         }
 
         if ($convertedString === false) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new EncodingConversionException("The conversion from $sourceEncoding to $targetEncoding failed.");
         }
 

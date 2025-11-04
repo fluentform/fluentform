@@ -57,7 +57,7 @@ class Reader extends AbstractReader
         if ($this->zip->open($filePath) === true) {
             $this->sheetIterator = new SheetIterator($filePath, $this->getOptions());
         } else {
-            throw new IOException("Could not open $filePath for reading.");
+            throw new IOException(esc_html("Could not open $filePath for reading."));
         }
     }
 

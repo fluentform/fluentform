@@ -40,7 +40,7 @@ class FluentFormAIAPI
     
         $error_message = __('Something went wrong.', 'fluentform');
         if (isset($body['error']['message'])) {
-            $error_message = __($body['error']['message'], 'fluentform');
+            $error_message = $body['error']['message'];
         }
     
         if ($code !== 200) {

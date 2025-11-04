@@ -36,9 +36,12 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
         $this->settingsKey = $settingsKey;
         $this->priority = $priority;
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Constructor, nonce verified in route handlers
         if(isset($_REQUEST['form_id'])) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Constructor, nonce verified in route handlers
+            $formId = (int)$_REQUEST['form_id'];
             parent::__construct(
-                $this->settingsKey, $_REQUEST['form_id'], true
+                $this->settingsKey, $formId, true
             );
         } else {
             parent::__construct(

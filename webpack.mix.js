@@ -16,6 +16,7 @@ if (!mix.inProduction()) {
     // directory so that the source-maps are deleted as well.
     let fs = require('fs-extra');
     fs.remove('assets');
+    mix.sourceMaps(false);
 }
 
 mix.webpackConfig({

@@ -74,13 +74,13 @@ class SheetIterator implements IteratorInterface
 
         if ($this->xmlReader->openFileInZip($this->filePath, self::CONTENT_XML_FILE_PATH) === false) {
             $contentXmlFilePath = $this->filePath . '#' . self::CONTENT_XML_FILE_PATH;
-            throw new IOException("Could not open \"{$contentXmlFilePath}\".");
+            throw new IOException(esc_html("Could not open \"{$contentXmlFilePath}\"."));
         }
 
         try {
             $this->hasFoundSheet = $this->xmlReader->readUntilNodeFound(self::XML_NODE_TABLE);
         } catch (XMLProcessingException $exception) {
-           throw new IOException("The content.xml file is invalid and cannot be read. [{$exception->getMessage()}]");
+           throw new IOException(esc_html("The content.xml file is invalid and cannot be read. [{$exception->getMessage()}]"));
        }
 
         $this->currentSheetIndex = 0;

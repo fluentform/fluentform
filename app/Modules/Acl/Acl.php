@@ -110,7 +110,7 @@ class Acl
                     'message' => $message,
                 ], 422);
             } else {
-                throw new \Exception($message);
+                throw new \Exception(esc_html($message));
             }
         }
     }
