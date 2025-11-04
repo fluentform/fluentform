@@ -2,6 +2,7 @@
 const { useState, useRef, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
 const { PanelBody, SelectControl, PanelRow, RangeControl, TabPanel } = wp.components;
+const { useSelect } = wp.data;
 
 // Custom components
 import FluentTypography from "../controls/FluentTypography";
@@ -69,18 +70,18 @@ const LabelStylesPanel = ({ attributes, updateStyles }) => {
       <PanelBody title={__("Label Styles")} initialOpen={false}>
           <FluentColorPicker
             label="Color"
-            value={attributes.labelColor}
+            value={attributes.styles.labelColor}
             onChange={(value) => updateStyles({labelColor: value})}
             defaultColor=""
           />
           <FluentTypography
             label="Typography"
             settings={{
-                fontSize: attributes.labelTypography?.size?.lg || '',
-                fontWeight: attributes.labelTypography?.weight || '400',
-                lineHeight: attributes.labelTypography?.lineHeight || '',
-                letterSpacing: attributes.labelTypography?.letterSpacing || '',
-                textTransform: attributes.labelTypography?.textTransform || 'none'
+                fontSize: attributes.styles.labelTypography?.size?.lg || '',
+                fontWeight: attributes.styles.labelTypography?.weight || '400',
+                lineHeight: attributes.styles.labelTypography?.lineHeight || '',
+                letterSpacing: attributes.styles.labelTypography?.letterSpacing || '',
+                textTransform: attributes.styles.labelTypography?.textTransform || 'none'
             }}
             onChange={(changedTypo) => handleTypographyChange(changedTypo, 'labelTypography')}
           />
@@ -117,78 +118,81 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
                         return (
                             <>
                                 <FluentColorPicker
+                                    key="input-text-color-normal"
                                     label="Text Color"
-                                    value={attributes.inputTextColor}
-                                    onChange={(value) => updateStyles({
-                                        inputTextColor: value
-                                    })}
+                                    value={attributes.styles?.inputTextColor || ''}
+                                    onChange={(value) => {
+                                        updateStyles({ inputTextColor: value });
+                                    }}
                                     defaultColor=""
                                 />
 
                                 <FluentColorPicker
+                                    key="input-bg-color-normal"
                                     label="Background Color"
-                                    value={attributes.inputBackgroundColor}
-                                    onChange={(value) => updateStyles({
-                                        inputBackgroundColor: value
-                                    })}
+                                    value={attributes.styles?.inputBackgroundColor || ''}
+                                    styles={attributes.styles}
+                                    onChange={(value) => {
+                                        updateStyles({ inputBackgroundColor: value });
+                                    }}
                                     defaultColor=""
                                 />
 
                                 <FluentTypography
                                     label="Typography"
                                     settings={{
-                                        fontSize: attributes.inputTypography?.size?.lg || '',
-                                        fontWeight: attributes.inputTypography?.weight || '400',
-                                        lineHeight: attributes.inputTypography?.lineHeight || '',
-                                        letterSpacing: attributes.inputTypography?.letterSpacing || '',
-                                        textTransform: attributes.inputTypography?.textTransform || 'none'
+                                        fontSize: attributes.styles.inputTypography?.size?.lg || '',
+                                        fontWeight: attributes.styles.inputTypography?.weight || '400',
+                                        lineHeight: attributes.styles.inputTypography?.lineHeight || '',
+                                        letterSpacing: attributes.styles.inputTypography?.letterSpacing || '',
+                                        textTransform: attributes.styles.inputTypography?.textTransform || 'none'
                                     }}
                                     onChange={(changedTypo) => handleTypographyChange(changedTypo, 'inputTypography')}
                                 />
 
                                 <FluentSpaceControl
                                     label="Spacing"
-                                    values={attributes.inputSpacing}
+                                    values={attributes.styles.inputSpacing}
                                     onChange={(value) => updateStyles({ inputSpacing: value })}
                                 />
 
                                 <FluentBorderControl
                                     label={__("Border")}
-                                    enabled={attributes.enableInputBorder || false}
+                                    enabled={attributes.styles.enableInputBorder || false}
                                     onToggle={(value) => updateStyles({ enableInputBorder: value })}
-                                    borderType={attributes.inputBorderType}
+                                    borderType={attributes.styles.inputBorderType}
                                     onBorderTypeChange={(value) => updateStyles({ inputBorderType: value })}
-                                    borderColor={attributes.inputBorderColor}
+                                    borderColor={attributes.styles.inputBorderColor}
                                     onBorderColorChange={(value) => updateStyles({ inputBorderColor: value })}
-                                    borderWidth={attributes.inputBorderWidth}
+                                    borderWidth={attributes.styles.inputBorderWidth}
                                     onBorderWidthChange={(value) => updateStyles({ inputBorderWidth: value })}
-                                    borderRadius={attributes.inputBorderRadius}
+                                    borderRadius={attributes.styles.inputBorderRadius}
                                     onBorderRadiusChange={(value) => updateStyles({ inputBorderRadius: value })}
                                 />
 
                                 <FluentBoxShadowControl
                                     label={__("Box Shadow")}
-                                    enabled={attributes.enableInputBoxShadow || false}
+                                    enabled={attributes.styles.enableInputBoxShadow || false}
                                     onToggle={(value) => updateStyles({ enableInputBoxShadow: value })}
-                                    color={attributes.inputBoxShadowColor}
+                                    color={attributes.styles.inputBoxShadowColor}
                                     onColorChange={(value) => updateStyles({ inputBoxShadowColor: value })}
-                                    position={attributes.inputBoxShadowPosition}
+                                    position={attributes.styles.inputBoxShadowPosition}
                                     onPositionChange={(value) => updateStyles({ inputBoxShadowPosition: value })}
-                                    horizontal={attributes.inputBoxShadowHorizontal}
+                                    horizontal={attributes.styles.inputBoxShadowHorizontal}
                                     onHorizontalChange={(value) => updateStyles({ inputBoxShadowHorizontal: value })}
-                                    horizontalUnit={attributes.inputBoxShadowHorizontalUnit}
+                                    horizontalUnit={attributes.styles.inputBoxShadowHorizontalUnit}
                                     onHorizontalUnitChange={(value) => updateStyles({ inputBoxShadowHorizontalUnit: value })}
-                                    vertical={attributes.inputBoxShadowVertical}
+                                    vertical={attributes.styles.inputBoxShadowVertical}
                                     onVerticalChange={(value) => updateStyles({ inputBoxShadowVertical: value })}
-                                    verticalUnit={attributes.inputBoxShadowVerticalUnit}
+                                    verticalUnit={attributes.styles.inputBoxShadowVerticalUnit}
                                     onVerticalUnitChange={(value) => updateStyles({ inputBoxShadowVerticalUnit: value })}
-                                    blur={attributes.inputBoxShadowBlur}
+                                    blur={attributes.styles.inputBoxShadowBlur}
                                     onBlurChange={(value) => updateStyles({ inputBoxShadowBlur: value })}
-                                    blurUnit={attributes.inputBoxShadowBlurUnit}
+                                    blurUnit={attributes.styles.inputBoxShadowBlurUnit}
                                     onBlurUnitChange={(value) => updateStyles({ inputBoxShadowBlurUnit: value })}
-                                    spread={attributes.inputBoxShadowSpread}
+                                    spread={attributes.styles.inputBoxShadowSpread}
                                     onSpreadChange={(value) => updateStyles({ inputBoxShadowSpread: value })}
-                                    spreadUnit={attributes.inputBoxShadowSpreadUnit}
+                                    spreadUnit={attributes.styles.inputBoxShadowSpreadUnit}
                                     onSpreadUnitChange={(value) => updateStyles({ inputBoxShadowSpreadUnit: value })}
                                 />
                             </>
@@ -197,66 +201,68 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
                         return (
                             <>
                                 <FluentColorPicker
+                                    key="input-text-color-focus"
                                     label="Text Color"
-                                    value={attributes.inputTextFocusColor}
-                                    onChange={(value) => updateStyles({
-                                        inputTextFocusColor: value
-                                    })}
+                                    value={attributes.styles.inputTextFocusColor || ''}
+                                    onChange={(value) => {
+                                        updateStyles({ inputTextFocusColor: value });
+                                    }}
                                     defaultColor=""
                                 />
 
                                 <FluentColorPicker
+                                    key="input-bg-color-focus"
                                     label="Background Color"
-                                    value={attributes.inputBackgroundFocusColor}
-                                    onChange={(value) => updateStyles({
-                                        inputBackgroundFocusColor: value
-                                    })}
+                                    value={attributes.styles?.inputBackgroundFocusColor || ''}
+                                    onChange={(value) => {
+                                        updateStyles({ inputBackgroundFocusColor: value });
+                                    }}
                                     defaultColor=""
                                 />
 
                                 <FluentSpaceControl
                                     label="Spacing"
-                                    values={attributes.inputFocusSpacing}
+                                    values={attributes.styles.inputFocusSpacing}
                                     onChange={(value) => updateStyles({ inputFocusSpacing: value })}
                                 />
 
                                 <FluentBorderControl
                                     label={__("Border")}
-                                    enabled={attributes.enableInputBorderFocus || false}
+                                    enabled={attributes.styles.enableInputBorderFocus || false}
                                     onToggle={(value) => updateStyles({ enableInputBorderFocus: value })}
-                                    borderType={attributes.inputBorderTypeFocus}
+                                    borderType={attributes.styles.inputBorderTypeFocus}
                                     onBorderTypeChange={(value) => updateStyles({ inputBorderTypeFocus: value })}
-                                    borderColor={attributes.inputBorderColorFocus}
+                                    borderColor={attributes.styles.inputBorderColorFocus}
                                     onBorderColorChange={(value) => updateStyles({ inputBorderColorFocus: value })}
-                                    borderWidth={attributes.inputBorderWidthFocus}
+                                    borderWidth={attributes.styles.inputBorderWidthFocus}
                                     onBorderWidthChange={(value) => updateStyles({ inputBorderWidthFocus: value })}
-                                    borderRadius={attributes.inputBorderRadiusFocus}
+                                    borderRadius={attributes.styles.inputBorderRadiusFocus}
                                     onBorderRadiusChange={(value) => updateStyles({ inputBorderRadiusFocus: value })}
                                 />
 
                                 <FluentBoxShadowControl
                                     label={__("Box Shadow")}
-                                    enabled={attributes.enableInputBoxShadowFocus || false}
+                                    enabled={attributes.styles.enableInputBoxShadowFocus || false}
                                     onToggle={(value) => updateStyles({ enableInputBoxShadowFocus: value })}
-                                    color={attributes.inputBoxShadowColorFocus}
+                                    color={attributes.styles.inputBoxShadowColorFocus}
                                     onColorChange={(value) => updateStyles({ inputBoxShadowColorFocus: value })}
-                                    position={attributes.inputBoxShadowPositionFocus}
+                                    position={attributes.styles.inputBoxShadowPositionFocus}
                                     onPositionChange={(value) => updateStyles({ inputBoxShadowPositionFocus: value })}
-                                    horizontal={attributes.inputBoxShadowHorizontalFocus}
+                                    horizontal={attributes.styles.inputBoxShadowHorizontalFocus}
                                     onHorizontalChange={(value) => updateStyles({ inputBoxShadowHorizontalFocus: value })}
-                                    horizontalUnit={attributes.inputBoxShadowHorizontalUnitFocus}
+                                    horizontalUnit={attributes.styles.inputBoxShadowHorizontalUnitFocus}
                                     onHorizontalUnitChange={(value) => updateStyles({ inputBoxShadowHorizontalUnitFocus: value })}
-                                    vertical={attributes.inputBoxShadowVerticalFocus}
+                                    vertical={attributes.styles.inputBoxShadowVerticalFocus}
                                     onVerticalChange={(value) => updateStyles({ inputBoxShadowVerticalFocus: value })}
-                                    verticalUnit={attributes.inputBoxShadowVerticalUnitFocus}
+                                    verticalUnit={attributes.styles.inputBoxShadowVerticalUnitFocus}
                                     onVerticalUnitChange={(value) => updateStyles({ inputBoxShadowVerticalUnitFocus: value })}
-                                    blur={attributes.inputBoxShadowBlurFocus}
+                                    blur={attributes.styles.inputBoxShadowBlurFocus}
                                     onBlurChange={(value) => updateStyles({ inputBoxShadowBlurFocus: value })}
-                                    blurUnit={attributes.inputBoxShadowBlurUnitFocus}
+                                    blurUnit={attributes.styles.inputBoxShadowBlurUnitFocus}
                                     onBlurUnitChange={(value) => updateStyles({ inputBoxShadowBlurUnitFocus: value })}
-                                    spread={attributes.inputBoxShadowSpreadFocus}
+                                    spread={attributes.styles.inputBoxShadowSpreadFocus}
                                     onSpreadChange={(value) => updateStyles({ inputBoxShadowSpreadFocus: value })}
-                                    spreadUnit={attributes.inputBoxShadowSpreadUnitFocus}
+                                    spreadUnit={attributes.styles.inputBoxShadowSpreadUnitFocus}
                                     onSpreadUnitChange={(value) => updateStyles({ inputBoxShadowSpreadUnitFocus: value })}
                                 />
                             </>
@@ -298,7 +304,7 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
           <div>
               <span className="ffblock-label">{__('Alignment')}</span>
               <FluentAlignmentControl
-                  value={attributes.buttonAlignment}
+                  value={attributes.styles.buttonAlignment}
                   onChange={(value) => updateStyles({buttonAlignment: value})}
                   options={[
                       { value: 'left', icon: 'editor-alignleft', label: __('Left') },
@@ -311,7 +317,7 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
           {/* Common Button Width */}
           <RangeControl
             label={__('Width (%)')}
-            value={attributes.buttonWidth}
+            value={attributes.styles.buttonWidth}
             onChange={(value) => updateStyles({buttonWidth: value})}
             min={0}
             max={100}
@@ -335,14 +341,14 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                           <>
                               <FluentColorPicker
                                 label="Text Color"
-                                value={attributes.buttonColor}
+                                value={attributes.styles.buttonColor}
                                 onChange={(value) => updateStyles({buttonColor: value})}
                                 defaultColor="#ffffff"
                               />
 
                               <FluentColorPicker
                                 label="Background Color"
-                                value={attributes.buttonBGColor}
+                                value={attributes.styles.buttonBGColor}
                                 onChange={(value) => updateStyles({buttonBGColor: value})}
                                 defaultColor="#409EFF"
                               />
@@ -351,11 +357,11 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                               <FluentTypography
                                 label="Typography"
                                 settings={{
-                                    fontSize: attributes.buttonTypography?.size?.lg || '',
-                                    fontWeight: attributes.buttonTypography?.weight || '500',
-                                    lineHeight: attributes.buttonTypography?.lineHeight || '',
-                                    letterSpacing: attributes.buttonTypography?.letterSpacing || '',
-                                    textTransform: attributes.buttonTypography?.textTransform || 'none'
+                                    fontSize: attributes.styles.buttonTypography?.size?.lg || '',
+                                    fontWeight: attributes.styles.buttonTypography?.weight || '500',
+                                    lineHeight: attributes.styles.buttonTypography?.lineHeight || '',
+                                    letterSpacing: attributes.styles.buttonTypography?.letterSpacing || '',
+                                    textTransform: attributes.styles.buttonTypography?.textTransform || 'none'
                                 }}
                                 onChange={(changedTypo) => handleTypographyChange(changedTypo, 'buttonTypography')}
                               />
@@ -363,56 +369,56 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                               {/* Padding */}
                               <FluentSpaceControl
                                 label="Padding"
-                                values={attributes.buttonPadding}
+                                values={attributes.styles.buttonPadding}
                                 onChange={(value) => updateStyles({ buttonPadding: value })}
                               />
 
                               {/* Margin */}
                               <FluentSpaceControl
                                 label="Margin"
-                                values={attributes.buttonMargin}
+                                values={attributes.styles.buttonMargin}
                                 onChange={(value) => updateStyles({ buttonMargin: value })}
                               />
 
                               {/* Box Shadow */}
                               <FluentBoxShadowControl
                                   label={__("Box Shadow")}
-                                  enabled={attributes.enableButtonBoxShadow || false}
+                                  enabled={attributes.styles.enableButtonBoxShadow || false}
                                   onToggle={(value) => updateStyles({ enableButtonBoxShadow: value })}
-                                  color={attributes.buttonBoxShadowColor}
+                                  color={attributes.styles.buttonBoxShadowColor}
                                   onColorChange={(value) => updateStyles({ buttonBoxShadowColor: value })}
-                                  position={attributes.buttonBoxShadowPosition}
+                                  position={attributes.styles.buttonBoxShadowPosition}
                                   onPositionChange={(value) => updateStyles({ buttonBoxShadowPosition: value })}
-                                  horizontal={attributes.buttonBoxShadowHorizontal}
+                                  horizontal={attributes.styles.buttonBoxShadowHorizontal}
                                   onHorizontalChange={(value) => updateStyles({ buttonBoxShadowHorizontal: value })}
-                                  horizontalUnit={attributes.buttonBoxShadowHorizontalUnit}
+                                  horizontalUnit={attributes.styles.buttonBoxShadowHorizontalUnit}
                                   onHorizontalUnitChange={(value) => updateStyles({ buttonBoxShadowHorizontalUnit: value })}
-                                  vertical={attributes.buttonBoxShadowVertical}
+                                  vertical={attributes.styles.buttonBoxShadowVertical}
                                   onVerticalChange={(value) => updateStyles({ buttonBoxShadowVertical: value })}
-                                  verticalUnit={attributes.buttonBoxShadowVerticalUnit}
+                                  verticalUnit={attributes.styles.buttonBoxShadowVerticalUnit}
                                   onVerticalUnitChange={(value) => updateStyles({ buttonBoxShadowVerticalUnit: value })}
-                                  blur={attributes.buttonBoxShadowBlur}
+                                  blur={attributes.styles.buttonBoxShadowBlur}
                                   onBlurChange={(value) => updateStyles({ buttonBoxShadowBlur: value })}
-                                  blurUnit={attributes.buttonBoxShadowBlurUnit}
+                                  blurUnit={attributes.styles.buttonBoxShadowBlurUnit}
                                   onBlurUnitChange={(value) => updateStyles({ buttonBoxShadowBlurUnit: value })}
-                                  spread={attributes.buttonBoxShadowSpread}
+                                  spread={attributes.styles.buttonBoxShadowSpread}
                                   onSpreadChange={(value) => updateStyles({ buttonBoxShadowSpread: value })}
-                                  spreadUnit={attributes.buttonBoxShadowSpreadUnit}
+                                  spreadUnit={attributes.styles.buttonBoxShadowSpreadUnit}
                                   onSpreadUnitChange={(value) => updateStyles({ buttonBoxShadowSpreadUnit: value })}
                               />
 
                               {/* Button Border */}
                               <FluentBorderControl
                                   label={__("Border")}
-                                  enabled={attributes.enableButtonBorder || false}
+                                  enabled={attributes.styles.enableButtonBorder || false}
                                   onToggle={(value) => updateStyles({ enableButtonBorder: value })}
-                                  borderType={attributes.buttonBorderType}
+                                  borderType={attributes.styles.buttonBorderType}
                                   onBorderTypeChange={(value) => updateStyles({ buttonBorderType: value })}
-                                  borderColor={attributes.buttonBorderColor}
+                                  borderColor={attributes.styles.buttonBorderColor}
                                   onBorderColorChange={(value) => updateStyles({ buttonBorderColor: value })}
-                                  borderWidth={attributes.buttonBorderWidth}
+                                  borderWidth={attributes.styles.buttonBorderWidth}
                                   onBorderWidthChange={(value) => updateStyles({ buttonBorderWidth: value })}
-                                  borderRadius={attributes.buttonBorderRadius}
+                                  borderRadius={attributes.styles.buttonBorderRadius}
                                   onBorderRadiusChange={(value) => updateStyles({ buttonBorderRadius: value })}
                               />
                           </>
@@ -422,14 +428,14 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                           <>
                               <FluentColorPicker
                                 label="Text Color"
-                                value={attributes.buttonHoverColor}
+                                value={attributes.styles.buttonHoverColor}
                                 onChange={(value) => updateStyles({buttonHoverColor: value})}
                                 defaultColor="#ffffff"
                               />
 
                               <FluentColorPicker
                                 label="Background Color"
-                                value={attributes.buttonHoverBGColor}
+                                value={attributes.styles.buttonHoverBGColor}
                                 onChange={(value) => updateStyles({buttonHoverBGColor: value})}
                                 defaultColor="#66b1ff"
                               />
@@ -438,11 +444,11 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                               <FluentTypography
                                 label="Typography"
                                 settings={{
-                                    fontSize: attributes.buttonHoverTypography?.size?.lg || '',
-                                    fontWeight: attributes.buttonHoverTypography?.weight || '500',
-                                    lineHeight: attributes.buttonHoverTypography?.lineHeight || '',
-                                    letterSpacing: attributes.buttonHoverTypography?.letterSpacing || '',
-                                    textTransform: attributes.buttonHoverTypography?.textTransform || 'none'
+                                    fontSize: attributes.styles.buttonHoverTypography?.size?.lg || '',
+                                    fontWeight: attributes.styles.buttonHoverTypography?.weight || '500',
+                                    lineHeight: attributes.styles.buttonHoverTypography?.lineHeight || '',
+                                    letterSpacing: attributes.styles.buttonHoverTypography?.letterSpacing || '',
+                                    textTransform: attributes.styles.buttonHoverTypography?.textTransform || 'none'
                                 }}
                                 onChange={(changedTypo) => handleTypographyChange(changedTypo, 'buttonHoverTypography')}
                               />
@@ -450,56 +456,56 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                               {/* Padding */}
                               <FluentSpaceControl
                                 label="Padding"
-                                values={attributes.buttonHoverPadding}
+                                values={attributes.styles.buttonHoverPadding}
                                 onChange={(value) => updateStyles({ buttonHoverPadding: value })}
                               />
 
                               {/* Margin */}
                               <FluentSpaceControl
                                 label="Margin"
-                                values={attributes.buttonHoverMargin}
+                                values={attributes.styles.buttonHoverMargin}
                                 onChange={(value) => updateStyles({ buttonHoverMargin: value })}
                               />
 
                               {/* Box Shadow */}
                               <FluentBoxShadowControl
                                   label={__("Box Shadow")}
-                                  enabled={attributes.enableButtonHoverBoxShadow || false}
+                                  enabled={attributes.styles.enableButtonHoverBoxShadow || false}
                                   onToggle={(value) => updateStyles({ enableButtonHoverBoxShadow: value })}
-                                  color={attributes.buttonHoverBoxShadowColor}
+                                  color={attributes.styles.buttonHoverBoxShadowColor}
                                   onColorChange={(value) => updateStyles({ buttonHoverBoxShadowColor: value })}
-                                  position={attributes.buttonHoverBoxShadowPosition}
+                                  position={attributes.styles.buttonHoverBoxShadowPosition}
                                   onPositionChange={(value) => updateStyles({ buttonHoverBoxShadowPosition: value })}
-                                  horizontal={attributes.buttonHoverBoxShadowHorizontal}
+                                  horizontal={attributes.styles.buttonHoverBoxShadowHorizontal}
                                   onHorizontalChange={(value) => updateStyles({ buttonHoverBoxShadowHorizontal: value })}
-                                  horizontalUnit={attributes.buttonHoverBoxShadowHorizontalUnit}
+                                  horizontalUnit={attributes.styles.buttonHoverBoxShadowHorizontalUnit}
                                   onHorizontalUnitChange={(value) => updateStyles({ buttonHoverBoxShadowHorizontalUnit: value })}
-                                  vertical={attributes.buttonHoverBoxShadowVertical}
+                                  vertical={attributes.styles.buttonHoverBoxShadowVertical}
                                   onVerticalChange={(value) => updateStyles({ buttonHoverBoxShadowVertical: value })}
-                                  verticalUnit={attributes.buttonHoverBoxShadowVerticalUnit}
+                                  verticalUnit={attributes.styles.buttonHoverBoxShadowVerticalUnit}
                                   onVerticalUnitChange={(value) => updateStyles({ buttonHoverBoxShadowVerticalUnit: value })}
-                                  blur={attributes.buttonHoverBoxShadowBlur}
+                                  blur={attributes.styles.buttonHoverBoxShadowBlur}
                                   onBlurChange={(value) => updateStyles({ buttonHoverBoxShadowBlur: value })}
-                                  blurUnit={attributes.buttonHoverBoxShadowBlurUnit}
+                                  blurUnit={attributes.styles.buttonHoverBoxShadowBlurUnit}
                                   onBlurUnitChange={(value) => updateStyles({ buttonHoverBoxShadowBlurUnit: value })}
-                                  spread={attributes.buttonHoverBoxShadowSpread}
+                                  spread={attributes.styles.buttonHoverBoxShadowSpread}
                                   onSpreadChange={(value) => updateStyles({ buttonHoverBoxShadowSpread: value })}
-                                  spreadUnit={attributes.buttonHoverBoxShadowSpreadUnit}
+                                  spreadUnit={attributes.styles.buttonHoverBoxShadowSpreadUnit}
                                   onSpreadUnitChange={(value) => updateStyles({ buttonHoverBoxShadowSpreadUnit: value })}
                               />
 
                               {/* Button Border */}
                               <FluentBorderControl
                                   label={__("Border")}
-                                  enabled={attributes.enableButtonHoverBorder || false}
+                                  enabled={attributes.styles.enableButtonHoverBorder || false}
                                   onToggle={(value) => updateStyles({ enableButtonHoverBorder: value })}
-                                  borderType={attributes.buttonHoverBorderType}
+                                  borderType={attributes.styles.buttonHoverBorderType}
                                   onBorderTypeChange={(value) => updateStyles({ buttonHoverBorderType: value })}
-                                  borderColor={attributes.buttonHoverBorderColor}
+                                  borderColor={attributes.styles.buttonHoverBorderColor}
                                   onBorderColorChange={(value) => updateStyles({ buttonHoverBorderColor: value })}
-                                  borderWidth={attributes.buttonHoverBorderWidth}
+                                  borderWidth={attributes.styles.buttonHoverBorderWidth}
                                   onBorderWidthChange={(value) => updateStyles({ buttonHoverBorderWidth: value })}
-                                  borderRadius={attributes.buttonHoverBorderRadius}
+                                  borderRadius={attributes.styles.buttonHoverBorderRadius}
                                   onBorderRadiusChange={(value) => updateStyles({ buttonHoverBorderRadius: value })}
                               />
                           </>
@@ -530,7 +536,7 @@ const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
       <PanelBody title={__('Placeholder Styles')} initialOpen={false}>
           <FluentColorPicker
             label="Text Color"
-            value={attributes.placeholderColor}
+            value={attributes.styles.placeholderColor}
             onChange={(value) => updateStyles({placeholderColor: value})}
             defaultColor=""
           />
@@ -538,11 +544,11 @@ const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
           <FluentTypography
             label="Typography"
             settings={{
-                fontSize: attributes.placeholderTypography?.size?.lg || '',
-                fontWeight: attributes.placeholderTypography?.weight || '400',
-                lineHeight: attributes.placeholderTypography?.lineHeight || '',
-                letterSpacing: attributes.placeholderTypography?.letterSpacing || '',
-                textTransform: attributes.placeholderTypography?.textTransform || 'none'
+                fontSize: attributes.styles.placeholderTypography?.size?.lg || '',
+                fontWeight: attributes.styles.placeholderTypography?.weight || '400',
+                lineHeight: attributes.styles.placeholderTypography?.lineHeight || '',
+                letterSpacing: attributes.styles.placeholderTypography?.letterSpacing || '',
+                textTransform: attributes.styles.placeholderTypography?.textTransform || 'none'
             }}
             onChange={(changedTypo) => handleTypographyChange(changedTypo, 'placeholderTypography')}
           />
@@ -553,14 +559,14 @@ const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
 
 const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
     // Use local state to ensure the UI updates immediately
-    const [localSize, setLocalSize] = useState(attributes.radioCheckboxItemsSize || 15);
+    const [localSize, setLocalSize] = useState(attributes.styles.radioCheckboxItemsSize || 15);
 
     // Update local state when the attribute changes from outside
     useEffect(() => {
-        if (attributes.radioCheckboxItemsSize !== undefined && attributes.radioCheckboxItemsSize !== localSize) {
-            setLocalSize(attributes.radioCheckboxItemsSize);
+        if (attributes.styles.radioCheckboxItemsSize !== undefined && attributes.styles.radioCheckboxItemsSize !== localSize) {
+            setLocalSize(attributes.styles.radioCheckboxItemsSize);
         }
-    }, [attributes.radioCheckboxItemsSize]);
+    }, [attributes.styles.radioCheckboxItemsSize]);
 
     // Handle size change with immediate UI update
     const handleSizeChange = (value) => {
@@ -568,8 +574,6 @@ const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
         setLocalSize(value);
         // Update the actual attribute
         updateStyles({radioCheckboxItemsSize: value});
-        // Log for debugging
-        console.log('Radio/Checkbox size changed to:', value);
     };
 
     return (
@@ -577,7 +581,7 @@ const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
             {/* Label Text Styles */}
             <FluentColorPicker
                 label="Items Color"
-                value={attributes.radioCheckboxItemsColor}
+                value={attributes.styles.radioCheckboxItemsColor}
                 onChange={(value) => updateStyles({radioCheckboxItemsColor: value})}
                 defaultColor=""
             />
@@ -598,7 +602,10 @@ const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
 /**
  * Main TabGeneral component
  */
-const TabGeneral = ({ attributes, setAttributes, updateStyles, state, handlePresetChange }) => {
+const TabGeneral = ({ setAttributes, updateStyles, state, handlePresetChange }) => {
+    const attributes = useSelect((select) => {
+        return select('core/block-editor').getSelectedBlock().attributes;
+    });
     return (
       <>
           <StyleTemplatePanel

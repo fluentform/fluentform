@@ -14,12 +14,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 /**
  * Fluent Forms Alignment Control Component
  */
@@ -122,12 +122,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
 /* harmony import */ var _FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 var _wp$components = wp.components,
   BaseControl = _wp$components.BaseControl,
   ToggleControl = _wp$components.ToggleControl,
@@ -136,8 +136,6 @@ var _wp$element = wp.element,
   useState = _wp$element.useState,
   useEffect = _wp$element.useEffect;
 var __ = wp.i18n.__;
-
-
 
 
 
@@ -228,12 +226,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 var _wp$components = wp.components,
   BaseControl = _wp$components.BaseControl,
   ToggleControl = _wp$components.ToggleControl,
@@ -242,8 +240,6 @@ var _wp$element = wp.element,
   useState = _wp$element.useState,
   useEffect = _wp$element.useEffect;
 var __ = wp.i18n.__;
-
-
 
 
 var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
@@ -291,9 +287,9 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     localBlur = _useState8[0],
     setLocalBlur = _useState8[1];
   var _useState9 = useState(spread || ''),
-    _useState10 = _slicedToArray(_useState9, 2),
-    localSpread = _useState10[0],
-    setLocalSpread = _useState10[1];
+    _useState0 = _slicedToArray(_useState9, 2),
+    localSpread = _useState0[0],
+    setLocalSpread = _useState0[1];
 
   // Update internal state when props change
   useEffect(function () {
@@ -475,13 +471,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 /**
  * Fluent Forms Custom Color Picker Component
  */
@@ -501,15 +496,25 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
     value = _ref.value,
     _onChange = _ref.onChange,
     _ref$defaultColor = _ref.defaultColor,
-    defaultColor = _ref$defaultColor === void 0 ? '' : _ref$defaultColor;
+    defaultColor = _ref$defaultColor === void 0 ? '' : _ref$defaultColor,
+    _ref$styles = _ref.styles,
+    styles = _ref$styles === void 0 ? {} : _ref$styles;
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     isOpen = _useState2[0],
     setIsOpen = _useState2[1];
-  var _useState3 = useState(value || ''),
+  var _useState3 = useState(value || defaultColor),
     _useState4 = _slicedToArray(_useState3, 2),
     currentColor = _useState4[0],
     setCurrentColor = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    isTransparent = _useState6[0],
+    setIsTransparent = _useState6[1];
+  var _useState7 = useState(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    isColorChanged = _useState8[0],
+    setIsColorChanged = _useState8[1];
   var containerRef = useRef(null);
   var buttonRef = useRef(null);
   var popoverRef = useRef(null);
@@ -518,9 +523,9 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
   useEffect(function () {
     setCurrentColor(value || '');
   }, [value]);
-
-  // Check if current value is different from default
-  var isColorChanged = currentColor !== defaultColor && currentColor !== undefined && currentColor !== null;
+  useEffect(function () {
+    setIsColorChanged(currentColor !== defaultColor && currentColor !== undefined && currentColor !== null);
+  }, [currentColor, defaultColor]);
   var toggleColorPicker = function toggleColorPicker(e) {
     e.stopPropagation();
     setIsOpen(!isOpen);
@@ -528,14 +533,6 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
   var resetToDefault = function resetToDefault() {
     setCurrentColor(defaultColor);
     _onChange(defaultColor);
-  };
-
-  // Determine if we should show the transparent pattern
-  var isTransparent = !currentColor || currentColor === 'transparent' || typeof currentColor === 'string' && currentColor.includes('rgba') && (currentColor.endsWith(',0)') || currentColor.endsWith(', 0)'));
-
-  // Prepare the style for the color swatch
-  var swatchStyle = {
-    backgroundColor: currentColor || 'transparent'
   };
 
   // Handle clicks outside to close the color picker
@@ -582,7 +579,9 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
           ref: buttonRef,
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
             className: "ffblock-color-swatch ".concat(isTransparent ? 'ffblock-color-transparent-pattern' : ''),
-            style: swatchStyle,
+            style: {
+              backgroundColor: currentColor || "transparent"
+            },
             title: currentColor || 'transparent'
           })
         })]
@@ -718,18 +717,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 
-
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 /**
  * Fluent Forms Custom Space/Margin/Padding Control
  */
@@ -786,9 +784,9 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
     hasModifiedValues = _useState8[0],
     setHasModifiedValues = _useState8[1];
   var _useState9 = useState({}),
-    _useState10 = _slicedToArray(_useState9, 2),
-    currentValues = _useState10[0],
-    setCurrentValues = _useState10[1];
+    _useState0 = _slicedToArray(_useState9, 2),
+    currentValues = _useState0[0],
+    setCurrentValues = _useState0[1];
 
   // Default values structure
   var defaultValues = {
@@ -1184,18 +1182,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 
-
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 /**
  * Fluent Forms Custom Typography Control Component
  */
@@ -1241,13 +1238,13 @@ var FluentTypography = function FluentTypography(_ref) {
     localLineHeight = _useState8[0],
     setLocalLineHeight = _useState8[1];
   var _useState9 = useState(settings.letterSpacing || ''),
-    _useState10 = _slicedToArray(_useState9, 2),
-    localLetterSpacing = _useState10[0],
-    setLocalLetterSpacing = _useState10[1];
-  var _useState11 = useState(settings.textTransform || 'none'),
-    _useState12 = _slicedToArray(_useState11, 2),
-    localTextTransform = _useState12[0],
-    setLocalTextTransform = _useState12[1];
+    _useState0 = _slicedToArray(_useState9, 2),
+    localLetterSpacing = _useState0[0],
+    setLocalLetterSpacing = _useState0[1];
+  var _useState1 = useState(settings.textTransform || 'none'),
+    _useState10 = _slicedToArray(_useState1, 2),
+    localTextTransform = _useState10[0],
+    setLocalTextTransform = _useState10[1];
 
   // Update local state when settings change
   useEffect(function () {
@@ -1448,7 +1445,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
-
 var _wp$components = wp.components,
   BaseControl = _wp$components.BaseControl,
   SelectControl = _wp$components.SelectControl;
@@ -1528,14 +1524,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 var _wp$element = wp.element,
   useState = _wp$element.useState,
@@ -1549,6 +1545,7 @@ var _wp$components = wp.components,
   PanelRow = _wp$components.PanelRow,
   RangeControl = _wp$components.RangeControl,
   TabPanel = _wp$components.TabPanel;
+var useSelect = wp.data.useSelect;
 
 // Custom components
 
@@ -1562,8 +1559,6 @@ var _wp$components = wp.components,
 
 
 // Constants
-
-
 
 var DEFAULT_COLORS = [{
   name: 'Theme Blue',
@@ -1618,7 +1613,7 @@ var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
  * Component for label styling options
  */
 var LabelStylesPanel = function LabelStylesPanel(_ref2) {
-  var _attributes$labelTypo, _attributes$labelTypo2, _attributes$labelTypo3, _attributes$labelTypo4, _attributes$labelTypo5;
+  var _attributes$styles$la, _attributes$styles$la2, _attributes$styles$la3, _attributes$styles$la4, _attributes$styles$la5;
   var attributes = _ref2.attributes,
     updateStyles = _ref2.updateStyles;
   var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
@@ -1630,7 +1625,7 @@ var LabelStylesPanel = function LabelStylesPanel(_ref2) {
     initialOpen: false,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
       label: "Color",
-      value: attributes.labelColor,
+      value: attributes.styles.labelColor,
       onChange: function onChange(value) {
         return updateStyles({
           labelColor: value
@@ -1640,11 +1635,11 @@ var LabelStylesPanel = function LabelStylesPanel(_ref2) {
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
       label: "Typography",
       settings: {
-        fontSize: ((_attributes$labelTypo = attributes.labelTypography) === null || _attributes$labelTypo === void 0 || (_attributes$labelTypo = _attributes$labelTypo.size) === null || _attributes$labelTypo === void 0 ? void 0 : _attributes$labelTypo.lg) || '',
-        fontWeight: ((_attributes$labelTypo2 = attributes.labelTypography) === null || _attributes$labelTypo2 === void 0 ? void 0 : _attributes$labelTypo2.weight) || '400',
-        lineHeight: ((_attributes$labelTypo3 = attributes.labelTypography) === null || _attributes$labelTypo3 === void 0 ? void 0 : _attributes$labelTypo3.lineHeight) || '',
-        letterSpacing: ((_attributes$labelTypo4 = attributes.labelTypography) === null || _attributes$labelTypo4 === void 0 ? void 0 : _attributes$labelTypo4.letterSpacing) || '',
-        textTransform: ((_attributes$labelTypo5 = attributes.labelTypography) === null || _attributes$labelTypo5 === void 0 ? void 0 : _attributes$labelTypo5.textTransform) || 'none'
+        fontSize: ((_attributes$styles$la = attributes.styles.labelTypography) === null || _attributes$styles$la === void 0 || (_attributes$styles$la = _attributes$styles$la.size) === null || _attributes$styles$la === void 0 ? void 0 : _attributes$styles$la.lg) || '',
+        fontWeight: ((_attributes$styles$la2 = attributes.styles.labelTypography) === null || _attributes$styles$la2 === void 0 ? void 0 : _attributes$styles$la2.weight) || '400',
+        lineHeight: ((_attributes$styles$la3 = attributes.styles.labelTypography) === null || _attributes$styles$la3 === void 0 ? void 0 : _attributes$styles$la3.lineHeight) || '',
+        letterSpacing: ((_attributes$styles$la4 = attributes.styles.labelTypography) === null || _attributes$styles$la4 === void 0 ? void 0 : _attributes$styles$la4.letterSpacing) || '',
+        textTransform: ((_attributes$styles$la5 = attributes.styles.labelTypography) === null || _attributes$styles$la5 === void 0 ? void 0 : _attributes$styles$la5.textTransform) || 'none'
       },
       onChange: function onChange(changedTypo) {
         return handleTypographyChange(changedTypo, 'labelTypography');
@@ -1680,41 +1675,42 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
       }],
       children: function children(tab) {
         if (tab.name === 'normal') {
-          var _attributes$inputTypo, _attributes$inputTypo2, _attributes$inputTypo3, _attributes$inputTypo4, _attributes$inputTypo5;
+          var _attributes$styles, _attributes$styles2, _attributes$styles$in, _attributes$styles$in2, _attributes$styles$in3, _attributes$styles$in4, _attributes$styles$in5;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Text Color",
-              value: attributes.inputTextColor,
+              value: ((_attributes$styles = attributes.styles) === null || _attributes$styles === void 0 ? void 0 : _attributes$styles.inputTextColor) || '',
               onChange: function onChange(value) {
-                return updateStyles({
+                updateStyles({
                   inputTextColor: value
                 });
               },
               defaultColor: ""
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            }, "input-text-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Background Color",
-              value: attributes.inputBackgroundColor,
+              value: ((_attributes$styles2 = attributes.styles) === null || _attributes$styles2 === void 0 ? void 0 : _attributes$styles2.inputBackgroundColor) || '',
+              styles: attributes.styles,
               onChange: function onChange(value) {
-                return updateStyles({
+                updateStyles({
                   inputBackgroundColor: value
                 });
               },
               defaultColor: ""
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+            }, "input-bg-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
               label: "Typography",
               settings: {
-                fontSize: ((_attributes$inputTypo = attributes.inputTypography) === null || _attributes$inputTypo === void 0 || (_attributes$inputTypo = _attributes$inputTypo.size) === null || _attributes$inputTypo === void 0 ? void 0 : _attributes$inputTypo.lg) || '',
-                fontWeight: ((_attributes$inputTypo2 = attributes.inputTypography) === null || _attributes$inputTypo2 === void 0 ? void 0 : _attributes$inputTypo2.weight) || '400',
-                lineHeight: ((_attributes$inputTypo3 = attributes.inputTypography) === null || _attributes$inputTypo3 === void 0 ? void 0 : _attributes$inputTypo3.lineHeight) || '',
-                letterSpacing: ((_attributes$inputTypo4 = attributes.inputTypography) === null || _attributes$inputTypo4 === void 0 ? void 0 : _attributes$inputTypo4.letterSpacing) || '',
-                textTransform: ((_attributes$inputTypo5 = attributes.inputTypography) === null || _attributes$inputTypo5 === void 0 ? void 0 : _attributes$inputTypo5.textTransform) || 'none'
+                fontSize: ((_attributes$styles$in = attributes.styles.inputTypography) === null || _attributes$styles$in === void 0 || (_attributes$styles$in = _attributes$styles$in.size) === null || _attributes$styles$in === void 0 ? void 0 : _attributes$styles$in.lg) || '',
+                fontWeight: ((_attributes$styles$in2 = attributes.styles.inputTypography) === null || _attributes$styles$in2 === void 0 ? void 0 : _attributes$styles$in2.weight) || '400',
+                lineHeight: ((_attributes$styles$in3 = attributes.styles.inputTypography) === null || _attributes$styles$in3 === void 0 ? void 0 : _attributes$styles$in3.lineHeight) || '',
+                letterSpacing: ((_attributes$styles$in4 = attributes.styles.inputTypography) === null || _attributes$styles$in4 === void 0 ? void 0 : _attributes$styles$in4.letterSpacing) || '',
+                textTransform: ((_attributes$styles$in5 = attributes.styles.inputTypography) === null || _attributes$styles$in5 === void 0 ? void 0 : _attributes$styles$in5.textTransform) || 'none'
               },
               onChange: function onChange(changedTypo) {
                 return handleTypographyChange(changedTypo, 'inputTypography');
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Spacing",
-              values: attributes.inputSpacing,
+              values: attributes.styles.inputSpacing,
               onChange: function onChange(value) {
                 return updateStyles({
                   inputSpacing: value
@@ -1722,31 +1718,31 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
-              enabled: attributes.enableInputBorder || false,
+              enabled: attributes.styles.enableInputBorder || false,
               onToggle: function onToggle(value) {
                 return updateStyles({
                   enableInputBorder: value
                 });
               },
-              borderType: attributes.inputBorderType,
+              borderType: attributes.styles.inputBorderType,
               onBorderTypeChange: function onBorderTypeChange(value) {
                 return updateStyles({
                   inputBorderType: value
                 });
               },
-              borderColor: attributes.inputBorderColor,
+              borderColor: attributes.styles.inputBorderColor,
               onBorderColorChange: function onBorderColorChange(value) {
                 return updateStyles({
                   inputBorderColor: value
                 });
               },
-              borderWidth: attributes.inputBorderWidth,
+              borderWidth: attributes.styles.inputBorderWidth,
               onBorderWidthChange: function onBorderWidthChange(value) {
                 return updateStyles({
                   inputBorderWidth: value
                 });
               },
-              borderRadius: attributes.inputBorderRadius,
+              borderRadius: attributes.styles.inputBorderRadius,
               onBorderRadiusChange: function onBorderRadiusChange(value) {
                 return updateStyles({
                   inputBorderRadius: value
@@ -1754,67 +1750,67 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
-              enabled: attributes.enableInputBoxShadow || false,
+              enabled: attributes.styles.enableInputBoxShadow || false,
               onToggle: function onToggle(value) {
                 return updateStyles({
                   enableInputBoxShadow: value
                 });
               },
-              color: attributes.inputBoxShadowColor,
+              color: attributes.styles.inputBoxShadowColor,
               onColorChange: function onColorChange(value) {
                 return updateStyles({
                   inputBoxShadowColor: value
                 });
               },
-              position: attributes.inputBoxShadowPosition,
+              position: attributes.styles.inputBoxShadowPosition,
               onPositionChange: function onPositionChange(value) {
                 return updateStyles({
                   inputBoxShadowPosition: value
                 });
               },
-              horizontal: attributes.inputBoxShadowHorizontal,
+              horizontal: attributes.styles.inputBoxShadowHorizontal,
               onHorizontalChange: function onHorizontalChange(value) {
                 return updateStyles({
                   inputBoxShadowHorizontal: value
                 });
               },
-              horizontalUnit: attributes.inputBoxShadowHorizontalUnit,
+              horizontalUnit: attributes.styles.inputBoxShadowHorizontalUnit,
               onHorizontalUnitChange: function onHorizontalUnitChange(value) {
                 return updateStyles({
                   inputBoxShadowHorizontalUnit: value
                 });
               },
-              vertical: attributes.inputBoxShadowVertical,
+              vertical: attributes.styles.inputBoxShadowVertical,
               onVerticalChange: function onVerticalChange(value) {
                 return updateStyles({
                   inputBoxShadowVertical: value
                 });
               },
-              verticalUnit: attributes.inputBoxShadowVerticalUnit,
+              verticalUnit: attributes.styles.inputBoxShadowVerticalUnit,
               onVerticalUnitChange: function onVerticalUnitChange(value) {
                 return updateStyles({
                   inputBoxShadowVerticalUnit: value
                 });
               },
-              blur: attributes.inputBoxShadowBlur,
+              blur: attributes.styles.inputBoxShadowBlur,
               onBlurChange: function onBlurChange(value) {
                 return updateStyles({
                   inputBoxShadowBlur: value
                 });
               },
-              blurUnit: attributes.inputBoxShadowBlurUnit,
+              blurUnit: attributes.styles.inputBoxShadowBlurUnit,
               onBlurUnitChange: function onBlurUnitChange(value) {
                 return updateStyles({
                   inputBoxShadowBlurUnit: value
                 });
               },
-              spread: attributes.inputBoxShadowSpread,
+              spread: attributes.styles.inputBoxShadowSpread,
               onSpreadChange: function onSpreadChange(value) {
                 return updateStyles({
                   inputBoxShadowSpread: value
                 });
               },
-              spreadUnit: attributes.inputBoxShadowSpreadUnit,
+              spreadUnit: attributes.styles.inputBoxShadowSpreadUnit,
               onSpreadUnitChange: function onSpreadUnitChange(value) {
                 return updateStyles({
                   inputBoxShadowSpreadUnit: value
@@ -1823,28 +1819,29 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
             })]
           });
         } else if (tab.name === 'focus') {
+          var _attributes$styles3;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Text Color",
-              value: attributes.inputTextFocusColor,
+              value: attributes.styles.inputTextFocusColor || '',
               onChange: function onChange(value) {
-                return updateStyles({
+                updateStyles({
                   inputTextFocusColor: value
                 });
               },
               defaultColor: ""
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            }, "input-text-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Background Color",
-              value: attributes.inputBackgroundFocusColor,
+              value: ((_attributes$styles3 = attributes.styles) === null || _attributes$styles3 === void 0 ? void 0 : _attributes$styles3.inputBackgroundFocusColor) || '',
               onChange: function onChange(value) {
-                return updateStyles({
+                updateStyles({
                   inputBackgroundFocusColor: value
                 });
               },
               defaultColor: ""
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            }, "input-bg-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Spacing",
-              values: attributes.inputFocusSpacing,
+              values: attributes.styles.inputFocusSpacing,
               onChange: function onChange(value) {
                 return updateStyles({
                   inputFocusSpacing: value
@@ -1852,31 +1849,31 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
-              enabled: attributes.enableInputBorderFocus || false,
+              enabled: attributes.styles.enableInputBorderFocus || false,
               onToggle: function onToggle(value) {
                 return updateStyles({
                   enableInputBorderFocus: value
                 });
               },
-              borderType: attributes.inputBorderTypeFocus,
+              borderType: attributes.styles.inputBorderTypeFocus,
               onBorderTypeChange: function onBorderTypeChange(value) {
                 return updateStyles({
                   inputBorderTypeFocus: value
                 });
               },
-              borderColor: attributes.inputBorderColorFocus,
+              borderColor: attributes.styles.inputBorderColorFocus,
               onBorderColorChange: function onBorderColorChange(value) {
                 return updateStyles({
                   inputBorderColorFocus: value
                 });
               },
-              borderWidth: attributes.inputBorderWidthFocus,
+              borderWidth: attributes.styles.inputBorderWidthFocus,
               onBorderWidthChange: function onBorderWidthChange(value) {
                 return updateStyles({
                   inputBorderWidthFocus: value
                 });
               },
-              borderRadius: attributes.inputBorderRadiusFocus,
+              borderRadius: attributes.styles.inputBorderRadiusFocus,
               onBorderRadiusChange: function onBorderRadiusChange(value) {
                 return updateStyles({
                   inputBorderRadiusFocus: value
@@ -1884,67 +1881,67 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
-              enabled: attributes.enableInputBoxShadowFocus || false,
+              enabled: attributes.styles.enableInputBoxShadowFocus || false,
               onToggle: function onToggle(value) {
                 return updateStyles({
                   enableInputBoxShadowFocus: value
                 });
               },
-              color: attributes.inputBoxShadowColorFocus,
+              color: attributes.styles.inputBoxShadowColorFocus,
               onColorChange: function onColorChange(value) {
                 return updateStyles({
                   inputBoxShadowColorFocus: value
                 });
               },
-              position: attributes.inputBoxShadowPositionFocus,
+              position: attributes.styles.inputBoxShadowPositionFocus,
               onPositionChange: function onPositionChange(value) {
                 return updateStyles({
                   inputBoxShadowPositionFocus: value
                 });
               },
-              horizontal: attributes.inputBoxShadowHorizontalFocus,
+              horizontal: attributes.styles.inputBoxShadowHorizontalFocus,
               onHorizontalChange: function onHorizontalChange(value) {
                 return updateStyles({
                   inputBoxShadowHorizontalFocus: value
                 });
               },
-              horizontalUnit: attributes.inputBoxShadowHorizontalUnitFocus,
+              horizontalUnit: attributes.styles.inputBoxShadowHorizontalUnitFocus,
               onHorizontalUnitChange: function onHorizontalUnitChange(value) {
                 return updateStyles({
                   inputBoxShadowHorizontalUnitFocus: value
                 });
               },
-              vertical: attributes.inputBoxShadowVerticalFocus,
+              vertical: attributes.styles.inputBoxShadowVerticalFocus,
               onVerticalChange: function onVerticalChange(value) {
                 return updateStyles({
                   inputBoxShadowVerticalFocus: value
                 });
               },
-              verticalUnit: attributes.inputBoxShadowVerticalUnitFocus,
+              verticalUnit: attributes.styles.inputBoxShadowVerticalUnitFocus,
               onVerticalUnitChange: function onVerticalUnitChange(value) {
                 return updateStyles({
                   inputBoxShadowVerticalUnitFocus: value
                 });
               },
-              blur: attributes.inputBoxShadowBlurFocus,
+              blur: attributes.styles.inputBoxShadowBlurFocus,
               onBlurChange: function onBlurChange(value) {
                 return updateStyles({
                   inputBoxShadowBlurFocus: value
                 });
               },
-              blurUnit: attributes.inputBoxShadowBlurUnitFocus,
+              blurUnit: attributes.styles.inputBoxShadowBlurUnitFocus,
               onBlurUnitChange: function onBlurUnitChange(value) {
                 return updateStyles({
                   inputBoxShadowBlurUnitFocus: value
                 });
               },
-              spread: attributes.inputBoxShadowSpreadFocus,
+              spread: attributes.styles.inputBoxShadowSpreadFocus,
               onSpreadChange: function onSpreadChange(value) {
                 return updateStyles({
                   inputBoxShadowSpreadFocus: value
                 });
               },
-              spreadUnit: attributes.inputBoxShadowSpreadUnitFocus,
+              spreadUnit: attributes.styles.inputBoxShadowSpreadUnitFocus,
               onSpreadUnitChange: function onSpreadUnitChange(value) {
                 return updateStyles({
                   inputBoxShadowSpreadUnitFocus: value
@@ -1987,7 +1984,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
         className: "ffblock-label",
         children: __('Alignment')
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        value: attributes.buttonAlignment,
+        value: attributes.styles.buttonAlignment,
         onChange: function onChange(value) {
           return updateStyles({
             buttonAlignment: value
@@ -2009,7 +2006,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(RangeControl, {
       label: __('Width (%)'),
-      value: attributes.buttonWidth,
+      value: attributes.styles.buttonWidth,
       onChange: function onChange(value) {
         return updateStyles({
           buttonWidth: value
@@ -2034,11 +2031,11 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
       }],
       children: function children(tab) {
         if (tab.name === 'normal') {
-          var _attributes$buttonTyp, _attributes$buttonTyp2, _attributes$buttonTyp3, _attributes$buttonTyp4, _attributes$buttonTyp5;
+          var _attributes$styles$bu, _attributes$styles$bu2, _attributes$styles$bu3, _attributes$styles$bu4, _attributes$styles$bu5;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Text Color",
-              value: attributes.buttonColor,
+              value: attributes.styles.buttonColor,
               onChange: function onChange(value) {
                 return updateStyles({
                   buttonColor: value
@@ -2047,7 +2044,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               defaultColor: "#ffffff"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Background Color",
-              value: attributes.buttonBGColor,
+              value: attributes.styles.buttonBGColor,
               onChange: function onChange(value) {
                 return updateStyles({
                   buttonBGColor: value
@@ -2057,18 +2054,18 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
               label: "Typography",
               settings: {
-                fontSize: ((_attributes$buttonTyp = attributes.buttonTypography) === null || _attributes$buttonTyp === void 0 || (_attributes$buttonTyp = _attributes$buttonTyp.size) === null || _attributes$buttonTyp === void 0 ? void 0 : _attributes$buttonTyp.lg) || '',
-                fontWeight: ((_attributes$buttonTyp2 = attributes.buttonTypography) === null || _attributes$buttonTyp2 === void 0 ? void 0 : _attributes$buttonTyp2.weight) || '500',
-                lineHeight: ((_attributes$buttonTyp3 = attributes.buttonTypography) === null || _attributes$buttonTyp3 === void 0 ? void 0 : _attributes$buttonTyp3.lineHeight) || '',
-                letterSpacing: ((_attributes$buttonTyp4 = attributes.buttonTypography) === null || _attributes$buttonTyp4 === void 0 ? void 0 : _attributes$buttonTyp4.letterSpacing) || '',
-                textTransform: ((_attributes$buttonTyp5 = attributes.buttonTypography) === null || _attributes$buttonTyp5 === void 0 ? void 0 : _attributes$buttonTyp5.textTransform) || 'none'
+                fontSize: ((_attributes$styles$bu = attributes.styles.buttonTypography) === null || _attributes$styles$bu === void 0 || (_attributes$styles$bu = _attributes$styles$bu.size) === null || _attributes$styles$bu === void 0 ? void 0 : _attributes$styles$bu.lg) || '',
+                fontWeight: ((_attributes$styles$bu2 = attributes.styles.buttonTypography) === null || _attributes$styles$bu2 === void 0 ? void 0 : _attributes$styles$bu2.weight) || '500',
+                lineHeight: ((_attributes$styles$bu3 = attributes.styles.buttonTypography) === null || _attributes$styles$bu3 === void 0 ? void 0 : _attributes$styles$bu3.lineHeight) || '',
+                letterSpacing: ((_attributes$styles$bu4 = attributes.styles.buttonTypography) === null || _attributes$styles$bu4 === void 0 ? void 0 : _attributes$styles$bu4.letterSpacing) || '',
+                textTransform: ((_attributes$styles$bu5 = attributes.styles.buttonTypography) === null || _attributes$styles$bu5 === void 0 ? void 0 : _attributes$styles$bu5.textTransform) || 'none'
               },
               onChange: function onChange(changedTypo) {
                 return handleTypographyChange(changedTypo, 'buttonTypography');
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Padding",
-              values: attributes.buttonPadding,
+              values: attributes.styles.buttonPadding,
               onChange: function onChange(value) {
                 return updateStyles({
                   buttonPadding: value
@@ -2076,7 +2073,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Margin",
-              values: attributes.buttonMargin,
+              values: attributes.styles.buttonMargin,
               onChange: function onChange(value) {
                 return updateStyles({
                   buttonMargin: value
@@ -2084,67 +2081,67 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
-              enabled: attributes.enableButtonBoxShadow || false,
+              enabled: attributes.styles.enableButtonBoxShadow || false,
               onToggle: function onToggle(value) {
                 return updateStyles({
                   enableButtonBoxShadow: value
                 });
               },
-              color: attributes.buttonBoxShadowColor,
+              color: attributes.styles.buttonBoxShadowColor,
               onColorChange: function onColorChange(value) {
                 return updateStyles({
                   buttonBoxShadowColor: value
                 });
               },
-              position: attributes.buttonBoxShadowPosition,
+              position: attributes.styles.buttonBoxShadowPosition,
               onPositionChange: function onPositionChange(value) {
                 return updateStyles({
                   buttonBoxShadowPosition: value
                 });
               },
-              horizontal: attributes.buttonBoxShadowHorizontal,
+              horizontal: attributes.styles.buttonBoxShadowHorizontal,
               onHorizontalChange: function onHorizontalChange(value) {
                 return updateStyles({
                   buttonBoxShadowHorizontal: value
                 });
               },
-              horizontalUnit: attributes.buttonBoxShadowHorizontalUnit,
+              horizontalUnit: attributes.styles.buttonBoxShadowHorizontalUnit,
               onHorizontalUnitChange: function onHorizontalUnitChange(value) {
                 return updateStyles({
                   buttonBoxShadowHorizontalUnit: value
                 });
               },
-              vertical: attributes.buttonBoxShadowVertical,
+              vertical: attributes.styles.buttonBoxShadowVertical,
               onVerticalChange: function onVerticalChange(value) {
                 return updateStyles({
                   buttonBoxShadowVertical: value
                 });
               },
-              verticalUnit: attributes.buttonBoxShadowVerticalUnit,
+              verticalUnit: attributes.styles.buttonBoxShadowVerticalUnit,
               onVerticalUnitChange: function onVerticalUnitChange(value) {
                 return updateStyles({
                   buttonBoxShadowVerticalUnit: value
                 });
               },
-              blur: attributes.buttonBoxShadowBlur,
+              blur: attributes.styles.buttonBoxShadowBlur,
               onBlurChange: function onBlurChange(value) {
                 return updateStyles({
                   buttonBoxShadowBlur: value
                 });
               },
-              blurUnit: attributes.buttonBoxShadowBlurUnit,
+              blurUnit: attributes.styles.buttonBoxShadowBlurUnit,
               onBlurUnitChange: function onBlurUnitChange(value) {
                 return updateStyles({
                   buttonBoxShadowBlurUnit: value
                 });
               },
-              spread: attributes.buttonBoxShadowSpread,
+              spread: attributes.styles.buttonBoxShadowSpread,
               onSpreadChange: function onSpreadChange(value) {
                 return updateStyles({
                   buttonBoxShadowSpread: value
                 });
               },
-              spreadUnit: attributes.buttonBoxShadowSpreadUnit,
+              spreadUnit: attributes.styles.buttonBoxShadowSpreadUnit,
               onSpreadUnitChange: function onSpreadUnitChange(value) {
                 return updateStyles({
                   buttonBoxShadowSpreadUnit: value
@@ -2152,31 +2149,31 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
-              enabled: attributes.enableButtonBorder || false,
+              enabled: attributes.styles.enableButtonBorder || false,
               onToggle: function onToggle(value) {
                 return updateStyles({
                   enableButtonBorder: value
                 });
               },
-              borderType: attributes.buttonBorderType,
+              borderType: attributes.styles.buttonBorderType,
               onBorderTypeChange: function onBorderTypeChange(value) {
                 return updateStyles({
                   buttonBorderType: value
                 });
               },
-              borderColor: attributes.buttonBorderColor,
+              borderColor: attributes.styles.buttonBorderColor,
               onBorderColorChange: function onBorderColorChange(value) {
                 return updateStyles({
                   buttonBorderColor: value
                 });
               },
-              borderWidth: attributes.buttonBorderWidth,
+              borderWidth: attributes.styles.buttonBorderWidth,
               onBorderWidthChange: function onBorderWidthChange(value) {
                 return updateStyles({
                   buttonBorderWidth: value
                 });
               },
-              borderRadius: attributes.buttonBorderRadius,
+              borderRadius: attributes.styles.buttonBorderRadius,
               onBorderRadiusChange: function onBorderRadiusChange(value) {
                 return updateStyles({
                   buttonBorderRadius: value
@@ -2185,11 +2182,11 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
             })]
           });
         } else if (tab.name === 'hover') {
-          var _attributes$buttonHov, _attributes$buttonHov2, _attributes$buttonHov3, _attributes$buttonHov4, _attributes$buttonHov5;
+          var _attributes$styles$bu6, _attributes$styles$bu7, _attributes$styles$bu8, _attributes$styles$bu9, _attributes$styles$bu0;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Text Color",
-              value: attributes.buttonHoverColor,
+              value: attributes.styles.buttonHoverColor,
               onChange: function onChange(value) {
                 return updateStyles({
                   buttonHoverColor: value
@@ -2198,7 +2195,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               defaultColor: "#ffffff"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Background Color",
-              value: attributes.buttonHoverBGColor,
+              value: attributes.styles.buttonHoverBGColor,
               onChange: function onChange(value) {
                 return updateStyles({
                   buttonHoverBGColor: value
@@ -2208,18 +2205,18 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
               label: "Typography",
               settings: {
-                fontSize: ((_attributes$buttonHov = attributes.buttonHoverTypography) === null || _attributes$buttonHov === void 0 || (_attributes$buttonHov = _attributes$buttonHov.size) === null || _attributes$buttonHov === void 0 ? void 0 : _attributes$buttonHov.lg) || '',
-                fontWeight: ((_attributes$buttonHov2 = attributes.buttonHoverTypography) === null || _attributes$buttonHov2 === void 0 ? void 0 : _attributes$buttonHov2.weight) || '500',
-                lineHeight: ((_attributes$buttonHov3 = attributes.buttonHoverTypography) === null || _attributes$buttonHov3 === void 0 ? void 0 : _attributes$buttonHov3.lineHeight) || '',
-                letterSpacing: ((_attributes$buttonHov4 = attributes.buttonHoverTypography) === null || _attributes$buttonHov4 === void 0 ? void 0 : _attributes$buttonHov4.letterSpacing) || '',
-                textTransform: ((_attributes$buttonHov5 = attributes.buttonHoverTypography) === null || _attributes$buttonHov5 === void 0 ? void 0 : _attributes$buttonHov5.textTransform) || 'none'
+                fontSize: ((_attributes$styles$bu6 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu6 === void 0 || (_attributes$styles$bu6 = _attributes$styles$bu6.size) === null || _attributes$styles$bu6 === void 0 ? void 0 : _attributes$styles$bu6.lg) || '',
+                fontWeight: ((_attributes$styles$bu7 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu7 === void 0 ? void 0 : _attributes$styles$bu7.weight) || '500',
+                lineHeight: ((_attributes$styles$bu8 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu8 === void 0 ? void 0 : _attributes$styles$bu8.lineHeight) || '',
+                letterSpacing: ((_attributes$styles$bu9 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu9 === void 0 ? void 0 : _attributes$styles$bu9.letterSpacing) || '',
+                textTransform: ((_attributes$styles$bu0 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu0 === void 0 ? void 0 : _attributes$styles$bu0.textTransform) || 'none'
               },
               onChange: function onChange(changedTypo) {
                 return handleTypographyChange(changedTypo, 'buttonHoverTypography');
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Padding",
-              values: attributes.buttonHoverPadding,
+              values: attributes.styles.buttonHoverPadding,
               onChange: function onChange(value) {
                 return updateStyles({
                   buttonHoverPadding: value
@@ -2227,7 +2224,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Margin",
-              values: attributes.buttonHoverMargin,
+              values: attributes.styles.buttonHoverMargin,
               onChange: function onChange(value) {
                 return updateStyles({
                   buttonHoverMargin: value
@@ -2235,67 +2232,67 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
-              enabled: attributes.enableButtonHoverBoxShadow || false,
+              enabled: attributes.styles.enableButtonHoverBoxShadow || false,
               onToggle: function onToggle(value) {
                 return updateStyles({
                   enableButtonHoverBoxShadow: value
                 });
               },
-              color: attributes.buttonHoverBoxShadowColor,
+              color: attributes.styles.buttonHoverBoxShadowColor,
               onColorChange: function onColorChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowColor: value
                 });
               },
-              position: attributes.buttonHoverBoxShadowPosition,
+              position: attributes.styles.buttonHoverBoxShadowPosition,
               onPositionChange: function onPositionChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowPosition: value
                 });
               },
-              horizontal: attributes.buttonHoverBoxShadowHorizontal,
+              horizontal: attributes.styles.buttonHoverBoxShadowHorizontal,
               onHorizontalChange: function onHorizontalChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowHorizontal: value
                 });
               },
-              horizontalUnit: attributes.buttonHoverBoxShadowHorizontalUnit,
+              horizontalUnit: attributes.styles.buttonHoverBoxShadowHorizontalUnit,
               onHorizontalUnitChange: function onHorizontalUnitChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowHorizontalUnit: value
                 });
               },
-              vertical: attributes.buttonHoverBoxShadowVertical,
+              vertical: attributes.styles.buttonHoverBoxShadowVertical,
               onVerticalChange: function onVerticalChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowVertical: value
                 });
               },
-              verticalUnit: attributes.buttonHoverBoxShadowVerticalUnit,
+              verticalUnit: attributes.styles.buttonHoverBoxShadowVerticalUnit,
               onVerticalUnitChange: function onVerticalUnitChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowVerticalUnit: value
                 });
               },
-              blur: attributes.buttonHoverBoxShadowBlur,
+              blur: attributes.styles.buttonHoverBoxShadowBlur,
               onBlurChange: function onBlurChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowBlur: value
                 });
               },
-              blurUnit: attributes.buttonHoverBoxShadowBlurUnit,
+              blurUnit: attributes.styles.buttonHoverBoxShadowBlurUnit,
               onBlurUnitChange: function onBlurUnitChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowBlurUnit: value
                 });
               },
-              spread: attributes.buttonHoverBoxShadowSpread,
+              spread: attributes.styles.buttonHoverBoxShadowSpread,
               onSpreadChange: function onSpreadChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowSpread: value
                 });
               },
-              spreadUnit: attributes.buttonHoverBoxShadowSpreadUnit,
+              spreadUnit: attributes.styles.buttonHoverBoxShadowSpreadUnit,
               onSpreadUnitChange: function onSpreadUnitChange(value) {
                 return updateStyles({
                   buttonHoverBoxShadowSpreadUnit: value
@@ -2303,31 +2300,31 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
-              enabled: attributes.enableButtonHoverBorder || false,
+              enabled: attributes.styles.enableButtonHoverBorder || false,
               onToggle: function onToggle(value) {
                 return updateStyles({
                   enableButtonHoverBorder: value
                 });
               },
-              borderType: attributes.buttonHoverBorderType,
+              borderType: attributes.styles.buttonHoverBorderType,
               onBorderTypeChange: function onBorderTypeChange(value) {
                 return updateStyles({
                   buttonHoverBorderType: value
                 });
               },
-              borderColor: attributes.buttonHoverBorderColor,
+              borderColor: attributes.styles.buttonHoverBorderColor,
               onBorderColorChange: function onBorderColorChange(value) {
                 return updateStyles({
                   buttonHoverBorderColor: value
                 });
               },
-              borderWidth: attributes.buttonHoverBorderWidth,
+              borderWidth: attributes.styles.buttonHoverBorderWidth,
               onBorderWidthChange: function onBorderWidthChange(value) {
                 return updateStyles({
                   buttonHoverBorderWidth: value
                 });
               },
-              borderRadius: attributes.buttonHoverBorderRadius,
+              borderRadius: attributes.styles.buttonHoverBorderRadius,
               onBorderRadiusChange: function onBorderRadiusChange(value) {
                 return updateStyles({
                   buttonHoverBorderRadius: value
@@ -2346,7 +2343,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
  * Component for placeholder styling options
  */
 var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref5) {
-  var _attributes$placehold, _attributes$placehold2, _attributes$placehold3, _attributes$placehold4, _attributes$placehold5;
+  var _attributes$styles$pl, _attributes$styles$pl2, _attributes$styles$pl3, _attributes$styles$pl4, _attributes$styles$pl5;
   var attributes = _ref5.attributes,
     updateStyles = _ref5.updateStyles;
   var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
@@ -2358,7 +2355,7 @@ var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref5) {
     initialOpen: false,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
       label: "Text Color",
-      value: attributes.placeholderColor,
+      value: attributes.styles.placeholderColor,
       onChange: function onChange(value) {
         return updateStyles({
           placeholderColor: value
@@ -2368,11 +2365,11 @@ var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref5) {
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
       label: "Typography",
       settings: {
-        fontSize: ((_attributes$placehold = attributes.placeholderTypography) === null || _attributes$placehold === void 0 || (_attributes$placehold = _attributes$placehold.size) === null || _attributes$placehold === void 0 ? void 0 : _attributes$placehold.lg) || '',
-        fontWeight: ((_attributes$placehold2 = attributes.placeholderTypography) === null || _attributes$placehold2 === void 0 ? void 0 : _attributes$placehold2.weight) || '400',
-        lineHeight: ((_attributes$placehold3 = attributes.placeholderTypography) === null || _attributes$placehold3 === void 0 ? void 0 : _attributes$placehold3.lineHeight) || '',
-        letterSpacing: ((_attributes$placehold4 = attributes.placeholderTypography) === null || _attributes$placehold4 === void 0 ? void 0 : _attributes$placehold4.letterSpacing) || '',
-        textTransform: ((_attributes$placehold5 = attributes.placeholderTypography) === null || _attributes$placehold5 === void 0 ? void 0 : _attributes$placehold5.textTransform) || 'none'
+        fontSize: ((_attributes$styles$pl = attributes.styles.placeholderTypography) === null || _attributes$styles$pl === void 0 || (_attributes$styles$pl = _attributes$styles$pl.size) === null || _attributes$styles$pl === void 0 ? void 0 : _attributes$styles$pl.lg) || '',
+        fontWeight: ((_attributes$styles$pl2 = attributes.styles.placeholderTypography) === null || _attributes$styles$pl2 === void 0 ? void 0 : _attributes$styles$pl2.weight) || '400',
+        lineHeight: ((_attributes$styles$pl3 = attributes.styles.placeholderTypography) === null || _attributes$styles$pl3 === void 0 ? void 0 : _attributes$styles$pl3.lineHeight) || '',
+        letterSpacing: ((_attributes$styles$pl4 = attributes.styles.placeholderTypography) === null || _attributes$styles$pl4 === void 0 ? void 0 : _attributes$styles$pl4.letterSpacing) || '',
+        textTransform: ((_attributes$styles$pl5 = attributes.styles.placeholderTypography) === null || _attributes$styles$pl5 === void 0 ? void 0 : _attributes$styles$pl5.textTransform) || 'none'
       },
       onChange: function onChange(changedTypo) {
         return handleTypographyChange(changedTypo, 'placeholderTypography');
@@ -2384,17 +2381,17 @@ var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
   var attributes = _ref6.attributes,
     updateStyles = _ref6.updateStyles;
   // Use local state to ensure the UI updates immediately
-  var _useState = useState(attributes.radioCheckboxItemsSize || 15),
+  var _useState = useState(attributes.styles.radioCheckboxItemsSize || 15),
     _useState2 = _slicedToArray(_useState, 2),
     localSize = _useState2[0],
     setLocalSize = _useState2[1];
 
   // Update local state when the attribute changes from outside
   useEffect(function () {
-    if (attributes.radioCheckboxItemsSize !== undefined && attributes.radioCheckboxItemsSize !== localSize) {
-      setLocalSize(attributes.radioCheckboxItemsSize);
+    if (attributes.styles.radioCheckboxItemsSize !== undefined && attributes.styles.radioCheckboxItemsSize !== localSize) {
+      setLocalSize(attributes.styles.radioCheckboxItemsSize);
     }
-  }, [attributes.radioCheckboxItemsSize]);
+  }, [attributes.styles.radioCheckboxItemsSize]);
 
   // Handle size change with immediate UI update
   var handleSizeChange = function handleSizeChange(value) {
@@ -2404,15 +2401,13 @@ var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
     updateStyles({
       radioCheckboxItemsSize: value
     });
-    // Log for debugging
-    console.log('Radio/Checkbox size changed to:', value);
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
     title: __('Radio & Checkbox Styles'),
     initialOpen: false,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
       label: "Items Color",
-      value: attributes.radioCheckboxItemsColor,
+      value: attributes.styles.radioCheckboxItemsColor,
       onChange: function onChange(value) {
         return updateStyles({
           radioCheckboxItemsColor: value
@@ -2440,11 +2435,13 @@ var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
  * Main TabGeneral component
  */
 var TabGeneral = function TabGeneral(_ref7) {
-  var attributes = _ref7.attributes,
-    setAttributes = _ref7.setAttributes,
+  var setAttributes = _ref7.setAttributes,
     updateStyles = _ref7.updateStyles,
     state = _ref7.state,
     handlePresetChange = _ref7.handlePresetChange;
+  var attributes = useSelect(function (select) {
+    return select('core/block-editor').getSelectedBlock().attributes;
+  });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(StyleTemplatePanel, {
       attributes: attributes,
@@ -2511,15 +2508,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 /**
  * Fluent Forms Gutenberg Block Misc Tab Component
  */
@@ -2550,8 +2549,6 @@ var _wp$components = wp.components,
 
 // Constants
 
-
-
 var DEFAULT_COLORS = [{
   name: 'Theme Blue',
   color: '#72aee6'
@@ -2576,17 +2573,18 @@ var DEFAULT_COLORS = [{
  * Main TabMisc component
  */
 var TabMisc = function TabMisc(_ref) {
+  var _attributes$styles$co, _attributes$styles$co2, _attributes$styles$co3, _attributes$styles$co4;
   var attributes = _ref.attributes,
     setAttributes = _ref.setAttributes,
     updateStyles = _ref.updateStyles,
     state = _ref.state;
   // Use local state for background type to ensure UI updates immediately
-  var _useState = useState(attributes.backgroundType || 'classic'),
+  var _useState = useState(attributes.styles.backgroundType || 'classic'),
     _useState2 = _slicedToArray(_useState, 2),
     localBgType = _useState2[0],
     setLocalBgType = _useState2[1];
   // Add local state for background image to ensure immediate UI update
-  var _useState3 = useState(attributes.backgroundImage || ''),
+  var _useState3 = useState(attributes.styles.backgroundImage || ''),
     _useState4 = _slicedToArray(_useState3, 2),
     localBgImage = _useState4[0],
     setLocalBgImage = _useState4[1];
@@ -2597,17 +2595,17 @@ var TabMisc = function TabMisc(_ref) {
 
   // Update local state when attributes change
   useEffect(function () {
-    if (attributes.backgroundType !== undefined && attributes.backgroundType !== localBgType) {
-      setLocalBgType(attributes.backgroundType);
+    if (attributes.styles.backgroundType !== undefined && attributes.styles.backgroundType !== localBgType) {
+      setLocalBgType(attributes.styles.backgroundType);
     }
-  }, [attributes.backgroundType]);
+  }, [attributes.styles.backgroundType]);
 
   // Sync local background image state with attributes
   useEffect(function () {
-    if (attributes.backgroundImage !== localBgImage) {
-      setLocalBgImage(attributes.backgroundImage || '');
+    if (attributes.styles.backgroundImage !== localBgImage) {
+      setLocalBgImage(attributes.styles.backgroundImage || '');
     }
-  }, [attributes.backgroundImage]);
+  }, [attributes.styles.backgroundImage]);
 
   // Handle background type change
   var handleBackgroundTypeChange = function handleBackgroundTypeChange(value) {
@@ -2648,7 +2646,7 @@ var TabMisc = function TabMisc(_ref) {
     mediaUploader.open();
   };
 
-  // Handle media removal 
+  // Handle media removal
   var removeBackgroundImage = function removeBackgroundImage() {
     console.log('Removing background image');
 
@@ -2667,7 +2665,7 @@ var TabMisc = function TabMisc(_ref) {
   };
 
   // Use local state for conditional rendering
-  var currentBgImage = localBgImage || attributes.backgroundImage;
+  var currentBgImage = localBgImage || attributes.styles.backgroundImage;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(PanelBody, {
       title: __("Container Styles"),
@@ -2772,7 +2770,7 @@ var TabMisc = function TabMisc(_ref) {
           },
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(SelectControl, {
             label: __("Background Size"),
-            value: attributes.backgroundSize || 'cover',
+            value: attributes.styles.backgroundSize || 'cover',
             options: [{
               label: __("Cover"),
               value: 'cover'
@@ -2790,7 +2788,7 @@ var TabMisc = function TabMisc(_ref) {
             }
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(SelectControl, {
             label: __("Background Position"),
-            value: attributes.backgroundPosition || 'center center',
+            value: attributes.styles.backgroundPosition || 'center center',
             options: [{
               label: __("Center Center"),
               value: 'center center'
@@ -2826,7 +2824,7 @@ var TabMisc = function TabMisc(_ref) {
             }
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(SelectControl, {
             label: __("Background Repeat"),
-            value: attributes.backgroundRepeat || 'no-repeat',
+            value: attributes.styles.backgroundRepeat || 'no-repeat',
             options: [{
               label: __("No Repeat"),
               value: 'no-repeat'
@@ -2855,7 +2853,7 @@ var TabMisc = function TabMisc(_ref) {
           className: "ffblock-bg-gradient",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
             label: __("Primary Color"),
-            value: attributes.gradientColor1 || '',
+            value: attributes.styles.gradientColor1 || '',
             onChange: function onChange(value) {
               return updateStyles({
                 gradientColor1: value
@@ -2864,7 +2862,7 @@ var TabMisc = function TabMisc(_ref) {
             defaultColor: ""
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
             label: __("Secondary Color"),
-            value: attributes.gradientColor2 || '',
+            value: attributes.styles.gradientColor2 || '',
             onChange: function onChange(value) {
               return updateStyles({
                 gradientColor2: value
@@ -2873,7 +2871,7 @@ var TabMisc = function TabMisc(_ref) {
             defaultColor: ""
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(SelectControl, {
             label: __("Gradient Type"),
-            value: attributes.gradientType || 'linear',
+            value: attributes.styles.gradientType || 'linear',
             options: [{
               label: __("Linear"),
               value: 'linear'
@@ -2886,9 +2884,9 @@ var TabMisc = function TabMisc(_ref) {
                 gradientType: value
               });
             }
-          }), attributes.gradientType === 'linear' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(RangeControl, {
+          }), attributes.styles.gradientType === 'linear' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(RangeControl, {
             label: __("Gradient Angle (°)"),
-            value: attributes.gradientAngle || 90,
+            value: attributes.styles.gradientAngle || 90,
             onChange: function onChange(value) {
               return updateStyles({
                 gradientAngle: value
@@ -2900,25 +2898,16 @@ var TabMisc = function TabMisc(_ref) {
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Background Color"),
-        value: attributes.backgroundColor || '',
+        value: attributes.styles.backgroundColor || '',
         onChange: function onChange(value) {
           return updateStyles({
             backgroundColor: value
           });
         },
         defaultColor: ""
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
-        label: __("Color"),
-        value: attributes.textColor || '',
-        onChange: function onChange(value) {
-          return updateStyles({
-            textColor: value
-          });
-        },
-        defaultColor: ""
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Padding"),
-        values: attributes.containerPadding,
+        values: attributes.styles.containerPadding,
         onChange: function onChange(value) {
           return updateStyles({
             containerPadding: value
@@ -2926,7 +2915,7 @@ var TabMisc = function TabMisc(_ref) {
         }
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Margin"),
-        values: attributes.containerMargin,
+        values: attributes.styles.containerMargin,
         onChange: function onChange(value) {
           return updateStyles({
             containerMargin: value
@@ -2936,83 +2925,91 @@ var TabMisc = function TabMisc(_ref) {
         label: __("Box Shadow")
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_6__["default"], {
         label: __("Box Shadow"),
-        enabled: attributes.enableBoxShadow || false,
+        enabled: attributes.styles.enableBoxShadow || false,
         onToggle: function onToggle(value) {
           if (value) {
             updateStyles({
               enableBoxShadow: value,
-              boxShadowColor: attributes.boxShadowColor || 'rgba(0,0,0,0.5)',
-              boxShadowPosition: attributes.boxShadowPosition || 'outline',
-              boxShadowHorizontal: attributes.boxShadowHorizontal || '0',
-              boxShadowHorizontalUnit: attributes.boxShadowHorizontalUnit || 'px',
-              boxShadowVertical: attributes.boxShadowVertical || '0',
-              boxShadowVerticalUnit: attributes.boxShadowVerticalUnit || 'px',
-              boxShadowBlur: attributes.boxShadowBlur || '5',
-              boxShadowBlurUnit: attributes.boxShadowBlurUnit || 'px',
-              boxShadowSpread: attributes.boxShadowSpread || '0',
-              boxShadowSpreadUnit: attributes.boxShadowSpreadUnit || 'px'
+              boxShadowColor: attributes.styles.boxShadowColor || 'rgba(0,0,0,0.5)',
+              boxShadowPosition: attributes.styles.boxShadowPosition || 'outline',
+              boxShadowHorizontal: attributes.styles.boxShadowHorizontal || '0',
+              boxShadowHorizontalUnit: attributes.styles.boxShadowHorizontalUnit || 'px',
+              boxShadowVertical: attributes.styles.boxShadowVertical || '0',
+              boxShadowVerticalUnit: attributes.styles.boxShadowVerticalUnit || 'px',
+              boxShadowBlur: attributes.styles.boxShadowBlur || '5',
+              boxShadowBlurUnit: attributes.styles.boxShadowBlurUnit || 'px',
+              boxShadowSpread: attributes.styles.boxShadowSpread || '0',
+              boxShadowSpreadUnit: attributes.styles.boxShadowSpreadUnit || 'px'
             });
           } else {
             updateStyles({
-              enableBoxShadow: value
+              containerBoxShadow: value
             });
           }
         },
-        color: attributes.boxShadowColor,
+        color: ((_attributes$styles$co = attributes.styles.containerBoxShadow) === null || _attributes$styles$co === void 0 ? void 0 : _attributes$styles$co.color) || '',
         onColorChange: function onColorChange(value) {
           return updateStyles({
-            boxShadowColor: value
+            containerBoxShadow: _objectSpread(_objectSpread({}, attributes.styles.containerBoxShadow), {}, {
+              color: value
+            })
           });
         },
-        position: attributes.boxShadowPosition,
+        position: ((_attributes$styles$co2 = attributes.styles.containerBoxShadow) === null || _attributes$styles$co2 === void 0 ? void 0 : _attributes$styles$co2.position) || 'outline',
         onPositionChange: function onPositionChange(value) {
           return updateStyles({
-            boxShadowPosition: value
+            containerBoxShadow: _objectSpread(_objectSpread({}, attributes.styles.containerBoxShadow), {}, {
+              position: value
+            })
           });
         },
-        horizontal: attributes.boxShadowHorizontal,
+        horizontal: ((_attributes$styles$co3 = attributes.styles.containerBoxShadow) === null || _attributes$styles$co3 === void 0 ? void 0 : _attributes$styles$co3.horizontal.value) || '',
         onHorizontalChange: function onHorizontalChange(value) {
           return updateStyles({
-            boxShadowHorizontal: value
+            containerBoxShadow: _objectSpread(_objectSpread({}, attributes.styles.containerBoxShadow), {}, {
+              horizontal: {
+                value: value
+              }
+            })
           });
         },
-        horizontalUnit: attributes.boxShadowHorizontalUnit,
+        horizontalUnit: ((_attributes$styles$co4 = attributes.styles.containerBoxShadow) === null || _attributes$styles$co4 === void 0 ? void 0 : _attributes$styles$co4.horizontal.unit) || 'px',
         onHorizontalUnitChange: function onHorizontalUnitChange(value) {
           return updateStyles({
             boxShadowHorizontalUnit: value
           });
         },
-        vertical: attributes.boxShadowVertical,
+        vertical: attributes.styles.boxShadowVertical,
         onVerticalChange: function onVerticalChange(value) {
           return updateStyles({
             boxShadowVertical: value
           });
         },
-        verticalUnit: attributes.boxShadowVerticalUnit,
+        verticalUnit: attributes.styles.boxShadowVerticalUnit,
         onVerticalUnitChange: function onVerticalUnitChange(value) {
           return updateStyles({
             boxShadowVerticalUnit: value
           });
         },
-        blur: attributes.boxShadowBlur,
+        blur: attributes.styles.boxShadowBlur,
         onBlurChange: function onBlurChange(value) {
           return updateStyles({
             boxShadowBlur: value
           });
         },
-        blurUnit: attributes.boxShadowBlurUnit,
+        blurUnit: attributes.styles.boxShadowBlurUnit,
         onBlurUnitChange: function onBlurUnitChange(value) {
           return updateStyles({
             boxShadowBlurUnit: value
           });
         },
-        spread: attributes.boxShadowSpread,
+        spread: attributes.styles.boxShadowSpread,
         onSpreadChange: function onSpreadChange(value) {
           return updateStyles({
             boxShadowSpread: value
           });
         },
-        spreadUnit: attributes.boxShadowSpreadUnit,
+        spreadUnit: attributes.styles.boxShadowSpreadUnit,
         onSpreadUnitChange: function onSpreadUnitChange(value) {
           return updateStyles({
             boxShadowSpreadUnit: value
@@ -3022,31 +3019,31 @@ var TabMisc = function TabMisc(_ref) {
         label: __("Form Border Settings")
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_7__["default"], {
         label: __("Form Border"),
-        enabled: attributes.enableFormBorder || false,
+        enabled: attributes.styles.enableFormBorder || false,
         onToggle: function onToggle(value) {
           return updateStyles({
             enableFormBorder: value
           });
         },
-        borderType: attributes.borderType,
+        borderType: attributes.styles.borderType,
         onBorderTypeChange: function onBorderTypeChange(value) {
           return updateStyles({
             borderType: value
           });
         },
-        borderColor: attributes.borderColor,
+        borderColor: attributes.styles.borderColor,
         onBorderColorChange: function onBorderColorChange(value) {
           return updateStyles({
             borderColor: value
           });
         },
-        borderWidth: attributes.borderWidth,
+        borderWidth: attributes.styles.borderWidth,
         onBorderWidthChange: function onBorderWidthChange(value) {
           return updateStyles({
             borderWidth: value
           });
         },
-        borderRadius: attributes.borderRadius,
+        borderRadius: attributes.styles.borderRadius,
         onBorderRadiusChange: function onBorderRadiusChange(value) {
           return updateStyles({
             borderRadius: value
@@ -3058,7 +3055,7 @@ var TabMisc = function TabMisc(_ref) {
       initialOpen: false,
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Asterisk Color"),
-        value: attributes.asteriskColor || '',
+        value: attributes.styles.asteriskColor || '',
         onChange: function onChange(value) {
           return updateStyles({
             asteriskColor: value
@@ -3071,7 +3068,7 @@ var TabMisc = function TabMisc(_ref) {
       initialOpen: false,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Background Color"),
-        value: attributes.errorMessageBgColor || '',
+        value: attributes.styles.errorMessageBgColor || '',
         onChange: function onChange(value) {
           return updateStyles({
             errorMessageBgColor: value
@@ -3080,7 +3077,7 @@ var TabMisc = function TabMisc(_ref) {
         defaultColor: ""
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Text Color"),
-        value: attributes.errorMessageColor || '',
+        value: attributes.styles.errorMessageColor || '',
         onChange: function onChange(value) {
           return updateStyles({
             errorMessageColor: value
@@ -3090,7 +3087,7 @@ var TabMisc = function TabMisc(_ref) {
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(BaseControl, {
         label: __("Alignment"),
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-          value: attributes.errorMessageAlignment || 'left',
+          value: attributes.styles.errorMessageAlignment || 'left',
           onChange: function onChange(value) {
             return updateStyles({
               errorMessageAlignment: value
@@ -3116,7 +3113,7 @@ var TabMisc = function TabMisc(_ref) {
       initialOpen: false,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Background Color"),
-        value: attributes.successMessageBgColor || '',
+        value: attributes.styles.successMessageBgColor || '',
         onChange: function onChange(value) {
           return updateStyles({
             successMessageBgColor: value
@@ -3125,7 +3122,7 @@ var TabMisc = function TabMisc(_ref) {
         defaultColor: "#dff0d8"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Text Color"),
-        value: attributes.successMessageColor || '',
+        value: attributes.styles.successMessageColor || '',
         onChange: function onChange(value) {
           return updateStyles({
             successMessageColor: value
@@ -3135,7 +3132,7 @@ var TabMisc = function TabMisc(_ref) {
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(BaseControl, {
         label: __("Alignment"),
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-          value: attributes.successMessageAlignment || 'left',
+          value: attributes.styles.successMessageAlignment || 'left',
           onChange: function onChange(value) {
             return updateStyles({
               successMessageAlignment: value
@@ -3161,7 +3158,7 @@ var TabMisc = function TabMisc(_ref) {
       initialOpen: false,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Background Color"),
-        value: attributes.submitErrorMessageBgColor || '',
+        value: attributes.styles.submitErrorMessageBgColor || '',
         onChange: function onChange(value) {
           return updateStyles({
             submitErrorMessageBgColor: value
@@ -3170,7 +3167,7 @@ var TabMisc = function TabMisc(_ref) {
         defaultColor: "#f2dede"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Text Color"),
-        value: attributes.submitErrorMessageColor || '',
+        value: attributes.styles.submitErrorMessageColor || '',
         onChange: function onChange(value) {
           return updateStyles({
             submitErrorMessageColor: value
@@ -3180,7 +3177,7 @@ var TabMisc = function TabMisc(_ref) {
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(BaseControl, {
         label: __("Alignment"),
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-          value: attributes.submitErrorMessageAlignment || 'left',
+          value: attributes.styles.submitErrorMessageAlignment || 'left',
           onChange: function onChange(value) {
             return updateStyles({
               submitErrorMessageAlignment: value
@@ -3230,18 +3227,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
+function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
+function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
+function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * Fluent Forms Gutenberg Block Tabs Component
  * Manages the tab panel for the block inspector
@@ -3261,12 +3258,12 @@ var _wp$element = wp.element,
 // Use PureComponent to automatically implement shouldComponentUpdate
 
 var Tabs = /*#__PURE__*/function (_PureComponent) {
-  _inherits(Tabs, _PureComponent);
   function Tabs() {
     _classCallCheck(this, Tabs);
     return _callSuper(this, Tabs, arguments);
   }
-  _createClass(Tabs, [{
+  _inherits(Tabs, _PureComponent);
+  return _createClass(Tabs, [{
     key: "render",
     value: function render() {
       var _this$props = this.props,
@@ -3290,7 +3287,6 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
           if (tab.name === 'general') {
             return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
-                attributes: attributes,
                 setAttributes: setAttributes,
                 updateStyles: updateStyles,
                 state: state,
@@ -3313,7 +3309,6 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
       });
     }
   }]);
-  return Tabs;
 }(PureComponent);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(Tabs, function (prevProps, nextProps) {
   return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__.arePropsEqual)(prevProps, nextProps, [], true);
@@ -3331,9 +3326,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   arePropsEqual: () => (/* binding */ arePropsEqual)
 /* harmony export */ });
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 /**
  * Checks if props have changed for component memoization
  *
@@ -3355,7 +3350,10 @@ var arePropsEqual = function arePropsEqual(prevProps, nextProps) {
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
       var attr = _step.value;
-      if (JSON.stringify(prevAttrs[attr]) !== JSON.stringify(nextAttrs[attr])) {
+      if (!(prevAttrs !== null && prevAttrs !== void 0 && prevAttrs.styles[attr]) || !(nextAttrs !== null && nextAttrs !== void 0 && nextAttrs.styles[attr])) {
+        return false; // Props are not equal, should update
+      }
+      if (JSON.stringify(prevAttrs.styles[attr]) !== JSON.stringify(nextAttrs.styles[attr])) {
         return false; // Props are not equal, should update
       }
     }
@@ -3389,8 +3387,8 @@ __webpack_require__.r(__webpack_exports__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 // In guten_block/src/components/utils/TypographyUtils.js
 
@@ -3450,31 +3448,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _components_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
-/* harmony import */ var _components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/tabs/Tabs */ "./guten_block/src/components/tabs/Tabs.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/StyleHandler */ "./guten_block/src/utils/StyleHandler.js");
+/* harmony import */ var _components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/tabs/Tabs */ "./guten_block/src/components/tabs/Tabs.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+var _excluded = ["styles"];
+function _objectWithoutProperties(e, t) { if (null == e) return {}; var o, r, i = _objectWithoutPropertiesLoose(e, t); if (Object.getOwnPropertySymbols) { var n = Object.getOwnPropertySymbols(e); for (r = 0; r < n.length; r++) o = n[r], -1 === t.indexOf(o) && {}.propertyIsEnumerable.call(e, o) && (i[o] = e[o]); } return i; }
+function _objectWithoutPropertiesLoose(r, e) { if (null == r) return {}; var t = {}; for (var n in r) if ({}.hasOwnProperty.call(r, n)) { if (-1 !== e.indexOf(n)) continue; t[n] = r[n]; } return t; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
+function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
+function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
+function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw new Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw new Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 /**
  * Fluent Forms Gutenberg Block Edit Component
  * Enhanced with custom UX controls
  */
+
 
 var __ = wp.i18n.__;
 var _wp$blockEditor = wp.blockEditor,
@@ -3503,30 +3507,26 @@ var _wp$element = wp.element,
 
 // Function to get form meta
 
-
 var getFormMeta = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(formId, metaKey) {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(formId, metaKey) {
     var path, response;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.n) {
         case 0:
           if (formId) {
-            _context.next = 2;
+            _context.n = 1;
             break;
           }
-          return _context.abrupt("return");
-        case 2:
+          return _context.a(2);
+        case 1:
           path = "".concat(window.fluentform_block_vars.rest.namespace, "/").concat(window.fluentform_block_vars.rest.version, "/settings/").concat(formId, "?meta_key=").concat(metaKey);
-          _context.next = 5;
+          _context.n = 2;
           return apiFetch({
             path: path
           });
-        case 5:
-          response = _context.sent;
-          return _context.abrupt("return", response.length && response[0].value || false);
-        case 7:
-        case "end":
-          return _context.stop();
+        case 2:
+          response = _context.v;
+          return _context.a(2, response.length && response[0].value || false);
       }
     }, _callee);
   }));
@@ -3535,39 +3535,37 @@ var getFormMeta = /*#__PURE__*/function () {
   };
 }();
 var EditComponent = /*#__PURE__*/function (_Component) {
-  _inherits(EditComponent, _Component);
   function EditComponent() {
     var _this;
     _classCallCheck(this, EditComponent);
     _this = _callSuper(this, EditComponent, arguments);
-    _defineProperty(_assertThisInitialized(_this), "checkIfConversationalForm", /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(formId) {
+    _defineProperty(_this, "checkIfConversationalForm", /*#__PURE__*/function () {
+      var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(formId) {
         var isConversationalForm;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) switch (_context2.prev = _context2.next) {
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.n) {
             case 0:
               if (formId) {
-                _context2.next = 2;
+                _context2.n = 1;
                 break;
               }
-              return _context2.abrupt("return");
-            case 2:
+              return _context2.a(2);
+            case 1:
               _this.setState({
                 isPreviewLoading: true
               });
-              _context2.next = 5;
+              _context2.n = 2;
               return getFormMeta(formId, "is_conversion_form");
-            case 5:
-              isConversationalForm = _context2.sent;
+            case 2:
+              isConversationalForm = _context2.v;
               _this.props.setAttributes({
                 isConversationalForm: isConversationalForm === "yes"
               });
               _this.setState({
                 isPreviewLoading: false
               });
-            case 8:
-            case "end":
-              return _context2.stop();
+            case 3:
+              return _context2.a(2);
           }
         }, _callee2);
       }));
@@ -3575,7 +3573,7 @@ var EditComponent = /*#__PURE__*/function (_Component) {
         return _ref2.apply(this, arguments);
       };
     }());
-    _defineProperty(_assertThisInitialized(_this), "handleFormChange", function (formId) {
+    _defineProperty(_this, "handleFormChange", function (formId) {
       _this.setState({
         isPreviewLoading: true
       });
@@ -3597,7 +3595,7 @@ var EditComponent = /*#__PURE__*/function (_Component) {
         _this.checkIfConversationalForm(formId);
       }
     });
-    _defineProperty(_assertThisInitialized(_this), "handlePresetChange", function (selectedPreset) {
+    _defineProperty(_this, "handlePresetChange", function (selectedPreset) {
       _this.setState({
         selectedPreset: selectedPreset,
         isPreviewLoading: true
@@ -3614,7 +3612,7 @@ var EditComponent = /*#__PURE__*/function (_Component) {
         });
       }, 300);
     });
-    _defineProperty(_assertThisInitialized(_this), "toggleCustomizePreset", function () {
+    _defineProperty(_this, "toggleCustomizePreset", function () {
       var customizePreset = !_this.state.customizePreset;
       _this.setState({
         customizePreset: customizePreset
@@ -3623,7 +3621,7 @@ var EditComponent = /*#__PURE__*/function (_Component) {
         customizePreset: customizePreset
       });
     });
-    _defineProperty(_assertThisInitialized(_this), "setPreviewDevice", function (device) {
+    _defineProperty(_this, "setPreviewDevice", function (device) {
       _this.setState({
         previewDevice: device
       });
@@ -3633,89 +3631,34 @@ var EditComponent = /*#__PURE__*/function (_Component) {
       selectedPreset: 'default',
       isPreviewLoading: false,
       showSaveNotice: false,
-      previewDevice: 'desktop',
-      updateTimer: null // Add timer state for debouncing
+      previewDevice: 'desktop'
     };
-    _this.updateStyles = _this.updateStyles.bind(_assertThisInitialized(_this));
+    _this.updateStyles = _this.updateStyles.bind(_this);
     return _this;
   }
 
   // Method to update styles with debouncing to prevent excessive requests
-  _createClass(EditComponent, [{
+  _inherits(EditComponent, _Component);
+  return _createClass(EditComponent, [{
     key: "updateStyles",
     value: function updateStyles(styleAttributes) {
-      var _this2 = this;
-      // Special handling for radioCheckboxItemsSize to ensure it's a number
-      if ('radioCheckboxItemsSize' in styleAttributes) {
-        styleAttributes.radioCheckboxItemsSize = parseInt(styleAttributes.radioCheckboxItemsSize, 10) || 0;
-      }
+      var _this$props = this.props,
+        setAttributes = _this$props.setAttributes,
+        attributes = _this$props.attributes;
 
-      // Clear any existing timer
-      if (this.state.updateTimer) {
-        clearTimeout(this.state.updateTimer);
-      }
+      // Ensure styles object exists
+      var currentStyles = attributes.styles || {};
+      var styles = _objectSpread(_objectSpread({}, currentStyles), styleAttributes);
 
-      // Set a new timer to delay the update
-      var timer = setTimeout(function () {
-        console.log('Updating styles:', styleAttributes);
-        var _this2$props = _this2.props,
-          setAttributes = _this2$props.setAttributes,
-          attributes = _this2$props.attributes;
-
-        // Create a new object with only the changed attributes
-        var updatedAttributes = {};
-
-        // Compare each attribute to see if it actually changed
-        Object.keys(styleAttributes).forEach(function (key) {
-          var currentValue = attributes[key];
-          var newValue = styleAttributes[key];
-
-          // Special handling for radioCheckboxItemsSize to ensure numeric comparison
-          if (key === 'radioCheckboxItemsSize') {
-            if (currentValue !== newValue) {
-              updatedAttributes[key] = newValue;
-            }
-          } else {
-            // For other attributes, use JSON.stringify for deep comparison
-            if (JSON.stringify(currentValue) !== JSON.stringify(newValue)) {
-              updatedAttributes[key] = newValue;
-            }
-          }
-        });
-
-        // Only update if there are actual changes
-        if (Object.keys(updatedAttributes).length > 0) {
-          // Save if we're updating the background image
-          var isUpdatingBgImage = ('backgroundImage' in updatedAttributes);
-
-          // Update attributes
-          setAttributes(updatedAttributes);
-
-          // Set loading state briefly to show user something is happening
-          _this2.setState({
-            isPreviewLoading: true
-          });
-          if (isUpdatingBgImage) {
-            _this2.injectBackgroundStyles();
-          }
-          // Clear loading state after a short delay
-          setTimeout(function () {
-            _this2.setState({
-              isPreviewLoading: false
-            });
-          }, 300);
-        }
-
-        // Clear the timer reference
-        _this2.setState({
-          updateTimer: null
-        });
-      }, 300); // 300ms debounce delay
-
-      // Store the timer reference
-      this.setState({
-        updateTimer: timer
+      // Update attributes
+      setAttributes({
+        styles: styles
       });
+
+      // Apply styles immediately via JavaScript without triggering server render
+      if (this.styleHandler && attributes.formId) {
+        this.styleHandler.updateStyles(styles);
+      }
     }
   }, {
     key: "componentDidMount",
@@ -3740,81 +3683,39 @@ var EditComponent = /*#__PURE__*/function (_Component) {
           selectedPreset: attributes.selectedPreset || 'default'
         });
       }
-      if (attributes.backgroundImage) {
-        this.injectBackgroundStyles();
+
+      // Initialize style handler
+      if (attributes.formId && attributes.styles) {
+        this.styleHandler = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
       }
     }
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps) {
       var attributes = this.props.attributes;
+      var styleChanged = JSON.stringify(prevProps.attributes.styles || {}) !== JSON.stringify(attributes.styles || {});
 
-      // Check if form ID changed
-      if (prevProps.attributes.formId !== attributes.formId && attributes.formId) {
-        this.checkIfConversationalForm(attributes.formId);
+      // Initialize or update style handler
+      if (attributes.formId !== prevProps.attributes.formId) {
+        if (this.styleHandler) {
+          this.styleHandler.destroy();
+        }
+        if (attributes.formId) {
+          this.styleHandler = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
+        }
       }
-      this.injectBackgroundStyles();
+
+      // Handle style changes with JavaScript only
+      if (styleChanged && this.styleHandler && attributes.formId) {
+        this.styleHandler.updateStyles(attributes.styles);
+      }
     }
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
-      var attributes = this.props.attributes;
-      var formId = attributes.formId;
-
-      // Clean up any style elements we created
-      if (formId) {
-        var styleEl = document.getElementById("ff-dynamic-bg-styles-".concat(formId));
-        if (styleEl && styleEl.parentNode) {
-          styleEl.parentNode.removeChild(styleEl);
-        }
+      if (this.styleHandler) {
+        this.styleHandler.destroy();
       }
-    }
-
-    // Add this method to your Edit class
-  }, {
-    key: "injectBackgroundStyles",
-    value: function injectBackgroundStyles() {
-      var attributes = this.props.attributes;
-      var formId = attributes.formId,
-        backgroundImage = attributes.backgroundImage,
-        backgroundColor = attributes.backgroundColor;
-
-      // Get or create the style element
-      var styleEl = document.getElementById("ff-dynamic-bg-styles-".concat(formId));
-      if (!styleEl) {
-        styleEl = document.createElement('style');
-        styleEl.id = "ff-dynamic-bg-styles-".concat(formId);
-        document.head.appendChild(styleEl);
-      }
-
-      // If no formId, clear the styles and return
-      if (!formId) {
-        styleEl.innerHTML = '';
-        return;
-      }
-
-      // Start building the CSS rules
-      var cssRules = [];
-
-      // Add background color as an independent property
-      if (backgroundColor) {
-        cssRules.push("background-color: ".concat(backgroundColor, ";"));
-      }
-
-      // Add background image properties if they exist
-      if (backgroundImage) {
-        cssRules.push("background-image: url('".concat(backgroundImage, "');"));
-        cssRules.push("background-size: ".concat(attributes.backgroundSize || 'cover', ";"));
-        cssRules.push("background-position: ".concat(attributes.backgroundPosition || 'center center', ";"));
-        cssRules.push("background-repeat: ".concat(attributes.backgroundRepeat || 'no-repeat', ";"));
-        cssRules.push("background-attachment: ".concat(attributes.backgroundAttachment || 'scroll', ";"));
-      }
-
-      // Create the CSS
-      var css = "\n        .ff_guten_block-".concat(formId, " {\n            ").concat(cssRules.join('\n            '), "\n        }\n    ");
-
-      // Update the stylesheet content
-      styleEl.innerHTML = css;
     }
   }, {
     key: "render",
@@ -3823,10 +3724,10 @@ var EditComponent = /*#__PURE__*/function (_Component) {
 
     function render() {
       var _config$forms,
-        _this3 = this;
-      var _this$props = this.props,
-        attributes = _this$props.attributes,
-        setAttributes = _this$props.setAttributes;
+        _this2 = this;
+      var _this$props2 = this.props,
+        attributes = _this$props2.attributes,
+        setAttributes = _this$props2.setAttributes;
       var _this$state = this.state,
         isPreviewLoading = _this$state.isPreviewLoading,
         showSaveNotice = _this$state.showSaveNotice,
@@ -3834,11 +3735,11 @@ var EditComponent = /*#__PURE__*/function (_Component) {
       var config = window.fluentform_block_vars || {};
       var presets = config.style_presets;
       // Form selection and style controls in inspector controls
-      var inspectorControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(InspectorControls, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(PanelBody, {
+      var inspectorControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(InspectorControls, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(PanelBody, {
           title: __('Form Selection'),
           initialOpen: attributes.formId ? false : true,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SelectControl, {
             label: __('Select a Form'),
             value: attributes.formId || '',
             options: ((_config$forms = config.forms) === null || _config$forms === void 0 ? void 0 : _config$forms.map(function (form) {
@@ -3850,7 +3751,7 @@ var EditComponent = /*#__PURE__*/function (_Component) {
             })) || [],
             onChange: this.handleFormChange
           })
-        }), attributes.formId && !attributes.isConversationalForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        }), attributes.formId && !attributes.isConversationalForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__["default"], {
           attributes: attributes,
           setAttributes: setAttributes,
           updateStyles: this.updateStyles,
@@ -3869,11 +3770,11 @@ var EditComponent = /*#__PURE__*/function (_Component) {
 
       // Create loading overlay if needed
       if (isPreviewLoading) {
-        loadingOverlay = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        loadingOverlay = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "fluent-form-loading-overlay",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
             children: "Loading form preview..."
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_components_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__["default"], {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__["default"], {
             style: "dotted",
             className: "fluent-separator-sm"
           })]
@@ -3882,16 +3783,16 @@ var EditComponent = /*#__PURE__*/function (_Component) {
       if (!attributes.formId) {
         var _config$forms2;
         // No form selected
-        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "fluent-form-initial-wrapper",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
             className: "fluent-form-logo",
-            children: config.logo && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+            children: config.logo && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
               src: config.logo,
               alt: "Fluent Forms Logo",
               className: "fluent-form-logo-img"
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SelectControl, {
             label: __('Select a Form'),
             value: "",
             options: ((_config$forms2 = config.forms) === null || _config$forms2 === void 0 ? void 0 : _config$forms2.map(function (form) {
@@ -3902,7 +3803,7 @@ var EditComponent = /*#__PURE__*/function (_Component) {
               };
             })) || [],
             onChange: this.handleFormChange
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
             style: {
               marginTop: '16px',
               fontSize: '13px',
@@ -3913,15 +3814,15 @@ var EditComponent = /*#__PURE__*/function (_Component) {
         });
       } else if (attributes.isConversationalForm === true) {
         // Conversational form selected
-        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "fluent-form-conv-demo",
-          children: [config.conversational_demo_img && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+          children: [config.conversational_demo_img && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
             src: config.conversational_demo_img,
             alt: "Fluent Forms Conversational Form",
             className: "fluent-form-conv-img"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
             className: "fluent-form-conv-message",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("strong", {
               children: __("This is a demo preview. The actual Conversational Form will appear on your live page.")
             })
           })]
@@ -3930,9 +3831,11 @@ var EditComponent = /*#__PURE__*/function (_Component) {
         // Regular form selected - show preview only
         // Create device-specific class for responsive preview
         var deviceClass = "preview-device-".concat(previewDevice);
-        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        var styles = attributes.styles,
+          serverAttributes = _objectWithoutProperties(attributes, _excluded);
+        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "fluent-form-preview-wrapper ".concat(deviceClass),
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
             className: "fluent-form-preview-controls",
             children: [{
               device: 'desktop',
@@ -3947,27 +3850,27 @@ var EditComponent = /*#__PURE__*/function (_Component) {
               icon: 'smartphone',
               label: 'Mobile Preview'
             }].map(function (item) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Button, {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Button, {
                 icon: item.icon,
                 isSmall: true,
                 isPrimary: previewDevice === item.device,
                 onClick: function onClick() {
-                  return _this3.setPreviewDevice(item.device);
+                  return _this2.setPreviewDevice(item.device);
                 },
                 label: item.label
               }, item.device);
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ServerSideRender, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ServerSideRender, {
             block: "fluentfom/guten-block",
-            attributes: attributes
-          }, "ff-preview")]
+            attributes: serverAttributes
+          }, "ff-preview-".concat(attributes.formId, "-").concat(attributes.selectedPreset, "-").concat(attributes.isThemeChange))]
         });
       }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "fluentform-guten-wrapper",
-        children: [inspectorControls, attributes.formId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(BlockControls, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToolbarGroup, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToolbarButton, {
+        children: [inspectorControls, attributes.formId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(BlockControls, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToolbarGroup, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToolbarButton, {
               icon: "edit",
               label: __('Edit Form'),
               onClick: function onClick() {
@@ -3979,17 +3882,352 @@ var EditComponent = /*#__PURE__*/function (_Component) {
       });
     }
   }]);
-  return EditComponent;
 }(Component); // Functional wrapper component that uses useBlockProps for API Version 3
 function Edit(props) {
   var blockProps = useBlockProps({
     className: 'fluentform-guten-wrapper'
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", _objectSpread(_objectSpread({}, blockProps), {}, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(EditComponent, _objectSpread({}, props))
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", _objectSpread(_objectSpread({}, blockProps), {}, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(EditComponent, _objectSpread({}, props))
   }));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
+
+/***/ }),
+
+/***/ "./guten_block/src/utils/StyleHandler.js":
+/*!***********************************************!*\
+  !*** ./guten_block/src/utils/StyleHandler.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+/**
+ * JavaScript Style Handler for FluentForm Gutenberg Block
+ * Converts PHP styling logic to client-side JavaScript
+ */
+var FluentFormStyleHandler = /*#__PURE__*/function () {
+  function FluentFormStyleHandler(formId) {
+    _classCallCheck(this, FluentFormStyleHandler);
+    this.formId = formId;
+    this.styleElementId = "fluentform-block-custom-styles-".concat(formId);
+    this.baseSelector = ".fluentform-guten-wrapper .ff_guten_block.ff_guten_block-".concat(formId);
+    this.initStyleElement();
+  }
+  return _createClass(FluentFormStyleHandler, [{
+    key: "initStyleElement",
+    value: function initStyleElement() {
+      if (this.styleElement) {
+        this.styleElement.innerHTML = '';
+      }
+    }
+  }, {
+    key: "setStyleElement",
+    value: function setStyleElement() {
+      var styleElement = document.getElementById(this.styleElementId);
+      if (styleElement) {
+        this.styleElement = styleElement;
+      } else {
+        var style = document.createElement('style');
+        style.id = this.styleElementId;
+        document.head.appendChild(style);
+        this.styleElement = style;
+      }
+    }
+  }, {
+    key: "updateStyles",
+    value: function updateStyles(styles) {
+      if (!styles) return;
+      if (!this.styleElement) {
+        this.setStyleElement();
+      }
+      this.styleElement.innerHTML = this.generateAllStyles(styles);
+    }
+  }, {
+    key: "generateAllStyles",
+    value: function generateAllStyles(styles) {
+      var css = '';
+
+      // Container styles
+      css += this.generateContainerStyles(styles);
+
+      // Label styles
+      css += this.generateLabelStyles(styles);
+
+      // Input styles
+      css += this.generateInputStyles(styles);
+
+      // Button styles
+      css += this.generateButtonStyles(styles);
+      return css;
+    }
+  }, {
+    key: "generateContainerStyles",
+    value: function generateContainerStyles(styles) {
+      var css = '';
+      var selector = this.baseSelector;
+      var styleRules = [];
+      if (styles.backgroundColor) {
+        styleRules.push("background-color: ".concat(styles.backgroundColor));
+      }
+      if (styles.containerPadding) {
+        var padding = this.generateSpacing(styles.containerPadding);
+        if (padding) styleRules.push(padding);
+      }
+      if (styleRules.length > 0) {
+        css += "".concat(selector, " { ").concat(styleRules.join('; '), "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generateLabelStyles",
+    value: function generateLabelStyles(attributes) {
+      var css = '';
+      var labelSelector = "".concat(this.baseSelector, " .ff-el-input--label label");
+      var styles = [];
+      if (attributes.labelColor) {
+        styles.push("color: ".concat(attributes.labelColor));
+      }
+      if (attributes.labelTypography) {
+        var typography = this.generateTypography(attributes.labelTypography);
+        if (typography) styles.push(typography);
+      }
+      if (styles.length > 0) {
+        css += "".concat(labelSelector, " { ").concat(styles.join('; '), "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generateInputStyles",
+    value: function generateInputStyles(attributes) {
+      var css = '';
+      var inputSelectors = ["".concat(this.baseSelector, " .ff-el-form-control"), "".concat(this.baseSelector, " .ff-el-input--content input"), "".concat(this.baseSelector, " .ff-el-input--content textarea"), "".concat(this.baseSelector, " .ff-el-input--content select")];
+      var inputSelector = inputSelectors.join(', ');
+
+      // Normal state
+      var normalStyles = [];
+      if (attributes.inputTextColor) {
+        normalStyles.push("color: ".concat(attributes.inputTextColor));
+      }
+      if (attributes.inputBackgroundColor) {
+        normalStyles.push("background-color: ".concat(attributes.inputBackgroundColor));
+      }
+      if (attributes.inputTypography) {
+        var typography = this.generateTypography(attributes.inputTypography);
+        if (typography) normalStyles.push(typography);
+      }
+      if (attributes.inputBorder) {
+        var border = this.generateBorder(attributes.inputBorder);
+        if (border) normalStyles.push(border);
+      }
+      if (attributes.inputSpacing) {
+        var spacing = this.generateSpacing(attributes.inputSpacing);
+        if (spacing) normalStyles.push(spacing);
+      }
+      if (normalStyles.length > 0) {
+        css += "".concat(inputSelector, " { ").concat(normalStyles.join('; '), "; }\n");
+      }
+
+      // Focus state
+      var focusStyles = [];
+      var focusSelector = inputSelectors.map(function (sel) {
+        return "".concat(sel, ":focus");
+      }).join(', ');
+      if (attributes.inputTextColorFocus) {
+        focusStyles.push("color: ".concat(attributes.inputTextColorFocus));
+      }
+      if (attributes.inputBackgroundColorFocus) {
+        focusStyles.push("background-color: ".concat(attributes.inputBackgroundColorFocus));
+      }
+      if (attributes.inputBorderFocus) {
+        var borderFocus = this.generateBorder(attributes.inputBorderFocus);
+        if (borderFocus) focusStyles.push(borderFocus);
+      }
+      if (focusStyles.length > 0) {
+        css += "".concat(focusSelector, " { ").concat(focusStyles.join('; '), "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generatePlaceholderStyles",
+    value: function generatePlaceholderStyles(attributes) {
+      var css = '';
+      if (attributes.placeholderColor) {
+        var placeholderSelectors = ["".concat(this.baseSelector, " .ff-el-input--content input::placeholder"), "".concat(this.baseSelector, " .ff-el-input--content textarea::placeholder")];
+        css += "".concat(placeholderSelectors.join(', '), " { color: ").concat(attributes.placeholderColor, "; }\n");
+      }
+      if (attributes.placeholderTypography) {
+        var typography = this.generateTypography(attributes.placeholderTypography);
+        if (typography) {
+          var _placeholderSelectors = ["".concat(this.baseSelector, " .ff-el-input--content input::placeholder"), "".concat(this.baseSelector, " .ff-el-input--content textarea::placeholder")];
+          css += "".concat(_placeholderSelectors.join(', '), " { ").concat(typography, "; }\n");
+        }
+      }
+      return css;
+    }
+  }, {
+    key: "generateButtonStyles",
+    value: function generateButtonStyles(attributes) {
+      var css = '';
+      var buttonSelector = "".concat(this.baseSelector, " .ff-btn-submit");
+
+      // Button alignment
+      if (attributes.buttonAlignment) {
+        css += "".concat(this.baseSelector, " .ff_submit_btn_wrapper { text-align: ").concat(attributes.buttonAlignment, "; }\n");
+      }
+
+      // Normal state
+      var normalStyles = [];
+      if (attributes.buttonColor) {
+        normalStyles.push("color: ".concat(attributes.buttonColor));
+      }
+      if (attributes.buttonBGColor) {
+        normalStyles.push("background-color: ".concat(attributes.buttonBGColor));
+      }
+      if (attributes.buttonTypography) {
+        var typography = this.generateTypography(attributes.buttonTypography);
+        if (typography) normalStyles.push(typography);
+      }
+      if (attributes.buttonBorder) {
+        var border = this.generateBorder(attributes.buttonBorder);
+        if (border) normalStyles.push(border);
+      }
+      if (attributes.buttonSpacing) {
+        var spacing = this.generateSpacing(attributes.buttonSpacing);
+        if (spacing) normalStyles.push(spacing);
+      }
+      if (normalStyles.length > 0) {
+        css += "".concat(buttonSelector, " { ").concat(normalStyles.join('; '), "; }\n");
+      }
+
+      // Hover state
+      var hoverStyles = [];
+      var hoverSelector = "".concat(buttonSelector, ":hover");
+      if (attributes.buttonColorHover) {
+        hoverStyles.push("color: ".concat(attributes.buttonColorHover));
+      }
+      if (attributes.buttonBGColorHover) {
+        hoverStyles.push("background-color: ".concat(attributes.buttonBGColorHover));
+      }
+      if (hoverStyles.length > 0) {
+        css += "".concat(hoverSelector, " { ").concat(hoverStyles.join('; '), "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generateRadioCheckboxStyles",
+    value: function generateRadioCheckboxStyles(attributes) {
+      var css = '';
+      if (attributes.radioCheckboxItemsColor) {
+        css += "".concat(this.baseSelector, " .ff-el-form-check { color: ").concat(attributes.radioCheckboxItemsColor, "; }\n");
+      }
+      if (attributes.radioCheckboxItemsSize) {
+        var size = "".concat(attributes.radioCheckboxItemsSize, "px");
+        css += "".concat(this.baseSelector, " input[type=\"radio\"], ").concat(this.baseSelector, " input[type=\"checkbox\"] { width: ").concat(size, "; height: ").concat(size, "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generateMessageStyles",
+    value: function generateMessageStyles(attributes) {
+      var css = '';
+
+      // Success message
+      if (attributes.successMessageColor) {
+        css += "".concat(this.baseSelector, " .ff-message-success { color: ").concat(attributes.successMessageColor, "; }\n");
+      }
+
+      // Error message
+      if (attributes.errorMessageColor) {
+        css += "".concat(this.baseSelector, " .ff-errors-in-stack, ").concat(this.baseSelector, " .error { color: ").concat(attributes.errorMessageColor, "; }\n");
+      }
+
+      // Asterisk
+      if (attributes.asteriskColor) {
+        css += "".concat(this.baseSelector, " .asterisk-right label:after, ").concat(this.baseSelector, " .asterisk-left label:before { color: ").concat(attributes.asteriskColor, "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generateTypography",
+    value: function generateTypography(typography) {
+      if (!typography) return '';
+      var styles = [];
+      if (typography.size && typography.size.lg) {
+        styles.push("font-size: ".concat(typography.size.lg, "px"));
+      }
+      if (typography.weight) {
+        styles.push("font-weight: ".concat(typography.weight));
+      }
+      if (typography.lineHeight) {
+        styles.push("line-height: ".concat(typography.lineHeight));
+      }
+      if (typography.letterSpacing) {
+        styles.push("letter-spacing: ".concat(typography.letterSpacing, "px"));
+      }
+      if (typography.textTransform) {
+        styles.push("text-transform: ".concat(typography.textTransform));
+      }
+      return styles.join('; ');
+    }
+  }, {
+    key: "generateBorder",
+    value: function generateBorder(border) {
+      if (!border) return '';
+      var styles = [];
+      if (border.width) {
+        styles.push("border-width: ".concat(border.width, "px"));
+      }
+      if (border.style) {
+        styles.push("border-style: ".concat(border.style));
+      }
+      if (border.color) {
+        styles.push("border-color: ".concat(border.color));
+      }
+      if (border.radius) {
+        styles.push("border-radius: ".concat(border.radius, "px"));
+      }
+      return styles.join('; ');
+    }
+  }, {
+    key: "generateSpacing",
+    value: function generateSpacing(spacing) {
+      var property = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'padding';
+      if (!spacing) return '';
+      var styles = [];
+      if (spacing.top) {
+        styles.push("".concat(property, "-top: ").concat(spacing.top, "px"));
+      }
+      if (spacing.right) {
+        styles.push("".concat(property, "-right: ").concat(spacing.right, "px"));
+      }
+      if (spacing.bottom) {
+        styles.push("".concat(property, "-bottom: ").concat(spacing.bottom, "px"));
+      }
+      if (spacing.left) {
+        styles.push("".concat(property, "-left: ").concat(spacing.left, "px"));
+      }
+      return styles.join('; ');
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      if (this.styleElement) {
+        this.styleElement.remove();
+      }
+    }
+  }]);
+}();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentFormStyleHandler);
 
 /***/ }),
 
@@ -5209,6 +5447,7 @@ function validateFragmentProps(fragment) {
   }
 }
 
+var didWarnAboutKeySpread = {};
 function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
   {
     var validType = isValidElementType(type); // We warn in this case but don't throw. We expect the element creation to
@@ -5275,6 +5514,24 @@ function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
           }
         } else {
           validateChildKeys(children, type);
+        }
+      }
+    }
+
+    {
+      if (hasOwnProperty.call(props, 'key')) {
+        var componentName = getComponentNameFromType(type);
+        var keys = Object.keys(props).filter(function (k) {
+          return k !== 'key';
+        });
+        var beforeExample = keys.length > 0 ? '{key: someKey, ' + keys.join(': ..., ') + ': ...}' : '{key: someKey}';
+
+        if (!didWarnAboutKeySpread[componentName + beforeExample]) {
+          var afterExample = keys.length > 0 ? '{' + keys.join(': ..., ') + ': ...}' : '{}';
+
+          error('A props object containing a "key" prop is being spread into JSX:\n' + '  let props = %s;\n' + '  <%s {...props} />\n' + 'React keys must be passed directly to JSX without using spread:\n' + '  let props = %s;\n' + '  <%s key={someKey} {...props} />', beforeExample, componentName, afterExample, componentName);
+
+          didWarnAboutKeySpread[componentName + beforeExample] = true;
         }
       }
     }
@@ -5349,7 +5606,7 @@ if (
 ) {
   __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
 }
-          var ReactVersion = '18.2.0';
+          var ReactVersion = '18.3.1';
 
 // ATTENTION
 // When adding new symbols to this file,
@@ -8025,6 +8282,7 @@ exports.PureComponent = PureComponent;
 exports.StrictMode = REACT_STRICT_MODE_TYPE;
 exports.Suspense = REACT_SUSPENSE_TYPE;
 exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
+exports.act = act;
 exports.cloneElement = cloneElement$1;
 exports.createContext = createContext;
 exports.createElement = createElement$1;
@@ -8075,7 +8333,8 @@ if (
 
 
 
-if (false) {} else {
+if (false) // removed by dead control flow
+{} else {
   module.exports = __webpack_require__(/*! ./cjs/react.development.js */ "./node_modules/react/cjs/react.development.js");
 }
 
@@ -8090,7 +8349,8 @@ if (false) {} else {
 
 
 
-if (false) {} else {
+if (false) // removed by dead control flow
+{} else {
   module.exports = __webpack_require__(/*! ./cjs/react-jsx-runtime.development.js */ "./node_modules/react/cjs/react-jsx-runtime.development.js");
 }
 
@@ -8166,7 +8426,7 @@ if (false) {} else {
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
 /*!**********************************!*\
   !*** ./guten_block/src/index.js ***!

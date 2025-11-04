@@ -17,14 +17,7 @@ class BlockAttributes
     {
         return array_merge(
             self::getFormAttributes(),
-            self::getTypographyAttributes(),
-            self::getColorAttributes(),
-            self::getBorderAttributes(),
-            self::getBackgroundAttributes(),
-            self::getSpacingAttributes(),
-            self::getButtonAttributes(),
-            self::getMessageAttributes(),
-            self::getAdvancedAttributes()
+            self::getStylesAttribute()
         );
     }
 
@@ -76,6 +69,71 @@ class BlockAttributes
     }
 
     /**
+     * Get the consolidated styles attribute
+     *
+     * @return array Styles attribute configuration
+     */
+    public static function getStylesAttribute()
+    {
+        return [
+            'styles' => [
+                'type' => 'object',
+                'default' => array_merge(
+                    self::getTypographyAttributes(),
+                    self::getColorAttributes(),
+                    self::getBorderAttributes(),
+                    self::getBoxShadowAttributes(),
+                    self::getBackgroundAttributes(),
+                    self::getSpacingAttributes(),
+                    self::getButtonAttributes(),
+                    self::getMessageAttributes(),
+                    self::getAdvancedAttributes()
+                ),
+            ],
+        ];
+    }
+
+    public static function getBoxShadowAttributes() {
+        return [
+            // Input box shadow focus
+            'enableInputBoxShadow' => false,
+            'inputBoxShadowColor' => '',
+            'inputBoxShadowPosition' => 'outline',
+            'inputBoxShadowHorizontal' => '',
+            'inputBoxShadowHorizontalUnit' => 'px',
+            'inputBoxShadowVertical' => '',
+            'inputBoxShadowVerticalUnit' => 'px',
+            'inputBoxShadowBlur' => '',
+            'inputBoxShadowBlurUnit' => 'px',
+            'inputBoxShadowSpread' => '',
+            'inputBoxShadowSpreadUnit' => 'px',
+            'enableInputBoxShadowFocus' => false,
+            'inputBoxShadowColorFocus' => '',
+            'inputBoxShadowPositionFocus' => 'outline',
+            'inputBoxShadowHorizontalFocus' => '',
+            'inputBoxShadowHorizontalUnitFocus' => 'px',
+            'inputBoxShadowVerticalFocus' => '',
+            'inputBoxShadowVerticalUnitFocus' => 'px',
+            'inputBoxShadowBlurFocus' => '',
+            'inputBoxShadowBlurUnitFocus' => 'px',
+            'inputBoxShadowSpreadFocus' => '',
+            'inputBoxShadowSpreadUnitFocus' => 'px',
+            // Container box shadow
+            'enableBoxShadow' => false,
+            'boxShadowColor' => '',
+            'boxShadowPosition' => 'outline',
+            'boxShadowHorizontal' => '',
+            'boxShadowHorizontalUnit' => 'px',
+            'boxShadowVertical' => '',
+            'boxShadowVerticalUnit' => 'px',
+            'boxShadowBlur' => '',
+            'boxShadowBlurUnit' => 'px',
+            'boxShadowSpread' => '',
+            'boxShadowSpreadUnit' => 'px',
+        ];
+    }
+
+    /**
      * Get typography related attributes
      *
      * @return array Typography related attributes
@@ -83,26 +141,11 @@ class BlockAttributes
     public static function getTypographyAttributes()
     {
         return [
-            'labelTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'inputTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'placeholderTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'radioCheckboxTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
+            'labelTypography' => [],
+            'inputTypography' => [],
+            'buttonTypography' => [],
+            'placeholderTypography' => [],
+            'radioCheckboxTypography' => [],
         ];
     }
 
@@ -114,147 +157,42 @@ class BlockAttributes
     public static function getColorAttributes()
     {
         return [
-            'textColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'backgroundColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'labelColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputTextColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBackgroundColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'placeholderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'placeholderFocusColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonBGColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonHoverColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonHoverBGColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'radioCheckboxItemsColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'radioCheckboxLabelColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'checkboxSize' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'checkboxBorderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'checkboxBgColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'checkboxCheckedColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'radioSize' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'radioBorderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'radioBgColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'radioCheckedColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'errorMessageColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'errorMessageBgColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageBgColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageBgColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'gradientColor1' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'gradientColor2' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'backgroundOverlayColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'boxShadowColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'asteriskColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
+            'textColor' => '',
+            'backgroundColor' => '',
+            'labelColor' => '',
+            'inputTextColor' => '',
+            'inputBackgroundColor' => '',
+            'placeholderColor' => '',
+            'placeholderFocusColor' => '',
+            'buttonColor' => '',
+            'buttonBGColor' => '',
+            'buttonHoverColor' => '',
+            'buttonHoverBGColor' => '',
+            'radioCheckboxItemsColor' => '',
+            'radioCheckboxLabelColor' => '',
+            'checkboxSize' => '',
+            'checkboxBorderColor' => '',
+            'checkboxBgColor' => '',
+            'checkboxCheckedColor' => '',
+            'radioSize' => '',
+            'radioBorderColor' => '',
+            'radioBgColor' => '',
+            'radioCheckedColor' => '',
+            'errorMessageColor' => '',
+            'errorMessageBgColor' => '',
+            'successMessageColor' => '',
+            'successMessageBgColor' => '',
+            'submitErrorMessageColor' => '',
+            'submitErrorMessageBgColor' => '',
+            'gradientColor1' => '',
+            'gradientColor2' => '',
+            'backgroundOverlayColor' => '',
+            'boxShadowColor' => '',
+            'asteriskColor' => '',
             // Focus state colors
-            'inputTextFocusColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBackgroundFocusColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputFocusSpacing' => [
-                'type' => 'object',
-                'default' => [],
-            ],
+            'inputTextFocusColor' => '',
+            'inputBackgroundFocusColor' => '',
+            'inputFocusSpacing' => [],
         ];
     }
 
@@ -266,100 +204,32 @@ class BlockAttributes
     public static function getBorderAttributes()
     {
         return [
-            'inputBorder' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'inputBorderHover' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'formBorder' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'enableFormBorder' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'borderType' => [
-                'type' => 'string',
-                'default' => 'solid',
-            ],
-            'borderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'borderWidth' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'borderRadius' => [
-                'type' => 'object',
-                'default' => [],
-            ],
+            // Input border
+            'enableInputBorder' => false,
+            'inputBorderType' => 'solid',
+            'inputBorderColor' => '',
+            'inputBorder' => [],
+            'inputBorderRadius' => [],
+            'inputBorderWidth' => [],
+            'inputBorderHover' => [],
+            'formBorder' => [],
+            'enableFormBorder' => false,
+            'borderType' => 'solid',
+            'borderColor' => '',
+            'borderWidth' => [],
+            'borderRadius' => [],
             // Button border
-            'enableButtonBorder' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'buttonBorderType' => [
-                'type' => 'string',
-                'default' => 'solid',
-            ],
-            'buttonBorderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonBorderWidth' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonBorderRadius' => [
-                'type' => 'object',
-                'default' => [],
-            ],
+            'enableButtonBorder' => false,
+            'buttonBorderType' => 'solid',
+            'buttonBorderColor' => '',
+            'buttonBorderWidth' => [],
+            'buttonBorderRadius' => [],
             // Input focus borders
-            'enableInputBorder' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'inputBorderType' => [
-                'type' => 'string',
-                'default' => 'solid',
-            ],
-            'inputBorderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBorderWidth' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'inputBorderRadius' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'enableInputBorderFocus' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'inputBorderTypeFocus' => [
-                'type' => 'string',
-                'default' => 'solid',
-            ],
-            'inputBorderColorFocus' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBorderWidthFocus' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'inputBorderRadiusFocus' => [
-                'type' => 'object',
-                'default' => [],
-            ],
+            'enableInputBorderFocus' => false,
+            'inputBorderTypeFocus' => 'solid',
+            'inputBorderColorFocus' => '',
+            'inputBorderWidthFocus' => [],
+            'inputBorderRadiusFocus' => [],
         ];
     }
 
@@ -371,46 +241,16 @@ class BlockAttributes
     public static function getBackgroundAttributes()
     {
         return [
-            'backgroundType' => [
-                'type' => 'string',
-                'default' => 'classic',
-            ],
-            'backgroundImage' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'backgroundImageId' => [
-                'type' => 'number',
-                'default' => 0,
-            ],
-            'backgroundSize' => [
-                'type' => 'string',
-                'default' => 'cover',
-            ],
-            'backgroundPosition' => [
-                'type' => 'string',
-                'default' => 'center center',
-            ],
-            'backgroundRepeat' => [
-                'type' => 'string',
-                'default' => 'no-repeat',
-            ],
-            'backgroundAttachment' => [
-                'type' => 'string',
-                'default' => 'scroll',
-            ],
-            'gradientType' => [
-                'type' => 'string',
-                'default' => 'linear',
-            ],
-            'gradientAngle' => [
-                'type' => 'number',
-                'default' => 90,
-            ],
-            'backgroundOverlayOpacity' => [
-                'type' => 'number',
-                'default' => 0.5,
-            ],
+            'backgroundType' => 'classic',
+            'backgroundImage' => '',
+            'backgroundImageId' => 0,
+            'backgroundSize' => 'cover',
+            'backgroundPosition' => 'center center',
+            'backgroundRepeat' => 'no-repeat',
+            'backgroundAttachment' => 'scroll',
+            'gradientType' => 'linear',
+            'gradientAngle' => 90,
+            'backgroundOverlayOpacity' => 0.5,
         ];
     }
 
@@ -422,46 +262,16 @@ class BlockAttributes
     public static function getSpacingAttributes()
     {
         return [
-            'containerPadding' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'containerMargin' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'containerBoxShadow' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'containerBoxShadowHover' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'inputSpacing' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'inputSpacingHover' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonPadding' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonMargin' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'formWidth' => [
-                    'type' => 'string',
-                'default' => '',
-            ],
-            'formAlignment' => [
-                'type' => 'string',
-                'default' => '',
-            ],
+            'containerPadding' => [],
+            'containerMargin' => [],
+            'containerBoxShadow' => [],
+            'containerBoxShadowHover' => [],
+            'inputSpacing' => [],
+            'inputSpacingHover' => [],
+            'buttonPadding' => [],
+            'buttonMargin' => [],
+            'formWidth' => '',
+            'formAlignment' => '',
         ];
     }
 
@@ -474,169 +284,49 @@ class BlockAttributes
     {
         return [
             // Common button attributes
-            'buttonWidth' => [
-                'type' => 'number',
-            ],
-            'buttonAlignment' => [
-                'type' => 'string',
-                'default' => 'left',
-            ],
+            'buttonWidth' => '',
+            'buttonAlignment' => 'left',
 
             // Normal state button attributes
-            'buttonTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonPadding' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonMargin' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'enableButtonBorder' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'buttonBorderType' => [
-                'type' => 'string',
-                'default' => 'solid',
-            ],
-            'buttonBorderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonBorderWidth' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonBorderRadius' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'enableButtonBoxShadow' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'buttonBoxShadowColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonBoxShadowPosition' => [
-                'type' => 'string',
-                'default' => 'outline',
-            ],
-            'buttonBoxShadowHorizontal' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonBoxShadowHorizontalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'buttonBoxShadowVertical' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonBoxShadowVerticalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'buttonBoxShadowBlur' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonBoxShadowBlurUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'buttonBoxShadowSpread' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonBoxShadowSpreadUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
+            'buttonTypography' => [],
+            'buttonPadding' => [],
+            'buttonMargin' => [],
+            'buttonBorderType' => 'solid',
+            'buttonBorderColor' => '',
+            'buttonBorderWidth' => [],
+            'buttonBorderRadius' => [],
+            'enableButtonBoxShadow' => false,
+            'buttonBoxShadowColor' => '',
+            'buttonBoxShadowPosition' => 'outline',
+            'buttonBoxShadowHorizontal' => '',
+            'buttonBoxShadowHorizontalUnit' => 'px',
+            'buttonBoxShadowVertical' => '',
+            'buttonBoxShadowVerticalUnit' => 'px',
+            'buttonBoxShadowBlur' => '',
+            'buttonBoxShadowBlurUnit' => 'px',
+            'buttonBoxShadowSpread' => '',
+            'buttonBoxShadowSpreadUnit' => 'px',
 
             // Hover state button attributes
-            'buttonHoverTypography' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonHoverPadding' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonHoverMargin' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'enableButtonHoverBorder' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'buttonHoverBorderType' => [
-                'type' => 'string',
-                'default' => 'solid',
-            ],
-            'buttonHoverBorderColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonHoverBorderWidth' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'buttonHoverBorderRadius' => [
-                'type' => 'object',
-                'default' => [],
-            ],
-            'enableButtonHoverBoxShadow' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'buttonHoverBoxShadowColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonHoverBoxShadowPosition' => [
-                'type' => 'string',
-                'default' => 'outline',
-            ],
-            'buttonHoverBoxShadowHorizontal' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonHoverBoxShadowHorizontalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'buttonHoverBoxShadowVertical' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonHoverBoxShadowVerticalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'buttonHoverBoxShadowBlur' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonHoverBoxShadowBlurUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'buttonHoverBoxShadowSpread' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'buttonHoverBoxShadowSpreadUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
+            'buttonHoverTypography' => [],
+            'buttonHoverPadding' => [],
+            'buttonHoverMargin' => [],
+            'enableButtonHoverBorder' => false,
+            'buttonHoverBorderType' => 'solid',
+            'buttonHoverBorderColor' => '',
+            'buttonHoverBorderWidth' => [],
+            'buttonHoverBorderRadius' => [],
+            'enableButtonHoverBoxShadow' => false,
+            'buttonHoverBoxShadowColor' => '',
+            'buttonHoverBoxShadowPosition' => 'outline',
+            'buttonHoverBoxShadowHorizontal' => '',
+            'buttonHoverBoxShadowHorizontalUnit' => 'px',
+            'buttonHoverBoxShadowVertical' => '',
+            'buttonHoverBoxShadowVerticalUnit' => 'px',
+            'buttonHoverBoxShadowBlur' => '',
+            'buttonHoverBoxShadowBlurUnit' => 'px',
+            'buttonHoverBoxShadowSpread' => '',
+            'buttonHoverBoxShadowSpreadUnit' => 'px',
         ];
     }
 
@@ -648,18 +338,9 @@ class BlockAttributes
     public static function getMessageAttributes()
     {
         return [
-            'errorMessageAlignment' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'successMessageAlignment' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'submitErrorMessageAlignment' => [
-                'type' => 'string',
-                'default' => '',
-            ],
+            'errorMessageAlignment' => '',
+            'successMessageAlignment' => '',
+            'submitErrorMessageAlignment' => '',
         ];
     }
 
@@ -671,140 +352,12 @@ class BlockAttributes
     public static function getAdvancedAttributes()
     {
         return [
-            'radioCheckboxItemsSize' => [
-                'type' => 'number',
-            ],
-            'customCss' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'hideOnDesktop' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'hideOnTablet' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'hideOnMobile' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'zIndex' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            // Input box shadow focus
-            'enableInputBoxShadow' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'inputBoxShadowColor' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowPosition' => [
-                'type' => 'string',
-                'default' => 'outline',
-            ],
-            'inputBoxShadowHorizontal' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowHorizontalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'inputBoxShadowVertical' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowVerticalUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'inputBoxShadowBlur' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowBlurUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'inputBoxShadowSpread' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowSpreadUnit' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'enableInputBoxShadowFocus' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'inputBoxShadowColorFocus' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowPositionFocus' => [
-                'type' => 'string',
-                'default' => 'outline',
-            ],
-            'inputBoxShadowHorizontalFocus' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowHorizontalUnitFocus' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'inputBoxShadowVerticalFocus' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowVerticalUnitFocus' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'inputBoxShadowBlurFocus' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowBlurUnitFocus' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
-            'inputBoxShadowSpreadFocus' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'inputBoxShadowSpreadUnitFocus' => [
-                'type' => 'string',
-                'default' => 'px',
-            ],
+            'radioCheckboxItemsSize' => '',
+            'customCss' => '',
+            'hideOnDesktop' => false,
+            'hideOnTablet' => false,
+            'hideOnMobile' => false,
+            'zIndex' => '',
         ];
-    }
-
-    /**
-     * Check if any style attributes are present in the given attributes
-     *
-     * @param array $atts Block attributes to check
-     * @return bool True if style attributes exist, false otherwise
-     */
-    public static function hasStyleAttributes($atts)
-    {
-        $styleAttributes = array_merge(
-            array_keys(self::getTypographyAttributes()),
-            array_keys(self::getColorAttributes()),
-            array_keys(self::getBorderAttributes()),
-            array_keys(self::getSpacingAttributes()),
-            array_keys(self::getButtonAttributes()),
-            array_keys(self::getMessageAttributes())
-        );
-
-        return !empty(array_filter($atts, function($value, $key) use ($styleAttributes) {
-            return in_array($key, $styleAttributes) && !empty($value);
-        }, ARRAY_FILTER_USE_BOTH));
     }
 }

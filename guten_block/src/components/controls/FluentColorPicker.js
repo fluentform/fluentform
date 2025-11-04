@@ -10,9 +10,11 @@ const {
 const { useState, useRef, useEffect } = wp.element;
 
 // Custom Color Picker Component with direct ColorPicker and conditional reset button
-const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
+const FluentColorPicker = ({ label, value, onChange, defaultColor = '', styles = {} }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [currentColor, setCurrentColor] = useState(value || '');
+    const [currentColor, setCurrentColor] = useState(value || defaultColor);
+    const [isTransparent, setIsTransparent] = useState(false);
+    const [isColorChanged, setIsColorChanged] = useState(false);
     const containerRef = useRef(null);
     const buttonRef = useRef(null);
     const popoverRef = useRef(null);
@@ -22,8 +24,9 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
         setCurrentColor(value || '');
     }, [value]);
 
-    // Check if current value is different from default
-    const isColorChanged = currentColor !== defaultColor && currentColor !== undefined && currentColor !== null;
+    useEffect(() => {
+        setIsColorChanged(currentColor !== defaultColor && currentColor !== undefined && currentColor !== null);
+    }, [currentColor, defaultColor]);
 
     const toggleColorPicker = (e) => {
         e.stopPropagation();
@@ -33,17 +36,6 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
     const resetToDefault = () => {
         setCurrentColor(defaultColor);
         onChange(defaultColor);
-    };
-
-    // Determine if we should show the transparent pattern
-    const isTransparent = !currentColor ||
-                         currentColor === 'transparent' ||
-                         (typeof currentColor === 'string' && currentColor.includes('rgba') &&
-                          (currentColor.endsWith(',0)') || currentColor.endsWith(', 0)')));
-
-    // Prepare the style for the color swatch
-    const swatchStyle = {
-        backgroundColor: currentColor || 'transparent'
     };
 
     // Handle clicks outside to close the color picker
@@ -97,7 +89,7 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
                     >
                         <div
                             className={`ffblock-color-swatch ${isTransparent ? 'ffblock-color-transparent-pattern' : ''}`}
-                            style={swatchStyle}
+                            style={ { backgroundColor: currentColor || "transparent" }}
                             title={currentColor || 'transparent'}
                         />
                     </div>

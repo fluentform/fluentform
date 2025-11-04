@@ -48,41 +48,22 @@ class GutenbergBlock
      * Render the Gutenberg block
      *
      * @param array $atts Block attributes
-     *
      * @return string Rendered block HTML
      */
     public static function render($atts)
     {
-        $formId = Arr::get($atts, 'formId');
+        $formId = intval(Arr::get($atts, 'formId', 0));
 
-        if (empty($formId)) {
-            return '';
+        if (!$formId) {
+            return '<div class="fluentform-no-form-selected"><p>' . __('Please select a form', 'fluentformpro') . '</p></div>';
         }
 
-        // Define selectors for various form elements
-        $baseSelector = '.ff_guten_block.ff_guten_block-' . $formId;
-        $buttonSelectorsStr = $baseSelector . ' .ff-btn-submit';
-        $labelSelector = $baseSelector . ' .ff-el-input--label label';
-        $inputTypes = ['.ff-el-form-control', 'input', 'textarea', 'select'];
-        $inputBGSelectorsStr = $baseSelector . ' ' . implode(', ' . $baseSelector . ' ', $inputTypes);
-        $placeholderPseudos = ['::placeholder', '::-webkit-input-placeholder', '::-moz-placeholder', ':-ms-input-placeholder', ':-moz-placeholder'];
-
-        $className = Arr::get($atts, 'className');
-
-        if ($className) {
-            $classes = explode(' ', $className);
-            $className = '';
-            if (!empty($classes)) {
-                foreach ($classes as $class) {
-                    $className .= sanitize_html_class($class) . ' ';
-                }
-            }
-        }
-
+        $className = sanitize_text_field(Arr::get($atts, 'className', ''));
         $themeStyle = sanitize_text_field(Arr::get($atts, 'themeStyle', ''));
         $selectedPreset = sanitize_text_field(Arr::get($atts, 'selectedPreset', ''));
         $customizePreset = Arr::get($atts, 'customizePreset', false);
         $presetStyles = Arr::get($atts, 'presetStyles', []);
+        $styles = Arr::get($atts, 'styles', []); // Get consolidated styles
         $type = Helper::isConversionForm($formId) ? 'conversational' : '';
 
         // Handle preset styles
@@ -104,86 +85,35 @@ class GutenbergBlock
         }
 
         // Then, add individual custom styles (higher specificity, should override presets)
-        $individualCSS = StyleProcessor::generateBlockStyles($atts, $formId);
-        if ($individualCSS) {
-            $customCSS .= $individualCSS;
+        if (!empty($styles)) {
+            $individualCSS = StyleProcessor::generateBlockStyles($atts, $formId);
+            if ($individualCSS) {
+                // Create a unique ID for this form's individual styles
+                $stylesId = 'fluentform-block-custom-styles-' . $formId;
+                $individualStyleTag = '<style id="' . esc_attr($stylesId) . '">' . $individualCSS . '</style>';
+                
+                // Also attach to frontend style handles
+                if (wp_style_is('fluent-form-styles', 'enqueued') || wp_style_is('fluent-form-styles', 'registered')) {
+                    wp_add_inline_style('fluent-form-styles', $individualCSS);
+                }
+                if (wp_style_is('fluentform-public-default', 'enqueued') || wp_style_is('fluentform-public-default', 'registered')) {
+                    wp_add_inline_style('fluentform-public-default', $individualCSS);
+                }
+            }
         }
 
         // Custom CSS for block styling
         $inlineStyle = '';
 
-        // Only process individual styles if style attributes exist
-        if (BlockAttributes::hasStyleAttributes($atts)) {
-            // Process button padding
-            $buttonPadding = Arr::get($atts, 'buttonPadding', []);
-            if (!empty($buttonPadding)) {
-                $customCSS .= StyleProcessor::processSpacing($buttonPadding, $buttonSelectorsStr, 'padding');
-            }
-
-            // Process button margin
-            $buttonMargin = Arr::get($atts, 'buttonMargin', []);
-            if (!empty($buttonMargin)) {
-                $customCSS .= StyleProcessor::processSpacing($buttonMargin, $buttonSelectorsStr, 'margin');
-            }
-
-            // Process label typography
-            $labelTypo = Arr::get($atts, 'labelTypography', []);
-
-            if (!empty($labelTypo)) {
-                $customCSS .= StyleProcessor::processTypography($labelTypo, $labelSelector);
-            }
-
-            // Process input typography
-            $inputTypo = Arr::get($atts, 'inputTypography', []);
-
-            if (!empty($inputTypo)) {
-                $customCSS .= StyleProcessor::processTypography($inputTypo, $inputBGSelectorsStr);
-            }
-
-            // Process input spacing
-            $inputSpacing = Arr::get($atts, 'inputSpacing', []);
-            if (!empty($inputSpacing)) {
-                $customCSS .= StyleProcessor::processSpacing($inputSpacing, $inputBGSelectorsStr, 'padding');
-            }
-
-            // Process input border
-            $inputBorder = Arr::get($atts, 'inputBorder', []);
-            $inputBorderHover = Arr::get($atts, 'inputBorderHover', []);
-
-            // Get the custom_border flag - default to false if not set
-            // This ensures that if no data is saved for custom_border, it defaults to false
-            $customBorderEnabled = Arr::get($inputBorder, 'custom_border', false);
-
-            // Check if custom_border is truthy (true, 'true', 1, etc.) but not falsey values ('false', '0', etc.)
-            // This handles various data types that might come from the client
-            $isBorderEnabled = $customBorderEnabled && $customBorderEnabled !== 'false' && $customBorderEnabled !== '0';
-
-            // Apply border styles if inputBorder is not empty and custom_border is enabled
-            if (!empty($inputBorder) && $isBorderEnabled) {
-                $borderCSS = StyleProcessor::processBorder($inputBorder, $inputBGSelectorsStr, false);
-                if ($borderCSS) {
-                    $customCSS .= $borderCSS;
-                }
-
-                if (!empty($inputBorderHover)) {
-                    $borderHoverCSS = StyleProcessor::processBorder($inputBorderHover, $inputBGSelectorsStr, true);
-                    if ($borderHoverCSS) {
-                        $customCSS .= $borderHoverCSS;
-                    }
-                }
-            }
-        }
-
-        // Add the custom CSS inline with the form and via wp_add_inline_style for frontend
+        // Add the CSS inline with the form
         if ($customCSS) {
             // Create a unique ID for this form's styles
             $styleId = 'fluentform-block-styles-' . $formId;
 
-            // Add the styles inline with the form (fallback for editor/preview)
-            $inlineStyle = '<style id="' . esc_attr($styeId) . '">' . $customCSS . '</style>';
+            // Add the styles inline with the form
+            $inlineStyle = '<style id="' . esc_attr($styleId) . '">' . $customCSS . '</style>';
 
-            // Also attach to frontend style handles to ensure it renders outside the editor
-            // Base public CSS
+            // Also attach to frontend style handles
             if (wp_style_is('fluent-form-styles', 'enqueued') || wp_style_is('fluent-form-styles', 'registered')) {
                 wp_add_inline_style('fluent-form-styles', $customCSS);
             }
@@ -197,8 +127,16 @@ class GutenbergBlock
         $formOutput = do_shortcode('[fluentform theme="' . $themeStyle . '" css_classes="' . $className . ' ff_guten_block ff_guten_block-' . $formId . '" id="' . $formId . '"  type="' . $type . '"]');
 
         if ($formOutput) {
+            $allStyles = '';
             if ($inlineStyle) {
-                return $inlineStyle . $formOutput;
+                $allStyles .= $inlineStyle;
+            }
+            if (!empty($individualStyleTag)) {
+                $allStyles .= $individualStyleTag;
+            }
+            
+            if ($allStyles) {
+                return $allStyles . $formOutput;
             }
             return $formOutput;
         }

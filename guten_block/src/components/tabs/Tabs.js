@@ -30,7 +30,6 @@ class Tabs extends PureComponent {
                         return (
                             <div key="general-tab-content">
                                 <TabGeneral
-                                    attributes={attributes}
                                     setAttributes={setAttributes}
                                     updateStyles={updateStyles}
                                     state={state}

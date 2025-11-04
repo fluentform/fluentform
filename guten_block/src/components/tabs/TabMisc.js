@@ -32,9 +32,9 @@ const DEFAULT_COLORS = [
  */
 const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
     // Use local state for background type to ensure UI updates immediately
-    const [localBgType, setLocalBgType] = useState(attributes.backgroundType || 'classic');
+    const [localBgType, setLocalBgType] = useState(attributes.styles.backgroundType || 'classic');
     // Add local state for background image to ensure immediate UI update
-    const [localBgImage, setLocalBgImage] = useState(attributes.backgroundImage || '');
+    const [localBgImage, setLocalBgImage] = useState(attributes.styles.backgroundImage || '');
 
     const handleTypographyChange = (changedTypo, key) => {
         const updatedTypography = getUpdatedTypography(
@@ -48,17 +48,17 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
 
     // Update local state when attributes change
     useEffect(() => {
-        if (attributes.backgroundType !== undefined && attributes.backgroundType !== localBgType) {
-            setLocalBgType(attributes.backgroundType);
+        if (attributes.styles.backgroundType !== undefined && attributes.styles.backgroundType !== localBgType) {
+            setLocalBgType(attributes.styles.backgroundType);
         }
-    }, [attributes.backgroundType]);
+    }, [attributes.styles.backgroundType]);
 
     // Sync local background image state with attributes
     useEffect(() => {
-        if (attributes.backgroundImage !== localBgImage) {
-            setLocalBgImage(attributes.backgroundImage || '');
+        if (attributes.styles.backgroundImage !== localBgImage) {
+            setLocalBgImage(attributes.styles.backgroundImage || '');
         }
-    }, [attributes.backgroundImage]);
+    }, [attributes.styles.backgroundImage]);
 
     // Handle background type change
     const handleBackgroundTypeChange = (value) => {
@@ -118,7 +118,7 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
     };
 
     // Use local state for conditional rendering
-    const currentBgImage = localBgImage || attributes.backgroundImage;
+    const currentBgImage = localBgImage || attributes.styles.backgroundImage;
 
     return (
       <>
@@ -212,7 +212,7 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
                       <div style={{ marginTop: '16px' }}>
                           <SelectControl
                             label={__("Background Size")}
-                            value={attributes.backgroundSize || 'cover'}
+                            value={attributes.styles.backgroundSize || 'cover'}
                             options={[
                                 { label: __("Cover"), value: 'cover' },
                                 { label: __("Contain"), value: 'contain' },
@@ -223,7 +223,7 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
 
                           <SelectControl
                             label={__("Background Position")}
-                            value={attributes.backgroundPosition || 'center center'}
+                            value={attributes.styles.backgroundPosition || 'center center'}
                             options={[
                                 { label: __("Center Center"), value: 'center center' },
                                 { label: __("Center Top"), value: 'center top' },
@@ -240,7 +240,7 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
 
                           <SelectControl
                             label={__("Background Repeat")}
-                            value={attributes.backgroundRepeat || 'no-repeat'}
+                            value={attributes.styles.backgroundRepeat || 'no-repeat'}
                             options={[
                                 { label: __("No Repeat"), value: 'no-repeat' },
                                 { label: __("Repeat"), value: 'repeat' },
@@ -260,21 +260,21 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
                     <div className="ffblock-bg-gradient">
                         <FluentColorPicker
                           label={__("Primary Color")}
-                          value={attributes.gradientColor1 || ''}
+                          value={attributes.styles.gradientColor1 || ''}
                           onChange={(value) => updateStyles({ gradientColor1: value })}
                           defaultColor=""
                         />
 
                         <FluentColorPicker
                           label={__("Secondary Color")}
-                          value={attributes.gradientColor2 || ''}
+                          value={attributes.styles.gradientColor2 || ''}
                           onChange={(value) => updateStyles({ gradientColor2: value })}
                           defaultColor=""
                         />
 
                         <SelectControl
                           label={__("Gradient Type")}
-                          value={attributes.gradientType || 'linear'}
+                          value={attributes.styles.gradientType || 'linear'}
                           options={[
                               { label: __("Linear"), value: 'linear' },
                               { label: __("Radial"), value: 'radial' }
@@ -282,10 +282,10 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
                           onChange={(value) => updateStyles({ gradientType: value })}
                         />
 
-                        {attributes.gradientType === 'linear' && (
+                        {attributes.styles.gradientType === 'linear' && (
                           <RangeControl
                             label={__("Gradient Angle (°)")}
-                            value={attributes.gradientAngle || 90}
+                            value={attributes.styles.gradientAngle || 90}
                             onChange={(value) => updateStyles({ gradientAngle: value })}
                             min={0}
                             max={360}
@@ -298,7 +298,7 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
               {/* Background Color - shown for both modes */}
               <FluentColorPicker
                 label={__("Background Color")}
-                value={attributes.backgroundColor || ''}
+                value={attributes.styles.backgroundColor || ''}
                 onChange={(value) => updateStyles({ backgroundColor: value })}
                 defaultColor=""
               />
@@ -306,14 +306,14 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
               {/* Padding */}
               <FluentSpaceControl
                 label={__("Padding")}
-                values={attributes.containerPadding}
+                values={attributes.styles.containerPadding}
                 onChange={(value) => updateStyles({ containerPadding: value })}
               />
 
               {/* Margin */}
               <FluentSpaceControl
                 label={__("Margin")}
-                values={attributes.containerMargin}
+                values={attributes.styles.containerMargin}
                 onChange={(value) => updateStyles({ containerMargin: value })}
               />
 
@@ -323,45 +323,45 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
               {/* Box Shadow Checkbox */}
               <FluentBoxShadowControl
                 label={__("Box Shadow")}
-                enabled={attributes.enableBoxShadow || false}
+                enabled={attributes.styles.enableBoxShadow || false}
                 onToggle={(value) => {
                     if (value) {
                         updateStyles({
                             enableBoxShadow: value,
-                            boxShadowColor: attributes.boxShadowColor || 'rgba(0,0,0,0.5)',
-                            boxShadowPosition: attributes.boxShadowPosition || 'outline',
-                            boxShadowHorizontal: attributes.boxShadowHorizontal || '0',
-                            boxShadowHorizontalUnit: attributes.boxShadowHorizontalUnit || 'px',
-                            boxShadowVertical: attributes.boxShadowVertical || '0',
-                            boxShadowVerticalUnit: attributes.boxShadowVerticalUnit || 'px',
-                            boxShadowBlur: attributes.boxShadowBlur || '5',
-                            boxShadowBlurUnit: attributes.boxShadowBlurUnit || 'px',
-                            boxShadowSpread: attributes.boxShadowSpread || '0',
-                            boxShadowSpreadUnit: attributes.boxShadowSpreadUnit || 'px'
+                            boxShadowColor: attributes.styles.boxShadowColor || 'rgba(0,0,0,0.5)',
+                            boxShadowPosition: attributes.styles.boxShadowPosition || 'outline',
+                            boxShadowHorizontal: attributes.styles.boxShadowHorizontal || '0',
+                            boxShadowHorizontalUnit: attributes.styles.boxShadowHorizontalUnit || 'px',
+                            boxShadowVertical: attributes.styles.boxShadowVertical || '0',
+                            boxShadowVerticalUnit: attributes.styles.boxShadowVerticalUnit || 'px',
+                            boxShadowBlur: attributes.styles.boxShadowBlur || '5',
+                            boxShadowBlurUnit: attributes.styles.boxShadowBlurUnit || 'px',
+                            boxShadowSpread: attributes.styles.boxShadowSpread || '0',
+                            boxShadowSpreadUnit: attributes.styles.boxShadowSpreadUnit || 'px'
                         });
                     } else {
-                        updateStyles({ enableBoxShadow: value });
+                        updateStyles({ containerBoxShadow: value });
                     }
                 }}
-                color={attributes.boxShadowColor}
-                onColorChange={(value) => updateStyles({ boxShadowColor: value })}
-                position={attributes.boxShadowPosition}
-                onPositionChange={(value) => updateStyles({ boxShadowPosition: value })}
-                horizontal={attributes.boxShadowHorizontal}
-                onHorizontalChange={(value) => updateStyles({ boxShadowHorizontal: value })}
-                horizontalUnit={attributes.boxShadowHorizontalUnit}
+                color={attributes.styles.containerBoxShadow?.color || ''}
+                onColorChange={(value) => updateStyles({ containerBoxShadow: { ...attributes.styles.containerBoxShadow, color: value } })}
+                position={attributes.styles.containerBoxShadow?.position || 'outline'}
+                onPositionChange={(value) => updateStyles({ containerBoxShadow: { ...attributes.styles.containerBoxShadow, position: value } })}
+                horizontal={attributes.styles.containerBoxShadow?.horizontal.value || ''}
+                onHorizontalChange={(value) => updateStyles({ containerBoxShadow: { ...attributes.styles.containerBoxShadow, horizontal: { value } } })}
+                horizontalUnit={attributes.styles.containerBoxShadow?.horizontal.unit || 'px'}
                 onHorizontalUnitChange={(value) => updateStyles({ boxShadowHorizontalUnit: value })}
-                vertical={attributes.boxShadowVertical}
+                vertical={attributes.styles.boxShadowVertical}
                 onVerticalChange={(value) => updateStyles({ boxShadowVertical: value })}
-                verticalUnit={attributes.boxShadowVerticalUnit}
+                verticalUnit={attributes.styles.boxShadowVerticalUnit}
                 onVerticalUnitChange={(value) => updateStyles({ boxShadowVerticalUnit: value })}
-                blur={attributes.boxShadowBlur}
+                blur={attributes.styles.boxShadowBlur}
                 onBlurChange={(value) => updateStyles({ boxShadowBlur: value })}
-                blurUnit={attributes.boxShadowBlurUnit}
+                blurUnit={attributes.styles.boxShadowBlurUnit}
                 onBlurUnitChange={(value) => updateStyles({ boxShadowBlurUnit: value })}
-                spread={attributes.boxShadowSpread}
+                spread={attributes.styles.boxShadowSpread}
                 onSpreadChange={(value) => updateStyles({ boxShadowSpread: value })}
-                spreadUnit={attributes.boxShadowSpreadUnit}
+                spreadUnit={attributes.styles.boxShadowSpreadUnit}
                 onSpreadUnitChange={(value) => updateStyles({ boxShadowSpreadUnit: value })}
               />
 
@@ -371,15 +371,15 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
               {/* Form Border Checkbox */}
               <FluentBorderControl
                 label={__("Form Border")}
-                enabled={attributes.enableFormBorder || false}
+                enabled={attributes.styles.enableFormBorder || false}
                 onToggle={(value) => updateStyles({ enableFormBorder: value })}
-                borderType={attributes.borderType}
+                borderType={attributes.styles.borderType}
                 onBorderTypeChange={(value) => updateStyles({ borderType: value })}
-                borderColor={attributes.borderColor}
+                borderColor={attributes.styles.borderColor}
                 onBorderColorChange={(value) => updateStyles({ borderColor: value })}
-                borderWidth={attributes.borderWidth}
+                borderWidth={attributes.styles.borderWidth}
                 onBorderWidthChange={(value) => updateStyles({ borderWidth: value })}
-                borderRadius={attributes.borderRadius}
+                borderRadius={attributes.styles.borderRadius}
                 onBorderRadiusChange={(value) => updateStyles({ borderRadius: value })}
               />
           </PanelBody>
@@ -388,7 +388,7 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
           <PanelBody title={__("Asterisk Styles")} initialOpen={false}>
               <FluentColorPicker
                 label={__("Asterisk Color")}
-                value={attributes.asteriskColor || ''}
+                value={attributes.styles.asteriskColor || ''}
                 onChange={(value) => updateStyles({ asteriskColor: value })}
                 defaultColor="#ff0000"
               />
@@ -398,21 +398,21 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
           <PanelBody title={__("Inline Error Message Styles")} initialOpen={false}>
               <FluentColorPicker
                 label={__("Background Color")}
-                value={attributes.errorMessageBgColor || ''}
+                value={attributes.styles.errorMessageBgColor || ''}
                 onChange={(value) => updateStyles({ errorMessageBgColor: value })}
                 defaultColor=""
               />
 
               <FluentColorPicker
                 label={__("Text Color")}
-                value={attributes.errorMessageColor || ''}
+                value={attributes.styles.errorMessageColor || ''}
                 onChange={(value) => updateStyles({ errorMessageColor: value })}
                 defaultColor="#ff0000"
               />
 
               <BaseControl label={__("Alignment")}>
                   <FluentAlignmentControl
-                    value={attributes.errorMessageAlignment || 'left'}
+                    value={attributes.styles.errorMessageAlignment || 'left'}
                     onChange={(value) => updateStyles({ errorMessageAlignment: value })}
                     options={[
                         { value: 'left', icon: 'editor-alignleft', title: __('Align Left') },
@@ -427,21 +427,21 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
           <PanelBody title={__("After Submit Success Message Styles")} initialOpen={false}>
               <FluentColorPicker
                 label={__("Background Color")}
-                value={attributes.successMessageBgColor || ''}
+                value={attributes.styles.successMessageBgColor || ''}
                 onChange={(value) => updateStyles({ successMessageBgColor: value })}
                 defaultColor="#dff0d8"
               />
 
               <FluentColorPicker
                 label={__("Text Color")}
-                value={attributes.successMessageColor || ''}
+                value={attributes.styles.successMessageColor || ''}
                 onChange={(value) => updateStyles({ successMessageColor: value })}
                 defaultColor="#3c763d"
               />
 
               <BaseControl label={__("Alignment")}>
                   <FluentAlignmentControl
-                    value={attributes.successMessageAlignment || 'left'}
+                    value={attributes.styles.successMessageAlignment || 'left'}
                     onChange={(value) => updateStyles({ successMessageAlignment: value })}
                     options={[
                         { value: 'left', icon: 'editor-alignleft', title: __('Align Left') },
@@ -456,21 +456,21 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
           <PanelBody title={__("After Submit Error Message Styles")} initialOpen={false}>
               <FluentColorPicker
                 label={__("Background Color")}
-                value={attributes.submitErrorMessageBgColor || ''}
+                value={attributes.styles.submitErrorMessageBgColor || ''}
                 onChange={(value) => updateStyles({ submitErrorMessageBgColor: value })}
                 defaultColor="#f2dede"
               />
 
               <FluentColorPicker
                 label={__("Text Color")}
-                value={attributes.submitErrorMessageColor || ''}
+                value={attributes.styles.submitErrorMessageColor || ''}
                 onChange={(value) => updateStyles({ submitErrorMessageColor: value })}
                 defaultColor="#a94442"
               />
 
               <BaseControl label={__("Alignment")}>
                   <FluentAlignmentControl
-                    value={attributes.submitErrorMessageAlignment || 'left'}
+                    value={attributes.styles.submitErrorMessageAlignment || 'left'}
                     onChange={(value) => updateStyles({ submitErrorMessageAlignment: value })}
                     options={[
                         { value: 'left', icon: 'editor-alignleft', title: __('Align Left') },

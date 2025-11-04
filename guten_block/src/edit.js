@@ -3,6 +3,7 @@
  * Enhanced with custom UX controls
  */
 import FluentSeparator from './components/controls/FluentSeparator';
+import FluentFormStyleHandler from './utils/StyleHandler';
 const { __ } = wp.i18n;
 const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
@@ -42,76 +43,27 @@ class EditComponent extends Component {
             isPreviewLoading: false,
             showSaveNotice: false,
             previewDevice: 'desktop',
-            updateTimer: null, // Add timer state for debouncing
         };
 
         this.updateStyles = this.updateStyles.bind(this);
     }
 
     // Method to update styles with debouncing to prevent excessive requests
+
     updateStyles(styleAttributes) {
-        // Special handling for radioCheckboxItemsSize to ensure it's a number
-        if ('radioCheckboxItemsSize' in styleAttributes) {
-            styleAttributes.radioCheckboxItemsSize = parseInt(styleAttributes.radioCheckboxItemsSize, 10) || 0;
+        const { setAttributes, attributes } = this.props;
+        
+        // Ensure styles object exists
+        const currentStyles = attributes.styles || {};
+        const styles = { ...currentStyles, ...styleAttributes };
+        
+        // Update attributes
+        setAttributes({ styles });
+        
+        // Apply styles immediately via JavaScript without triggering server render
+        if (this.styleHandler && attributes.formId) {
+            this.styleHandler.updateStyles(styles);
         }
-
-        // Clear any existing timer
-        if (this.state.updateTimer) {
-            clearTimeout(this.state.updateTimer);
-        }
-
-        // Set a new timer to delay the update
-        const timer = setTimeout(() => {
-            console.log('Updating styles:', styleAttributes);
-            const { setAttributes, attributes } = this.props;
-
-            // Create a new object with only the changed attributes
-            const updatedAttributes = {};
-
-            // Compare each attribute to see if it actually changed
-            Object.keys(styleAttributes).forEach(key => {
-                const currentValue = attributes[key];
-                const newValue = styleAttributes[key];
-
-                // Special handling for radioCheckboxItemsSize to ensure numeric comparison
-                if (key === 'radioCheckboxItemsSize') {
-                    if (currentValue !== newValue) {
-                        updatedAttributes[key] = newValue;
-                    }
-                } else {
-                    // For other attributes, use JSON.stringify for deep comparison
-                    if (JSON.stringify(currentValue) !== JSON.stringify(newValue)) {
-                        updatedAttributes[key] = newValue;
-                    }
-                }
-            });
-
-            // Only update if there are actual changes
-            if (Object.keys(updatedAttributes).length > 0) {
-                // Save if we're updating the background image
-                const isUpdatingBgImage = 'backgroundImage' in updatedAttributes;
-
-                // Update attributes
-                setAttributes(updatedAttributes);
-
-                // Set loading state briefly to show user something is happening
-                this.setState({ isPreviewLoading: true });
-
-                if (isUpdatingBgImage) {
-                    this.injectBackgroundStyles();
-                }
-                // Clear loading state after a short delay
-                setTimeout(() => {
-                    this.setState({ isPreviewLoading: false });
-                }, 300);
-            }
-
-            // Clear the timer reference
-            this.setState({ updateTimer: null });
-        }, 300); // 300ms debounce delay
-
-        // Store the timer reference
-        this.setState({ updateTimer: timer });
     }
 
     componentDidMount() {
@@ -136,80 +88,37 @@ class EditComponent extends Component {
             });
         }
 
-        if (attributes.backgroundImage) {
-            this.injectBackgroundStyles();
+        // Initialize style handler
+        if (attributes.formId && attributes.styles) {
+            this.styleHandler = new FluentFormStyleHandler(attributes.formId);
         }
     }
 
     componentDidUpdate(prevProps) {
         const { attributes } = this.props;
 
-        // Check if form ID changed
-        if (prevProps.attributes.formId !== attributes.formId && attributes.formId) {
-            this.checkIfConversationalForm(attributes.formId);
+        const styleChanged = JSON.stringify(prevProps.attributes.styles || {}) !== JSON.stringify(attributes.styles || {});
+        
+        // Initialize or update style handler
+        if (attributes.formId !== prevProps.attributes.formId) {
+            if (this.styleHandler) {
+                this.styleHandler.destroy();
+            }
+            if (attributes.formId) {
+                this.styleHandler = new FluentFormStyleHandler(attributes.formId);
+            }
         }
-
-        this.injectBackgroundStyles();
+        
+        // Handle style changes with JavaScript only
+        if (styleChanged && this.styleHandler && attributes.formId) {
+            this.styleHandler.updateStyles(attributes.styles);
+        }
     }
 
     componentWillUnmount() {
-        const { attributes } = this.props;
-        const { formId } = attributes;
-
-        // Clean up any style elements we created
-        if (formId) {
-            const styleEl = document.getElementById(`ff-dynamic-bg-styles-${formId}`);
-            if (styleEl && styleEl.parentNode) {
-                styleEl.parentNode.removeChild(styleEl);
-            }
+        if (this.styleHandler) {
+            this.styleHandler.destroy();
         }
-    }
-
-    // Add this method to your Edit class
-    injectBackgroundStyles() {
-        const { attributes } = this.props;
-        const { formId, backgroundImage, backgroundColor } = attributes;
-
-        // Get or create the style element
-        let styleEl = document.getElementById(`ff-dynamic-bg-styles-${formId}`);
-        if (!styleEl) {
-            styleEl = document.createElement('style');
-            styleEl.id = `ff-dynamic-bg-styles-${formId}`;
-            document.head.appendChild(styleEl);
-        }
-
-        // If no formId, clear the styles and return
-        if (!formId) {
-            styleEl.innerHTML = '';
-            return;
-        }
-
-        // Start building the CSS rules
-        let cssRules = [];
-
-        // Add background color as an independent property
-        if (backgroundColor) {
-            cssRules.push(`background-color: ${backgroundColor};`);
-        }
-
-        // Add background image properties if they exist
-        if (backgroundImage) {
-            cssRules.push(`background-image: url('${backgroundImage}');`);
-            cssRules.push(`background-size: ${attributes.backgroundSize || 'cover'};`);
-            cssRules.push(`background-position: ${attributes.backgroundPosition || 'center center'};`);
-            cssRules.push(`background-repeat: ${attributes.backgroundRepeat || 'no-repeat'};`);
-            cssRules.push(`background-attachment: ${attributes.backgroundAttachment || 'scroll'};`);
-        }
-
-        // Create the CSS
-        const css = `
-        .ff_guten_block-${formId} {
-            ${cssRules.join('\n            ')}
-        }
-    `;
-
-        // Update the stylesheet content
-        styleEl.innerHTML = css;
     }
 
     checkIfConversationalForm = async formId => {
@@ -375,6 +284,7 @@ class EditComponent extends Component {
             // Regular form selected - show preview only
             // Create device-specific class for responsive preview
             const deviceClass = `preview-device-${previewDevice}`;
+            const {styles, ...serverAttributes } = attributes;
 
             mainContent = (
                 <div className={`fluent-form-preview-wrapper ${deviceClass}`}>
@@ -394,13 +304,12 @@ class EditComponent extends Component {
                                 label={item.label}
                             />
                         ))}
-
                     </div>
 
                     <ServerSideRender
-                        key="ff-preview"
+                        key={`ff-preview-${attributes.formId}-${attributes.selectedPreset}-${attributes.isThemeChange}`}
                         block="fluentfom/guten-block"
-                        attributes={attributes}
+                        attributes={serverAttributes}
                     />
                 </div>
             );

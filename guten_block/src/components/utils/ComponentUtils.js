@@ -13,7 +13,10 @@ export const arePropsEqual = (prevProps, nextProps, attributesToCheck = [], chec
 
     // Check specific attributes
     for (const attr of attributesToCheck) {
-        if (JSON.stringify(prevAttrs[attr]) !== JSON.stringify(nextAttrs[attr])) {
+        if (!prevAttrs?.styles[attr] || !nextAttrs?.styles[attr]) {
+            return false; // Props are not equal, should update
+        }
+        if (JSON.stringify(prevAttrs.styles[attr]) !== JSON.stringify(nextAttrs.styles[attr])) {
             return false; // Props are not equal, should update
         }
     }
