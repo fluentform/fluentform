@@ -220,31 +220,45 @@ class BlockAttributes
     {
         return [
             // Input border
-            'enableInputBorder' => false,
-            'inputBorderType' => 'solid',
-            'inputBorderColor' => '',
-            'inputBorder' => [],
-            'inputBorderRadius' => [],
-            'inputBorderWidth' => [],
-            'inputBorderHover' => [],
-            'formBorder' => [],
-            'enableFormBorder' => false,
-            'borderType' => 'solid',
-            'borderColor' => '',
-            'borderWidth' => [],
-            'borderRadius' => [],
+            'inputBorder' => [
+                'enable' => false,
+                'type' => 'solid',
+                'color' => '',
+                'width' => [],
+                'radius' => [],
+            ],
+            // Input focus border
+            'inputBorderFocus' => [
+                'enable' => false,
+                'type' => 'solid',
+                'color' => '',
+                'width' => [],
+                'radius' => [],
+            ],
+            // Form container border
+            'formBorder' => [
+                'enable' => false,
+                'type' => 'solid',
+                'color' => '',
+                'width' => [],
+                'radius' => [],
+            ],
             // Button border
-            'enableButtonBorder' => false,
-            'buttonBorderType' => 'solid',
-            'buttonBorderColor' => '',
-            'buttonBorderWidth' => [],
-            'buttonBorderRadius' => [],
-            // Input focus borders
-            'enableInputBorderFocus' => false,
-            'inputBorderTypeFocus' => 'solid',
-            'inputBorderColorFocus' => '',
-            'inputBorderWidthFocus' => [],
-            'inputBorderRadiusFocus' => [],
+            'buttonBorder' => [
+                'enable' => false,
+                'type' => 'solid',
+                'color' => '',
+                'width' => [],
+                'radius' => [],
+            ],
+            // Button hover border
+            'buttonHoverBorder' => [
+                'enable' => false,
+                'type' => 'solid',
+                'color' => '',
+                'width' => [],
+                'radius' => [],
+            ],
         ];
     }
 

@@ -333,16 +333,8 @@ const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
               {/* Form Border Checkbox */}
               <FluentBorderControl
                 label={__("Form Border")}
-                enabled={attributes.styles.enableFormBorder || false}
-                onToggle={(value) => updateStyles({ enableFormBorder: value })}
-                borderType={attributes.styles.borderType}
-                onBorderTypeChange={(value) => updateStyles({ borderType: value })}
-                borderColor={attributes.styles.borderColor}
-                onBorderColorChange={(value) => updateStyles({ borderColor: value })}
-                borderWidth={attributes.styles.borderWidth}
-                onBorderWidthChange={(value) => updateStyles({ borderWidth: value })}
-                borderRadius={attributes.styles.borderRadius}
-                onBorderRadiusChange={(value) => updateStyles({ borderRadius: value })}
+                border={attributes.styles.formBorder || {}}
+                onChange={(borderObj) => updateStyles({ formBorder: borderObj })}
               />
           </PanelBody>
 

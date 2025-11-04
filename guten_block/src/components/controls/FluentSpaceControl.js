@@ -30,9 +30,9 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
 
     // Default values structure
     const defaultValues = {
-        desktop: { unit: 'px', top: 0, right: 0, bottom: 0, left: 0, linked: true },
-        tablet: { unit: 'px', top: 0, right: 0, bottom: 0, left: 0, linked: true },
-        mobile: { unit: 'px', top: 0, right: 0, bottom: 0, left: 0, linked: true }
+        desktop: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
+        tablet: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
+        mobile: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true }
     };
 
     // Initialize values on component mount and when props change
@@ -42,26 +42,26 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             const structuredValues = {
                 desktop: {
                     unit: values.desktop?.unit || values.unit || 'px',
-                    top: values.desktop?.top || '',
-                    right: values.desktop?.right || '',
-                    bottom: values.desktop?.bottom || '',
-                    left: values.desktop?.left || '',
+                    top: values.desktop?.top ?? '',
+                    right: values.desktop?.right ?? '',
+                    bottom: values.desktop?.bottom ?? '',
+                    left: values.desktop?.left ?? '',
                     linked: values.desktop?.linked !== undefined ? values.desktop.linked : true
                 },
                 tablet: {
-                    unit: values.tablet?.unit || values.unit || 'px',
-                    top: values.tablet?.top || '',
-                    right: values.tablet?.right || '',
-                    bottom: values.tablet?.bottom || '',
-                    left: values.tablet?.left || '',
+                    unit: values.tablet?.unit ?? (values.unit || 'px'),
+                    top: values.tablet?.top ?? '',
+                    right: values.tablet?.right ?? '',
+                    bottom: values.tablet?.bottom ?? '',
+                    left: values.tablet?.left ?? '',
                     linked: values.tablet?.linked !== undefined ? values.tablet.linked : true
                 },
                 mobile: {
-                    unit: values.mobile?.unit || values.unit || 'px',
-                    top: values.mobile?.top || '',
-                    right: values.mobile?.right || '',
-                    bottom: values.mobile?.bottom || '',
-                    left: values.mobile?.left || '',
+                    unit: values.mobile?.unit ?? (values.unit || 'px'),
+                    top: values.mobile?.top ?? '',
+                    right: values.mobile?.right ?? '',
+                    bottom: values.mobile?.bottom ?? '',
+                    left: values.mobile?.left ?? '',
                     linked: values.mobile?.linked !== undefined ? values.mobile.linked : true
                 }
             };
@@ -82,10 +82,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             if (values[device]) {
                 const deviceValues = values[device];
                 // Check if any value is set and not empty or zero
-                if ((deviceValues.top && deviceValues.top !== 0 && deviceValues.top !== '') ||
-                    (deviceValues.right && deviceValues.right !== 0 && deviceValues.right !== '') ||
-                    (deviceValues.bottom && deviceValues.bottom !== 0 && deviceValues.bottom !== '') ||
-                    (deviceValues.left && deviceValues.left !== 0 && deviceValues.left !== '')) {
+                if (deviceValues.top !== '' || deviceValues.right !== '' || deviceValues.bottom !== '' || deviceValues.left !== '') {
                     return true;
                 }
             }
@@ -153,20 +150,6 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
         onChange(updatedValues);
     };
 
-    const updateValues = (newDeviceValues) => {
-        // Make sure the unit is always included in the values
-        const updatedValues = {
-            ...currentValues,
-            unit: activeUnit, // Ensure unit is at the top level
-            [activeDevice]: {
-                ...newDeviceValues,
-                unit: activeUnit, // Also ensure unit is in the device object
-                linked: isLinked // Explicitly preserve the linked state
-            }
-        };
-        onChange(updatedValues);
-    };
-
     const handleValueChange = (position, value) => {
         const numValue = value === '' ? '' : parseInt(value);
 
@@ -183,7 +166,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
         }
 
         // If linked, update all values
-        if (isLinked && position !== 'unit') {
+        if (isLinked) {
             const updatedValues = {...currentValues};
             const updatedDeviceValues = {...updatedValues[activeDevice]};
 

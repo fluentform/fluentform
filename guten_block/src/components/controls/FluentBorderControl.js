@@ -5,26 +5,36 @@ import FluentColorPicker from "./FluentColorPicker";
 import FluentSpaceControl from "./FluentSpaceControl";
 
 const FluentBorderControl = ({
-                                 label = __("Border"),
-                                 enabled,
-                                 onToggle,
-                                 borderType,
-                                 onBorderTypeChange,
-                                 borderColor,
-                                 onBorderColorChange,
-                                 borderWidth,
-                                 onBorderWidthChange,
-                                 borderRadius,
-                                 onBorderRadiusChange,
-                                 defaultColor = "#dddddd"
-                             }) => {
+    label = __("Border"),
+    border = {},
+    onChange,
+    defaultColor = "#dddddd"
+}) => {
+    // Use internal state to track the border object
+    const [localBorder, setLocalBorder] = useState({
+        enable: false,
+        type: 'solid',
+        color: '',
+        width: {},
+        radius: {},
+        ...border
+    });
 
-    const [isEnabled, setIsEnabled] = useState(!!enabled);
-
-    // Update internal state when prop changes
+    // Update internal state when props change
     useEffect(() => {
-        setIsEnabled(!!enabled);
-    }, [enabled]);
+        setLocalBorder(prev => ({
+            ...prev,
+            ...border
+        }));
+    }, [border]);
+
+    const updateBorder = (updates) => {
+        const newBorder = { ...localBorder, ...updates };
+        setLocalBorder(newBorder);
+        if (onChange) {
+            onChange(newBorder);
+        }
+    };
 
     const borderTypeOptions = [
         { label: __("Solid"), value: 'solid' },
@@ -33,49 +43,74 @@ const FluentBorderControl = ({
         { label: __("Double"), value: 'double' }
     ];
 
+    const unitOptions = [
+        { label: 'px', value: 'px' },
+        { label: 'em', value: 'em' },
+        { label: '%', value: '%' }
+    ];
+
     return (
         <BaseControl label={label}>
             <ToggleControl
                 label={__("Enable Border")}
-                checked={isEnabled}
+                checked={localBorder.enable}
                 onChange={(value) => {
-                    // Update internal state first
-                    setIsEnabled(!!value);
-                    // Then notify parent
-                    onToggle(!!value);
+                    const updates = { enable: value };
+                    
+                    // Set defaults when enabling
+                    if (value) {
+                        if (!localBorder.color) updates.color = defaultColor;
+                        if (!localBorder.type) updates.type = 'solid';
+                        if (!localBorder.width || Object.keys(localBorder.width).length === 0) {
+                            updates.width = {
+                                desktop: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
+                                tablet: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
+                                mobile: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true }
+                            };
+                        }
+                        if (!localBorder.radius || Object.keys(localBorder.radius).length === 0) {
+                            updates.radius = {
+                                desktop: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
+                                tablet: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
+                                mobile: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true }
+                            };
+                        }
+                    }
+                    
+                    updateBorder(updates);
                 }}
             />
 
-            {isEnabled && (
+            {localBorder.enable && (
                 <>
                     {/* Border Type */}
                     <SelectControl
                         label={__("Border Type")}
-                        value={borderType || 'solid'}
+                        value={localBorder.type || 'solid'}
                         options={borderTypeOptions}
-                        onChange={onBorderTypeChange}
+                        onChange={(value) => updateBorder({ type: value })}
                     />
 
                     {/* Border Color */}
                     <FluentColorPicker
                         label={__("Border Color")}
-                        value={borderColor || ''}
-                        onChange={onBorderColorChange}
+                        value={localBorder.color || ''}
+                        onChange={(value) => updateBorder({ color: value })}
                         defaultColor={defaultColor}
                     />
 
-                    {/* Border Width */}
+                    {/* Border Width using FluentSpaceControl */}
                     <FluentSpaceControl
                         label={__("Border Width")}
-                        values={borderWidth}
-                        onChange={onBorderWidthChange}
+                        values={localBorder.width}
+                        onChange={(value) => updateBorder({ width: value })}
                     />
 
-                    {/* Border Radius */}
+                    {/* Border Radius using FluentSpaceControl */}
                     <FluentSpaceControl
                         label={__("Border Radius")}
-                        values={borderRadius}
-                        onChange={onBorderRadiusChange}
+                        values={localBorder.radius}
+                        onChange={(value) => updateBorder({ radius: value })}
                     />
                 </>
             )}

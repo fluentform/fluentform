@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\Blocks;
 
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\App\Helpers\Helper;
 use FluentFormPro\classes\FormStyler;
 
@@ -171,35 +171,35 @@ class StyleProcessor
 
         // Define all selectors using the form ID for consistency
         // Base selector
-        $containerSelector = ".ff_guten_block.ff_guten_block-{$formId}";
+        $containerSelector = ".fluentform.ff_guten_block.ff_guten_block-{$formId}";
 
         // Label selectors
         $labelSelectors = [
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-input--label label",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-label"
+            "{$containerSelector} .ff-el-input--label label",
+            "{$containerSelector} .ff-el-form-check-label"
         ];
         $labelSelector = implode(', ', $labelSelectors);
 
         // Input selectors (textual inputs only: inputs where user types + textarea/select)
         $inputSelectors = [
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
-            ".ff_guten_block.ff_guten_block-{$formId} textarea",
-            ".ff_guten_block.ff_guten_block-{$formId} select"
+            "{$containerSelector} .ff-el-form-control",
+            "{$containerSelector} textarea",
+            "{$containerSelector} select"
         ];
         $inputSelectorsStr = implode(', ', $inputSelectors);
 
         // Input background selectors (textual inputs only)
         $inputBGSelectors = [
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
-            ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--multiple",
-            ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--single"
+            "{$containerSelector} .ff-el-form-control",
+            "{$containerSelector} .select2-container--default .select2-selection--multiple",
+            "{$containerSelector} .select2-container--default .select2-selection--single"
         ];
         $inputBGSelectorsStr = implode(', ', $inputBGSelectors);
 
         // Button selectors
         $buttonSelectors = [
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-btn-submit",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff_upload_btn"
+            "{$containerSelector} .ff-btn-submit",
+            "{$containerSelector} .ff_upload_btn"
         ];
         $buttonSelectorsStr = implode(', ', $buttonSelectors);
 
@@ -294,7 +294,12 @@ class StyleProcessor
             $css .= self::processSpacing($containerMargin, $containerSelector, 'margin');
         }
 
-        // Process container box shadow (alternative attribute)
+        // Process container border
+        if ($formBorder = Arr::get($styles, 'formBorder', [])) {
+            $css .= self::processBorder($formBorder, $containerSelector, false);
+        }
+
+        // Process container box shadow
         $containerBoxShadow = Arr::get($styles, 'containerBoxShadow', []);
         if (!empty($containerBoxShadow) && Arr::get($containerBoxShadow, 'enable', false)) {
             $css .= self::generateBoxShadow($containerSelector, $containerBoxShadow);
@@ -350,7 +355,7 @@ class StyleProcessor
         ];
 
         // Asterisk selector
-        $asteriskSelector = ".fluentform-guten-wrapper .ff_guten_block.ff_guten_block-{$formId} .ff-el-input--label.ff-el-is-required label::after";
+        $asteriskSelector = ".fluentform-guten-wrapper {$containerSelector} .ff-el-input--label.ff-el-is-required label::after";
 
         // Apply label color if set
         if ($labelColor = Arr::get($styles, 'labelColor')) {
@@ -386,18 +391,15 @@ class StyleProcessor
         }
 
         // Input Border - NORMAL
-        $enableInputBorder = Arr::get($styles, 'enableInputBorder', false);
-        if ($enableInputBorder) {
-            $inputBorder = Arr::get($styles, 'inputBorder', []);
-            if (!empty($inputBorder)) {
-                $css .= self::processBorder($inputBorder, $inputSelector, false);
-            }
+        $inputBorder = Arr::get($styles, 'inputBorder', []);
+        if (!empty($inputBorder)) {
+            $css .= self::processBorder($inputBorder, $inputSelector, false);
         }
 
         // Input Border - FOCUS/HOVER
-        $inputBorderHover = Arr::get($styles, 'inputBorderHover', []);
-        if (!empty($inputBorderHover)) {
-            $css .= self::processBorder($inputBorderHover, $inputSelector, true);
+        $inputBorderFocus = Arr::get($styles, 'inputBorderFocus', []);
+        if (!empty($inputBorderFocus)) {
+            $css .= self::processBorder($inputBorderFocus, $inputSelector, true);
         }
 
         // Process placeholder typography
@@ -489,23 +491,22 @@ class StyleProcessor
             $css .= self::processSpacing($buttonMargin, $buttonSelector, 'margin');
         }
 
+        // HOVER STATE STYLES
+        if ($buttonHoverBgColor = Arr::get($styles, 'buttonHoverBGColor')) {
+            $css .= self::generateCssRule($buttonHoverSelector, 'background-color', $buttonHoverBgColor, '', true);
+        }
+
+        if ($buttonHoverColor = Arr::get($styles, 'buttonHoverColor')) {
+            $css .= self::generateCssRule($buttonHoverSelector, 'color', $buttonHoverColor, '', true);
+        }
         // Button border
         $buttonBorder = Arr::get($styles, 'buttonBorder', []);
         if (!empty($buttonBorder)) {
             $css .= self::processBorder($buttonBorder, $buttonSelector, false);
         }
 
-        // HOVER STATE STYLES
-        if ($buttonHoverColor = Arr::get($styles, 'buttonHoverColor')) {
-            $css .= self::generateCssRule($buttonHoverSelector, 'color', $buttonHoverColor, '', true);
-        }
-
-        if ($buttonHoverBgColor = Arr::get($styles, 'buttonHoverBGColor')) {
-            $css .= self::generateCssRule($buttonHoverSelector, 'background-color', $buttonHoverBgColor, '', true);
-        }
-
         // Button hover border
-        $buttonBorderHover = Arr::get($styles, 'buttonBorderHover', []);
+        $buttonBorderHover = Arr::get($styles, 'buttonHoverBorder', []);
         if (!empty($buttonBorderHover)) {
             $css .= self::processBorder($buttonBorderHover, $buttonSelector, true);
         }
@@ -691,9 +692,9 @@ class StyleProcessor
     }
 
     /**
-     * Process border settings for all devices
+     * Process border settings for all devices with new structured format
      *
-     * @param array $border Border settings
+     * @param array $border Border settings with new structure
      * @param string $selector CSS selector
      * @param boolean $isHover Whether this is for hover/focus state
      *
@@ -703,60 +704,121 @@ class StyleProcessor
     {
         $css = '';
 
-        if (empty($border)) {
+        if (empty($border) || !Arr::isTrue($border, 'enable') || !Arr::get($border, 'color')) {
             return $css;
         }
 
-        // Handle desktop borders
-        $desktopValues = isset($border['desktop']) ? $border['desktop'] : $border;
+        // Get border properties
+        $borderType = Arr::get($border, 'type', 'solid');
+        $borderColor = Arr::get($border, 'color', '');
+        $borderWidth = Arr::get($border, 'width', []);
+        $borderRadius = Arr::get($border, 'radius', []);
 
-        if (!empty($desktopValues)) {
-            $desktopRules = self::getBorderRules($desktopValues);
+        // Generate base styles (desktop)
+        $desktopRules = [];
+        
+        // Add border type and color
+        if ($borderType) {
+            $desktopRules[] = 'border-style: ' . $borderType;
+        }
+        if ($borderColor) {
+            $desktopRules[] = 'border-color: ' . $borderColor;
+        }
 
-            if (!empty($desktopRules)) {
-                if ($isHover) {
-                    $hoverSelector = self::generateHoverSelectors($selector);
-                    $css .= $hoverSelector . ' { ' . implode('; ', $desktopRules) . '; }' . "\n";
-                } else {
-                    $css .= $selector . ' { ' . implode('; ', $desktopRules) . '; }' . "\n";
-                }
+        // Add border width rules
+        if (!empty($borderWidth)) {
+            $widthRules = self::getBorderWidthRules($borderWidth);
+            $desktopRules = array_merge($desktopRules, $widthRules);
+        }
+
+        // Add border radius rules
+        if (!empty($borderRadius)) {
+            $radiusRules = self::getBorderRadiusRules($borderRadius);
+            $desktopRules = array_merge($desktopRules, $radiusRules);
+        }
+
+        // Apply desktop styles
+        if (!empty($desktopRules)) {
+            if ($isHover) {
+                $hoverSelector = self::generateHoverSelectors($selector);
+                $css .= $hoverSelector . ' { ' . implode('; ', $desktopRules) . '; }' . "\n";
+            } else {
+                $css .= $selector . ' { ' . implode('; ', $desktopRules) . '; }' . "\n";
             }
         }
 
-        // Handle tablet borders
-        if (isset($border['tablet']) && !empty($border['tablet'])) {
-            $tabletValues = $border['tablet'];
-            $tabletRules = self::getBorderRules($tabletValues);
+        // Handle tablet styles (only if different from desktop)
+        if (isset($borderWidth['tablet']) || isset($borderRadius['tablet'])) {
+            $tabletRules = [];
+            
+            // Check width differences
+            if (isset($borderWidth['tablet'])) {
+                $desktopWidth = isset($borderWidth['desktop']) ? $borderWidth['desktop'] : [];
+                $tabletWidth = $borderWidth['tablet'];
+                
+                if (!self::areSpacingValuesEqual($desktopWidth, $tabletWidth)) {
+                    $widthRules = self::getBorderWidthRules($borderWidth, 'tablet');
+                    $tabletRules = array_merge($tabletRules, $widthRules);
+                }
+            }
+            
+            // Check radius differences
+            if (isset($borderRadius['tablet'])) {
+                $desktopRadius = isset($borderRadius['desktop']) ? $borderRadius['desktop'] : [];
+                $tabletRadius = $borderRadius['tablet'];
+                
+                if (!self::areSpacingValuesEqual($desktopRadius, $tabletRadius)) {
+                    $radiusRules = self::getBorderRadiusRules($borderRadius, 'tablet');
+                    $tabletRules = array_merge($tabletRules, $radiusRules);
+                }
+            }
 
             if (!empty($tabletRules)) {
                 $css .= "@media (max-width: " . self::TABLET_BREAKPOINT . ") {\n";
-
                 if ($isHover) {
                     $hoverSelector = self::generateHoverSelectors($selector);
                     $css .= "    " . $hoverSelector . ' { ' . implode('; ', $tabletRules) . '; }' . "\n";
                 } else {
                     $css .= "    " . $selector . ' { ' . implode('; ', $tabletRules) . '; }' . "\n";
                 }
-
                 $css .= "}\n";
             }
         }
 
-        // Handle mobile borders
-        if (isset($border['mobile']) && !empty($border['mobile'])) {
-            $mobileValues = $border['mobile'];
-            $mobileRules = self::getBorderRules($mobileValues);
+        // Handle mobile styles (only if different from desktop)
+        if (isset($borderWidth['mobile']) || isset($borderRadius['mobile'])) {
+            $mobileRules = [];
+            
+            // Check width differences
+            if (isset($borderWidth['mobile'])) {
+                $desktopWidth = isset($borderWidth['desktop']) ? $borderWidth['desktop'] : [];
+                $mobileWidth = $borderWidth['mobile'];
+                
+                if (!self::areSpacingValuesEqual($desktopWidth, $mobileWidth)) {
+                    $widthRules = self::getBorderWidthRules($borderWidth, 'mobile');
+                    $mobileRules = array_merge($mobileRules, $widthRules);
+                }
+            }
+            
+            // Check radius differences
+            if (isset($borderRadius['mobile'])) {
+                $desktopRadius = isset($borderRadius['desktop']) ? $borderRadius['desktop'] : [];
+                $mobileRadius = $borderRadius['mobile'];
+                
+                if (!self::areSpacingValuesEqual($desktopRadius, $mobileRadius)) {
+                    $radiusRules = self::getBorderRadiusRules($borderRadius, 'mobile');
+                    $mobileRules = array_merge($mobileRules, $radiusRules);
+                }
+            }
 
             if (!empty($mobileRules)) {
                 $css .= "@media (max-width: " . self::MOBILE_BREAKPOINT . ") {\n";
-
                 if ($isHover) {
                     $hoverSelector = self::generateHoverSelectors($selector);
                     $css .= "    " . $hoverSelector . ' { ' . implode('; ', $mobileRules) . '; }' . "\n";
                 } else {
                     $css .= "    " . $selector . ' { ' . implode('; ', $mobileRules) . '; }' . "\n";
                 }
-
                 $css .= "}\n";
             }
         }
@@ -765,65 +827,117 @@ class StyleProcessor
     }
 
     /**
-     * Get border CSS rules from values
+     * Get border width CSS rules for a specific device
      *
-     * @param array $values Border values for a device
+     * @param array $borderWidth Border width settings
+     * @param string $device Device type (desktop, tablet, mobile)
      *
      * @return array Array of CSS rules
      */
-    private static function getBorderRules($values)
+    private static function getBorderWidthRules($borderWidth, $device = 'desktop')
     {
         $rules = [];
-
-        // If we have a top border with properties
-        $topBorder = Arr::get($values, 'top', []);
-        if (!empty($topBorder)) {
-            // Border width
-            $borderWidth = Arr::get($topBorder, 'width');
-            if (!empty($borderWidth)) {
-                // Remove 'px' suffix if it already exists
-                $borderWidth = str_replace('px', '', $borderWidth);
-                $rules[] = 'border-width: ' . $borderWidth . 'px';
-            }
-
-            // Border style
-            $borderStyle = Arr::get($topBorder, 'style');
-            if (!empty($borderStyle)) {
-                $rules[] = 'border-style: ' . $borderStyle;
-            }
-
-            // Border color
-            $borderColor = Arr::get($topBorder, 'color');
-            if (!empty($borderColor)) {
-                $rules[] = 'border-color: ' . $borderColor;
-            }
+        $values = isset($borderWidth[$device]) ? $borderWidth[$device] : $borderWidth;
+        
+        if (empty($values)) {
+            return $rules;
         }
 
-        // If we have a radius object
-        $radiusObj = Arr::get($values, 'radius', []);
-        if (!empty($radiusObj)) {
-            $topLeft = Arr::get($radiusObj, 'topLeft');
-            if (isset($topLeft) || $topLeft === 0 || $topLeft === '0') {
-                $rules[] = 'border-top-left-radius: ' . $topLeft . 'px';
-            }
+        $unit = Arr::get($values, 'unit', 'px');
+        $linked = Arr::get($values, 'linked', true);
 
-            $topRight = Arr::get($radiusObj, 'topRight');
-            if (isset($topRight) || $topRight === 0 || $topRight === '0') {
-                $rules[] = 'border-top-right-radius: ' . $topRight . 'px';
+        if ($linked && isset($values['top']) && $values['top'] !== '' && $values['top'] !== null) {
+            $rules[] = 'border-width: ' . $values['top'] . $unit;
+        } else {
+            // Individual border widths
+            if (isset($values['top']) && $values['top'] !== '' && $values['top'] !== null) {
+                $rules[] = 'border-top-width: ' . $values['top'] . $unit;
             }
-
-            $bottomRight = Arr::get($radiusObj, 'bottomRight');
-            if (isset($bottomRight) || $bottomRight === 0 || $bottomRight === '0') {
-                $rules[] = 'border-bottom-right-radius: ' . $bottomRight . 'px';
+            if (isset($values['right']) && $values['right'] !== '' && $values['right'] !== null) {
+                $rules[] = 'border-right-width: ' . $values['right'] . $unit;
             }
-
-            $bottomLeft = Arr::get($radiusObj, 'bottomLeft');
-            if (isset($bottomLeft) || $bottomLeft === 0 || $bottomLeft === '0') {
-                $rules[] = 'border-bottom-left-radius: ' . $bottomLeft . 'px';
+            if (isset($values['bottom']) && $values['bottom'] !== '' && $values['bottom'] !== null) {
+                $rules[] = 'border-bottom-width: ' . $values['bottom'] . $unit;
+            }
+            if (isset($values['left']) && $values['left'] !== '' && $values['left'] !== null) {
+                $rules[] = 'border-left-width: ' . $values['left'] . $unit;
             }
         }
 
         return $rules;
+    }
+
+    /**
+     * Get border radius CSS rules for a specific device
+     *
+     * @param array $borderRadius Border radius settings
+     * @param string $device Device type (desktop, tablet, mobile)
+     *
+     * @return array Array of CSS rules
+     */
+    private static function getBorderRadiusRules($borderRadius, $device = 'desktop')
+    {
+        $rules = [];
+        $values = isset($borderRadius[$device]) ? $borderRadius[$device] : $borderRadius;
+        
+        if (empty($values)) {
+            return $rules;
+        }
+
+        $unit = Arr::get($values, 'unit', 'px');
+        $linked = Arr::get($values, 'linked', true);
+
+        if ($linked && isset($values['top']) && $values['top'] !== '' && $values['top'] !== null) {
+            $rules[] = 'border-radius: ' . $values['top'] . $unit;
+        } else {
+            // Individual border radius values (top=top-left, right=top-right, bottom=bottom-right, left=bottom-left)
+            if (isset($values['top']) && $values['top'] !== '' && $values['top'] !== null) {
+                $rules[] = 'border-top-left-radius: ' . $values['top'] . $unit;
+            }
+            if (isset($values['right']) && $values['right'] !== '' && $values['right'] !== null) {
+                $rules[] = 'border-top-right-radius: ' . $values['right'] . $unit;
+            }
+            if (isset($values['bottom']) && $values['bottom'] !== '' && $values['bottom'] !== null) {
+                $rules[] = 'border-bottom-right-radius: ' . $values['bottom'] . $unit;
+            }
+            if (isset($values['left']) && $values['left'] !== '' && $values['left'] !== null) {
+                $rules[] = 'border-bottom-left-radius: ' . $values['left'] . $unit;
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Compare two spacing value arrays to check if they are equal
+     *
+     * @param array $values1 First spacing values
+     * @param array $values2 Second spacing values
+     *
+     * @return bool True if values are equal
+     */
+    private static function areSpacingValuesEqual($values1, $values2)
+    {
+        if (empty($values1) && empty($values2)) {
+            return true;
+        }
+        
+        if (empty($values1) || empty($values2)) {
+            return false;
+        }
+
+        $keys = ['top', 'right', 'bottom', 'left'];
+        
+        foreach ($keys as $key) {
+            $val1 = Arr::get($values1, $key, '');
+            $val2 = Arr::get($values2, $key, '');
+            
+            if ('' !== $val2 && $val1 !== $val2) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     /**

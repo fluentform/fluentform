@@ -122,6 +122,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
 /* harmony import */ var _FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -142,27 +148,36 @@ var __ = wp.i18n.__;
 var FluentBorderControl = function FluentBorderControl(_ref) {
   var _ref$label = _ref.label,
     label = _ref$label === void 0 ? __("Border") : _ref$label,
-    enabled = _ref.enabled,
-    onToggle = _ref.onToggle,
-    borderType = _ref.borderType,
-    onBorderTypeChange = _ref.onBorderTypeChange,
-    borderColor = _ref.borderColor,
-    onBorderColorChange = _ref.onBorderColorChange,
-    borderWidth = _ref.borderWidth,
-    onBorderWidthChange = _ref.onBorderWidthChange,
-    borderRadius = _ref.borderRadius,
-    onBorderRadiusChange = _ref.onBorderRadiusChange,
+    _ref$border = _ref.border,
+    border = _ref$border === void 0 ? {} : _ref$border,
+    onChange = _ref.onChange,
     _ref$defaultColor = _ref.defaultColor,
     defaultColor = _ref$defaultColor === void 0 ? "#dddddd" : _ref$defaultColor;
-  var _useState = useState(!!enabled),
+  // Use internal state to track the border object
+  var _useState = useState(_objectSpread({
+      enable: false,
+      type: 'solid',
+      color: '',
+      width: {},
+      radius: {}
+    }, border)),
     _useState2 = _slicedToArray(_useState, 2),
-    isEnabled = _useState2[0],
-    setIsEnabled = _useState2[1];
+    localBorder = _useState2[0],
+    setLocalBorder = _useState2[1];
 
-  // Update internal state when prop changes
+  // Update internal state when props change
   useEffect(function () {
-    setIsEnabled(!!enabled);
-  }, [enabled]);
+    setLocalBorder(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), border);
+    });
+  }, [border]);
+  var updateBorder = function updateBorder(updates) {
+    var newBorder = _objectSpread(_objectSpread({}, localBorder), updates);
+    setLocalBorder(newBorder);
+    if (onChange) {
+      onChange(newBorder);
+    }
+  };
   var borderTypeOptions = [{
     label: __("Solid"),
     value: 'solid'
@@ -176,36 +191,124 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
     label: __("Double"),
     value: 'double'
   }];
+  var unitOptions = [{
+    label: 'px',
+    value: 'px'
+  }, {
+    label: 'em',
+    value: 'em'
+  }, {
+    label: '%',
+    value: '%'
+  }];
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(BaseControl, {
     label: label,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToggleControl, {
       label: __("Enable Border"),
-      checked: isEnabled,
+      checked: localBorder.enable,
       onChange: function onChange(value) {
-        // Update internal state first
-        setIsEnabled(!!value);
-        // Then notify parent
-        onToggle(!!value);
+        var updates = {
+          enable: value
+        };
+
+        // Set defaults when enabling
+        if (value) {
+          if (!localBorder.color) updates.color = defaultColor;
+          if (!localBorder.type) updates.type = 'solid';
+          if (!localBorder.width || Object.keys(localBorder.width).length === 0) {
+            updates.width = {
+              desktop: {
+                unit: 'px',
+                top: '',
+                right: '',
+                bottom: '',
+                left: '',
+                linked: true
+              },
+              tablet: {
+                unit: 'px',
+                top: '',
+                right: '',
+                bottom: '',
+                left: '',
+                linked: true
+              },
+              mobile: {
+                unit: 'px',
+                top: '',
+                right: '',
+                bottom: '',
+                left: '',
+                linked: true
+              }
+            };
+          }
+          if (!localBorder.radius || Object.keys(localBorder.radius).length === 0) {
+            updates.radius = {
+              desktop: {
+                unit: 'px',
+                top: '',
+                right: '',
+                bottom: '',
+                left: '',
+                linked: true
+              },
+              tablet: {
+                unit: 'px',
+                top: '',
+                right: '',
+                bottom: '',
+                left: '',
+                linked: true
+              },
+              mobile: {
+                unit: 'px',
+                top: '',
+                right: '',
+                bottom: '',
+                left: '',
+                linked: true
+              }
+            };
+          }
+        }
+        updateBorder(updates);
       }
-    }), isEnabled && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+    }), localBorder.enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
         label: __("Border Type"),
-        value: borderType || 'solid',
+        value: localBorder.type || 'solid',
         options: borderTypeOptions,
-        onChange: onBorderTypeChange
+        onChange: function onChange(value) {
+          return updateBorder({
+            type: value
+          });
+        }
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Border Color"),
-        value: borderColor || '',
-        onChange: onBorderColorChange,
+        value: localBorder.color || '',
+        onChange: function onChange(value) {
+          return updateBorder({
+            color: value
+          });
+        },
         defaultColor: defaultColor
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Border Width"),
-        values: borderWidth,
-        onChange: onBorderWidthChange
+        values: localBorder.width,
+        onChange: function onChange(value) {
+          return updateBorder({
+            width: value
+          });
+        }
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Border Radius"),
-        values: borderRadius,
-        onChange: onBorderRadiusChange
+        values: localBorder.radius,
+        onChange: function onChange(value) {
+          return updateBorder({
+            radius: value
+          });
+        }
       })]
     })]
   });
@@ -827,26 +930,26 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
   var defaultValues = {
     desktop: {
       unit: 'px',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
+      top: '',
+      right: '',
+      bottom: '',
+      left: '',
       linked: true
     },
     tablet: {
       unit: 'px',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
+      top: '',
+      right: '',
+      bottom: '',
+      left: '',
       linked: true
     },
     mobile: {
       unit: 'px',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
+      top: '',
+      right: '',
+      bottom: '',
+      left: '',
       linked: true
     }
   };
@@ -854,31 +957,31 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
   // Initialize values on component mount and when props change
   useEffect(function () {
     if (values) {
-      var _values$desktop, _values$desktop2, _values$desktop3, _values$desktop4, _values$desktop5, _values$desktop6, _values$tablet, _values$tablet2, _values$tablet3, _values$tablet4, _values$tablet5, _values$tablet6, _values$mobile, _values$mobile2, _values$mobile3, _values$mobile4, _values$mobile5, _values$mobile6;
+      var _values$desktop, _values$desktop$top, _values$desktop2, _values$desktop$right, _values$desktop3, _values$desktop$botto, _values$desktop4, _values$desktop$left, _values$desktop5, _values$desktop6, _values$tablet$unit, _values$tablet, _values$tablet$top, _values$tablet2, _values$tablet$right, _values$tablet3, _values$tablet$bottom, _values$tablet4, _values$tablet$left, _values$tablet5, _values$tablet6, _values$mobile$unit, _values$mobile, _values$mobile$top, _values$mobile2, _values$mobile$right, _values$mobile3, _values$mobile$bottom, _values$mobile4, _values$mobile$left, _values$mobile5, _values$mobile6;
       // Create a properly structured object with all required properties
       var structuredValues = {
         desktop: {
           unit: ((_values$desktop = values.desktop) === null || _values$desktop === void 0 ? void 0 : _values$desktop.unit) || values.unit || 'px',
-          top: ((_values$desktop2 = values.desktop) === null || _values$desktop2 === void 0 ? void 0 : _values$desktop2.top) || '',
-          right: ((_values$desktop3 = values.desktop) === null || _values$desktop3 === void 0 ? void 0 : _values$desktop3.right) || '',
-          bottom: ((_values$desktop4 = values.desktop) === null || _values$desktop4 === void 0 ? void 0 : _values$desktop4.bottom) || '',
-          left: ((_values$desktop5 = values.desktop) === null || _values$desktop5 === void 0 ? void 0 : _values$desktop5.left) || '',
+          top: (_values$desktop$top = (_values$desktop2 = values.desktop) === null || _values$desktop2 === void 0 ? void 0 : _values$desktop2.top) !== null && _values$desktop$top !== void 0 ? _values$desktop$top : '',
+          right: (_values$desktop$right = (_values$desktop3 = values.desktop) === null || _values$desktop3 === void 0 ? void 0 : _values$desktop3.right) !== null && _values$desktop$right !== void 0 ? _values$desktop$right : '',
+          bottom: (_values$desktop$botto = (_values$desktop4 = values.desktop) === null || _values$desktop4 === void 0 ? void 0 : _values$desktop4.bottom) !== null && _values$desktop$botto !== void 0 ? _values$desktop$botto : '',
+          left: (_values$desktop$left = (_values$desktop5 = values.desktop) === null || _values$desktop5 === void 0 ? void 0 : _values$desktop5.left) !== null && _values$desktop$left !== void 0 ? _values$desktop$left : '',
           linked: ((_values$desktop6 = values.desktop) === null || _values$desktop6 === void 0 ? void 0 : _values$desktop6.linked) !== undefined ? values.desktop.linked : true
         },
         tablet: {
-          unit: ((_values$tablet = values.tablet) === null || _values$tablet === void 0 ? void 0 : _values$tablet.unit) || values.unit || 'px',
-          top: ((_values$tablet2 = values.tablet) === null || _values$tablet2 === void 0 ? void 0 : _values$tablet2.top) || '',
-          right: ((_values$tablet3 = values.tablet) === null || _values$tablet3 === void 0 ? void 0 : _values$tablet3.right) || '',
-          bottom: ((_values$tablet4 = values.tablet) === null || _values$tablet4 === void 0 ? void 0 : _values$tablet4.bottom) || '',
-          left: ((_values$tablet5 = values.tablet) === null || _values$tablet5 === void 0 ? void 0 : _values$tablet5.left) || '',
+          unit: (_values$tablet$unit = (_values$tablet = values.tablet) === null || _values$tablet === void 0 ? void 0 : _values$tablet.unit) !== null && _values$tablet$unit !== void 0 ? _values$tablet$unit : values.unit || 'px',
+          top: (_values$tablet$top = (_values$tablet2 = values.tablet) === null || _values$tablet2 === void 0 ? void 0 : _values$tablet2.top) !== null && _values$tablet$top !== void 0 ? _values$tablet$top : '',
+          right: (_values$tablet$right = (_values$tablet3 = values.tablet) === null || _values$tablet3 === void 0 ? void 0 : _values$tablet3.right) !== null && _values$tablet$right !== void 0 ? _values$tablet$right : '',
+          bottom: (_values$tablet$bottom = (_values$tablet4 = values.tablet) === null || _values$tablet4 === void 0 ? void 0 : _values$tablet4.bottom) !== null && _values$tablet$bottom !== void 0 ? _values$tablet$bottom : '',
+          left: (_values$tablet$left = (_values$tablet5 = values.tablet) === null || _values$tablet5 === void 0 ? void 0 : _values$tablet5.left) !== null && _values$tablet$left !== void 0 ? _values$tablet$left : '',
           linked: ((_values$tablet6 = values.tablet) === null || _values$tablet6 === void 0 ? void 0 : _values$tablet6.linked) !== undefined ? values.tablet.linked : true
         },
         mobile: {
-          unit: ((_values$mobile = values.mobile) === null || _values$mobile === void 0 ? void 0 : _values$mobile.unit) || values.unit || 'px',
-          top: ((_values$mobile2 = values.mobile) === null || _values$mobile2 === void 0 ? void 0 : _values$mobile2.top) || '',
-          right: ((_values$mobile3 = values.mobile) === null || _values$mobile3 === void 0 ? void 0 : _values$mobile3.right) || '',
-          bottom: ((_values$mobile4 = values.mobile) === null || _values$mobile4 === void 0 ? void 0 : _values$mobile4.bottom) || '',
-          left: ((_values$mobile5 = values.mobile) === null || _values$mobile5 === void 0 ? void 0 : _values$mobile5.left) || '',
+          unit: (_values$mobile$unit = (_values$mobile = values.mobile) === null || _values$mobile === void 0 ? void 0 : _values$mobile.unit) !== null && _values$mobile$unit !== void 0 ? _values$mobile$unit : values.unit || 'px',
+          top: (_values$mobile$top = (_values$mobile2 = values.mobile) === null || _values$mobile2 === void 0 ? void 0 : _values$mobile2.top) !== null && _values$mobile$top !== void 0 ? _values$mobile$top : '',
+          right: (_values$mobile$right = (_values$mobile3 = values.mobile) === null || _values$mobile3 === void 0 ? void 0 : _values$mobile3.right) !== null && _values$mobile$right !== void 0 ? _values$mobile$right : '',
+          bottom: (_values$mobile$bottom = (_values$mobile4 = values.mobile) === null || _values$mobile4 === void 0 ? void 0 : _values$mobile4.bottom) !== null && _values$mobile$bottom !== void 0 ? _values$mobile$bottom : '',
+          left: (_values$mobile$left = (_values$mobile5 = values.mobile) === null || _values$mobile5 === void 0 ? void 0 : _values$mobile5.left) !== null && _values$mobile$left !== void 0 ? _values$mobile$left : '',
           linked: ((_values$mobile6 = values.mobile) === null || _values$mobile6 === void 0 ? void 0 : _values$mobile6.linked) !== undefined ? values.mobile.linked : true
         }
       };
@@ -899,7 +1002,7 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
       if (values[device]) {
         var _deviceValues = values[device];
         // Check if any value is set and not empty or zero
-        if (_deviceValues.top && _deviceValues.top !== 0 && _deviceValues.top !== '' || _deviceValues.right && _deviceValues.right !== 0 && _deviceValues.right !== '' || _deviceValues.bottom && _deviceValues.bottom !== 0 && _deviceValues.bottom !== '' || _deviceValues.left && _deviceValues.left !== 0 && _deviceValues.left !== '') {
+        if (_deviceValues.top !== '' || _deviceValues.right !== '' || _deviceValues.bottom !== '' || _deviceValues.left !== '') {
           return true;
         }
       }
@@ -958,17 +1061,6 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
     // Update the parent component's state
     onChange(updatedValues);
   };
-  var updateValues = function updateValues(newDeviceValues) {
-    // Make sure the unit is always included in the values
-    var updatedValues = _objectSpread(_objectSpread({}, currentValues), {}, _defineProperty({
-      unit: activeUnit
-    }, activeDevice, _objectSpread(_objectSpread({}, newDeviceValues), {}, {
-      unit: activeUnit,
-      // Also ensure unit is in the device object
-      linked: isLinked // Explicitly preserve the linked state
-    })));
-    onChange(updatedValues);
-  };
   var handleValueChange = function handleValueChange(position, value) {
     var numValue = value === '' ? '' : parseInt(value);
 
@@ -985,7 +1077,7 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
     }
 
     // If linked, update all values
-    if (isLinked && position !== 'unit') {
+    if (isLinked) {
       var _updatedValues = _objectSpread({}, currentValues);
       var updatedDeviceValues = _objectSpread({}, _updatedValues[activeDevice]);
 
@@ -1753,34 +1845,10 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
-              enabled: attributes.styles.enableInputBorder || false,
-              onToggle: function onToggle(value) {
+              border: attributes.styles.inputBorder || {},
+              onChange: function onChange(borderObj) {
                 return updateStyles({
-                  enableInputBorder: value
-                });
-              },
-              borderType: attributes.styles.inputBorderType,
-              onBorderTypeChange: function onBorderTypeChange(value) {
-                return updateStyles({
-                  inputBorderType: value
-                });
-              },
-              borderColor: attributes.styles.inputBorderColor,
-              onBorderColorChange: function onBorderColorChange(value) {
-                return updateStyles({
-                  inputBorderColor: value
-                });
-              },
-              borderWidth: attributes.styles.inputBorderWidth,
-              onBorderWidthChange: function onBorderWidthChange(value) {
-                return updateStyles({
-                  inputBorderWidth: value
-                });
-              },
-              borderRadius: attributes.styles.inputBorderRadius,
-              onBorderRadiusChange: function onBorderRadiusChange(value) {
-                return updateStyles({
-                  inputBorderRadius: value
+                  inputBorder: borderObj
                 });
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -1824,34 +1892,10 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
-              enabled: attributes.styles.enableInputBorderFocus || false,
-              onToggle: function onToggle(value) {
+              border: attributes.styles.inputBorderFocus || {},
+              onChange: function onChange(borderObj) {
                 return updateStyles({
-                  enableInputBorderFocus: value
-                });
-              },
-              borderType: attributes.styles.inputBorderTypeFocus,
-              onBorderTypeChange: function onBorderTypeChange(value) {
-                return updateStyles({
-                  inputBorderTypeFocus: value
-                });
-              },
-              borderColor: attributes.styles.inputBorderColorFocus,
-              onBorderColorChange: function onBorderColorChange(value) {
-                return updateStyles({
-                  inputBorderColorFocus: value
-                });
-              },
-              borderWidth: attributes.styles.inputBorderWidthFocus,
-              onBorderWidthChange: function onBorderWidthChange(value) {
-                return updateStyles({
-                  inputBorderWidthFocus: value
-                });
-              },
-              borderRadius: attributes.styles.inputBorderRadiusFocus,
-              onBorderRadiusChange: function onBorderRadiusChange(value) {
-                return updateStyles({
-                  inputBorderRadiusFocus: value
+                  inputBorderFocus: borderObj
                 });
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -1994,34 +2038,10 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
-              enabled: attributes.styles.enableButtonBorder || false,
-              onToggle: function onToggle(value) {
+              border: attributes.styles.buttonBorder || {},
+              onChange: function onChange(borderObj) {
                 return updateStyles({
-                  enableButtonBorder: value
-                });
-              },
-              borderType: attributes.styles.buttonBorderType,
-              onBorderTypeChange: function onBorderTypeChange(value) {
-                return updateStyles({
-                  buttonBorderType: value
-                });
-              },
-              borderColor: attributes.styles.buttonBorderColor,
-              onBorderColorChange: function onBorderColorChange(value) {
-                return updateStyles({
-                  buttonBorderColor: value
-                });
-              },
-              borderWidth: attributes.styles.buttonBorderWidth,
-              onBorderWidthChange: function onBorderWidthChange(value) {
-                return updateStyles({
-                  buttonBorderWidth: value
-                });
-              },
-              borderRadius: attributes.styles.buttonBorderRadius,
-              onBorderRadiusChange: function onBorderRadiusChange(value) {
-                return updateStyles({
-                  buttonBorderRadius: value
+                  buttonBorder: borderObj
                 });
               }
             })]
@@ -2085,34 +2105,10 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
               }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
-              enabled: attributes.styles.enableButtonHoverBorder || false,
-              onToggle: function onToggle(value) {
+              border: attributes.styles.buttonHoverBorder || {},
+              onChange: function onChange(borderObj) {
                 return updateStyles({
-                  enableButtonHoverBorder: value
-                });
-              },
-              borderType: attributes.styles.buttonHoverBorderType,
-              onBorderTypeChange: function onBorderTypeChange(value) {
-                return updateStyles({
-                  buttonHoverBorderType: value
-                });
-              },
-              borderColor: attributes.styles.buttonHoverBorderColor,
-              onBorderColorChange: function onBorderColorChange(value) {
-                return updateStyles({
-                  buttonHoverBorderColor: value
-                });
-              },
-              borderWidth: attributes.styles.buttonHoverBorderWidth,
-              onBorderWidthChange: function onBorderWidthChange(value) {
-                return updateStyles({
-                  buttonHoverBorderWidth: value
-                });
-              },
-              borderRadius: attributes.styles.buttonHoverBorderRadius,
-              onBorderRadiusChange: function onBorderRadiusChange(value) {
-                return updateStyles({
-                  buttonHoverBorderRadius: value
+                  buttonHoverBorder: borderObj
                 });
               }
             })]
@@ -2254,7 +2250,7 @@ var GENERAL_TAB_ATTRIBUTES = [
 // Label attributes
 'labelColor', 'labelTypography',
 // Input attributes
-'inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'enableInputBorder', 'inputBorderType', 'inputBorderColor', 'inputBorderWidth', 'inputBorderRadius', 'enableInputBorderFocus', 'inputBorderTypeFocus', 'inputBorderColorFocus', 'inputBorderWidthFocus', 'inputBorderRadiusFocus', 'inputBoxShadow', 'inputBoxShadowFocus',
+'inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'inputBoxShadow', 'inputBoxShadowFocus',
 // Placeholder attributes
 'placeholderColor', 'placeholderFocusColor', 'placeholderTypography',
 // Radio/Checkbox attributes
@@ -2262,9 +2258,9 @@ var GENERAL_TAB_ATTRIBUTES = [
 // Common Button attributes
 'buttonWidth', 'buttonAlignment',
 // Normal Button attributes
-'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'enableButtonBorder', 'buttonBorderType', 'buttonBorderColor', 'buttonBorderWidth', 'buttonBorderRadius',
+'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'buttonBorder',
 // Hover Button attributes
-'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'enableButtonHoverBorder', 'buttonHoverBorderType', 'buttonHoverBorderColor', 'buttonHoverBorderWidth', 'buttonHoverBorderRadius'];
+'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'buttonHoverBorder'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabGeneral, function (prevProps, nextProps) {
   return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_8__.arePropsEqual)(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES, true);
 }));
@@ -2717,34 +2713,10 @@ var TabMisc = function TabMisc(_ref) {
         label: __("Form Border Settings")
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_7__["default"], {
         label: __("Form Border"),
-        enabled: attributes.styles.enableFormBorder || false,
-        onToggle: function onToggle(value) {
+        border: attributes.styles.formBorder || {},
+        onChange: function onChange(borderObj) {
           return updateStyles({
-            enableFormBorder: value
-          });
-        },
-        borderType: attributes.styles.borderType,
-        onBorderTypeChange: function onBorderTypeChange(value) {
-          return updateStyles({
-            borderType: value
-          });
-        },
-        borderColor: attributes.styles.borderColor,
-        onBorderColorChange: function onBorderColorChange(value) {
-          return updateStyles({
-            borderColor: value
-          });
-        },
-        borderWidth: attributes.styles.borderWidth,
-        onBorderWidthChange: function onBorderWidthChange(value) {
-          return updateStyles({
-            borderWidth: value
-          });
-        },
-        borderRadius: attributes.styles.borderRadius,
-        onBorderRadiusChange: function onBorderRadiusChange(value) {
-          return updateStyles({
-            borderRadius: value
+            formBorder: borderObj
           });
         }
       })]
@@ -3385,34 +3357,21 @@ var EditComponent = /*#__PURE__*/function (_Component) {
       // Initialize style handler
       if (attributes.formId && attributes.styles) {
         this.styleHandler = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
+        if (attributes.styles) {
+          this.styleHandler.updateStyles(attributes.styles);
+        }
       }
     }
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps) {
       var attributes = this.props.attributes;
-      var styleChanged = JSON.stringify(prevProps.attributes.styles || {}) !== JSON.stringify(attributes.styles || {});
-
       // Initialize or update style handler
-      if (attributes.formId !== prevProps.attributes.formId) {
-        if (this.styleHandler) {
-          this.styleHandler.destroy();
+      if (attributes.formId !== prevProps.attributes.formId && attributes.formId) {
+        this.styleHandler = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
+        if (attributes.styles) {
+          this.styleHandler.updateStyles(attributes.styles);
         }
-        if (attributes.formId) {
-          this.styleHandler = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
-        }
-      }
-
-      // Handle style changes with JavaScript only
-      if (styleChanged && this.styleHandler && attributes.formId) {
-        this.styleHandler.updateStyles(attributes.styles);
-      }
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      if (this.styleHandler) {
-        this.styleHandler.destroy();
       }
     }
   }, {
@@ -3617,18 +3576,13 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
   function FluentFormStyleHandler(formId) {
     _classCallCheck(this, FluentFormStyleHandler);
     this.formId = formId;
+    this.TABLET_BREAKPOINT = '768px';
+    this.MOBILE_BREAKPOINT = '480px';
     this.styleElementId = "fluentform-block-custom-styles-".concat(formId);
     this.baseSelector = ".fluentform-guten-wrapper .ff_guten_block.ff_guten_block-".concat(formId);
-    this.initStyleElement();
+    this.setStyleElement();
   }
   return _createClass(FluentFormStyleHandler, [{
-    key: "initStyleElement",
-    value: function initStyleElement() {
-      if (this.styleElement) {
-        this.styleElement.innerHTML = '';
-      }
-    }
-  }, {
     key: "setStyleElement",
     value: function setStyleElement() {
       var styleElement = document.getElementById(this.styleElementId);
@@ -3648,7 +3602,9 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (!this.styleElement) {
         this.setStyleElement();
       }
-      this.styleElement.innerHTML = this.generateAllStyles(styles);
+      if (this.styleElement) {
+        this.styleElement.innerHTML = this.generateAllStyles(styles);
+      }
     }
   }, {
     key: "generateAllStyles",
@@ -3699,61 +3655,67 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (styleRules.length > 0) {
         css += "".concat(selector, " { ").concat(styleRules.join('; '), "; }\n");
       }
+
+      // Container border with responsive support
+      if (styles.formBorder) {
+        css += this.generateBorder(styles.formBorder, selector);
+      }
       return css;
     }
   }, {
     key: "generateLabelStyles",
-    value: function generateLabelStyles(attributes) {
+    value: function generateLabelStyles(styles) {
       var css = '';
       var labelSelector = "".concat(this.baseSelector, " .ff-el-input--label label");
-      var styles = [];
-      if (attributes.labelColor) {
-        styles.push("color: ".concat(attributes.labelColor));
+      var rules = [];
+      if (styles.labelColor) {
+        rules.push("color: ".concat(styles.labelColor));
       }
-      if (attributes.labelTypography) {
-        var typography = this.generateTypography(attributes.labelTypography);
-        if (typography) styles.push(typography);
+      if (styles.labelTypography) {
+        var typography = this.generateTypography(styles.labelTypography);
+        if (typography) rules.push(typography);
       }
       if (styles.length > 0) {
-        css += "".concat(labelSelector, " { ").concat(styles.join('; '), "; }\n");
+        css += "".concat(labelSelector, " { ").concat(rules.join('; '), "; }\n");
       }
       return css;
     }
   }, {
     key: "generateInputStyles",
-    value: function generateInputStyles(attributes) {
+    value: function generateInputStyles(styles) {
       var css = '';
       var inputSelectors = ["".concat(this.baseSelector, " .ff-el-form-control"), "".concat(this.baseSelector, " .ff-el-input--content input"), "".concat(this.baseSelector, " .ff-el-input--content textarea"), "".concat(this.baseSelector, " .ff-el-input--content select")];
       var inputSelector = inputSelectors.join(', ');
 
       // Normal state
       var normalStyles = [];
-      if (attributes.inputTextColor) {
-        normalStyles.push("color: ".concat(attributes.inputTextColor));
+      if (styles.inputTextColor) {
+        normalStyles.push("color: ".concat(styles.inputTextColor));
       }
-      if (attributes.inputBackgroundColor) {
-        normalStyles.push("background-color: ".concat(attributes.inputBackgroundColor));
+      if (styles.inputBackgroundColor) {
+        normalStyles.push("background-color: ".concat(styles.inputBackgroundColor));
       }
-      if (attributes.inputTypography) {
-        var typography = this.generateTypography(attributes.inputTypography);
+      if (styles.inputTypography) {
+        var typography = this.generateTypography(styles.inputTypography);
         if (typography) normalStyles.push(typography);
       }
-      if (attributes.inputBorder) {
-        var border = this.generateBorder(attributes.inputBorder);
-        if (border) normalStyles.push(border);
-      }
-      if (attributes.inputSpacing) {
-        var spacing = this.generateSpacing(attributes.inputSpacing);
+      if (styles.inputSpacing) {
+        var spacing = this.generateSpacing(styles.inputSpacing);
         if (spacing) normalStyles.push(spacing);
       }
 
       // Input box shadow
-      if (attributes.inputBoxShadow && attributes.inputBoxShadow.enable) {
-        var boxShadow = this.generateBoxShadow(attributes.inputBoxShadow);
+      if (styles.inputBoxShadow && styles.inputBoxShadow.enable) {
+        var boxShadow = this.generateBoxShadow(styles.inputBoxShadow);
         if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
       }
       if (normalStyles.length > 0) {
         css += "".concat(inputSelector, " { ").concat(normalStyles.join('; '), "; }\n");
+      }
+
+      // Input border with responsive support
+      if (styles.inputBorder) {
+        css += this.generateBorder(styles.inputBorder, inputSelector);
       }
 
       // Focus state
@@ -3761,37 +3723,38 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       var focusSelector = inputSelectors.map(function (sel) {
         return "".concat(sel, ":focus");
       }).join(', ');
-      if (attributes.inputTextColorFocus) {
-        focusStyles.push("color: ".concat(attributes.inputTextColorFocus));
+      if (styles.inputTextColorFocus) {
+        focusStyles.push("color: ".concat(styles.inputTextColorFocus));
       }
-      if (attributes.inputBackgroundColorFocus) {
-        focusStyles.push("background-color: ".concat(attributes.inputBackgroundColorFocus));
-      }
-      if (attributes.inputBorderFocus) {
-        var borderFocus = this.generateBorder(attributes.inputBorderFocus);
-        if (borderFocus) focusStyles.push(borderFocus);
+      if (styles.inputBackgroundColorFocus) {
+        focusStyles.push("background-color: ".concat(styles.inputBackgroundColorFocus));
       }
 
       // Input box shadow focus
-      if (attributes.inputBoxShadowFocus && attributes.inputBoxShadowFocus.enable) {
-        var boxShadowFocus = this.generateBoxShadow(attributes.inputBoxShadowFocus);
+      if (styles.inputBoxShadowFocus && styles.inputBoxShadowFocus.enable) {
+        var boxShadowFocus = this.generateBoxShadow(styles.inputBoxShadowFocus);
         if (boxShadowFocus) focusStyles.push("box-shadow: ".concat(boxShadowFocus));
       }
       if (focusStyles.length > 0) {
         css += "".concat(focusSelector, " { ").concat(focusStyles.join('; '), "; }\n");
       }
+
+      // Input focus border with responsive support
+      if (styles.inputBorderFocus) {
+        css += this.generateBorder(styles.inputBorderFocus, focusSelector);
+      }
       return css;
     }
   }, {
     key: "generatePlaceholderStyles",
-    value: function generatePlaceholderStyles(attributes) {
+    value: function generatePlaceholderStyles(styles) {
       var css = '';
-      if (attributes.placeholderColor) {
+      if (styles.placeholderColor) {
         var placeholderSelectors = ["".concat(this.baseSelector, " .ff-el-input--content input::placeholder"), "".concat(this.baseSelector, " .ff-el-input--content textarea::placeholder")];
-        css += "".concat(placeholderSelectors.join(', '), " { color: ").concat(attributes.placeholderColor, "; }\n");
+        css += "".concat(placeholderSelectors.join(', '), " { color: ").concat(styles.placeholderColor, "; }\n");
       }
-      if (attributes.placeholderTypography) {
-        var typography = this.generateTypography(attributes.placeholderTypography);
+      if (styles.placeholderTypography) {
+        var typography = this.generateTypography(styles.placeholderTypography);
         if (typography) {
           var _placeholderSelectors = ["".concat(this.baseSelector, " .ff-el-input--content input::placeholder"), "".concat(this.baseSelector, " .ff-el-input--content textarea::placeholder")];
           css += "".concat(_placeholderSelectors.join(', '), " { ").concat(typography, "; }\n");
@@ -3801,96 +3764,102 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
     }
   }, {
     key: "generateButtonStyles",
-    value: function generateButtonStyles(attributes) {
+    value: function generateButtonStyles(styles) {
       var css = '';
       var buttonSelector = "".concat(this.baseSelector, " .ff-btn-submit");
 
       // Button alignment
-      if (attributes.buttonAlignment) {
-        css += "".concat(this.baseSelector, " .ff_submit_btn_wrapper { text-align: ").concat(attributes.buttonAlignment, "; }\n");
+      if (styles.buttonAlignment) {
+        css += "".concat(this.baseSelector, " .ff_submit_btn_wrapper { text-align: ").concat(styles.buttonAlignment, "; }\n");
       }
 
       // Normal state
       var normalStyles = [];
-      if (attributes.buttonColor) {
-        normalStyles.push("color: ".concat(attributes.buttonColor));
+      if (styles.buttonColor) {
+        normalStyles.push("color: ".concat(styles.buttonColor));
       }
-      if (attributes.buttonBGColor) {
-        normalStyles.push("background-color: ".concat(attributes.buttonBGColor));
+      if (styles.buttonBGColor) {
+        normalStyles.push("background-color: ".concat(styles.buttonBGColor));
       }
-      if (attributes.buttonTypography) {
-        var typography = this.generateTypography(attributes.buttonTypography);
+      if (styles.buttonTypography) {
+        var typography = this.generateTypography(styles.buttonTypography);
         if (typography) normalStyles.push(typography);
       }
-      if (attributes.buttonBorder) {
-        var border = this.generateBorder(attributes.buttonBorder);
-        if (border) normalStyles.push(border);
-      }
-      if (attributes.buttonSpacing) {
-        var spacing = this.generateSpacing(attributes.buttonSpacing);
+      if (styles.buttonSpacing) {
+        var spacing = this.generateSpacing(styles.buttonSpacing);
         if (spacing) normalStyles.push(spacing);
       }
 
       // Button box shadow
-      if (attributes.buttonBoxShadow && attributes.buttonBoxShadow.enable) {
-        var boxShadow = this.generateBoxShadow(attributes.buttonBoxShadow);
+      if (styles.buttonBoxShadow && styles.buttonBoxShadow.enable) {
+        var boxShadow = this.generateBoxShadow(styles.buttonBoxShadow);
         if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
       }
       if (normalStyles.length > 0) {
         css += "".concat(buttonSelector, " { ").concat(normalStyles.join('; '), "; }\n");
       }
 
+      // Button border with responsive support
+      if (styles.buttonBorder) {
+        css += this.generateBorder(styles.buttonBorder, buttonSelector);
+      }
+
       // Hover state
       var hoverStyles = [];
       var hoverSelector = "".concat(buttonSelector, ":hover");
-      if (attributes.buttonColorHover) {
-        hoverStyles.push("color: ".concat(attributes.buttonColorHover));
+      if (styles.buttonColorHover) {
+        hoverStyles.push("color: ".concat(styles.buttonColorHover));
       }
-      if (attributes.buttonBGColorHover) {
-        hoverStyles.push("background-color: ".concat(attributes.buttonBGColorHover));
+      if (styles.buttonBGColorHover) {
+        hoverStyles.push("background-color: ".concat(styles.buttonBGColorHover));
       }
 
       // Button hover box shadow
-      if (attributes.buttonHoverBoxShadow && attributes.buttonHoverBoxShadow.enable) {
-        var boxShadowHover = this.generateBoxShadow(attributes.buttonHoverBoxShadow);
+      if (styles.buttonHoverBoxShadow && styles.buttonHoverBoxShadow.enable) {
+        var boxShadowHover = this.generateBoxShadow(styles.buttonHoverBoxShadow);
         if (boxShadowHover) hoverStyles.push("box-shadow: ".concat(boxShadowHover));
       }
       if (hoverStyles.length > 0) {
         css += "".concat(hoverSelector, " { ").concat(hoverStyles.join('; '), "; }\n");
       }
+
+      // Button hover border with responsive support
+      if (styles.buttonHoverBorder) {
+        css += this.generateBorder(styles.buttonHoverBorder, hoverSelector);
+      }
       return css;
     }
   }, {
     key: "generateRadioCheckboxStyles",
-    value: function generateRadioCheckboxStyles(attributes) {
+    value: function generateRadioCheckboxStyles(styles) {
       var css = '';
-      if (attributes.radioCheckboxItemsColor) {
-        css += "".concat(this.baseSelector, " .ff-el-form-check { color: ").concat(attributes.radioCheckboxItemsColor, "; }\n");
+      if (styles.radioCheckboxItemsColor) {
+        css += "".concat(this.baseSelector, " .ff-el-form-check { color: ").concat(styles.radioCheckboxItemsColor, "; }\n");
       }
-      if (attributes.radioCheckboxItemsSize) {
-        var size = "".concat(attributes.radioCheckboxItemsSize, "px");
+      if (styles.radioCheckboxItemsSize) {
+        var size = "".concat(styles.radioCheckboxItemsSize, "px");
         css += "".concat(this.baseSelector, " input[type=\"radio\"], ").concat(this.baseSelector, " input[type=\"checkbox\"] { width: ").concat(size, "; height: ").concat(size, "; }\n");
       }
       return css;
     }
   }, {
     key: "generateMessageStyles",
-    value: function generateMessageStyles(attributes) {
+    value: function generateMessageStyles(styles) {
       var css = '';
 
       // Success message
-      if (attributes.successMessageColor) {
-        css += "".concat(this.baseSelector, " .ff-message-success { color: ").concat(attributes.successMessageColor, "; }\n");
+      if (styles.successMessageColor) {
+        css += "".concat(this.baseSelector, " .ff-message-success { color: ").concat(styles.successMessageColor, "; }\n");
       }
 
       // Error message
-      if (attributes.errorMessageColor) {
-        css += "".concat(this.baseSelector, " .ff-errors-in-stack, ").concat(this.baseSelector, " .error { color: ").concat(attributes.errorMessageColor, "; }\n");
+      if (styles.errorMessageColor) {
+        css += "".concat(this.baseSelector, " .ff-errors-in-stack, ").concat(this.baseSelector, " .error { color: ").concat(styles.errorMessageColor, "; }\n");
       }
 
       // Asterisk
-      if (attributes.asteriskColor) {
-        css += "".concat(this.baseSelector, " .asterisk-right label:after, ").concat(this.baseSelector, " .asterisk-left label:before { color: ").concat(attributes.asteriskColor, "; }\n");
+      if (styles.asteriskColor) {
+        css += "".concat(this.baseSelector, " .asterisk-right label:after, ").concat(this.baseSelector, " .asterisk-left label:before { color: ").concat(styles.asteriskColor, "; }\n");
       }
       return css;
     }
@@ -3919,21 +3888,128 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
   }, {
     key: "generateBorder",
     value: function generateBorder(border) {
-      if (!border) return '';
-      var styles = [];
-      if (border.width) {
-        styles.push("border-width: ".concat(border.width, "px"));
-      }
-      if (border.style) {
-        styles.push("border-style: ".concat(border.style));
+      var selector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      if (!border || !border.enable || !border.color) return '';
+      var css = '';
+      var desktopStyles = [];
+
+      // Border type and color (apply to all devices)
+      if (border.type) {
+        desktopStyles.push("border-style: ".concat(border.type));
       }
       if (border.color) {
-        styles.push("border-color: ".concat(border.color));
+        desktopStyles.push("border-color: ".concat(border.color));
       }
-      if (border.radius) {
-        styles.push("border-radius: ".concat(border.radius, "px"));
+
+      // Border width (desktop values)
+      if (border.width && border.width.desktop) {
+        var widthStyles = this.generateBorderWidth(border.width.desktop);
+        if (widthStyles) desktopStyles.push(widthStyles);
       }
-      return styles.join('; ');
+
+      // Border radius (desktop values)
+      if (border.radius && border.radius.desktop) {
+        var radiusStyles = this.generateBorderRadius(border.radius.desktop);
+        if (radiusStyles) desktopStyles.push(radiusStyles);
+      }
+
+      // If no selector provided, return inline styles (for existing functionality)
+      if (!selector) {
+        return desktopStyles.join('; ');
+      }
+
+      // Generate CSS with media queries
+      if (desktopStyles.length > 0) {
+        css += "".concat(selector, " { ").concat(desktopStyles.join('; '), "; }\n");
+      }
+
+      // Handle tablet styles (only if different from desktop)
+      if (border.width && border.width.tablet && border.width.desktop) {
+        if (!this.areSpacingValuesEqual(border.width.desktop, border.width.tablet)) {
+          var tabletWidthStyles = this.generateBorderWidth(border.width.tablet);
+          if (tabletWidthStyles) {
+            css += "@media (max-width: ".concat(this.TABLET_BREAKPOINT, ") { ").concat(selector, " { ").concat(tabletWidthStyles, "; } }\n");
+          }
+        }
+      }
+      if (border.radius && border.radius.tablet && border.radius.desktop) {
+        if (!this.areSpacingValuesEqual(border.radius.desktop, border.radius.tablet)) {
+          var tabletRadiusStyles = this.generateBorderRadius(border.radius.tablet);
+          if (tabletRadiusStyles) {
+            css += "@media (max-width: ".concat(this.TABLET_BREAKPOINT, ") { ").concat(selector, " { ").concat(tabletRadiusStyles, "; } }\n");
+          }
+        }
+      }
+
+      // Handle mobile styles (only if different from desktop)
+      if (border.width && border.width.mobile && border.width.desktop) {
+        if (!this.areSpacingValuesEqual(border.width.desktop, border.width.mobile)) {
+          var mobileWidthStyles = this.generateBorderWidth(border.width.mobile);
+          if (mobileWidthStyles) {
+            css += "@media (max-width: ".concat(this.MOBILE_BREAKPOINT, ") { ").concat(selector, " { ").concat(mobileWidthStyles, "; } }\n");
+          }
+        }
+      }
+      if (border.radius && border.radius.mobile && border.radius.desktop) {
+        if (!this.areSpacingValuesEqual(border.radius.desktop, border.radius.mobile)) {
+          var mobileRadiusStyles = this.generateBorderRadius(border.radius.mobile);
+          if (mobileRadiusStyles) {
+            css += "@media (max-width: ".concat(this.MOBILE_BREAKPOINT, ") { ").concat(selector, " { ").concat(mobileRadiusStyles, "; } }\n");
+          }
+        }
+      }
+      return css;
+    }
+  }, {
+    key: "generateBorderWidth",
+    value: function generateBorderWidth(widthValues) {
+      if (!widthValues) return '';
+      var unit = widthValues.unit || 'px';
+      var linked = !!widthValues.linked;
+      if (linked && widthValues.top !== undefined && widthValues.top !== '') {
+        return "border-width: ".concat(widthValues.top).concat(unit);
+      } else {
+        var styles = [];
+        if (widthValues.top !== undefined && widthValues.top !== '') {
+          styles.push("border-top-width: ".concat(widthValues.top).concat(unit));
+        }
+        if (widthValues.right !== undefined && widthValues.right !== '') {
+          styles.push("border-right-width: ".concat(widthValues.right).concat(unit));
+        }
+        if (widthValues.bottom !== undefined && widthValues.bottom !== '') {
+          styles.push("border-bottom-width: ".concat(widthValues.bottom).concat(unit));
+        }
+        if (widthValues.left !== undefined && widthValues.left !== '') {
+          styles.push("border-left-width: ".concat(widthValues.left).concat(unit));
+        }
+        return styles.join('; ');
+      }
+    }
+  }, {
+    key: "generateBorderRadius",
+    value: function generateBorderRadius(radiusValues) {
+      if (!radiusValues) return '';
+      var unit = radiusValues.unit || 'px';
+      var linked = !!radiusValues.linked;
+      if (linked && radiusValues.top !== undefined && radiusValues.top !== '') {
+        return "border-radius: ".concat(radiusValues.top).concat(unit);
+      } else {
+        var styles = [];
+        // Map to CSS border-radius corners: top=top-left, right=top-right, bottom=bottom-right, left=bottom-left
+        if (radiusValues.top !== undefined && radiusValues.top !== '') {
+          styles.push("border-top-left-radius: ".concat(radiusValues.top).concat(unit));
+        }
+        if (radiusValues.right !== undefined && radiusValues.right !== '') {
+          styles.push("border-top-right-radius: ".concat(radiusValues.right).concat(unit));
+        }
+        if (radiusValues.bottom !== undefined && radiusValues.bottom !== '') {
+          styles.push("border-bottom-right-radius: ".concat(radiusValues.bottom).concat(unit));
+        }
+        if (radiusValues.left !== undefined && radiusValues.left !== '') {
+          styles.push("border-bottom-left-radius: ".concat(radiusValues.left).concat(unit));
+        }
+        return styles.join('; ');
+      }
     }
   }, {
     key: "generateSpacing",
@@ -3973,11 +4049,20 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       return "".concat(position).concat(horizontal, " ").concat(vertical, " ").concat(blur, " ").concat(spread, " ").concat(boxShadow.color);
     }
   }, {
-    key: "destroy",
-    value: function destroy() {
-      if (this.styleElement) {
-        this.styleElement.remove();
+    key: "areSpacingValuesEqual",
+    value: function areSpacingValuesEqual(values1, values2) {
+      if (!values1 && !values2) return true;
+      if (!values1 || !values2) return false;
+      var keys = ['top', 'right', 'bottom', 'left'];
+      for (var _i = 0, _keys = keys; _i < _keys.length; _i++) {
+        var key = _keys[_i];
+        var val1 = values1[key] || '';
+        var val2 = values2[key] || '';
+        if ('' !== val2 && val1 !== val2) {
+          return false;
+        }
       }
+      return true;
     }
   }]);
 }();

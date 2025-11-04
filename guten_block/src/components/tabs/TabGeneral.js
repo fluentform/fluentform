@@ -158,16 +158,8 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
 
                                 <FluentBorderControl
                                     label={__("Border")}
-                                    enabled={attributes.styles.enableInputBorder || false}
-                                    onToggle={(value) => updateStyles({ enableInputBorder: value })}
-                                    borderType={attributes.styles.inputBorderType}
-                                    onBorderTypeChange={(value) => updateStyles({ inputBorderType: value })}
-                                    borderColor={attributes.styles.inputBorderColor}
-                                    onBorderColorChange={(value) => updateStyles({ inputBorderColor: value })}
-                                    borderWidth={attributes.styles.inputBorderWidth}
-                                    onBorderWidthChange={(value) => updateStyles({ inputBorderWidth: value })}
-                                    borderRadius={attributes.styles.inputBorderRadius}
-                                    onBorderRadiusChange={(value) => updateStyles({ inputBorderRadius: value })}
+                                    border={attributes.styles.inputBorder || {}}
+                                    onChange={(borderObj) => updateStyles({ inputBorder: borderObj })}
                                 />
 
                                 <FluentBoxShadowControl
@@ -208,16 +200,8 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
 
                                 <FluentBorderControl
                                     label={__("Border")}
-                                    enabled={attributes.styles.enableInputBorderFocus || false}
-                                    onToggle={(value) => updateStyles({ enableInputBorderFocus: value })}
-                                    borderType={attributes.styles.inputBorderTypeFocus}
-                                    onBorderTypeChange={(value) => updateStyles({ inputBorderTypeFocus: value })}
-                                    borderColor={attributes.styles.inputBorderColorFocus}
-                                    onBorderColorChange={(value) => updateStyles({ inputBorderColorFocus: value })}
-                                    borderWidth={attributes.styles.inputBorderWidthFocus}
-                                    onBorderWidthChange={(value) => updateStyles({ inputBorderWidthFocus: value })}
-                                    borderRadius={attributes.styles.inputBorderRadiusFocus}
-                                    onBorderRadiusChange={(value) => updateStyles({ inputBorderRadiusFocus: value })}
+                                    border={attributes.styles.inputBorderFocus || {}}
+                                    onChange={(borderObj) => updateStyles({ inputBorderFocus: borderObj })}
                                 />
 
                                 <FluentBoxShadowControl
@@ -342,16 +326,8 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                               {/* Button Border */}
                               <FluentBorderControl
                                   label={__("Border")}
-                                  enabled={attributes.styles.enableButtonBorder || false}
-                                  onToggle={(value) => updateStyles({ enableButtonBorder: value })}
-                                  borderType={attributes.styles.buttonBorderType}
-                                  onBorderTypeChange={(value) => updateStyles({ buttonBorderType: value })}
-                                  borderColor={attributes.styles.buttonBorderColor}
-                                  onBorderColorChange={(value) => updateStyles({ buttonBorderColor: value })}
-                                  borderWidth={attributes.styles.buttonBorderWidth}
-                                  onBorderWidthChange={(value) => updateStyles({ buttonBorderWidth: value })}
-                                  borderRadius={attributes.styles.buttonBorderRadius}
-                                  onBorderRadiusChange={(value) => updateStyles({ buttonBorderRadius: value })}
+                                  border={attributes.styles.buttonBorder || {}}
+                                  onChange={(borderObj) => updateStyles({ buttonBorder: borderObj })}
                               />
                           </>
                       );
@@ -406,19 +382,11 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                                   onChange={(shadowObj) => updateStyles({ buttonHoverBoxShadow: shadowObj })}
                               />
 
-                              {/* Button Border */}
+                              {/* Button Hover Border */}
                               <FluentBorderControl
                                   label={__("Border")}
-                                  enabled={attributes.styles.enableButtonHoverBorder || false}
-                                  onToggle={(value) => updateStyles({ enableButtonHoverBorder: value })}
-                                  borderType={attributes.styles.buttonHoverBorderType}
-                                  onBorderTypeChange={(value) => updateStyles({ buttonHoverBorderType: value })}
-                                  borderColor={attributes.styles.buttonHoverBorderColor}
-                                  onBorderColorChange={(value) => updateStyles({ buttonHoverBorderColor: value })}
-                                  borderWidth={attributes.styles.buttonHoverBorderWidth}
-                                  onBorderWidthChange={(value) => updateStyles({ buttonHoverBorderWidth: value })}
-                                  borderRadius={attributes.styles.buttonHoverBorderRadius}
-                                  onBorderRadiusChange={(value) => updateStyles({ buttonHoverBorderRadius: value })}
+                                  border={attributes.styles.buttonHoverBorder || {}}
+                                  onChange={(borderObj) => updateStyles({ buttonHoverBorder: borderObj })}
                               />
                           </>
                       );
@@ -573,16 +541,6 @@ const GENERAL_TAB_ATTRIBUTES = [
     'inputTextFocusColor',
     'inputBackgroundFocusColor',
     'inputFocusSpacing',
-    'enableInputBorder',
-    'inputBorderType',
-    'inputBorderColor',
-    'inputBorderWidth',
-    'inputBorderRadius',
-    'enableInputBorderFocus',
-    'inputBorderTypeFocus',
-    'inputBorderColorFocus',
-    'inputBorderWidthFocus',
-    'inputBorderRadiusFocus',
     'inputBoxShadow',
     'inputBoxShadowFocus',
 
@@ -616,11 +574,7 @@ const GENERAL_TAB_ATTRIBUTES = [
     'buttonPadding',
     'buttonMargin',
     'buttonBoxShadow',
-    'enableButtonBorder',
-    'buttonBorderType',
-    'buttonBorderColor',
-    'buttonBorderWidth',
-    'buttonBorderRadius',
+    'buttonBorder',
 
     // Hover Button attributes
     'buttonHoverColor',
@@ -629,11 +583,7 @@ const GENERAL_TAB_ATTRIBUTES = [
     'buttonHoverPadding',
     'buttonHoverMargin',
     'buttonHoverBoxShadow',
-    'enableButtonHoverBorder',
-    'buttonHoverBorderType',
-    'buttonHoverBorderColor',
-    'buttonHoverBorderWidth',
-    'buttonHoverBorderRadius'
+    'buttonHoverBorder'
 ];
 
 export default memo(TabGeneral, (prevProps, nextProps) => {

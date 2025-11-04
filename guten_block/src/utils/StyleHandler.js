@@ -6,6 +6,8 @@
 class FluentFormStyleHandler {
     constructor(formId) {
         this.formId = formId;
+        this.TABLET_BREAKPOINT = '768px';
+        this.MOBILE_BREAKPOINT = '480px';
         this.styleElementId = `fluentform-block-custom-styles-${formId}`;
         this.baseSelector = `.fluentform-guten-wrapper .ff_guten_block.ff_guten_block-${formId}`;
         this.setStyleElement();
@@ -83,32 +85,37 @@ class FluentFormStyleHandler {
         if (styleRules.length > 0) {
             css += `${selector} { ${styleRules.join('; ')}; }\n`;
         }
+        
+        // Container border with responsive support
+        if (styles.formBorder) {
+            css += this.generateBorder(styles.formBorder, selector);
+        }
 
         return css;
     }
 
-    generateLabelStyles(attributes) {
+    generateLabelStyles(styles) {
         let css = '';
         const labelSelector = `${this.baseSelector} .ff-el-input--label label`;
-        let styles = [];
+        let rules = [];
         
-        if (attributes.labelColor) {
-            styles.push(`color: ${attributes.labelColor}`);
+        if (styles.labelColor) {
+            rules.push(`color: ${styles.labelColor}`);
         }
         
-        if (attributes.labelTypography) {
-            const typography = this.generateTypography(attributes.labelTypography);
-            if (typography) styles.push(typography);
+        if (styles.labelTypography) {
+            const typography = this.generateTypography(styles.labelTypography);
+            if (typography) rules.push(typography);
         }
 
         if (styles.length > 0) {
-            css += `${labelSelector} { ${styles.join('; ')}; }\n`;
+            css += `${labelSelector} { ${rules.join('; ')}; }\n`;
         }
 
         return css;
     }
 
-    generateInputStyles(attributes) {
+    generateInputStyles(styles) {
         let css = '';
         const inputSelectors = [
             `${this.baseSelector} .ff-el-form-control`,
@@ -121,32 +128,27 @@ class FluentFormStyleHandler {
         // Normal state
         let normalStyles = [];
         
-        if (attributes.inputTextColor) {
-            normalStyles.push(`color: ${attributes.inputTextColor}`);
+        if (styles.inputTextColor) {
+            normalStyles.push(`color: ${styles.inputTextColor}`);
         }
         
-        if (attributes.inputBackgroundColor) {
-            normalStyles.push(`background-color: ${attributes.inputBackgroundColor}`);
+        if (styles.inputBackgroundColor) {
+            normalStyles.push(`background-color: ${styles.inputBackgroundColor}`);
         }
         
-        if (attributes.inputTypography) {
-            const typography = this.generateTypography(attributes.inputTypography);
+        if (styles.inputTypography) {
+            const typography = this.generateTypography(styles.inputTypography);
             if (typography) normalStyles.push(typography);
         }
         
-        if (attributes.inputBorder) {
-            const border = this.generateBorder(attributes.inputBorder);
-            if (border) normalStyles.push(border);
-        }
-        
-        if (attributes.inputSpacing) {
-            const spacing = this.generateSpacing(attributes.inputSpacing);
+        if (styles.inputSpacing) {
+            const spacing = this.generateSpacing(styles.inputSpacing);
             if (spacing) normalStyles.push(spacing);
         }
 
         // Input box shadow
-        if (attributes.inputBoxShadow && attributes.inputBoxShadow.enable) {
-            const boxShadow = this.generateBoxShadow(attributes.inputBoxShadow);
+        if (styles.inputBoxShadow && styles.inputBoxShadow.enable) {
+            const boxShadow = this.generateBoxShadow(styles.inputBoxShadow);
             if (boxShadow) normalStyles.push(`box-shadow: ${boxShadow}`);
         }
 
@@ -154,50 +156,55 @@ class FluentFormStyleHandler {
             css += `${inputSelector} { ${normalStyles.join('; ')}; }\n`;
         }
         
+        // Input border with responsive support
+        if (styles.inputBorder) {
+            css += this.generateBorder(styles.inputBorder, inputSelector);
+        }
+        
         // Focus state
         let focusStyles = [];
         const focusSelector = inputSelectors.map(sel => `${sel}:focus`).join(', ');
         
-        if (attributes.inputTextColorFocus) {
-            focusStyles.push(`color: ${attributes.inputTextColorFocus}`);
+        if (styles.inputTextColorFocus) {
+            focusStyles.push(`color: ${styles.inputTextColorFocus}`);
         }
         
-        if (attributes.inputBackgroundColorFocus) {
-            focusStyles.push(`background-color: ${attributes.inputBackgroundColorFocus}`);
-        }
-        
-        if (attributes.inputBorderFocus) {
-            const borderFocus = this.generateBorder(attributes.inputBorderFocus);
-            if (borderFocus) focusStyles.push(borderFocus);
+        if (styles.inputBackgroundColorFocus) {
+            focusStyles.push(`background-color: ${styles.inputBackgroundColorFocus}`);
         }
 
         // Input box shadow focus
-        if (attributes.inputBoxShadowFocus && attributes.inputBoxShadowFocus.enable) {
-            const boxShadowFocus = this.generateBoxShadow(attributes.inputBoxShadowFocus);
+        if (styles.inputBoxShadowFocus && styles.inputBoxShadowFocus.enable) {
+            const boxShadowFocus = this.generateBoxShadow(styles.inputBoxShadowFocus);
             if (boxShadowFocus) focusStyles.push(`box-shadow: ${boxShadowFocus}`);
         }
 
         if (focusStyles.length > 0) {
             css += `${focusSelector} { ${focusStyles.join('; ')}; }\n`;
         }
+        
+        // Input focus border with responsive support
+        if (styles.inputBorderFocus) {
+            css += this.generateBorder(styles.inputBorderFocus, focusSelector);
+        }
 
         return css;
     }
 
-    generatePlaceholderStyles(attributes) {
+    generatePlaceholderStyles(styles) {
         let css = '';
         
-        if (attributes.placeholderColor) {
+        if (styles.placeholderColor) {
             const placeholderSelectors = [
                 `${this.baseSelector} .ff-el-input--content input::placeholder`,
                 `${this.baseSelector} .ff-el-input--content textarea::placeholder`
             ];
             
-            css += `${placeholderSelectors.join(', ')} { color: ${attributes.placeholderColor}; }\n`;
+            css += `${placeholderSelectors.join(', ')} { color: ${styles.placeholderColor}; }\n`;
         }
         
-        if (attributes.placeholderTypography) {
-            const typography = this.generateTypography(attributes.placeholderTypography);
+        if (styles.placeholderTypography) {
+            const typography = this.generateTypography(styles.placeholderTypography);
             if (typography) {
                 const placeholderSelectors = [
                     `${this.baseSelector} .ff-el-input--content input::placeholder`,
@@ -210,44 +217,39 @@ class FluentFormStyleHandler {
         return css;
     }
 
-    generateButtonStyles(attributes) {
+    generateButtonStyles(styles) {
         let css = '';
         const buttonSelector = `${this.baseSelector} .ff-btn-submit`;
         
         // Button alignment
-        if (attributes.buttonAlignment) {
-            css += `${this.baseSelector} .ff_submit_btn_wrapper { text-align: ${attributes.buttonAlignment}; }\n`;
+        if (styles.buttonAlignment) {
+            css += `${this.baseSelector} .ff_submit_btn_wrapper { text-align: ${styles.buttonAlignment}; }\n`;
         }
         
         // Normal state
         let normalStyles = [];
         
-        if (attributes.buttonColor) {
-            normalStyles.push(`color: ${attributes.buttonColor}`);
+        if (styles.buttonColor) {
+            normalStyles.push(`color: ${styles.buttonColor}`);
         }
         
-        if (attributes.buttonBGColor) {
-            normalStyles.push(`background-color: ${attributes.buttonBGColor}`);
+        if (styles.buttonBGColor) {
+            normalStyles.push(`background-color: ${styles.buttonBGColor}`);
         }
         
-        if (attributes.buttonTypography) {
-            const typography = this.generateTypography(attributes.buttonTypography);
+        if (styles.buttonTypography) {
+            const typography = this.generateTypography(styles.buttonTypography);
             if (typography) normalStyles.push(typography);
         }
         
-        if (attributes.buttonBorder) {
-            const border = this.generateBorder(attributes.buttonBorder);
-            if (border) normalStyles.push(border);
-        }
-        
-        if (attributes.buttonSpacing) {
-            const spacing = this.generateSpacing(attributes.buttonSpacing);
+        if (styles.buttonSpacing) {
+            const spacing = this.generateSpacing(styles.buttonSpacing);
             if (spacing) normalStyles.push(spacing);
         }
 
         // Button box shadow
-        if (attributes.buttonBoxShadow && attributes.buttonBoxShadow.enable) {
-            const boxShadow = this.generateBoxShadow(attributes.buttonBoxShadow);
+        if (styles.buttonBoxShadow && styles.buttonBoxShadow.enable) {
+            const boxShadow = this.generateBoxShadow(styles.buttonBoxShadow);
             if (boxShadow) normalStyles.push(`box-shadow: ${boxShadow}`);
         }
 
@@ -255,62 +257,72 @@ class FluentFormStyleHandler {
             css += `${buttonSelector} { ${normalStyles.join('; ')}; }\n`;
         }
         
+        // Button border with responsive support
+        if (styles.buttonBorder) {
+            css += this.generateBorder(styles.buttonBorder, buttonSelector);
+        }
+        
         // Hover state
         let hoverStyles = [];
         const hoverSelector = `${buttonSelector}:hover`;
         
-        if (attributes.buttonColorHover) {
-            hoverStyles.push(`color: ${attributes.buttonColorHover}`);
+        if (styles.buttonColorHover) {
+            hoverStyles.push(`color: ${styles.buttonColorHover}`);
         }
         
-        if (attributes.buttonBGColorHover) {
-            hoverStyles.push(`background-color: ${attributes.buttonBGColorHover}`);
+        if (styles.buttonBGColorHover) {
+            hoverStyles.push(`background-color: ${styles.buttonBGColorHover}`);
         }
 
         // Button hover box shadow
-        if (attributes.buttonHoverBoxShadow && attributes.buttonHoverBoxShadow.enable) {
-            const boxShadowHover = this.generateBoxShadow(attributes.buttonHoverBoxShadow);
+        if (styles.buttonHoverBoxShadow && styles.buttonHoverBoxShadow.enable) {
+            const boxShadowHover = this.generateBoxShadow(styles.buttonHoverBoxShadow);
             if (boxShadowHover) hoverStyles.push(`box-shadow: ${boxShadowHover}`);
         }
 
         if (hoverStyles.length > 0) {
             css += `${hoverSelector} { ${hoverStyles.join('; ')}; }\n`;
         }
+        
+        // Button hover border with responsive support
+        if (styles.buttonHoverBorder) {
+            css += this.generateBorder(styles.buttonHoverBorder, hoverSelector);
+        }
 
         return css;
     }
 
-    generateRadioCheckboxStyles(attributes) {
+    generateRadioCheckboxStyles(styles) {
         let css = '';
         
-        if (attributes.radioCheckboxItemsColor) {
-            css += `${this.baseSelector} .ff-el-form-check { color: ${attributes.radioCheckboxItemsColor}; }\n`;
+        if (styles.radioCheckboxItemsColor) {
+            css += `${this.baseSelector} .ff-el-form-check { color: ${styles.radioCheckboxItemsColor}; }\n`;
         }
         
-        if (attributes.radioCheckboxItemsSize) {
-            const size = `${attributes.radioCheckboxItemsSize}px`;
+        if (styles.radioCheckboxItemsSize) {
+            const size = `${styles.radioCheckboxItemsSize}px`;
             css += `${this.baseSelector} input[type="radio"], ${this.baseSelector} input[type="checkbox"] { width: ${size}; height: ${size}; }\n`;
         }
 
         return css;
     }
 
-    generateMessageStyles(attributes) {
+    generateMessageStyles(styles) {
         let css = '';
         
         // Success message
-        if (attributes.successMessageColor) {
-            css += `${this.baseSelector} .ff-message-success { color: ${attributes.successMessageColor}; }\n`;
+        if (styles.successMessageColor) {
+            css += `${this.baseSelector} .ff-message-success { color: ${styles.successMessageColor}; }\n`;
         }
         
         // Error message
-        if (attributes.errorMessageColor) {
-            css += `${this.baseSelector} .ff-errors-in-stack, ${this.baseSelector} .error { color: ${attributes.errorMessageColor}; }\n`;
+        if (styles.errorMessageColor) {
+            css += `${this.baseSelector} .ff-errors-in-stack, ${this.baseSelector} .error { color: ${styles.errorMessageColor}; }\n`;
         }
         
         // Asterisk
-        if (attributes.asteriskColor) {
-            css += `${this.baseSelector} .asterisk-right label:after, ${this.baseSelector} .asterisk-left label:before { color: ${attributes.asteriskColor}; }\n`;
+        if (styles.asteriskColor) {
+            css += `${this.baseSelector} .asterisk-right label:after, ${this.baseSelector} .asterisk-left label:before { color: ${styles.asteriskColor}; }\n`;
         }
 
         return css;
@@ -344,28 +356,135 @@ class FluentFormStyleHandler {
         return styles.join('; ');
     }
 
-    generateBorder(border) {
-        if (!border) return '';
+    generateBorder(border, selector = '') {
+        if (!border || !border.enable || !border.color) return '';
         
-        let styles = [];
+        let css = '';
+        let desktopStyles = [];
         
-        if (border.width) {
-            styles.push(`border-width: ${border.width}px`);
-        }
-        
-        if (border.style) {
-            styles.push(`border-style: ${border.style}`);
+        // Border type and color (apply to all devices)
+        if (border.type) {
+            desktopStyles.push(`border-style: ${border.type}`);
         }
         
         if (border.color) {
-            styles.push(`border-color: ${border.color}`);
+            desktopStyles.push(`border-color: ${border.color}`);
         }
         
-        if (border.radius) {
-            styles.push(`border-radius: ${border.radius}px`);
+        // Border width (desktop values)
+        if (border.width && border.width.desktop) {
+            const widthStyles = this.generateBorderWidth(border.width.desktop);
+            if (widthStyles) desktopStyles.push(widthStyles);
         }
         
-        return styles.join('; ');
+        // Border radius (desktop values)
+        if (border.radius && border.radius.desktop) {
+            const radiusStyles = this.generateBorderRadius(border.radius.desktop);
+            if (radiusStyles) desktopStyles.push(radiusStyles);
+        }
+        
+        // If no selector provided, return inline styles (for existing functionality)
+        if (!selector) {
+            return desktopStyles.join('; ');
+        }
+        
+        // Generate CSS with media queries
+        if (desktopStyles.length > 0) {
+            css += `${selector} { ${desktopStyles.join('; ')}; }\n`;
+        }
+        
+        // Handle tablet styles (only if different from desktop)
+        if (border.width && border.width.tablet && border.width.desktop) {
+            if (!this.areSpacingValuesEqual(border.width.desktop, border.width.tablet)) {
+                const tabletWidthStyles = this.generateBorderWidth(border.width.tablet);
+                if (tabletWidthStyles) {
+                    css += `@media (max-width: ${this.TABLET_BREAKPOINT}) { ${selector} { ${tabletWidthStyles}; } }\n`;
+                }
+            }
+        }
+        
+        if (border.radius && border.radius.tablet && border.radius.desktop) {
+            if (!this.areSpacingValuesEqual(border.radius.desktop, border.radius.tablet)) {
+                const tabletRadiusStyles = this.generateBorderRadius(border.radius.tablet);
+                if (tabletRadiusStyles) {
+                    css += `@media (max-width: ${this.TABLET_BREAKPOINT}) { ${selector} { ${tabletRadiusStyles}; } }\n`;
+                }
+            }
+        }
+        
+        // Handle mobile styles (only if different from desktop)
+        if (border.width && border.width.mobile && border.width.desktop) {
+            if (!this.areSpacingValuesEqual(border.width.desktop, border.width.mobile)) {
+                const mobileWidthStyles = this.generateBorderWidth(border.width.mobile);
+                if (mobileWidthStyles) {
+                    css += `@media (max-width: ${this.MOBILE_BREAKPOINT}) { ${selector} { ${mobileWidthStyles}; } }\n`;
+                }
+            }
+        }
+        
+        if (border.radius && border.radius.mobile && border.radius.desktop) {
+            if (!this.areSpacingValuesEqual(border.radius.desktop, border.radius.mobile)) {
+                const mobileRadiusStyles = this.generateBorderRadius(border.radius.mobile);
+                if (mobileRadiusStyles) {
+                    css += `@media (max-width: ${this.MOBILE_BREAKPOINT}) { ${selector} { ${mobileRadiusStyles}; } }\n`;
+                }
+            }
+        }
+        
+        return css;
+    }
+
+    generateBorderWidth(widthValues) {
+        if (!widthValues) return '';
+        
+        const unit = widthValues.unit || 'px';
+        const linked = !!widthValues.linked;
+        
+        if (linked && widthValues.top !== undefined && widthValues.top !== '') {
+            return `border-width: ${widthValues.top}${unit}`;
+        } else {
+            let styles = [];
+            if (widthValues.top !== undefined && widthValues.top !== '') {
+                styles.push(`border-top-width: ${widthValues.top}${unit}`);
+            }
+            if (widthValues.right !== undefined && widthValues.right !== '') {
+                styles.push(`border-right-width: ${widthValues.right}${unit}`);
+            }
+            if (widthValues.bottom !== undefined && widthValues.bottom !== '') {
+                styles.push(`border-bottom-width: ${widthValues.bottom}${unit}`);
+            }
+            if (widthValues.left !== undefined && widthValues.left !== '') {
+                styles.push(`border-left-width: ${widthValues.left}${unit}`);
+            }
+            return styles.join('; ');
+        }
+    }
+
+    generateBorderRadius(radiusValues) {
+        if (!radiusValues) return '';
+        
+        const unit = radiusValues.unit || 'px';
+        const linked = !!radiusValues.linked;
+        
+        if (linked && radiusValues.top !== undefined && radiusValues.top !== '') {
+            return `border-radius: ${radiusValues.top}${unit}`;
+        } else {
+            let styles = [];
+            // Map to CSS border-radius corners: top=top-left, right=top-right, bottom=bottom-right, left=bottom-left
+            if (radiusValues.top !== undefined && radiusValues.top !== '') {
+                styles.push(`border-top-left-radius: ${radiusValues.top}${unit}`);
+            }
+            if (radiusValues.right !== undefined && radiusValues.right !== '') {
+                styles.push(`border-top-right-radius: ${radiusValues.right}${unit}`);
+            }
+            if (radiusValues.bottom !== undefined && radiusValues.bottom !== '') {
+                styles.push(`border-bottom-right-radius: ${radiusValues.bottom}${unit}`);
+            }
+            if (radiusValues.left !== undefined && radiusValues.left !== '') {
+                styles.push(`border-bottom-left-radius: ${radiusValues.left}${unit}`);
+            }
+            return styles.join('; ');
+        }
     }
 
     generateSpacing(spacing, property = 'padding') {
@@ -405,6 +524,24 @@ class FluentFormStyleHandler {
         const spread = `${ boxShadow.spread?.value || '0' }${ boxShadow.spread?.unit || 'px' }`;
         // Build the box-shadow value
         return `${ position }${ horizontal } ${ vertical } ${ blur } ${ spread } ${ boxShadow.color }`;
+    }
+
+    areSpacingValuesEqual(values1, values2) {
+        if (!values1 && !values2) return true;
+        if (!values1 || !values2) return false;
+        
+        const keys = ['top', 'right', 'bottom', 'left'];
+        
+        for (const key of keys) {
+            const val1 = values1[key] || '';
+            const val2 = values2[key] || '';
+            
+            if ('' !== val2 && val1 !== val2) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }
 
