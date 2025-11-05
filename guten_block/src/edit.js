@@ -310,7 +310,7 @@ class EditComponent extends Component {
                     </div>
 
                     <ServerSideRender
-                        key={`ff-preview-${attributes.formId}-${attributes.selectedPreset}-${attributes.isThemeChange}`}
+                        key={`ff-preview-${attributes.formId}-${attributes.selectedPreset}`}
                         block="fluentfom/guten-block"
                         attributes={serverAttributes}
                     />
