@@ -1,8 +1,7 @@
 
-const { useState, useRef, useEffect, memo } = wp.element;
+const { useState, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
-const { PanelBody, SelectControl, PanelRow, RangeControl, TabPanel } = wp.components;
-const { useSelect } = wp.data;
+const { PanelBody, SelectControl, RangeControl, TabPanel } = wp.components;
 
 // Custom components
 import FluentTypography from "../controls/FluentTypography";
@@ -398,10 +397,7 @@ const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
 /**
  * Main TabGeneral component
  */
-const TabGeneral = ({ setAttributes, updateStyles, state, handlePresetChange }) => {
-    const attributes = useSelect((select) => {
-        return select('core/block-editor').getSelectedBlock().attributes;
-    });
+const TabGeneral = ({attributes, setAttributes, updateStyles, handlePresetChange }) => {
     return (
       <>
           <StyleTemplatePanel
@@ -503,5 +499,8 @@ const GENERAL_TAB_ATTRIBUTES = [
 ];
 
 export default memo(TabGeneral, (prevProps, nextProps) => {
-    return arePropsEqual(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES, true);
+    if (prevProps.attributes.themeStyle !== nextProps.attributes.themeStyle) {
+        return false;
+    }
+    return arePropsEqual(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES);
 });

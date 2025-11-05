@@ -2,6 +2,358 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./guten_block/src/components/EditComponent.js":
+/*!*****************************************************!*\
+  !*** ./guten_block/src/components/EditComponent.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
+/* harmony import */ var _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/StyleHandler */ "./guten_block/src/components/utils/StyleHandler.js");
+/* harmony import */ var _tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./tabs/Tabs */ "./guten_block/src/components/tabs/Tabs.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+/**
+ * Fluent Forms Gutenberg Block Edit Component
+ * Enhanced with custom UX controls
+ */
+
+
+
+
+var __ = wp.i18n.__;
+var _wp$blockEditor = wp.blockEditor,
+  InspectorControls = _wp$blockEditor.InspectorControls,
+  BlockControls = _wp$blockEditor.BlockControls;
+var _wp = wp,
+  ServerSideRender = _wp.serverSideRender;
+var _wp2 = wp,
+  apiFetch = _wp2.apiFetch;
+var memo = wp.element.memo;
+var _wp$components = wp.components,
+  SelectControl = _wp$components.SelectControl,
+  PanelBody = _wp$components.PanelBody,
+  Button = _wp$components.Button,
+  Spinner = _wp$components.Spinner,
+  ToolbarGroup = _wp$components.ToolbarGroup,
+  ToolbarButton = _wp$components.ToolbarButton;
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useEffect = _wp$element.useEffect,
+  useRef = _wp$element.useRef,
+  useCallback = _wp$element.useCallback,
+  useMemo = _wp$element.useMemo;
+
+// Function to get form meta
+var getFormMeta = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(formId, metaKey) {
+    var path, response;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          if (formId) {
+            _context.n = 1;
+            break;
+          }
+          return _context.a(2);
+        case 1:
+          path = "".concat(window.fluentform_block_vars.rest.namespace, "/").concat(window.fluentform_block_vars.rest.version, "/settings/").concat(formId, "?meta_key=").concat(metaKey);
+          _context.n = 2;
+          return apiFetch({
+            path: path
+          });
+        case 2:
+          response = _context.v;
+          return _context.a(2, response.length && response[0].value || false);
+      }
+    }, _callee);
+  }));
+  return function getFormMeta(_x, _x2) {
+    return _ref.apply(this, arguments);
+  };
+}();
+function EditComponent(_ref2) {
+  var _config$forms;
+  var attributes = _ref2.attributes,
+    setAttributes = _ref2.setAttributes;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isPreviewLoading = _useState2[0],
+    setIsPreviewLoading = _useState2[1];
+  var _useState3 = useState('desktop'),
+    _useState4 = _slicedToArray(_useState3, 2),
+    previewDevice = _useState4[0],
+    setPreviewDevice = _useState4[1];
+  var styleHandlerRef = useRef(null);
+  var storeCss = useCallback(function (css) {
+    if (css === false) {
+      return;
+    }
+    css = JSON.stringify(css);
+    if (css !== attributes.customCss) {
+      setAttributes({
+        customCss: css
+      });
+    }
+  }, [attributes.customCss, setAttributes]);
+  var updateStyles = useCallback(function (styleAttributes) {
+    var currentStyles = attributes.styles || {};
+    var styles = _objectSpread(_objectSpread({}, currentStyles), styleAttributes);
+    setAttributes({
+      styles: styles
+    });
+    if (styleHandlerRef.current && attributes.formId) {
+      var css = styleHandlerRef.current.updateStyles(styles);
+      storeCss(css);
+    }
+  }, [attributes.styles, attributes.formId, setAttributes, storeCss]);
+  var checkIfConversationalForm = useCallback(/*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(formId) {
+      var isConversationalForm;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.n) {
+          case 0:
+            if (formId) {
+              _context2.n = 1;
+              break;
+            }
+            return _context2.a(2);
+          case 1:
+            setIsPreviewLoading(true);
+            _context2.n = 2;
+            return getFormMeta(formId, "is_conversion_form");
+          case 2:
+            isConversationalForm = _context2.v;
+            setAttributes({
+              isConversationalForm: isConversationalForm === "yes"
+            });
+            setIsPreviewLoading(false);
+          case 3:
+            return _context2.a(2);
+        }
+      }, _callee2);
+    }));
+    return function (_x3) {
+      return _ref3.apply(this, arguments);
+    };
+  }(), [setAttributes]);
+  var handleFormChange = useCallback(function (formId) {
+    setIsPreviewLoading(true);
+    setAttributes({
+      formId: formId
+    });
+    if (!formId) {
+      setAttributes({
+        themeStyle: "",
+        isThemeChange: false,
+        isConversationalForm: false,
+        selectedPreset: 'default',
+        customizePreset: false
+      });
+      setIsPreviewLoading(false);
+    } else {
+      checkIfConversationalForm(formId);
+    }
+  }, [setAttributes, checkIfConversationalForm]);
+  var handlePresetChange = useCallback(function (newPreset) {
+    setIsPreviewLoading(true);
+    setAttributes({
+      selectedPreset: newPreset,
+      isThemeChange: true
+    });
+    setTimeout(function () {
+      setIsPreviewLoading(false);
+    }, 300);
+  }, [setAttributes]);
+  var serverAttributes = useMemo(function () {
+    return _objectSpread(_objectSpread({}, attributes), {}, {
+      styles: {},
+      customCss: ''
+    });
+  }, [attributes.formId, attributes.selectedPreset]);
+
+  // Initial setup effect
+  useEffect(function () {
+    var _window$fluentform_bl;
+    var maybeSetStyle = !attributes.themeStyle && ((_window$fluentform_bl = window.fluentform_block_vars) === null || _window$fluentform_bl === void 0 ? void 0 : _window$fluentform_bl.theme_style);
+    var config = window.fluentform_block_vars || {};
+    if (maybeSetStyle) {
+      setAttributes({
+        themeStyle: config.theme_style
+      });
+    }
+    if (attributes.formId) {
+      checkIfConversationalForm(attributes.formId);
+    }
+  }, []); // Only run on mount
+
+  // Handle form ID changes
+  useEffect(function () {
+    if (attributes.formId) {
+      styleHandlerRef.current = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
+      if (attributes.styles) {
+        var css = styleHandlerRef.current.updateStyles(attributes.styles);
+        storeCss(css);
+      }
+    }
+  }, [attributes.formId, attributes.styles, storeCss]);
+  var config = window.fluentform_block_vars || {};
+  var inspectorControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(InspectorControls, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(PanelBody, {
+      title: __('Form Selection'),
+      initialOpen: !attributes.formId,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SelectControl, {
+        label: __('Select a Form'),
+        value: attributes.formId || '',
+        options: ((_config$forms = config.forms) === null || _config$forms === void 0 ? void 0 : _config$forms.map(function (form) {
+          return {
+            value: form.id,
+            label: form.title,
+            key: "form-".concat(form.id)
+          };
+        })) || [],
+        onChange: handleFormChange
+      })
+    }), attributes.formId && !attributes.isConversationalForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      attributes: attributes,
+      setAttributes: setAttributes,
+      updateStyles: updateStyles,
+      handlePresetChange: handlePresetChange
+    })]
+  }, "ff-inspector-controls");
+  var mainContent;
+  var loadingOverlay = null;
+  if (isPreviewLoading) {
+    loadingOverlay = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "fluent-form-loading-overlay",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+        children: "Loading form preview..."
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__["default"], {
+        style: "dotted",
+        className: "fluent-separator-sm"
+      })]
+    });
+  }
+  if (!attributes.formId) {
+    var _config$forms2;
+    mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "fluent-form-initial-wrapper",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "fluent-form-logo",
+        children: config.logo && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
+          src: config.logo,
+          alt: __('Fluent Forms Logo'),
+          className: "fluent-form-logo-img"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SelectControl, {
+        label: __('Select a Form'),
+        value: "",
+        options: ((_config$forms2 = config.forms) === null || _config$forms2 === void 0 ? void 0 : _config$forms2.map(function (form) {
+          return {
+            value: form.id,
+            label: form.title,
+            key: "form-select-".concat(form.id)
+          };
+        })) || [],
+        onChange: handleFormChange
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+        style: {
+          marginTop: '16px',
+          fontSize: '13px',
+          color: '#666'
+        },
+        children: "Select a form to display and customize its appearance."
+      })]
+    });
+  } else if (attributes.isConversationalForm === true) {
+    mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "fluent-form-conv-demo",
+      children: [config.conversational_demo_img && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
+        src: config.conversational_demo_img,
+        alt: __('Fluent Forms Conversational Form'),
+        className: "fluent-form-conv-img"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+        className: "fluent-form-conv-message",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("strong", {
+          children: __("This is a demo preview. The actual Conversational Form will appear on your live page.")
+        })
+      })]
+    });
+  } else {
+    // Regular form selected - show preview only
+    mainContent = useMemo(function () {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "fluent-form-preview-wrapper preview-device-".concat(previewDevice),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          className: "fluent-form-preview-controls",
+          children: [{
+            device: 'desktop',
+            icon: 'desktop',
+            label: __('Desktop Preview')
+          }, {
+            device: 'tablet',
+            icon: 'tablet',
+            label: __('Tablet Preview')
+          }, {
+            device: 'mobile',
+            icon: 'smartphone',
+            label: __('Mobile Preview')
+          }].map(function (item) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Button, {
+              icon: item.icon,
+              isSmall: true,
+              isPrimary: previewDevice === item.device,
+              onClick: function onClick() {
+                return setPreviewDevice(item.device);
+              },
+              label: item.label
+            }, item.device);
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ServerSideRender, {
+          block: "fluentfom/guten-block",
+          attributes: serverAttributes
+        }, "ff-preview")]
+      });
+    }, [previewDevice, attributes.formId, attributes.selectedPreset]);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "fluentform-guten-wrapper",
+    children: [inspectorControls, attributes.formId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToolbarGroup, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToolbarButton, {
+          icon: "edit",
+          label: __('Edit Form'),
+          onClick: function onClick() {
+            return window.open("admin.php?page=fluent_forms&route=editor&form_id=".concat(attributes.formId), '_blank', 'noopener');
+          }
+        })
+      })
+    }), mainContent, loadingOverlay]
+  });
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(EditComponent));
+
+/***/ }),
+
 /***/ "./guten_block/src/components/controls/FluentAlignmentControl.js":
 /*!***********************************************************************!*\
   !*** ./guten_block/src/components/controls/FluentAlignmentControl.js ***!
@@ -1561,17 +1913,14 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 var _wp$element = wp.element,
   useState = _wp$element.useState,
-  useRef = _wp$element.useRef,
   useEffect = _wp$element.useEffect,
   memo = _wp$element.memo;
 var __ = wp.i18n.__;
 var _wp$components = wp.components,
   PanelBody = _wp$components.PanelBody,
   SelectControl = _wp$components.SelectControl,
-  PanelRow = _wp$components.PanelRow,
   RangeControl = _wp$components.RangeControl,
   TabPanel = _wp$components.TabPanel;
-var useSelect = wp.data.useSelect;
 
 // Custom components
 
@@ -2052,13 +2401,10 @@ var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
  * Main TabGeneral component
  */
 var TabGeneral = function TabGeneral(_ref7) {
-  var setAttributes = _ref7.setAttributes,
+  var attributes = _ref7.attributes,
+    setAttributes = _ref7.setAttributes,
     updateStyles = _ref7.updateStyles,
-    state = _ref7.state,
     handlePresetChange = _ref7.handlePresetChange;
-  var attributes = useSelect(function (select) {
-    return select('core/block-editor').getSelectedBlock().attributes;
-  });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(StyleTemplatePanel, {
       attributes: attributes,
@@ -2098,7 +2444,10 @@ var GENERAL_TAB_ATTRIBUTES = [
 // Hover Button attributes
 'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'buttonHoverBorder'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabGeneral, function (prevProps, nextProps) {
-  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.arePropsEqual)(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES, true);
+  if (prevProps.attributes.themeStyle !== nextProps.attributes.themeStyle) {
+    return false;
+  }
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.arePropsEqual)(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES);
 }));
 
 /***/ }),
@@ -2142,7 +2491,6 @@ var _wp$components = wp.components,
   Button = _wp$components.Button,
   BaseControl = _wp$components.BaseControl,
   FontSizePicker = _wp$components.FontSizePicker;
-var useSelect = wp.data.useSelect;
 
 // Import custom components
 
@@ -2158,46 +2506,33 @@ var useSelect = wp.data.useSelect;
  */
 
 var TabMisc = function TabMisc(_ref) {
-  var setAttributes = _ref.setAttributes,
-    updateStyles = _ref.updateStyles,
-    state = _ref.state;
-  var attributes = useSelect(function (select) {
-    return select('core/block-editor').getSelectedBlock().attributes;
-  });
-  // Use local state for background type to ensure UI updates immediately
+  var attributes = _ref.attributes,
+    setAttributes = _ref.setAttributes,
+    updateStyles = _ref.updateStyles;
   var _useState = useState(attributes.styles.backgroundType || 'classic'),
     _useState2 = _slicedToArray(_useState, 2),
     localBgType = _useState2[0],
     setLocalBgType = _useState2[1];
-  // Add local state for background image to ensure immediate UI update
   var _useState3 = useState(attributes.styles.backgroundImage || ''),
     _useState4 = _slicedToArray(_useState3, 2),
     localBgImage = _useState4[0],
     setLocalBgImage = _useState4[1];
-
-  // Update local state when attributes change
   useEffect(function () {
     if (attributes.styles.backgroundType !== undefined && attributes.styles.backgroundType !== localBgType) {
       setLocalBgType(attributes.styles.backgroundType);
     }
   }, [attributes.styles.backgroundType]);
-
-  // Sync local background image state with attributes
   useEffect(function () {
     if (attributes.styles.backgroundImage !== localBgImage) {
       setLocalBgImage(attributes.styles.backgroundImage || '');
     }
   }, [attributes.styles.backgroundImage]);
-
-  // Handle background type change
   var handleBackgroundTypeChange = function handleBackgroundTypeChange(value) {
     setLocalBgType(value);
     updateStyles({
       backgroundType: value
     });
   };
-
-  // Handle media upload
   var uploadBackgroundImage = function uploadBackgroundImage() {
     var mediaUploader = wp.media({
       title: __('Select Background Image'),
@@ -2227,8 +2562,6 @@ var TabMisc = function TabMisc(_ref) {
     });
     mediaUploader.open();
   };
-
-  // Handle media removal
   var removeBackgroundImage = function removeBackgroundImage() {
     console.log('Removing background image');
 
@@ -2681,7 +3014,7 @@ var TabMisc = function TabMisc(_ref) {
  */
 var MISC_TAB_ATTRIBUTES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageBgColor', 'errorMessageColor', 'errorMessageAlignment', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'submitErrorMessageBgColor', 'submitErrorMessageColor', 'submitErrorMessageAlignment'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabMisc, function (prevProps, nextProps) {
-  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.arePropsEqual)(prevProps, nextProps, MISC_TAB_ATTRIBUTES, true);
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.arePropsEqual)(prevProps, nextProps, MISC_TAB_ATTRIBUTES);
 }));
 
 /***/ }),
@@ -2698,95 +3031,60 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _TabGeneral__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TabGeneral */ "./guten_block/src/components/tabs/TabGeneral.js");
 /* harmony import */ var _TabMisc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TabMisc */ "./guten_block/src/components/tabs/TabMisc.js");
-/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 /**
  * Fluent Forms Gutenberg Block Tabs Component
  * Manages the tab panel for the block inspector
  */
 var __ = wp.i18n.__;
 var TabPanel = wp.components.TabPanel;
-var _wp$element = wp.element,
-  Component = _wp$element.Component,
-  memo = _wp$element.memo,
-  PureComponent = _wp$element.PureComponent;
+var memo = wp.element.memo;
 
 // Import tab content components
 
 
 
-
-// Use PureComponent to automatically implement shouldComponentUpdate
-
-var Tabs = /*#__PURE__*/function (_PureComponent) {
-  function Tabs() {
-    _classCallCheck(this, Tabs);
-    return _callSuper(this, Tabs, arguments);
-  }
-  _inherits(Tabs, _PureComponent);
-  return _createClass(Tabs, [{
-    key: "render",
-    value: function render() {
-      var _this$props = this.props,
-        attributes = _this$props.attributes,
-        setAttributes = _this$props.setAttributes,
-        updateStyles = _this$props.updateStyles,
-        state = _this$props.state;
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TabPanel, {
-        className: "fluent-form-block-style-tabs",
-        activeClass: "is-active",
-        tabs: [{
-          name: 'general',
-          title: __('General'),
-          key: 'general-tab'
-        }, {
-          name: 'misc',
-          title: __('Misc'),
-          key: 'misc-tab'
-        }],
-        children: function children(tab) {
-          if (tab.name === 'general') {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
-                setAttributes: setAttributes,
-                updateStyles: updateStyles,
-                state: state,
-                handlePresetChange: state.handlePresetChange,
-                toggleCustomizePreset: state.toggleCustomizePreset
-              })
-            }, "general-tab-content");
-          } else if (tab.name === 'misc') {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabMisc__WEBPACK_IMPORTED_MODULE_1__["default"], {
-                attributes: attributes,
-                setAttributes: setAttributes,
-                updateStyles: updateStyles,
-                state: state
-              })
-            }, "misc-tab-content");
-          }
-          return null;
-        }
-      });
+function Tabs(_ref) {
+  var attributes = _ref.attributes,
+    setAttributes = _ref.setAttributes,
+    updateStyles = _ref.updateStyles,
+    handlePresetChange = _ref.handlePresetChange;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(TabPanel, {
+    className: "fluent-form-block-style-tabs",
+    activeClass: "is-active",
+    tabs: [{
+      name: 'general',
+      title: __('General'),
+      key: 'general-tab'
+    }, {
+      name: 'misc',
+      title: __('Misc'),
+      key: 'misc-tab'
+    }],
+    children: function children(tab) {
+      if (tab.name === 'general') {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
+            attributes: attributes,
+            setAttributes: setAttributes,
+            updateStyles: updateStyles,
+            handlePresetChange: handlePresetChange
+          })
+        }, "general-tab-content");
+      } else if (tab.name === 'misc') {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_TabMisc__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            attributes: attributes,
+            setAttributes: setAttributes,
+            updateStyles: updateStyles
+          })
+        }, "misc-tab-content");
+      }
+      return null;
     }
-  }]);
-}(PureComponent);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(Tabs, function (prevProps, nextProps) {
-  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__.arePropsEqual)(prevProps, nextProps, [], true);
-}));
+  });
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(Tabs));
 
 /***/ }),
 
@@ -2809,41 +3107,41 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
  * @param {Object} prevProps Previous props
  * @param {Object} nextProps New props
  * @param {Array} attributesToCheck Array of attribute names to check
- * @param {Boolean} checkState Whether to check state properties
  * @return {Boolean} True if props are equal (no update needed)
  */
 var arePropsEqual = function arePropsEqual(prevProps, nextProps) {
+  var _prevProps$attributes, _nextProps$attributes;
   var attributesToCheck = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-  var checkState = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  var prevAttrs = prevProps.attributes;
-  var nextAttrs = nextProps.attributes;
-
-  // Check specific attributes
+  if (((_prevProps$attributes = prevProps.attributes) === null || _prevProps$attributes === void 0 ? void 0 : _prevProps$attributes.styles) !== ((_nextProps$attributes = nextProps.attributes) === null || _nextProps$attributes === void 0 ? void 0 : _nextProps$attributes.styles)) {
+    return false;
+  }
+  if (attributesToCheck.length === 0) {
+    return true;
+  }
+  var prevAttrs = prevProps.attributes || {};
+  var nextAttrs = nextProps.attributes || {};
   var _iterator = _createForOfIteratorHelper(attributesToCheck),
     _step;
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var _prevAttrs$styles, _nextAttrs$styles, _prevAttrs$styles2, _nextAttrs$styles2;
       var attr = _step.value;
-      if (!(prevAttrs !== null && prevAttrs !== void 0 && prevAttrs.styles[attr]) || !(nextAttrs !== null && nextAttrs !== void 0 && nextAttrs.styles[attr])) {
-        return false; // Props are not equal, should update
+      if (!(prevAttrs !== null && prevAttrs !== void 0 && (_prevAttrs$styles = prevAttrs.styles) !== null && _prevAttrs$styles !== void 0 && _prevAttrs$styles[attr]) && !(nextAttrs !== null && nextAttrs !== void 0 && (_nextAttrs$styles = nextAttrs.styles) !== null && _nextAttrs$styles !== void 0 && _nextAttrs$styles[attr])) {
+        continue;
+      }
+      if (!(prevAttrs !== null && prevAttrs !== void 0 && (_prevAttrs$styles2 = prevAttrs.styles) !== null && _prevAttrs$styles2 !== void 0 && _prevAttrs$styles2[attr]) || !(nextAttrs !== null && nextAttrs !== void 0 && (_nextAttrs$styles2 = nextAttrs.styles) !== null && _nextAttrs$styles2 !== void 0 && _nextAttrs$styles2[attr])) {
+        return false;
       }
       if (JSON.stringify(prevAttrs.styles[attr]) !== JSON.stringify(nextAttrs.styles[attr])) {
-        return false; // Props are not equal, should update
+        return false;
       }
     }
-
-    // Check state if needed
   } catch (err) {
     _iterator.e(err);
   } finally {
     _iterator.f();
   }
-  if (checkState && prevProps.state && nextProps.state) {
-    if (prevProps.state.customizePreset !== nextProps.state.customizePreset || prevProps.state.selectedPreset !== nextProps.state.selectedPreset) {
-      return false; // State changed, should update
-    }
-  }
-  return true; // Props are equal, no need to update
+  return true;
 };
 
 /***/ }),
@@ -3517,457 +3815,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _components_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
-/* harmony import */ var _components_utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/utils/StyleHandler */ "./guten_block/src/components/utils/StyleHandler.js");
-/* harmony import */ var _components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/tabs/Tabs */ "./guten_block/src/components/tabs/Tabs.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _components_EditComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/EditComponent */ "./guten_block/src/components/EditComponent.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-var _excluded = ["styles", "customCss"];
-function _objectWithoutProperties(e, t) { if (null == e) return {}; var o, r, i = _objectWithoutPropertiesLoose(e, t); if (Object.getOwnPropertySymbols) { var n = Object.getOwnPropertySymbols(e); for (r = 0; r < n.length; r++) o = n[r], -1 === t.indexOf(o) && {}.propertyIsEnumerable.call(e, o) && (i[o] = e[o]); } return i; }
-function _objectWithoutPropertiesLoose(r, e) { if (null == r) return {}; var t = {}; for (var n in r) if ({}.hasOwnProperty.call(r, n)) { if (-1 !== e.indexOf(n)) continue; t[n] = r[n]; } return t; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 /**
  * Fluent Forms Gutenberg Block Edit Component
  * Enhanced with custom UX controls
  */
 
 
-var __ = wp.i18n.__;
-var _wp$blockEditor = wp.blockEditor,
-  InspectorControls = _wp$blockEditor.InspectorControls,
-  BlockControls = _wp$blockEditor.BlockControls,
-  useBlockProps = _wp$blockEditor.useBlockProps;
-var _wp = wp,
-  ServerSideRender = _wp.serverSideRender;
-var _wp2 = wp,
-  apiFetch = _wp2.apiFetch;
-var _wp$components = wp.components,
-  SelectControl = _wp$components.SelectControl,
-  PanelBody = _wp$components.PanelBody,
-  Button = _wp$components.Button,
-  Spinner = _wp$components.Spinner,
-  ToolbarGroup = _wp$components.ToolbarGroup,
-  ToolbarButton = _wp$components.ToolbarButton;
-var _wp$element = wp.element,
-  Component = _wp$element.Component,
-  React = _wp$element.React,
-  useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect;
-
-// Import components
-
-
-// Function to get form meta
-
-var getFormMeta = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(formId, metaKey) {
-    var path, response;
-    return _regenerator().w(function (_context) {
-      while (1) switch (_context.n) {
-        case 0:
-          if (formId) {
-            _context.n = 1;
-            break;
-          }
-          return _context.a(2);
-        case 1:
-          path = "".concat(window.fluentform_block_vars.rest.namespace, "/").concat(window.fluentform_block_vars.rest.version, "/settings/").concat(formId, "?meta_key=").concat(metaKey);
-          _context.n = 2;
-          return apiFetch({
-            path: path
-          });
-        case 2:
-          response = _context.v;
-          return _context.a(2, response.length && response[0].value || false);
-      }
-    }, _callee);
-  }));
-  return function getFormMeta(_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-}();
-var EditComponent = /*#__PURE__*/function (_Component) {
-  function EditComponent() {
-    var _this;
-    _classCallCheck(this, EditComponent);
-    _this = _callSuper(this, EditComponent, arguments);
-    _defineProperty(_this, "checkIfConversationalForm", /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(formId) {
-        var isConversationalForm;
-        return _regenerator().w(function (_context2) {
-          while (1) switch (_context2.n) {
-            case 0:
-              if (formId) {
-                _context2.n = 1;
-                break;
-              }
-              return _context2.a(2);
-            case 1:
-              _this.setState({
-                isPreviewLoading: true
-              });
-              _context2.n = 2;
-              return getFormMeta(formId, "is_conversion_form");
-            case 2:
-              isConversationalForm = _context2.v;
-              _this.props.setAttributes({
-                isConversationalForm: isConversationalForm === "yes"
-              });
-              _this.setState({
-                isPreviewLoading: false
-              });
-            case 3:
-              return _context2.a(2);
-          }
-        }, _callee2);
-      }));
-      return function (_x3) {
-        return _ref2.apply(this, arguments);
-      };
-    }());
-    _defineProperty(_this, "handleFormChange", function (formId) {
-      _this.setState({
-        isPreviewLoading: true
-      });
-      _this.props.setAttributes({
-        formId: formId
-      });
-      if (!formId) {
-        _this.props.setAttributes({
-          themeStyle: "",
-          isThemeChange: false,
-          isConversationalForm: false,
-          selectedPreset: 'default',
-          customizePreset: false
-        });
-        _this.setState({
-          isPreviewLoading: false
-        });
-      } else {
-        _this.checkIfConversationalForm(formId);
-      }
-    });
-    _defineProperty(_this, "handlePresetChange", function (selectedPreset) {
-      _this.setState({
-        selectedPreset: selectedPreset,
-        isPreviewLoading: true
-      });
-      _this.props.setAttributes({
-        selectedPreset: selectedPreset,
-        isThemeChange: true
-      });
-
-      // Simulate delay for preview update
-      setTimeout(function () {
-        _this.setState({
-          isPreviewLoading: false
-        });
-      }, 300);
-    });
-    _defineProperty(_this, "toggleCustomizePreset", function () {
-      var customizePreset = !_this.state.customizePreset;
-      _this.setState({
-        customizePreset: customizePreset
-      });
-      _this.props.setAttributes({
-        customizePreset: customizePreset
-      });
-    });
-    _defineProperty(_this, "setPreviewDevice", function (device) {
-      _this.setState({
-        previewDevice: device
-      });
-    });
-    _this.state = {
-      customizePreset: false,
-      selectedPreset: 'default',
-      isPreviewLoading: false,
-      showSaveNotice: false,
-      previewDevice: 'desktop'
-    };
-    _this.updateStyles = _this.updateStyles.bind(_this);
-    return _this;
-  }
-
-  // Method to update styles with debouncing to prevent excessive requests
-  _inherits(EditComponent, _Component);
-  return _createClass(EditComponent, [{
-    key: "updateStyles",
-    value: function updateStyles(styleAttributes) {
-      var _this$props = this.props,
-        setAttributes = _this$props.setAttributes,
-        attributes = _this$props.attributes;
-
-      // Ensure styles object exists
-      var currentStyles = attributes.styles || {};
-      var styles = _objectSpread(_objectSpread({}, currentStyles), styleAttributes);
-
-      // Update attributes
-      setAttributes({
-        styles: styles
-      });
-
-      // Apply styles immediately via JavaScript without triggering server render
-      if (this.styleHandler && attributes.formId) {
-        var css = this.styleHandler.updateStyles(styles);
-        this.storeCss(css);
-      }
-    }
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _window$fluentform_bl;
-      var attributes = this.props.attributes;
-      var maybeSetStyle = !attributes.themeStyle && ((_window$fluentform_bl = window.fluentform_block_vars) === null || _window$fluentform_bl === void 0 ? void 0 : _window$fluentform_bl.theme_style);
-      var config = window.fluentform_block_vars || {};
-      if (maybeSetStyle) {
-        this.props.setAttributes({
-          themeStyle: config.theme_style
-        });
-      }
-
-      // Set initial state based on attributes
-      if (attributes.formId) {
-        this.checkIfConversationalForm(attributes.formId);
-
-        // Set initial state for customization options
-        this.setState({
-          customizePreset: attributes.customizePreset || false,
-          selectedPreset: attributes.selectedPreset || 'default'
-        });
-      }
-
-      // Initialize style handler
-      if (attributes.formId && attributes.styles) {
-        this.styleHandler = new _components_utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
-        if (attributes.styles) {
-          var css = this.styleHandler.updateStyles(attributes.styles);
-          this.storeCss(css);
-        }
-      }
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
-      var attributes = this.props.attributes;
-
-      // Initialize or update style handler
-      if (attributes.formId !== prevProps.attributes.formId && attributes.formId) {
-        this.styleHandler = new _components_utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
-        if (attributes.styles) {
-          var css = this.styleHandler.updateStyles(attributes.styles);
-          this.storeCss(css);
-        }
-      }
-    }
-  }, {
-    key: "storeCss",
-    value:
-    // Tab rendering methods have been moved to separate components
-
-    // Add this method to generate and store CSS
-    function storeCss(css) {
-      if (css === false) {
-        return;
-      }
-      var _this$props2 = this.props,
-        attributes = _this$props2.attributes,
-        setAttributes = _this$props2.setAttributes;
-      css = JSON.stringify(css);
-      if (css !== attributes.customCss) {
-        setAttributes({
-          customCss: css
-        });
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _config$forms,
-        _this2 = this;
-      var _this$props3 = this.props,
-        attributes = _this$props3.attributes,
-        setAttributes = _this$props3.setAttributes;
-      var _this$state = this.state,
-        isPreviewLoading = _this$state.isPreviewLoading,
-        showSaveNotice = _this$state.showSaveNotice,
-        previewDevice = _this$state.previewDevice;
-      var config = window.fluentform_block_vars || {};
-      var presets = config.style_presets;
-      // Form selection and style controls in inspector controls
-      var inspectorControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(InspectorControls, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(PanelBody, {
-          title: __('Form Selection'),
-          initialOpen: attributes.formId ? false : true,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SelectControl, {
-            label: __('Select a Form'),
-            value: attributes.formId || '',
-            options: ((_config$forms = config.forms) === null || _config$forms === void 0 ? void 0 : _config$forms.map(function (form) {
-              return {
-                value: form.id,
-                label: form.title,
-                key: "form-".concat(form.id)
-              };
-            })) || [],
-            onChange: this.handleFormChange
-          })
-        }), attributes.formId && !attributes.isConversationalForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__["default"], {
-          attributes: attributes,
-          setAttributes: setAttributes,
-          updateStyles: this.updateStyles,
-          state: {
-            customizePreset: this.state.customizePreset,
-            selectedPreset: this.state.selectedPreset,
-            handlePresetChange: this.handlePresetChange,
-            toggleCustomizePreset: this.toggleCustomizePreset
-          }
-        })]
-      }, "ff-inspector-controls");
-
-      // Main content based on selection state
-      var mainContent;
-      var loadingOverlay = null;
-
-      // Create loading overlay if needed
-      if (isPreviewLoading) {
-        loadingOverlay = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-          className: "fluent-form-loading-overlay",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
-            children: "Loading form preview..."
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__["default"], {
-            style: "dotted",
-            className: "fluent-separator-sm"
-          })]
-        });
-      }
-      if (!attributes.formId) {
-        var _config$forms2;
-        // No form selected
-        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-          className: "fluent-form-initial-wrapper",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-            className: "fluent-form-logo",
-            children: config.logo && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
-              src: config.logo,
-              alt: "Fluent Forms Logo",
-              className: "fluent-form-logo-img"
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SelectControl, {
-            label: __('Select a Form'),
-            value: "",
-            options: ((_config$forms2 = config.forms) === null || _config$forms2 === void 0 ? void 0 : _config$forms2.map(function (form) {
-              return {
-                value: form.id,
-                label: form.title,
-                key: "form-select-".concat(form.id)
-              };
-            })) || [],
-            onChange: this.handleFormChange
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
-            style: {
-              marginTop: '16px',
-              fontSize: '13px',
-              color: '#666'
-            },
-            children: "Select a form to display and customize its appearance."
-          })]
-        });
-      } else if (attributes.isConversationalForm === true) {
-        // Conversational form selected
-        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-          className: "fluent-form-conv-demo",
-          children: [config.conversational_demo_img && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
-            src: config.conversational_demo_img,
-            alt: "Fluent Forms Conversational Form",
-            className: "fluent-form-conv-img"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
-            className: "fluent-form-conv-message",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("strong", {
-              children: __("This is a demo preview. The actual Conversational Form will appear on your live page.")
-            })
-          })]
-        });
-      } else {
-        // Regular form selected - show preview only
-        // Create device-specific class for responsive preview
-        var deviceClass = "preview-device-".concat(previewDevice);
-        var styles = attributes.styles,
-          customCss = attributes.customCss,
-          serverAttributes = _objectWithoutProperties(attributes, _excluded);
-        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-          className: "fluent-form-preview-wrapper ".concat(deviceClass),
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-            className: "fluent-form-preview-controls",
-            children: [{
-              device: 'desktop',
-              icon: 'desktop',
-              label: 'Desktop Preview'
-            }, {
-              device: 'tablet',
-              icon: 'tablet',
-              label: 'Tablet Preview'
-            }, {
-              device: 'mobile',
-              icon: 'smartphone',
-              label: 'Mobile Preview'
-            }].map(function (item) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Button, {
-                icon: item.icon,
-                isSmall: true,
-                isPrimary: previewDevice === item.device,
-                onClick: function onClick() {
-                  return _this2.setPreviewDevice(item.device);
-                },
-                label: item.label
-              }, item.device);
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ServerSideRender, {
-            block: "fluentfom/guten-block",
-            attributes: serverAttributes
-          }, "ff-preview-".concat(attributes.formId, "-").concat(attributes.selectedPreset, "-").concat(attributes.isThemeChange))]
-        });
-      }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-        className: "fluentform-guten-wrapper",
-        children: [inspectorControls, attributes.formId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(BlockControls, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToolbarGroup, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToolbarButton, {
-              icon: "edit",
-              label: __('Edit Form'),
-              onClick: function onClick() {
-                return window.open("admin.php?page=fluent_forms&route=editor&form_id=".concat(attributes.formId), '_blank', 'noopener');
-              }
-            })
-          })
-        }), mainContent, loadingOverlay]
-      });
-    }
-  }]);
-}(Component); // Functional wrapper component that uses useBlockProps for API Version 3
+var useBlockProps = wp.blockEditor.useBlockProps;
 function Edit(props) {
   var blockProps = useBlockProps({
     className: 'fluentform-guten-wrapper'
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", _objectSpread(_objectSpread({}, blockProps), {}, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(EditComponent, _objectSpread({}, props))
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", _objectSpread(_objectSpread({}, blockProps), {}, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_components_EditComponent__WEBPACK_IMPORTED_MODULE_0__["default"], _objectSpread({}, props))
   }));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);

@@ -4,7 +4,6 @@
 const { useState, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
 const { PanelBody, SelectControl, RangeControl, Button, BaseControl, FontSizePicker } = wp.components;
-const { useSelect } = wp.data;
 
 // Import custom components
 import FluentColorPicker from "../controls/FluentColorPicker";
@@ -18,36 +17,27 @@ import { arePropsEqual } from '../utils/ComponentUtils';
 /**
  * Main TabMisc component
  */
-const TabMisc = ({ setAttributes, updateStyles, state }) => {
-    const attributes = useSelect((select) => {
-        return select('core/block-editor').getSelectedBlock().attributes;
-    });
-    // Use local state for background type to ensure UI updates immediately
+const TabMisc = ({ attributes, setAttributes, updateStyles }) => {
     const [localBgType, setLocalBgType] = useState(attributes.styles.backgroundType || 'classic');
-    // Add local state for background image to ensure immediate UI update
     const [localBgImage, setLocalBgImage] = useState(attributes.styles.backgroundImage || '');
 
-    // Update local state when attributes change
     useEffect(() => {
         if (attributes.styles.backgroundType !== undefined && attributes.styles.backgroundType !== localBgType) {
             setLocalBgType(attributes.styles.backgroundType);
         }
     }, [attributes.styles.backgroundType]);
 
-    // Sync local background image state with attributes
     useEffect(() => {
         if (attributes.styles.backgroundImage !== localBgImage) {
             setLocalBgImage(attributes.styles.backgroundImage || '');
         }
     }, [attributes.styles.backgroundImage]);
 
-    // Handle background type change
     const handleBackgroundTypeChange = (value) => {
         setLocalBgType(value);
         updateStyles({ backgroundType: value });
     };
 
-    // Handle media upload
     const uploadBackgroundImage = () => {
         const mediaUploader = wp.media({
             title: __('Select Background Image'),
@@ -78,7 +68,6 @@ const TabMisc = ({ setAttributes, updateStyles, state }) => {
         mediaUploader.open();
     };
 
-    // Handle media removal
     const removeBackgroundImage = () => {
         console.log('Removing background image');
 
@@ -471,5 +460,5 @@ const MISC_TAB_ATTRIBUTES = [
 ];
 
 export default memo(TabMisc, (prevProps, nextProps) => {
-    return arePropsEqual(prevProps, nextProps, MISC_TAB_ATTRIBUTES, true);
+    return arePropsEqual(prevProps, nextProps, MISC_TAB_ATTRIBUTES);
 });
