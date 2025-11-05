@@ -1016,14 +1016,8 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
       // Explicitly set isLinked based on the current device's linked property
       setIsLinked(currentValues[activeDevice].linked !== false);
 
-      // Check for unit at the top level first, then in the device object
-      if (currentValues.unit) {
-        setActiveUnit(currentValues.unit);
-      } else if (currentValues[activeDevice].unit) {
-        setActiveUnit(currentValues[activeDevice].unit);
-      } else {
-        setActiveUnit('px');
-      }
+      // Set unit based on the current device's unit
+      setActiveUnit(currentValues[activeDevice].unit || 'px');
 
       // Check if any values have been modified
       setHasModifiedValues(checkForModifiedValues(currentValues));
@@ -1032,19 +1026,10 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
   var handleUnitChange = function handleUnitChange(unit) {
     setActiveUnit(unit);
 
-    // Create a new values object with the updated unit
-    var updatedValues = _objectSpread(_objectSpread({}, currentValues), {}, {
-      unit: unit // Set unit at the top level
-    });
-
-    // Also update the unit in each device object for backward compatibility
-    ['desktop', 'tablet', 'mobile'].forEach(function (device) {
-      if (updatedValues[device]) {
-        updatedValues[device] = _objectSpread(_objectSpread({}, updatedValues[device]), {}, {
-          unit: unit
-        });
-      }
-    });
+    // Create a new values object with the updated unit for current device only
+    var updatedValues = _objectSpread(_objectSpread({}, currentValues), {}, _defineProperty({}, activeDevice, _objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, {
+      unit: unit
+    })));
 
     // Call the onChange callback with the updated values
     onChange(updatedValues);
@@ -1062,7 +1047,8 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
     onChange(updatedValues);
   };
   var handleValueChange = function handleValueChange(position, value) {
-    var numValue = value === '' ? '' : parseInt(value);
+    // For em units, keep decimal values; for others, use integers
+    var numValue = value === '' ? '' : activeUnit === 'em' || activeUnit === '%' ? parseFloat(value) : parseInt(value);
 
     // Set the modified flag if the value is not empty
     if (value !== '') {
@@ -1246,7 +1232,8 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
             onChange: function onChange(value) {
               return handleValueChange('top', value);
             },
-            min: 0
+            min: 0,
+            step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             children: "TOP"
           }, "label-top")]
@@ -1257,7 +1244,8 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
             onChange: function onChange(value) {
               return handleValueChange('right', value);
             },
-            min: 0
+            min: 0,
+            step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             children: "RIGHT"
           }, "label-right")]
@@ -1268,7 +1256,8 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
             onChange: function onChange(value) {
               return handleValueChange('bottom', value);
             },
-            min: 0
+            min: 0,
+            step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             children: "BOTTOM"
           }, "label-right")]
@@ -1279,7 +1268,8 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
             onChange: function onChange(value) {
               return handleValueChange('left', value);
             },
-            min: 0
+            min: 0,
+            step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             children: "LEFT"
           }, "label-left")]
@@ -1328,69 +1318,56 @@ var _wp$components = wp.components,
   Flex = _wp$components.Flex,
   Popover = _wp$components.Popover,
   FontSizePicker = _wp$components.FontSizePicker,
-  SelectControl = _wp$components.SelectControl;
+  SelectControl = _wp$components.SelectControl,
+  RangeControl = _wp$components.RangeControl;
 var _wp$element = wp.element,
   useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect;
+  useEffect = _wp$element.useEffect,
+  useMemo = _wp$element.useMemo;
 
 /**
  * Typography control component for Fluent Forms
  *
  * @param {Object} props Component properties
  * @param {string} props.label Label for the control
- * @param {Object} props.settings Typography settings object
- * @param {Function} props.onChange Callback when settings change
+ * @param {Object} props.typography Full typography object
+ * @param {Function} props.onChange updateStyles method
  * @returns {JSX.Element} Typography control component
  */
 var FluentTypography = function FluentTypography(_ref) {
   var label = _ref.label,
-    settings = _ref.settings,
+    _ref$typography = _ref.typography,
+    typography = _ref$typography === void 0 ? {} : _ref$typography,
     onChange = _ref.onChange;
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     isOpen = _useState2[0],
     setIsOpen = _useState2[1];
-
-  // Local state for typography properties
-  var _useState3 = useState(settings.fontSize || ''),
+  var _useState3 = useState({
+      fontSize: '',
+      fontWeight: '',
+      lineHeight: '',
+      letterSpacing: '',
+      textTransform: ''
+    }),
     _useState4 = _slicedToArray(_useState3, 2),
-    localFontSize = _useState4[0],
-    setLocalFontSize = _useState4[1];
-  var _useState5 = useState(settings.fontWeight || '400'),
-    _useState6 = _slicedToArray(_useState5, 2),
-    localFontWeight = _useState6[0],
-    setLocalFontWeight = _useState6[1];
-  var _useState7 = useState(settings.lineHeight || ''),
-    _useState8 = _slicedToArray(_useState7, 2),
-    localLineHeight = _useState8[0],
-    setLocalLineHeight = _useState8[1];
-  var _useState9 = useState(settings.letterSpacing || ''),
-    _useState0 = _slicedToArray(_useState9, 2),
-    localLetterSpacing = _useState0[0],
-    setLocalLetterSpacing = _useState0[1];
-  var _useState1 = useState(settings.textTransform || 'none'),
-    _useState10 = _slicedToArray(_useState1, 2),
-    localTextTransform = _useState10[0],
-    setLocalTextTransform = _useState10[1];
+    typoValues = _useState4[0],
+    setTypoValues = _useState4[1];
 
-  // Update local state when settings change
+  // Update local state when typography prop changes
   useEffect(function () {
-    setLocalFontSize(settings.fontSize || '');
-    setLocalFontWeight(settings.fontWeight || '400');
-    setLocalLineHeight(settings.lineHeight || '');
-    setLocalLetterSpacing(settings.letterSpacing || '');
-    setLocalTextTransform(settings.textTransform || 'none');
-  }, [settings]);
-
-  // Default values and options
-  var defaultValues = {
-    fontSize: '',
-    fontWeight: '400',
-    lineHeight: '',
-    letterSpacing: '',
-    textTransform: 'none'
-  };
+    setTypoValues({
+      fontSize: (typography === null || typography === void 0 ? void 0 : typography.fontSize) || '',
+      fontWeight: (typography === null || typography === void 0 ? void 0 : typography.fontWeight) || '',
+      lineHeight: (typography === null || typography === void 0 ? void 0 : typography.lineHeight) || '',
+      letterSpacing: (typography === null || typography === void 0 ? void 0 : typography.letterSpacing) || '',
+      textTransform: (typography === null || typography === void 0 ? void 0 : typography.textTransform) || ''
+    });
+  }, [typography]);
   var fontWeightOptions = [{
+    value: '',
+    label: 'Select'
+  }, {
     value: '300',
     label: 'Light (300)'
   }, {
@@ -1410,6 +1387,9 @@ var FluentTypography = function FluentTypography(_ref) {
     label: 'Extra Bold (800)'
   }];
   var textTransformOptions = [{
+    value: '',
+    label: 'Select'
+  }, {
     value: 'none',
     label: 'None'
   }, {
@@ -1430,67 +1410,27 @@ var FluentTypography = function FluentTypography(_ref) {
 
   /**
    * Update a typography setting
-   *
-   * @param {string} property Property to update
-   * @param {any} value New value
    */
-  var updateSetting = function updateSetting(property, value) {
-    // Update local state based on property
-    switch (property) {
-      case 'fontSize':
-        setLocalFontSize(value);
-        break;
-      case 'fontWeight':
-        setLocalFontWeight(value);
-        break;
-      case 'lineHeight':
-        setLocalLineHeight(value);
-        break;
-      case 'letterSpacing':
-        setLocalLetterSpacing(value);
-        break;
-      case 'textTransform':
-        setLocalTextTransform(value);
-        break;
-    }
-
-    // Call onChange with only the changed property
-    onChange(_defineProperty({}, property, value));
+  var updateSetting = function updateSetting(updatedProperties) {
+    var updatedTypography = _objectSpread(_objectSpread({}, typography), updatedProperties);
+    onChange(updatedTypography);
   };
 
   /**
    * Check if any typography settings have changed from defaults
-   *
-   * @returns {boolean} True if any setting has changed
    */
-  var isFontChanged = function isFontChanged() {
-    // Check if any property has a non-default value
-    return localFontSize !== '' && localFontSize != null || localFontWeight !== defaultValues.fontWeight || localLineHeight !== '' && localLineHeight != null || localLetterSpacing !== '' && localLetterSpacing != null || localTextTransform !== defaultValues.textTransform;
-  };
+  var isFontChanged = useMemo(function () {
+    return typoValues.fontSize !== '' && typoValues.fontSize != null || typoValues.fontWeight !== '' && typoValues.fontWeight != null || typoValues.lineHeight !== '' && typoValues.lineHeight != null || typoValues.letterSpacing !== '' && typoValues.letterSpacing != null || typoValues.textTransform !== '' && typoValues.textTransform != null;
+  }, [typoValues]);
 
   /**
    * Reset all typography settings to defaults
    */
   var resetToDefault = function resetToDefault() {
-    // Create reset values object with a special reset flag
-    var resetValues = _objectSpread({
-      reset: true
-    }, defaultValues);
-
-    // Update local state
-    setLocalFontSize(defaultValues.fontSize);
-    setLocalFontWeight(defaultValues.fontWeight);
-    setLocalLineHeight(defaultValues.lineHeight);
-    setLocalLetterSpacing(defaultValues.letterSpacing);
-    setLocalTextTransform(defaultValues.textTransform);
-
-    // Close the popover if it's open
+    onChange({});
     if (isOpen) {
       setIsOpen(false);
     }
-
-    // Call onChange with reset values
-    onChange(resetValues);
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-typography-wrap",
@@ -1502,7 +1442,7 @@ var FluentTypography = function FluentTypography(_ref) {
         children: label
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
         className: "ffblock-flex-gap",
-        children: [isFontChanged() && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+        children: [isFontChanged && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
           icon: "image-rotate",
           isSmall: true,
           onClick: resetToDefault,
@@ -1539,17 +1479,52 @@ var FluentTypography = function FluentTypography(_ref) {
             slug: 'x-large',
             size: 32
           }],
-          value: localFontSize,
+          value: typoValues.fontSize,
           onChange: function onChange(value) {
-            return updateSetting('fontSize', value);
+            return updateSetting({
+              fontSize: value
+            });
           },
           withSlider: true
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
           label: "Font Weight",
-          value: localFontWeight,
+          value: typoValues.fontWeight,
           options: fontWeightOptions,
           onChange: function onChange(value) {
-            return updateSetting('fontWeight', value);
+            return updateSetting({
+              fontWeight: value
+            });
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
+          label: "Line Height",
+          value: typoValues.lineHeight,
+          onChange: function onChange(value) {
+            return updateSetting({
+              lineHeight: value
+            });
+          },
+          min: 0.5,
+          max: 3,
+          step: 0.1
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
+          label: "Letter Spacing (px)",
+          value: typoValues.letterSpacing,
+          onChange: function onChange(value) {
+            return updateSetting({
+              letterSpacing: value
+            });
+          },
+          min: -5,
+          max: 10,
+          step: 0.1
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+          label: "Text Transform",
+          value: typoValues.textTransform,
+          options: textTransformOptions,
+          onChange: function onChange(value) {
+            return updateSetting({
+              textTransform: value
+            });
           }
         })]
       })
@@ -1557,76 +1532,6 @@ var FluentTypography = function FluentTypography(_ref) {
   });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentTypography);
-
-/***/ }),
-
-/***/ "./guten_block/src/components/controls/FluentUnitControl.js":
-/*!******************************************************************!*\
-  !*** ./guten_block/src/components/controls/FluentUnitControl.js ***!
-  \******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-var _wp$components = wp.components,
-  BaseControl = _wp$components.BaseControl,
-  SelectControl = _wp$components.SelectControl;
-var __ = wp.i18n.__;
-var FluentUnitControl = function FluentUnitControl(_ref) {
-  var label = _ref.label,
-    value = _ref.value,
-    _onChange = _ref.onChange,
-    unit = _ref.unit,
-    onUnitChange = _ref.onUnitChange,
-    _ref$min = _ref.min,
-    min = _ref$min === void 0 ? -100 : _ref$min,
-    _ref$max = _ref.max,
-    max = _ref$max === void 0 ? 100 : _ref$max,
-    _ref$placeholder = _ref.placeholder,
-    placeholder = _ref$placeholder === void 0 ? "0" : _ref$placeholder,
-    _ref$units = _ref.units,
-    units = _ref$units === void 0 ? [{
-      label: 'px',
-      value: 'px'
-    }, {
-      label: 'em',
-      value: 'em'
-    }, {
-      label: '%',
-      value: '%'
-    }] : _ref$units;
-  var unitOptions = units.map(function (unit) {
-    return {
-      label: unit.label,
-      value: unit.value
-    };
-  });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(BaseControl, {
-    label: label,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-      className: "fluent-form-unit-control",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", {
-        type: "number",
-        value: value || '',
-        onChange: function onChange(e) {
-          return _onChange(e.target.value);
-        },
-        min: min,
-        max: max,
-        placeholder: placeholder
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-        value: unit || 'px',
-        options: unitOptions,
-        onChange: onUnitChange
-      })]
-    })
-  });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentUnitControl);
 
 /***/ }),
 
@@ -1646,20 +1551,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
 /* harmony import */ var _controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../controls/FluentBoxShadowControl */ "./guten_block/src/components/controls/FluentBoxShadowControl.js");
 /* harmony import */ var _controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../controls/FluentAlignmentControl */ "./guten_block/src/components/controls/FluentAlignmentControl.js");
-/* harmony import */ var _controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
-/* harmony import */ var _utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/TypographyUtils */ "./guten_block/src/components/utils/TypographyUtils.js");
-/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useRef = _wp$element.useRef,
@@ -1683,43 +1582,20 @@ var useSelect = wp.data.useSelect;
 
 
 
-
-
-// Constants
-
-var DEFAULT_COLORS = [{
-  name: 'Theme Blue',
-  color: '#72aee6'
-}, {
-  name: 'Theme Red',
-  color: '#e65054'
-}, {
-  name: 'Theme Green',
-  color: '#68de7c'
-}, {
-  name: 'Black',
-  color: '#000000'
-}, {
-  name: 'White',
-  color: '#ffffff'
-}, {
-  name: 'Gray',
-  color: '#dddddd'
-}];
-
 /**
  * Component for form style template selection
  */
+
 var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
   var attributes = _ref.attributes,
     setAttributes = _ref.setAttributes,
     handlePresetChange = _ref.handlePresetChange;
   var config = window.fluentform_block_vars;
   var presets = config.style_presets;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(PanelBody, {
     title: __("Form Style Template"),
     initialOpen: true,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(SelectControl, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(SelectControl, {
       label: __("Choose a Template"),
       value: attributes.themeStyle,
       options: presets,
@@ -1740,17 +1616,12 @@ var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
  * Component for label styling options
  */
 var LabelStylesPanel = function LabelStylesPanel(_ref2) {
-  var _attributes$styles$la, _attributes$styles$la2, _attributes$styles$la3, _attributes$styles$la4, _attributes$styles$la5;
   var attributes = _ref2.attributes,
     updateStyles = _ref2.updateStyles;
-  var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
-    var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_7__.getUpdatedTypography)(changedTypo, attributes, key);
-    updateStyles(_defineProperty({}, key, updatedTypography));
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
     title: __("Label Styles"),
     initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
       label: "Color",
       value: attributes.styles.labelColor,
       onChange: function onChange(value) {
@@ -1759,17 +1630,13 @@ var LabelStylesPanel = function LabelStylesPanel(_ref2) {
         });
       },
       defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
       label: "Typography",
-      settings: {
-        fontSize: ((_attributes$styles$la = attributes.styles.labelTypography) === null || _attributes$styles$la === void 0 || (_attributes$styles$la = _attributes$styles$la.size) === null || _attributes$styles$la === void 0 ? void 0 : _attributes$styles$la.lg) || '',
-        fontWeight: ((_attributes$styles$la2 = attributes.styles.labelTypography) === null || _attributes$styles$la2 === void 0 ? void 0 : _attributes$styles$la2.weight) || '400',
-        lineHeight: ((_attributes$styles$la3 = attributes.styles.labelTypography) === null || _attributes$styles$la3 === void 0 ? void 0 : _attributes$styles$la3.lineHeight) || '',
-        letterSpacing: ((_attributes$styles$la4 = attributes.styles.labelTypography) === null || _attributes$styles$la4 === void 0 ? void 0 : _attributes$styles$la4.letterSpacing) || '',
-        textTransform: ((_attributes$styles$la5 = attributes.styles.labelTypography) === null || _attributes$styles$la5 === void 0 ? void 0 : _attributes$styles$la5.textTransform) || 'none'
-      },
-      onChange: function onChange(changedTypo) {
-        return handleTypographyChange(changedTypo, 'labelTypography');
+      typography: attributes.styles.labelTypography || {},
+      onChange: function onChange(typography) {
+        return updateStyles({
+          labelTypography: typography
+        });
       }
     })]
   });
@@ -1781,14 +1648,10 @@ var LabelStylesPanel = function LabelStylesPanel(_ref2) {
 var InputStylesPanel = function InputStylesPanel(_ref3) {
   var attributes = _ref3.attributes,
     updateStyles = _ref3.updateStyles;
-  var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
-    var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_7__.getUpdatedTypography)(changedTypo, attributes, key);
-    updateStyles(_defineProperty({}, key, updatedTypography));
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(PanelBody, {
     title: __("Input & Textarea"),
     initialOpen: false,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(TabPanel, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(TabPanel, {
       className: "input-styles-tabs",
       activeClass: "is-active",
       tabs: [{
@@ -1802,9 +1665,9 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
       }],
       children: function children(tab) {
         if (tab.name === 'normal') {
-          var _attributes$styles, _attributes$styles2, _attributes$styles$in, _attributes$styles$in2, _attributes$styles$in3, _attributes$styles$in4, _attributes$styles$in5;
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+          var _attributes$styles, _attributes$styles2;
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Text Color",
               value: ((_attributes$styles = attributes.styles) === null || _attributes$styles === void 0 ? void 0 : _attributes$styles.inputTextColor) || '',
               onChange: function onChange(value) {
@@ -1813,7 +1676,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
                 });
               },
               defaultColor: ""
-            }, "input-text-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            }, "input-text-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Background Color",
               value: ((_attributes$styles2 = attributes.styles) === null || _attributes$styles2 === void 0 ? void 0 : _attributes$styles2.inputBackgroundColor) || '',
               styles: attributes.styles,
@@ -1823,19 +1686,15 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
                 });
               },
               defaultColor: ""
-            }, "input-bg-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+            }, "input-bg-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
               label: "Typography",
-              settings: {
-                fontSize: ((_attributes$styles$in = attributes.styles.inputTypography) === null || _attributes$styles$in === void 0 || (_attributes$styles$in = _attributes$styles$in.size) === null || _attributes$styles$in === void 0 ? void 0 : _attributes$styles$in.lg) || '',
-                fontWeight: ((_attributes$styles$in2 = attributes.styles.inputTypography) === null || _attributes$styles$in2 === void 0 ? void 0 : _attributes$styles$in2.weight) || '400',
-                lineHeight: ((_attributes$styles$in3 = attributes.styles.inputTypography) === null || _attributes$styles$in3 === void 0 ? void 0 : _attributes$styles$in3.lineHeight) || '',
-                letterSpacing: ((_attributes$styles$in4 = attributes.styles.inputTypography) === null || _attributes$styles$in4 === void 0 ? void 0 : _attributes$styles$in4.letterSpacing) || '',
-                textTransform: ((_attributes$styles$in5 = attributes.styles.inputTypography) === null || _attributes$styles$in5 === void 0 ? void 0 : _attributes$styles$in5.textTransform) || 'none'
-              },
-              onChange: function onChange(changedTypo) {
-                return handleTypographyChange(changedTypo, 'inputTypography');
+              typography: attributes.styles.inputTypography || {},
+              onChange: function onChange(typography) {
+                return updateStyles({
+                  inputTypography: typography
+                });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Spacing",
               values: attributes.styles.inputSpacing,
               onChange: function onChange(value) {
@@ -1843,7 +1702,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
                   inputSpacing: value
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
               border: attributes.styles.inputBorder || {},
               onChange: function onChange(borderObj) {
@@ -1851,7 +1710,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
                   inputBorder: borderObj
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
               shadow: attributes.styles.inputBoxShadow || {},
               onChange: function onChange(shadowObj) {
@@ -1863,8 +1722,8 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
           });
         } else if (tab.name === 'focus') {
           var _attributes$styles3;
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Text Color",
               value: attributes.styles.inputTextFocusColor || '',
               onChange: function onChange(value) {
@@ -1873,7 +1732,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
                 });
               },
               defaultColor: ""
-            }, "input-text-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            }, "input-text-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Background Color",
               value: ((_attributes$styles3 = attributes.styles) === null || _attributes$styles3 === void 0 ? void 0 : _attributes$styles3.inputBackgroundFocusColor) || '',
               onChange: function onChange(value) {
@@ -1882,7 +1741,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
                 });
               },
               defaultColor: ""
-            }, "input-bg-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            }, "input-bg-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Spacing",
               values: attributes.styles.inputFocusSpacing,
               onChange: function onChange(value) {
@@ -1890,7 +1749,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
                   inputFocusSpacing: value
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
               border: attributes.styles.inputBorderFocus || {},
               onChange: function onChange(borderObj) {
@@ -1898,7 +1757,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
                   inputBorderFocus: borderObj
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
               shadow: attributes.styles.inputBoxShadowFocus || {},
               onChange: function onChange(shadowObj) {
@@ -1921,18 +1780,14 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
 var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
   var attributes = _ref4.attributes,
     updateStyles = _ref4.updateStyles;
-  var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
-    var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_7__.getUpdatedTypography)(changedTypo, attributes, key);
-    updateStyles(_defineProperty({}, key, updatedTypography));
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
     title: __('Button Styles'),
     initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
         className: "ffblock-label",
         children: __('Alignment')
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
         value: attributes.styles.buttonAlignment,
         onChange: function onChange(value) {
           return updateStyles({
@@ -1953,7 +1808,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
           label: __('Right')
         }]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(RangeControl, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(RangeControl, {
       label: __('Width (%)'),
       value: attributes.styles.buttonWidth,
       onChange: function onChange(value) {
@@ -1966,7 +1821,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
       allowReset: true,
       initialPosition: 0,
       help: __('Set to 0 for auto width')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(TabPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(TabPanel, {
       className: "button-styles-tabs",
       activeClass: "is-active",
       tabs: [{
@@ -1980,9 +1835,8 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
       }],
       children: function children(tab) {
         if (tab.name === 'normal') {
-          var _attributes$styles$bu, _attributes$styles$bu2, _attributes$styles$bu3, _attributes$styles$bu4, _attributes$styles$bu5;
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Text Color",
               value: attributes.styles.buttonColor,
               onChange: function onChange(value) {
@@ -1991,7 +1845,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                 });
               },
               defaultColor: "#ffffff"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Background Color",
               value: attributes.styles.buttonBGColor,
               onChange: function onChange(value) {
@@ -2000,19 +1854,15 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                 });
               },
               defaultColor: "#409EFF"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
               label: "Typography",
-              settings: {
-                fontSize: ((_attributes$styles$bu = attributes.styles.buttonTypography) === null || _attributes$styles$bu === void 0 || (_attributes$styles$bu = _attributes$styles$bu.size) === null || _attributes$styles$bu === void 0 ? void 0 : _attributes$styles$bu.lg) || '',
-                fontWeight: ((_attributes$styles$bu2 = attributes.styles.buttonTypography) === null || _attributes$styles$bu2 === void 0 ? void 0 : _attributes$styles$bu2.weight) || '500',
-                lineHeight: ((_attributes$styles$bu3 = attributes.styles.buttonTypography) === null || _attributes$styles$bu3 === void 0 ? void 0 : _attributes$styles$bu3.lineHeight) || '',
-                letterSpacing: ((_attributes$styles$bu4 = attributes.styles.buttonTypography) === null || _attributes$styles$bu4 === void 0 ? void 0 : _attributes$styles$bu4.letterSpacing) || '',
-                textTransform: ((_attributes$styles$bu5 = attributes.styles.buttonTypography) === null || _attributes$styles$bu5 === void 0 ? void 0 : _attributes$styles$bu5.textTransform) || 'none'
-              },
-              onChange: function onChange(changedTypo) {
-                return handleTypographyChange(changedTypo, 'buttonTypography');
+              typography: attributes.styles.buttonTypography || {},
+              onChange: function onChange(typography) {
+                return updateStyles({
+                  buttonTypography: typography
+                });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Padding",
               values: attributes.styles.buttonPadding,
               onChange: function onChange(value) {
@@ -2020,7 +1870,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                   buttonPadding: value
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Margin",
               values: attributes.styles.buttonMargin,
               onChange: function onChange(value) {
@@ -2028,7 +1878,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                   buttonMargin: value
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
               shadow: attributes.styles.buttonBoxShadow || {},
               onChange: function onChange(shadowObj) {
@@ -2036,7 +1886,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                   buttonBoxShadow: shadowObj
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
               border: attributes.styles.buttonBorder || {},
               onChange: function onChange(borderObj) {
@@ -2047,9 +1897,8 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
             })]
           });
         } else if (tab.name === 'hover') {
-          var _attributes$styles$bu6, _attributes$styles$bu7, _attributes$styles$bu8, _attributes$styles$bu9, _attributes$styles$bu0;
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Text Color",
               value: attributes.styles.buttonHoverColor,
               onChange: function onChange(value) {
@@ -2058,7 +1907,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                 });
               },
               defaultColor: "#ffffff"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
               label: "Background Color",
               value: attributes.styles.buttonHoverBGColor,
               onChange: function onChange(value) {
@@ -2067,19 +1916,15 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                 });
               },
               defaultColor: "#66b1ff"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
               label: "Typography",
-              settings: {
-                fontSize: ((_attributes$styles$bu6 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu6 === void 0 || (_attributes$styles$bu6 = _attributes$styles$bu6.size) === null || _attributes$styles$bu6 === void 0 ? void 0 : _attributes$styles$bu6.lg) || '',
-                fontWeight: ((_attributes$styles$bu7 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu7 === void 0 ? void 0 : _attributes$styles$bu7.weight) || '500',
-                lineHeight: ((_attributes$styles$bu8 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu8 === void 0 ? void 0 : _attributes$styles$bu8.lineHeight) || '',
-                letterSpacing: ((_attributes$styles$bu9 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu9 === void 0 ? void 0 : _attributes$styles$bu9.letterSpacing) || '',
-                textTransform: ((_attributes$styles$bu0 = attributes.styles.buttonHoverTypography) === null || _attributes$styles$bu0 === void 0 ? void 0 : _attributes$styles$bu0.textTransform) || 'none'
-              },
-              onChange: function onChange(changedTypo) {
-                return handleTypographyChange(changedTypo, 'buttonHoverTypography');
+              typography: attributes.styles.buttonHoverTypography || {},
+              onChange: function onChange(typography) {
+                return updateStyles({
+                  buttonHoverTypography: typography
+                });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Padding",
               values: attributes.styles.buttonHoverPadding,
               onChange: function onChange(value) {
@@ -2087,7 +1932,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                   buttonHoverPadding: value
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
               label: "Margin",
               values: attributes.styles.buttonHoverMargin,
               onChange: function onChange(value) {
@@ -2095,7 +1940,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                   buttonHoverMargin: value
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
               label: __("Box Shadow"),
               shadow: attributes.styles.buttonHoverBoxShadow || {},
               onChange: function onChange(shadowObj) {
@@ -2103,7 +1948,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
                   buttonHoverBoxShadow: shadowObj
                 });
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
               label: __("Border"),
               border: attributes.styles.buttonHoverBorder || {},
               onChange: function onChange(borderObj) {
@@ -2124,17 +1969,12 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
  * Component for placeholder styling options
  */
 var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref5) {
-  var _attributes$styles$pl, _attributes$styles$pl2, _attributes$styles$pl3, _attributes$styles$pl4, _attributes$styles$pl5;
   var attributes = _ref5.attributes,
     updateStyles = _ref5.updateStyles;
-  var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
-    var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_7__.getUpdatedTypography)(changedTypo, attributes, key);
-    updateStyles(_defineProperty({}, key, updatedTypography));
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
     title: __('Placeholder Styles'),
     initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
       label: "Text Color",
       value: attributes.styles.placeholderColor,
       onChange: function onChange(value) {
@@ -2143,17 +1983,13 @@ var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref5) {
         });
       },
       defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
       label: "Typography",
-      settings: {
-        fontSize: ((_attributes$styles$pl = attributes.styles.placeholderTypography) === null || _attributes$styles$pl === void 0 || (_attributes$styles$pl = _attributes$styles$pl.size) === null || _attributes$styles$pl === void 0 ? void 0 : _attributes$styles$pl.lg) || '',
-        fontWeight: ((_attributes$styles$pl2 = attributes.styles.placeholderTypography) === null || _attributes$styles$pl2 === void 0 ? void 0 : _attributes$styles$pl2.weight) || '400',
-        lineHeight: ((_attributes$styles$pl3 = attributes.styles.placeholderTypography) === null || _attributes$styles$pl3 === void 0 ? void 0 : _attributes$styles$pl3.lineHeight) || '',
-        letterSpacing: ((_attributes$styles$pl4 = attributes.styles.placeholderTypography) === null || _attributes$styles$pl4 === void 0 ? void 0 : _attributes$styles$pl4.letterSpacing) || '',
-        textTransform: ((_attributes$styles$pl5 = attributes.styles.placeholderTypography) === null || _attributes$styles$pl5 === void 0 ? void 0 : _attributes$styles$pl5.textTransform) || 'none'
-      },
-      onChange: function onChange(changedTypo) {
-        return handleTypographyChange(changedTypo, 'placeholderTypography');
+      typography: attributes.styles.placeholderTypography || {},
+      onChange: function onChange(typography) {
+        return updateStyles({
+          placeholderTypography: typography
+        });
       }
     })]
   });
@@ -2183,10 +2019,10 @@ var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
       radioCheckboxItemsSize: value
     });
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
     title: __('Radio & Checkbox Styles'),
     initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
       label: "Items Color",
       value: attributes.styles.radioCheckboxItemsColor,
       onChange: function onChange(value) {
@@ -2195,12 +2031,12 @@ var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
         });
       },
       defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
       className: "ffblock-control-field",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
         className: "ffblock-label",
         children: "Size (px)"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(RangeControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(RangeControl, {
         value: localSize // Use local state for immediate UI feedback
         ,
         min: 1,
@@ -2223,24 +2059,24 @@ var TabGeneral = function TabGeneral(_ref7) {
   var attributes = useSelect(function (select) {
     return select('core/block-editor').getSelectedBlock().attributes;
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(StyleTemplatePanel, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(StyleTemplatePanel, {
       attributes: attributes,
       setAttributes: setAttributes,
       handlePresetChange: handlePresetChange
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(LabelStylesPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(LabelStylesPanel, {
       attributes: attributes,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(InputStylesPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(InputStylesPanel, {
       attributes: attributes,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(PlaceHolderStylesPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(PlaceHolderStylesPanel, {
       attributes: attributes,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(RadioCheckBoxStylesPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(RadioCheckBoxStylesPanel, {
       attributes: attributes,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ButtonStylesPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(ButtonStylesPanel, {
       attributes: attributes,
       updateStyles: updateStyles
     })]
@@ -2262,7 +2098,7 @@ var GENERAL_TAB_ATTRIBUTES = [
 // Hover Button attributes
 'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'buttonHoverBorder'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabGeneral, function (prevProps, nextProps) {
-  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_8__.arePropsEqual)(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES, true);
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.arePropsEqual)(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES, true);
 }));
 
 /***/ }),
@@ -2280,18 +2116,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
 /* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
 /* harmony import */ var _controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentAlignmentControl */ "./guten_block/src/components/controls/FluentAlignmentControl.js");
-/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
-/* harmony import */ var _controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
-/* harmony import */ var _controls_FluentUnitControl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../controls/FluentUnitControl */ "./guten_block/src/components/controls/FluentUnitControl.js");
-/* harmony import */ var _controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../controls/FluentBoxShadowControl */ "./guten_block/src/components/controls/FluentBoxShadowControl.js");
-/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
-/* harmony import */ var _utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/TypographyUtils */ "./guten_block/src/components/utils/TypographyUtils.js");
-/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+/* harmony import */ var _controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
+/* harmony import */ var _controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../controls/FluentBoxShadowControl */ "./guten_block/src/components/controls/FluentBoxShadowControl.js");
+/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -2313,6 +2142,7 @@ var _wp$components = wp.components,
   Button = _wp$components.Button,
   BaseControl = _wp$components.BaseControl,
   FontSizePicker = _wp$components.FontSizePicker;
+var useSelect = wp.data.useSelect;
 
 // Import custom components
 
@@ -2323,39 +2153,17 @@ var _wp$components = wp.components,
 
 
 
-
-
-
-// Constants
-
-var DEFAULT_COLORS = [{
-  name: 'Theme Blue',
-  color: '#72aee6'
-}, {
-  name: 'Theme Red',
-  color: '#e65054'
-}, {
-  name: 'Theme Green',
-  color: '#68de7c'
-}, {
-  name: 'Black',
-  color: '#000000'
-}, {
-  name: 'White',
-  color: '#ffffff'
-}, {
-  name: 'Gray',
-  color: '#dddddd'
-}];
-
 /**
  * Main TabMisc component
  */
+
 var TabMisc = function TabMisc(_ref) {
-  var attributes = _ref.attributes,
-    setAttributes = _ref.setAttributes,
+  var setAttributes = _ref.setAttributes,
     updateStyles = _ref.updateStyles,
     state = _ref.state;
+  var attributes = useSelect(function (select) {
+    return select('core/block-editor').getSelectedBlock().attributes;
+  });
   // Use local state for background type to ensure UI updates immediately
   var _useState = useState(attributes.styles.backgroundType || 'classic'),
     _useState2 = _slicedToArray(_useState, 2),
@@ -2366,10 +2174,6 @@ var TabMisc = function TabMisc(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     localBgImage = _useState4[0],
     setLocalBgImage = _useState4[1];
-  var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
-    var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_8__.getUpdatedTypography)(changedTypo, attributes, key);
-    updateStyles(_defineProperty({}, key, updatedTypography));
-  };
 
   // Update local state when attributes change
   useEffect(function () {
@@ -2444,23 +2248,23 @@ var TabMisc = function TabMisc(_ref) {
 
   // Use local state for conditional rendering
   var currentBgImage = localBgImage || attributes.styles.backgroundImage;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
       title: __("Container Styles"),
       initialOpen: false,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
         className: "ffblock-control-field",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("strong", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
           className: "ffblock-label",
           children: __("Background Type")
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: "ffblock-radio-options",
           style: {
             display: 'flex',
             gap: '8px',
             marginTop: '8px'
           },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(Button, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(Button, {
             isPrimary: localBgType === 'classic',
             isSecondary: localBgType !== 'classic',
             onClick: function onClick() {
@@ -2471,7 +2275,7 @@ var TabMisc = function TabMisc(_ref) {
               justifyContent: 'center'
             },
             children: __('Classic')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(Button, {
             isPrimary: localBgType === 'gradient',
             isSecondary: localBgType !== 'gradient',
             onClick: function onClick() {
@@ -2484,24 +2288,24 @@ var TabMisc = function TabMisc(_ref) {
             children: __('Gradient')
           })]
         })]
-      }), localBgType === 'classic' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+      }), localBgType === 'classic' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
         className: "ffblock-control-field",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: "ffblock-media-upload",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
             className: "ffblock-label",
             children: __('Background Image')
-          }), !currentBgImage ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(Button, {
+          }), !currentBgImage ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(Button, {
             className: "ffblock-upload-button",
             icon: "upload",
             onClick: uploadBackgroundImage,
             children: __('Upload Media')
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
             className: "ffblock-image-preview",
             style: {
               marginTop: '8px'
             },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
               style: {
                 backgroundImage: "url(".concat(currentBgImage, ")"),
                 backgroundSize: 'cover',
@@ -2513,7 +2317,7 @@ var TabMisc = function TabMisc(_ref) {
                 marginBottom: '8px',
                 border: '1px solid #ddd'
               },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(Button, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(Button, {
                 icon: "no-alt",
                 onClick: removeBackgroundImage,
                 isDestructive: true,
@@ -2530,23 +2334,23 @@ var TabMisc = function TabMisc(_ref) {
                   width: '28px'
                 }
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
               style: {
                 display: 'flex',
                 justifyContent: 'center'
               },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(Button, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(Button, {
                 isSecondary: true,
                 onClick: uploadBackgroundImage,
                 children: __('Replace Image')
               })
             })]
           })]
-        }), currentBgImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+        }), currentBgImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           style: {
             marginTop: '16px'
           },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(SelectControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(SelectControl, {
             label: __("Background Size"),
             value: attributes.styles.backgroundSize || 'cover',
             options: [{
@@ -2564,7 +2368,7 @@ var TabMisc = function TabMisc(_ref) {
                 backgroundSize: value
               });
             }
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(SelectControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(SelectControl, {
             label: __("Background Position"),
             value: attributes.styles.backgroundPosition || 'center center',
             options: [{
@@ -2600,7 +2404,7 @@ var TabMisc = function TabMisc(_ref) {
                 backgroundPosition: value
               });
             }
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(SelectControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(SelectControl, {
             label: __("Background Repeat"),
             value: attributes.styles.backgroundRepeat || 'no-repeat',
             options: [{
@@ -2623,13 +2427,13 @@ var TabMisc = function TabMisc(_ref) {
             }
           })]
         })]
-      }), localBgType === 'gradient' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
+      }), localBgType === 'gradient' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
           className: "ffblock-label",
           children: __('Background Gradient')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: "ffblock-bg-gradient",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
             label: __("Primary Color"),
             value: attributes.styles.gradientColor1 || '',
             onChange: function onChange(value) {
@@ -2638,7 +2442,7 @@ var TabMisc = function TabMisc(_ref) {
               });
             },
             defaultColor: ""
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
             label: __("Secondary Color"),
             value: attributes.styles.gradientColor2 || '',
             onChange: function onChange(value) {
@@ -2647,7 +2451,7 @@ var TabMisc = function TabMisc(_ref) {
               });
             },
             defaultColor: ""
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(SelectControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(SelectControl, {
             label: __("Gradient Type"),
             value: attributes.styles.gradientType || 'linear',
             options: [{
@@ -2662,7 +2466,7 @@ var TabMisc = function TabMisc(_ref) {
                 gradientType: value
               });
             }
-          }), attributes.styles.gradientType === 'linear' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(RangeControl, {
+          }), attributes.styles.gradientType === 'linear' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(RangeControl, {
             label: __("Gradient Angle (°)"),
             value: attributes.styles.gradientAngle || 90,
             onChange: function onChange(value) {
@@ -2674,7 +2478,7 @@ var TabMisc = function TabMisc(_ref) {
             max: 360
           })]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Background Color"),
         value: attributes.styles.backgroundColor || '',
         onChange: function onChange(value) {
@@ -2683,7 +2487,7 @@ var TabMisc = function TabMisc(_ref) {
           });
         },
         defaultColor: ""
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Padding"),
         values: attributes.styles.containerPadding,
         onChange: function onChange(value) {
@@ -2691,7 +2495,7 @@ var TabMisc = function TabMisc(_ref) {
             containerPadding: value
           });
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Margin"),
         values: attributes.styles.containerMargin,
         onChange: function onChange(value) {
@@ -2699,9 +2503,9 @@ var TabMisc = function TabMisc(_ref) {
             containerMargin: value
           });
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_3__["default"], {
         label: __("Box Shadow")
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
         label: __("Box Shadow"),
         shadow: attributes.styles.containerBoxShadow || {},
         onChange: function onChange(shadowObj) {
@@ -2709,9 +2513,9 @@ var TabMisc = function TabMisc(_ref) {
             containerBoxShadow: shadowObj
           });
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_3__["default"], {
         label: __("Form Border Settings")
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
         label: __("Form Border"),
         border: attributes.styles.formBorder || {},
         onChange: function onChange(borderObj) {
@@ -2720,10 +2524,10 @@ var TabMisc = function TabMisc(_ref) {
           });
         }
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(PanelBody, {
       title: __("Asterisk Styles"),
       initialOpen: false,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Asterisk Color"),
         value: attributes.styles.asteriskColor || '',
         onChange: function onChange(value) {
@@ -2733,10 +2537,10 @@ var TabMisc = function TabMisc(_ref) {
         },
         defaultColor: "#ff0000"
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
       title: __("Inline Error Message Styles"),
       initialOpen: false,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Background Color"),
         value: attributes.styles.errorMessageBgColor || '',
         onChange: function onChange(value) {
@@ -2745,7 +2549,7 @@ var TabMisc = function TabMisc(_ref) {
           });
         },
         defaultColor: ""
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Text Color"),
         value: attributes.styles.errorMessageColor || '',
         onChange: function onChange(value) {
@@ -2754,9 +2558,9 @@ var TabMisc = function TabMisc(_ref) {
           });
         },
         defaultColor: "#ff0000"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(BaseControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(BaseControl, {
         label: __("Alignment"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
           value: attributes.styles.errorMessageAlignment || 'left',
           onChange: function onChange(value) {
             return updateStyles({
@@ -2778,10 +2582,10 @@ var TabMisc = function TabMisc(_ref) {
           }]
         })
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
       title: __("After Submit Success Message Styles"),
       initialOpen: false,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Background Color"),
         value: attributes.styles.successMessageBgColor || '',
         onChange: function onChange(value) {
@@ -2790,7 +2594,7 @@ var TabMisc = function TabMisc(_ref) {
           });
         },
         defaultColor: "#dff0d8"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Text Color"),
         value: attributes.styles.successMessageColor || '',
         onChange: function onChange(value) {
@@ -2799,9 +2603,9 @@ var TabMisc = function TabMisc(_ref) {
           });
         },
         defaultColor: "#3c763d"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(BaseControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(BaseControl, {
         label: __("Alignment"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
           value: attributes.styles.successMessageAlignment || 'left',
           onChange: function onChange(value) {
             return updateStyles({
@@ -2823,10 +2627,10 @@ var TabMisc = function TabMisc(_ref) {
           }]
         })
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
       title: __("After Submit Error Message Styles"),
       initialOpen: false,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Background Color"),
         value: attributes.styles.submitErrorMessageBgColor || '',
         onChange: function onChange(value) {
@@ -2835,7 +2639,7 @@ var TabMisc = function TabMisc(_ref) {
           });
         },
         defaultColor: "#f2dede"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Text Color"),
         value: attributes.styles.submitErrorMessageColor || '',
         onChange: function onChange(value) {
@@ -2844,9 +2648,9 @@ var TabMisc = function TabMisc(_ref) {
           });
         },
         defaultColor: "#a94442"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(BaseControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(BaseControl, {
         label: __("Alignment"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
           value: attributes.styles.submitErrorMessageAlignment || 'left',
           onChange: function onChange(value) {
             return updateStyles({
@@ -2875,9 +2679,9 @@ var TabMisc = function TabMisc(_ref) {
 /**
  * Compare function to determine if component should update
  */
-var MISC_TAB_ATTRIBUTES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'textColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'formAlignment', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageBgColor', 'errorMessageColor', 'errorMessageAlignment', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'submitErrorMessageBgColor', 'submitErrorMessageColor', 'submitErrorMessageAlignment'];
+var MISC_TAB_ATTRIBUTES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageBgColor', 'errorMessageColor', 'errorMessageAlignment', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'submitErrorMessageBgColor', 'submitErrorMessageColor', 'submitErrorMessageAlignment'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabMisc, function (prevProps, nextProps) {
-  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_9__.arePropsEqual)(prevProps, nextProps, MISC_TAB_ATTRIBUTES, true);
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.arePropsEqual)(prevProps, nextProps, MISC_TAB_ATTRIBUTES, true);
 }));
 
 /***/ }),
@@ -3044,66 +2848,662 @@ var arePropsEqual = function arePropsEqual(prevProps, nextProps) {
 
 /***/ }),
 
-/***/ "./guten_block/src/components/utils/TypographyUtils.js":
-/*!*************************************************************!*\
-  !*** ./guten_block/src/components/utils/TypographyUtils.js ***!
-  \*************************************************************/
+/***/ "./guten_block/src/components/utils/StyleHandler.js":
+/*!**********************************************************!*\
+  !*** ./guten_block/src/components/utils/StyleHandler.js ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getUpdatedTypography: () => (/* binding */ getUpdatedTypography)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-// In guten_block/src/components/utils/TypographyUtils.js
-
 /**
- * Updates typography settings with only changed values to avoid unnecessary rerenders
- * @param {Object} changedTypo - Object containing only the changed typography property
- * @param {Object} currentAttributes - Current attributes object
- * @param {string} typographyKey - Key for the typography attribute to update
- * @returns {Object} The updated typography object or empty object for reset
+ * JavaScript Style Handler for FluentForm Gutenberg Block
+ * Converts PHP styling logic to client-side JavaScript
  */
-var getUpdatedTypography = function getUpdatedTypography(changedTypo, currentAttributes, typographyKey) {
-  // Check if this is a reset operation
-  if (changedTypo.reset) {
-    return {};
+var FluentFormStyleHandler = /*#__PURE__*/function () {
+  function FluentFormStyleHandler(formId) {
+    _classCallCheck(this, FluentFormStyleHandler);
+    this.formId = formId;
+    this.TABLET_BREAKPOINT = '768px';
+    this.MOBILE_BREAKPOINT = '480px';
+    this.styleElementId = "fluentform-block-custom-styles-".concat(formId);
+    this.baseSelector = ".fluentform.ff_guten_block.ff_guten_block-".concat(formId);
+    this.setStyleElement();
   }
+  return _createClass(FluentFormStyleHandler, [{
+    key: "setStyleElement",
+    value: function setStyleElement() {
+      var styleElement = document.getElementById(this.styleElementId);
+      if (styleElement) {
+        this.styleElement = styleElement;
+      } else {
+        var style = document.createElement('style');
+        style.id = this.styleElementId;
+        document.head.appendChild(style);
+        this.styleElement = style;
+      }
+    }
+  }, {
+    key: "updateStyles",
+    value: function updateStyles(styles) {
+      if (!styles) return;
+      if (!this.styleElement) {
+        this.setStyleElement();
+      }
+      if (this.styleElement) {
+        var css = this.generateAllStyles(styles);
+        this.styleElement.innerHTML = css;
+        return css;
+      }
+      return false;
+    }
+  }, {
+    key: "generateAllStyles",
+    value: function generateAllStyles(styles) {
+      if (!styles || Object.keys(styles).length === 0) {
+        return '';
+      }
+      var css = '';
 
-  // Create a new typography object based on current attributes
-  var updatedTypography = _objectSpread({}, currentAttributes[typographyKey] || {});
+      // Container styles
+      css += this.generateContainerStyles(styles);
 
-  // Get the property that changed (there should be only one)
-  var changedProperty = Object.keys(changedTypo)[0];
-  var newValue = changedTypo[changedProperty];
+      // Label styles
+      css += this.generateLabelStyles(styles);
 
-  // Update only the changed property
-  switch (changedProperty) {
-    case 'fontSize':
-      updatedTypography.size = {
-        lg: newValue
-      };
-      break;
-    case 'fontWeight':
-      updatedTypography.weight = newValue;
-      break;
-    case 'lineHeight':
-      updatedTypography.lineHeight = newValue;
-      break;
-    case 'letterSpacing':
-      updatedTypography.letterSpacing = newValue;
-      break;
-    case 'textTransform':
-      updatedTypography.textTransform = newValue;
-      break;
-  }
-  return updatedTypography;
-};
+      // Input styles
+      css += this.generateInputStyles(styles);
+
+      // Placeholder styles
+      css += this.generatePlaceholderStyles(styles);
+
+      // Button styles
+      css += this.generateButtonStyles(styles);
+
+      // Radio/Checkbox styles
+      css += this.generateRadioCheckboxStyles(styles);
+
+      // Message styles
+      css += this.generateMessageStyles(styles);
+      return css;
+    }
+  }, {
+    key: "generateContainerStyles",
+    value: function generateContainerStyles(styles) {
+      var css = '';
+      var selector = this.baseSelector;
+      var rules = [];
+      // Background handling
+      if (styles.backgroundType === 'gradient' && styles.gradientColor1 && styles.gradientColor2) {
+        var gradientType = styles.gradientType || 'linear';
+        var gradientAngle = styles.gradientAngle || 90;
+        if (gradientType === 'linear') {
+          rules.push("background: linear-gradient(".concat(gradientAngle, "deg, ").concat(styles.gradientColor1, ", ").concat(styles.gradientColor2, ")"));
+        } else {
+          rules.push("background: radial-gradient(circle, ".concat(styles.gradientColor1, ", ").concat(styles.gradientColor2, ")"));
+        }
+      } else if (styles.backgroundColor) {
+        rules.push("background-color: ".concat(styles.backgroundColor));
+      }
+      if (styles.backgroundType === 'classic' && styles.backgroundImage) {
+        rules.push("background-image: url(".concat(styles.backgroundImage, ")"));
+        if (styles.backgroundSize) {
+          rules.push("background-size: ".concat(styles.backgroundSize));
+        }
+        if (styles.backgroundPosition) {
+          rules.push("background-position: ".concat(styles.backgroundPosition));
+        }
+        if (styles.backgroundRepeat) {
+          rules.push("background-repeat: ".concat(styles.backgroundRepeat));
+        }
+      }
+      if (styles.containerPadding) {
+        css += this.generateSpacingWithResponsive(styles.containerPadding, 'padding', selector);
+      }
+      if (styles.containerMargin) {
+        css += this.generateSpacingWithResponsive(styles.containerMargin, 'margin', selector);
+      }
+
+      // Container box shadow
+      if (styles.containerBoxShadow && styles.containerBoxShadow.enable) {
+        var boxShadow = this.generateBoxShadow(styles.containerBoxShadow);
+        if (boxShadow) rules.push("box-shadow: ".concat(boxShadow));
+      }
+      if (rules.length > 0) {
+        css += "".concat(selector, " { ").concat(rules.join('; '), "; }\n");
+      }
+
+      // Container border with responsive support
+      if (styles.formBorder) {
+        css += this.generateBorder(styles.formBorder, selector);
+      }
+      return css;
+    }
+  }, {
+    key: "generateLabelStyles",
+    value: function generateLabelStyles(styles) {
+      var css = '';
+      var labelSelector = "".concat(this.baseSelector, " .ff-el-input--label label");
+      var rules = [];
+      if (styles.labelColor) {
+        rules.push("color: ".concat(styles.labelColor));
+      }
+      if (styles.labelTypography) {
+        var typography = this.generateTypography(styles.labelTypography);
+        if (typography) rules.push(typography);
+      }
+      if (rules.length > 0) {
+        css += "".concat(labelSelector, " { ").concat(rules.join('; '), "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generateInputStyles",
+    value: function generateInputStyles(styles) {
+      var css = '';
+      var inputSelectors = ["".concat(this.baseSelector, " .ff-el-form-control"), "".concat(this.baseSelector, " .ff-el-input--content input"), "".concat(this.baseSelector, " .ff-el-input--content textarea"), "".concat(this.baseSelector, " .ff-el-input--content select")];
+      var inputSelector = inputSelectors.join(', ');
+
+      // Normal state
+      var normalStyles = [];
+      if (styles.inputTextColor) {
+        normalStyles.push("color: ".concat(styles.inputTextColor));
+      }
+      if (styles.inputBackgroundColor) {
+        normalStyles.push("background-color: ".concat(styles.inputBackgroundColor));
+      }
+      if (styles.inputTypography) {
+        var typography = this.generateTypography(styles.inputTypography);
+        if (typography) normalStyles.push(typography);
+      }
+      if (styles.inputSpacing) {
+        css += this.generateSpacingWithResponsive(styles.inputSpacing, 'padding', inputSelector);
+      }
+
+      // Input box shadow
+      if (styles.inputBoxShadow && styles.inputBoxShadow.enable) {
+        var boxShadow = this.generateBoxShadow(styles.inputBoxShadow);
+        if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
+      }
+      if (normalStyles.length > 0) {
+        css += "".concat(inputSelector, " { ").concat(normalStyles.join('; '), "; }\n");
+      }
+
+      // Input border with responsive support
+      if (styles.inputBorder) {
+        css += this.generateBorder(styles.inputBorder, inputSelector);
+      }
+
+      // Focus state
+      var focusStyles = [];
+      var focusSelector = inputSelectors.map(function (sel) {
+        return "".concat(sel, ":focus");
+      }).join(', ');
+      if (styles.inputTextFocusColor) {
+        focusStyles.push("color: ".concat(styles.inputTextFocusColor));
+      }
+      if (styles.inputBackgroundFocusColor) {
+        focusStyles.push("background-color: ".concat(styles.inputBackgroundFocusColor));
+      }
+      if (styles.inputFocusSpacing) {
+        css += this.generateSpacingWithResponsive(styles.inputFocusSpacing, 'padding', focusSelector);
+      }
+
+      // Input box shadow focus
+      if (styles.inputBoxShadowFocus && styles.inputBoxShadowFocus.enable) {
+        var boxShadowFocus = this.generateBoxShadow(styles.inputBoxShadowFocus);
+        if (boxShadowFocus) focusStyles.push("box-shadow: ".concat(boxShadowFocus));
+      }
+      if (focusStyles.length > 0) {
+        css += "".concat(focusSelector, " { ").concat(focusStyles.join('; '), "; }\n");
+      }
+
+      // Input focus border with responsive support
+      if (styles.inputBorderFocus) {
+        css += this.generateBorder(styles.inputBorderFocus, focusSelector);
+      }
+      return css;
+    }
+  }, {
+    key: "generatePlaceholderStyles",
+    value: function generatePlaceholderStyles(styles) {
+      var css = '';
+      if (styles.placeholderColor) {
+        var placeholderSelectors = ["".concat(this.baseSelector, " .ff-el-input--content input::placeholder"), "".concat(this.baseSelector, " .ff-el-input--content textarea::placeholder")];
+        css += "".concat(placeholderSelectors.join(', '), " { color: ").concat(styles.placeholderColor, "; }\n");
+      }
+      if (styles.placeholderTypography) {
+        var typography = this.generateTypography(styles.placeholderTypography);
+        if (typography) {
+          var _placeholderSelectors = ["".concat(this.baseSelector, " .ff-el-input--content input::placeholder"), "".concat(this.baseSelector, " .ff-el-input--content textarea::placeholder")];
+          css += "".concat(_placeholderSelectors.join(', '), " { ").concat(typography, "; }\n");
+        }
+      }
+      return css;
+    }
+  }, {
+    key: "generateButtonStyles",
+    value: function generateButtonStyles(styles) {
+      var css = '';
+      var buttonSelector = "".concat(this.baseSelector, " .ff-btn-submit");
+
+      // Button alignment
+      if (styles.buttonAlignment && styles.buttonAlignment !== 'left') {
+        css += "".concat(this.baseSelector, " .ff_submit_btn_wrapper { text-align: ").concat(styles.buttonAlignment, "; }\n");
+      }
+
+      // Normal state
+      var normalStyles = [];
+      if (styles.buttonWidth) {
+        normalStyles.push("width: ".concat(styles.buttonWidth, "%"));
+      }
+      if (styles.buttonColor) {
+        normalStyles.push("color: ".concat(styles.buttonColor));
+      }
+      if (styles.buttonBGColor) {
+        normalStyles.push("background-color: ".concat(styles.buttonBGColor));
+      }
+      if (styles.buttonTypography) {
+        var typography = this.generateTypography(styles.buttonTypography);
+        if (typography) normalStyles.push(typography);
+      }
+      if (styles.buttonPadding) {
+        css += this.generateSpacingWithResponsive(styles.buttonPadding, 'padding', buttonSelector);
+      }
+      if (styles.buttonMargin) {
+        css += this.generateSpacingWithResponsive(styles.buttonMargin, 'margin', buttonSelector);
+      }
+
+      // Button box shadow
+      if (styles.buttonBoxShadow && styles.buttonBoxShadow.enable) {
+        var boxShadow = this.generateBoxShadow(styles.buttonBoxShadow);
+        if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
+      }
+      if (normalStyles.length > 0) {
+        css += "".concat(buttonSelector, " { ").concat(normalStyles.join('; '), "; }\n");
+      }
+
+      // Button border with responsive support
+      if (styles.buttonBorder) {
+        css += this.generateBorder(styles.buttonBorder, buttonSelector);
+      }
+
+      // Hover state
+      var hoverStyles = [];
+      var hoverSelector = "".concat(buttonSelector, ":hover");
+      if (styles.buttonHoverColor) {
+        hoverStyles.push("color: ".concat(styles.buttonHoverColor));
+      }
+      if (styles.buttonHoverBGColor) {
+        hoverStyles.push("background-color: ".concat(styles.buttonHoverBGColor));
+      }
+      if (styles.buttonHoverTypography) {
+        var typographyHover = this.generateTypography(styles.buttonHoverTypography);
+        if (typographyHover) hoverStyles.push(typographyHover);
+      }
+      if (styles.buttonHoverPadding) {
+        css += this.generateSpacingWithResponsive(styles.buttonHoverPadding, 'padding', hoverSelector);
+      }
+      if (styles.buttonHoverMargin) {
+        css += this.generateSpacingWithResponsive(styles.buttonHoverMargin, 'margin', hoverSelector);
+      }
+
+      // Button hover box shadow
+      if (styles.buttonHoverBoxShadow && styles.buttonHoverBoxShadow.enable) {
+        var boxShadowHover = this.generateBoxShadow(styles.buttonHoverBoxShadow);
+        if (boxShadowHover) hoverStyles.push("box-shadow: ".concat(boxShadowHover));
+      }
+      if (hoverStyles.length > 0) {
+        css += "".concat(hoverSelector, " { ").concat(hoverStyles.join('; '), "; }\n");
+      }
+
+      // Button hover border with responsive support
+      if (styles.buttonHoverBorder) {
+        css += this.generateBorder(styles.buttonHoverBorder, hoverSelector);
+      }
+      return css;
+    }
+  }, {
+    key: "generateRadioCheckboxStyles",
+    value: function generateRadioCheckboxStyles(styles) {
+      var css = '';
+      if (styles.radioCheckboxItemsColor) {
+        css += "".concat(this.baseSelector, " .ff-el-form-check { color: ").concat(styles.radioCheckboxItemsColor, "; }\n");
+      }
+      if (styles.radioCheckboxItemsSize) {
+        var size = "".concat(styles.radioCheckboxItemsSize, "px");
+        css += "".concat(this.baseSelector, " input[type=\"radio\"], ").concat(this.baseSelector, " input[type=\"checkbox\"] { width: ").concat(size, "; height: ").concat(size, "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generateMessageStyles",
+    value: function generateMessageStyles(styles) {
+      var css = '';
+
+      // Success message
+      if (styles.successMessageColor) {
+        css += "".concat(this.baseSelector, " .ff-message-success { color: ").concat(styles.successMessageColor, "; }\n");
+      }
+      if (styles.successMessageBgColor) {
+        css += "".concat(this.baseSelector, " .ff-message-success { background-color: ").concat(styles.successMessageBgColor, "; }\n");
+      }
+      if (styles.successMessageAlignment && styles.successMessageAlignment !== 'left') {
+        css += "".concat(this.baseSelector, " .ff-message-success { text-align: ").concat(styles.successMessageAlignment, "; }\n");
+      }
+
+      // Error message
+      if (styles.errorMessageColor) {
+        css += "".concat(this.baseSelector, " .ff-errors-in-stack, ").concat(this.baseSelector, " .error { color: ").concat(styles.errorMessageColor, "; }\n");
+      }
+      if (styles.errorMessageBgColor) {
+        css += "".concat(this.baseSelector, " .ff-errors-in-stack, ").concat(this.baseSelector, " .error { background-color: ").concat(styles.errorMessageBgColor, "; }\n");
+      }
+      if (styles.errorMessageAlignment && styles.errorMessageAlignment !== 'left') {
+        css += "".concat(this.baseSelector, " .ff-errors-in-stack, ").concat(this.baseSelector, " .error { text-align: ").concat(styles.errorMessageAlignment, "; }\n");
+      }
+
+      // Submit error message
+      if (styles.submitErrorMessageColor) {
+        css += "".concat(this.baseSelector, " .ff-submit-error { color: ").concat(styles.submitErrorMessageColor, "; }\n");
+      }
+      if (styles.submitErrorMessageBgColor) {
+        css += "".concat(this.baseSelector, " .ff-submit-error { background-color: ").concat(styles.submitErrorMessageBgColor, "; }\n");
+      }
+      if (styles.submitErrorMessageAlignment && styles.submitErrorMessageAlignment !== 'left') {
+        css += "".concat(this.baseSelector, " .ff-submit-error { text-align: ").concat(styles.submitErrorMessageAlignment, "; }\n");
+      }
+
+      // Asterisk
+      if (styles.asteriskColor) {
+        css += "".concat(this.baseSelector, " .asterisk-right label:after, ").concat(this.baseSelector, " .asterisk-left label:before { color: ").concat(styles.asteriskColor, "; }\n");
+      }
+      return css;
+    }
+  }, {
+    key: "generateTypography",
+    value: function generateTypography(typography) {
+      if (!typography) return '';
+      var styles = [];
+      if (typography.fontSize) {
+        styles.push("font-size: ".concat(typography.fontSize, "px"));
+      }
+      if (typography.fontWeight) {
+        styles.push("font-weight: ".concat(typography.fontWeight));
+      }
+      if (typography.lineHeight) {
+        styles.push("line-height: ".concat(typography.lineHeight));
+      }
+      if (typography.letterSpacing) {
+        styles.push("letter-spacing: ".concat(typography.letterSpacing, "px"));
+      }
+      if (typography.textTransform) {
+        styles.push("text-transform: ".concat(typography.textTransform));
+      }
+      return styles.join('; ');
+    }
+  }, {
+    key: "generateBorder",
+    value: function generateBorder(border) {
+      var selector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      if (!border || !border.enable || !border.color) return '';
+      var css = '';
+      var desktopStyles = [];
+
+      // Border type and color (apply to all devices)
+      if (border.type) {
+        desktopStyles.push("border-style: ".concat(border.type));
+      }
+      if (border.color) {
+        desktopStyles.push("border-color: ".concat(border.color));
+      }
+
+      // Border width (desktop values)
+      if (border.width && border.width.desktop) {
+        var widthStyles = this.generateBorderWidth(border.width.desktop);
+        if (widthStyles) desktopStyles.push(widthStyles);
+      }
+
+      // Border radius (desktop values)
+      if (border.radius && border.radius.desktop) {
+        var radiusStyles = this.generateBorderRadius(border.radius.desktop);
+        if (radiusStyles) desktopStyles.push(radiusStyles);
+      }
+
+      // If no selector provided, return inline styles (for existing functionality)
+      if (!selector) {
+        return desktopStyles.join('; ');
+      }
+
+      // Generate CSS with media queries
+      if (desktopStyles.length > 0) {
+        css += "".concat(selector, " { ").concat(desktopStyles.join('; '), "; }\n");
+      }
+
+      // Handle tablet styles (only if different from desktop)
+      if (border.width && border.width.tablet && border.width.desktop) {
+        if (!this.areSpacingValuesEqual(border.width.desktop, border.width.tablet)) {
+          var tabletWidthStyles = this.generateBorderWidth(border.width.tablet);
+          if (tabletWidthStyles) {
+            css += "@media (max-width: ".concat(this.TABLET_BREAKPOINT, ") { ").concat(selector, " { ").concat(tabletWidthStyles, "; } }\n");
+          }
+        }
+      }
+      if (border.radius && border.radius.tablet && border.radius.desktop) {
+        if (!this.areSpacingValuesEqual(border.radius.desktop, border.radius.tablet)) {
+          var tabletRadiusStyles = this.generateBorderRadius(border.radius.tablet);
+          if (tabletRadiusStyles) {
+            css += "@media (max-width: ".concat(this.TABLET_BREAKPOINT, ") { ").concat(selector, " { ").concat(tabletRadiusStyles, "; } }\n");
+          }
+        }
+      }
+
+      // Handle mobile styles (only if different from desktop)
+      if (border.width && border.width.mobile && border.width.desktop) {
+        if (!this.areSpacingValuesEqual(border.width.desktop, border.width.mobile)) {
+          var mobileWidthStyles = this.generateBorderWidth(border.width.mobile);
+          if (mobileWidthStyles) {
+            css += "@media (max-width: ".concat(this.MOBILE_BREAKPOINT, ") { ").concat(selector, " { ").concat(mobileWidthStyles, "; } }\n");
+          }
+        }
+      }
+      if (border.radius && border.radius.mobile && border.radius.desktop) {
+        if (!this.areSpacingValuesEqual(border.radius.desktop, border.radius.mobile)) {
+          var mobileRadiusStyles = this.generateBorderRadius(border.radius.mobile);
+          if (mobileRadiusStyles) {
+            css += "@media (max-width: ".concat(this.MOBILE_BREAKPOINT, ") { ").concat(selector, " { ").concat(mobileRadiusStyles, "; } }\n");
+          }
+        }
+      }
+      return css;
+    }
+  }, {
+    key: "generateBorderWidth",
+    value: function generateBorderWidth(widthValues) {
+      if (!widthValues) return '';
+      var unit = widthValues.unit || 'px';
+      var linked = !!widthValues.linked;
+      if (linked && widthValues.top !== undefined && widthValues.top !== '') {
+        return "border-width: ".concat(widthValues.top).concat(unit);
+      } else {
+        var styles = [];
+        if (widthValues.top !== undefined && widthValues.top !== '') {
+          styles.push("border-top-width: ".concat(widthValues.top).concat(unit));
+        }
+        if (widthValues.right !== undefined && widthValues.right !== '') {
+          styles.push("border-right-width: ".concat(widthValues.right).concat(unit));
+        }
+        if (widthValues.bottom !== undefined && widthValues.bottom !== '') {
+          styles.push("border-bottom-width: ".concat(widthValues.bottom).concat(unit));
+        }
+        if (widthValues.left !== undefined && widthValues.left !== '') {
+          styles.push("border-left-width: ".concat(widthValues.left).concat(unit));
+        }
+        return styles.join('; ');
+      }
+    }
+  }, {
+    key: "generateBorderRadius",
+    value: function generateBorderRadius(radiusValues) {
+      if (!radiusValues) return '';
+      var unit = radiusValues.unit || 'px';
+      var linked = !!radiusValues.linked;
+      if (linked && radiusValues.top !== undefined && radiusValues.top !== '') {
+        return "border-radius: ".concat(radiusValues.top).concat(unit);
+      } else {
+        var styles = [];
+        // Map to CSS border-radius corners: top=top-left, right=top-right, bottom=bottom-right, left=bottom-left
+        if (radiusValues.top !== undefined && radiusValues.top !== '') {
+          styles.push("border-top-left-radius: ".concat(radiusValues.top).concat(unit));
+        }
+        if (radiusValues.right !== undefined && radiusValues.right !== '') {
+          styles.push("border-top-right-radius: ".concat(radiusValues.right).concat(unit));
+        }
+        if (radiusValues.bottom !== undefined && radiusValues.bottom !== '') {
+          styles.push("border-bottom-right-radius: ".concat(radiusValues.bottom).concat(unit));
+        }
+        if (radiusValues.left !== undefined && radiusValues.left !== '') {
+          styles.push("border-bottom-left-radius: ".concat(radiusValues.left).concat(unit));
+        }
+        return styles.join('; ');
+      }
+    }
+  }, {
+    key: "generateSpacingWithResponsive",
+    value: function generateSpacingWithResponsive(spacing) {
+      var property = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'padding';
+      var selector = arguments.length > 2 ? arguments[2] : undefined;
+      if (!spacing || !selector || Array.isArray(spacing) && spacing.length === 0 || _typeof(spacing) === 'object' && Object.keys(spacing).length === 0) {
+        return '';
+      }
+      var css = '';
+
+      // Desktop styles (default)
+      if (spacing.desktop) {
+        var desktopRules = this.getSpacingRules(spacing.desktop, property);
+        if (desktopRules.length > 0) {
+          css += "".concat(selector, " { ").concat(desktopRules.join('; '), "; }\n");
+        }
+      }
+
+      // Tablet styles (only if different from desktop)
+      if (spacing.tablet && spacing.desktop) {
+        if (!this.areSpacingValuesEqual(spacing.desktop, spacing.tablet)) {
+          var tabletRules = this.getSpacingRules(spacing.tablet, property);
+          if (tabletRules.length > 0) {
+            css += "@media (max-width: ".concat(this.TABLET_BREAKPOINT, ") { ").concat(selector, " { ").concat(tabletRules.join('; '), "; } }\n");
+          }
+        }
+      }
+
+      // Mobile styles (only if different from desktop)
+      if (spacing.mobile && spacing.desktop) {
+        if (!this.areSpacingValuesEqual(spacing.desktop, spacing.mobile)) {
+          var mobileRules = this.getSpacingRules(spacing.mobile, property);
+          if (mobileRules.length > 0) {
+            css += "@media (max-width: ".concat(this.MOBILE_BREAKPOINT, ") { ").concat(selector, " { ").concat(mobileRules.join('; '), "; } }\n");
+          }
+        }
+      }
+      return css;
+    }
+  }, {
+    key: "getSpacingRules",
+    value: function getSpacingRules(values, property) {
+      var unit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+      if (!values) return [];
+      var spacingUnit = unit || values.unit || 'px';
+      var linked = !!values.linked;
+      var rules = [];
+      if (linked && values.top !== undefined && values.top !== '') {
+        rules.push("".concat(property, ": ").concat(values.top).concat(spacingUnit));
+      } else {
+        if (values.top !== undefined && values.top !== '') {
+          rules.push("".concat(property, "-top: ").concat(values.top).concat(spacingUnit));
+        }
+        if (values.right !== undefined && values.right !== '') {
+          rules.push("".concat(property, "-right: ").concat(values.right).concat(spacingUnit));
+        }
+        if (values.bottom !== undefined && values.bottom !== '') {
+          rules.push("".concat(property, "-bottom: ").concat(values.bottom).concat(spacingUnit));
+        }
+        if (values.left !== undefined && values.left !== '') {
+          rules.push("".concat(property, "-left: ").concat(values.left).concat(spacingUnit));
+        }
+      }
+      return rules;
+    }
+  }, {
+    key: "generateBoxShadow",
+    value: function generateBoxShadow(boxShadow) {
+      var _boxShadow$horizontal, _boxShadow$horizontal2, _boxShadow$vertical, _boxShadow$vertical2, _boxShadow$blur, _boxShadow$blur2, _boxShadow$spread, _boxShadow$spread2;
+      if (!boxShadow || !boxShadow.enable || !boxShadow.color) return '';
+
+      // Get position (inset or outline)
+      var position = boxShadow.position === 'inset' ? 'inset ' : '';
+
+      // Get values with units
+      var horizontal = "".concat(((_boxShadow$horizontal = boxShadow.horizontal) === null || _boxShadow$horizontal === void 0 ? void 0 : _boxShadow$horizontal.value) || '0').concat(((_boxShadow$horizontal2 = boxShadow.horizontal) === null || _boxShadow$horizontal2 === void 0 ? void 0 : _boxShadow$horizontal2.unit) || 'px');
+      var vertical = "".concat(((_boxShadow$vertical = boxShadow.vertical) === null || _boxShadow$vertical === void 0 ? void 0 : _boxShadow$vertical.value) || '0').concat(((_boxShadow$vertical2 = boxShadow.vertical) === null || _boxShadow$vertical2 === void 0 ? void 0 : _boxShadow$vertical2.unit) || 'px');
+      var blur = "".concat(((_boxShadow$blur = boxShadow.blur) === null || _boxShadow$blur === void 0 ? void 0 : _boxShadow$blur.value) || '5').concat(((_boxShadow$blur2 = boxShadow.blur) === null || _boxShadow$blur2 === void 0 ? void 0 : _boxShadow$blur2.unit) || 'px');
+      var spread = "".concat(((_boxShadow$spread = boxShadow.spread) === null || _boxShadow$spread === void 0 ? void 0 : _boxShadow$spread.value) || '0').concat(((_boxShadow$spread2 = boxShadow.spread) === null || _boxShadow$spread2 === void 0 ? void 0 : _boxShadow$spread2.unit) || 'px');
+      // Build the box-shadow value
+      return "".concat(position).concat(horizontal, " ").concat(vertical, " ").concat(blur, " ").concat(spread, " ").concat(boxShadow.color);
+    }
+  }, {
+    key: "areSpacingValuesEqual",
+    value: function areSpacingValuesEqual(values1, values2) {
+      if (!values1 && !values2) return true;
+      if (!values1 || !values2) return false;
+      if (values1.unit !== values2.unit) {
+        return false;
+      }
+      if (values2.linked) {
+        var val2 = values2.top || '';
+        // If values2 has no value, consider it equal (no change)
+        if (val2 === '') {
+          return true;
+        }
+        // If values1 is also linked, compare top values only
+        if (values1.linked) {
+          var val1 = values1.top || '';
+          return val1 === val2;
+        } else {
+          // values1 is not linked, so check if values2.top matches any of values1's sides
+          var keys = ['top', 'right', 'bottom', 'left'];
+          for (var _i = 0, _keys = keys; _i < _keys.length; _i++) {
+            var key = _keys[_i];
+            var _val = values1[key] || '';
+            if (_val !== '' && _val !== val2) {
+              return false;
+            }
+          }
+          return true;
+        }
+      } else {
+        var _keys2 = ['top', 'right', 'bottom', 'left'];
+        for (var _i2 = 0, _keys3 = _keys2; _i2 < _keys3.length; _i2++) {
+          var _key = _keys3[_i2];
+          var _val2 = values1.linked ? values1.top || '' : values1[_key] || '';
+          var _val3 = values2[_key] || '';
+          if (_val3 !== '' && _val2 !== _val3) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+  }]);
+}();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentFormStyleHandler);
 
 /***/ }),
 
@@ -3118,11 +3518,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _components_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
-/* harmony import */ var _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/StyleHandler */ "./guten_block/src/utils/StyleHandler.js");
+/* harmony import */ var _components_utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/utils/StyleHandler */ "./guten_block/src/components/utils/StyleHandler.js");
 /* harmony import */ var _components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/tabs/Tabs */ "./guten_block/src/components/tabs/Tabs.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-var _excluded = ["styles"];
+var _excluded = ["styles", "customCss"];
 function _objectWithoutProperties(e, t) { if (null == e) return {}; var o, r, i = _objectWithoutPropertiesLoose(e, t); if (Object.getOwnPropertySymbols) { var n = Object.getOwnPropertySymbols(e); for (r = 0; r < n.length; r++) o = n[r], -1 === t.indexOf(o) && {}.propertyIsEnumerable.call(e, o) && (i[o] = e[o]); } return i; }
 function _objectWithoutPropertiesLoose(r, e) { if (null == r) return {}; var t = {}; for (var n in r) if ({}.hasOwnProperty.call(r, n)) { if (-1 !== e.indexOf(n)) continue; t[n] = r[n]; } return t; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -3327,7 +3727,8 @@ var EditComponent = /*#__PURE__*/function (_Component) {
 
       // Apply styles immediately via JavaScript without triggering server render
       if (this.styleHandler && attributes.formId) {
-        this.styleHandler.updateStyles(styles);
+        var css = this.styleHandler.updateStyles(styles);
+        this.storeCss(css);
       }
     }
   }, {
@@ -3356,9 +3757,10 @@ var EditComponent = /*#__PURE__*/function (_Component) {
 
       // Initialize style handler
       if (attributes.formId && attributes.styles) {
-        this.styleHandler = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
+        this.styleHandler = new _components_utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
         if (attributes.styles) {
-          this.styleHandler.updateStyles(attributes.styles);
+          var css = this.styleHandler.updateStyles(attributes.styles);
+          this.storeCss(css);
         }
       }
     }
@@ -3366,25 +3768,44 @@ var EditComponent = /*#__PURE__*/function (_Component) {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps) {
       var attributes = this.props.attributes;
+
       // Initialize or update style handler
       if (attributes.formId !== prevProps.attributes.formId && attributes.formId) {
-        this.styleHandler = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
+        this.styleHandler = new _components_utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
         if (attributes.styles) {
-          this.styleHandler.updateStyles(attributes.styles);
+          var css = this.styleHandler.updateStyles(attributes.styles);
+          this.storeCss(css);
         }
       }
     }
   }, {
-    key: "render",
+    key: "storeCss",
     value:
     // Tab rendering methods have been moved to separate components
 
-    function render() {
-      var _config$forms,
-        _this2 = this;
+    // Add this method to generate and store CSS
+    function storeCss(css) {
+      if (css === false) {
+        return;
+      }
       var _this$props2 = this.props,
         attributes = _this$props2.attributes,
         setAttributes = _this$props2.setAttributes;
+      css = JSON.stringify(css);
+      if (css !== attributes.customCss) {
+        setAttributes({
+          customCss: css
+        });
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _config$forms,
+        _this2 = this;
+      var _this$props3 = this.props,
+        attributes = _this$props3.attributes,
+        setAttributes = _this$props3.setAttributes;
       var _this$state = this.state,
         isPreviewLoading = _this$state.isPreviewLoading,
         showSaveNotice = _this$state.showSaveNotice,
@@ -3489,6 +3910,7 @@ var EditComponent = /*#__PURE__*/function (_Component) {
         // Create device-specific class for responsive preview
         var deviceClass = "preview-device-".concat(previewDevice);
         var styles = attributes.styles,
+          customCss = attributes.customCss,
           serverAttributes = _objectWithoutProperties(attributes, _excluded);
         mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "fluent-form-preview-wrapper ".concat(deviceClass),
@@ -3549,524 +3971,6 @@ function Edit(props) {
   }));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
-
-/***/ }),
-
-/***/ "./guten_block/src/utils/StyleHandler.js":
-/*!***********************************************!*\
-  !*** ./guten_block/src/utils/StyleHandler.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
- * JavaScript Style Handler for FluentForm Gutenberg Block
- * Converts PHP styling logic to client-side JavaScript
- */
-var FluentFormStyleHandler = /*#__PURE__*/function () {
-  function FluentFormStyleHandler(formId) {
-    _classCallCheck(this, FluentFormStyleHandler);
-    this.formId = formId;
-    this.TABLET_BREAKPOINT = '768px';
-    this.MOBILE_BREAKPOINT = '480px';
-    this.styleElementId = "fluentform-block-custom-styles-".concat(formId);
-    this.baseSelector = ".fluentform-guten-wrapper .ff_guten_block.ff_guten_block-".concat(formId);
-    this.setStyleElement();
-  }
-  return _createClass(FluentFormStyleHandler, [{
-    key: "setStyleElement",
-    value: function setStyleElement() {
-      var styleElement = document.getElementById(this.styleElementId);
-      if (styleElement) {
-        this.styleElement = styleElement;
-      } else {
-        var style = document.createElement('style');
-        style.id = this.styleElementId;
-        document.head.appendChild(style);
-        this.styleElement = style;
-      }
-    }
-  }, {
-    key: "updateStyles",
-    value: function updateStyles(styles) {
-      if (!styles) return;
-      if (!this.styleElement) {
-        this.setStyleElement();
-      }
-      if (this.styleElement) {
-        this.styleElement.innerHTML = this.generateAllStyles(styles);
-      }
-    }
-  }, {
-    key: "generateAllStyles",
-    value: function generateAllStyles(styles) {
-      var css = '';
-
-      // Container styles
-      css += this.generateContainerStyles(styles);
-
-      // Label styles
-      css += this.generateLabelStyles(styles);
-
-      // Input styles
-      css += this.generateInputStyles(styles);
-
-      // Placeholder styles
-      css += this.generatePlaceholderStyles(styles);
-
-      // Button styles
-      css += this.generateButtonStyles(styles);
-
-      // Radio/Checkbox styles
-      css += this.generateRadioCheckboxStyles(styles);
-
-      // Message styles
-      css += this.generateMessageStyles(styles);
-      return css;
-    }
-  }, {
-    key: "generateContainerStyles",
-    value: function generateContainerStyles(styles) {
-      var css = '';
-      var selector = this.baseSelector;
-      var styleRules = [];
-      if (styles.backgroundColor) {
-        styleRules.push("background-color: ".concat(styles.backgroundColor));
-      }
-      if (styles.containerPadding) {
-        var padding = this.generateSpacing(styles.containerPadding);
-        if (padding) styleRules.push(padding);
-      }
-
-      // Container box shadow
-      if (styles.containerBoxShadow && styles.containerBoxShadow.enable) {
-        var boxShadow = this.generateBoxShadow(styles.containerBoxShadow);
-        if (boxShadow) styleRules.push("box-shadow: ".concat(boxShadow));
-      }
-      if (styleRules.length > 0) {
-        css += "".concat(selector, " { ").concat(styleRules.join('; '), "; }\n");
-      }
-
-      // Container border with responsive support
-      if (styles.formBorder) {
-        css += this.generateBorder(styles.formBorder, selector);
-      }
-      return css;
-    }
-  }, {
-    key: "generateLabelStyles",
-    value: function generateLabelStyles(styles) {
-      var css = '';
-      var labelSelector = "".concat(this.baseSelector, " .ff-el-input--label label");
-      var rules = [];
-      if (styles.labelColor) {
-        rules.push("color: ".concat(styles.labelColor));
-      }
-      if (styles.labelTypography) {
-        var typography = this.generateTypography(styles.labelTypography);
-        if (typography) rules.push(typography);
-      }
-      if (styles.length > 0) {
-        css += "".concat(labelSelector, " { ").concat(rules.join('; '), "; }\n");
-      }
-      return css;
-    }
-  }, {
-    key: "generateInputStyles",
-    value: function generateInputStyles(styles) {
-      var css = '';
-      var inputSelectors = ["".concat(this.baseSelector, " .ff-el-form-control"), "".concat(this.baseSelector, " .ff-el-input--content input"), "".concat(this.baseSelector, " .ff-el-input--content textarea"), "".concat(this.baseSelector, " .ff-el-input--content select")];
-      var inputSelector = inputSelectors.join(', ');
-
-      // Normal state
-      var normalStyles = [];
-      if (styles.inputTextColor) {
-        normalStyles.push("color: ".concat(styles.inputTextColor));
-      }
-      if (styles.inputBackgroundColor) {
-        normalStyles.push("background-color: ".concat(styles.inputBackgroundColor));
-      }
-      if (styles.inputTypography) {
-        var typography = this.generateTypography(styles.inputTypography);
-        if (typography) normalStyles.push(typography);
-      }
-      if (styles.inputSpacing) {
-        var spacing = this.generateSpacing(styles.inputSpacing);
-        if (spacing) normalStyles.push(spacing);
-      }
-
-      // Input box shadow
-      if (styles.inputBoxShadow && styles.inputBoxShadow.enable) {
-        var boxShadow = this.generateBoxShadow(styles.inputBoxShadow);
-        if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
-      }
-      if (normalStyles.length > 0) {
-        css += "".concat(inputSelector, " { ").concat(normalStyles.join('; '), "; }\n");
-      }
-
-      // Input border with responsive support
-      if (styles.inputBorder) {
-        css += this.generateBorder(styles.inputBorder, inputSelector);
-      }
-
-      // Focus state
-      var focusStyles = [];
-      var focusSelector = inputSelectors.map(function (sel) {
-        return "".concat(sel, ":focus");
-      }).join(', ');
-      if (styles.inputTextColorFocus) {
-        focusStyles.push("color: ".concat(styles.inputTextColorFocus));
-      }
-      if (styles.inputBackgroundColorFocus) {
-        focusStyles.push("background-color: ".concat(styles.inputBackgroundColorFocus));
-      }
-
-      // Input box shadow focus
-      if (styles.inputBoxShadowFocus && styles.inputBoxShadowFocus.enable) {
-        var boxShadowFocus = this.generateBoxShadow(styles.inputBoxShadowFocus);
-        if (boxShadowFocus) focusStyles.push("box-shadow: ".concat(boxShadowFocus));
-      }
-      if (focusStyles.length > 0) {
-        css += "".concat(focusSelector, " { ").concat(focusStyles.join('; '), "; }\n");
-      }
-
-      // Input focus border with responsive support
-      if (styles.inputBorderFocus) {
-        css += this.generateBorder(styles.inputBorderFocus, focusSelector);
-      }
-      return css;
-    }
-  }, {
-    key: "generatePlaceholderStyles",
-    value: function generatePlaceholderStyles(styles) {
-      var css = '';
-      if (styles.placeholderColor) {
-        var placeholderSelectors = ["".concat(this.baseSelector, " .ff-el-input--content input::placeholder"), "".concat(this.baseSelector, " .ff-el-input--content textarea::placeholder")];
-        css += "".concat(placeholderSelectors.join(', '), " { color: ").concat(styles.placeholderColor, "; }\n");
-      }
-      if (styles.placeholderTypography) {
-        var typography = this.generateTypography(styles.placeholderTypography);
-        if (typography) {
-          var _placeholderSelectors = ["".concat(this.baseSelector, " .ff-el-input--content input::placeholder"), "".concat(this.baseSelector, " .ff-el-input--content textarea::placeholder")];
-          css += "".concat(_placeholderSelectors.join(', '), " { ").concat(typography, "; }\n");
-        }
-      }
-      return css;
-    }
-  }, {
-    key: "generateButtonStyles",
-    value: function generateButtonStyles(styles) {
-      var css = '';
-      var buttonSelector = "".concat(this.baseSelector, " .ff-btn-submit");
-
-      // Button alignment
-      if (styles.buttonAlignment) {
-        css += "".concat(this.baseSelector, " .ff_submit_btn_wrapper { text-align: ").concat(styles.buttonAlignment, "; }\n");
-      }
-
-      // Normal state
-      var normalStyles = [];
-      if (styles.buttonColor) {
-        normalStyles.push("color: ".concat(styles.buttonColor));
-      }
-      if (styles.buttonBGColor) {
-        normalStyles.push("background-color: ".concat(styles.buttonBGColor));
-      }
-      if (styles.buttonTypography) {
-        var typography = this.generateTypography(styles.buttonTypography);
-        if (typography) normalStyles.push(typography);
-      }
-      if (styles.buttonSpacing) {
-        var spacing = this.generateSpacing(styles.buttonSpacing);
-        if (spacing) normalStyles.push(spacing);
-      }
-
-      // Button box shadow
-      if (styles.buttonBoxShadow && styles.buttonBoxShadow.enable) {
-        var boxShadow = this.generateBoxShadow(styles.buttonBoxShadow);
-        if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
-      }
-      if (normalStyles.length > 0) {
-        css += "".concat(buttonSelector, " { ").concat(normalStyles.join('; '), "; }\n");
-      }
-
-      // Button border with responsive support
-      if (styles.buttonBorder) {
-        css += this.generateBorder(styles.buttonBorder, buttonSelector);
-      }
-
-      // Hover state
-      var hoverStyles = [];
-      var hoverSelector = "".concat(buttonSelector, ":hover");
-      if (styles.buttonColorHover) {
-        hoverStyles.push("color: ".concat(styles.buttonColorHover));
-      }
-      if (styles.buttonBGColorHover) {
-        hoverStyles.push("background-color: ".concat(styles.buttonBGColorHover));
-      }
-
-      // Button hover box shadow
-      if (styles.buttonHoverBoxShadow && styles.buttonHoverBoxShadow.enable) {
-        var boxShadowHover = this.generateBoxShadow(styles.buttonHoverBoxShadow);
-        if (boxShadowHover) hoverStyles.push("box-shadow: ".concat(boxShadowHover));
-      }
-      if (hoverStyles.length > 0) {
-        css += "".concat(hoverSelector, " { ").concat(hoverStyles.join('; '), "; }\n");
-      }
-
-      // Button hover border with responsive support
-      if (styles.buttonHoverBorder) {
-        css += this.generateBorder(styles.buttonHoverBorder, hoverSelector);
-      }
-      return css;
-    }
-  }, {
-    key: "generateRadioCheckboxStyles",
-    value: function generateRadioCheckboxStyles(styles) {
-      var css = '';
-      if (styles.radioCheckboxItemsColor) {
-        css += "".concat(this.baseSelector, " .ff-el-form-check { color: ").concat(styles.radioCheckboxItemsColor, "; }\n");
-      }
-      if (styles.radioCheckboxItemsSize) {
-        var size = "".concat(styles.radioCheckboxItemsSize, "px");
-        css += "".concat(this.baseSelector, " input[type=\"radio\"], ").concat(this.baseSelector, " input[type=\"checkbox\"] { width: ").concat(size, "; height: ").concat(size, "; }\n");
-      }
-      return css;
-    }
-  }, {
-    key: "generateMessageStyles",
-    value: function generateMessageStyles(styles) {
-      var css = '';
-
-      // Success message
-      if (styles.successMessageColor) {
-        css += "".concat(this.baseSelector, " .ff-message-success { color: ").concat(styles.successMessageColor, "; }\n");
-      }
-
-      // Error message
-      if (styles.errorMessageColor) {
-        css += "".concat(this.baseSelector, " .ff-errors-in-stack, ").concat(this.baseSelector, " .error { color: ").concat(styles.errorMessageColor, "; }\n");
-      }
-
-      // Asterisk
-      if (styles.asteriskColor) {
-        css += "".concat(this.baseSelector, " .asterisk-right label:after, ").concat(this.baseSelector, " .asterisk-left label:before { color: ").concat(styles.asteriskColor, "; }\n");
-      }
-      return css;
-    }
-  }, {
-    key: "generateTypography",
-    value: function generateTypography(typography) {
-      if (!typography) return '';
-      var styles = [];
-      if (typography.size && typography.size.lg) {
-        styles.push("font-size: ".concat(typography.size.lg, "px"));
-      }
-      if (typography.weight) {
-        styles.push("font-weight: ".concat(typography.weight));
-      }
-      if (typography.lineHeight) {
-        styles.push("line-height: ".concat(typography.lineHeight));
-      }
-      if (typography.letterSpacing) {
-        styles.push("letter-spacing: ".concat(typography.letterSpacing, "px"));
-      }
-      if (typography.textTransform) {
-        styles.push("text-transform: ".concat(typography.textTransform));
-      }
-      return styles.join('; ');
-    }
-  }, {
-    key: "generateBorder",
-    value: function generateBorder(border) {
-      var selector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-      if (!border || !border.enable || !border.color) return '';
-      var css = '';
-      var desktopStyles = [];
-
-      // Border type and color (apply to all devices)
-      if (border.type) {
-        desktopStyles.push("border-style: ".concat(border.type));
-      }
-      if (border.color) {
-        desktopStyles.push("border-color: ".concat(border.color));
-      }
-
-      // Border width (desktop values)
-      if (border.width && border.width.desktop) {
-        var widthStyles = this.generateBorderWidth(border.width.desktop);
-        if (widthStyles) desktopStyles.push(widthStyles);
-      }
-
-      // Border radius (desktop values)
-      if (border.radius && border.radius.desktop) {
-        var radiusStyles = this.generateBorderRadius(border.radius.desktop);
-        if (radiusStyles) desktopStyles.push(radiusStyles);
-      }
-
-      // If no selector provided, return inline styles (for existing functionality)
-      if (!selector) {
-        return desktopStyles.join('; ');
-      }
-
-      // Generate CSS with media queries
-      if (desktopStyles.length > 0) {
-        css += "".concat(selector, " { ").concat(desktopStyles.join('; '), "; }\n");
-      }
-
-      // Handle tablet styles (only if different from desktop)
-      if (border.width && border.width.tablet && border.width.desktop) {
-        if (!this.areSpacingValuesEqual(border.width.desktop, border.width.tablet)) {
-          var tabletWidthStyles = this.generateBorderWidth(border.width.tablet);
-          if (tabletWidthStyles) {
-            css += "@media (max-width: ".concat(this.TABLET_BREAKPOINT, ") { ").concat(selector, " { ").concat(tabletWidthStyles, "; } }\n");
-          }
-        }
-      }
-      if (border.radius && border.radius.tablet && border.radius.desktop) {
-        if (!this.areSpacingValuesEqual(border.radius.desktop, border.radius.tablet)) {
-          var tabletRadiusStyles = this.generateBorderRadius(border.radius.tablet);
-          if (tabletRadiusStyles) {
-            css += "@media (max-width: ".concat(this.TABLET_BREAKPOINT, ") { ").concat(selector, " { ").concat(tabletRadiusStyles, "; } }\n");
-          }
-        }
-      }
-
-      // Handle mobile styles (only if different from desktop)
-      if (border.width && border.width.mobile && border.width.desktop) {
-        if (!this.areSpacingValuesEqual(border.width.desktop, border.width.mobile)) {
-          var mobileWidthStyles = this.generateBorderWidth(border.width.mobile);
-          if (mobileWidthStyles) {
-            css += "@media (max-width: ".concat(this.MOBILE_BREAKPOINT, ") { ").concat(selector, " { ").concat(mobileWidthStyles, "; } }\n");
-          }
-        }
-      }
-      if (border.radius && border.radius.mobile && border.radius.desktop) {
-        if (!this.areSpacingValuesEqual(border.radius.desktop, border.radius.mobile)) {
-          var mobileRadiusStyles = this.generateBorderRadius(border.radius.mobile);
-          if (mobileRadiusStyles) {
-            css += "@media (max-width: ".concat(this.MOBILE_BREAKPOINT, ") { ").concat(selector, " { ").concat(mobileRadiusStyles, "; } }\n");
-          }
-        }
-      }
-      return css;
-    }
-  }, {
-    key: "generateBorderWidth",
-    value: function generateBorderWidth(widthValues) {
-      if (!widthValues) return '';
-      var unit = widthValues.unit || 'px';
-      var linked = !!widthValues.linked;
-      if (linked && widthValues.top !== undefined && widthValues.top !== '') {
-        return "border-width: ".concat(widthValues.top).concat(unit);
-      } else {
-        var styles = [];
-        if (widthValues.top !== undefined && widthValues.top !== '') {
-          styles.push("border-top-width: ".concat(widthValues.top).concat(unit));
-        }
-        if (widthValues.right !== undefined && widthValues.right !== '') {
-          styles.push("border-right-width: ".concat(widthValues.right).concat(unit));
-        }
-        if (widthValues.bottom !== undefined && widthValues.bottom !== '') {
-          styles.push("border-bottom-width: ".concat(widthValues.bottom).concat(unit));
-        }
-        if (widthValues.left !== undefined && widthValues.left !== '') {
-          styles.push("border-left-width: ".concat(widthValues.left).concat(unit));
-        }
-        return styles.join('; ');
-      }
-    }
-  }, {
-    key: "generateBorderRadius",
-    value: function generateBorderRadius(radiusValues) {
-      if (!radiusValues) return '';
-      var unit = radiusValues.unit || 'px';
-      var linked = !!radiusValues.linked;
-      if (linked && radiusValues.top !== undefined && radiusValues.top !== '') {
-        return "border-radius: ".concat(radiusValues.top).concat(unit);
-      } else {
-        var styles = [];
-        // Map to CSS border-radius corners: top=top-left, right=top-right, bottom=bottom-right, left=bottom-left
-        if (radiusValues.top !== undefined && radiusValues.top !== '') {
-          styles.push("border-top-left-radius: ".concat(radiusValues.top).concat(unit));
-        }
-        if (radiusValues.right !== undefined && radiusValues.right !== '') {
-          styles.push("border-top-right-radius: ".concat(radiusValues.right).concat(unit));
-        }
-        if (radiusValues.bottom !== undefined && radiusValues.bottom !== '') {
-          styles.push("border-bottom-right-radius: ".concat(radiusValues.bottom).concat(unit));
-        }
-        if (radiusValues.left !== undefined && radiusValues.left !== '') {
-          styles.push("border-bottom-left-radius: ".concat(radiusValues.left).concat(unit));
-        }
-        return styles.join('; ');
-      }
-    }
-  }, {
-    key: "generateSpacing",
-    value: function generateSpacing(spacing) {
-      var property = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'padding';
-      if (!spacing) return '';
-      var styles = [];
-      if (spacing.top) {
-        styles.push("".concat(property, "-top: ").concat(spacing.top, "px"));
-      }
-      if (spacing.right) {
-        styles.push("".concat(property, "-right: ").concat(spacing.right, "px"));
-      }
-      if (spacing.bottom) {
-        styles.push("".concat(property, "-bottom: ").concat(spacing.bottom, "px"));
-      }
-      if (spacing.left) {
-        styles.push("".concat(property, "-left: ").concat(spacing.left, "px"));
-      }
-      return styles.join('; ');
-    }
-  }, {
-    key: "generateBoxShadow",
-    value: function generateBoxShadow(boxShadow) {
-      var _boxShadow$horizontal, _boxShadow$horizontal2, _boxShadow$vertical, _boxShadow$vertical2, _boxShadow$blur, _boxShadow$blur2, _boxShadow$spread, _boxShadow$spread2;
-      if (!boxShadow || !boxShadow.enable || !boxShadow.color) return '';
-
-      // Get position (inset or outline)
-      var position = boxShadow.position === 'inset' ? 'inset ' : '';
-
-      // Get values with units
-      var horizontal = "".concat(((_boxShadow$horizontal = boxShadow.horizontal) === null || _boxShadow$horizontal === void 0 ? void 0 : _boxShadow$horizontal.value) || '0').concat(((_boxShadow$horizontal2 = boxShadow.horizontal) === null || _boxShadow$horizontal2 === void 0 ? void 0 : _boxShadow$horizontal2.unit) || 'px');
-      var vertical = "".concat(((_boxShadow$vertical = boxShadow.vertical) === null || _boxShadow$vertical === void 0 ? void 0 : _boxShadow$vertical.value) || '0').concat(((_boxShadow$vertical2 = boxShadow.vertical) === null || _boxShadow$vertical2 === void 0 ? void 0 : _boxShadow$vertical2.unit) || 'px');
-      var blur = "".concat(((_boxShadow$blur = boxShadow.blur) === null || _boxShadow$blur === void 0 ? void 0 : _boxShadow$blur.value) || '5').concat(((_boxShadow$blur2 = boxShadow.blur) === null || _boxShadow$blur2 === void 0 ? void 0 : _boxShadow$blur2.unit) || 'px');
-      var spread = "".concat(((_boxShadow$spread = boxShadow.spread) === null || _boxShadow$spread === void 0 ? void 0 : _boxShadow$spread.value) || '0').concat(((_boxShadow$spread2 = boxShadow.spread) === null || _boxShadow$spread2 === void 0 ? void 0 : _boxShadow$spread2.unit) || 'px');
-      // Build the box-shadow value
-      return "".concat(position).concat(horizontal, " ").concat(vertical, " ").concat(blur, " ").concat(spread, " ").concat(boxShadow.color);
-    }
-  }, {
-    key: "areSpacingValuesEqual",
-    value: function areSpacingValuesEqual(values1, values2) {
-      if (!values1 && !values2) return true;
-      if (!values1 || !values2) return false;
-      var keys = ['top', 'right', 'bottom', 'left'];
-      for (var _i = 0, _keys = keys; _i < _keys.length; _i++) {
-        var key = _keys[_i];
-        var val1 = values1[key] || '';
-        var val2 = values2[key] || '';
-        if ('' !== val2 && val1 !== val2) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }]);
-}();
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentFormStyleHandler);
 
 /***/ }),
 

@@ -9,7 +9,7 @@ class FluentFormStyleHandler {
         this.TABLET_BREAKPOINT = '768px';
         this.MOBILE_BREAKPOINT = '480px';
         this.styleElementId = `fluentform-block-custom-styles-${formId}`;
-        this.baseSelector = `.fluentform-guten-wrapper .ff_guten_block.ff_guten_block-${formId}`;
+        this.baseSelector = `.fluentform.ff_guten_block.ff_guten_block-${formId}`;
         this.setStyleElement();
     }
 
@@ -31,11 +31,18 @@ class FluentFormStyleHandler {
             this.setStyleElement();
         }
         if (this.styleElement) {
-            this.styleElement.innerHTML = this.generateAllStyles(styles);
+            const css = this.generateAllStyles(styles);
+            this.styleElement.innerHTML = css;
+            return css;
         }
+        return false;
     }
 
     generateAllStyles(styles) {
+        if (!styles || Object.keys(styles).length === 0) {
+            return '';
+        }
+
         let css = '';
 
         // Container styles
@@ -65,25 +72,51 @@ class FluentFormStyleHandler {
     generateContainerStyles(styles) {
         let css = '';
         const selector = this.baseSelector;
-        let styleRules = [];
-        
-        if (styles.backgroundColor) {
-            styleRules.push(`background-color: ${styles.backgroundColor}`);
+        let rules = [];
+        // Background handling
+        if (styles.backgroundType === 'gradient' && styles.gradientColor1 && styles.gradientColor2) {
+            const gradientType = styles.gradientType || 'linear';
+            const gradientAngle = styles.gradientAngle || 90;
+            
+            if (gradientType === 'linear') {
+                rules.push(`background: linear-gradient(${gradientAngle}deg, ${styles.gradientColor1}, ${styles.gradientColor2})`);
+            } else {
+                rules.push(`background: radial-gradient(circle, ${styles.gradientColor1}, ${styles.gradientColor2})`);
+            }
+        } else if (styles.backgroundColor) {
+            rules.push(`background-color: ${styles.backgroundColor}`);
+        }
+        if (styles.backgroundType === 'classic' && styles.backgroundImage) {
+            rules.push(`background-image: url(${styles.backgroundImage})`);
+            
+            if (styles.backgroundSize) {
+                rules.push(`background-size: ${styles.backgroundSize}`);
+            }
+            
+            if (styles.backgroundPosition) {
+                rules.push(`background-position: ${styles.backgroundPosition}`);
+            }
+            
+            if (styles.backgroundRepeat) {
+                rules.push(`background-repeat: ${styles.backgroundRepeat}`);
+            }
         }
         
         if (styles.containerPadding) {
-            const padding = this.generateSpacing(styles.containerPadding);
-            if (padding) styleRules.push(padding);
+            css += this.generateSpacingWithResponsive(styles.containerPadding, 'padding', selector);
+        }
+        if (styles.containerMargin) {
+            css += this.generateSpacingWithResponsive(styles.containerMargin, 'margin', selector);
         }
 
         // Container box shadow
         if (styles.containerBoxShadow && styles.containerBoxShadow.enable) {
             const boxShadow = this.generateBoxShadow(styles.containerBoxShadow);
-            if (boxShadow) styleRules.push(`box-shadow: ${boxShadow}`);
+            if (boxShadow) rules.push(`box-shadow: ${boxShadow}`);
         }
 
-        if (styleRules.length > 0) {
-            css += `${selector} { ${styleRules.join('; ')}; }\n`;
+        if (rules.length > 0) {
+            css += `${selector} { ${rules.join('; ')}; }\n`;
         }
         
         // Container border with responsive support
@@ -108,7 +141,7 @@ class FluentFormStyleHandler {
             if (typography) rules.push(typography);
         }
 
-        if (styles.length > 0) {
+        if (rules.length > 0) {
             css += `${labelSelector} { ${rules.join('; ')}; }\n`;
         }
 
@@ -142,8 +175,7 @@ class FluentFormStyleHandler {
         }
         
         if (styles.inputSpacing) {
-            const spacing = this.generateSpacing(styles.inputSpacing);
-            if (spacing) normalStyles.push(spacing);
+            css += this.generateSpacingWithResponsive(styles.inputSpacing, 'padding', inputSelector);
         }
 
         // Input box shadow
@@ -165,12 +197,16 @@ class FluentFormStyleHandler {
         let focusStyles = [];
         const focusSelector = inputSelectors.map(sel => `${sel}:focus`).join(', ');
         
-        if (styles.inputTextColorFocus) {
-            focusStyles.push(`color: ${styles.inputTextColorFocus}`);
+        if (styles.inputTextFocusColor) {
+            focusStyles.push(`color: ${styles.inputTextFocusColor}`);
         }
         
-        if (styles.inputBackgroundColorFocus) {
-            focusStyles.push(`background-color: ${styles.inputBackgroundColorFocus}`);
+        if (styles.inputBackgroundFocusColor) {
+            focusStyles.push(`background-color: ${styles.inputBackgroundFocusColor}`);
+        }
+
+        if (styles.inputFocusSpacing) {
+            css += this.generateSpacingWithResponsive(styles.inputFocusSpacing, 'padding', focusSelector);
         }
 
         // Input box shadow focus
@@ -222,12 +258,16 @@ class FluentFormStyleHandler {
         const buttonSelector = `${this.baseSelector} .ff-btn-submit`;
         
         // Button alignment
-        if (styles.buttonAlignment) {
+        if (styles.buttonAlignment && styles.buttonAlignment !== 'left') {
             css += `${this.baseSelector} .ff_submit_btn_wrapper { text-align: ${styles.buttonAlignment}; }\n`;
         }
         
         // Normal state
         let normalStyles = [];
+
+        if (styles.buttonWidth) {
+            normalStyles.push(`width: ${styles.buttonWidth}%`);
+        }
         
         if (styles.buttonColor) {
             normalStyles.push(`color: ${styles.buttonColor}`);
@@ -242,9 +282,12 @@ class FluentFormStyleHandler {
             if (typography) normalStyles.push(typography);
         }
         
-        if (styles.buttonSpacing) {
-            const spacing = this.generateSpacing(styles.buttonSpacing);
-            if (spacing) normalStyles.push(spacing);
+        if (styles.buttonPadding) {
+            css += this.generateSpacingWithResponsive(styles.buttonPadding, 'padding', buttonSelector);
+        }
+
+        if (styles.buttonMargin) {
+            css += this.generateSpacingWithResponsive(styles.buttonMargin, 'margin', buttonSelector);
         }
 
         // Button box shadow
@@ -266,12 +309,25 @@ class FluentFormStyleHandler {
         let hoverStyles = [];
         const hoverSelector = `${buttonSelector}:hover`;
         
-        if (styles.buttonColorHover) {
-            hoverStyles.push(`color: ${styles.buttonColorHover}`);
+        if (styles.buttonHoverColor) {
+            hoverStyles.push(`color: ${styles.buttonHoverColor}`);
         }
         
-        if (styles.buttonBGColorHover) {
-            hoverStyles.push(`background-color: ${styles.buttonBGColorHover}`);
+        if (styles.buttonHoverBGColor) {
+            hoverStyles.push(`background-color: ${styles.buttonHoverBGColor}`);
+        }
+
+        if (styles.buttonHoverTypography) {
+            const typographyHover = this.generateTypography(styles.buttonHoverTypography);
+            if (typographyHover) hoverStyles.push(typographyHover);
+        }
+
+        if (styles.buttonHoverPadding) {
+            css += this.generateSpacingWithResponsive(styles.buttonHoverPadding, 'padding', hoverSelector);
+        }
+
+        if (styles.buttonHoverMargin) {
+            css += this.generateSpacingWithResponsive(styles.buttonHoverMargin, 'margin', hoverSelector);
         }
 
         // Button hover box shadow
@@ -315,9 +371,38 @@ class FluentFormStyleHandler {
             css += `${this.baseSelector} .ff-message-success { color: ${styles.successMessageColor}; }\n`;
         }
         
+        if (styles.successMessageBgColor) {
+            css += `${this.baseSelector} .ff-message-success { background-color: ${styles.successMessageBgColor}; }\n`;
+        }
+        
+        if (styles.successMessageAlignment && styles.successMessageAlignment !== 'left') {
+            css += `${this.baseSelector} .ff-message-success { text-align: ${styles.successMessageAlignment}; }\n`;
+        }
+        
         // Error message
         if (styles.errorMessageColor) {
             css += `${this.baseSelector} .ff-errors-in-stack, ${this.baseSelector} .error { color: ${styles.errorMessageColor}; }\n`;
+        }
+        
+        if (styles.errorMessageBgColor) {
+            css += `${this.baseSelector} .ff-errors-in-stack, ${this.baseSelector} .error { background-color: ${styles.errorMessageBgColor}; }\n`;
+        }
+        
+        if (styles.errorMessageAlignment && styles.errorMessageAlignment !== 'left') {
+            css += `${this.baseSelector} .ff-errors-in-stack, ${this.baseSelector} .error { text-align: ${styles.errorMessageAlignment}; }\n`;
+        }
+        
+        // Submit error message
+        if (styles.submitErrorMessageColor) {
+            css += `${this.baseSelector} .ff-submit-error { color: ${styles.submitErrorMessageColor}; }\n`;
+        }
+        
+        if (styles.submitErrorMessageBgColor) {
+            css += `${this.baseSelector} .ff-submit-error { background-color: ${styles.submitErrorMessageBgColor}; }\n`;
+        }
+        
+        if (styles.submitErrorMessageAlignment && styles.submitErrorMessageAlignment !== 'left') {
+            css += `${this.baseSelector} .ff-submit-error { text-align: ${styles.submitErrorMessageAlignment}; }\n`;
         }
         
         // Asterisk
@@ -333,12 +418,12 @@ class FluentFormStyleHandler {
         
         let styles = [];
         
-        if (typography.size && typography.size.lg) {
-            styles.push(`font-size: ${typography.size.lg}px`);
+        if (typography.fontSize) {
+            styles.push(`font-size: ${typography.fontSize}px`);
         }
         
-        if (typography.weight) {
-            styles.push(`font-weight: ${typography.weight}`);
+        if (typography.fontWeight) {
+            styles.push(`font-weight: ${typography.fontWeight}`);
         }
         
         if (typography.lineHeight) {
@@ -487,28 +572,72 @@ class FluentFormStyleHandler {
         }
     }
 
-    generateSpacing(spacing, property = 'padding') {
-        if (!spacing) return '';
-        
-        let styles = [];
-        
-        if (spacing.top) {
-            styles.push(`${property}-top: ${spacing.top}px`);
+    generateSpacingWithResponsive(spacing, property = 'padding', selector) {
+        if (!spacing || !selector ||
+            (Array.isArray(spacing) && spacing.length === 0) ||
+            (typeof spacing === 'object' && Object.keys(spacing).length === 0)
+        ) {
+            return '';
         }
         
-        if (spacing.right) {
-            styles.push(`${property}-right: ${spacing.right}px`);
+        let css = '';
+        
+        // Desktop styles (default)
+        if (spacing.desktop) {
+            const desktopRules = this.getSpacingRules(spacing.desktop, property);
+            if (desktopRules.length > 0) {
+                css += `${selector} { ${desktopRules.join('; ')}; }\n`;
+            }
         }
         
-        if (spacing.bottom) {
-            styles.push(`${property}-bottom: ${spacing.bottom}px`);
+        // Tablet styles (only if different from desktop)
+        if (spacing.tablet && spacing.desktop) {
+            if (!this.areSpacingValuesEqual(spacing.desktop, spacing.tablet)) {
+                const tabletRules = this.getSpacingRules(spacing.tablet, property);
+                if (tabletRules.length > 0) {
+                    css += `@media (max-width: ${this.TABLET_BREAKPOINT}) { ${selector} { ${tabletRules.join('; ')}; } }\n`;
+                }
+            }
         }
         
-        if (spacing.left) {
-            styles.push(`${property}-left: ${spacing.left}px`);
+        // Mobile styles (only if different from desktop)
+        if (spacing.mobile && spacing.desktop) {
+            if (!this.areSpacingValuesEqual(spacing.desktop, spacing.mobile)) {
+                const mobileRules = this.getSpacingRules(spacing.mobile, property);
+                if (mobileRules.length > 0) {
+                    css += `@media (max-width: ${this.MOBILE_BREAKPOINT}) { ${selector} { ${mobileRules.join('; ')}; } }\n`;
+                }
+            }
         }
         
-        return styles.join('; ');
+        return css;
+    }
+
+    getSpacingRules(values, property, unit = null) {
+        if (!values) return [];
+        
+        const spacingUnit = unit || values.unit || 'px';
+        const linked = !!values.linked;
+        let rules = [];
+        
+        if (linked && values.top !== undefined && values.top !== '') {
+            rules.push(`${property}: ${values.top}${spacingUnit}`);
+        } else {
+            if (values.top !== undefined && values.top !== '') {
+                rules.push(`${property}-top: ${values.top}${spacingUnit}`);
+            }
+            if (values.right !== undefined && values.right !== '') {
+                rules.push(`${property}-right: ${values.right}${spacingUnit}`);
+            }
+            if (values.bottom !== undefined && values.bottom !== '') {
+                rules.push(`${property}-bottom: ${values.bottom}${spacingUnit}`);
+            }
+            if (values.left !== undefined && values.left !== '') {
+                rules.push(`${property}-left: ${values.left}${spacingUnit}`);
+            }
+        }
+        
+        return rules;
     }
 
     generateBoxShadow(boxShadow) {
@@ -529,15 +658,40 @@ class FluentFormStyleHandler {
     areSpacingValuesEqual(values1, values2) {
         if (!values1 && !values2) return true;
         if (!values1 || !values2) return false;
-        
-        const keys = ['top', 'right', 'bottom', 'left'];
-        
-        for (const key of keys) {
-            const val1 = values1[key] || '';
-            const val2 = values2[key] || '';
-            
-            if ('' !== val2 && val1 !== val2) {
-                return false;
+
+        if (values1.unit !== values2.unit) {
+            return false;
+        }
+
+        if (values2.linked) {
+            const val2 = values2.top || '';
+            // If values2 has no value, consider it equal (no change)
+            if (val2 === '') {
+                return true;
+            }
+            // If values1 is also linked, compare top values only
+            if (values1.linked) {
+                const val1 = values1.top || '';
+                return val1 === val2;
+            } else {
+                // values1 is not linked, so check if values2.top matches any of values1's sides
+                const keys = ['top', 'right', 'bottom', 'left'];
+                for (const key of keys) {
+                    const val1 = values1[key] || '';
+                    if (val1 !== '' && val1 !== val2) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else {
+            const keys = ['top', 'right', 'bottom', 'left'];
+            for (const key of keys) {
+                const val1 = values1.linked ? (values1.top || '') : (values1[key] || '');
+                const val2 = values2[key] || '';
+                if (val2 !== '' && val1 !== val2) {
+                    return false;
+                }
             }
         }
         

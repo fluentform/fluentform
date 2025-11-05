@@ -64,6 +64,10 @@ class BlockAttributes
             'customCssClass' => [
                 'type' => 'string',
                 'default' => '',
+            ],
+            'customCss' => [
+                'type' => 'string',
+                'default' => '',
             ]
         ];
     }
@@ -172,7 +176,6 @@ class BlockAttributes
     public static function getColorAttributes()
     {
         return [
-            'textColor' => '',
             'backgroundColor' => '',
             'labelColor' => '',
             'inputTextColor' => '',

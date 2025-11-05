@@ -63,7 +63,6 @@ class GutenbergBlock
         $selectedPreset = sanitize_text_field(Arr::get($atts, 'selectedPreset', ''));
         $customizePreset = Arr::get($atts, 'customizePreset', false);
         $presetStyles = Arr::get($atts, 'presetStyles', []);
-        $styles = Arr::get($atts, 'styles', []); // Get consolidated styles
         $type = Helper::isConversionForm($formId) ? 'conversational' : '';
 
         // Handle preset styles
@@ -84,21 +83,18 @@ class GutenbergBlock
             }
         }
 
-        // Then, add individual custom styles (higher specificity, should override presets)
-        if (!empty($styles)) {
-            $individualCSS = StyleProcessor::generateBlockStyles($atts, $formId);
-            if ($individualCSS) {
-                // Create a unique ID for this form's individual styles
-                $stylesId = 'fluentform-block-custom-styles-' . $formId;
-                $individualStyleTag = '<style id="' . esc_attr($stylesId) . '">' . $individualCSS . '</style>';
-                
-                // Also attach to frontend style handles
-                if (wp_style_is('fluent-form-styles', 'enqueued') || wp_style_is('fluent-form-styles', 'registered')) {
-                    wp_add_inline_style('fluent-form-styles', $individualCSS);
-                }
-                if (wp_style_is('fluentform-public-default', 'enqueued') || wp_style_is('fluentform-public-default', 'registered')) {
-                    wp_add_inline_style('fluentform-public-default', $individualCSS);
-                }
+        // Custom block styles
+        $customBlockCss = Arr::get($atts, 'customCss', '');
+        if ($customBlockCss = json_decode($customBlockCss)) {
+            $stylesId = 'fluentform-block-custom-styles-' . $formId;
+            $individualStyleTag = '<style id="' . esc_attr($stylesId) . '">' . $customBlockCss . '</style>';
+
+            // Also attach to frontend style handles
+            if (wp_style_is('fluent-form-styles', 'enqueued') || wp_style_is('fluent-form-styles', 'registered')) {
+                wp_add_inline_style('fluent-form-styles', $customBlockCss);
+            }
+            if (wp_style_is('fluentform-public-default', 'enqueued') || wp_style_is('fluentform-public-default', 'registered')) {
+                wp_add_inline_style('fluentform-public-default', $customBlockCss);
             }
         }
 

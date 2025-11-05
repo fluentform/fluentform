@@ -3,7 +3,7 @@
  * Enhanced with custom UX controls
  */
 import FluentSeparator from './components/controls/FluentSeparator';
-import FluentFormStyleHandler from './utils/StyleHandler';
+import StyleHandler from './components/utils/StyleHandler';
 const { __ } = wp.i18n;
 const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
@@ -62,7 +62,8 @@ class EditComponent extends Component {
         
         // Apply styles immediately via JavaScript without triggering server render
         if (this.styleHandler && attributes.formId) {
-            this.styleHandler.updateStyles(styles);
+            const css = this.styleHandler.updateStyles(styles);
+            this.storeCss(css);
         }
     }
 
@@ -90,20 +91,23 @@ class EditComponent extends Component {
 
         // Initialize style handler
         if (attributes.formId && attributes.styles) {
-            this.styleHandler = new FluentFormStyleHandler(attributes.formId);
+            this.styleHandler = new StyleHandler(attributes.formId);
             if (attributes.styles) {
-                this.styleHandler.updateStyles(attributes.styles);
+                const css = this.styleHandler.updateStyles(attributes.styles);
+                this.storeCss(css);
             }
         }
     }
 
     componentDidUpdate(prevProps) {
         const { attributes } = this.props;
+        
         // Initialize or update style handler
         if (attributes.formId !== prevProps.attributes.formId && attributes.formId) {
-            this.styleHandler = new FluentFormStyleHandler(attributes.formId);
+            this.styleHandler = new StyleHandler(attributes.formId);
             if (attributes.styles) {
-                this.styleHandler.updateStyles(attributes.styles);
+                const css = this.styleHandler.updateStyles(attributes.styles);
+                this.storeCss(css);
             }
         }
     }
@@ -171,6 +175,18 @@ class EditComponent extends Component {
     }
 
     // Tab rendering methods have been moved to separate components
+
+    // Add this method to generate and store CSS
+    storeCss(css) {
+        if (css === false) {
+            return;
+        }
+        const { attributes, setAttributes } = this.props;
+        css = JSON.stringify(css);
+        if (css !== attributes.customCss) {
+            setAttributes({ customCss: css });
+        }
+    }
 
     render() {
         const { attributes, setAttributes } = this.props;
@@ -271,7 +287,7 @@ class EditComponent extends Component {
             // Regular form selected - show preview only
             // Create device-specific class for responsive preview
             const deviceClass = `preview-device-${previewDevice}`;
-            const {styles, ...serverAttributes } = attributes;
+            const {styles, customCss, ...serverAttributes } = attributes;
 
             mainContent = (
                 <div className={`fluent-form-preview-wrapper ${deviceClass}`}>

@@ -4,47 +4,28 @@
 const { useState, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
 const { PanelBody, SelectControl, RangeControl, Button, BaseControl, FontSizePicker } = wp.components;
+const { useSelect } = wp.data;
 
 // Import custom components
 import FluentColorPicker from "../controls/FluentColorPicker";
 import FluentSpaceControl from "../controls/FluentSpaceControl";
 import FluentAlignmentControl from "../controls/FluentAlignmentControl";
-import FluentTypography from "../controls/FluentTypography";
 import FluentSeparator from "../controls/FluentSeparator";
-import FluentUnitControl from "../controls/FluentUnitControl";
 import FluentBoxShadowControl from "../controls/FluentBoxShadowControl";
 import FluentBorderControl from "../controls/FluentBorderControl";
-import { getUpdatedTypography } from "../utils/TypographyUtils";
 import { arePropsEqual } from '../utils/ComponentUtils';
-
-// Constants
-const DEFAULT_COLORS = [
-    { name: 'Theme Blue', color: '#72aee6' },
-    { name: 'Theme Red', color: '#e65054' },
-    { name: 'Theme Green', color: '#68de7c' },
-    { name: 'Black', color: '#000000' },
-    { name: 'White', color: '#ffffff' },
-    { name: 'Gray', color: '#dddddd' }
-];
 
 /**
  * Main TabMisc component
  */
-const TabMisc = ({ attributes, setAttributes, updateStyles, state }) => {
+const TabMisc = ({ setAttributes, updateStyles, state }) => {
+    const attributes = useSelect((select) => {
+        return select('core/block-editor').getSelectedBlock().attributes;
+    });
     // Use local state for background type to ensure UI updates immediately
     const [localBgType, setLocalBgType] = useState(attributes.styles.backgroundType || 'classic');
     // Add local state for background image to ensure immediate UI update
     const [localBgImage, setLocalBgImage] = useState(attributes.styles.backgroundImage || '');
-
-    const handleTypographyChange = (changedTypo, key) => {
-        const updatedTypography = getUpdatedTypography(
-          changedTypo,
-          attributes,
-          key
-        );
-
-        updateStyles({ [key]: updatedTypography });
-    };
 
     // Update local state when attributes change
     useEffect(() => {
@@ -446,7 +427,6 @@ const MISC_TAB_ATTRIBUTES = [
     'backgroundImage',
     'backgroundImageId',
     'backgroundColor',
-    'textColor',
     'gradientColor1',
     'gradientColor2',
     'containerPadding',
@@ -459,7 +439,6 @@ const MISC_TAB_ATTRIBUTES = [
     'enableFormBorder',
     'formBorder',
     'formWidth',
-    'formAlignment',
     'backgroundSize',
     'backgroundPosition',
     'backgroundRepeat',

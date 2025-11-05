@@ -96,14 +96,8 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             // Explicitly set isLinked based on the current device's linked property
             setIsLinked(currentValues[activeDevice].linked !== false);
 
-            // Check for unit at the top level first, then in the device object
-            if (currentValues.unit) {
-                setActiveUnit(currentValues.unit);
-            } else if (currentValues[activeDevice].unit) {
-                setActiveUnit(currentValues[activeDevice].unit);
-            } else {
-                setActiveUnit('px');
-            }
+            // Set unit based on the current device's unit
+            setActiveUnit(currentValues[activeDevice].unit || 'px');
 
             // Check if any values have been modified
             setHasModifiedValues(checkForModifiedValues(currentValues));
@@ -113,21 +107,14 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
     const handleUnitChange = (unit) => {
         setActiveUnit(unit);
 
-        // Create a new values object with the updated unit
+        // Create a new values object with the updated unit for current device only
         const updatedValues = {
             ...currentValues,
-            unit: unit, // Set unit at the top level
-        };
-
-        // Also update the unit in each device object for backward compatibility
-        ['desktop', 'tablet', 'mobile'].forEach(device => {
-            if (updatedValues[device]) {
-                updatedValues[device] = {
-                    ...updatedValues[device],
-                    unit: unit
-                };
+            [activeDevice]: {
+                ...currentValues[activeDevice],
+                unit: unit
             }
-        });
+        };
 
         // Call the onChange callback with the updated values
         onChange(updatedValues);
@@ -151,7 +138,9 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
     };
 
     const handleValueChange = (position, value) => {
-        const numValue = value === '' ? '' : parseInt(value);
+        // For em units, keep decimal values; for others, use integers
+        const numValue = value === '' ? '' : 
+            (activeUnit === 'em' || activeUnit === '%') ? parseFloat(value) : parseInt(value);
 
         // Set the modified flag if the value is not empty
         if (value !== '') {
@@ -309,6 +298,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
                             value={deviceValues.top}
                             onChange={(value) => handleValueChange('top', value)}
                             min={0}
+                            step={activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1}
                         />
                         <span key="label-top">TOP</span>
 
@@ -320,6 +310,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
                            value={deviceValues.right}
                            onChange={(value) => handleValueChange('right', value)}
                            min={0}
+                           step={activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1}
                        />
                        <span key="label-right">RIGHT</span>
 
@@ -330,6 +321,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
                             value={deviceValues.bottom}
                             onChange={(value) => handleValueChange('bottom', value)}
                             min={0}
+                            step={activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1}
                         />
                         <span key="label-right">BOTTOM</span>
 
@@ -340,6 +332,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
                             value={deviceValues.left}
                             onChange={(value) => handleValueChange('left', value)}
                             min={0}
+                            step={activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1}
                         />
                         <span key="label-left">LEFT</span>
 
