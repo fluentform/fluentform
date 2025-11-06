@@ -13,7 +13,7 @@ import { areStylesEqual } from '../utils/ComponentUtils';
 /**
  * Main TabMisc component
  */
-const TabMisc = ({ attributes, setAttributes, updateStyles }) => {
+const TabMisc = ({ attributes, updateStyles }) => {
     const [localBgType, setLocalBgType] = useState(attributes.styles.backgroundType || 'classic');
     const [localBgImage, setLocalBgImage] = useState(attributes.styles.backgroundImage || '');
 
@@ -45,14 +45,6 @@ const TabMisc = ({ attributes, setAttributes, updateStyles }) => {
         mediaUploader.on('select', function() {
             const attachment = mediaUploader.state().get('selection').first().toJSON();
             setLocalBgImage(attachment.url);
-
-            if (typeof setAttributes === 'function') {
-                setAttributes({
-                    backgroundImage: attachment.url,
-                    backgroundImageId: attachment.id
-                });
-            }
-
             updateStyles({
                 backgroundImage: attachment.url,
                 backgroundImageId: attachment.id
@@ -65,14 +57,6 @@ const TabMisc = ({ attributes, setAttributes, updateStyles }) => {
 
     const removeBackgroundImage = () => {
         setLocalBgImage('');
-
-        if (typeof setAttributes === 'function') {
-            setAttributes({
-                backgroundImage: '',
-                backgroundImageId: 0
-            });
-        }
-
         updateStyles({
             backgroundImage: '',
             backgroundImageId: 0

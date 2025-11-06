@@ -5,7 +5,7 @@ const { memo } = wp.element;
 /**
  * Component for form style template selection
  */
-const StyleTemplatePanel = ({ attributes, setAttributes, handlePresetChange }) => {
+const StyleTemplatePanel = ({ attributes, handlePresetChange }) => {
     const config = window.fluentform_block_vars;
     const presets = config.style_presets;
 
@@ -15,17 +15,7 @@ const StyleTemplatePanel = ({ attributes, setAttributes, handlePresetChange }) =
             label={__("Choose a Template")}
             value={attributes.themeStyle}
             options={presets}
-            onChange={themeStyle => {
-                setAttributes({
-                    themeStyle,
-                    isThemeChange: true,
-                });
-                if (handlePresetChange) {
-                    handlePresetChange(themeStyle);
-                }
-            }}
-            __next36pxDefaultSize={true}
-            __nextHasNoMarginBottom={true}
+            onChange={themeStyle => handlePresetChange(themeStyle)}
           />
       </PanelBody>
     );

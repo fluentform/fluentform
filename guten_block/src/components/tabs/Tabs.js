@@ -4,7 +4,7 @@ const { memo } = wp.element;
 
 import TabGeneral from './TabGeneral';
 import TabMisc from './TabMisc';
-function Tabs({ attributes, setAttributes, updateStyles, handlePresetChange}) {
+function Tabs({ attributes, updateStyles, handlePresetChange}) {
     return (
         <TabPanel
             className="fluent-form-block-style-tabs"
@@ -20,7 +20,6 @@ function Tabs({ attributes, setAttributes, updateStyles, handlePresetChange}) {
                         <div key="general-tab-content">
                             <TabGeneral
                                 attributes={attributes}
-                                setAttributes={setAttributes}
                                 updateStyles={updateStyles}
                                 handlePresetChange={handlePresetChange}
                             />
@@ -31,7 +30,6 @@ function Tabs({ attributes, setAttributes, updateStyles, handlePresetChange}) {
                         <div key="misc-tab-content">
                             <TabMisc
                                 attributes={attributes}
-                                setAttributes={setAttributes}
                                 updateStyles={updateStyles}
                             />
                         </div>
@@ -44,9 +42,9 @@ function Tabs({ attributes, setAttributes, updateStyles, handlePresetChange}) {
 }
 
 export default memo(Tabs, (prevProps, nextProps) => {
-    if (prevProps.setAttributes !== nextProps.setAttributes ||
-        prevProps.updateStyles !== nextProps.updateStyles ||
-        prevProps.handlePresetChange !== nextProps.handlePresetChange) {
+    if (prevProps.updateStyles !== nextProps.updateStyles ||
+        prevProps.handlePresetChange !== nextProps.handlePresetChange
+    ) {
         return false;
     }
     return prevProps.attributes === nextProps.attributes;

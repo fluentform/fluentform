@@ -165,10 +165,7 @@ function EditComponent(_ref2) {
     if (!formId) {
       setAttributes({
         themeStyle: "",
-        isThemeChange: false,
-        isConversationalForm: false,
-        selectedPreset: 'default',
-        customizePreset: false
+        isConversationalForm: false
       });
       setIsPreviewLoading(false);
     } else {
@@ -178,8 +175,7 @@ function EditComponent(_ref2) {
   var handlePresetChange = useCallback(function (newPreset) {
     setIsPreviewLoading(true);
     setAttributes({
-      selectedPreset: newPreset,
-      isThemeChange: true
+      themeStyle: newPreset
     });
     setTimeout(function () {
       setIsPreviewLoading(false);
@@ -190,7 +186,7 @@ function EditComponent(_ref2) {
       styles: {},
       customCss: ''
     });
-  }, [attributes.formId, attributes.selectedPreset]);
+  }, [attributes.formId, attributes.themeStyle]);
 
   // Initial setup effect
   useEffect(function () {
@@ -235,7 +231,6 @@ function EditComponent(_ref2) {
       })
     }), attributes.formId && !attributes.isConversationalForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__["default"], {
       attributes: attributes,
-      setAttributes: setAttributes,
       updateStyles: updateStyles,
       handlePresetChange: handlePresetChange
     })]
@@ -1768,13 +1763,11 @@ var memo = wp.element.memo;
 
 var TabGeneral = function TabGeneral(_ref) {
   var attributes = _ref.attributes,
-    setAttributes = _ref.setAttributes,
     updateStyles = _ref.updateStyles,
     handlePresetChange = _ref.handlePresetChange;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_StyleTemplatePanel__WEBPACK_IMPORTED_MODULE_1__["default"], {
       attributes: attributes,
-      setAttributes: setAttributes,
       handlePresetChange: handlePresetChange
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_LabelStylesPanel__WEBPACK_IMPORTED_MODULE_2__["default"], {
       styles: attributes.styles,
@@ -1853,7 +1846,6 @@ var _wp$components = wp.components,
 
 var TabMisc = function TabMisc(_ref) {
   var attributes = _ref.attributes,
-    setAttributes = _ref.setAttributes,
     updateStyles = _ref.updateStyles;
   var _useState = useState(attributes.styles.backgroundType || 'classic'),
     _useState2 = _slicedToArray(_useState, 2),
@@ -1893,12 +1885,6 @@ var TabMisc = function TabMisc(_ref) {
     mediaUploader.on('select', function () {
       var attachment = mediaUploader.state().get('selection').first().toJSON();
       setLocalBgImage(attachment.url);
-      if (typeof setAttributes === 'function') {
-        setAttributes({
-          backgroundImage: attachment.url,
-          backgroundImageId: attachment.id
-        });
-      }
       updateStyles({
         backgroundImage: attachment.url,
         backgroundImageId: attachment.id
@@ -1908,12 +1894,6 @@ var TabMisc = function TabMisc(_ref) {
   };
   var removeBackgroundImage = function removeBackgroundImage() {
     setLocalBgImage('');
-    if (typeof setAttributes === 'function') {
-      setAttributes({
-        backgroundImage: '',
-        backgroundImageId: 0
-      });
-    }
     updateStyles({
       backgroundImage: '',
       backgroundImageId: 0
@@ -2379,7 +2359,6 @@ var memo = wp.element.memo;
 
 function Tabs(_ref) {
   var attributes = _ref.attributes,
-    setAttributes = _ref.setAttributes,
     updateStyles = _ref.updateStyles,
     handlePresetChange = _ref.handlePresetChange;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(TabPanel, {
@@ -2399,7 +2378,6 @@ function Tabs(_ref) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
             attributes: attributes,
-            setAttributes: setAttributes,
             updateStyles: updateStyles,
             handlePresetChange: handlePresetChange
           })
@@ -2408,7 +2386,6 @@ function Tabs(_ref) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_TabMisc__WEBPACK_IMPORTED_MODULE_1__["default"], {
             attributes: attributes,
-            setAttributes: setAttributes,
             updateStyles: updateStyles
           })
         }, "misc-tab-content");
@@ -2418,7 +2395,7 @@ function Tabs(_ref) {
   });
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(Tabs, function (prevProps, nextProps) {
-  if (prevProps.setAttributes !== nextProps.setAttributes || prevProps.updateStyles !== nextProps.updateStyles || prevProps.handlePresetChange !== nextProps.handlePresetChange) {
+  if (prevProps.updateStyles !== nextProps.updateStyles || prevProps.handlePresetChange !== nextProps.handlePresetChange) {
     return false;
   }
   return prevProps.attributes === nextProps.attributes;
@@ -3037,7 +3014,6 @@ var memo = wp.element.memo;
  */
 var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
   var attributes = _ref.attributes,
-    setAttributes = _ref.setAttributes,
     handlePresetChange = _ref.handlePresetChange;
   var config = window.fluentform_block_vars;
   var presets = config.style_presets;
@@ -3049,16 +3025,8 @@ var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
       value: attributes.themeStyle,
       options: presets,
       onChange: function onChange(themeStyle) {
-        setAttributes({
-          themeStyle: themeStyle,
-          isThemeChange: true
-        });
-        if (handlePresetChange) {
-          handlePresetChange(themeStyle);
-        }
-      },
-      __next36pxDefaultSize: true,
-      __nextHasNoMarginBottom: true
+        return handlePresetChange(themeStyle);
+      }
     })
   });
 };

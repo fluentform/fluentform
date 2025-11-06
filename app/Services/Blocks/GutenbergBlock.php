@@ -30,21 +30,6 @@ class GutenbergBlock
     }
 
     /**
-     * Get available preset styles for the block
-     *
-     * @return array Available preset styles
-     */
-    public static function getPresetStyles()
-    {
-        if (!class_exists('FluentFormPro\classes\FormStyler')) {
-            return [];
-        }
-
-        $formStyler = new FormStyler();
-        return $formStyler->getBlockPresets();
-    }
-
-    /**
      * Render the Gutenberg block
      *
      * @param array $atts Block attributes
@@ -60,60 +45,17 @@ class GutenbergBlock
 
         $className = sanitize_text_field(Arr::get($atts, 'className', ''));
         $themeStyle = sanitize_text_field(Arr::get($atts, 'themeStyle', ''));
-        $selectedPreset = sanitize_text_field(Arr::get($atts, 'selectedPreset', ''));
-        $customizePreset = Arr::get($atts, 'customizePreset', false);
-        $presetStyles = Arr::get($atts, 'presetStyles', []);
         $type = Helper::isConversionForm($formId) ? 'conversational' : '';
-
-        // Handle preset styles
-        if (!empty($selectedPreset) && !$customizePreset) {
-            $themeStyle = $selectedPreset;
-        } elseif (!empty($presetStyles) && $customizePreset) {
-            $themeStyle = 'ffs_custom';
-        }
-
-        // Generate CSS - order matters for specificity
-        $customCSS = '';
-        
-        // Always add preset styles first (lower specificity)
-        if (!empty($selectedPreset) || (!empty($presetStyles) && $customizePreset)) {
-            $presetCSS = StyleProcessor::processPresetStyles($atts, $formId);
-            if ($presetCSS) {
-                $customCSS .= $presetCSS;
-            }
-        }
-
-        // Custom block styles
-        $customBlockCss = Arr::get($atts, 'customCss', '');
-        if ($customBlockCss = json_decode($customBlockCss)) {
-            $stylesId = 'fluentform-block-custom-styles-' . $formId;
-            $individualStyleTag = '<style id="' . esc_attr($stylesId) . '">' . $customBlockCss . '</style>';
-
-            // Also attach to frontend style handles
-            if (wp_style_is('fluent-form-styles', 'enqueued') || wp_style_is('fluent-form-styles', 'registered')) {
-                wp_add_inline_style('fluent-form-styles', $customBlockCss);
-            }
-            if (wp_style_is('fluentform-public-default', 'enqueued') || wp_style_is('fluentform-public-default', 'registered')) {
-                wp_add_inline_style('fluentform-public-default', $customBlockCss);
-            }
-        }
 
         // Custom CSS for block styling
         $inlineStyle = '';
-
-        // Add the CSS inline with the form
-        if ($customCSS) {
-            // Create a unique ID for this form's styles
-            $styleId = 'fluentform-block-styles-' . $formId;
-
-            // Add the styles inline with the form
+        $customCss = json_decode(Arr::get($atts, 'customCss', ''));
+        if ($customCSS = fluentformSanitizeCSS($customCss)) {
+            $styleId = 'fluentform-block-custom-styles-' . $formId;
             $inlineStyle = '<style id="' . esc_attr($styleId) . '">' . $customCSS . '</style>';
-
-            // Also attach to frontend style handles
             if (wp_style_is('fluent-form-styles', 'enqueued') || wp_style_is('fluent-form-styles', 'registered')) {
                 wp_add_inline_style('fluent-form-styles', $customCSS);
             }
-            // Default skin CSS if loaded
             if (wp_style_is('fluentform-public-default', 'enqueued') || wp_style_is('fluentform-public-default', 'registered')) {
                 wp_add_inline_style('fluentform-public-default', $customCSS);
             }

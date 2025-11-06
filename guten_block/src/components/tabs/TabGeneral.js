@@ -11,12 +11,11 @@ import RadioCheckBoxStylesPanel from './panels/RadioCheckBoxStylesPanel';
 /**
  * Main TabGeneral component
  */
-const TabGeneral = ({attributes, setAttributes, updateStyles, handlePresetChange }) => {
+const TabGeneral = ({attributes, updateStyles, handlePresetChange }) => {
     return (
       <>
           <StyleTemplatePanel
             attributes={attributes}
-            setAttributes={setAttributes}
             handlePresetChange={handlePresetChange}
           />
 

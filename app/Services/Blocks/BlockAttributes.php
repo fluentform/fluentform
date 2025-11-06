@@ -41,23 +41,7 @@ class BlockAttributes
                 'type' => 'string',
                 'default' => '',
             ],
-            'selectedPreset' => [
-                'type' => 'string',
-                'default' => '',
-            ],
-            'customizePreset' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'presetStyles' => [
-                'type' => 'object',
-                'default' => [],
-            ],
             'isConversationalForm' => [
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            'isThemeChange' => [
                 'type' => 'boolean',
                 'default' => false,
             ],

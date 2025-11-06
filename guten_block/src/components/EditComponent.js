@@ -83,10 +83,7 @@ function EditComponent({ attributes, setAttributes }) {
         if (!formId) {
             setAttributes({
                 themeStyle: "",
-                isThemeChange: false,
                 isConversationalForm: false,
-                selectedPreset: 'default',
-                customizePreset: false
             });
             setIsPreviewLoading(false);
         } else {
@@ -96,7 +93,7 @@ function EditComponent({ attributes, setAttributes }) {
 
     const handlePresetChange = useCallback((newPreset) => {
         setIsPreviewLoading(true);
-        setAttributes({ selectedPreset: newPreset, isThemeChange: true });
+        setAttributes({ themeStyle: newPreset});
 
         setTimeout(() => {
             setIsPreviewLoading(false);
@@ -105,7 +102,7 @@ function EditComponent({ attributes, setAttributes }) {
 
     const serverAttributes = useMemo(() => {
         return {...attributes, styles: {}, customCss: '' };
-    }, [attributes.formId, attributes.selectedPreset]);
+    }, [attributes.formId, attributes.themeStyle]);
 
     // Initial setup effect
     useEffect(() => {
@@ -153,7 +150,6 @@ function EditComponent({ attributes, setAttributes }) {
             {attributes.formId && !attributes.isConversationalForm && (
                 <Tabs
                     attributes={attributes}
-                    setAttributes={setAttributes}
                     updateStyles={updateStyles}
                     handlePresetChange={handlePresetChange}
                 />
