@@ -538,7 +538,7 @@ class Component
         }
 
         $form->fields = json_decode($form->form_fields, true);
-        if (!$form->fields['fields']) {
+        if (!is_array($form->fields) || empty($form->fields['fields'])) {
             return '';
         }
 
@@ -678,6 +678,11 @@ class Component
         $formSettings = $form->settings;
 
         $formSettings = ArrayHelper::only($formSettings, ['layout', 'id']);
+
+        // Ensure restrictions array exists before setting denyEmptySubmission
+        if (!isset($formSettings['restrictions']) || !is_array($formSettings['restrictions'])) {
+            $formSettings['restrictions'] = [];
+        }
 
         $formSettings['restrictions']['denyEmptySubmission'] = [
             'enabled' => false,
@@ -910,9 +915,19 @@ class Component
         $this->app->addFilter('fluentform/is_form_renderable', function ($isRenderable, $form) {
             $checkables = ['limitNumberOfEntries', 'scheduleForm', 'requireLogin'];
 
-            foreach ($form->settings['restrictions'] as $key => $restrictions) {
+            // Ensure settings is an array
+            if (!is_array($form->settings)) {
+                $form->settings = [];
+            }
+
+            // Ensure restrictions exists and is an array before iterating
+            $restrictions = isset($form->settings['restrictions']) && is_array($form->settings['restrictions'])
+                ? $form->settings['restrictions']
+                : [];
+
+            foreach ($restrictions as $key => $restrictionSettings) {
                 if (in_array($key, $checkables)) {
-                    $isRenderable['status'] = $this->{$key}($restrictions, $form, $isRenderable);
+                    $isRenderable['status'] = $this->{$key}($restrictionSettings, $form, $isRenderable);
                     if (!$isRenderable['status']) {
                         $isRenderable['status'] = false;
                         return $isRenderable;
