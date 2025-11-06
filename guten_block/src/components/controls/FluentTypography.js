@@ -1,25 +1,7 @@
-/**
- * Fluent Forms Custom Typography Control Component
- */
-const {
-    Button,
-    Flex,
-    Popover,
-    FontSizePicker,
-    SelectControl,
-    RangeControl
-} = wp.components;
-const { useState, useEffect, useMemo } = wp.element;
+const { Button, Flex, Popover, FontSizePicker, SelectControl, RangeControl } = wp.components;
+const { useState, useEffect, useMemo, memo } = wp.element;
+import { arePropsEqual } from '../utils/ComponentUtils';
 
-/**
- * Typography control component for Fluent Forms
- *
- * @param {Object} props Component properties
- * @param {string} props.label Label for the control
- * @param {Object} props.typography Full typography object
- * @param {Function} props.onChange updateStyles method
- * @returns {JSX.Element} Typography control component
- */
 const FluentTypography = ({ label, typography = {}, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [typoValues, setTypoValues] = useState({
@@ -30,7 +12,6 @@ const FluentTypography = ({ label, typography = {}, onChange }) => {
         textTransform: ''
     });
 
-    // Update local state when typography prop changes
     useEffect(() => {
         setTypoValues({
             fontSize: typography?.fontSize || '',
@@ -59,12 +40,8 @@ const FluentTypography = ({ label, typography = {}, onChange }) => {
         { value: 'lowercase', label: 'lowercase' }
     ];
 
-    // Toggle popover
     const togglePopover = () => setIsOpen(!isOpen);
 
-    /**
-     * Update a typography setting
-     */
     const updateSetting = (updatedProperties) => {
         const updatedTypography = { 
             ...typography,
@@ -74,11 +51,6 @@ const FluentTypography = ({ label, typography = {}, onChange }) => {
         onChange(updatedTypography);
     };
 
-
-
-    /**
-     * Check if any typography settings have changed from defaults
-     */
     const isFontChanged = useMemo(() => {
         return (
             (typoValues.fontSize !== '' && typoValues.fontSize != null) ||
@@ -89,9 +61,6 @@ const FluentTypography = ({ label, typography = {}, onChange }) => {
         );
     }, [typoValues]);
 
-    /**
-     * Reset all typography settings to defaults
-     */
     const resetToDefault = () => {
         onChange({});
         if (isOpen) {
@@ -176,4 +145,6 @@ const FluentTypography = ({ label, typography = {}, onChange }) => {
     );
 };
 
-export default FluentTypography;
+export default memo(FluentTypography, (prevProps, nextProps) => {
+    return arePropsEqual(prevProps, nextProps, ['label', 'typography']);
+});

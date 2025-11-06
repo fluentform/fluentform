@@ -1,16 +1,8 @@
-/**
- * Fluent Forms Custom Color Picker Component
- */
-const {
-    Button,
-    Flex,
-    Popover,
-    ColorPalette
-} = wp.components;
-const { useState, useRef, useEffect } = wp.element;
+const { Button, Flex, Popover, ColorPalette } = wp.components;
+const { useState, useRef, useEffect, memo } = wp.element;
+import { arePropsEqual } from "../utils/ComponentUtils";
 
-// Custom Color Picker Component with direct ColorPicker and conditional reset button
-const FluentColorPicker = ({ label, value, onChange, defaultColor = '', styles = {} }) => {
+const FluentColorPicker = ({ label, value, onChange, defaultColor = ''}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentColor, setCurrentColor] = useState(value || defaultColor);
     const [isTransparent, setIsTransparent] = useState(false);
@@ -19,7 +11,6 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '', styles =
     const buttonRef = useRef(null);
     const popoverRef = useRef(null);
 
-    // Update currentColor when value changes from outside
     useEffect(() => {
         setCurrentColor(value || '');
     }, [value]);
@@ -38,17 +29,14 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '', styles =
         onChange(defaultColor);
     };
 
-    // Handle clicks outside to close the color picker
     useEffect(() => {
         if (!isOpen) return;
 
         const handleOutsideClick = (event) => {
-            // Don't close if clicking on WordPress color picker elements
             if (event.target.closest('.components-color-picker, .components-color-palette')) {
                 return;
             }
 
-            // Check if the click is outside both the button and popover content
             if (
                 buttonRef.current &&
                 !buttonRef.current.contains(event.target) &&
@@ -59,7 +47,6 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '', styles =
             }
         };
 
-        // Use capture phase to handle before other handlers
         document.addEventListener('mousedown', handleOutsideClick, true);
 
         return () => {
@@ -149,5 +136,6 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '', styles =
         </div>
     );
 };
-
-export default FluentColorPicker;
+export default memo(FluentColorPicker, (prevProps, nextProps) => {
+    return arePropsEqual(prevProps, nextProps, ['label', 'value', 'defaultColor']);
+});

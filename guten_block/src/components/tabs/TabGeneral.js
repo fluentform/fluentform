@@ -1,398 +1,12 @@
+const { memo } = wp.element;
 
-const { useState, useEffect, memo } = wp.element;
-const { __ } = wp.i18n;
-const { PanelBody, SelectControl, RangeControl, TabPanel } = wp.components;
-
-// Custom components
-import FluentTypography from "../controls/FluentTypography";
-import FluentColorPicker from "../controls/FluentColorPicker";
-import FluentSpaceControl from "../controls/FluentSpaceControl";
-import FluentBorderControl from "../controls/FluentBorderControl";
-import FluentBoxShadowControl from "../controls/FluentBoxShadowControl";
-import FluentAlignmentControl from "../controls/FluentAlignmentControl";
-import { arePropsEqual } from '../utils/ComponentUtils';
-
-/**
- * Component for form style template selection
- */
-const StyleTemplatePanel = ({ attributes, setAttributes, handlePresetChange }) => {
-    const config = window.fluentform_block_vars;
-    const presets = config.style_presets;
-
-    return (
-      <PanelBody title={__("Form Style Template")} initialOpen={true}>
-          <SelectControl
-            label={__("Choose a Template")}
-            value={attributes.themeStyle}
-            options={presets}
-            onChange={themeStyle => {
-                setAttributes({
-                    themeStyle,
-                    isThemeChange: true,
-                });
-                if (handlePresetChange) {
-                    handlePresetChange(themeStyle);
-                }
-            }}
-          />
-      </PanelBody>
-    );
-};
-
-/**
- * Component for label styling options
- */
-const LabelStylesPanel = ({ attributes, updateStyles }) => {
-    return (
-        <PanelBody title={__("Label Styles")} initialOpen={false}>
-            <FluentColorPicker
-                label="Color"
-                value={attributes.styles.labelColor}
-                onChange={(value) => updateStyles({labelColor: value})}
-                defaultColor=""
-            />
-            <FluentTypography
-                label="Typography"
-                typography={attributes.styles.labelTypography || {}}
-                onChange={(typography) => updateStyles({ labelTypography: typography })}
-            />
-        </PanelBody>
-    );
-};
-
-/**
- * Component for input and textarea styling options
- */
-const InputStylesPanel = ({ attributes, updateStyles }) => {
-    return (
-        <PanelBody title={__("Input & Textarea")} initialOpen={false}>
-            <TabPanel
-                className="input-styles-tabs"
-                activeClass="is-active"
-                tabs={[
-                    { name: 'normal', title: __('Normal'), className: 'tab-normal' },
-                    { name: 'focus', title: __('Focus'), className: 'tab-focus' },
-                ]}
-            >
-                {(tab) => {
-                    if (tab.name === 'normal') {
-                        return (
-                            <>
-                                <FluentColorPicker
-                                    key="input-text-color-normal"
-                                    label="Text Color"
-                                    value={attributes.styles?.inputTextColor || ''}
-                                    onChange={(value) => {
-                                        updateStyles({ inputTextColor: value });
-                                    }}
-                                    defaultColor=""
-                                />
-
-                                <FluentColorPicker
-                                    key="input-bg-color-normal"
-                                    label="Background Color"
-                                    value={attributes.styles?.inputBackgroundColor || ''}
-                                    styles={attributes.styles}
-                                    onChange={(value) => {
-                                        updateStyles({ inputBackgroundColor: value });
-                                    }}
-                                    defaultColor=""
-                                />
-
-                                <FluentTypography
-                                    label="Typography"
-                                    typography={attributes.styles.inputTypography || {}}
-                                    onChange={(typography) => updateStyles({ inputTypography: typography })}
-                                />
-
-                                <FluentSpaceControl
-                                    label="Spacing"
-                                    values={attributes.styles.inputSpacing}
-                                    onChange={(value) => updateStyles({ inputSpacing: value })}
-                                />
-
-                                <FluentBorderControl
-                                    label={__("Border")}
-                                    border={attributes.styles.inputBorder || {}}
-                                    onChange={(borderObj) => updateStyles({ inputBorder: borderObj })}
-                                />
-
-                                <FluentBoxShadowControl
-                                    label={__("Box Shadow")}
-                                    shadow={attributes.styles.inputBoxShadow || {}}
-                                    onChange={(shadowObj) => updateStyles({ inputBoxShadow: shadowObj })}
-                                />
-                            </>
-                        );
-                    } else if (tab.name === 'focus') {
-                        return (
-                            <>
-                                <FluentColorPicker
-                                    key="input-text-color-focus"
-                                    label="Text Color"
-                                    value={attributes.styles.inputTextFocusColor || ''}
-                                    onChange={(value) => {
-                                        updateStyles({ inputTextFocusColor: value });
-                                    }}
-                                    defaultColor=""
-                                />
-
-                                <FluentColorPicker
-                                    key="input-bg-color-focus"
-                                    label="Background Color"
-                                    value={attributes.styles?.inputBackgroundFocusColor || ''}
-                                    onChange={(value) => {
-                                        updateStyles({ inputBackgroundFocusColor: value });
-                                    }}
-                                    defaultColor=""
-                                />
-
-                                <FluentSpaceControl
-                                    label="Spacing"
-                                    values={attributes.styles.inputFocusSpacing}
-                                    onChange={(value) => updateStyles({ inputFocusSpacing: value })}
-                                />
-
-                                <FluentBorderControl
-                                    label={__("Border")}
-                                    border={attributes.styles.inputBorderFocus || {}}
-                                    onChange={(borderObj) => updateStyles({ inputBorderFocus: borderObj })}
-                                />
-
-                                <FluentBoxShadowControl
-                                    label={__("Box Shadow")}
-                                    shadow={attributes.styles.inputBoxShadowFocus || {}}
-                                    onChange={(shadowObj) => updateStyles({ inputBoxShadowFocus: shadowObj })}
-                                />
-                            </>
-                        );
-                    }
-                    return null;
-                }}
-            </TabPanel>
-        </PanelBody>
-    );
-};
-
-/**
- * Component for button styling options
- */
-const ButtonStylesPanel = ({ attributes, updateStyles }) => {
-    return (
-        <PanelBody title={__('Button Styles')} initialOpen={false}>
-
-            {/* Common Button Alignment */}
-            <div>
-                <span className="ffblock-label">{__('Alignment')}</span>
-                <FluentAlignmentControl
-                    value={attributes.styles.buttonAlignment}
-                    onChange={(value) => updateStyles({buttonAlignment: value})}
-                    options={[
-                        { value: 'left', icon: 'editor-alignleft', label: __('Left') },
-                        { value: 'center', icon: 'editor-aligncenter', label: __('Center') },
-                        { value: 'right', icon: 'editor-alignright', label: __('Right') }
-                    ]}
-                />
-            </div>
-
-            {/* Common Button Width */}
-            <RangeControl
-                label={__('Width (%)')}
-                value={attributes.styles.buttonWidth}
-                onChange={(value) => updateStyles({buttonWidth: value})}
-                min={0}
-                max={100}
-                allowReset
-                initialPosition={0}
-                help={__('Set to 0 for auto width')}
-            />
-
-            {/* Tabs for Normal and Hover states */}
-            <TabPanel
-                className="button-styles-tabs"
-                activeClass="is-active"
-                tabs={[
-                    { name: 'normal', title: __('Normal'), className: 'tab-normal' },
-                    { name: 'hover', title: __('Hover'), className: 'tab-hover' },
-                ]}
-            >
-                {(tab) => {
-                    if (tab.name === 'normal') {
-                        return (
-                            <>
-                                <FluentColorPicker
-                                    label="Text Color"
-                                    value={attributes.styles.buttonColor}
-                                    onChange={(value) => updateStyles({buttonColor: value})}
-                                    defaultColor="#ffffff"
-                                />
-
-                                <FluentColorPicker
-                                    label="Background Color"
-                                    value={attributes.styles.buttonBGColor}
-                                    onChange={(value) => updateStyles({buttonBGColor: value})}
-                                    defaultColor="#409EFF"
-                                />
-
-                                {/* Typography */}
-                                <FluentTypography
-                                    label="Typography"
-                                    typography={attributes.styles.buttonTypography || {}}
-                                    onChange={(typography) => updateStyles({ buttonTypography: typography })}
-                                />
-
-                                {/* Padding */}
-                                <FluentSpaceControl
-                                    label="Padding"
-                                    values={attributes.styles.buttonPadding}
-                                    onChange={(value) => updateStyles({ buttonPadding: value })}
-                                />
-
-                                {/* Margin */}
-                                <FluentSpaceControl
-                                    label="Margin"
-                                    values={attributes.styles.buttonMargin}
-                                    onChange={(value) => updateStyles({ buttonMargin: value })}
-                                />
-
-                                {/* Box Shadow */}
-                                <FluentBoxShadowControl
-                                    label={__("Box Shadow")}
-                                    shadow={attributes.styles.buttonBoxShadow || {}}
-                                    onChange={(shadowObj) => updateStyles({ buttonBoxShadow: shadowObj })}
-                                />
-
-                                {/* Button Border */}
-                                <FluentBorderControl
-                                    label={__("Border")}
-                                    border={attributes.styles.buttonBorder || {}}
-                                    onChange={(borderObj) => updateStyles({ buttonBorder: borderObj })}
-                                />
-                            </>
-                        );
-                    } else if (tab.name === 'hover') {
-                        return (
-                            <>
-                                <FluentColorPicker
-                                    label="Text Color"
-                                    value={attributes.styles.buttonHoverColor}
-                                    onChange={(value) => updateStyles({buttonHoverColor: value})}
-                                    defaultColor="#ffffff"
-                                />
-
-                                <FluentColorPicker
-                                    label="Background Color"
-                                    value={attributes.styles.buttonHoverBGColor}
-                                    onChange={(value) => updateStyles({buttonHoverBGColor: value})}
-                                    defaultColor="#66b1ff"
-                                />
-
-                                {/* Typography */}
-                                <FluentTypography
-                                    label="Typography"
-                                    typography={attributes.styles.buttonHoverTypography || {}}
-                                    onChange={(typography) => updateStyles({ buttonHoverTypography: typography })}
-                                />
-
-                                {/* Padding */}
-                                <FluentSpaceControl
-                                    label="Padding"
-                                    values={attributes.styles.buttonHoverPadding}
-                                    onChange={(value) => updateStyles({ buttonHoverPadding: value })}
-                                />
-
-                                {/* Margin */}
-                                <FluentSpaceControl
-                                    label="Margin"
-                                    values={attributes.styles.buttonHoverMargin}
-                                    onChange={(value) => updateStyles({ buttonHoverMargin: value })}
-                                />
-
-                                {/* Box Shadow */}
-                                <FluentBoxShadowControl
-                                    label={__("Box Shadow")}
-                                    shadow={attributes.styles.buttonHoverBoxShadow || {}}
-                                    onChange={(shadowObj) => updateStyles({ buttonHoverBoxShadow: shadowObj })}
-                                />
-
-                                {/* Button Hover Border */}
-                                <FluentBorderControl
-                                    label={__("Border")}
-                                    border={attributes.styles.buttonHoverBorder || {}}
-                                    onChange={(borderObj) => updateStyles({ buttonHoverBorder: borderObj })}
-                                />
-                            </>
-                        );
-                    }
-                    return null;
-                }}
-            </TabPanel>
-        </PanelBody>
-    );
-};
-
-/**
- * Component for placeholder styling options
- */
-const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
-    return (
-        <PanelBody title={__('Placeholder Styles')} initialOpen={false}>
-            <FluentColorPicker
-                label="Text Color"
-                value={attributes.styles.placeholderColor}
-                onChange={(value) => updateStyles({placeholderColor: value})}
-                defaultColor=""
-            />
-            <FluentTypography
-                label="Typography"
-                typography={attributes.styles.placeholderTypography || {}}
-                onChange={(typography) => updateStyles({ placeholderTypography: typography })}
-            />
-        </PanelBody>
-    );
-}
-
-const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
-    // Use local state to ensure the UI updates immediately
-    const [localSize, setLocalSize] = useState(attributes.styles.radioCheckboxItemsSize || 15);
-
-    // Update local state when the attribute changes from outside
-    useEffect(() => {
-        if (attributes.styles.radioCheckboxItemsSize !== undefined && attributes.styles.radioCheckboxItemsSize !== localSize) {
-            setLocalSize(attributes.styles.radioCheckboxItemsSize);
-        }
-    }, [attributes.styles.radioCheckboxItemsSize]);
-
-    // Handle size change with immediate UI update
-    const handleSizeChange = (value) => {
-        // Update local state for immediate UI feedback
-        setLocalSize(value);
-        // Update the actual attribute
-        updateStyles({radioCheckboxItemsSize: value});
-    };
-
-    return (
-        <PanelBody title={__('Radio & Checkbox Styles')} initialOpen={false}>
-            {/* Label Text Styles */}
-            <FluentColorPicker
-                label="Items Color"
-                value={attributes.styles.radioCheckboxItemsColor}
-                onChange={(value) => updateStyles({radioCheckboxItemsColor: value})}
-                defaultColor=""
-            />
-            <div className="ffblock-control-field">
-                <span className="ffblock-label">Size (px)</span>
-                <RangeControl
-                    value={localSize} // Use local state for immediate UI feedback
-                    min={1}
-                    max={30}
-                    step={1}
-                    onChange={handleSizeChange}
-                />
-            </div>
-        </PanelBody>
-    );
-}
+import { areStylesEqual } from '../utils/ComponentUtils';
+import StyleTemplatePanel from './panels/StyleTemplatePanel';
+import LabelStylesPanel from './panels/LabelStylesPanel';
+import InputStylesPanel from './panels/InputStylesPanel';
+import ButtonStylesPanel from './panels/ButtonStylesPanel';
+import PlaceHolderStylesPanel from './panels/PlaceHolderStylesPanel';
+import RadioCheckBoxStylesPanel from './panels/RadioCheckBoxStylesPanel';
 
 /**
  * Main TabGeneral component
@@ -406,44 +20,37 @@ const TabGeneral = ({attributes, setAttributes, updateStyles, handlePresetChange
             handlePresetChange={handlePresetChange}
           />
 
-
           <LabelStylesPanel
-            attributes={attributes}
+            styles={attributes.styles}
             updateStyles={updateStyles}
           />
-
 
           <InputStylesPanel
-            attributes={attributes}
+            styles={attributes.styles}
             updateStyles={updateStyles}
           />
-
 
           <PlaceHolderStylesPanel
-            attributes={attributes}
+            styles={attributes.styles}
             updateStyles={updateStyles}
           />
 
-
           <RadioCheckBoxStylesPanel
-            attributes={attributes}
+            styles={attributes.styles}
             updateStyles={updateStyles}
           />
 
           <ButtonStylesPanel
-            attributes={attributes}
+            styles={attributes.styles}
             updateStyles={updateStyles}
           />
       </>
     );
 };
 
-const GENERAL_TAB_ATTRIBUTES = [
-    // Label attributes
+const GENERAL_STYLES = [
     'labelColor',
     'labelTypography',
-
-    // Input attributes
     'inputTextColor',
     'inputBackgroundColor',
     'inputTypography',
@@ -455,13 +62,9 @@ const GENERAL_TAB_ATTRIBUTES = [
     'inputFocusSpacing',
     'inputBoxShadow',
     'inputBoxShadowFocus',
-
-    // Placeholder attributes
     'placeholderColor',
     'placeholderFocusColor',
     'placeholderTypography',
-
-    // Radio/Checkbox attributes
     'radioCheckboxLabelColor',
     'radioCheckboxTypography',
     'radioCheckboxItemsColor',
@@ -474,12 +77,8 @@ const GENERAL_TAB_ATTRIBUTES = [
     'radioBorderColor',
     'radioBgColor',
     'radioCheckedColor',
-
-    // Common Button attributes
     'buttonWidth',
     'buttonAlignment',
-
-    // Normal Button attributes
     'buttonColor',
     'buttonBGColor',
     'buttonTypography',
@@ -487,8 +86,6 @@ const GENERAL_TAB_ATTRIBUTES = [
     'buttonMargin',
     'buttonBoxShadow',
     'buttonBorder',
-
-    // Hover Button attributes
     'buttonHoverColor',
     'buttonHoverBGColor',
     'buttonHoverTypography',
@@ -498,9 +95,9 @@ const GENERAL_TAB_ATTRIBUTES = [
     'buttonHoverBorder'
 ];
 
-export default memo(TabGeneral, (prevProps, nextProps) => {
-    if (prevProps.attributes.themeStyle !== nextProps.attributes.themeStyle) {
+export default memo(TabGeneral, (prev, next) => {
+    if (prev.attributes.themeStyle !== next.attributes.themeStyle) {
         return false;
     }
-    return arePropsEqual(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES);
+    return areStylesEqual(prev.attributes.styles, next.attributes.styles, GENERAL_STYLES);
 });

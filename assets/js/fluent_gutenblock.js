@@ -104,6 +104,10 @@ function EditComponent(_ref2) {
     previewDevice = _useState4[0],
     setPreviewDevice = _useState4[1];
   var styleHandlerRef = useRef(null);
+  var currentStylesRef = useRef(attributes.styles || {});
+  useEffect(function () {
+    currentStylesRef.current = attributes.styles || {};
+  }, [attributes.styles]);
   var storeCss = useCallback(function (css) {
     if (css === false) {
       return;
@@ -116,16 +120,13 @@ function EditComponent(_ref2) {
     }
   }, [attributes.customCss, setAttributes]);
   var updateStyles = useCallback(function (styleAttributes) {
-    var currentStyles = attributes.styles || {};
+    var currentStyles = currentStylesRef.current;
     var styles = _objectSpread(_objectSpread({}, currentStyles), styleAttributes);
+    currentStylesRef.current = styles;
     setAttributes({
       styles: styles
     });
-    if (styleHandlerRef.current && attributes.formId) {
-      var css = styleHandlerRef.current.updateStyles(styles);
-      storeCss(css);
-    }
-  }, [attributes.styles, attributes.formId, setAttributes, storeCss]);
+  }, [setAttributes]);
   var checkIfConversationalForm = useCallback(/*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(formId) {
       var isConversationalForm;
@@ -215,7 +216,7 @@ function EditComponent(_ref2) {
         storeCss(css);
       }
     }
-  }, [attributes.formId, attributes.styles, storeCss]);
+  }, [attributes.formId, attributes.styles]);
   var config = window.fluentform_block_vars || {};
   var inspectorControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(InspectorControls, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(PanelBody, {
@@ -227,8 +228,7 @@ function EditComponent(_ref2) {
         options: ((_config$forms = config.forms) === null || _config$forms === void 0 ? void 0 : _config$forms.map(function (form) {
           return {
             value: form.id,
-            label: form.title,
-            key: "form-".concat(form.id)
+            label: form.title
           };
         })) || [],
         onChange: handleFormChange
@@ -270,8 +270,7 @@ function EditComponent(_ref2) {
         options: ((_config$forms2 = config.forms) === null || _config$forms2 === void 0 ? void 0 : _config$forms2.map(function (form) {
           return {
             value: form.id,
-            label: form.title,
-            key: "form-select-".concat(form.id)
+            label: form.title
           };
         })) || [],
         onChange: handleFormChange
@@ -300,40 +299,38 @@ function EditComponent(_ref2) {
     });
   } else {
     // Regular form selected - show preview only
-    mainContent = useMemo(function () {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-        className: "fluent-form-preview-wrapper preview-device-".concat(previewDevice),
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-          className: "fluent-form-preview-controls",
-          children: [{
-            device: 'desktop',
-            icon: 'desktop',
-            label: __('Desktop Preview')
-          }, {
-            device: 'tablet',
-            icon: 'tablet',
-            label: __('Tablet Preview')
-          }, {
-            device: 'mobile',
-            icon: 'smartphone',
-            label: __('Mobile Preview')
-          }].map(function (item) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Button, {
-              icon: item.icon,
-              isSmall: true,
-              isPrimary: previewDevice === item.device,
-              onClick: function onClick() {
-                return setPreviewDevice(item.device);
-              },
-              label: item.label
-            }, item.device);
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ServerSideRender, {
-          block: "fluentfom/guten-block",
-          attributes: serverAttributes
-        }, "ff-preview")]
-      });
-    }, [previewDevice, attributes.formId, attributes.selectedPreset]);
+    mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "fluent-form-preview-wrapper preview-device-".concat(previewDevice),
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "fluent-form-preview-controls",
+        children: [{
+          device: 'desktop',
+          icon: 'desktop',
+          label: __('Desktop Preview')
+        }, {
+          device: 'tablet',
+          icon: 'tablet',
+          label: __('Tablet Preview')
+        }, {
+          device: 'mobile',
+          icon: 'smartphone',
+          label: __('Mobile Preview')
+        }].map(function (item) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Button, {
+            icon: item.icon,
+            isSmall: true,
+            isPrimary: previewDevice === item.device,
+            onClick: function onClick() {
+              return setPreviewDevice(item.device);
+            },
+            label: item.label
+          }, item.device);
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ServerSideRender, {
+        block: "fluentfom/guten-block",
+        attributes: serverAttributes
+      }, "ff-preview")]
+    });
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     className: "fluentform-guten-wrapper",
@@ -350,7 +347,9 @@ function EditComponent(_ref2) {
     }), mainContent, loadingOverlay]
   });
 }
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(EditComponent));
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(EditComponent, function (prevProps, nextProps) {
+  return prevProps.attributes === nextProps.attributes;
+}));
 
 /***/ }),
 
@@ -364,39 +363,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-/**
- * Fluent Forms Alignment Control Component
- */
-
-// Import React components
 var _wp$element = wp.element,
   useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect;
+  useEffect = _wp$element.useEffect,
+  memo = _wp$element.memo;
 var __ = wp.i18n.__;
-
-// Import WordPress components
 var _wp$components = wp.components,
   ButtonGroup = _wp$components.ButtonGroup,
   Button = _wp$components.Button,
   Tooltip = _wp$components.Tooltip;
 
-/**
- * Fluent Forms Alignment Control Component
- *
- * @param {Object} props Component props
- * @param {string} props.label Label for the control
- * @param {string} props.value Current alignment value
- * @param {Function} props.onChange Callback when alignment changes
- * @param {Array} props.options Alignment options to display
- */
+
 var FluentAlignmentControl = function FluentAlignmentControl(_ref) {
   var _ref$label = _ref.label,
     label = _ref$label === void 0 ? __('Alignment') : _ref$label,
@@ -421,8 +406,6 @@ var FluentAlignmentControl = function FluentAlignmentControl(_ref) {
     _useState2 = _slicedToArray(_useState, 2),
     alignment = _useState2[0],
     setAlignment = _useState2[1];
-
-  // Update local state when props change
   useEffect(function () {
     if (value !== alignment) {
       setAlignment(value);
@@ -434,15 +417,15 @@ var FluentAlignmentControl = function FluentAlignmentControl(_ref) {
       onChange(newAlignment);
     }
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
     className: "ffblock-alignment-control",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "ffblock-alignment-buttons",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ButtonGroup, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ButtonGroup, {
         children: options.map(function (option) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Tooltip, {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Tooltip, {
             text: option.label,
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
               icon: option.icon,
               isPrimary: alignment === option.value,
               isSecondary: alignment !== option.value,
@@ -457,7 +440,9 @@ var FluentAlignmentControl = function FluentAlignmentControl(_ref) {
     })
   });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentAlignmentControl);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(FluentAlignmentControl, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__.arePropsEqual)(prevProps, nextProps, ['label', 'value', 'options']);
+}));
 
 /***/ }),
 
@@ -473,27 +458,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
 /* harmony import */ var _FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 var _wp$components = wp.components,
   BaseControl = _wp$components.BaseControl,
   ToggleControl = _wp$components.ToggleControl,
   SelectControl = _wp$components.SelectControl;
 var _wp$element = wp.element,
-  useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect;
+  useEffect = _wp$element.useEffect,
+  memo = _wp$element.memo,
+  useCallback = _wp$element.useCallback,
+  useRef = _wp$element.useRef;
 var __ = wp.i18n.__;
+
 
 
 
@@ -506,30 +489,23 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
     _ref$defaultColor = _ref.defaultColor,
     defaultColor = _ref$defaultColor === void 0 ? "#dddddd" : _ref$defaultColor;
   // Use internal state to track the border object
-  var _useState = useState(_objectSpread({
-      enable: false,
-      type: 'solid',
-      color: '',
-      width: {},
-      radius: {}
-    }, border)),
-    _useState2 = _slicedToArray(_useState, 2),
-    localBorder = _useState2[0],
-    setLocalBorder = _useState2[1];
-
-  // Update internal state when props change
+  var currentBorderRef = useRef(border || {
+    enable: false,
+    type: 'solid',
+    color: '',
+    width: {},
+    radius: {}
+  });
   useEffect(function () {
-    setLocalBorder(function (prev) {
-      return _objectSpread(_objectSpread({}, prev), border);
-    });
+    currentBorderRef.current = border || currentBorderRef.current;
   }, [border]);
-  var updateBorder = function updateBorder(updates) {
-    var newBorder = _objectSpread(_objectSpread({}, localBorder), updates);
-    setLocalBorder(newBorder);
+  var updateBorder = useCallback(function (updates) {
+    var newBorder = _objectSpread(_objectSpread({}, currentBorderRef.current), updates);
+    currentBorderRef.current = newBorder;
     if (onChange) {
       onChange(newBorder);
     }
-  };
+  }, [currentBorderRef, onChange]);
   var borderTypeOptions = [{
     label: __("Solid"),
     value: 'solid'
@@ -543,31 +519,19 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
     label: __("Double"),
     value: 'double'
   }];
-  var unitOptions = [{
-    label: 'px',
-    value: 'px'
-  }, {
-    label: 'em',
-    value: 'em'
-  }, {
-    label: '%',
-    value: '%'
-  }];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(BaseControl, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(BaseControl, {
     label: label,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToggleControl, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToggleControl, {
       label: __("Enable Border"),
-      checked: localBorder.enable,
+      checked: border.enable,
       onChange: function onChange(value) {
         var updates = {
           enable: value
         };
-
-        // Set defaults when enabling
         if (value) {
-          if (!localBorder.color) updates.color = defaultColor;
-          if (!localBorder.type) updates.type = 'solid';
-          if (!localBorder.width || Object.keys(localBorder.width).length === 0) {
+          if (!border.color) updates.color = defaultColor;
+          if (!border.type) updates.type = 'solid';
+          if (!border.width || Object.keys(border.width).length === 0) {
             updates.width = {
               desktop: {
                 unit: 'px',
@@ -595,7 +559,7 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
               }
             };
           }
-          if (!localBorder.radius || Object.keys(localBorder.radius).length === 0) {
+          if (!border.radius || Object.keys(border.radius).length === 0) {
             updates.radius = {
               desktop: {
                 unit: 'px',
@@ -626,36 +590,36 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
         }
         updateBorder(updates);
       }
-    }), localBorder.enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
+    }), border.enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SelectControl, {
         label: __("Border Type"),
-        value: localBorder.type || 'solid',
+        value: border.type || 'solid',
         options: borderTypeOptions,
         onChange: function onChange(value) {
           return updateBorder({
             type: value
           });
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Border Color"),
-        value: localBorder.color || '',
+        value: border.color || '',
         onChange: function onChange(value) {
           return updateBorder({
             color: value
           });
         },
         defaultColor: defaultColor
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Border Width"),
-        values: localBorder.width,
+        values: border.width,
         onChange: function onChange(value) {
           return updateBorder({
             width: value
           });
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Border Radius"),
-        values: localBorder.radius,
+        values: border.radius,
         onChange: function onChange(value) {
           return updateBorder({
             radius: value
@@ -665,7 +629,9 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
     })]
   });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentBorderControl);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(FluentBorderControl, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__.arePropsEqual)(prevProps, nextProps, ['label', 'defaultColor', 'border']);
+}));
 
 /***/ }),
 
@@ -680,31 +646,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 var _wp$components = wp.components,
   BaseControl = _wp$components.BaseControl,
   ToggleControl = _wp$components.ToggleControl,
   SelectControl = _wp$components.SelectControl;
 var _wp$element = wp.element,
-  useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect;
+  useEffect = _wp$element.useEffect,
+  memo = _wp$element.memo,
+  useCallback = _wp$element.useCallback,
+  useRef = _wp$element.useRef;
 var __ = wp.i18n.__;
 
 
+
 var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
-  var _localShadow$horizont2, _localShadow$horizont3, _localShadow$vertical2, _localShadow$vertical3, _localShadow$blur2, _localShadow$blur3, _localShadow$spread2, _localShadow$spread3;
+  var _shadow$horizontal2, _shadow$horizontal3, _shadow$vertical2, _shadow$vertical3, _shadow$blur2, _shadow$blur3, _shadow$spread2, _shadow$spread3;
   var _ref$label = _ref.label,
     label = _ref$label === void 0 ? __("Box Shadow") : _ref$label,
     _ref$shadow = _ref.shadow,
@@ -712,41 +676,33 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     onChange = _ref.onChange,
     _ref$defaultColor = _ref.defaultColor,
     defaultColor = _ref$defaultColor === void 0 ? "rgba(0,0,0,0.5)" : _ref$defaultColor;
-  // Use internal state to track the shadow object
-  var _useState = useState(_objectSpread({
-      enable: false,
-      color: '',
-      position: 'outline',
-      horizontal: {
-        value: '0',
-        unit: 'px'
-      },
-      vertical: {
-        value: '0',
-        unit: 'px'
-      },
-      blur: {
-        value: '5',
-        unit: 'px'
-      },
-      spread: {
-        value: '0',
-        unit: 'px'
-      }
-    }, shadow)),
-    _useState2 = _slicedToArray(_useState, 2),
-    localShadow = _useState2[0],
-    setLocalShadow = _useState2[1];
-
-  // Update internal state when props change
+  var shadowRef = useRef(shadow || {
+    enable: false,
+    color: '',
+    position: 'outline',
+    horizontal: {
+      value: '0',
+      unit: 'px'
+    },
+    vertical: {
+      value: '0',
+      unit: 'px'
+    },
+    blur: {
+      value: '5',
+      unit: 'px'
+    },
+    spread: {
+      value: '0',
+      unit: 'px'
+    }
+  });
   useEffect(function () {
-    setLocalShadow(function (prev) {
-      return _objectSpread(_objectSpread({}, prev), shadow);
-    });
+    shadowRef.current = shadow || shadowRef.current;
   }, [shadow]);
   var updateShadow = function updateShadow(updates) {
-    var newShadow = _objectSpread(_objectSpread({}, localShadow), updates);
-    setLocalShadow(newShadow);
+    var newShadow = _objectSpread(_objectSpread({}, shadowRef.current), updates);
+    shadowRef.current = newShadow;
     if (onChange) {
       onChange(newShadow);
     }
@@ -768,70 +724,68 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     label: '%',
     value: '%'
   }];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(BaseControl, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(BaseControl, {
     label: label,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ToggleControl, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToggleControl, {
       label: __("Enable Box Shadow"),
-      checked: localShadow.enable,
+      checked: shadow.enable,
       onChange: function onChange(value) {
         var updates = {
           enable: value
         };
-
-        // Set defaults when enabling
         if (value) {
-          var _localShadow$horizont, _localShadow$vertical, _localShadow$blur, _localShadow$spread;
-          if (!localShadow.color) updates.color = defaultColor;
-          if (!localShadow.position) updates.position = 'outline';
-          if (!((_localShadow$horizont = localShadow.horizontal) !== null && _localShadow$horizont !== void 0 && _localShadow$horizont.value)) updates.horizontal = {
+          var _shadow$horizontal, _shadow$vertical, _shadow$blur, _shadow$spread;
+          if (!shadow.color) updates.color = defaultColor;
+          if (!shadow.position) updates.position = 'outline';
+          if (!((_shadow$horizontal = shadow.horizontal) !== null && _shadow$horizontal !== void 0 && _shadow$horizontal.value)) updates.horizontal = {
             value: '0',
             unit: 'px'
           };
-          if (!((_localShadow$vertical = localShadow.vertical) !== null && _localShadow$vertical !== void 0 && _localShadow$vertical.value)) updates.vertical = {
+          if (!((_shadow$vertical = shadow.vertical) !== null && _shadow$vertical !== void 0 && _shadow$vertical.value)) updates.vertical = {
             value: '0',
             unit: 'px'
           };
-          if (!((_localShadow$blur = localShadow.blur) !== null && _localShadow$blur !== void 0 && _localShadow$blur.value)) updates.blur = {
+          if (!((_shadow$blur = shadow.blur) !== null && _shadow$blur !== void 0 && _shadow$blur.value)) updates.blur = {
             value: '5',
             unit: 'px'
           };
-          if (!((_localShadow$spread = localShadow.spread) !== null && _localShadow$spread !== void 0 && _localShadow$spread.value)) updates.spread = {
+          if (!((_shadow$spread = shadow.spread) !== null && _shadow$spread !== void 0 && _shadow$spread.value)) updates.spread = {
             value: '0',
             unit: 'px'
           };
         }
         updateShadow(updates);
       }
-    }), localShadow.enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    }), shadow.enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Shadow Color"),
-        value: localShadow.color || '',
+        value: shadow.color || '',
         onChange: function onChange(value) {
           return updateShadow({
             color: value
           });
         },
         defaultColor: defaultColor
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
         label: __("Shadow Position"),
-        value: localShadow.position || 'outline',
+        value: shadow.position || 'outline',
         options: positionOptions,
         onChange: function onChange(value) {
           return updateShadow({
             position: value
           });
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BaseControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(BaseControl, {
         label: __("Horizontal Offset"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
           className: "ffblock-unit-control",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
             type: "number",
             className: "components-text-control__input",
-            value: ((_localShadow$horizont2 = localShadow.horizontal) === null || _localShadow$horizont2 === void 0 ? void 0 : _localShadow$horizont2.value) || '',
+            value: ((_shadow$horizontal2 = shadow.horizontal) === null || _shadow$horizontal2 === void 0 ? void 0 : _shadow$horizontal2.value) || '',
             onChange: function onChange(e) {
               return updateShadow({
-                horizontal: _objectSpread(_objectSpread({}, localShadow.horizontal), {}, {
+                horizontal: _objectSpread(_objectSpread({}, shadow.horizontal), {}, {
                   value: e.target.value
                 })
               });
@@ -839,29 +793,29 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
             min: "-50",
             max: "50",
             placeholder: "0"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
-            value: ((_localShadow$horizont3 = localShadow.horizontal) === null || _localShadow$horizont3 === void 0 ? void 0 : _localShadow$horizont3.unit) || 'px',
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
+            value: ((_shadow$horizontal3 = shadow.horizontal) === null || _shadow$horizontal3 === void 0 ? void 0 : _shadow$horizontal3.unit) || 'px',
             options: unitOptions,
             onChange: function onChange(unit) {
               return updateShadow({
-                horizontal: _objectSpread(_objectSpread({}, localShadow.horizontal), {}, {
+                horizontal: _objectSpread(_objectSpread({}, shadow.horizontal), {}, {
                   unit: unit
                 })
               });
             }
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BaseControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(BaseControl, {
         label: __("Vertical Offset"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
           className: "ffblock-unit-control",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
             type: "number",
             className: "components-text-control__input",
-            value: ((_localShadow$vertical2 = localShadow.vertical) === null || _localShadow$vertical2 === void 0 ? void 0 : _localShadow$vertical2.value) || '',
+            value: ((_shadow$vertical2 = shadow.vertical) === null || _shadow$vertical2 === void 0 ? void 0 : _shadow$vertical2.value) || '',
             onChange: function onChange(e) {
               return updateShadow({
-                vertical: _objectSpread(_objectSpread({}, localShadow.vertical), {}, {
+                vertical: _objectSpread(_objectSpread({}, shadow.vertical), {}, {
                   value: e.target.value
                 })
               });
@@ -869,29 +823,29 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
             min: "-50",
             max: "50",
             placeholder: "0"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
-            value: ((_localShadow$vertical3 = localShadow.vertical) === null || _localShadow$vertical3 === void 0 ? void 0 : _localShadow$vertical3.unit) || 'px',
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
+            value: ((_shadow$vertical3 = shadow.vertical) === null || _shadow$vertical3 === void 0 ? void 0 : _shadow$vertical3.unit) || 'px',
             options: unitOptions,
             onChange: function onChange(unit) {
               return updateShadow({
-                vertical: _objectSpread(_objectSpread({}, localShadow.vertical), {}, {
+                vertical: _objectSpread(_objectSpread({}, shadow.vertical), {}, {
                   unit: unit
                 })
               });
             }
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BaseControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(BaseControl, {
         label: __("Blur Radius"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
           className: "ffblock-unit-control",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
             type: "number",
             className: "components-text-control__input",
-            value: ((_localShadow$blur2 = localShadow.blur) === null || _localShadow$blur2 === void 0 ? void 0 : _localShadow$blur2.value) || '',
+            value: ((_shadow$blur2 = shadow.blur) === null || _shadow$blur2 === void 0 ? void 0 : _shadow$blur2.value) || '',
             onChange: function onChange(e) {
               return updateShadow({
-                blur: _objectSpread(_objectSpread({}, localShadow.blur), {}, {
+                blur: _objectSpread(_objectSpread({}, shadow.blur), {}, {
                   value: e.target.value
                 })
               });
@@ -899,29 +853,29 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
             min: "0",
             max: "100",
             placeholder: "0"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
-            value: ((_localShadow$blur3 = localShadow.blur) === null || _localShadow$blur3 === void 0 ? void 0 : _localShadow$blur3.unit) || 'px',
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
+            value: ((_shadow$blur3 = shadow.blur) === null || _shadow$blur3 === void 0 ? void 0 : _shadow$blur3.unit) || 'px',
             options: unitOptions,
             onChange: function onChange(unit) {
               return updateShadow({
-                blur: _objectSpread(_objectSpread({}, localShadow.blur), {}, {
+                blur: _objectSpread(_objectSpread({}, shadow.blur), {}, {
                   unit: unit
                 })
               });
             }
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BaseControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(BaseControl, {
         label: __("Spread Radius"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
           className: "ffblock-unit-control",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
             type: "number",
             className: "components-text-control__input",
-            value: ((_localShadow$spread2 = localShadow.spread) === null || _localShadow$spread2 === void 0 ? void 0 : _localShadow$spread2.value) || '',
+            value: ((_shadow$spread2 = shadow.spread) === null || _shadow$spread2 === void 0 ? void 0 : _shadow$spread2.value) || '',
             onChange: function onChange(e) {
               return updateShadow({
-                spread: _objectSpread(_objectSpread({}, localShadow.spread), {}, {
+                spread: _objectSpread(_objectSpread({}, shadow.spread), {}, {
                   value: e.target.value
                 })
               });
@@ -929,12 +883,12 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
             min: "-50",
             max: "50",
             placeholder: "0"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
-            value: ((_localShadow$spread3 = localShadow.spread) === null || _localShadow$spread3 === void 0 ? void 0 : _localShadow$spread3.unit) || 'px',
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(SelectControl, {
+            value: ((_shadow$spread3 = shadow.spread) === null || _shadow$spread3 === void 0 ? void 0 : _shadow$spread3.unit) || 'px',
             options: unitOptions,
             onChange: function onChange(unit) {
               return updateShadow({
-                spread: _objectSpread(_objectSpread({}, localShadow.spread), {}, {
+                spread: _objectSpread(_objectSpread({}, shadow.spread), {}, {
                   unit: unit
                 })
               });
@@ -945,7 +899,9 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     })]
   });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentBoxShadowControl);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(FluentBoxShadowControl, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_1__.arePropsEqual)(prevProps, nextProps, ['label', 'defaultColor', 'shadow']);
+}));
 
 /***/ }),
 
@@ -959,17 +915,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-/**
- * Fluent Forms Custom Color Picker Component
- */
 var _wp$components = wp.components,
   Button = _wp$components.Button,
   Flex = _wp$components.Flex,
@@ -978,17 +931,16 @@ var _wp$components = wp.components,
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useRef = _wp$element.useRef,
-  useEffect = _wp$element.useEffect;
+  useEffect = _wp$element.useEffect,
+  memo = _wp$element.memo;
 
-// Custom Color Picker Component with direct ColorPicker and conditional reset button
+
 var FluentColorPicker = function FluentColorPicker(_ref) {
   var label = _ref.label,
     value = _ref.value,
     _onChange = _ref.onChange,
     _ref$defaultColor = _ref.defaultColor,
-    defaultColor = _ref$defaultColor === void 0 ? '' : _ref$defaultColor,
-    _ref$styles = _ref.styles,
-    styles = _ref$styles === void 0 ? {} : _ref$styles;
+    defaultColor = _ref$defaultColor === void 0 ? '' : _ref$defaultColor;
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     isOpen = _useState2[0],
@@ -1008,8 +960,6 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
   var containerRef = useRef(null);
   var buttonRef = useRef(null);
   var popoverRef = useRef(null);
-
-  // Update currentColor when value changes from outside
   useEffect(function () {
     setCurrentColor(value || '');
   }, [value]);
@@ -1024,50 +974,43 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
     setCurrentColor(defaultColor);
     _onChange(defaultColor);
   };
-
-  // Handle clicks outside to close the color picker
   useEffect(function () {
     if (!isOpen) return;
     var handleOutsideClick = function handleOutsideClick(event) {
-      // Don't close if clicking on WordPress color picker elements
       if (event.target.closest('.components-color-picker, .components-color-palette')) {
         return;
       }
-
-      // Check if the click is outside both the button and popover content
       if (buttonRef.current && !buttonRef.current.contains(event.target) && popoverRef.current && !popoverRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
-    // Use capture phase to handle before other handlers
     document.addEventListener('mousedown', handleOutsideClick, true);
     return function () {
       document.removeEventListener('mousedown', handleOutsideClick, true);
     };
   }, [isOpen]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-color-wrap",
     ref: containerRef,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(Flex, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(Flex, {
       align: "center",
       justify: "space-between",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
         className: "ffblock-label",
         children: label
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-flex-gap",
-        children: [isColorChanged && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+        children: [isColorChanged && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
           icon: "image-rotate",
           isSmall: true,
           onClick: resetToDefault,
           label: "Reset to default",
           className: "ffblock-reset-button"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
           className: "ffblock-color-button",
           onClick: toggleColorPicker,
           ref: buttonRef,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
             className: "ffblock-color-swatch ".concat(isTransparent ? 'ffblock-color-transparent-pattern' : ''),
             style: {
               backgroundColor: currentColor || "transparent"
@@ -1076,7 +1019,7 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
           })
         })]
       })]
-    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Popover, {
+    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Popover, {
       onClose: function onClose() {},
       anchor: buttonRef.current,
       focusOnMount: false,
@@ -1088,14 +1031,14 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
       flip: true,
       resize: true,
       __unstableSlotName: "ffblock-popover-content",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-popover-content",
         ref: popoverRef,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
           className: "ffblock-color-picker-header",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
             children: "Select Color"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
             className: "ffblock-color-picker-close",
             onClick: function onClick() {
               return setIsOpen(false);
@@ -1104,7 +1047,7 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
             isSmall: true,
             label: "Close"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ColorPalette, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ColorPalette, {
           colors: [{
             name: 'Theme Blue',
             color: '#72aee6'
@@ -1139,7 +1082,9 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
     })]
   });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentColorPicker);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(FluentColorPicker, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__.arePropsEqual)(prevProps, nextProps, ['label', 'value', 'defaultColor']);
+}));
 
 /***/ }),
 
@@ -1153,22 +1098,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-/**
- * Fluent Forms Separator Component
- */
-
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 var __ = wp.i18n.__;
+var memo = wp.element.memo;
 
-/**
- * Fluent Forms Separator Component
- *
- * @param {Object} props Component props
- * @param {string} props.label Optional label to display in the separator
- * @param {string} props.className Additional CSS class
- * @param {string} props.style Style of separator (default, dashed, dotted)
- */
+
 var FluentSeparator = function FluentSeparator(_ref) {
   var _ref$label = _ref.label,
     label = _ref$label === void 0 ? '' : _ref$label,
@@ -1178,19 +1113,21 @@ var FluentSeparator = function FluentSeparator(_ref) {
     style = _ref$style === void 0 ? 'default' : _ref$style;
   var separatorClass = "fluent-separator fluent-separator-".concat(style, " ").concat(className);
   if (label) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: separatorClass,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
         className: "fluent-separator-label",
         children: label
       })
     });
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("hr", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("hr", {
     className: separatorClass
   });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentSeparator);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(FluentSeparator, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__.arePropsEqual)(prevProps, nextProps, ['label', 'className', 'style']);
+}));
 
 /***/ }),
 
@@ -1204,9 +1141,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
@@ -1218,33 +1155,25 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-/**
- * Fluent Forms Custom Space/Margin/Padding Control
- */
-
 var _wp$components = wp.components,
   Button = _wp$components.Button,
   ButtonGroup = _wp$components.ButtonGroup,
   TextControl = _wp$components.TextControl,
-  Flex = _wp$components.Flex,
-  FlexItem = _wp$components.FlexItem,
-  FlexBlock = _wp$components.FlexBlock,
   Tooltip = _wp$components.Tooltip,
   DropdownMenu = _wp$components.DropdownMenu;
-var _ref = wp.blockEditor || wp.editor,
-  Icon = _ref.Icon;
 var _wp$element = wp.element,
   useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect;
+  useEffect = _wp$element.useEffect,
+  memo = _wp$element.memo;
 var __ = wp.i18n.__;
 
-// Custom Space/Margin/Padding Control
-var FluentSpaceControl = function FluentSpaceControl(_ref2) {
-  var label = _ref2.label,
-    values = _ref2.values,
-    onChange = _ref2.onChange,
-    _ref2$units = _ref2.units,
-    units = _ref2$units === void 0 ? [{
+
+var FluentSpaceControl = function FluentSpaceControl(_ref) {
+  var label = _ref.label,
+    values = _ref.values,
+    onChange = _ref.onChange,
+    _ref$units = _ref.units,
+    units = _ref$units === void 0 ? [{
       value: 'px',
       key: 'px-unit'
     }, {
@@ -1253,13 +1182,11 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
     }, {
       value: '%',
       key: 'percent-unit'
-    }] : _ref2$units;
-  // Initialize state from props or defaults
+    }] : _ref$units;
   var _useState = useState('desktop'),
     _useState2 = _slicedToArray(_useState, 2),
     activeDevice = _useState2[0],
     setActiveDevice = _useState2[1];
-  // Initialize isLinked based on values if available
   var initialLinkedState = values && values[activeDevice] && values[activeDevice].linked !== undefined ? values[activeDevice].linked : true;
   var _useState3 = useState(initialLinkedState),
     _useState4 = _slicedToArray(_useState3, 2),
@@ -1277,8 +1204,6 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
     _useState0 = _slicedToArray(_useState9, 2),
     currentValues = _useState0[0],
     setCurrentValues = _useState0[1];
-
-  // Default values structure
   var defaultValues = {
     desktop: {
       unit: 'px',
@@ -1305,12 +1230,9 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
       linked: true
     }
   };
-
-  // Initialize values on component mount and when props change
   useEffect(function () {
     if (values) {
       var _values$desktop, _values$desktop$top, _values$desktop2, _values$desktop$right, _values$desktop3, _values$desktop$botto, _values$desktop4, _values$desktop$left, _values$desktop5, _values$desktop6, _values$tablet$unit, _values$tablet, _values$tablet$top, _values$tablet2, _values$tablet$right, _values$tablet3, _values$tablet$bottom, _values$tablet4, _values$tablet$left, _values$tablet5, _values$tablet6, _values$mobile$unit, _values$mobile, _values$mobile$top, _values$mobile2, _values$mobile$right, _values$mobile3, _values$mobile$bottom, _values$mobile4, _values$mobile$left, _values$mobile5, _values$mobile6;
-      // Create a properly structured object with all required properties
       var structuredValues = {
         desktop: {
           unit: ((_values$desktop = values.desktop) === null || _values$desktop === void 0 ? void 0 : _values$desktop.unit) || values.unit || 'px',
@@ -1344,16 +1266,12 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
       setHasModifiedValues(checkForModifiedValues(structuredValues));
     }
   }, [values, activeDevice]);
-
-  // Helper function to check if any spacing values have been set
   var checkForModifiedValues = function checkForModifiedValues(values) {
-    // Check all devices for any non-empty, non-zero values
     var devices = ['desktop', 'tablet', 'mobile'];
     for (var _i = 0, _devices = devices; _i < _devices.length; _i++) {
       var device = _devices[_i];
       if (values[device]) {
         var _deviceValues = values[device];
-        // Check if any value is set and not empty or zero
         if (_deviceValues.top !== '' || _deviceValues.right !== '' || _deviceValues.bottom !== '' || _deviceValues.left !== '') {
           return true;
         }
@@ -1361,112 +1279,69 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
     }
     return false;
   };
-
-  // Set initial state from props and update when device changes
   useEffect(function () {
     if (currentValues[activeDevice]) {
-      // Explicitly set isLinked based on the current device's linked property
       setIsLinked(currentValues[activeDevice].linked !== false);
-
-      // Set unit based on the current device's unit
       setActiveUnit(currentValues[activeDevice].unit || 'px');
-
-      // Check if any values have been modified
       setHasModifiedValues(checkForModifiedValues(currentValues));
     }
   }, [activeDevice, currentValues]);
   var handleUnitChange = function handleUnitChange(unit) {
     setActiveUnit(unit);
-
-    // Create a new values object with the updated unit for current device only
     var updatedValues = _objectSpread(_objectSpread({}, currentValues), {}, _defineProperty({}, activeDevice, _objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, {
       unit: unit
     })));
-
-    // Call the onChange callback with the updated values
     onChange(updatedValues);
   };
   var toggleLinked = function toggleLinked() {
     var newLinkedState = !isLinked;
     setIsLinked(newLinkedState);
-
-    // Create a new values object with the updated linked state
     var updatedValues = _objectSpread(_objectSpread({}, currentValues), {}, _defineProperty({}, activeDevice, _objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, {
       linked: newLinkedState
     })));
-
-    // Update the parent component's state
     onChange(updatedValues);
   };
   var handleValueChange = function handleValueChange(position, value) {
-    // For em units, keep decimal values; for others, use integers
     var numValue = value === '' ? '' : activeUnit === 'em' || activeUnit === '%' ? parseFloat(value) : parseInt(value);
-
-    // Set the modified flag if the value is not empty
     if (value !== '') {
       setHasModifiedValues(true);
     } else {
-      // If the value is empty, check if any other values exist
       var updatedValues = _objectSpread({}, currentValues);
       var _deviceValues2 = _objectSpread({}, updatedValues[activeDevice]);
       _deviceValues2[position] = numValue;
       updatedValues[activeDevice] = _deviceValues2;
       setHasModifiedValues(checkForModifiedValues(updatedValues));
     }
-
-    // If linked, update all values
     if (isLinked) {
       var _updatedValues = _objectSpread({}, currentValues);
       var updatedDeviceValues = _objectSpread({}, _updatedValues[activeDevice]);
-
-      // Update all positions with the same value
       updatedDeviceValues.top = numValue;
       updatedDeviceValues.right = numValue;
       updatedDeviceValues.bottom = numValue;
       updatedDeviceValues.left = numValue;
-
-      // Explicitly preserve the linked state
       updatedDeviceValues.linked = true;
-
-      // Update the device values
       _updatedValues[activeDevice] = updatedDeviceValues;
-
-      // Update local state
       setCurrentValues(_updatedValues);
-
-      // Call onChange with updated values
       if (onChange) {
         onChange(_updatedValues);
       }
     } else {
-      // Update just the changed position
       var _updatedValues2 = _objectSpread({}, currentValues);
       var _updatedDeviceValues = _objectSpread({}, _updatedValues2[activeDevice]);
       _updatedDeviceValues[position] = numValue;
-
-      // Explicitly preserve the linked state
       _updatedDeviceValues.linked = isLinked;
       _updatedValues2[activeDevice] = _updatedDeviceValues;
-
-      // Update local state
       setCurrentValues(_updatedValues2);
-
-      // Call onChange with updated values
       if (onChange) {
         onChange(_updatedValues2);
       }
     }
   };
   var deviceValues = currentValues[activeDevice] || defaultValues[activeDevice];
-
-  // Handler for reset button
   var handleReset = function handleReset() {
-    // Reset to default values
     setIsLinked(true);
     setActiveUnit('px');
     setHasModifiedValues(false);
-
-    // Create empty values
     var emptyValues = {
       desktop: {
         unit: 'px',
@@ -1493,40 +1368,36 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
         linked: true
       }
     };
-
-    // Update local state
     setCurrentValues(emptyValues);
-
-    // Call onChange with empty values
     if (onChange) {
       onChange(emptyValues);
     }
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-space",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
       className: "ffblock-space-header",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
         className: "ffblock-label-container",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
           className: "ffblock-label",
           children: label
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-        children: hasModifiedValues && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Tooltip, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        children: hasModifiedValues && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Tooltip, {
           text: __('Reset spacing values'),
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
             onClick: handleReset,
             className: "ffblock-reset-button",
             icon: "image-rotate",
             isSmall: true
           })
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-space-controls",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
           className: "ffblock-device-selector",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DropdownMenu, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(DropdownMenu, {
             className: "ffblock-device-dropdown",
             icon: activeDevice === 'desktop' ? 'desktop' : activeDevice === 'tablet' ? 'tablet' : 'smartphone',
             label: __('Select device'),
@@ -1549,7 +1420,6 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
                 isActive: activeDevice === device.value,
                 onClick: function onClick() {
                   setActiveDevice(device.value);
-                  // Update isLinked based on the selected device's linked property
                   if (currentValues[device.value]) {
                     setIsLinked(currentValues[device.value].linked !== false);
                   }
@@ -1557,11 +1427,11 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
               };
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
           className: "ffblock-unit-selector",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ButtonGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ButtonGroup, {
             children: units.map(function (unit) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
                 isSmall: true,
                 isPrimary: activeUnit === unit.value,
                 onClick: function onClick() {
@@ -1573,12 +1443,12 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
           })
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "ffblock-space-inputs device-".concat(activeDevice),
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-space-input-row",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
             type: "number",
             value: deviceValues.top,
             onChange: function onChange(value) {
@@ -1586,11 +1456,11 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
             },
             min: 0,
             step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
             children: "TOP"
           }, "label-top")]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
             type: "number",
             value: deviceValues.right,
             onChange: function onChange(value) {
@@ -1598,11 +1468,11 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
             },
             min: 0,
             step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
             children: "RIGHT"
           }, "label-right")]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
             type: "number",
             value: deviceValues.bottom,
             onChange: function onChange(value) {
@@ -1610,11 +1480,11 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
             },
             min: 0,
             step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
             children: "BOTTOM"
           }, "label-right")]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
             type: "number",
             value: deviceValues.left,
             onChange: function onChange(value) {
@@ -1622,10 +1492,10 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
             },
             min: 0,
             step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
             children: "LEFT"
           }, "label-left")]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
           icon: isLinked ? 'admin-links' : 'editor-unlink',
           onClick: toggleLinked,
           className: "ffblock-linked-button"
@@ -1634,7 +1504,9 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
     })]
   });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentSpaceControl);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(FluentSpaceControl, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__.arePropsEqual)(prevProps, nextProps, ['label', 'values', 'units']);
+}));
 
 /***/ }),
 
@@ -1648,9 +1520,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
@@ -1662,9 +1534,6 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-/**
- * Fluent Forms Custom Typography Control Component
- */
 var _wp$components = wp.components,
   Button = _wp$components.Button,
   Flex = _wp$components.Flex,
@@ -1675,17 +1544,10 @@ var _wp$components = wp.components,
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useEffect = _wp$element.useEffect,
-  useMemo = _wp$element.useMemo;
+  useMemo = _wp$element.useMemo,
+  memo = _wp$element.memo;
 
-/**
- * Typography control component for Fluent Forms
- *
- * @param {Object} props Component properties
- * @param {string} props.label Label for the control
- * @param {Object} props.typography Full typography object
- * @param {Function} props.onChange updateStyles method
- * @returns {JSX.Element} Typography control component
- */
+
 var FluentTypography = function FluentTypography(_ref) {
   var label = _ref.label,
     _ref$typography = _ref.typography,
@@ -1705,8 +1567,6 @@ var FluentTypography = function FluentTypography(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     typoValues = _useState4[0],
     setTypoValues = _useState4[1];
-
-  // Update local state when typography prop changes
   useEffect(function () {
     setTypoValues({
       fontSize: (typography === null || typography === void 0 ? void 0 : typography.fontSize) || '',
@@ -1754,66 +1614,52 @@ var FluentTypography = function FluentTypography(_ref) {
     value: 'lowercase',
     label: 'lowercase'
   }];
-
-  // Toggle popover
   var togglePopover = function togglePopover() {
     return setIsOpen(!isOpen);
   };
-
-  /**
-   * Update a typography setting
-   */
   var updateSetting = function updateSetting(updatedProperties) {
     var updatedTypography = _objectSpread(_objectSpread({}, typography), updatedProperties);
     onChange(updatedTypography);
   };
-
-  /**
-   * Check if any typography settings have changed from defaults
-   */
   var isFontChanged = useMemo(function () {
     return typoValues.fontSize !== '' && typoValues.fontSize != null || typoValues.fontWeight !== '' && typoValues.fontWeight != null || typoValues.lineHeight !== '' && typoValues.lineHeight != null || typoValues.letterSpacing !== '' && typoValues.letterSpacing != null || typoValues.textTransform !== '' && typoValues.textTransform != null;
   }, [typoValues]);
-
-  /**
-   * Reset all typography settings to defaults
-   */
   var resetToDefault = function resetToDefault() {
     onChange({});
     if (isOpen) {
       setIsOpen(false);
     }
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-typography-wrap",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(Flex, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(Flex, {
       align: "center",
       justify: "space-between",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
         className: "ffblock-label",
         children: label
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-flex-gap",
-        children: [isFontChanged && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+        children: [isFontChanged && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
           icon: "image-rotate",
           isSmall: true,
           onClick: resetToDefault,
           label: "Reset to default",
           className: "ffblock-reset-button"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
           icon: "edit",
           isSmall: true,
           onClick: togglePopover,
           className: "fluent-typography-edit-btn"
         })]
       })]
-    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Popover, {
+    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Popover, {
       className: "fluent-typography-popover",
       onClose: togglePopover,
       position: "bottom center",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-popover-content",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(FontSizePicker, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(FontSizePicker, {
           fontSizes: [{
             name: 'Small',
             slug: 'small',
@@ -1838,7 +1684,7 @@ var FluentTypography = function FluentTypography(_ref) {
             });
           },
           withSlider: true
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
           label: "Font Weight",
           value: typoValues.fontWeight,
           options: fontWeightOptions,
@@ -1847,7 +1693,7 @@ var FluentTypography = function FluentTypography(_ref) {
               fontWeight: value
             });
           }
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
           label: "Line Height",
           value: typoValues.lineHeight,
           onChange: function onChange(value) {
@@ -1858,7 +1704,7 @@ var FluentTypography = function FluentTypography(_ref) {
           min: 0.5,
           max: 3,
           step: 0.1
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
           label: "Letter Spacing (px)",
           value: typoValues.letterSpacing,
           onChange: function onChange(value) {
@@ -1869,7 +1715,7 @@ var FluentTypography = function FluentTypography(_ref) {
           min: -5,
           max: 10,
           step: 0.1
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
           label: "Text Transform",
           value: typoValues.textTransform,
           options: textTransformOptions,
@@ -1883,7 +1729,9 @@ var FluentTypography = function FluentTypography(_ref) {
     }, "typo-popover")]
   });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentTypography);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(FluentTypography, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__.arePropsEqual)(prevProps, nextProps, ['label', 'typography']);
+}));
 
 /***/ }),
 
@@ -1897,32 +1745,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
-/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
-/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
-/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
-/* harmony import */ var _controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../controls/FluentBoxShadowControl */ "./guten_block/src/components/controls/FluentBoxShadowControl.js");
-/* harmony import */ var _controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../controls/FluentAlignmentControl */ "./guten_block/src/components/controls/FluentAlignmentControl.js");
-/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var _panels_StyleTemplatePanel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./panels/StyleTemplatePanel */ "./guten_block/src/components/tabs/panels/StyleTemplatePanel.js");
+/* harmony import */ var _panels_LabelStylesPanel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels/LabelStylesPanel */ "./guten_block/src/components/tabs/panels/LabelStylesPanel.js");
+/* harmony import */ var _panels_InputStylesPanel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./panels/InputStylesPanel */ "./guten_block/src/components/tabs/panels/InputStylesPanel.js");
+/* harmony import */ var _panels_ButtonStylesPanel__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./panels/ButtonStylesPanel */ "./guten_block/src/components/tabs/panels/ButtonStylesPanel.js");
+/* harmony import */ var _panels_PlaceHolderStylesPanel__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./panels/PlaceHolderStylesPanel */ "./guten_block/src/components/tabs/panels/PlaceHolderStylesPanel.js");
+/* harmony import */ var _panels_RadioCheckBoxStylesPanel__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./panels/RadioCheckBoxStylesPanel */ "./guten_block/src/components/tabs/panels/RadioCheckBoxStylesPanel.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-var _wp$element = wp.element,
-  useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect,
-  memo = _wp$element.memo;
-var __ = wp.i18n.__;
-var _wp$components = wp.components,
-  PanelBody = _wp$components.PanelBody,
-  SelectControl = _wp$components.SelectControl,
-  RangeControl = _wp$components.RangeControl,
-  TabPanel = _wp$components.TabPanel;
-
-// Custom components
+var memo = wp.element.memo;
 
 
 
@@ -1930,524 +1761,45 @@ var _wp$components = wp.components,
 
 
 
-
-/**
- * Component for form style template selection
- */
-
-var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
-  var attributes = _ref.attributes,
-    setAttributes = _ref.setAttributes,
-    handlePresetChange = _ref.handlePresetChange;
-  var config = window.fluentform_block_vars;
-  var presets = config.style_presets;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(PanelBody, {
-    title: __("Form Style Template"),
-    initialOpen: true,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(SelectControl, {
-      label: __("Choose a Template"),
-      value: attributes.themeStyle,
-      options: presets,
-      onChange: function onChange(themeStyle) {
-        setAttributes({
-          themeStyle: themeStyle,
-          isThemeChange: true
-        });
-        if (handlePresetChange) {
-          handlePresetChange(themeStyle);
-        }
-      }
-    })
-  });
-};
-
-/**
- * Component for label styling options
- */
-var LabelStylesPanel = function LabelStylesPanel(_ref2) {
-  var attributes = _ref2.attributes,
-    updateStyles = _ref2.updateStyles;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
-    title: __("Label Styles"),
-    initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      label: "Color",
-      value: attributes.styles.labelColor,
-      onChange: function onChange(value) {
-        return updateStyles({
-          labelColor: value
-        });
-      },
-      defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
-      label: "Typography",
-      typography: attributes.styles.labelTypography || {},
-      onChange: function onChange(typography) {
-        return updateStyles({
-          labelTypography: typography
-        });
-      }
-    })]
-  });
-};
-
-/**
- * Component for input and textarea styling options
- */
-var InputStylesPanel = function InputStylesPanel(_ref3) {
-  var attributes = _ref3.attributes,
-    updateStyles = _ref3.updateStyles;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(PanelBody, {
-    title: __("Input & Textarea"),
-    initialOpen: false,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(TabPanel, {
-      className: "input-styles-tabs",
-      activeClass: "is-active",
-      tabs: [{
-        name: 'normal',
-        title: __('Normal'),
-        className: 'tab-normal'
-      }, {
-        name: 'focus',
-        title: __('Focus'),
-        className: 'tab-focus'
-      }],
-      children: function children(tab) {
-        if (tab.name === 'normal') {
-          var _attributes$styles, _attributes$styles2;
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              label: "Text Color",
-              value: ((_attributes$styles = attributes.styles) === null || _attributes$styles === void 0 ? void 0 : _attributes$styles.inputTextColor) || '',
-              onChange: function onChange(value) {
-                updateStyles({
-                  inputTextColor: value
-                });
-              },
-              defaultColor: ""
-            }, "input-text-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              label: "Background Color",
-              value: ((_attributes$styles2 = attributes.styles) === null || _attributes$styles2 === void 0 ? void 0 : _attributes$styles2.inputBackgroundColor) || '',
-              styles: attributes.styles,
-              onChange: function onChange(value) {
-                updateStyles({
-                  inputBackgroundColor: value
-                });
-              },
-              defaultColor: ""
-            }, "input-bg-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
-              label: "Typography",
-              typography: attributes.styles.inputTypography || {},
-              onChange: function onChange(typography) {
-                return updateStyles({
-                  inputTypography: typography
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-              label: "Spacing",
-              values: attributes.styles.inputSpacing,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  inputSpacing: value
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
-              label: __("Border"),
-              border: attributes.styles.inputBorder || {},
-              onChange: function onChange(borderObj) {
-                return updateStyles({
-                  inputBorder: borderObj
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
-              label: __("Box Shadow"),
-              shadow: attributes.styles.inputBoxShadow || {},
-              onChange: function onChange(shadowObj) {
-                return updateStyles({
-                  inputBoxShadow: shadowObj
-                });
-              }
-            })]
-          });
-        } else if (tab.name === 'focus') {
-          var _attributes$styles3;
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              label: "Text Color",
-              value: attributes.styles.inputTextFocusColor || '',
-              onChange: function onChange(value) {
-                updateStyles({
-                  inputTextFocusColor: value
-                });
-              },
-              defaultColor: ""
-            }, "input-text-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              label: "Background Color",
-              value: ((_attributes$styles3 = attributes.styles) === null || _attributes$styles3 === void 0 ? void 0 : _attributes$styles3.inputBackgroundFocusColor) || '',
-              onChange: function onChange(value) {
-                updateStyles({
-                  inputBackgroundFocusColor: value
-                });
-              },
-              defaultColor: ""
-            }, "input-bg-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-              label: "Spacing",
-              values: attributes.styles.inputFocusSpacing,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  inputFocusSpacing: value
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
-              label: __("Border"),
-              border: attributes.styles.inputBorderFocus || {},
-              onChange: function onChange(borderObj) {
-                return updateStyles({
-                  inputBorderFocus: borderObj
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
-              label: __("Box Shadow"),
-              shadow: attributes.styles.inputBoxShadowFocus || {},
-              onChange: function onChange(shadowObj) {
-                return updateStyles({
-                  inputBoxShadowFocus: shadowObj
-                });
-              }
-            })]
-          });
-        }
-        return null;
-      }
-    })
-  });
-};
-
-/**
- * Component for button styling options
- */
-var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
-  var attributes = _ref4.attributes,
-    updateStyles = _ref4.updateStyles;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
-    title: __('Button Styles'),
-    initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
-        className: "ffblock-label",
-        children: __('Alignment')
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        value: attributes.styles.buttonAlignment,
-        onChange: function onChange(value) {
-          return updateStyles({
-            buttonAlignment: value
-          });
-        },
-        options: [{
-          value: 'left',
-          icon: 'editor-alignleft',
-          label: __('Left')
-        }, {
-          value: 'center',
-          icon: 'editor-aligncenter',
-          label: __('Center')
-        }, {
-          value: 'right',
-          icon: 'editor-alignright',
-          label: __('Right')
-        }]
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(RangeControl, {
-      label: __('Width (%)'),
-      value: attributes.styles.buttonWidth,
-      onChange: function onChange(value) {
-        return updateStyles({
-          buttonWidth: value
-        });
-      },
-      min: 0,
-      max: 100,
-      allowReset: true,
-      initialPosition: 0,
-      help: __('Set to 0 for auto width')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(TabPanel, {
-      className: "button-styles-tabs",
-      activeClass: "is-active",
-      tabs: [{
-        name: 'normal',
-        title: __('Normal'),
-        className: 'tab-normal'
-      }, {
-        name: 'hover',
-        title: __('Hover'),
-        className: 'tab-hover'
-      }],
-      children: function children(tab) {
-        if (tab.name === 'normal') {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              label: "Text Color",
-              value: attributes.styles.buttonColor,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  buttonColor: value
-                });
-              },
-              defaultColor: "#ffffff"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              label: "Background Color",
-              value: attributes.styles.buttonBGColor,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  buttonBGColor: value
-                });
-              },
-              defaultColor: "#409EFF"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
-              label: "Typography",
-              typography: attributes.styles.buttonTypography || {},
-              onChange: function onChange(typography) {
-                return updateStyles({
-                  buttonTypography: typography
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-              label: "Padding",
-              values: attributes.styles.buttonPadding,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  buttonPadding: value
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-              label: "Margin",
-              values: attributes.styles.buttonMargin,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  buttonMargin: value
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
-              label: __("Box Shadow"),
-              shadow: attributes.styles.buttonBoxShadow || {},
-              onChange: function onChange(shadowObj) {
-                return updateStyles({
-                  buttonBoxShadow: shadowObj
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
-              label: __("Border"),
-              border: attributes.styles.buttonBorder || {},
-              onChange: function onChange(borderObj) {
-                return updateStyles({
-                  buttonBorder: borderObj
-                });
-              }
-            })]
-          });
-        } else if (tab.name === 'hover') {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              label: "Text Color",
-              value: attributes.styles.buttonHoverColor,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  buttonHoverColor: value
-                });
-              },
-              defaultColor: "#ffffff"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              label: "Background Color",
-              value: attributes.styles.buttonHoverBGColor,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  buttonHoverBGColor: value
-                });
-              },
-              defaultColor: "#66b1ff"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
-              label: "Typography",
-              typography: attributes.styles.buttonHoverTypography || {},
-              onChange: function onChange(typography) {
-                return updateStyles({
-                  buttonHoverTypography: typography
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-              label: "Padding",
-              values: attributes.styles.buttonHoverPadding,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  buttonHoverPadding: value
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-              label: "Margin",
-              values: attributes.styles.buttonHoverMargin,
-              onChange: function onChange(value) {
-                return updateStyles({
-                  buttonHoverMargin: value
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
-              label: __("Box Shadow"),
-              shadow: attributes.styles.buttonHoverBoxShadow || {},
-              onChange: function onChange(shadowObj) {
-                return updateStyles({
-                  buttonHoverBoxShadow: shadowObj
-                });
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
-              label: __("Border"),
-              border: attributes.styles.buttonHoverBorder || {},
-              onChange: function onChange(borderObj) {
-                return updateStyles({
-                  buttonHoverBorder: borderObj
-                });
-              }
-            })]
-          });
-        }
-        return null;
-      }
-    })]
-  });
-};
-
-/**
- * Component for placeholder styling options
- */
-var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref5) {
-  var attributes = _ref5.attributes,
-    updateStyles = _ref5.updateStyles;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
-    title: __('Placeholder Styles'),
-    initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      label: "Text Color",
-      value: attributes.styles.placeholderColor,
-      onChange: function onChange(value) {
-        return updateStyles({
-          placeholderColor: value
-        });
-      },
-      defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
-      label: "Typography",
-      typography: attributes.styles.placeholderTypography || {},
-      onChange: function onChange(typography) {
-        return updateStyles({
-          placeholderTypography: typography
-        });
-      }
-    })]
-  });
-};
-var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
-  var attributes = _ref6.attributes,
-    updateStyles = _ref6.updateStyles;
-  // Use local state to ensure the UI updates immediately
-  var _useState = useState(attributes.styles.radioCheckboxItemsSize || 15),
-    _useState2 = _slicedToArray(_useState, 2),
-    localSize = _useState2[0],
-    setLocalSize = _useState2[1];
-
-  // Update local state when the attribute changes from outside
-  useEffect(function () {
-    if (attributes.styles.radioCheckboxItemsSize !== undefined && attributes.styles.radioCheckboxItemsSize !== localSize) {
-      setLocalSize(attributes.styles.radioCheckboxItemsSize);
-    }
-  }, [attributes.styles.radioCheckboxItemsSize]);
-
-  // Handle size change with immediate UI update
-  var handleSizeChange = function handleSizeChange(value) {
-    // Update local state for immediate UI feedback
-    setLocalSize(value);
-    // Update the actual attribute
-    updateStyles({
-      radioCheckboxItemsSize: value
-    });
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
-    title: __('Radio & Checkbox Styles'),
-    initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      label: "Items Color",
-      value: attributes.styles.radioCheckboxItemsColor,
-      onChange: function onChange(value) {
-        return updateStyles({
-          radioCheckboxItemsColor: value
-        });
-      },
-      defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-      className: "ffblock-control-field",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
-        className: "ffblock-label",
-        children: "Size (px)"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(RangeControl, {
-        value: localSize // Use local state for immediate UI feedback
-        ,
-        min: 1,
-        max: 30,
-        step: 1,
-        onChange: handleSizeChange
-      })]
-    })]
-  });
-};
 
 /**
  * Main TabGeneral component
  */
-var TabGeneral = function TabGeneral(_ref7) {
-  var attributes = _ref7.attributes,
-    setAttributes = _ref7.setAttributes,
-    updateStyles = _ref7.updateStyles,
-    handlePresetChange = _ref7.handlePresetChange;
+
+var TabGeneral = function TabGeneral(_ref) {
+  var attributes = _ref.attributes,
+    setAttributes = _ref.setAttributes,
+    updateStyles = _ref.updateStyles,
+    handlePresetChange = _ref.handlePresetChange;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(StyleTemplatePanel, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_StyleTemplatePanel__WEBPACK_IMPORTED_MODULE_1__["default"], {
       attributes: attributes,
       setAttributes: setAttributes,
       handlePresetChange: handlePresetChange
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(LabelStylesPanel, {
-      attributes: attributes,
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_LabelStylesPanel__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      styles: attributes.styles,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(InputStylesPanel, {
-      attributes: attributes,
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_InputStylesPanel__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      styles: attributes.styles,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(PlaceHolderStylesPanel, {
-      attributes: attributes,
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_PlaceHolderStylesPanel__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      styles: attributes.styles,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(RadioCheckBoxStylesPanel, {
-      attributes: attributes,
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_RadioCheckBoxStylesPanel__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      styles: attributes.styles,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(ButtonStylesPanel, {
-      attributes: attributes,
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_ButtonStylesPanel__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      styles: attributes.styles,
       updateStyles: updateStyles
     })]
   });
 };
-var GENERAL_TAB_ATTRIBUTES = [
-// Label attributes
-'labelColor', 'labelTypography',
-// Input attributes
-'inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'inputBoxShadow', 'inputBoxShadowFocus',
-// Placeholder attributes
-'placeholderColor', 'placeholderFocusColor', 'placeholderTypography',
-// Radio/Checkbox attributes
-'radioCheckboxLabelColor', 'radioCheckboxTypography', 'radioCheckboxItemsColor', 'radioCheckboxItemsSize', 'checkboxSize', 'checkboxBorderColor', 'checkboxBgColor', 'checkboxCheckedColor', 'radioSize', 'radioBorderColor', 'radioBgColor', 'radioCheckedColor',
-// Common Button attributes
-'buttonWidth', 'buttonAlignment',
-// Normal Button attributes
-'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'buttonBorder',
-// Hover Button attributes
-'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'buttonHoverBorder'];
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabGeneral, function (prevProps, nextProps) {
-  if (prevProps.attributes.themeStyle !== nextProps.attributes.themeStyle) {
+var GENERAL_STYLES = ['labelColor', 'labelTypography', 'inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'inputBoxShadow', 'inputBoxShadowFocus', 'placeholderColor', 'placeholderFocusColor', 'placeholderTypography', 'radioCheckboxLabelColor', 'radioCheckboxTypography', 'radioCheckboxItemsColor', 'radioCheckboxItemsSize', 'checkboxSize', 'checkboxBorderColor', 'checkboxBgColor', 'checkboxCheckedColor', 'radioSize', 'radioBorderColor', 'radioBgColor', 'radioCheckedColor', 'buttonWidth', 'buttonAlignment', 'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'buttonBorder', 'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'buttonHoverBorder'];
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabGeneral, function (prev, next) {
+  if (prev.attributes.themeStyle !== next.attributes.themeStyle) {
     return false;
   }
-  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.arePropsEqual)(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES);
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__.areStylesEqual)(prev.attributes.styles, next.attributes.styles, GENERAL_STYLES);
 }));
 
 /***/ }),
@@ -2476,9 +1828,6 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-/**
- * Fluent Forms Gutenberg Block Misc Tab Component
- */
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useEffect = _wp$element.useEffect,
@@ -2489,10 +1838,7 @@ var _wp$components = wp.components,
   SelectControl = _wp$components.SelectControl,
   RangeControl = _wp$components.RangeControl,
   Button = _wp$components.Button,
-  BaseControl = _wp$components.BaseControl,
-  FontSizePicker = _wp$components.FontSizePicker;
-
-// Import custom components
+  BaseControl = _wp$components.BaseControl;
 
 
 
@@ -2553,8 +1899,6 @@ var TabMisc = function TabMisc(_ref) {
           backgroundImageId: attachment.id
         });
       }
-
-      // Also call updateStyles as backup
       updateStyles({
         backgroundImage: attachment.url,
         backgroundImageId: attachment.id
@@ -2563,9 +1907,6 @@ var TabMisc = function TabMisc(_ref) {
     mediaUploader.open();
   };
   var removeBackgroundImage = function removeBackgroundImage() {
-    console.log('Removing background image');
-
-    // Clear local state immediately
     setLocalBgImage('');
     if (typeof setAttributes === 'function') {
       setAttributes({
@@ -2578,8 +1919,6 @@ var TabMisc = function TabMisc(_ref) {
       backgroundImageId: 0
     });
   };
-
-  // Use local state for conditional rendering
   var currentBgImage = localBgImage || attributes.styles.backgroundImage;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
@@ -3012,9 +2351,9 @@ var TabMisc = function TabMisc(_ref) {
 /**
  * Compare function to determine if component should update
  */
-var MISC_TAB_ATTRIBUTES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageBgColor', 'errorMessageColor', 'errorMessageAlignment', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'submitErrorMessageBgColor', 'submitErrorMessageColor', 'submitErrorMessageAlignment'];
+var MISC_STYLES = ['backgroundType', 'backgroundImage', 'backgroundImageId', 'backgroundColor', 'gradientColor1', 'gradientColor2', 'containerPadding', 'containerMargin', 'containerBoxShadow', 'borderType', 'borderColor', 'borderWidth', 'borderRadius', 'enableFormBorder', 'formBorder', 'formWidth', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat', 'backgroundAttachment', 'backgroundOverlayColor', 'backgroundOverlayOpacity', 'gradientType', 'gradientAngle', 'enableBoxShadow', 'boxShadowColor', 'boxShadowPosition', 'boxShadowHorizontal', 'boxShadowHorizontalUnit', 'boxShadowVertical', 'boxShadowVerticalUnit', 'boxShadowBlur', 'boxShadowBlurUnit', 'boxShadowSpread', 'boxShadowSpreadUnit', 'asteriskColor', 'errorMessageBgColor', 'errorMessageColor', 'errorMessageAlignment', 'successMessageBgColor', 'successMessageColor', 'successMessageAlignment', 'submitErrorMessageBgColor', 'submitErrorMessageColor', 'submitErrorMessageAlignment'];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabMisc, function (prevProps, nextProps) {
-  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.arePropsEqual)(prevProps, nextProps, MISC_TAB_ATTRIBUTES);
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.areStylesEqual)(prevProps.attributes.styles, nextProps.attributes.styles, MISC_STYLES);
 }));
 
 /***/ }),
@@ -3032,15 +2371,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _TabGeneral__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TabGeneral */ "./guten_block/src/components/tabs/TabGeneral.js");
 /* harmony import */ var _TabMisc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TabMisc */ "./guten_block/src/components/tabs/TabMisc.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-/**
- * Fluent Forms Gutenberg Block Tabs Component
- * Manages the tab panel for the block inspector
- */
 var __ = wp.i18n.__;
 var TabPanel = wp.components.TabPanel;
 var memo = wp.element.memo;
-
-// Import tab content components
 
 
 
@@ -3084,7 +2417,654 @@ function Tabs(_ref) {
     }
   });
 }
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(Tabs));
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(Tabs, function (prevProps, nextProps) {
+  if (prevProps.setAttributes !== nextProps.setAttributes || prevProps.updateStyles !== nextProps.updateStyles || prevProps.handlePresetChange !== nextProps.handlePresetChange) {
+    return false;
+  }
+  return prevProps.attributes === nextProps.attributes;
+}));
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/panels/ButtonStylesPanel.js":
+/*!*********************************************************************!*\
+  !*** ./guten_block/src/components/tabs/panels/ButtonStylesPanel.js ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
+/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
+/* harmony import */ var _controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../controls/FluentBoxShadowControl */ "./guten_block/src/components/controls/FluentBoxShadowControl.js");
+/* harmony import */ var _controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../controls/FluentAlignmentControl */ "./guten_block/src/components/controls/FluentAlignmentControl.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+var memo = wp.element.memo;
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  TabPanel = _wp$components.TabPanel,
+  RangeControl = _wp$components.RangeControl;
+
+
+
+
+
+
+
+
+/**
+ * Component for button styling options
+ */
+
+var ButtonStylesPanel = function ButtonStylesPanel(_ref) {
+  var styles = _ref.styles,
+    updateStyles = _ref.updateStyles;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(PanelBody, {
+    title: __('Button Styles'),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
+        className: "ffblock-label",
+        children: __('Alignment')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        value: styles.buttonAlignment,
+        onChange: function onChange(value) {
+          return updateStyles({
+            buttonAlignment: value
+          });
+        },
+        options: [{
+          value: 'left',
+          icon: 'editor-alignleft',
+          label: __('Left')
+        }, {
+          value: 'center',
+          icon: 'editor-aligncenter',
+          label: __('Center')
+        }, {
+          value: 'right',
+          icon: 'editor-alignright',
+          label: __('Right')
+        }]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(RangeControl, {
+      label: __('Width (%)'),
+      value: styles.buttonWidth,
+      onChange: function onChange(value) {
+        return updateStyles({
+          buttonWidth: value
+        });
+      },
+      min: 0,
+      max: 100,
+      allowReset: true,
+      initialPosition: 0,
+      help: __('Set to 0 for auto width')
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(TabPanel, {
+      className: "button-styles-tabs",
+      activeClass: "is-active",
+      tabs: [{
+        name: 'normal',
+        title: __('Normal'),
+        className: 'tab-normal'
+      }, {
+        name: 'hover',
+        title: __('Hover'),
+        className: 'tab-hover'
+      }],
+      children: function children(tab) {
+        if (tab.name === 'normal') {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Text Color",
+              value: styles.buttonColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonColor: value
+                });
+              },
+              defaultColor: "#ffffff"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Background Color",
+              value: styles.buttonBGColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonBGColor: value
+                });
+              },
+              defaultColor: "#409EFF"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+              label: "Typography",
+              typography: styles.buttonTypography || {},
+              onChange: function onChange(typography) {
+                return updateStyles({
+                  buttonTypography: typography
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Padding",
+              values: styles.buttonPadding,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonPadding: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Margin",
+              values: styles.buttonMargin,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonMargin: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+              label: __("Box Shadow"),
+              shadow: styles.buttonBoxShadow || {},
+              onChange: function onChange(shadowObj) {
+                return updateStyles({
+                  buttonBoxShadow: shadowObj
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+              label: __("Border"),
+              border: styles.buttonBorder || {},
+              onChange: function onChange(borderObj) {
+                return updateStyles({
+                  buttonBorder: borderObj
+                });
+              }
+            })]
+          });
+        } else if (tab.name === 'hover') {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Text Color",
+              value: styles.buttonHoverColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonHoverColor: value
+                });
+              },
+              defaultColor: "#ffffff"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Background Color",
+              value: styles.buttonHoverBGColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonHoverBGColor: value
+                });
+              },
+              defaultColor: "#66b1ff"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+              label: "Typography",
+              typography: styles.buttonHoverTypography || {},
+              onChange: function onChange(typography) {
+                return updateStyles({
+                  buttonHoverTypography: typography
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Padding",
+              values: styles.buttonHoverPadding,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonHoverPadding: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Margin",
+              values: styles.buttonHoverMargin,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonHoverMargin: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+              label: __("Box Shadow"),
+              shadow: styles.buttonHoverBoxShadow || {},
+              onChange: function onChange(shadowObj) {
+                return updateStyles({
+                  buttonHoverBoxShadow: shadowObj
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+              label: __("Border"),
+              border: styles.buttonHoverBorder || {},
+              onChange: function onChange(borderObj) {
+                return updateStyles({
+                  buttonHoverBorder: borderObj
+                });
+              }
+            })]
+          });
+        }
+        return null;
+      }
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(ButtonStylesPanel, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_6__.areStylesEqual)(prevProps.styles, nextProps.styles, ['buttonWidth', 'buttonAlignment', 'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'buttonBorder', 'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'buttonHoverBorder']);
+}));
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/panels/InputStylesPanel.js":
+/*!********************************************************************!*\
+  !*** ./guten_block/src/components/tabs/panels/InputStylesPanel.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
+/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
+/* harmony import */ var _controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../controls/FluentBoxShadowControl */ "./guten_block/src/components/controls/FluentBoxShadowControl.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+var memo = wp.element.memo;
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  TabPanel = _wp$components.TabPanel;
+
+
+
+
+
+
+
+/**
+ * Component for input and textarea styling options
+ */
+
+var InputStylesPanel = function InputStylesPanel(_ref) {
+  var styles = _ref.styles,
+    updateStyles = _ref.updateStyles;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(PanelBody, {
+    title: __("Input & Textarea"),
+    initialOpen: false,
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(TabPanel, {
+      className: "input-styles-tabs",
+      activeClass: "is-active",
+      tabs: [{
+        name: 'normal',
+        title: __('Normal'),
+        className: 'tab-normal'
+      }, {
+        name: 'focus',
+        title: __('Focus'),
+        className: 'tab-focus'
+      }],
+      children: function children(tab) {
+        if (tab.name === 'normal') {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Text Color",
+              value: (styles === null || styles === void 0 ? void 0 : styles.inputTextColor) || '',
+              onChange: function onChange(value) {
+                updateStyles({
+                  inputTextColor: value
+                });
+              },
+              defaultColor: ""
+            }, "input-text-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Background Color",
+              value: (styles === null || styles === void 0 ? void 0 : styles.inputBackgroundColor) || '',
+              onChange: function onChange(value) {
+                updateStyles({
+                  inputBackgroundColor: value
+                });
+              },
+              defaultColor: ""
+            }, "input-bg-color-normal"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+              label: "Typography",
+              typography: styles.inputTypography || {},
+              onChange: function onChange(typography) {
+                return updateStyles({
+                  inputTypography: typography
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Spacing",
+              values: styles.inputSpacing,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  inputSpacing: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+              label: __("Border"),
+              border: styles.inputBorder || {},
+              onChange: function onChange(borderObj) {
+                return updateStyles({
+                  inputBorder: borderObj
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+              label: __("Box Shadow"),
+              shadow: styles.inputBoxShadow || {},
+              onChange: function onChange(shadowObj) {
+                return updateStyles({
+                  inputBoxShadow: shadowObj
+                });
+              }
+            })]
+          });
+        } else if (tab.name === 'focus') {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Text Color",
+              value: styles.inputTextFocusColor || '',
+              onChange: function onChange(value) {
+                updateStyles({
+                  inputTextFocusColor: value
+                });
+              },
+              defaultColor: ""
+            }, "input-text-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Background Color",
+              value: (styles === null || styles === void 0 ? void 0 : styles.inputBackgroundFocusColor) || '',
+              onChange: function onChange(value) {
+                updateStyles({
+                  inputBackgroundFocusColor: value
+                });
+              },
+              defaultColor: ""
+            }, "input-bg-color-focus"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Spacing",
+              values: styles.inputFocusSpacing,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  inputFocusSpacing: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+              label: __("Border"),
+              border: styles.inputBorderFocus || {},
+              onChange: function onChange(borderObj) {
+                return updateStyles({
+                  inputBorderFocus: borderObj
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+              label: __("Box Shadow"),
+              shadow: styles.inputBoxShadowFocus || {},
+              onChange: function onChange(shadowObj) {
+                return updateStyles({
+                  inputBoxShadowFocus: shadowObj
+                });
+              }
+            })]
+          });
+        }
+        return null;
+      }
+    })
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(InputStylesPanel, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_5__.areStylesEqual)(prevProps.styles, nextProps.styles, ['inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBoxShadow', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'inputBorderFocus', 'inputBoxShadowFocus']);
+}));
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/panels/LabelStylesPanel.js":
+/*!********************************************************************!*\
+  !*** ./guten_block/src/components/tabs/panels/LabelStylesPanel.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+var memo = wp.element.memo;
+var __ = wp.i18n.__;
+var PanelBody = wp.components.PanelBody;
+
+
+
+
+/**
+ * Component for label styling options
+ */
+
+var LabelStylesPanel = function LabelStylesPanel(_ref) {
+  var styles = _ref.styles,
+    updateStyles = _ref.updateStyles;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(PanelBody, {
+    title: __("Label Styles"),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Color",
+      value: styles.labelColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          labelColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      label: "Typography",
+      typography: styles.labelTypography || {},
+      onChange: function onChange(typography) {
+        return updateStyles({
+          labelTypography: typography
+        });
+      }
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(LabelStylesPanel, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__.areStylesEqual)(prevProps.styles, nextProps.styles, ['labelColor', 'labelTypography']);
+}));
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/panels/PlaceHolderStylesPanel.js":
+/*!**************************************************************************!*\
+  !*** ./guten_block/src/components/tabs/panels/PlaceHolderStylesPanel.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+var memo = wp.element.memo;
+var __ = wp.i18n.__;
+var PanelBody = wp.components.PanelBody;
+
+
+
+
+/**
+ * Component for placeholder styling options
+ */
+
+var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref) {
+  var styles = _ref.styles,
+    updateStyles = _ref.updateStyles;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(PanelBody, {
+    title: __('Placeholder Styles'),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Text Color",
+      value: styles.placeholderColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          placeholderColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      label: "Typography",
+      typography: styles.placeholderTypography || {},
+      onChange: function onChange(typography) {
+        return updateStyles({
+          placeholderTypography: typography
+        });
+      }
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(PlaceHolderStylesPanel, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_2__.areStylesEqual)(prevProps.styles, nextProps.styles, ['placeholderColor', 'placeholderTypography']);
+}));
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/panels/RadioCheckBoxStylesPanel.js":
+/*!****************************************************************************!*\
+  !*** ./guten_block/src/components/tabs/panels/RadioCheckBoxStylesPanel.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useEffect = _wp$element.useEffect,
+  memo = _wp$element.memo;
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  RangeControl = _wp$components.RangeControl;
+
+
+
+var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref) {
+  var styles = _ref.styles,
+    updateStyles = _ref.updateStyles;
+  var _useState = useState(styles.radioCheckboxItemsSize || 15),
+    _useState2 = _slicedToArray(_useState, 2),
+    localSize = _useState2[0],
+    setLocalSize = _useState2[1];
+  useEffect(function () {
+    if (styles.radioCheckboxItemsSize !== undefined && styles.radioCheckboxItemsSize !== localSize) {
+      setLocalSize(styles.radioCheckboxItemsSize);
+    }
+  }, [styles.radioCheckboxItemsSize]);
+  var handleSizeChange = function handleSizeChange(value) {
+    setLocalSize(value);
+    updateStyles({
+      radioCheckboxItemsSize: value
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(PanelBody, {
+    title: __('Radio & Checkbox Styles'),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Items Color",
+      value: styles.radioCheckboxItemsColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          radioCheckboxItemsColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "ffblock-control-field",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+        className: "ffblock-label",
+        children: "Size (px)"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RangeControl, {
+        value: localSize,
+        min: 1,
+        max: 30,
+        step: 1,
+        onChange: handleSizeChange
+      })]
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(RadioCheckBoxStylesPanel, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_0__.areStylesEqual)(prevProps.styles, nextProps.styles, ['radioCheckboxItemsColor', 'radioCheckboxItemsSize']);
+}));
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/panels/StyleTemplatePanel.js":
+/*!**********************************************************************!*\
+  !*** ./guten_block/src/components/tabs/panels/StyleTemplatePanel.js ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  SelectControl = _wp$components.SelectControl;
+var memo = wp.element.memo;
+
+/**
+ * Component for form style template selection
+ */
+var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
+  var attributes = _ref.attributes,
+    setAttributes = _ref.setAttributes,
+    handlePresetChange = _ref.handlePresetChange;
+  var config = window.fluentform_block_vars;
+  var presets = config.style_presets;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(PanelBody, {
+    title: __("Form Style Template"),
+    initialOpen: true,
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+      label: __("Choose a Template"),
+      value: attributes.themeStyle,
+      options: presets,
+      onChange: function onChange(themeStyle) {
+        setAttributes({
+          themeStyle: themeStyle,
+          isThemeChange: true
+        });
+        if (handlePresetChange) {
+          handlePresetChange(themeStyle);
+        }
+      },
+      __next36pxDefaultSize: true,
+      __nextHasNoMarginBottom: true
+    })
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(StyleTemplatePanel, function (prevProps, nextProps) {
+  return prevProps.attributes.themeStyle === nextProps.attributes.themeStyle;
+}));
 
 /***/ }),
 
@@ -3096,43 +3076,41 @@ function Tabs(_ref) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   arePropsEqual: () => (/* binding */ arePropsEqual)
+/* harmony export */   arePropsEqual: () => (/* binding */ arePropsEqual),
+/* harmony export */   areStylesEqual: () => (/* binding */ areStylesEqual)
 /* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 /**
  * Checks if props have changed for component memoization
  *
- * @param {Object} prevProps Previous props
- * @param {Object} nextProps New props
- * @param {Array} attributesToCheck Array of attribute names to check
+ * @param {Object} prevStyles Previous props
+ * @param {Object} nextStyles New props
+ * @param {Array} stylesNames Array of styles names to check
  * @return {Boolean} True if props are equal (no update needed)
  */
-var arePropsEqual = function arePropsEqual(prevProps, nextProps) {
-  var _prevProps$attributes, _nextProps$attributes;
-  var attributesToCheck = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-  if (((_prevProps$attributes = prevProps.attributes) === null || _prevProps$attributes === void 0 ? void 0 : _prevProps$attributes.styles) !== ((_nextProps$attributes = nextProps.attributes) === null || _nextProps$attributes === void 0 ? void 0 : _nextProps$attributes.styles)) {
-    return false;
-  }
-  if (attributesToCheck.length === 0) {
+var areStylesEqual = function areStylesEqual(prevStyles, nextStyles) {
+  var stylesNames = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  if (!prevStyles && !nextStyles || prevStyles === nextStyles || !stylesNames.length) {
     return true;
   }
-  var prevAttrs = prevProps.attributes || {};
-  var nextAttrs = nextProps.attributes || {};
-  var _iterator = _createForOfIteratorHelper(attributesToCheck),
+  if (!prevStyles || !nextStyles) {
+    return false;
+  }
+  var _iterator = _createForOfIteratorHelper(stylesNames),
     _step;
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var _prevAttrs$styles, _nextAttrs$styles, _prevAttrs$styles2, _nextAttrs$styles2;
       var attr = _step.value;
-      if (!(prevAttrs !== null && prevAttrs !== void 0 && (_prevAttrs$styles = prevAttrs.styles) !== null && _prevAttrs$styles !== void 0 && _prevAttrs$styles[attr]) && !(nextAttrs !== null && nextAttrs !== void 0 && (_nextAttrs$styles = nextAttrs.styles) !== null && _nextAttrs$styles !== void 0 && _nextAttrs$styles[attr])) {
+      if (!(prevStyles !== null && prevStyles !== void 0 && prevStyles[attr]) && !(nextStyles !== null && nextStyles !== void 0 && nextStyles[attr])) {
         continue;
       }
-      if (!(prevAttrs !== null && prevAttrs !== void 0 && (_prevAttrs$styles2 = prevAttrs.styles) !== null && _prevAttrs$styles2 !== void 0 && _prevAttrs$styles2[attr]) || !(nextAttrs !== null && nextAttrs !== void 0 && (_nextAttrs$styles2 = nextAttrs.styles) !== null && _nextAttrs$styles2 !== void 0 && _nextAttrs$styles2[attr])) {
+      if (!(prevStyles !== null && prevStyles !== void 0 && prevStyles[attr]) || !(nextStyles !== null && nextStyles !== void 0 && nextStyles[attr])) {
         return false;
       }
-      if (JSON.stringify(prevAttrs.styles[attr]) !== JSON.stringify(nextAttrs.styles[attr])) {
+      if (JSON.stringify(prevStyles[attr]) !== JSON.stringify(nextStyles[attr])) {
         return false;
       }
     }
@@ -3140,6 +3118,44 @@ var arePropsEqual = function arePropsEqual(prevProps, nextProps) {
     _iterator.e(err);
   } finally {
     _iterator.f();
+  }
+  return true;
+};
+
+/**
+ * Checks if props have changed for component memoization
+ *
+ * @param {Object} prevProps Previous props
+ * @param {Object} nextProps New props
+ * @param {Array} propsNames Array of props names to check
+ * @return {Boolean} True if props are equal (no update needed)
+ */
+var arePropsEqual = function arePropsEqual(prevProps, nextProps) {
+  var propsNames = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  if (!propsNames.length) {
+    return true;
+  }
+  var _iterator2 = _createForOfIteratorHelper(propsNames),
+    _step2;
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var key = _step2.value;
+      var prev = prevProps[key];
+      var next = nextProps[key];
+      if (_typeof(prev) === 'object' && _typeof(next) === 'object') {
+        if (JSON.stringify(prev) !== JSON.stringify(next)) {
+          return false;
+        }
+        continue;
+      }
+      if (prev !== next) {
+        return false;
+      }
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
   }
   return true;
 };
@@ -3173,7 +3189,7 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
     this.TABLET_BREAKPOINT = '768px';
     this.MOBILE_BREAKPOINT = '480px';
     this.styleElementId = "fluentform-block-custom-styles-".concat(formId);
-    this.baseSelector = ".fluentform.ff_guten_block.ff_guten_block-".concat(formId);
+    this.baseSelector = ".fluentform.fluentform_wrapper_".concat(formId, ".ff_guten_block.ff_guten_block-").concat(formId);
     this.setStyleElement();
   }
   return _createClass(FluentFormStyleHandler, [{
@@ -3210,26 +3226,12 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
         return '';
       }
       var css = '';
-
-      // Container styles
       css += this.generateContainerStyles(styles);
-
-      // Label styles
       css += this.generateLabelStyles(styles);
-
-      // Input styles
       css += this.generateInputStyles(styles);
-
-      // Placeholder styles
       css += this.generatePlaceholderStyles(styles);
-
-      // Button styles
       css += this.generateButtonStyles(styles);
-
-      // Radio/Checkbox styles
       css += this.generateRadioCheckboxStyles(styles);
-
-      // Message styles
       css += this.generateMessageStyles(styles);
       return css;
     }
@@ -3269,8 +3271,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (styles.containerMargin) {
         css += this.generateSpacingWithResponsive(styles.containerMargin, 'margin', selector);
       }
-
-      // Container box shadow
       if (styles.containerBoxShadow && styles.containerBoxShadow.enable) {
         var boxShadow = this.generateBoxShadow(styles.containerBoxShadow);
         if (boxShadow) rules.push("box-shadow: ".concat(boxShadow));
@@ -3278,8 +3278,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (rules.length > 0) {
         css += "".concat(selector, " { ").concat(rules.join('; '), "; }\n");
       }
-
-      // Container border with responsive support
       if (styles.formBorder) {
         css += this.generateBorder(styles.formBorder, selector);
       }
@@ -3325,8 +3323,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (styles.inputSpacing) {
         css += this.generateSpacingWithResponsive(styles.inputSpacing, 'padding', inputSelector);
       }
-
-      // Input box shadow
       if (styles.inputBoxShadow && styles.inputBoxShadow.enable) {
         var boxShadow = this.generateBoxShadow(styles.inputBoxShadow);
         if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
@@ -3334,8 +3330,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (normalStyles.length > 0) {
         css += "".concat(inputSelector, " { ").concat(normalStyles.join('; '), "; }\n");
       }
-
-      // Input border with responsive support
       if (styles.inputBorder) {
         css += this.generateBorder(styles.inputBorder, inputSelector);
       }
@@ -3354,8 +3348,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (styles.inputFocusSpacing) {
         css += this.generateSpacingWithResponsive(styles.inputFocusSpacing, 'padding', focusSelector);
       }
-
-      // Input box shadow focus
       if (styles.inputBoxShadowFocus && styles.inputBoxShadowFocus.enable) {
         var boxShadowFocus = this.generateBoxShadow(styles.inputBoxShadowFocus);
         if (boxShadowFocus) focusStyles.push("box-shadow: ".concat(boxShadowFocus));
@@ -3363,8 +3355,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (focusStyles.length > 0) {
         css += "".concat(focusSelector, " { ").concat(focusStyles.join('; '), "; }\n");
       }
-
-      // Input focus border with responsive support
       if (styles.inputBorderFocus) {
         css += this.generateBorder(styles.inputBorderFocus, focusSelector);
       }
@@ -3391,7 +3381,7 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
     key: "generateButtonStyles",
     value: function generateButtonStyles(styles) {
       var css = '';
-      var buttonSelector = "".concat(this.baseSelector, " .ff-btn-submit");
+      var buttonSelector = "".concat(this.baseSelector, " .ff_submit_btn_wrapper .ff-btn-submit");
 
       // Button alignment
       if (styles.buttonAlignment && styles.buttonAlignment !== 'left') {
@@ -3419,8 +3409,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (styles.buttonMargin) {
         css += this.generateSpacingWithResponsive(styles.buttonMargin, 'margin', buttonSelector);
       }
-
-      // Button box shadow
       if (styles.buttonBoxShadow && styles.buttonBoxShadow.enable) {
         var boxShadow = this.generateBoxShadow(styles.buttonBoxShadow);
         if (boxShadow) normalStyles.push("box-shadow: ".concat(boxShadow));
@@ -3428,8 +3416,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (normalStyles.length > 0) {
         css += "".concat(buttonSelector, " { ").concat(normalStyles.join('; '), "; }\n");
       }
-
-      // Button border with responsive support
       if (styles.buttonBorder) {
         css += this.generateBorder(styles.buttonBorder, buttonSelector);
       }
@@ -3453,8 +3439,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (styles.buttonHoverMargin) {
         css += this.generateSpacingWithResponsive(styles.buttonHoverMargin, 'margin', hoverSelector);
       }
-
-      // Button hover box shadow
       if (styles.buttonHoverBoxShadow && styles.buttonHoverBoxShadow.enable) {
         var boxShadowHover = this.generateBoxShadow(styles.buttonHoverBoxShadow);
         if (boxShadowHover) hoverStyles.push("box-shadow: ".concat(boxShadowHover));
@@ -3462,8 +3446,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
       if (hoverStyles.length > 0) {
         css += "".concat(hoverSelector, " { ").concat(hoverStyles.join('; '), "; }\n");
       }
-
-      // Button hover border with responsive support
       if (styles.buttonHoverBorder) {
         css += this.generateBorder(styles.buttonHoverBorder, hoverSelector);
       }
@@ -3473,12 +3455,15 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
     key: "generateRadioCheckboxStyles",
     value: function generateRadioCheckboxStyles(styles) {
       var css = '';
+      var rules = [];
       if (styles.radioCheckboxItemsColor) {
-        css += "".concat(this.baseSelector, " .ff-el-form-check { color: ").concat(styles.radioCheckboxItemsColor, "; }\n");
+        rules.push("color: ".concat(styles.radioCheckboxItemsColor));
       }
       if (styles.radioCheckboxItemsSize) {
-        var size = "".concat(styles.radioCheckboxItemsSize, "px");
-        css += "".concat(this.baseSelector, " input[type=\"radio\"], ").concat(this.baseSelector, " input[type=\"checkbox\"] { width: ").concat(size, "; height: ").concat(size, "; }\n");
+        rules.push("font-size: ".concat(styles.radioCheckboxItemsSize, "px;"));
+      }
+      if (rules.length > 0) {
+        css += "".concat(this.baseSelector, " .ff-el-form-check label { ").concat(rules.join('; '), "; }\n");
       }
       return css;
     }
@@ -3564,24 +3549,18 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
         desktopStyles.push("border-color: ".concat(border.color));
       }
 
-      // Border width (desktop values)
+      // Desktop styles
       if (border.width && border.width.desktop) {
         var widthStyles = this.generateBorderWidth(border.width.desktop);
         if (widthStyles) desktopStyles.push(widthStyles);
       }
-
-      // Border radius (desktop values)
       if (border.radius && border.radius.desktop) {
         var radiusStyles = this.generateBorderRadius(border.radius.desktop);
         if (radiusStyles) desktopStyles.push(radiusStyles);
       }
-
-      // If no selector provided, return inline styles (for existing functionality)
       if (!selector) {
         return desktopStyles.join('; ');
       }
-
-      // Generate CSS with media queries
       if (desktopStyles.length > 0) {
         css += "".concat(selector, " { ").concat(desktopStyles.join('; '), "; }\n");
       }
@@ -3658,7 +3637,6 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
         return "border-radius: ".concat(radiusValues.top).concat(unit);
       } else {
         var styles = [];
-        // Map to CSS border-radius corners: top=top-left, right=top-right, bottom=bottom-right, left=bottom-left
         if (radiusValues.top !== undefined && radiusValues.top !== '') {
           styles.push("border-top-left-radius: ".concat(radiusValues.top).concat(unit));
         }
@@ -3744,16 +3722,11 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
     value: function generateBoxShadow(boxShadow) {
       var _boxShadow$horizontal, _boxShadow$horizontal2, _boxShadow$vertical, _boxShadow$vertical2, _boxShadow$blur, _boxShadow$blur2, _boxShadow$spread, _boxShadow$spread2;
       if (!boxShadow || !boxShadow.enable || !boxShadow.color) return '';
-
-      // Get position (inset or outline)
       var position = boxShadow.position === 'inset' ? 'inset ' : '';
-
-      // Get values with units
       var horizontal = "".concat(((_boxShadow$horizontal = boxShadow.horizontal) === null || _boxShadow$horizontal === void 0 ? void 0 : _boxShadow$horizontal.value) || '0').concat(((_boxShadow$horizontal2 = boxShadow.horizontal) === null || _boxShadow$horizontal2 === void 0 ? void 0 : _boxShadow$horizontal2.unit) || 'px');
       var vertical = "".concat(((_boxShadow$vertical = boxShadow.vertical) === null || _boxShadow$vertical === void 0 ? void 0 : _boxShadow$vertical.value) || '0').concat(((_boxShadow$vertical2 = boxShadow.vertical) === null || _boxShadow$vertical2 === void 0 ? void 0 : _boxShadow$vertical2.unit) || 'px');
       var blur = "".concat(((_boxShadow$blur = boxShadow.blur) === null || _boxShadow$blur === void 0 ? void 0 : _boxShadow$blur.value) || '5').concat(((_boxShadow$blur2 = boxShadow.blur) === null || _boxShadow$blur2 === void 0 ? void 0 : _boxShadow$blur2.unit) || 'px');
       var spread = "".concat(((_boxShadow$spread = boxShadow.spread) === null || _boxShadow$spread === void 0 ? void 0 : _boxShadow$spread.value) || '0').concat(((_boxShadow$spread2 = boxShadow.spread) === null || _boxShadow$spread2 === void 0 ? void 0 : _boxShadow$spread2.unit) || 'px');
-      // Build the box-shadow value
       return "".concat(position).concat(horizontal, " ").concat(vertical, " ").concat(blur, " ").concat(spread, " ").concat(boxShadow.color);
     }
   }, {

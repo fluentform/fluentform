@@ -38,6 +38,10 @@ function EditComponent({ attributes, setAttributes }) {
     const [previewDevice, setPreviewDevice] = useState('desktop');
     
     const styleHandlerRef = useRef(null);
+    const currentStylesRef = useRef(attributes.styles || {});
+    useEffect(() => {
+        currentStylesRef.current = attributes.styles || {};
+    }, [attributes.styles]);
 
     const storeCss = useCallback((css) => {
         if (css === false) {
@@ -50,16 +54,11 @@ function EditComponent({ attributes, setAttributes }) {
     }, [attributes.customCss, setAttributes]);
 
     const updateStyles = useCallback((styleAttributes) => {
-        const currentStyles = attributes.styles || {};
+        const currentStyles = currentStylesRef.current;
         const styles = { ...currentStyles, ...styleAttributes };
-
+        currentStylesRef.current = styles;
         setAttributes({ styles });
-
-        if (styleHandlerRef.current && attributes.formId) {
-            const css = styleHandlerRef.current.updateStyles(styles);
-            storeCss(css);
-        }
-    }, [attributes.styles, attributes.formId, setAttributes, storeCss]);
+    }, [setAttributes]);
 
     const checkIfConversationalForm = useCallback(async (formId) => {
         if (!formId) {
@@ -133,7 +132,7 @@ function EditComponent({ attributes, setAttributes }) {
                 storeCss(css);
             }
         }
-    }, [attributes.formId, attributes.styles, storeCss]);
+    }, [attributes.formId, attributes.styles]);
 
     const config = window.fluentform_block_vars || {};
 
@@ -146,7 +145,6 @@ function EditComponent({ attributes, setAttributes }) {
                     options={config.forms?.map(form => ({
                         value: form.id,
                         label: form.title,
-                        key: `form-${form.id}`
                     })) || []}
                     onChange={handleFormChange}
                 />
@@ -188,7 +186,6 @@ function EditComponent({ attributes, setAttributes }) {
                     options={config.forms?.map(form => ({
                         value: form.id,
                         label: form.title,
-                        key: `form-select-${form.id}`
                     })) || []}
                     onChange={handleFormChange}
                 />
@@ -218,33 +215,31 @@ function EditComponent({ attributes, setAttributes }) {
         );
     } else {
         // Regular form selected - show preview only
-        mainContent = useMemo(() => {
-            return (
-                <div className={`fluent-form-preview-wrapper preview-device-${previewDevice}`}>
-                    <div className="fluent-form-preview-controls">
-                        {[
-                            { device: 'desktop', icon: 'desktop', label: __('Desktop Preview') },
-                            { device: 'tablet', icon: 'tablet', label: __('Tablet Preview') },
-                            { device: 'mobile', icon: 'smartphone', label: __('Mobile Preview') }
-                        ].map(item => (
-                            <Button
-                                key={item.device}
-                                icon={item.icon}
-                                isSmall
-                                isPrimary={previewDevice === item.device}
-                                onClick={() => setPreviewDevice(item.device)}
-                                label={item.label}
-                            />
-                        ))}
-                    </div>
-                    <ServerSideRender
-                        key={`ff-preview`}
-                        block="fluentfom/guten-block"
-                        attributes={serverAttributes}
-                    />
+        mainContent = (
+            <div className={`fluent-form-preview-wrapper preview-device-${previewDevice}`}>
+                <div className="fluent-form-preview-controls">
+                    {[
+                        { device: 'desktop', icon: 'desktop', label: __('Desktop Preview') },
+                        { device: 'tablet', icon: 'tablet', label: __('Tablet Preview') },
+                        { device: 'mobile', icon: 'smartphone', label: __('Mobile Preview') }
+                    ].map(item => (
+                        <Button
+                            key={item.device}
+                            icon={item.icon}
+                            isSmall
+                            isPrimary={previewDevice === item.device}
+                            onClick={() => setPreviewDevice(item.device)}
+                            label={item.label}
+                        />
+                    ))}
                 </div>
-            );
-        }, [previewDevice, attributes.formId, attributes.selectedPreset]);
+                <ServerSideRender
+                    key={`ff-preview`}
+                    block="fluentfom/guten-block"
+                    attributes={serverAttributes}
+                />
+            </div>
+        );
     }
 
     return (
@@ -267,4 +262,6 @@ function EditComponent({ attributes, setAttributes }) {
     );
 }
 
-export default memo(EditComponent);
+export default memo(EditComponent, (prevProps, nextProps) => {
+    return prevProps.attributes === nextProps.attributes;
+});

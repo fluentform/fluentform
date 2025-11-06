@@ -9,7 +9,7 @@ class FluentFormStyleHandler {
         this.TABLET_BREAKPOINT = '768px';
         this.MOBILE_BREAKPOINT = '480px';
         this.styleElementId = `fluentform-block-custom-styles-${formId}`;
-        this.baseSelector = `.fluentform.ff_guten_block.ff_guten_block-${formId}`;
+        this.baseSelector = `.fluentform.fluentform_wrapper_${formId}.ff_guten_block.ff_guten_block-${formId}`;
         this.setStyleElement();
     }
 
@@ -45,25 +45,18 @@ class FluentFormStyleHandler {
 
         let css = '';
 
-        // Container styles
         css += this.generateContainerStyles(styles);
-        
-        // Label styles
+
         css += this.generateLabelStyles(styles);
-        
-        // Input styles
+
         css += this.generateInputStyles(styles);
-        
-        // Placeholder styles
+
         css += this.generatePlaceholderStyles(styles);
-        
-        // Button styles
+
         css += this.generateButtonStyles(styles);
-        
-        // Radio/Checkbox styles
+
         css += this.generateRadioCheckboxStyles(styles);
-        
-        // Message styles
+
         css += this.generateMessageStyles(styles);
 
         return css;
@@ -109,7 +102,6 @@ class FluentFormStyleHandler {
             css += this.generateSpacingWithResponsive(styles.containerMargin, 'margin', selector);
         }
 
-        // Container box shadow
         if (styles.containerBoxShadow && styles.containerBoxShadow.enable) {
             const boxShadow = this.generateBoxShadow(styles.containerBoxShadow);
             if (boxShadow) rules.push(`box-shadow: ${boxShadow}`);
@@ -118,8 +110,7 @@ class FluentFormStyleHandler {
         if (rules.length > 0) {
             css += `${selector} { ${rules.join('; ')}; }\n`;
         }
-        
-        // Container border with responsive support
+
         if (styles.formBorder) {
             css += this.generateBorder(styles.formBorder, selector);
         }
@@ -178,7 +169,6 @@ class FluentFormStyleHandler {
             css += this.generateSpacingWithResponsive(styles.inputSpacing, 'padding', inputSelector);
         }
 
-        // Input box shadow
         if (styles.inputBoxShadow && styles.inputBoxShadow.enable) {
             const boxShadow = this.generateBoxShadow(styles.inputBoxShadow);
             if (boxShadow) normalStyles.push(`box-shadow: ${boxShadow}`);
@@ -187,8 +177,7 @@ class FluentFormStyleHandler {
         if (normalStyles.length > 0) {
             css += `${inputSelector} { ${normalStyles.join('; ')}; }\n`;
         }
-        
-        // Input border with responsive support
+
         if (styles.inputBorder) {
             css += this.generateBorder(styles.inputBorder, inputSelector);
         }
@@ -209,7 +198,6 @@ class FluentFormStyleHandler {
             css += this.generateSpacingWithResponsive(styles.inputFocusSpacing, 'padding', focusSelector);
         }
 
-        // Input box shadow focus
         if (styles.inputBoxShadowFocus && styles.inputBoxShadowFocus.enable) {
             const boxShadowFocus = this.generateBoxShadow(styles.inputBoxShadowFocus);
             if (boxShadowFocus) focusStyles.push(`box-shadow: ${boxShadowFocus}`);
@@ -218,8 +206,7 @@ class FluentFormStyleHandler {
         if (focusStyles.length > 0) {
             css += `${focusSelector} { ${focusStyles.join('; ')}; }\n`;
         }
-        
-        // Input focus border with responsive support
+
         if (styles.inputBorderFocus) {
             css += this.generateBorder(styles.inputBorderFocus, focusSelector);
         }
@@ -255,7 +242,7 @@ class FluentFormStyleHandler {
 
     generateButtonStyles(styles) {
         let css = '';
-        const buttonSelector = `${this.baseSelector} .ff-btn-submit`;
+        const buttonSelector = `${this.baseSelector} .ff_submit_btn_wrapper .ff-btn-submit`;
         
         // Button alignment
         if (styles.buttonAlignment && styles.buttonAlignment !== 'left') {
@@ -290,7 +277,6 @@ class FluentFormStyleHandler {
             css += this.generateSpacingWithResponsive(styles.buttonMargin, 'margin', buttonSelector);
         }
 
-        // Button box shadow
         if (styles.buttonBoxShadow && styles.buttonBoxShadow.enable) {
             const boxShadow = this.generateBoxShadow(styles.buttonBoxShadow);
             if (boxShadow) normalStyles.push(`box-shadow: ${boxShadow}`);
@@ -299,8 +285,7 @@ class FluentFormStyleHandler {
         if (normalStyles.length > 0) {
             css += `${buttonSelector} { ${normalStyles.join('; ')}; }\n`;
         }
-        
-        // Button border with responsive support
+
         if (styles.buttonBorder) {
             css += this.generateBorder(styles.buttonBorder, buttonSelector);
         }
@@ -330,7 +315,6 @@ class FluentFormStyleHandler {
             css += this.generateSpacingWithResponsive(styles.buttonHoverMargin, 'margin', hoverSelector);
         }
 
-        // Button hover box shadow
         if (styles.buttonHoverBoxShadow && styles.buttonHoverBoxShadow.enable) {
             const boxShadowHover = this.generateBoxShadow(styles.buttonHoverBoxShadow);
             if (boxShadowHover) hoverStyles.push(`box-shadow: ${boxShadowHover}`);
@@ -339,8 +323,7 @@ class FluentFormStyleHandler {
         if (hoverStyles.length > 0) {
             css += `${hoverSelector} { ${hoverStyles.join('; ')}; }\n`;
         }
-        
-        // Button hover border with responsive support
+
         if (styles.buttonHoverBorder) {
             css += this.generateBorder(styles.buttonHoverBorder, hoverSelector);
         }
@@ -350,14 +333,17 @@ class FluentFormStyleHandler {
 
     generateRadioCheckboxStyles(styles) {
         let css = '';
-        
+        const rules = [];
+
         if (styles.radioCheckboxItemsColor) {
-            css += `${this.baseSelector} .ff-el-form-check { color: ${styles.radioCheckboxItemsColor}; }\n`;
+            rules.push(`color: ${styles.radioCheckboxItemsColor}`);
+        }
+        if (styles.radioCheckboxItemsSize) {
+            rules.push(`font-size: ${styles.radioCheckboxItemsSize}px;`);
         }
         
-        if (styles.radioCheckboxItemsSize) {
-            const size = `${styles.radioCheckboxItemsSize}px`;
-            css += `${this.baseSelector} input[type="radio"], ${this.baseSelector} input[type="checkbox"] { width: ${size}; height: ${size}; }\n`;
+        if (rules.length > 0) {
+            css += `${this.baseSelector} .ff-el-form-check label { ${rules.join('; ')}; }\n`;
         }
 
         return css;
@@ -455,25 +441,19 @@ class FluentFormStyleHandler {
         if (border.color) {
             desktopStyles.push(`border-color: ${border.color}`);
         }
-        
-        // Border width (desktop values)
+
+        // Desktop styles
         if (border.width && border.width.desktop) {
             const widthStyles = this.generateBorderWidth(border.width.desktop);
             if (widthStyles) desktopStyles.push(widthStyles);
         }
-        
-        // Border radius (desktop values)
         if (border.radius && border.radius.desktop) {
             const radiusStyles = this.generateBorderRadius(border.radius.desktop);
             if (radiusStyles) desktopStyles.push(radiusStyles);
         }
-        
-        // If no selector provided, return inline styles (for existing functionality)
         if (!selector) {
             return desktopStyles.join('; ');
         }
-        
-        // Generate CSS with media queries
         if (desktopStyles.length > 0) {
             css += `${selector} { ${desktopStyles.join('; ')}; }\n`;
         }
@@ -555,7 +535,6 @@ class FluentFormStyleHandler {
             return `border-radius: ${radiusValues.top}${unit}`;
         } else {
             let styles = [];
-            // Map to CSS border-radius corners: top=top-left, right=top-right, bottom=bottom-right, left=bottom-left
             if (radiusValues.top !== undefined && radiusValues.top !== '') {
                 styles.push(`border-top-left-radius: ${radiusValues.top}${unit}`);
             }
@@ -642,16 +621,11 @@ class FluentFormStyleHandler {
 
     generateBoxShadow(boxShadow) {
         if (!boxShadow || !boxShadow.enable || !boxShadow.color) return '';
-
-        // Get position (inset or outline)
         const position = boxShadow.position === 'inset' ? 'inset ' : '';
-
-        // Get values with units
         const horizontal = `${ boxShadow.horizontal?.value || '0' }${ boxShadow.horizontal?.unit || 'px' }`;
         const vertical = `${ boxShadow.vertical?.value || '0' }${ boxShadow.vertical?.unit || 'px' }`;
         const blur = `${ boxShadow.blur?.value || '5' }${ boxShadow.blur?.unit || 'px' }`;
         const spread = `${ boxShadow.spread?.value || '0' }${ boxShadow.spread?.unit || 'px' }`;
-        // Build the box-shadow value
         return `${ position }${ horizontal } ${ vertical } ${ blur } ${ spread } ${ boxShadow.color }`;
     }
 

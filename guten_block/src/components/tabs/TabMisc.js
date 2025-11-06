@@ -1,18 +1,14 @@
-/**
- * Fluent Forms Gutenberg Block Misc Tab Component
- */
 const { useState, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
-const { PanelBody, SelectControl, RangeControl, Button, BaseControl, FontSizePicker } = wp.components;
+const { PanelBody, SelectControl, RangeControl, Button, BaseControl } = wp.components;
 
-// Import custom components
 import FluentColorPicker from "../controls/FluentColorPicker";
 import FluentSpaceControl from "../controls/FluentSpaceControl";
 import FluentAlignmentControl from "../controls/FluentAlignmentControl";
 import FluentSeparator from "../controls/FluentSeparator";
 import FluentBoxShadowControl from "../controls/FluentBoxShadowControl";
 import FluentBorderControl from "../controls/FluentBorderControl";
-import { arePropsEqual } from '../utils/ComponentUtils';
+import { areStylesEqual } from '../utils/ComponentUtils';
 
 /**
  * Main TabMisc component
@@ -57,7 +53,6 @@ const TabMisc = ({ attributes, setAttributes, updateStyles }) => {
                 });
             }
 
-            // Also call updateStyles as backup
             updateStyles({
                 backgroundImage: attachment.url,
                 backgroundImageId: attachment.id
@@ -69,9 +64,6 @@ const TabMisc = ({ attributes, setAttributes, updateStyles }) => {
     };
 
     const removeBackgroundImage = () => {
-        console.log('Removing background image');
-
-        // Clear local state immediately
         setLocalBgImage('');
 
         if (typeof setAttributes === 'function') {
@@ -87,7 +79,6 @@ const TabMisc = ({ attributes, setAttributes, updateStyles }) => {
         });
     };
 
-    // Use local state for conditional rendering
     const currentBgImage = localBgImage || attributes.styles.backgroundImage;
 
     return (
@@ -411,7 +402,7 @@ const TabMisc = ({ attributes, setAttributes, updateStyles }) => {
 /**
  * Compare function to determine if component should update
  */
-const MISC_TAB_ATTRIBUTES = [
+const MISC_STYLES = [
     'backgroundType',
     'backgroundImage',
     'backgroundImageId',
@@ -460,5 +451,5 @@ const MISC_TAB_ATTRIBUTES = [
 ];
 
 export default memo(TabMisc, (prevProps, nextProps) => {
-    return arePropsEqual(prevProps, nextProps, MISC_TAB_ATTRIBUTES);
+    return areStylesEqual(prevProps.attributes.styles, nextProps.attributes.styles, MISC_STYLES);
 });

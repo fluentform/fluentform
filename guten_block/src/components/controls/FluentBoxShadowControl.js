@@ -1,7 +1,8 @@
 const { BaseControl, ToggleControl, SelectControl } = wp.components;
-const { useState, useEffect } = wp.element;
+const { useEffect, memo, useCallback, useRef } = wp.element;
 const { __ } = wp.i18n;
 import FluentColorPicker from "./FluentColorPicker";
+import { arePropsEqual } from '../utils/ComponentUtils';
 
 const FluentBoxShadowControl = ({
     label = __("Box Shadow"),
@@ -9,8 +10,7 @@ const FluentBoxShadowControl = ({
     onChange,
     defaultColor = "rgba(0,0,0,0.5)"
 }) => {
-    // Use internal state to track the shadow object
-    const [localShadow, setLocalShadow] = useState({
+    const shadowRef = useRef(shadow || {
         enable: false,
         color: '',
         position: 'outline',
@@ -18,20 +18,15 @@ const FluentBoxShadowControl = ({
         vertical: { value: '0', unit: 'px' },
         blur: { value: '5', unit: 'px' },
         spread: { value: '0', unit: 'px' },
-        ...shadow
     });
 
-    // Update internal state when props change
     useEffect(() => {
-        setLocalShadow(prev => ({
-            ...prev,
-            ...shadow
-        }));
+        shadowRef.current = shadow || shadowRef.current;
     }, [shadow]);
 
     const updateShadow = (updates) => {
-        const newShadow = { ...localShadow, ...updates };
-        setLocalShadow(newShadow);
+        const newShadow = { ...shadowRef.current, ...updates };
+        shadowRef.current = newShadow;
         if (onChange) {
             onChange(newShadow);
         }
@@ -52,36 +47,33 @@ const FluentBoxShadowControl = ({
         <BaseControl label={label}>
             <ToggleControl
                 label={__("Enable Box Shadow")}
-                checked={localShadow.enable}
+                checked={shadow.enable}
                 onChange={(value) => {
                     const updates = { enable: value };
-                    
-                    // Set defaults when enabling
                     if (value) {
-                        if (!localShadow.color) updates.color = defaultColor;
-                        if (!localShadow.position) updates.position = 'outline';
-                        if (!localShadow.horizontal?.value) updates.horizontal = { value: '0', unit: 'px' };
-                        if (!localShadow.vertical?.value) updates.vertical = { value: '0', unit: 'px' };
-                        if (!localShadow.blur?.value) updates.blur = { value: '5', unit: 'px' };
-                        if (!localShadow.spread?.value) updates.spread = { value: '0', unit: 'px' };
+                        if (!shadow.color) updates.color = defaultColor;
+                        if (!shadow.position) updates.position = 'outline';
+                        if (!shadow.horizontal?.value) updates.horizontal = { value: '0', unit: 'px' };
+                        if (!shadow.vertical?.value) updates.vertical = { value: '0', unit: 'px' };
+                        if (!shadow.blur?.value) updates.blur = { value: '5', unit: 'px' };
+                        if (!shadow.spread?.value) updates.spread = { value: '0', unit: 'px' };
                     }
-                    
                     updateShadow(updates);
                 }}
             />
 
-            {localShadow.enable && (
+            {shadow.enable && (
                 <>
                     <FluentColorPicker
                         label={__("Shadow Color")}
-                        value={localShadow.color || ''}
+                        value={shadow.color || ''}
                         onChange={(value) => updateShadow({ color: value })}
                         defaultColor={defaultColor}
                     />
 
                     <SelectControl
                         label={__("Shadow Position")}
-                        value={localShadow.position || 'outline'}
+                        value={shadow.position || 'outline'}
                         options={positionOptions}
                         onChange={(value) => updateShadow({ position: value })}
                     />
@@ -92,19 +84,19 @@ const FluentBoxShadowControl = ({
                             <input
                                 type="number"
                                 className="components-text-control__input"
-                                value={localShadow.horizontal?.value || ''}
+                                value={shadow.horizontal?.value || ''}
                                 onChange={(e) => updateShadow({
-                                    horizontal: { ...localShadow.horizontal, value: e.target.value }
+                                    horizontal: { ...shadow.horizontal, value: e.target.value }
                                 })}
                                 min="-50"
                                 max="50"
                                 placeholder="0"
                             />
                             <SelectControl
-                                value={localShadow.horizontal?.unit || 'px'}
+                                value={shadow.horizontal?.unit || 'px'}
                                 options={unitOptions}
                                 onChange={(unit) => updateShadow({
-                                    horizontal: { ...localShadow.horizontal, unit }
+                                    horizontal: { ...shadow.horizontal, unit }
                                 })}
                             />
                         </div>
@@ -116,19 +108,19 @@ const FluentBoxShadowControl = ({
                             <input
                                 type="number"
                                 className="components-text-control__input"
-                                value={localShadow.vertical?.value || ''}
+                                value={shadow.vertical?.value || ''}
                                 onChange={(e) => updateShadow({
-                                    vertical: { ...localShadow.vertical, value: e.target.value }
+                                    vertical: { ...shadow.vertical, value: e.target.value }
                                 })}
                                 min="-50"
                                 max="50"
                                 placeholder="0"
                             />
                             <SelectControl
-                                value={localShadow.vertical?.unit || 'px'}
+                                value={shadow.vertical?.unit || 'px'}
                                 options={unitOptions}
                                 onChange={(unit) => updateShadow({
-                                    vertical: { ...localShadow.vertical, unit }
+                                    vertical: { ...shadow.vertical, unit }
                                 })}
                             />
                         </div>
@@ -139,19 +131,19 @@ const FluentBoxShadowControl = ({
                             <input
                                 type="number"
                                 className="components-text-control__input"
-                                value={localShadow.blur?.value || ''}
+                                value={shadow.blur?.value || ''}
                                 onChange={(e) => updateShadow({
-                                    blur: { ...localShadow.blur, value: e.target.value }
+                                    blur: { ...shadow.blur, value: e.target.value }
                                 })}
                                 min="0"
                                 max="100"
                                 placeholder="0"
                             />
                             <SelectControl
-                                value={localShadow.blur?.unit || 'px'}
+                                value={shadow.blur?.unit || 'px'}
                                 options={unitOptions}
                                 onChange={(unit) => updateShadow({
-                                    blur: { ...localShadow.blur, unit }
+                                    blur: { ...shadow.blur, unit }
                                 })}
                             />
                         </div>
@@ -162,19 +154,19 @@ const FluentBoxShadowControl = ({
                             <input
                                 type="number"
                                 className="components-text-control__input"
-                                value={localShadow.spread?.value || ''}
+                                value={shadow.spread?.value || ''}
                                 onChange={(e) => updateShadow({
-                                    spread: { ...localShadow.spread, value: e.target.value }
+                                    spread: { ...shadow.spread, value: e.target.value }
                                 })}
                                 min="-50"
                                 max="50"
                                 placeholder="0"
                             />
                             <SelectControl
-                                value={localShadow.spread?.unit || 'px'}
+                                value={shadow.spread?.unit || 'px'}
                                 options={unitOptions}
                                 onChange={(unit) => updateShadow({
-                                    spread: { ...localShadow.spread, unit }
+                                    spread: { ...shadow.spread, unit }
                                 })}
                             />
                         </div>
@@ -185,4 +177,6 @@ const FluentBoxShadowControl = ({
     );
 };
 
-export default FluentBoxShadowControl;
+export default memo(FluentBoxShadowControl, (prevProps, nextProps) => {
+    return arePropsEqual(prevProps, nextProps, ['label', 'defaultColor', 'shadow']);
+});

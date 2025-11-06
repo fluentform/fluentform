@@ -1,12 +1,7 @@
-/**
- * Fluent Forms Gutenberg Block Tabs Component
- * Manages the tab panel for the block inspector
- */
 const { __ } = wp.i18n;
 const { TabPanel } = wp.components;
 const { memo } = wp.element;
 
-// Import tab content components
 import TabGeneral from './TabGeneral';
 import TabMisc from './TabMisc';
 function Tabs({ attributes, setAttributes, updateStyles, handlePresetChange}) {
@@ -48,4 +43,11 @@ function Tabs({ attributes, setAttributes, updateStyles, handlePresetChange}) {
     );
 }
 
-export default memo(Tabs);
+export default memo(Tabs, (prevProps, nextProps) => {
+    if (prevProps.setAttributes !== nextProps.setAttributes ||
+        prevProps.updateStyles !== nextProps.updateStyles ||
+        prevProps.handlePresetChange !== nextProps.handlePresetChange) {
+        return false;
+    }
+    return prevProps.attributes === nextProps.attributes;
+});
