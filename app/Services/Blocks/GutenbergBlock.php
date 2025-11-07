@@ -49,7 +49,8 @@ class GutenbergBlock
 
         // Custom CSS for block styling
         $inlineStyle = '';
-        $customCss = json_decode(Arr::get($atts, 'customCss', ''));
+        $customCss = json_decode(Arr::get($atts, 'customCss', ''), true);
+        $customCss = is_string($customCss) ? $customCss : '';
         if ($customCSS = fluentformSanitizeCSS($customCss)) {
             $styleId = 'fluentform-block-custom-styles-' . $formId;
             $inlineStyle = '<style id="' . esc_attr($styleId) . '">' . $customCSS . '</style>';
