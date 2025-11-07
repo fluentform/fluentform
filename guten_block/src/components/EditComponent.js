@@ -11,15 +11,9 @@ const { InspectorControls, BlockControls } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
 const { apiFetch } = wp;
 const { memo } = wp.element;
-const {
-    SelectControl,
-    PanelBody,
-    Button,
-    Spinner,
-    ToolbarGroup,
-    ToolbarButton
-} = wp.components;
+const { SelectControl, PanelBody, Button, Spinner, ToolbarGroup, ToolbarButton } = wp.components;
 const { useState, useEffect, useRef, useCallback, useMemo } = wp.element;
+const { useRefEffect } = wp.compose;
 
 // Function to get form meta
 const getFormMeta = async (formId, metaKey) => {
@@ -42,6 +36,13 @@ function EditComponent({ attributes, setAttributes }) {
     useEffect(() => {
         currentStylesRef.current = attributes.styles || {};
     }, [attributes.styles]);
+
+    const blockRef = useRefEffect((element) => {
+        if (attributes.formId && element) {
+            const { ownerDocument } = element;
+            styleHandlerRef.current = new StyleHandler(attributes.formId, ownerDocument);
+        }
+    }, [attributes.formId]);
 
     const storeCss = useCallback((css) => {
         if (css === false) {
@@ -122,12 +123,9 @@ function EditComponent({ attributes, setAttributes }) {
 
     // Handle form ID changes
     useEffect(() => {
-        if (attributes.formId) {
-            styleHandlerRef.current = new StyleHandler(attributes.formId);
-            if (attributes.styles) {
-                const css = styleHandlerRef.current.updateStyles(attributes.styles);
-                storeCss(css);
-            }
+        if (styleHandlerRef.current) {
+            const css = styleHandlerRef.current.updateStyles(attributes.styles);
+            storeCss(css);
         }
     }, [attributes.formId, attributes.styles]);
 
@@ -239,7 +237,7 @@ function EditComponent({ attributes, setAttributes }) {
     }
 
     return (
-        <div className="fluentform-guten-wrapper">
+        <div ref={blockRef} className="fluentform-guten-wrapper">
             { inspectorControls }
             { attributes.formId && (
                 <BlockControls>

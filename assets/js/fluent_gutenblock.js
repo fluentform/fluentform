@@ -62,6 +62,7 @@ var _wp$element = wp.element,
   useRef = _wp$element.useRef,
   useCallback = _wp$element.useCallback,
   useMemo = _wp$element.useMemo;
+var useRefEffect = wp.compose.useRefEffect;
 
 // Function to get form meta
 var getFormMeta = /*#__PURE__*/function () {
@@ -108,6 +109,12 @@ function EditComponent(_ref2) {
   useEffect(function () {
     currentStylesRef.current = attributes.styles || {};
   }, [attributes.styles]);
+  var blockRef = useRefEffect(function (element) {
+    if (attributes.formId && element) {
+      var ownerDocument = element.ownerDocument;
+      styleHandlerRef.current = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId, ownerDocument);
+    }
+  }, [attributes.formId]);
   var storeCss = useCallback(function (css) {
     if (css === false) {
       return;
@@ -205,12 +212,9 @@ function EditComponent(_ref2) {
 
   // Handle form ID changes
   useEffect(function () {
-    if (attributes.formId) {
-      styleHandlerRef.current = new _utils_StyleHandler__WEBPACK_IMPORTED_MODULE_1__["default"](attributes.formId);
-      if (attributes.styles) {
-        var css = styleHandlerRef.current.updateStyles(attributes.styles);
-        storeCss(css);
-      }
+    if (styleHandlerRef.current) {
+      var css = styleHandlerRef.current.updateStyles(attributes.styles);
+      storeCss(css);
     }
   }, [attributes.formId, attributes.styles]);
   var config = window.fluentform_block_vars || {};
@@ -328,6 +332,7 @@ function EditComponent(_ref2) {
     });
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    ref: blockRef,
     className: "fluentform-guten-wrapper",
     children: [inspectorControls, attributes.formId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToolbarGroup, {
@@ -1066,9 +1071,6 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
           onChange: function onChange(color) {
             setCurrentColor(color);
             _onChange(color);
-            setTimeout(function () {
-              setIsOpen(false);
-            }, 100);
           },
           enableAlpha: true,
           clearable: true
@@ -3152,8 +3154,10 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  */
 var FluentFormStyleHandler = /*#__PURE__*/function () {
   function FluentFormStyleHandler(formId) {
+    var targetDocument = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     _classCallCheck(this, FluentFormStyleHandler);
     this.formId = formId;
+    this.targetDocument = targetDocument || document;
     this.TABLET_BREAKPOINT = '768px';
     this.MOBILE_BREAKPOINT = '480px';
     this.styleElementId = "fluentform-block-custom-styles-".concat(formId);
@@ -3163,13 +3167,13 @@ var FluentFormStyleHandler = /*#__PURE__*/function () {
   return _createClass(FluentFormStyleHandler, [{
     key: "setStyleElement",
     value: function setStyleElement() {
-      var styleElement = document.getElementById(this.styleElementId);
+      var styleElement = this.targetDocument.getElementById(this.styleElementId);
       if (styleElement) {
         this.styleElement = styleElement;
       } else {
-        var style = document.createElement('style');
+        var style = this.targetDocument.createElement('style');
         style.id = this.styleElementId;
-        document.head.appendChild(style);
+        this.targetDocument.head.appendChild(style);
         this.styleElement = style;
       }
     }
@@ -7999,7 +8003,7 @@ registerBlockType("fluentfom/guten-block", {
   icon: fluentLogo,
   category: "formatting",
   keywords: [__("Contact Form"), __("Fluent Forms"), __("Forms"), __("Advanced Forms"), __("fluentforms-gutenberg-block")],
-  apiVersion: 2,
+  apiVersion: 3,
   edit: _edit__WEBPACK_IMPORTED_MODULE_0__["default"]
 });
 })();
