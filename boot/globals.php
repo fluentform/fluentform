@@ -467,6 +467,15 @@ function fluentform_backend_sanitizer($inputs, $sanitizeMap = [])
  */
 function fluentformSanitizeCSS($css)
 {
+    if ($css === null || $css === '') {
+        return '';
+    }
+
+    // Convert to string if not already
+    if (!is_string($css)) {
+        $css = (string) $css;
+    }
+
     return preg_match('#</?\w+#', $css) ? '' : $css;
 }
 

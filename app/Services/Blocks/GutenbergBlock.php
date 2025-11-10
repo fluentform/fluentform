@@ -37,7 +37,7 @@ class GutenbergBlock
      */
     public static function render($atts)
     {
-        $formId = intval(Arr::get($atts, 'formId', 0));
+        $formId = (int)Arr::get($atts, 'formId', 0);
 
         if (!$formId) {
             return '<div class="fluentform-no-form-selected"><p>' . __('Please select a form', 'fluentformpro') . '</p></div>';
@@ -48,16 +48,21 @@ class GutenbergBlock
         $type = Helper::isConversionForm($formId) ? 'conversational' : '';
 
         // Custom CSS for block styling
+        
         $inlineStyle = '';
         $customCss = Arr::get($atts, 'customCss', '');
-        if ($customCss && $customCSS = fluentformSanitizeCSS(json_decode($customCss))) {
+        
+        $customCss = json_decode($customCss, true);
+        $customCss = is_string($customCss) ? $customCss : '';
+        
+        if ($customCss && $customCss = fluentformSanitizeCSS($customCss)) {
             $styleId = 'fluentform-block-custom-styles-' . $formId;
-            $inlineStyle = '<style id="' . esc_attr($styleId) . '">' . $customCSS . '</style>';
+            $inlineStyle = '<style id="' . esc_attr($styleId) . '">' . $customCss . '</style>';
             if (wp_style_is('fluent-form-styles', 'enqueued') || wp_style_is('fluent-form-styles', 'registered')) {
-                wp_add_inline_style('fluent-form-styles', $customCSS);
+                wp_add_inline_style('fluent-form-styles', $customCss);
             }
             if (wp_style_is('fluentform-public-default', 'enqueued') || wp_style_is('fluentform-public-default', 'registered')) {
-                wp_add_inline_style('fluentform-public-default', $customCSS);
+                wp_add_inline_style('fluentform-public-default', $customCss);
             }
         }
 
