@@ -192,7 +192,8 @@ class BaseComponent
     protected function buildElementLabel($data, $form)
     {
         $helpMessage = '';
-        if ('with_label' == $form->settings['layout']['helpMessagePlacement']) {
+        $helpMessagePlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
+        if ('with_label' == $helpMessagePlacement) {
             $helpMessage = $this->getLabelHelpMessage($data);
         }
         
@@ -239,8 +240,8 @@ class BaseComponent
         );
         
         $labelHelpText = $inputHelpText = '';
-        
-        $labelPlacement = $form->settings['layout']['helpMessagePlacement'];
+
+        $labelPlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
         if ('with_label' == $labelPlacement) {
             $labelHelpText = $this->getLabelHelpMessage($data);
         } elseif ('on_focus' == $labelPlacement) {
