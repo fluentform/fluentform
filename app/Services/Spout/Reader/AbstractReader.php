@@ -106,15 +106,15 @@ abstract class AbstractReader implements ReaderInterface
     public function open($filePath)
     {
         if ($this->isStreamWrapper($filePath) && (!$this->doesSupportStreamWrapper() || !$this->isSupportedStreamWrapper($filePath))) {
-            throw new IOException("Could not open $filePath for reading! Stream wrapper used is not supported for this type of file.");
+            throw new IOException(sprintf('Could not open %s for reading! Stream wrapper used is not supported for this type of file.', esc_html($filePath)));
         }
 
         if (!$this->isPhpStream($filePath)) {
             // we skip the checks if the provided file path points to a PHP stream
             if (!$this->globalFunctionsHelper->file_exists($filePath)) {
-                throw new IOException("Could not open $filePath for reading! File does not exist.");
+                throw new IOException(sprintf('Could not open %s for reading! File does not exist.', esc_html($filePath)));
             } else if (!$this->globalFunctionsHelper->is_readable($filePath)) {
-                throw new IOException("Could not open $filePath for reading! File is not readable.");
+                throw new IOException(sprintf('Could not open %s for reading! File is not readable.', esc_html($filePath)));
             }
         }
 
@@ -123,7 +123,7 @@ abstract class AbstractReader implements ReaderInterface
             $this->openReader($fileRealPath);
             $this->isStreamOpened = true;
         } catch (\Exception $exception) {
-            throw new IOException("Could not open $filePath for reading! ({$exception->getMessage()})");
+            throw new IOException(sprintf('Could not open %s for reading! (%s)', esc_html($filePath), esc_html($exception->getMessage())));
         }
     }
 

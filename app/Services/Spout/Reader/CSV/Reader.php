@@ -112,7 +112,7 @@ class Reader extends AbstractReader
 
         $this->filePointer = $this->globalFunctionsHelper->fopen($filePath, 'r');
         if (!$this->filePointer) {
-            throw new IOException("Could not open file $filePath for reading.");
+            throw new IOException(sprintf('Could not open file %s for reading.', esc_html($filePath)));
         }
 
         $this->sheetIterator = new SheetIterator(

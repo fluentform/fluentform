@@ -146,6 +146,7 @@ class StyleHelper extends AbstractStyleHelper
      */
     public function getStylesXMLFileContent()
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $content = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -158,6 +159,7 @@ EOD;
         $content .= $this->getCellXfsSectionContent();
         $content .= $this->getCellStylesSectionContent();
 
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $content .= <<<EOD
 </styleSheet>
 EOD;
@@ -283,6 +285,7 @@ EOD;
      */
     protected function getCellStyleXfsSectionContent()
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         return <<<EOD
 <cellStyleXfs count="1">
     <xf borderId="0" fillId="0" fontId="0" numFmtId="0"/>
@@ -335,6 +338,7 @@ EOD;
      */
     protected function getCellStylesSectionContent()
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         return <<<EOD
 <cellStyles count="1">
     <cellStyle builtinId="0" name="Normal" xfId="0"/>

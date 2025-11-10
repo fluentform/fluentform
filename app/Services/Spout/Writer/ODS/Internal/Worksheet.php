@@ -65,6 +65,7 @@ class Worksheet implements WorksheetInterface
      */
     protected function startSheet()
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Third-party library requires direct file system operations
         $this->sheetFilePointer = fopen($this->worksheetFilePath, 'w');
         $this->throwIfSheetFilePointerIsNotAvailable();
     }
@@ -165,9 +166,10 @@ class Worksheet implements WorksheetInterface
 
         $data .= '</table:table-row>';
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         $wasWriteSuccessful = fwrite($this->sheetFilePointer, $data);
         if ($wasWriteSuccessful === false) {
-            throw new IOException("Unable to write data in {$this->worksheetFilePath}");
+            throw new IOException(sprintf('Unable to write data in %s', esc_html($this->worksheetFilePath)));
         }
 
         // only update the count if the write worked
@@ -211,7 +213,7 @@ class Worksheet implements WorksheetInterface
         } else if (empty($cellValue)) {
             $data .= '/>';
         } else {
-            throw new InvalidArgumentException('Trying to add a value with an unsupported type: ' . gettype($cellValue));
+            throw new InvalidArgumentException(sprintf('Trying to add a value with an unsupported type: %s', esc_html(gettype($cellValue))));
         }
 
         return $data;
@@ -228,6 +230,7 @@ class Worksheet implements WorksheetInterface
             return;
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Third-party library requires direct file system operations
         fclose($this->sheetFilePointer);
     }
 }

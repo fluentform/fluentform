@@ -121,6 +121,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      */
     protected function createRelsFile()
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $relsFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
@@ -160,6 +161,7 @@ EOD;
     protected function createAppXmlFile()
     {
         $appName = self::APP_NAME;
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $appXmlFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
@@ -182,6 +184,7 @@ EOD;
     protected function createCoreXmlFile()
     {
         $createdDate = (new \DateTime())->format(\DateTime::W3C);
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $coreXmlFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -243,6 +246,7 @@ EOD;
      */
     public function createContentTypesFile($worksheets)
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $contentTypesXmlFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
@@ -256,6 +260,7 @@ EOD;
         $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet' . $worksheet->getId() . '.xml"/>';
     }
 
+    // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
     $contentTypesXmlFileContents .= <<<EOD
     <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml" PartName="/xl/styles.xml"/>
     <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml" PartName="/xl/sharedStrings.xml"/>
@@ -277,6 +282,7 @@ EOD;
      */
     public function createWorkbookFile($worksheets)
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $workbookXmlFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -293,6 +299,7 @@ EOD;
             $workbookXmlFileContents .= '<sheet name="' . $escaper->escape($worksheetName) . '" sheetId="' . $worksheetId . '" r:id="rIdSheet' . $worksheetId . '"/>';
         }
 
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $workbookXmlFileContents .= <<<EOD
     </sheets>
 </workbook>
@@ -311,6 +318,7 @@ EOD;
      */
     public function createWorkbookRelsFile($worksheets)
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $workbookRelsXmlFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">

@@ -14,6 +14,7 @@ class SharedStringsHelper
 {
     const SHARED_STRINGS_FILE_NAME = 'sharedStrings.xml';
 
+    // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
     const SHARED_STRINGS_XML_FILE_FIRST_PART_HEADER = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
@@ -40,12 +41,14 @@ EOD;
     public function __construct($xlFolder)
     {
         $sharedStringsFilePath = $xlFolder . '/' . self::SHARED_STRINGS_FILE_NAME;
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Third-party library requires direct file system operations
         $this->sharedStringsFilePointer = fopen($sharedStringsFilePath, 'w');
 
         $this->throwIfSharedStringsFilePointerIsNotAvailable();
 
         // the headers is split into different parts so that we can fseek and put in the correct count and uniqueCount later
         $header = self::SHARED_STRINGS_XML_FILE_FIRST_PART_HEADER . ' ' . self::DEFAULT_STRINGS_COUNT_PART . '>';
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($this->sharedStringsFilePointer, $header);
 
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
@@ -74,6 +77,7 @@ EOD;
      */
     public function writeString($string)
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($this->sharedStringsFilePointer, '<si><t xml:space="preserve">' . $this->stringsEscaper->escape($string) . '</t></si>');
         $this->numSharedStrings++;
 
@@ -92,6 +96,7 @@ EOD;
             return;
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($this->sharedStringsFilePointer, '</sst>');
 
         // Replace the default strings count with the actual number of shared strings in the file header
@@ -100,8 +105,10 @@ EOD;
 
         // Adding 1 to take into account the space between the last xml attribute and "count"
         fseek($this->sharedStringsFilePointer, $firstPartHeaderLength + 1);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($this->sharedStringsFilePointer, sprintf("%-{$defaultStringsCountPartLength}s", 'count="' . $this->numSharedStrings . '" uniqueCount="' . $this->numSharedStrings . '"'));
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Third-party library requires direct file system operations
         fclose($this->sharedStringsFilePointer);
     }
 }

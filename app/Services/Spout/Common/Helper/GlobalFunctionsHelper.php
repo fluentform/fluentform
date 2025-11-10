@@ -22,6 +22,7 @@ class GlobalFunctionsHelper
      */
     public function fopen($fileName, $mode)
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Third-party library wrapper for file operations
         return fopen($fileName, $mode);
     }
 
@@ -48,6 +49,7 @@ class GlobalFunctionsHelper
      */
     public function fputs($handle, $string)
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputs -- Third-party library wrapper for file operations
         return fputs($handle, $string);
     }
 
@@ -116,6 +118,7 @@ class GlobalFunctionsHelper
      */
     public function fwrite($handle, $string)
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library wrapper for file operations
         return fwrite($handle, $string);
     }
 
@@ -128,6 +131,7 @@ class GlobalFunctionsHelper
      */
     public function fclose($handle)
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Third-party library wrapper for file operations
         return fclose($handle);
     }
 

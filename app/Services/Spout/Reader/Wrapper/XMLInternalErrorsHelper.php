@@ -37,7 +37,8 @@ trait XMLInternalErrorsHelper
     {
         if ($this->hasXMLErrorOccured()) {
             $this->resetXMLInternalErrorsSetting();
-            throw new XMLProcessingException($this->getLastXMLErrorMessage());
+            $errorMessage = $this->getLastXMLErrorMessage();
+            throw new XMLProcessingException($errorMessage ? esc_html($errorMessage) : 'An XML processing error occurred.');
         }
 
         $this->resetXMLInternalErrorsSetting();

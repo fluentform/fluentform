@@ -45,6 +45,7 @@ class StyleHelper extends AbstractStyleHelper
      */
     public function getStylesXMLFileContent($numWorksheets)
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $content = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <office:document-styles office:version="1.2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:msoxl="http://schemas.microsoft.com/office/excel/formula" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -55,6 +56,7 @@ EOD;
         $content .= $this->getAutomaticStylesSectionContent($numWorksheets);
         $content .= $this->getMasterStylesSectionContent($numWorksheets);
 
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $content .= <<<EOD
 </office:document-styles>
 EOD;
@@ -87,6 +89,7 @@ EOD;
     {
         $defaultStyle = $this->getDefaultStyle();
 
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         return <<<EOD
 <office:styles>
     <number:number-style style:name="N0">
@@ -113,6 +116,7 @@ EOD;
         $content = '<office:automatic-styles>';
 
         for ($i = 1; $i <= $numWorksheets; $i++) {
+            // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
             $content .= <<<EOD
 <style:page-layout style:name="pm$i">
     <style:page-layout-properties style:first-page-number="continue" style:print="objects charts drawings" style:table-centering="none"/>
@@ -138,6 +142,7 @@ EOD;
         $content = '<office:master-styles>';
 
         for ($i = 1; $i <= $numWorksheets; $i++) {
+            // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
             $content .= <<<EOD
 <style:master-page style:name="mp$i" style:page-layout-name="pm$i">
     <style:header/>
@@ -184,6 +189,7 @@ EOD;
             $content .= $this->getStyleSectionContent($style);
         }
 
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $content .= <<<EOD
 <style:style style:family="table-column" style:name="co1">
     <style:table-column-properties fo:break-before="auto"/>
@@ -194,6 +200,7 @@ EOD;
 EOD;
 
         for ($i = 1; $i <= $numWorksheets; $i++) {
+            // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
             $content .= <<<EOD
 <style:style style:family="table" style:master-page-name="mp$i" style:name="ta$i">
     <style:table-properties style:writing-mode="lr-tb" table:display="true"/>

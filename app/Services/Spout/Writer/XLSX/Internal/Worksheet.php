@@ -25,6 +25,7 @@ class Worksheet implements WorksheetInterface
      */
     const MAX_CHARACTERS_PER_CELL = 32767;
 
+    // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
     const SHEET_XML_FILE_HEADER = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -88,10 +89,13 @@ EOD;
      */
     protected function startSheet()
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Third-party library requires direct file system operations
         $this->sheetFilePointer = fopen($this->worksheetFilePath, 'w');
         $this->throwIfSheetFilePointerIsNotAvailable();
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($this->sheetFilePointer, self::SHEET_XML_FILE_HEADER);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($this->sheetFilePointer, '<sheetData>');
     }
 
@@ -191,9 +195,10 @@ EOD;
 
         $rowXML .= '</row>';
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         $wasWriteSuccessful = fwrite($this->sheetFilePointer, $rowXML);
         if ($wasWriteSuccessful === false) {
-            throw new IOException("Unable to write data in {$this->worksheetFilePath}");
+            throw new IOException(sprintf('Unable to write data in %s', esc_html($this->worksheetFilePath)));
         }
     }
 
@@ -228,7 +233,7 @@ EOD;
                 $cellXML = '';
             }
         } else {
-            throw new InvalidArgumentException('Trying to add a value with an unsupported type: ' . gettype($cellValue));
+            throw new InvalidArgumentException(sprintf('Trying to add a value with an unsupported type: %s', esc_html(gettype($cellValue))));
         }
 
         return $cellXML;
@@ -268,8 +273,11 @@ EOD;
             return;
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($this->sheetFilePointer, '</sheetData>');
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($this->sheetFilePointer, '</worksheet>');
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Third-party library requires direct file system operations
         fclose($this->sheetFilePointer);
     }
 }

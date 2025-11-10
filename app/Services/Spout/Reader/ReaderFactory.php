@@ -38,7 +38,7 @@ class ReaderFactory
                 $reader = new ODS\Reader();
                 break;
             default:
-                throw new UnsupportedTypeException('No readers supporting the given type: ' . $readerType);
+                throw new UnsupportedTypeException(sprintf('No readers supporting the given type: %s', esc_html($readerType)));
         }
 
         $reader->setGlobalFunctionsHelper(new GlobalFunctionsHelper());

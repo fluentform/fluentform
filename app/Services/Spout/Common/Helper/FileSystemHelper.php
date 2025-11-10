@@ -38,6 +38,7 @@ class FileSystemHelper
 
         $folderPath = $parentFolderPath . '/' . $folderName;
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir -- Third-party library requires direct file system operations
         $wasCreationSuccessful = mkdir($folderPath, 0777, true);
         if (!$wasCreationSuccessful) {
             // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
@@ -84,6 +85,7 @@ class FileSystemHelper
         $this->throwIfOperationNotInBaseFolder($filePath);
 
         if (file_exists($filePath) && is_file($filePath)) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Third-party library requires direct file system operations
             unlink($filePath);
         }
     }
@@ -106,12 +108,15 @@ class FileSystemHelper
 
         foreach ($itemIterator as $item) {
             if ($item->isDir()) {
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Third-party library requires direct file system operations
                 rmdir($item->getPathname());
             } else {
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Third-party library requires direct file system operations
                 unlink($item->getPathname());
             }
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Third-party library requires direct file system operations
         rmdir($folderPath);
     }
 

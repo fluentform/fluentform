@@ -102,6 +102,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      */
     protected function createManifestFile()
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $manifestXmlFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.2">
@@ -141,6 +142,7 @@ EOD;
         $appName = self::APP_NAME;
         $createdDate = (new \DateTime())->format(\DateTime::W3C);
 
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $metaXmlFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <office:document-meta office:version="1.2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -178,6 +180,7 @@ EOD;
      */
     public function createContentFile($worksheets, $styleHelper)
     {
+        // phpcs:ignore Squiz.PHP.Heredoc.NotAllowed -- Third-party library uses heredoc for XML templates
         $contentXmlFileContents = <<<EOD
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <office:document-content office:version="1.2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:calcext="urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:msoxl="http://schemas.microsoft.com/office/excel/formula" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -192,21 +195,26 @@ EOD;
 
         // Append sheets content to "content.xml"
         $contentXmlFilePath = $this->rootFolder . '/' . self::CONTENT_XML_FILE_NAME;
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Third-party library requires direct file system operations
         $contentXmlHandle = fopen($contentXmlFilePath, 'a');
 
         foreach ($worksheets as $worksheet) {
             // write the "<table:table>" node, with the final sheet's name
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
             fwrite($contentXmlHandle, $worksheet->getTableElementStartAsString());
 
             $worksheetFilePath = $worksheet->getWorksheetFilePath();
             $this->copyFileContentsToTarget($worksheetFilePath, $contentXmlHandle);
 
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
             fwrite($contentXmlHandle, '</table:table>');
         }
 
         $contentXmlFileContents = '</office:spreadsheet></office:body></office:document-content>';
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Third-party library requires direct file system operations
         fwrite($contentXmlHandle, $contentXmlFileContents);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Third-party library requires direct file system operations
         fclose($contentXmlHandle);
 
         return $this;
@@ -223,8 +231,10 @@ EOD;
      */
     protected function copyFileContentsToTarget($sourceFilePath, $targetResource)
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Third-party library requires direct file system operations
         $sourceHandle = fopen($sourceFilePath, 'r');
         stream_copy_to_stream($sourceHandle, $targetResource);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Third-party library requires direct file system operations
         fclose($sourceHandle);
     }
 

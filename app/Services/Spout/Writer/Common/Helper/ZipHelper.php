@@ -210,8 +210,10 @@ class ZipHelper
      */
     protected function copyZipToStream($pointer)
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Third-party library requires direct file system operations
         $zipFilePointer = fopen($this->getZipFilePath(), 'r');
         stream_copy_to_stream($zipFilePointer, $pointer);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Third-party library requires direct file system operations
         fclose($zipFilePointer);
     }
 }
