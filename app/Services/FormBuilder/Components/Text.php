@@ -149,9 +149,25 @@ class Text extends BaseComponent
         $data['attributes']['class'] = @trim('ff-el-form-control ' . ArrayHelper::get($data, 'attributes.class', ''));
         $data['attributes']['id'] = $this->makeElementId($data, $form);
 
+        // Add character counter data attributes
+        $maxLength = ArrayHelper::get($data, 'attributes.maxlength');
+        $showCounter = ArrayHelper::get($data, 'settings.show_character_counter', false);
+        $counterFormat = ArrayHelper::get($data, 'settings.character_counter_format', 'count_remaining');
+
+        if ($maxLength && $showCounter) {
+            $data['attributes']['data-character-counter'] = 'true';
+            $data['attributes']['data-counter-format'] = $counterFormat;
+        }
+
         $elMarkup = $this->buildInputGroup($data, $form);
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
+        
+        // Add character counter if enabled
+        $characterCounter = $this->buildCharacterCounter($data);
+        if ($characterCounter) {
+            $html = str_replace('</div></div>', $characterCounter . '</div></div>', $html);
+        }
     
         $html = apply_filters_deprecated(
             'fluentform_rendering_field_html_' . $elementName,
@@ -166,6 +182,36 @@ class Text extends BaseComponent
         );
 
         $this->printContent('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
+    }
+    
+    /**
+     * Build character counter HTML for fields with maxlength
+     *
+     * @param array $data
+     * @return string
+     */
+    protected function buildCharacterCounter($data)
+    {
+        $maxLength = ArrayHelper::get($data, 'attributes.maxlength');
+        $showCounter = ArrayHelper::get($data, 'settings.show_character_counter');
+        
+        if (!$maxLength || !$showCounter) {
+            return '';
+        }
+        
+        $counterFormat = ArrayHelper::get($data, 'settings.character_counter_format', 'count_remaining');
+        $fieldName = ArrayHelper::get($data, 'attributes.name');
+        
+        $counterClass = 'ff-el-character-counter';
+        $counterHTML = sprintf(
+            '<div class="%s" data-max-length="%s" data-format="%s" data-field="%s" role="status" aria-live="polite" aria-atomic="true"></div>',
+            esc_attr($counterClass),
+            esc_attr($maxLength),
+            esc_attr($counterFormat),
+            esc_attr($fieldName)
+        );
+        
+        return $counterHTML;
     }
 
     private function buildInputGroup($data, $form)

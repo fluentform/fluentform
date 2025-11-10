@@ -829,7 +829,9 @@ class Converter
             'conditional_logics'   => self::parseConditionalLogic($field),
             'calculation_settings' => ArrayHelper::get($field, 'settings.calculation_settings'),
             'is_calculable'        => ArrayHelper::get($field, 'settings.calc_value_status', false),
-            'has_save_and_resume'  => static::hasSaveAndResume($form)
+            'has_save_and_resume'  => static::hasSaveAndResume($form),
+            'show_character_counter' => ArrayHelper::get($field, 'settings.show_character_counter', false),
+            'character_counter_format' => ArrayHelper::get($field, 'settings.character_counter_format', 'count_remaining')
         ];
     }
     
