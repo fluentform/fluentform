@@ -5,11 +5,11 @@ namespace Box\Spout\Autoloader;
 require_once 'Psr4Autoloader.php';
 
 /**
- * @var string $srcBaseDirectory
+ * @var string $fluentformSrcBaseDirectory
  * Full path to "src/Spout" which is what we want "Box\Spout" to map to.
  */
-$srcBaseDirectory = dirname(dirname(__FILE__));
+$fluentformSrcBaseDirectory = dirname(dirname(__FILE__));
 
-$loader = new Psr4Autoloader();
-$loader->register();
-$loader->addNamespace('Box\Spout', $srcBaseDirectory);
+$fluentformLoader = new Psr4Autoloader();
+$fluentformLoader->register();
+$fluentformLoader->addNamespace('Box\Spout', $fluentformSrcBaseDirectory);
