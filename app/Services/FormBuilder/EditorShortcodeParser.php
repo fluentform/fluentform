@@ -33,7 +33,7 @@ class EditorShortcodeParser
         
         'user.ID'           => 'parseUserProperties',
         'user.display_name' => 'parseUserProperties',
-        'user.first_name'   => 'parseUserProperties',
+        'user.first_name'    => 'parseUserProperties',
         'user.last_name'    => 'parseUserProperties',
         'user.user_email'   => 'parseUserProperties',
         'user.user_login'   => 'parseUserProperties',
@@ -54,17 +54,22 @@ class EditorShortcodeParser
      */
     public static function filter($value, $form)
     {
+        // Return early if value is null, empty, or not a string
+        if ($value === null || $value === '' || !is_string($value)) {
+            return $value;
+        }
+
         if (0 === strpos($value, '{ ')) {
             // it's the css
             return $value;
         }
-        
+
         if (is_null(static::$dynamicShortcodes)) {
             static::$dynamicShortcodes = fluentFormEditorShortCodes();
         }
-        
+
         $filteredValue = '';
-        
+
         foreach (static::parseValue($value) as $handler) {
             if (isset(static::$handlers[$handler])) {
                 return call_user_func_array(
@@ -189,15 +194,28 @@ class EditorShortcodeParser
      */
     public static function parseValue($value)
     {
+        // Return empty array if value is null or empty
+        if ($value === null || $value === '') {
+            return [];
+        }
+
         if (!is_array($value)) {
-            return preg_split(
+            // Ensure value is a string before preg_split
+            if (!is_string($value)) {
+                return [];
+            }
+
+            $result = preg_split(
                 '/{(.*?)}/',
                 $value,
                 -1,
                 PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
             );
+
+            // Return empty array if preg_split fails
+            return $result !== false ? $result : [];
         }
-        
+
         return $value;
     }
     
@@ -216,7 +234,7 @@ class EditorShortcodeParser
     {
         if ($user = wp_get_current_user()) {
             $prop = substr(str_replace(['{', '}'], '', $value), 5);
-            
+
             if (false !== strpos($prop, 'meta.')) {
                 $metaKey = substr($prop, strlen('meta.'));
                 $metaKey = sanitize_text_field($metaKey);
@@ -231,10 +249,13 @@ class EditorShortcodeParser
                 }
                 return esc_html(implode(',', $data));
             }
-            
-            return esc_html($user->{$prop});
+
+            // Check if property exists before accessing
+            if (isset($user->{$prop})) {
+                return esc_html($user->{$prop});
+            }
         }
-        
+
         return '';
     }
     
