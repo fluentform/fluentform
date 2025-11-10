@@ -59,7 +59,7 @@ class FormBuilder
         $this->form = $form;
         $hasStepWrapper = isset($form->fields['stepsWrapper']) && $form->fields['stepsWrapper'];
 
-        $labelPlacement = $form->settings['layout']['labelPlacement'];
+        $labelPlacement = ArrayHelper::get($form->settings, 'layout.labelPlacement', 'top');
 
         $formClass = "frm-fluent-form fluent_form_{$form->id} ff-el-form-{$labelPlacement}";
 
