@@ -123,9 +123,6 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = ''}) => {
                             onChange={(color) => {
                                 setCurrentColor(color);
                                 onChange(color);
-                                setTimeout(() => {
-                                    setIsOpen(false);
-                                }, 100);
                             }}
                             enableAlpha={true}
                             clearable={true}

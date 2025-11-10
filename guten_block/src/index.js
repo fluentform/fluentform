@@ -26,6 +26,6 @@ registerBlockType("fluentfom/guten-block", {
         __("Advanced Forms"),
         __("fluentforms-gutenberg-block"),
     ],
-    apiVersion: 2,
+    apiVersion: 3,
     edit: Edit,
 });

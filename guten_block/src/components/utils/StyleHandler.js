@@ -4,8 +4,9 @@
  */
 
 class FluentFormStyleHandler {
-    constructor(formId) {
+    constructor(formId, targetDocument = null) {
         this.formId = formId;
+        this.targetDocument = targetDocument || document;
         this.TABLET_BREAKPOINT = '768px';
         this.MOBILE_BREAKPOINT = '480px';
         this.styleElementId = `fluentform-block-custom-styles-${formId}`;
@@ -14,13 +15,13 @@ class FluentFormStyleHandler {
     }
 
     setStyleElement() {
-        const styleElement = document.getElementById(this.styleElementId);
+        const styleElement = this.targetDocument.getElementById(this.styleElementId);
         if (styleElement) {
             this.styleElement = styleElement;
         } else {
-            const style = document.createElement('style');
+            const style = this.targetDocument.createElement('style');
             style.id = this.styleElementId;
-            document.head.appendChild(style);
+            this.targetDocument.head.appendChild(style);
             this.styleElement = style;
         }
     }
