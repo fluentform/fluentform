@@ -470,15 +470,23 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var _wp$components = wp.components,
   BaseControl = _wp$components.BaseControl,
   ToggleControl = _wp$components.ToggleControl,
-  SelectControl = _wp$components.SelectControl;
+  SelectControl = _wp$components.SelectControl,
+  Button = _wp$components.Button;
 var _wp$element = wp.element,
   useEffect = _wp$element.useEffect,
   memo = _wp$element.memo,
   useCallback = _wp$element.useCallback,
-  useRef = _wp$element.useRef;
+  useRef = _wp$element.useRef,
+  useState = _wp$element.useState;
 var __ = wp.i18n.__;
 
 
@@ -494,6 +502,11 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
     onChange = _ref.onChange,
     _ref$defaultColor = _ref.defaultColor,
     defaultColor = _ref$defaultColor === void 0 ? "#dddddd" : _ref$defaultColor;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    showPresets = _useState2[0],
+    setShowPresets = _useState2[1];
+
   // Use internal state to track the border object
   var currentBorderRef = useRef(border || {
     enable: false,
@@ -525,77 +538,476 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
     label: __("Double"),
     value: 'double'
   }];
+
+  // Border presets
+  var borderPresets = [{
+    label: __("None"),
+    value: {
+      enable: false,
+      type: 'solid',
+      color: '',
+      width: {
+        desktop: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        }
+      },
+      radius: {
+        desktop: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        }
+      }
+    }
+  }, {
+    label: __("Thin"),
+    value: {
+      enable: true,
+      type: 'solid',
+      color: '#dddddd',
+      width: {
+        desktop: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        }
+      },
+      radius: {
+        desktop: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        }
+      }
+    }
+  }, {
+    label: __("Medium"),
+    value: {
+      enable: true,
+      type: 'solid',
+      color: '#dddddd',
+      width: {
+        desktop: {
+          unit: 'px',
+          top: '2',
+          right: '2',
+          bottom: '2',
+          left: '2',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '2',
+          right: '2',
+          bottom: '2',
+          left: '2',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '2',
+          right: '2',
+          bottom: '2',
+          left: '2',
+          linked: true
+        }
+      },
+      radius: {
+        desktop: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        }
+      }
+    }
+  }, {
+    label: __("Rounded"),
+    value: {
+      enable: true,
+      type: 'solid',
+      color: '#dddddd',
+      width: {
+        desktop: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        }
+      },
+      radius: {
+        desktop: {
+          unit: 'px',
+          top: '5',
+          right: '5',
+          bottom: '5',
+          left: '5',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '5',
+          right: '5',
+          bottom: '5',
+          left: '5',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '5',
+          right: '5',
+          bottom: '5',
+          left: '5',
+          linked: true
+        }
+      }
+    }
+  }, {
+    label: __("Pill"),
+    value: {
+      enable: true,
+      type: 'solid',
+      color: '#dddddd',
+      width: {
+        desktop: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '1',
+          right: '1',
+          bottom: '1',
+          left: '1',
+          linked: true
+        }
+      },
+      radius: {
+        desktop: {
+          unit: 'px',
+          top: '50',
+          right: '50',
+          bottom: '50',
+          left: '50',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '50',
+          right: '50',
+          bottom: '50',
+          left: '50',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '50',
+          right: '50',
+          bottom: '50',
+          left: '50',
+          linked: true
+        }
+      }
+    }
+  }, {
+    label: __("Dashed"),
+    value: {
+      enable: true,
+      type: 'dashed',
+      color: '#dddddd',
+      width: {
+        desktop: {
+          unit: 'px',
+          top: '2',
+          right: '2',
+          bottom: '2',
+          left: '2',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '2',
+          right: '2',
+          bottom: '2',
+          left: '2',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '2',
+          right: '2',
+          bottom: '2',
+          left: '2',
+          linked: true
+        }
+      },
+      radius: {
+        desktop: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        tablet: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        },
+        mobile: {
+          unit: 'px',
+          top: '',
+          right: '',
+          bottom: '',
+          left: '',
+          linked: true
+        }
+      }
+    }
+  }];
+  var applyPreset = function applyPreset(preset) {
+    updateBorder(preset.value);
+    setShowPresets(false);
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(BaseControl, {
     label: label,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToggleControl, {
-      label: __("Enable Border"),
-      checked: border.enable,
-      onChange: function onChange(value) {
-        var updates = {
-          enable: value
-        };
-        if (value) {
-          if (!border.color) updates.color = defaultColor;
-          if (!border.type) updates.type = 'solid';
-          if (!border.width || Object.keys(border.width).length === 0) {
-            updates.width = {
-              desktop: {
-                unit: 'px',
-                top: '',
-                right: '',
-                bottom: '',
-                left: '',
-                linked: true
-              },
-              tablet: {
-                unit: 'px',
-                top: '',
-                right: '',
-                bottom: '',
-                left: '',
-                linked: true
-              },
-              mobile: {
-                unit: 'px',
-                top: '',
-                right: '',
-                bottom: '',
-                left: '',
-                linked: true
-              }
-            };
+    className: "ffblock-border-control",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "ffblock-control-header",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToggleControl, {
+        label: __("Enable Border"),
+        checked: border.enable,
+        onChange: function onChange(value) {
+          var updates = {
+            enable: value
+          };
+          if (value) {
+            if (!border.color) updates.color = defaultColor;
+            if (!border.type) updates.type = 'solid';
+            if (!border.width || Object.keys(border.width).length === 0) {
+              updates.width = {
+                desktop: {
+                  unit: 'px',
+                  top: '',
+                  right: '',
+                  bottom: '',
+                  left: '',
+                  linked: true
+                },
+                tablet: {
+                  unit: 'px',
+                  top: '',
+                  right: '',
+                  bottom: '',
+                  left: '',
+                  linked: true
+                },
+                mobile: {
+                  unit: 'px',
+                  top: '',
+                  right: '',
+                  bottom: '',
+                  left: '',
+                  linked: true
+                }
+              };
+            }
+            if (!border.radius || Object.keys(border.radius).length === 0) {
+              updates.radius = {
+                desktop: {
+                  unit: 'px',
+                  top: '',
+                  right: '',
+                  bottom: '',
+                  left: '',
+                  linked: true
+                },
+                tablet: {
+                  unit: 'px',
+                  top: '',
+                  right: '',
+                  bottom: '',
+                  left: '',
+                  linked: true
+                },
+                mobile: {
+                  unit: 'px',
+                  top: '',
+                  right: '',
+                  bottom: '',
+                  left: '',
+                  linked: true
+                }
+              };
+            }
           }
-          if (!border.radius || Object.keys(border.radius).length === 0) {
-            updates.radius = {
-              desktop: {
-                unit: 'px',
-                top: '',
-                right: '',
-                bottom: '',
-                left: '',
-                linked: true
-              },
-              tablet: {
-                unit: 'px',
-                top: '',
-                right: '',
-                bottom: '',
-                left: '',
-                linked: true
-              },
-              mobile: {
-                unit: 'px',
-                top: '',
-                right: '',
-                bottom: '',
-                left: '',
-                linked: true
-              }
-            };
-          }
+          updateBorder(updates);
         }
-        updateBorder(updates);
-      }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Button, {
+        icon: "grid-view",
+        isSmall: true,
+        onClick: function onClick() {
+          return setShowPresets(!showPresets);
+        },
+        className: "ffblock-preset-toggle",
+        label: __("Border Presets")
+      })]
+    }), showPresets && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "ffblock-presets-container",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "ffblock-presets-grid",
+        children: borderPresets.map(function (preset, index) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(Button, {
+            className: "ffblock-preset-button",
+            onClick: function onClick() {
+              return applyPreset(preset);
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              className: "ffblock-preset-preview ffblock-border-preview",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "ffblock-border-box",
+                style: {
+                  border: preset.value.enable ? "".concat(preset.value.width.desktop.top || 0, "px ").concat(preset.value.type, " ").concat(preset.value.color) : 'none',
+                  borderRadius: preset.value.enable && preset.value.radius.desktop.top ? "".concat(preset.value.radius.desktop.top, "px") : '0'
+                }
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+              className: "ffblock-preset-label",
+              children: preset.label
+            })]
+          }, index);
+        })
+      })
     }), border.enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SelectControl, {
         label: __("Border Type"),
@@ -622,7 +1034,8 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
           return updateBorder({
             width: value
           });
-        }
+        },
+        showPresetsToggle: false
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: __("Border Radius"),
         values: border.radius,
@@ -630,7 +1043,9 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
           return updateBorder({
             radius: value
           });
-        }
+        },
+        showPresetsToggle: true,
+        presetType: "radius"
       })]
     })]
   });
@@ -660,15 +1075,24 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var _wp$components = wp.components,
   BaseControl = _wp$components.BaseControl,
   ToggleControl = _wp$components.ToggleControl,
-  SelectControl = _wp$components.SelectControl;
+  SelectControl = _wp$components.SelectControl,
+  Button = _wp$components.Button,
+  ButtonGroup = _wp$components.ButtonGroup;
 var _wp$element = wp.element,
   useEffect = _wp$element.useEffect,
   memo = _wp$element.memo,
   useCallback = _wp$element.useCallback,
-  useRef = _wp$element.useRef;
+  useRef = _wp$element.useRef,
+  useState = _wp$element.useState;
 var __ = wp.i18n.__;
 
 
@@ -684,6 +1108,10 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     onChange = _ref.onChange,
     _ref$defaultColor = _ref.defaultColor,
     defaultColor = _ref$defaultColor === void 0 ? "rgba(0,0,0,0.5)" : _ref$defaultColor;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    showPresets = _useState2[0],
+    setShowPresets = _useState2[1];
   var shadowRef = useRef(shadow || {
     enable: false,
     color: '',
@@ -732,38 +1160,220 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     label: '%',
     value: '%'
   }];
+
+  // Shadow presets
+  var shadowPresets = [{
+    label: __("None"),
+    value: {
+      enable: false,
+      color: '',
+      position: 'outline',
+      horizontal: {
+        value: '0',
+        unit: 'px'
+      },
+      vertical: {
+        value: '0',
+        unit: 'px'
+      },
+      blur: {
+        value: '0',
+        unit: 'px'
+      },
+      spread: {
+        value: '0',
+        unit: 'px'
+      }
+    }
+  }, {
+    label: __("Subtle"),
+    value: {
+      enable: true,
+      color: 'rgba(0,0,0,0.1)',
+      position: 'outline',
+      horizontal: {
+        value: '0',
+        unit: 'px'
+      },
+      vertical: {
+        value: '2',
+        unit: 'px'
+      },
+      blur: {
+        value: '4',
+        unit: 'px'
+      },
+      spread: {
+        value: '0',
+        unit: 'px'
+      }
+    }
+  }, {
+    label: __("Small"),
+    value: {
+      enable: true,
+      color: 'rgba(0,0,0,0.15)',
+      position: 'outline',
+      horizontal: {
+        value: '0',
+        unit: 'px'
+      },
+      vertical: {
+        value: '4',
+        unit: 'px'
+      },
+      blur: {
+        value: '6',
+        unit: 'px'
+      },
+      spread: {
+        value: '0',
+        unit: 'px'
+      }
+    }
+  }, {
+    label: __("Medium"),
+    value: {
+      enable: true,
+      color: 'rgba(0,0,0,0.2)',
+      position: 'outline',
+      horizontal: {
+        value: '0',
+        unit: 'px'
+      },
+      vertical: {
+        value: '6',
+        unit: 'px'
+      },
+      blur: {
+        value: '12',
+        unit: 'px'
+      },
+      spread: {
+        value: '0',
+        unit: 'px'
+      }
+    }
+  }, {
+    label: __("Large"),
+    value: {
+      enable: true,
+      color: 'rgba(0,0,0,0.25)',
+      position: 'outline',
+      horizontal: {
+        value: '0',
+        unit: 'px'
+      },
+      vertical: {
+        value: '10',
+        unit: 'px'
+      },
+      blur: {
+        value: '20',
+        unit: 'px'
+      },
+      spread: {
+        value: '0',
+        unit: 'px'
+      }
+    }
+  }, {
+    label: __("Inset"),
+    value: {
+      enable: true,
+      color: 'rgba(0,0,0,0.15)',
+      position: 'inset',
+      horizontal: {
+        value: '0',
+        unit: 'px'
+      },
+      vertical: {
+        value: '2',
+        unit: 'px'
+      },
+      blur: {
+        value: '4',
+        unit: 'px'
+      },
+      spread: {
+        value: '0',
+        unit: 'px'
+      }
+    }
+  }];
+  var applyPreset = function applyPreset(preset) {
+    updateShadow(preset.value);
+    setShowPresets(false);
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(BaseControl, {
     label: label,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToggleControl, {
-      label: __("Enable Box Shadow"),
-      checked: shadow.enable,
-      onChange: function onChange(value) {
-        var updates = {
-          enable: value
-        };
-        if (value) {
-          var _shadow$horizontal, _shadow$vertical, _shadow$blur, _shadow$spread;
-          if (!shadow.color) updates.color = defaultColor;
-          if (!shadow.position) updates.position = 'outline';
-          if (!((_shadow$horizontal = shadow.horizontal) !== null && _shadow$horizontal !== void 0 && _shadow$horizontal.value)) updates.horizontal = {
-            value: '0',
-            unit: 'px'
+    className: "ffblock-box-shadow-control",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "ffblock-control-header",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ToggleControl, {
+        label: __("Enable Box Shadow"),
+        checked: shadow.enable,
+        onChange: function onChange(value) {
+          var updates = {
+            enable: value
           };
-          if (!((_shadow$vertical = shadow.vertical) !== null && _shadow$vertical !== void 0 && _shadow$vertical.value)) updates.vertical = {
-            value: '0',
-            unit: 'px'
-          };
-          if (!((_shadow$blur = shadow.blur) !== null && _shadow$blur !== void 0 && _shadow$blur.value)) updates.blur = {
-            value: '5',
-            unit: 'px'
-          };
-          if (!((_shadow$spread = shadow.spread) !== null && _shadow$spread !== void 0 && _shadow$spread.value)) updates.spread = {
-            value: '0',
-            unit: 'px'
-          };
+          if (value) {
+            var _shadow$horizontal, _shadow$vertical, _shadow$blur, _shadow$spread;
+            if (!shadow.color) updates.color = defaultColor;
+            if (!shadow.position) updates.position = 'outline';
+            if (!((_shadow$horizontal = shadow.horizontal) !== null && _shadow$horizontal !== void 0 && _shadow$horizontal.value)) updates.horizontal = {
+              value: '0',
+              unit: 'px'
+            };
+            if (!((_shadow$vertical = shadow.vertical) !== null && _shadow$vertical !== void 0 && _shadow$vertical.value)) updates.vertical = {
+              value: '0',
+              unit: 'px'
+            };
+            if (!((_shadow$blur = shadow.blur) !== null && _shadow$blur !== void 0 && _shadow$blur.value)) updates.blur = {
+              value: '5',
+              unit: 'px'
+            };
+            if (!((_shadow$spread = shadow.spread) !== null && _shadow$spread !== void 0 && _shadow$spread.value)) updates.spread = {
+              value: '0',
+              unit: 'px'
+            };
+          }
+          updateShadow(updates);
         }
-        updateShadow(updates);
-      }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Button, {
+        icon: "grid-view",
+        isSmall: true,
+        onClick: function onClick() {
+          return setShowPresets(!showPresets);
+        },
+        className: "ffblock-preset-toggle",
+        label: __("Shadow Presets")
+      })]
+    }), showPresets && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "ffblock-presets-container",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "ffblock-presets-grid",
+        children: shadowPresets.map(function (preset, index) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(Button, {
+            className: "ffblock-preset-button",
+            onClick: function onClick() {
+              return applyPreset(preset);
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              className: "ffblock-preset-preview ffblock-shadow-preview",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                className: "ffblock-shadow-box",
+                style: {
+                  boxShadow: preset.value.enable ? "".concat(preset.value.position === 'inset' ? 'inset ' : '').concat(preset.value.horizontal.value).concat(preset.value.horizontal.unit, " ").concat(preset.value.vertical.value).concat(preset.value.vertical.unit, " ").concat(preset.value.blur.value).concat(preset.value.blur.unit, " ").concat(preset.value.spread.value).concat(preset.value.spread.unit, " ").concat(preset.value.color) : 'none'
+                }
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+              className: "ffblock-preset-label",
+              children: preset.label
+            })]
+          }, index);
+        })
+      })
     }), shadow.enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: __("Shadow Color"),
@@ -1189,7 +1799,11 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
     }, {
       value: '%',
       key: 'percent-unit'
-    }] : _ref$units;
+    }] : _ref$units,
+    _ref$showPresetsToggl = _ref.showPresetsToggle,
+    showPresetsToggle = _ref$showPresetsToggl === void 0 ? true : _ref$showPresetsToggl,
+    _ref$presetType = _ref.presetType,
+    presetType = _ref$presetType === void 0 ? 'spacing' : _ref$presetType;
   var _useState = useState('desktop'),
     _useState2 = _slicedToArray(_useState, 2),
     activeDevice = _useState2[0],
@@ -1211,6 +1825,10 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
     _useState10 = _slicedToArray(_useState9, 2),
     currentValues = _useState10[0],
     setCurrentValues = _useState10[1];
+  var _useState11 = useState(false),
+    _useState12 = _slicedToArray(_useState11, 2),
+    showPresets = _useState12[0],
+    setShowPresets = _useState12[1];
   var defaultValues = {
     desktop: {
       unit: 'px',
@@ -1380,6 +1998,362 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
       onChange(emptyValues);
     }
   };
+
+  // Spacing presets
+  var spacePresets = [{
+    label: __("None"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Small"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '10',
+        right: '10',
+        bottom: '10',
+        left: '10',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '8',
+        right: '8',
+        bottom: '8',
+        left: '8',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '5',
+        right: '5',
+        bottom: '5',
+        left: '5',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Medium"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '20',
+        right: '20',
+        bottom: '20',
+        left: '20',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '15',
+        right: '15',
+        bottom: '15',
+        left: '15',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '10',
+        right: '10',
+        bottom: '10',
+        left: '10',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Large"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '30',
+        right: '30',
+        bottom: '30',
+        left: '30',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '25',
+        right: '25',
+        bottom: '25',
+        left: '25',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '20',
+        right: '20',
+        bottom: '20',
+        left: '20',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Custom V"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '20',
+        right: '0',
+        bottom: '20',
+        left: '0',
+        linked: false
+      },
+      tablet: {
+        unit: 'px',
+        top: '15',
+        right: '0',
+        bottom: '15',
+        left: '0',
+        linked: false
+      },
+      mobile: {
+        unit: 'px',
+        top: '10',
+        right: '0',
+        bottom: '10',
+        left: '0',
+        linked: false
+      }
+    }
+  }, {
+    label: __("Custom H"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '0',
+        right: '20',
+        bottom: '0',
+        left: '20',
+        linked: false
+      },
+      tablet: {
+        unit: 'px',
+        top: '0',
+        right: '15',
+        bottom: '0',
+        left: '15',
+        linked: false
+      },
+      mobile: {
+        unit: 'px',
+        top: '0',
+        right: '10',
+        bottom: '0',
+        left: '10',
+        linked: false
+      }
+    }
+  }];
+
+  // Border Radius presets
+  var radiusPresets = [{
+    label: __("None"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Small"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '3',
+        right: '3',
+        bottom: '3',
+        left: '3',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '3',
+        right: '3',
+        bottom: '3',
+        left: '3',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '3',
+        right: '3',
+        bottom: '3',
+        left: '3',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Medium"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '5',
+        right: '5',
+        bottom: '5',
+        left: '5',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '5',
+        right: '5',
+        bottom: '5',
+        left: '5',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '5',
+        right: '5',
+        bottom: '5',
+        left: '5',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Large"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '10',
+        right: '10',
+        bottom: '10',
+        left: '10',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '10',
+        right: '10',
+        bottom: '10',
+        left: '10',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '10',
+        right: '10',
+        bottom: '10',
+        left: '10',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Rounded"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '15',
+        right: '15',
+        bottom: '15',
+        left: '15',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '15',
+        right: '15',
+        bottom: '15',
+        left: '15',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '15',
+        right: '15',
+        bottom: '15',
+        left: '15',
+        linked: true
+      }
+    }
+  }, {
+    label: __("Pill"),
+    value: {
+      desktop: {
+        unit: 'px',
+        top: '50',
+        right: '50',
+        bottom: '50',
+        left: '50',
+        linked: true
+      },
+      tablet: {
+        unit: 'px',
+        top: '50',
+        right: '50',
+        bottom: '50',
+        left: '50',
+        linked: true
+      },
+      mobile: {
+        unit: 'px',
+        top: '50',
+        right: '50',
+        bottom: '50',
+        left: '50',
+        linked: true
+      }
+    }
+  }];
+  var presets = presetType === 'radius' ? radiusPresets : spacePresets;
+  var applyPreset = function applyPreset(preset) {
+    setCurrentValues(preset.value);
+    setIsLinked(preset.value[activeDevice].linked);
+    setActiveUnit(preset.value[activeDevice].unit);
+    setHasModifiedValues(true);
+    if (onChange) {
+      onChange(preset.value);
+    }
+    setShowPresets(false);
+  };
+  var getPresetLabel = function getPresetLabel() {
+    return presetType === 'radius' ? __("Border Radius Presets") : __("Spacing Presets");
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-space",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
@@ -1390,8 +2364,17 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
           className: "ffblock-label",
           children: label
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        children: hasModifiedValues && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Tooltip, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        className: "ffblock-header-actions",
+        children: [showPresetsToggle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+          icon: "grid-view",
+          isSmall: true,
+          onClick: function onClick() {
+            return setShowPresets(!showPresets);
+          },
+          className: "ffblock-preset-toggle",
+          label: getPresetLabel()
+        }), hasModifiedValues && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Tooltip, {
           text: __('Reset spacing values'),
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
             onClick: handleReset,
@@ -1399,8 +2382,37 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
             icon: "image-rotate",
             isSmall: true
           })
+        })]
+      })]
+    }), showPresetsToggle && showPresets && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "ffblock-presets-container",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "ffblock-presets-grid",
+        children: presets.map(function (preset, index) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(Button, {
+            className: "ffblock-preset-button ".concat(presetType === 'radius' ? '' : 'ffblock-preset-text-only'),
+            onClick: function onClick() {
+              return applyPreset(preset);
+            },
+            children: [presetType === 'radius' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+              className: "ffblock-preset-preview ffblock-radius-preview",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+                className: "ffblock-radius-box",
+                style: {
+                  border: '2px solid #dddddd',
+                  borderRadius: "".concat(preset.value.desktop.top || 0, "px")
+                }
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+              className: "ffblock-preset-label",
+              children: preset.label
+            })]
+          }, index);
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "ffblock-space-body",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-space-controls",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
           className: "ffblock-device-selector",
@@ -1449,7 +2461,7 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
             })
           })
         })]
-      })]
+      })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "ffblock-space-inputs device-".concat(activeDevice),
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
@@ -1489,7 +2501,7 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
             step: activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
             children: "BOTTOM"
-          }, "label-right")]
+          }, "label-bottom")]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
             type: "number",

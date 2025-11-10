@@ -3,7 +3,7 @@ const { useState, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
 import { arePropsEqual } from '../utils/ComponentUtils';
 
-const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', key: 'px-unit' }, { value: 'em', key: 'em-unit' }, { value: '%', key: 'percent-unit' }] }) => {
+const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', key: 'px-unit' }, { value: 'em', key: 'em-unit' }, { value: '%', key: 'percent-unit' }], showPresetsToggle = true, presetType = 'spacing' }) => {
     const [activeDevice, setActiveDevice] = useState('desktop');
     const initialLinkedState = values && values[activeDevice] && values[activeDevice].linked !== undefined ?
         values[activeDevice].linked : true;
@@ -11,6 +11,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
     const [activeUnit, setActiveUnit] = useState('px');
     const [hasModifiedValues, setHasModifiedValues] = useState(false);
     const [currentValues, setCurrentValues] = useState({});
+    const [showPresets, setShowPresets] = useState(false);
 
     const defaultValues = {
         desktop: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
@@ -105,7 +106,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
     };
 
     const handleValueChange = (position, value) => {
-        const numValue = value === '' ? '' : 
+        const numValue = value === '' ? '' :
             (activeUnit === 'em' || activeUnit === '%') ? parseFloat(value) : parseInt(value);
         if (value !== '') {
             setHasModifiedValues(true);
@@ -172,13 +173,143 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
         }
     };
 
+    // Spacing presets
+    const spacePresets = [
+        {
+            label: __("None"),
+            value: {
+                desktop: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true },
+                tablet: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true },
+                mobile: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true }
+            }
+        },
+        {
+            label: __("Small"),
+            value: {
+                desktop: { unit: 'px', top: '10', right: '10', bottom: '10', left: '10', linked: true },
+                tablet: { unit: 'px', top: '8', right: '8', bottom: '8', left: '8', linked: true },
+                mobile: { unit: 'px', top: '5', right: '5', bottom: '5', left: '5', linked: true }
+            }
+        },
+        {
+            label: __("Medium"),
+            value: {
+                desktop: { unit: 'px', top: '20', right: '20', bottom: '20', left: '20', linked: true },
+                tablet: { unit: 'px', top: '15', right: '15', bottom: '15', left: '15', linked: true },
+                mobile: { unit: 'px', top: '10', right: '10', bottom: '10', left: '10', linked: true }
+            }
+        },
+        {
+            label: __("Large"),
+            value: {
+                desktop: { unit: 'px', top: '30', right: '30', bottom: '30', left: '30', linked: true },
+                tablet: { unit: 'px', top: '25', right: '25', bottom: '25', left: '25', linked: true },
+                mobile: { unit: 'px', top: '20', right: '20', bottom: '20', left: '20', linked: true }
+            }
+        },
+        {
+            label: __("Custom V"),
+            value: {
+                desktop: { unit: 'px', top: '20', right: '0', bottom: '20', left: '0', linked: false },
+                tablet: { unit: 'px', top: '15', right: '0', bottom: '15', left: '0', linked: false },
+                mobile: { unit: 'px', top: '10', right: '0', bottom: '10', left: '0', linked: false }
+            }
+        },
+        {
+            label: __("Custom H"),
+            value: {
+                desktop: { unit: 'px', top: '0', right: '20', bottom: '0', left: '20', linked: false },
+                tablet: { unit: 'px', top: '0', right: '15', bottom: '0', left: '15', linked: false },
+                mobile: { unit: 'px', top: '0', right: '10', bottom: '0', left: '10', linked: false }
+            }
+        }
+    ];
+
+    // Border Radius presets
+    const radiusPresets = [
+        {
+            label: __("None"),
+            value: {
+                desktop: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true },
+                tablet: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true },
+                mobile: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true }
+            }
+        },
+        {
+            label: __("Small"),
+            value: {
+                desktop: { unit: 'px', top: '3', right: '3', bottom: '3', left: '3', linked: true },
+                tablet: { unit: 'px', top: '3', right: '3', bottom: '3', left: '3', linked: true },
+                mobile: { unit: 'px', top: '3', right: '3', bottom: '3', left: '3', linked: true }
+            }
+        },
+        {
+            label: __("Medium"),
+            value: {
+                desktop: { unit: 'px', top: '5', right: '5', bottom: '5', left: '5', linked: true },
+                tablet: { unit: 'px', top: '5', right: '5', bottom: '5', left: '5', linked: true },
+                mobile: { unit: 'px', top: '5', right: '5', bottom: '5', left: '5', linked: true }
+            }
+        },
+        {
+            label: __("Large"),
+            value: {
+                desktop: { unit: 'px', top: '10', right: '10', bottom: '10', left: '10', linked: true },
+                tablet: { unit: 'px', top: '10', right: '10', bottom: '10', left: '10', linked: true },
+                mobile: { unit: 'px', top: '10', right: '10', bottom: '10', left: '10', linked: true }
+            }
+        },
+        {
+            label: __("Rounded"),
+            value: {
+                desktop: { unit: 'px', top: '15', right: '15', bottom: '15', left: '15', linked: true },
+                tablet: { unit: 'px', top: '15', right: '15', bottom: '15', left: '15', linked: true },
+                mobile: { unit: 'px', top: '15', right: '15', bottom: '15', left: '15', linked: true }
+            }
+        },
+        {
+            label: __("Pill"),
+            value: {
+                desktop: { unit: 'px', top: '50', right: '50', bottom: '50', left: '50', linked: true },
+                tablet: { unit: 'px', top: '50', right: '50', bottom: '50', left: '50', linked: true },
+                mobile: { unit: 'px', top: '50', right: '50', bottom: '50', left: '50', linked: true }
+            }
+        }
+    ];
+
+    const presets = presetType === 'radius' ? radiusPresets : spacePresets;
+
+    const applyPreset = (preset) => {
+        setCurrentValues(preset.value);
+        setIsLinked(preset.value[activeDevice].linked);
+        setActiveUnit(preset.value[activeDevice].unit);
+        setHasModifiedValues(true);
+        if (onChange) {
+            onChange(preset.value);
+        }
+        setShowPresets(false);
+    };
+
+    const getPresetLabel = () => {
+        return presetType === 'radius' ? __("Border Radius Presets") : __("Spacing Presets");
+    };
+
     return (
         <div className="ffblock-control-field ffblock-control-space">
             <div className="ffblock-space-header">
                 <div className="ffblock-label-container">
                     <span className="ffblock-label">{label}</span>
                 </div>
-                <div>
+                <div className="ffblock-header-actions">
+                    {showPresetsToggle && (
+                        <Button
+                            icon="grid-view"
+                            isSmall
+                            onClick={() => setShowPresets(!showPresets)}
+                            className="ffblock-preset-toggle"
+                            label={getPresetLabel()}
+                        />
+                    )}
                     {hasModifiedValues && (
                         <Tooltip text={__('Reset spacing values')}>
                             <Button
@@ -190,7 +321,36 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
                         </Tooltip>
                     )}
                 </div>
+            </div>
 
+            {showPresetsToggle && showPresets && (
+                <div className="ffblock-presets-container">
+                    <div className="ffblock-presets-grid">
+                        {presets.map((preset, index) => (
+                            <Button
+                                key={index}
+                                className={`ffblock-preset-button ${presetType === 'radius' ? '' : 'ffblock-preset-text-only'}`}
+                                onClick={() => applyPreset(preset)}
+                            >
+                                {presetType === 'radius' && (
+                                    <div className="ffblock-preset-preview ffblock-radius-preview">
+                                        <div
+                                            className="ffblock-radius-box"
+                                            style={{
+                                                border: '2px solid #dddddd',
+                                                borderRadius: `${preset.value.desktop.top || 0}px`
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                                <span className="ffblock-preset-label">{preset.label}</span>
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div className="ffblock-space-body">
                 <div className="ffblock-space-controls">
                    <div className="ffblock-device-selector">
                         <DropdownMenu
@@ -270,7 +430,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
                             min={0}
                             step={activeUnit === 'em' || activeUnit === '%' ? 0.1 : 1}
                         />
-                        <span key="label-right">BOTTOM</span>
+                        <span key="label-bottom">BOTTOM</span>
 
                     </div>
                     <div>
