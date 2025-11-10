@@ -166,11 +166,31 @@ class Export
                 return $itemValue;
             }, $item);
         }, $data);
-        require_once $this->app->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
+        require_once $this->app->make('path.app') . '/Services/OpenSpout/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . wp_date('d-m-Y') . '.' . $type;
-        $writer = \Box\Spout\Writer\WriterFactory::create($type);
+        
+        // Create writer based on type
+        switch (strtolower($type)) {
+            case 'csv':
+                $writer = new \OpenSpout\Writer\CSV\Writer();
+                break;
+            case 'xlsx':
+                $writer = new \OpenSpout\Writer\XLSX\Writer();
+                break;
+            case 'ods':
+                $writer = new \OpenSpout\Writer\ODS\Writer();
+                break;
+            default:
+                throw new \Exception('Unsupported file type: ' . $type);
+        }
         $writer->openToBrowser($fileName);
-        $writer->addRows($data);
+        
+        // Convert data arrays to Row objects for OpenSpout v4
+        $rows = array_map(function ($rowData) {
+            return \OpenSpout\Common\Entity\Row::fromValues($rowData);
+        }, $data);
+        
+        $writer->addRows($rows);
         $writer->close();
         die();
     }

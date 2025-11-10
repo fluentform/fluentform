@@ -293,16 +293,36 @@ class TransferService
                 return $itemValue;
             }, $item);
         }, $data);
-        $autoloaderPath = App::getInstance()->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
+        $autoloaderPath = App::getInstance()->make('path.app') . '/Services/OpenSpout/autoload.php';
         // Check if the file is already included
         if (!in_array(realpath($autoloaderPath), get_included_files())) {
             // Include the autoloader file if it has not been included yet
             require_once $autoloaderPath;
         }
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . gmdate('d-m-Y') . '.' . $type;
-        $writer = \Box\Spout\Writer\WriterFactory::create($type);
+        
+        // Create writer based on type
+        switch (strtolower($type)) {
+            case 'csv':
+                $writer = new \OpenSpout\Writer\CSV\Writer();
+                break;
+            case 'xlsx':
+                $writer = new \OpenSpout\Writer\XLSX\Writer();
+                break;
+            case 'ods':
+                $writer = new \OpenSpout\Writer\ODS\Writer();
+                break;
+            default:
+                throw new \Exception('Unsupported file type: ' . $type);
+        }
         $writer->openToBrowser($fileName);
-        $writer->addRows($data);
+        
+        // Convert data arrays to Row objects for OpenSpout v4
+        $rows = array_map(function ($rowData) {
+            return \OpenSpout\Common\Entity\Row::fromValues($rowData);
+        }, $data);
+        
+        $writer->addRows($rows);
         $writer->close();
         die();
     }
