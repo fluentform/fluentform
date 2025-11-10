@@ -17,7 +17,9 @@ class Logs
 
         $table = $wpdb->prefix . 'fluentform_logs';
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration file, direct query needed
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) != $table) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Migration file, schema change is the purpose
             $sql = "CREATE TABLE $table (
 			  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			  `parent_source_id` INT UNSIGNED NULL,

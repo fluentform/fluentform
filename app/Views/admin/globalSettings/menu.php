@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -41,7 +42,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <a
                                 class="ff_list_button_link"
                                 href="#">
-                                <?php echo __('General'); ?>
+                                <?php esc_html_e('General','fluentform'); ?>
                             </a>
                             <ul class="ff_list_submenu" >
                                 <li >
@@ -51,7 +52,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                         href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                         'hash' => 'settings'
                                         ])); ?>">
-                                        <?php echo __('Layout'); ?>
+                                        <?php esc_html_e('Layout', 'fluentform'); ?>
                                     </a>
                                 </li>
                                 <li>
@@ -61,7 +62,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                            'hash' => 'setting'
                                        ])); ?>">
-                                        <?php echo __('Email Summaries'); ?>
+                                        <?php esc_html_e('Email Summaries', 'fluentform'); ?>
                                     </a>
                                 </li>
                                 <li>
@@ -71,8 +72,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                            'hash' => 'setting'
                                        ])); ?>">
-
-                                        <?php echo __('Integration Failure'); ?>
+                                        <?php esc_html_e('Integration Failure', 'fluentform'); ?>
                                     </a>
                                 </li>
                                 <li>
@@ -82,7 +82,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                            'hash' => 'settings'
                                        ])); ?>">
-                                        <?php echo __('Validation Messages', 'fluentform'); ?>
+                                        <?php esc_html_e('Validation Messages', 'fluentform'); ?>
                                     </a>
                                 </li>
                                 <li>
@@ -92,7 +92,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                            'hash' => 'setting'
                                        ])); ?>">
-                                        <?php echo __('Miscellaneous'); ?>
+                                        <?php esc_html_e('Miscellaneous', 'fluentform'); ?>
                                     </a>
                                 </li>
                             </ul>
@@ -130,7 +130,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                             class="ff_list_button_link ff-payment-settings-root"
                                             data-hash="payment_settings"
                                             href="#">
-                                        <?php echo __('Payment', 'fluentform'); ?>
+                                        <?php esc_html_e('Payment', 'fluentform'); ?>
                                     </a>
                                     <?php if (ArrayHelper::get($components, 'payment_settings.sub_menu')) : ?>
                                         <ul class="ff_list_submenu">
@@ -161,7 +161,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 
                         <li class="ff_list_button_item has_sub_menu">
                             <a class="ff_list_button_link" href="#">
-                                <?php echo __('Security', 'fluentform'); ?>
+                                <?php esc_html_e('Security', 'fluentform'); ?>
                             </a>
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
@@ -196,7 +196,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                     href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                         'hash' => 'permissions'
                                     ])); ?>">
-                                <?php echo __('Permissions'); ?>
+                                <?php esc_html_e('Permissions','fluentform'); ?>
                             </a>
                         </li>
                         <?php if ( ArrayHelper::get($components, 'admin_approval')) :?>
@@ -210,7 +210,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                         href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                             'hash' => 'admin_approval'
                                         ])); ?>">
-                                    <?php echo __('Admin approval', 'fluentform'); ?>
+                                    <?php esc_html_e('Admin approval', 'fluentform'); ?>
                                 </a>
                             </li>
                         <?php endif; ?>
@@ -221,7 +221,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                     href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                         'hash' => 'double_optin_settings'
                                     ])); ?>">
-                                <?php echo __('Double Opt-in', 'fluentform'); ?>
+                                <?php esc_html_e('Double Opt-in', 'fluentform'); ?>
                             </a>
                         </li>
                         <?php
@@ -235,14 +235,14 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                             'hash' => 'inventory_manager'
                                         ])); ?>">
                                     <?php
-                                    echo __('Inventory Manager', 'fluentform'); ?>
+                                    esc_html_e('Inventory Manager', 'fluentform'); ?>
                                 </a>
                             </li>
                         <?php } ?>
 
                         <li class="ff_list_button_item has_sub_menu">
                             <a class="ff_list_button_link" href="#">
-                                <?php echo __('Configure Integrations', 'fluentform'); ?>
+                                <?php esc_html_e('Configure Integrations', 'fluentform'); ?>
                             </a>
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>

@@ -947,6 +947,7 @@ class Helper
 
     public static function isBlockEditor()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking REST API context
         return defined('REST_REQUEST') && REST_REQUEST && !empty($_REQUEST['context']) && $_REQUEST['context'] === 'edit';
     }
 
@@ -1334,12 +1335,14 @@ class Helper
         foreach ($headers as $header) {
             // Try directly from $_SERVER
             if (isset($_SERVER[$header])) {
-                $code = trim($_SERVER[$header]);
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Country code from CDN/proxy header, validated below
+                $code = trim(sanitize_text_field(wp_unslash($_SERVER[$header])));
             } // Try with HTTP_ prefix if not already present
             elseif (strpos($header, 'HTTP_') !== 0) {
                 $httpHeader = 'HTTP_' . str_replace('-', '_', strtoupper($header));
                 if (isset($_SERVER[$httpHeader])) {
-                    $code = trim($_SERVER[$httpHeader]);
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Country code from CDN/proxy header, validated below
+                    $code = trim(sanitize_text_field(wp_unslash($_SERVER[$httpHeader])));
                 } else {
                     continue;
                 }
@@ -1410,9 +1413,12 @@ class Helper
         }
 
         // Fallback checks for various block editor contexts
-        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-        return isset( $_GET['_wp-find-template'] ) || 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- REQUEST_URI used for string comparison only
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking block editor context
+        return isset( $_GET['_wp-find-template'] ) ||
                strpos( $request_uri, 'site-editor.php' ) !== false ||
+               // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking REST API context
                (defined('REST_REQUEST') && REST_REQUEST && !empty($_REQUEST['context']) && $_REQUEST['context'] === 'edit');
     }
 }

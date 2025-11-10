@@ -2780,38 +2780,62 @@ var memo = wp.element.memo;
 
 
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 /**
- * Main TabGeneral component
+ * Fluent Forms Gutenberg Block Advanced Tab Component
  */
-
-
-
-var TabGeneral = function TabGeneral(_ref) {
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  TextControl = _wp$components.TextControl;
+var TabAdvanced = function TabAdvanced(_ref) {
   var attributes = _ref.attributes,
-    updateStyles = _ref.updateStyles,
-    handlePresetChange = _ref.handlePresetChange;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_StyleTemplatePanel__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      attributes: attributes,
-      handlePresetChange: handlePresetChange
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_LabelStylesPanel__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      styles: attributes.styles,
-      updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_InputStylesPanel__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      styles: attributes.styles,
-      updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_PlaceHolderStylesPanel__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      styles: attributes.styles,
-      updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_RadioCheckBoxStylesPanel__WEBPACK_IMPORTED_MODULE_6__["default"], {
-      styles: attributes.styles,
-      updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_panels_ButtonStylesPanel__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      styles: attributes.styles,
-      updateStyles: updateStyles
-    })]
+    setAttributes = _ref.setAttributes;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
+      title: __('Custom CSS'),
+      initialOpen: true,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
+        children: "Add custom CSS to further customize your form appearance."
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+        label: "CSS Class",
+        value: attributes.customCssClass || '',
+        onChange: function onChange(value) {
+          return setAttributes({
+            customCssClass: value
+          });
+        },
+        help: "Add custom CSS class to the form container"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        style: {
+          marginTop: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
+          className: "ffblock-label",
+          children: "Custom CSS"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("textarea", {
+          className: "components-textarea-control__input",
+          value: attributes.customCss || '',
+          onChange: function onChange(e) {
+            return setAttributes({
+              customCss: e.target.value
+            });
+          },
+          rows: 8,
+          style: {
+            width: '100%'
+          },
+          placeholder: ".fluent-form .ff-el-form-control { /* Your custom styles */\n}"
+        })]
+      })]
+    })
   });
 };
 var GENERAL_STYLES = ['labelColor', 'labelTypography', 'inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'inputBoxShadow', 'inputBoxShadowFocus', 'placeholderColor', 'placeholderFocusColor', 'placeholderTypography', 'radioCheckboxLabelColor', 'radioCheckboxTypography', 'radioCheckboxItemsColor', 'radioCheckboxItemsSize', 'checkboxSize', 'checkboxBorderColor', 'checkboxBgColor', 'checkboxCheckedColor', 'radioSize', 'radioBorderColor', 'radioBgColor', 'radioCheckedColor', 'buttonWidth', 'buttonAlignment', 'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'buttonBorder', 'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonHoverBoxShadow', 'buttonHoverBorder'];
@@ -2921,6 +2945,971 @@ var TabMisc = function TabMisc(_ref) {
     });
     mediaUploader.open();
   };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(PanelBody, {
+    title: __("Input & Textarea"),
+    initialOpen: false,
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(TabPanel, {
+      className: "input-styles-tabs",
+      activeClass: "is-active",
+      tabs: [{
+        name: 'normal',
+        title: __('Normal'),
+        className: 'tab-normal'
+      }, {
+        name: 'focus',
+        title: __('Focus'),
+        className: 'tab-focus'
+      }],
+      children: function children(tab) {
+        if (tab.name === 'normal') {
+          var _attributes$inputTypo, _attributes$inputTypo2, _attributes$inputTypo3, _attributes$inputTypo4, _attributes$inputTypo5;
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Text Color",
+              value: attributes.inputTextColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  inputTextColor: value
+                });
+              },
+              defaultColor: ""
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Background Color",
+              value: attributes.inputBackgroundColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  inputBackgroundColor: value
+                });
+              },
+              defaultColor: ""
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+              label: "Typography",
+              settings: {
+                fontSize: ((_attributes$inputTypo = attributes.inputTypography) === null || _attributes$inputTypo === void 0 || (_attributes$inputTypo = _attributes$inputTypo.size) === null || _attributes$inputTypo === void 0 ? void 0 : _attributes$inputTypo.lg) || '',
+                fontWeight: ((_attributes$inputTypo2 = attributes.inputTypography) === null || _attributes$inputTypo2 === void 0 ? void 0 : _attributes$inputTypo2.weight) || '400',
+                lineHeight: ((_attributes$inputTypo3 = attributes.inputTypography) === null || _attributes$inputTypo3 === void 0 ? void 0 : _attributes$inputTypo3.lineHeight) || '',
+                letterSpacing: ((_attributes$inputTypo4 = attributes.inputTypography) === null || _attributes$inputTypo4 === void 0 ? void 0 : _attributes$inputTypo4.letterSpacing) || '',
+                textTransform: ((_attributes$inputTypo5 = attributes.inputTypography) === null || _attributes$inputTypo5 === void 0 ? void 0 : _attributes$inputTypo5.textTransform) || 'none'
+              },
+              onChange: function onChange(changedTypo) {
+                return handleTypographyChange(changedTypo, 'inputTypography');
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Spacing",
+              values: attributes.inputSpacing,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  inputSpacing: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+              label: __("Border"),
+              enabled: attributes.enableInputBorder || false,
+              onToggle: function onToggle(value) {
+                return updateStyles({
+                  enableInputBorder: value
+                });
+              },
+              borderType: attributes.inputBorderType,
+              onBorderTypeChange: function onBorderTypeChange(value) {
+                return updateStyles({
+                  inputBorderType: value
+                });
+              },
+              borderColor: attributes.inputBorderColor,
+              onBorderColorChange: function onBorderColorChange(value) {
+                return updateStyles({
+                  inputBorderColor: value
+                });
+              },
+              borderWidth: attributes.inputBorderWidth,
+              onBorderWidthChange: function onBorderWidthChange(value) {
+                return updateStyles({
+                  inputBorderWidth: value
+                });
+              },
+              borderRadius: attributes.inputBorderRadius,
+              onBorderRadiusChange: function onBorderRadiusChange(value) {
+                return updateStyles({
+                  inputBorderRadius: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+              label: __("Box Shadow"),
+              enabled: attributes.enableInputBoxShadow || false,
+              onToggle: function onToggle(value) {
+                return updateStyles({
+                  enableInputBoxShadow: value
+                });
+              },
+              color: attributes.inputBoxShadowColor,
+              onColorChange: function onColorChange(value) {
+                return updateStyles({
+                  inputBoxShadowColor: value
+                });
+              },
+              position: attributes.inputBoxShadowPosition,
+              onPositionChange: function onPositionChange(value) {
+                return updateStyles({
+                  inputBoxShadowPosition: value
+                });
+              },
+              horizontal: attributes.inputBoxShadowHorizontal,
+              onHorizontalChange: function onHorizontalChange(value) {
+                return updateStyles({
+                  inputBoxShadowHorizontal: value
+                });
+              },
+              horizontalUnit: attributes.inputBoxShadowHorizontalUnit,
+              onHorizontalUnitChange: function onHorizontalUnitChange(value) {
+                return updateStyles({
+                  inputBoxShadowHorizontalUnit: value
+                });
+              },
+              vertical: attributes.inputBoxShadowVertical,
+              onVerticalChange: function onVerticalChange(value) {
+                return updateStyles({
+                  inputBoxShadowVertical: value
+                });
+              },
+              verticalUnit: attributes.inputBoxShadowVerticalUnit,
+              onVerticalUnitChange: function onVerticalUnitChange(value) {
+                return updateStyles({
+                  inputBoxShadowVerticalUnit: value
+                });
+              },
+              blur: attributes.inputBoxShadowBlur,
+              onBlurChange: function onBlurChange(value) {
+                return updateStyles({
+                  inputBoxShadowBlur: value
+                });
+              },
+              blurUnit: attributes.inputBoxShadowBlurUnit,
+              onBlurUnitChange: function onBlurUnitChange(value) {
+                return updateStyles({
+                  inputBoxShadowBlurUnit: value
+                });
+              },
+              spread: attributes.inputBoxShadowSpread,
+              onSpreadChange: function onSpreadChange(value) {
+                return updateStyles({
+                  inputBoxShadowSpread: value
+                });
+              },
+              spreadUnit: attributes.inputBoxShadowSpreadUnit,
+              onSpreadUnitChange: function onSpreadUnitChange(value) {
+                return updateStyles({
+                  inputBoxShadowSpreadUnit: value
+                });
+              }
+            })]
+          });
+        } else if (tab.name === 'focus') {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Text Color",
+              value: attributes.inputTextFocusColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  inputTextFocusColor: value
+                });
+              },
+              defaultColor: ""
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Background Color",
+              value: attributes.inputBackgroundFocusColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  inputBackgroundFocusColor: value
+                });
+              },
+              defaultColor: ""
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Spacing",
+              values: attributes.inputFocusSpacing,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  inputFocusSpacing: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+              label: __("Border"),
+              enabled: attributes.enableInputBorderFocus || false,
+              onToggle: function onToggle(value) {
+                return updateStyles({
+                  enableInputBorderFocus: value
+                });
+              },
+              borderType: attributes.inputBorderTypeFocus,
+              onBorderTypeChange: function onBorderTypeChange(value) {
+                return updateStyles({
+                  inputBorderTypeFocus: value
+                });
+              },
+              borderColor: attributes.inputBorderColorFocus,
+              onBorderColorChange: function onBorderColorChange(value) {
+                return updateStyles({
+                  inputBorderColorFocus: value
+                });
+              },
+              borderWidth: attributes.inputBorderWidthFocus,
+              onBorderWidthChange: function onBorderWidthChange(value) {
+                return updateStyles({
+                  inputBorderWidthFocus: value
+                });
+              },
+              borderRadius: attributes.inputBorderRadiusFocus,
+              onBorderRadiusChange: function onBorderRadiusChange(value) {
+                return updateStyles({
+                  inputBorderRadiusFocus: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+              label: __("Box Shadow"),
+              enabled: attributes.enableInputBoxShadowFocus || false,
+              onToggle: function onToggle(value) {
+                return updateStyles({
+                  enableInputBoxShadowFocus: value
+                });
+              },
+              color: attributes.inputBoxShadowColorFocus,
+              onColorChange: function onColorChange(value) {
+                return updateStyles({
+                  inputBoxShadowColorFocus: value
+                });
+              },
+              position: attributes.inputBoxShadowPositionFocus,
+              onPositionChange: function onPositionChange(value) {
+                return updateStyles({
+                  inputBoxShadowPositionFocus: value
+                });
+              },
+              horizontal: attributes.inputBoxShadowHorizontalFocus,
+              onHorizontalChange: function onHorizontalChange(value) {
+                return updateStyles({
+                  inputBoxShadowHorizontalFocus: value
+                });
+              },
+              horizontalUnit: attributes.inputBoxShadowHorizontalUnitFocus,
+              onHorizontalUnitChange: function onHorizontalUnitChange(value) {
+                return updateStyles({
+                  inputBoxShadowHorizontalUnitFocus: value
+                });
+              },
+              vertical: attributes.inputBoxShadowVerticalFocus,
+              onVerticalChange: function onVerticalChange(value) {
+                return updateStyles({
+                  inputBoxShadowVerticalFocus: value
+                });
+              },
+              verticalUnit: attributes.inputBoxShadowVerticalUnitFocus,
+              onVerticalUnitChange: function onVerticalUnitChange(value) {
+                return updateStyles({
+                  inputBoxShadowVerticalUnitFocus: value
+                });
+              },
+              blur: attributes.inputBoxShadowBlurFocus,
+              onBlurChange: function onBlurChange(value) {
+                return updateStyles({
+                  inputBoxShadowBlurFocus: value
+                });
+              },
+              blurUnit: attributes.inputBoxShadowBlurUnitFocus,
+              onBlurUnitChange: function onBlurUnitChange(value) {
+                return updateStyles({
+                  inputBoxShadowBlurUnitFocus: value
+                });
+              },
+              spread: attributes.inputBoxShadowSpreadFocus,
+              onSpreadChange: function onSpreadChange(value) {
+                return updateStyles({
+                  inputBoxShadowSpreadFocus: value
+                });
+              },
+              spreadUnit: attributes.inputBoxShadowSpreadUnitFocus,
+              onSpreadUnitChange: function onSpreadUnitChange(value) {
+                return updateStyles({
+                  inputBoxShadowSpreadUnitFocus: value
+                });
+              }
+            })]
+          });
+        }
+        return null;
+      }
+    })
+  });
+};
+
+/**
+ * Component for button styling options
+ */
+var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
+  var attributes = _ref4.attributes,
+    updateStyles = _ref4.updateStyles;
+  var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
+    var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_7__.getUpdatedTypography)(changedTypo, attributes, key);
+    updateStyles(_defineProperty({}, key, updatedTypography));
+  };
+  var handleBoxShadowChange = function handleBoxShadowChange(value) {
+    updateStyles({
+      buttonBoxShadow: value
+    });
+  };
+  var handleBoxShadowHoverChange = function handleBoxShadowHoverChange(value) {
+    updateStyles({
+      buttonBoxShadowHover: value
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
+    title: __('Button Styles'),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+        className: "ffblock-label",
+        children: __('Alignment')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        value: attributes.buttonAlignment,
+        onChange: function onChange(value) {
+          return updateStyles({
+            buttonAlignment: value
+          });
+        },
+        options: [{
+          value: 'left',
+          icon: 'editor-alignleft',
+          label: __('Left')
+        }, {
+          value: 'center',
+          icon: 'editor-aligncenter',
+          label: __('Center')
+        }, {
+          value: 'right',
+          icon: 'editor-alignright',
+          label: __('Right')
+        }]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(RangeControl, {
+      label: __('Width (%)'),
+      value: attributes.buttonWidth,
+      onChange: function onChange(value) {
+        return updateStyles({
+          buttonWidth: value
+        });
+      },
+      min: 0,
+      max: 100,
+      allowReset: true,
+      initialPosition: 0,
+      help: __('Set to 0 for auto width')
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(TabPanel, {
+      className: "button-styles-tabs",
+      activeClass: "is-active",
+      tabs: [{
+        name: 'normal',
+        title: __('Normal'),
+        className: 'tab-normal'
+      }, {
+        name: 'hover',
+        title: __('Hover'),
+        className: 'tab-hover'
+      }],
+      children: function children(tab) {
+        if (tab.name === 'normal') {
+          var _attributes$buttonTyp, _attributes$buttonTyp2, _attributes$buttonTyp3, _attributes$buttonTyp4, _attributes$buttonTyp5;
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Text Color",
+              value: attributes.buttonColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonColor: value
+                });
+              },
+              defaultColor: "#ffffff"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Background Color",
+              value: attributes.buttonBGColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonBGColor: value
+                });
+              },
+              defaultColor: "#409EFF"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+              label: "Typography",
+              settings: {
+                fontSize: ((_attributes$buttonTyp = attributes.buttonTypography) === null || _attributes$buttonTyp === void 0 || (_attributes$buttonTyp = _attributes$buttonTyp.size) === null || _attributes$buttonTyp === void 0 ? void 0 : _attributes$buttonTyp.lg) || '',
+                fontWeight: ((_attributes$buttonTyp2 = attributes.buttonTypography) === null || _attributes$buttonTyp2 === void 0 ? void 0 : _attributes$buttonTyp2.weight) || '500',
+                lineHeight: ((_attributes$buttonTyp3 = attributes.buttonTypography) === null || _attributes$buttonTyp3 === void 0 ? void 0 : _attributes$buttonTyp3.lineHeight) || '',
+                letterSpacing: ((_attributes$buttonTyp4 = attributes.buttonTypography) === null || _attributes$buttonTyp4 === void 0 ? void 0 : _attributes$buttonTyp4.letterSpacing) || '',
+                textTransform: ((_attributes$buttonTyp5 = attributes.buttonTypography) === null || _attributes$buttonTyp5 === void 0 ? void 0 : _attributes$buttonTyp5.textTransform) || 'none'
+              },
+              onChange: function onChange(changedTypo) {
+                return handleTypographyChange(changedTypo, 'buttonTypography');
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Padding",
+              values: attributes.buttonPadding,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonPadding: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Margin",
+              values: attributes.buttonMargin,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonMargin: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+              label: __("Box Shadow"),
+              enabled: attributes.enableButtonBoxShadow || false,
+              onToggle: function onToggle(value) {
+                return updateStyles({
+                  enableButtonBoxShadow: value
+                });
+              },
+              color: attributes.buttonBoxShadowColor,
+              onColorChange: function onColorChange(value) {
+                return updateStyles({
+                  buttonBoxShadowColor: value
+                });
+              },
+              position: attributes.buttonBoxShadowPosition,
+              onPositionChange: function onPositionChange(value) {
+                return updateStyles({
+                  buttonBoxShadowPosition: value
+                });
+              },
+              horizontal: attributes.buttonBoxShadowHorizontal,
+              onHorizontalChange: function onHorizontalChange(value) {
+                return updateStyles({
+                  buttonBoxShadowHorizontal: value
+                });
+              },
+              horizontalUnit: attributes.buttonBoxShadowHorizontalUnit,
+              onHorizontalUnitChange: function onHorizontalUnitChange(value) {
+                return updateStyles({
+                  buttonBoxShadowHorizontalUnit: value
+                });
+              },
+              vertical: attributes.buttonBoxShadowVertical,
+              onVerticalChange: function onVerticalChange(value) {
+                return updateStyles({
+                  buttonBoxShadowVertical: value
+                });
+              },
+              verticalUnit: attributes.buttonBoxShadowVerticalUnit,
+              onVerticalUnitChange: function onVerticalUnitChange(value) {
+                return updateStyles({
+                  buttonBoxShadowVerticalUnit: value
+                });
+              },
+              blur: attributes.buttonBoxShadowBlur,
+              onBlurChange: function onBlurChange(value) {
+                return updateStyles({
+                  buttonBoxShadowBlur: value
+                });
+              },
+              blurUnit: attributes.buttonBoxShadowBlurUnit,
+              onBlurUnitChange: function onBlurUnitChange(value) {
+                return updateStyles({
+                  buttonBoxShadowBlurUnit: value
+                });
+              },
+              spread: attributes.buttonBoxShadowSpread,
+              onSpreadChange: function onSpreadChange(value) {
+                return updateStyles({
+                  buttonBoxShadowSpread: value
+                });
+              },
+              spreadUnit: attributes.buttonBoxShadowSpreadUnit,
+              onSpreadUnitChange: function onSpreadUnitChange(value) {
+                return updateStyles({
+                  buttonBoxShadowSpreadUnit: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+              label: __("Border"),
+              enabled: attributes.enableButtonBorder || false,
+              onToggle: function onToggle(value) {
+                return updateStyles({
+                  enableButtonBorder: value
+                });
+              },
+              borderType: attributes.buttonBorderType,
+              onBorderTypeChange: function onBorderTypeChange(value) {
+                return updateStyles({
+                  buttonBorderType: value
+                });
+              },
+              borderColor: attributes.buttonBorderColor,
+              onBorderColorChange: function onBorderColorChange(value) {
+                return updateStyles({
+                  buttonBorderColor: value
+                });
+              },
+              borderWidth: attributes.buttonBorderWidth,
+              onBorderWidthChange: function onBorderWidthChange(value) {
+                return updateStyles({
+                  buttonBorderWidth: value
+                });
+              },
+              borderRadius: attributes.buttonBorderRadius,
+              onBorderRadiusChange: function onBorderRadiusChange(value) {
+                return updateStyles({
+                  buttonBorderRadius: value
+                });
+              }
+            })]
+          });
+        } else if (tab.name === 'hover') {
+          var _attributes$buttonHov, _attributes$buttonHov2, _attributes$buttonHov3, _attributes$buttonHov4, _attributes$buttonHov5;
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Text Color",
+              value: attributes.buttonHoverColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonHoverColor: value
+                });
+              },
+              defaultColor: "#ffffff"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+              label: "Background Color",
+              value: attributes.buttonHoverBGColor,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonHoverBGColor: value
+                });
+              },
+              defaultColor: "#66b1ff"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+              label: "Typography",
+              settings: {
+                fontSize: ((_attributes$buttonHov = attributes.buttonHoverTypography) === null || _attributes$buttonHov === void 0 || (_attributes$buttonHov = _attributes$buttonHov.size) === null || _attributes$buttonHov === void 0 ? void 0 : _attributes$buttonHov.lg) || '',
+                fontWeight: ((_attributes$buttonHov2 = attributes.buttonHoverTypography) === null || _attributes$buttonHov2 === void 0 ? void 0 : _attributes$buttonHov2.weight) || '500',
+                lineHeight: ((_attributes$buttonHov3 = attributes.buttonHoverTypography) === null || _attributes$buttonHov3 === void 0 ? void 0 : _attributes$buttonHov3.lineHeight) || '',
+                letterSpacing: ((_attributes$buttonHov4 = attributes.buttonHoverTypography) === null || _attributes$buttonHov4 === void 0 ? void 0 : _attributes$buttonHov4.letterSpacing) || '',
+                textTransform: ((_attributes$buttonHov5 = attributes.buttonHoverTypography) === null || _attributes$buttonHov5 === void 0 ? void 0 : _attributes$buttonHov5.textTransform) || 'none'
+              },
+              onChange: function onChange(changedTypo) {
+                return handleTypographyChange(changedTypo, 'buttonHoverTypography');
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Padding",
+              values: attributes.buttonHoverPadding,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonHoverPadding: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+              label: "Margin",
+              values: attributes.buttonHoverMargin,
+              onChange: function onChange(value) {
+                return updateStyles({
+                  buttonHoverMargin: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
+              label: __("Box Shadow"),
+              enabled: attributes.enableButtonHoverBoxShadow || false,
+              onToggle: function onToggle(value) {
+                return updateStyles({
+                  enableButtonHoverBoxShadow: value
+                });
+              },
+              color: attributes.buttonHoverBoxShadowColor,
+              onColorChange: function onColorChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowColor: value
+                });
+              },
+              position: attributes.buttonHoverBoxShadowPosition,
+              onPositionChange: function onPositionChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowPosition: value
+                });
+              },
+              horizontal: attributes.buttonHoverBoxShadowHorizontal,
+              onHorizontalChange: function onHorizontalChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowHorizontal: value
+                });
+              },
+              horizontalUnit: attributes.buttonHoverBoxShadowHorizontalUnit,
+              onHorizontalUnitChange: function onHorizontalUnitChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowHorizontalUnit: value
+                });
+              },
+              vertical: attributes.buttonHoverBoxShadowVertical,
+              onVerticalChange: function onVerticalChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowVertical: value
+                });
+              },
+              verticalUnit: attributes.buttonHoverBoxShadowVerticalUnit,
+              onVerticalUnitChange: function onVerticalUnitChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowVerticalUnit: value
+                });
+              },
+              blur: attributes.buttonHoverBoxShadowBlur,
+              onBlurChange: function onBlurChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowBlur: value
+                });
+              },
+              blurUnit: attributes.buttonHoverBoxShadowBlurUnit,
+              onBlurUnitChange: function onBlurUnitChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowBlurUnit: value
+                });
+              },
+              spread: attributes.buttonHoverBoxShadowSpread,
+              onSpreadChange: function onSpreadChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowSpread: value
+                });
+              },
+              spreadUnit: attributes.buttonHoverBoxShadowSpreadUnit,
+              onSpreadUnitChange: function onSpreadUnitChange(value) {
+                return updateStyles({
+                  buttonHoverBoxShadowSpreadUnit: value
+                });
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+              label: __("Border"),
+              enabled: attributes.enableButtonHoverBorder || false,
+              onToggle: function onToggle(value) {
+                return updateStyles({
+                  enableButtonHoverBorder: value
+                });
+              },
+              borderType: attributes.buttonHoverBorderType,
+              onBorderTypeChange: function onBorderTypeChange(value) {
+                return updateStyles({
+                  buttonHoverBorderType: value
+                });
+              },
+              borderColor: attributes.buttonHoverBorderColor,
+              onBorderColorChange: function onBorderColorChange(value) {
+                return updateStyles({
+                  buttonHoverBorderColor: value
+                });
+              },
+              borderWidth: attributes.buttonHoverBorderWidth,
+              onBorderWidthChange: function onBorderWidthChange(value) {
+                return updateStyles({
+                  buttonHoverBorderWidth: value
+                });
+              },
+              borderRadius: attributes.buttonHoverBorderRadius,
+              onBorderRadiusChange: function onBorderRadiusChange(value) {
+                return updateStyles({
+                  buttonHoverBorderRadius: value
+                });
+              }
+            })]
+          });
+        }
+        return null;
+      }
+    })]
+  });
+};
+
+/**
+ * Component for placeholder styling options
+ */
+var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref5) {
+  var _attributes$placehold, _attributes$placehold2, _attributes$placehold3, _attributes$placehold4, _attributes$placehold5;
+  var attributes = _ref5.attributes,
+    updateStyles = _ref5.updateStyles;
+  var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
+    var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_7__.getUpdatedTypography)(changedTypo, attributes, key);
+    updateStyles(_defineProperty({}, key, updatedTypography));
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
+    title: __('Placeholder Styles'),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Text Color",
+      value: attributes.placeholderColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          placeholderColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      label: "Typography",
+      settings: {
+        fontSize: ((_attributes$placehold = attributes.placeholderTypography) === null || _attributes$placehold === void 0 || (_attributes$placehold = _attributes$placehold.size) === null || _attributes$placehold === void 0 ? void 0 : _attributes$placehold.lg) || '',
+        fontWeight: ((_attributes$placehold2 = attributes.placeholderTypography) === null || _attributes$placehold2 === void 0 ? void 0 : _attributes$placehold2.weight) || '400',
+        lineHeight: ((_attributes$placehold3 = attributes.placeholderTypography) === null || _attributes$placehold3 === void 0 ? void 0 : _attributes$placehold3.lineHeight) || '',
+        letterSpacing: ((_attributes$placehold4 = attributes.placeholderTypography) === null || _attributes$placehold4 === void 0 ? void 0 : _attributes$placehold4.letterSpacing) || '',
+        textTransform: ((_attributes$placehold5 = attributes.placeholderTypography) === null || _attributes$placehold5 === void 0 ? void 0 : _attributes$placehold5.textTransform) || 'none'
+      },
+      onChange: function onChange(changedTypo) {
+        return handleTypographyChange(changedTypo, 'placeholderTypography');
+      }
+    })]
+  });
+};
+var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
+  var attributes = _ref6.attributes,
+    updateStyles = _ref6.updateStyles;
+  // Use local state to ensure the UI updates immediately
+  var _useState = useState(attributes.radioCheckboxItemsSize || 15),
+    _useState2 = _slicedToArray(_useState, 2),
+    localSize = _useState2[0],
+    setLocalSize = _useState2[1];
+
+  // Update local state when the attribute changes from outside
+  useEffect(function () {
+    if (attributes.radioCheckboxItemsSize !== undefined && attributes.radioCheckboxItemsSize !== localSize) {
+      setLocalSize(attributes.radioCheckboxItemsSize);
+    }
+  }, [attributes.radioCheckboxItemsSize]);
+
+  // Handle size change with immediate UI update
+  var handleSizeChange = function handleSizeChange(value) {
+    // Update local state for immediate UI feedback
+    setLocalSize(value);
+    // Update the actual attribute
+    updateStyles({
+      radioCheckboxItemsSize: value
+    });
+    // Log for debugging
+    console.log('Radio/Checkbox size changed to:', value);
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(PanelBody, {
+    title: __('Radio & Checkbox Styles'),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Items Color",
+      value: attributes.radioCheckboxItemsColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          radioCheckboxItemsColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+      className: "ffblock-control-field",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+        className: "ffblock-label",
+        children: "Size (px)"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(RangeControl, {
+        value: localSize // Use local state for immediate UI feedback
+        ,
+        min: 1,
+        max: 30,
+        step: 1,
+        onChange: handleSizeChange
+      })]
+    })]
+  });
+};
+
+/**
+ * Main TabGeneral component
+ */
+var TabGeneral = function TabGeneral(_ref7) {
+  var attributes = _ref7.attributes,
+    setAttributes = _ref7.setAttributes,
+    updateStyles = _ref7.updateStyles,
+    state = _ref7.state,
+    handlePresetChange = _ref7.handlePresetChange;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(StyleTemplatePanel, {
+      attributes: attributes,
+      setAttributes: setAttributes,
+      handlePresetChange: handlePresetChange
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(LabelStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(InputStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(PlaceHolderStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(RadioCheckBoxStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ButtonStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    })]
+  });
+};
+var GENERAL_TAB_ATTRIBUTES = [
+// Label attributes
+'labelColor', 'labelTypography',
+// Input attributes
+'inputTextColor', 'inputBackgroundColor', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'inputTextFocusColor', 'inputBackgroundFocusColor', 'inputFocusSpacing', 'enableInputBorder', 'inputBorderType', 'inputBorderColor', 'inputBorderWidth', 'inputBorderRadius', 'enableInputBorderFocus', 'inputBorderTypeFocus', 'inputBorderColorFocus', 'inputBorderWidthFocus', 'inputBorderRadiusFocus', 'enableInputBoxShadow', 'inputBoxShadowColor', 'inputBoxShadowPosition', 'inputBoxShadowHorizontal', 'inputBoxShadowHorizontalUnit', 'inputBoxShadowVertical', 'inputBoxShadowVerticalUnit', 'inputBoxShadowBlur', 'inputBoxShadowBlurUnit', 'inputBoxShadowSpread', 'inputBoxShadowSpreadUnit', 'enableInputBoxShadowFocus', 'inputBoxShadowColorFocus', 'inputBoxShadowPositionFocus', 'inputBoxShadowHorizontalFocus', 'inputBoxShadowHorizontalUnitFocus', 'inputBoxShadowVerticalFocus', 'inputBoxShadowVerticalUnitFocus', 'inputBoxShadowBlurFocus', 'inputBoxShadowBlurUnitFocus', 'inputBoxShadowSpreadFocus', 'inputBoxShadowSpreadUnitFocus',
+// Placeholder attributes
+'placeholderColor', 'placeholderFocusColor', 'placeholderTypography',
+// Radio/Checkbox attributes
+'radioCheckboxLabelColor', 'radioCheckboxTypography', 'radioCheckboxItemsColor', 'radioCheckboxItemsSize', 'checkboxSize', 'checkboxBorderColor', 'checkboxBgColor', 'checkboxCheckedColor', 'radioSize', 'radioBorderColor', 'radioBgColor', 'radioCheckedColor',
+// Common Button attributes
+'buttonWidth', 'buttonAlignment',
+// Normal Button attributes
+'buttonColor', 'buttonBGColor', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'enableButtonBoxShadow', 'buttonBoxShadowColor', 'buttonBoxShadowPosition', 'buttonBoxShadowHorizontal', 'buttonBoxShadowHorizontalUnit', 'buttonBoxShadowVertical', 'buttonBoxShadowVerticalUnit', 'buttonBoxShadowBlur', 'buttonBoxShadowBlurUnit', 'buttonBoxShadowSpread', 'buttonBoxShadowSpreadUnit', 'enableButtonBorder', 'buttonBorderType', 'buttonBorderColor', 'buttonBorderWidth', 'buttonBorderRadius',
+// Hover Button attributes
+'buttonHoverColor', 'buttonHoverBGColor', 'buttonHoverTypography', 'buttonHoverPadding', 'buttonHoverMargin', 'buttonBoxShadowHover', 'buttonBoxShadowHoverColor', 'buttonBoxShadowHoverPosition', 'enableButtonHoverBoxShadow', 'buttonHoverBoxShadowColor', 'buttonHoverBoxShadowPosition', 'buttonHoverBoxShadowHorizontal', 'buttonHoverBoxShadowHorizontalUnit', 'buttonHoverBoxShadowVertical', 'buttonHoverBoxShadowVerticalUnit', 'buttonHoverBoxShadowBlur', 'buttonHoverBoxShadowBlurUnit', 'buttonHoverBoxShadowSpread', 'buttonHoverBoxShadowSpreadUnit', 'enableButtonHoverBorder', 'buttonHoverBorderType', 'buttonHoverBorderColor', 'buttonHoverBorderWidth', 'buttonHoverBorderRadius'];
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memo(TabGeneral, function (prevProps, nextProps) {
+  return (0,_utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_8__.arePropsEqual)(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES, true);
+}));
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/TabMisc.js":
+/*!****************************************************!*\
+  !*** ./guten_block/src/components/tabs/TabMisc.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
+/* harmony import */ var _controls_FluentAlignmentControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentAlignmentControl */ "./guten_block/src/components/controls/FluentAlignmentControl.js");
+/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../controls/FluentSeparator */ "./guten_block/src/components/controls/FluentSeparator.js");
+/* harmony import */ var _controls_FluentUnitControl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../controls/FluentUnitControl */ "./guten_block/src/components/controls/FluentUnitControl.js");
+/* harmony import */ var _controls_FluentBoxShadowControl__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../controls/FluentBoxShadowControl */ "./guten_block/src/components/controls/FluentBoxShadowControl.js");
+/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
+/* harmony import */ var _utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/TypographyUtils */ "./guten_block/src/components/utils/TypographyUtils.js");
+/* harmony import */ var _utils_ComponentUtils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/ComponentUtils */ "./guten_block/src/components/utils/ComponentUtils.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+/**
+ * Fluent Forms Gutenberg Block Misc Tab Component
+ */
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useEffect = _wp$element.useEffect,
+  memo = _wp$element.memo;
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  SelectControl = _wp$components.SelectControl,
+  RangeControl = _wp$components.RangeControl,
+  Button = _wp$components.Button,
+  BaseControl = _wp$components.BaseControl;
+
+// Import custom components
+
+
+
+
+
+
+
+
+
+
+
+// Constants
+
+
+
+var DEFAULT_COLORS = [{
+  name: 'Theme Blue',
+  color: '#72aee6'
+}, {
+  name: 'Theme Red',
+  color: '#e65054'
+}, {
+  name: 'Theme Green',
+  color: '#68de7c'
+}, {
+  name: 'Black',
+  color: '#000000'
+}, {
+  name: 'White',
+  color: '#ffffff'
+}, {
+  name: 'Gray',
+  color: '#dddddd'
+}];
+
+/**
+ * Main TabMisc component
+ */
+var TabMisc = function TabMisc(_ref) {
+  var _attributes$errorMess, _attributes$errorMess2, _attributes$errorMess3, _attributes$errorMess4, _attributes$errorMess5, _attributes$successMe, _attributes$successMe2, _attributes$successMe3, _attributes$successMe4, _attributes$successMe5, _attributes$submitErr, _attributes$submitErr2, _attributes$submitErr3, _attributes$submitErr4, _attributes$submitErr5;
+  var attributes = _ref.attributes,
+    setAttributes = _ref.setAttributes,
+    updateStyles = _ref.updateStyles,
+    state = _ref.state;
+  // Use local state for background type to ensure UI updates immediately
+  var _useState = useState(attributes.backgroundType || 'classic'),
+    _useState2 = _slicedToArray(_useState, 2),
+    localBgType = _useState2[0],
+    setLocalBgType = _useState2[1];
+  var handleTypographyChange = function handleTypographyChange(changedTypo, key) {
+    var updatedTypography = (0,_utils_TypographyUtils__WEBPACK_IMPORTED_MODULE_8__.getUpdatedTypography)(changedTypo, attributes, key);
+    updateStyles(_defineProperty({}, key, updatedTypography));
+  };
+
+  // Update local state when attributes change
+  useEffect(function () {
+    if (attributes.backgroundType !== undefined && attributes.backgroundType !== localBgType) {
+      setLocalBgType(attributes.backgroundType);
+    }
+  }, [attributes.backgroundType]);
+
+  // Handle background type change
+  var handleBackgroundTypeChange = function handleBackgroundTypeChange(value) {
+    setLocalBgType(value);
+    updateStyles({
+      backgroundType: value
+    });
+  };
+
+  // Handle media upload
+  var uploadBackgroundImage = function uploadBackgroundImage() {
+    var mediaUploader = wp.media({
+      title: __('Select Background Image'),
+      button: {
+        text: __('Use this image')
+      },
+      multiple: false,
+      library: {
+        type: 'image'
+      }
+    });
+    mediaUploader.on('select', function () {
+      var attachment = mediaUploader.state().get('selection').first().toJSON();
+      updateStyles({
+        backgroundImage: attachment.url,
+        backgroundImageId: attachment.id
+      });
+    });
+    mediaUploader.open();
+  };
+
+  // Handle media removal
   var removeBackgroundImage = function removeBackgroundImage() {
     setLocalBgImage('');
     updateStyles({
@@ -9016,7 +10005,7 @@ registerBlockType("fluentfom/guten-block", {
   icon: fluentLogo,
   category: "formatting",
   keywords: [__("Contact Form"), __("Fluent Forms"), __("Forms"), __("Advanced Forms"), __("fluentforms-gutenberg-block")],
-  apiVersion: 3,
+  apiVersion: 2,
   edit: _edit__WEBPACK_IMPORTED_MODULE_0__["default"]
 });
 })();

@@ -16,6 +16,10 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
             'FluentForm\\Framework\\' => 21,
             'FluentForm\\App\\' => 15,
         ),
+        'O' => 
+        array (
+            'OpenSpout\\' => 10,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -30,6 +34,10 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
         'FluentForm\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
+        ),
+        'OpenSpout\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/openspout/src',
         ),
     );
 

@@ -377,10 +377,10 @@ class Converter
             } elseif ('input_date' === $field['element']) {
                 $app = wpFluentForm();
                 $dateField = new DateTime();
-                
-                wp_enqueue_style('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.css'));
-                wp_enqueue_script('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.js'), [], false, true);
-                
+
+                wp_enqueue_style('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.css'), [], FLUENTFORM_VERSION);
+                wp_enqueue_script('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.js'), [], FLUENTFORM_VERSION, true);
+
                 $question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
                 $question['dateCustomConfig'] = $dateField->getCustomConfig($field['settings']);
             } elseif (in_array($field['element'], ['input_image', 'input_file'])) {
@@ -527,11 +527,11 @@ class Converter
                     $field['plans'][] = [
                         'label'               => self::getComponent()->replaceEditorSmartCodes($option['name'], $form),
                         'value'               => $planValue,
-                        'sub'                 => strip_tags($paymentSummaryText),
+                        'sub'                 => wp_strip_all_tags($paymentSummaryText),
                         'subscription_amount' => $planValue,
                     ];
-                    
-                    $option['sub'] = strip_tags($paymentSummaryText);
+
+                    $option['sub'] = wp_strip_all_tags($paymentSummaryText);
                     
                     if ('yes' == $option['is_default'] && !$hasSaveAndResume) {
                         $question['answer'] = $index;
@@ -730,10 +730,10 @@ class Converter
                     'siteKey' => $siteKey,
                     'appearance' => $appearance,
                 ];
-                
+
                 wp_enqueue_script(
                     'turnstile_conv',
-                    'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                    'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit', // phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile requires loading from their CDN for CAPTCHA functionality
                     [],
                     FLUENTFORM_VERSION,
                     false
@@ -1165,7 +1165,8 @@ class Converter
             $hash = '';
             $form->save_state = false;
 
-            $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public form state parameter for save & resume functionality, verified by hash comparison in database
+            $key = isset($_GET['fluent_state']) ? sanitize_text_field(wp_unslash($_GET['fluent_state'])) : false;
 
             if ($key) {
                 $hash = base64_decode($key);
@@ -1222,7 +1223,8 @@ class Converter
         $draftForm = null;
         $data = [];
         $formId = $form->id;
-        $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public form state parameter for save & resume functionality, verified by hash comparison in database
+        $key = isset($_GET['fluent_state']) ? sanitize_text_field(wp_unslash($_GET['fluent_state'])) : false;
         if ($key) {
             $hash = base64_decode($key);
         } else {

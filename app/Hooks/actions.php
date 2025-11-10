@@ -97,16 +97,6 @@ $app->addAction('fluentform/addons_page_render_fluentform_add_ons', function () 
     (new \FluentForm\App\Modules\AddOnModule())->showFluentAddOns();
 });
 
-// This is temp, we will remove this after 2-3 versions.
-add_filter('pre_set_site_transient_update_plugins', function ($updates) {
-    if (!empty($updates->response['fluentformpro'])) {
-        $updates->response['fluentformpro/fluentformpro.php'] = $updates->response['fluentformpro'];
-        unset($updates->response['fluentformpro']);
-    }
-
-    return $updates;
-}, 999, 1);
-
 $app->addAction('fluentform/global_menu', function () use ($app) {
     $menu = new \FluentForm\App\Modules\Registerer\Menu($app);
     $menu->renderGlobalMenu();
@@ -572,9 +562,10 @@ add_action('save_post', function ($post_id) use ($app) {
         return;
     }
 
-    $post_content = isset($_REQUEST['post_content']) ? $_REQUEST['post_content'] : false;
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by WordPress save_post action
+    $post_content = isset($_REQUEST['post_content']) ? wp_kses_post(wp_unslash($_REQUEST['post_content'])) : false;
     if ($post_content && is_string($post_content)) {
-        $post_content = wp_kses_post(wp_unslash($post_content));
+        // Already sanitized above
     } else {
         $post = get_post($post_id);
         $post_content = $post->post_content;
@@ -638,14 +629,13 @@ add_action('save_post', function ($post_id) use ($app) {
     }
 });
 
-$component = new Component($app);
-$component->addRendererActions();
-$component->addFluentFormShortCode();
-$component->addFluentFormDefaultValueParser();
-
-$component->addFluentformSubmissionInsertedFilter();
-$component->addIsRenderableFilter();
-$component->registerInputSanitizers();
+$fluentformComponent = new Component($app);
+$fluentformComponent->addRendererActions();
+$fluentformComponent->addFluentFormShortCode();
+$fluentformComponent->addFluentFormDefaultValueParser();
+$fluentformComponent->addFluentformSubmissionInsertedFilter();
+$fluentformComponent->addIsRenderableFilter();
+$fluentformComponent->registerInputSanitizers();
 
 add_action('wp', function () use ($app) {
     // @todo: We will remove the fluentform_pages check from April 2021
@@ -687,7 +677,7 @@ add_action('wp', function () use ($app) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
-            wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'));
+            wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'), [], FLUENTFORM_VERSION);
             if (!defined('FLUENTFORMPRO')) {
                 wp_enqueue_script(
                     'fluentform-preview_app',
@@ -758,7 +748,11 @@ function fluentform_after_submission_api_response_success($form, $entryId, $data
             'updated_at'  => current_time('mysql'),
         ]);
     } catch (Exception $e) {
-        error_log($e->getMessage());
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging only when WP_DEBUG is enabled, helps developers troubleshoot shortcode parsing issues
+            error_log($e->getMessage());
+        }
+        return '';
     }
 }
 
@@ -794,6 +788,7 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
             'updated_at'  => current_time('mysql'),
         ]);
     } catch (Exception $e) {
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional logging for debugging
         error_log($e->getMessage());
     }
 }
@@ -1037,7 +1032,8 @@ add_action('enqueue_block_editor_assets', function () {
         'fluentform-gutenberg-block',
         fluentFormMix('js/fluent_gutenblock.js'),
         ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components','wp-server-side-render', 'wp-block-editor'],
-        FLUENTFORM_VERSION
+        FLUENTFORM_VERSION,
+        true
     );
     wp_enqueue_style(
         'fluentform-gutenberg-block',
@@ -1100,7 +1096,8 @@ add_action('enqueue_block_editor_assets', function () {
         FLUENTFORM_VERSION
     );
 
-    $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking post ID in admin context
+    $post_id = isset($_GET['post']) ? (int)$_GET['post'] : 0;
     $loadPublicStyle = apply_filters_deprecated(
         'fluentform_load_default_public',
         [
@@ -1141,18 +1138,18 @@ add_action('fluentform/before_updating_form',function ($form, $postData){
 add_action('enqueue_block_assets', function() {
     if (\FluentForm\App\Helpers\Helper::isSiteEditor()) {
         // Enqueue WordPress admin CSS for Site Editor iframe
-        wp_enqueue_style('wp-admin-common', admin_url('css/common.css'));
+        wp_enqueue_style('wp-admin-common', admin_url('css/common.css'), [], FLUENTFORM_VERSION);
         if (is_rtl()) {
-            wp_enqueue_style('wp-admin-common-rtl', admin_url('css/common-rtl.css'));
+            wp_enqueue_style('wp-admin-common-rtl', admin_url('css/common-rtl.css'), [], FLUENTFORM_VERSION);
         }
-        wp_enqueue_style('dashicons', admin_url('css/dashicons.css'));
-        wp_enqueue_style('wp-components', admin_url('css/dist/components/style.css'));
+        wp_enqueue_style('dashicons', admin_url('css/dashicons.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_style('wp-components', admin_url('css/dist/components/style.css'), [], FLUENTFORM_VERSION);
         
         // Enqueue Fluent Forms CSS for Site Editor iframe
-        wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'));
-        wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'));
+        wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'), [], FLUENTFORM_VERSION);
        
-        wp_enqueue_style('fluentform-gutenblock', fluentFormMix('css/fluent_gutenblock.css'));
+        wp_enqueue_style('fluentform-gutenblock', fluentFormMix('css/fluent_gutenblock.css'), [], FLUENTFORM_VERSION);
     }
 });
 

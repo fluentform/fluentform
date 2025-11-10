@@ -8,22 +8,25 @@
 
     <?php if(!empty($data['result']) && !empty($data['result']['redirectUrl'])): ?>
     <!-- Fallback for jquery error for redirect -->
-    <meta http-equiv="refresh" content="5;url=<?php echo $data['result']['redirectUrl']; ?>" />
+    <meta http-equiv="refresh" content="5;url=<?php echo esc_url($data['result']['redirectUrl']); ?>" />
     <?php endif; ?>
 
     <?php
         wp_head();
     ?>
 </head>
-<body class="ff_frameless_page_body ff_frameless_page_<?php echo $form->id; ?> ff_frameless_status_<?php echo $status; ?>">
+<body class="ff_frameless_page_body ff_frameless_page_<?php echo esc_attr($form->id); ?> ff_frameless_status_<?php echo esc_attr($status); ?>">
 
 <div class="ff_frameless_wrapper">
     <div class="ff_frameless_item">
         <div class="ff_frameless_header">
-            <?php echo $title; ?>
+            <?php echo esc_html($title); ?>
         </div>
         <div class="ff_frameless_body">
-            <?php echo $message; ?>
+            <?php
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $message is sanitized via fluentform_sanitize_html() in SubmissionHandlerService::getReturnData() before being passed to this view
+            echo $message;
+            ?>
 
             <?php if (isset($data['loader']) && $data['loader']): ?>
                 <div class="ff_paypal_loader_svg" style="text-align: center">
@@ -62,7 +65,7 @@ wp_footer();
 <?php if(!empty($data['result']) && !empty($data['result']['redirectUrl'])): ?>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-        window.location.href = "<?php echo $data['result']['redirectUrl']; ?>";
+        window.location.href = "<?php echo esc_url($data['result']['redirectUrl']); ?>";
     });
 </script>
 <?php endif; ?>

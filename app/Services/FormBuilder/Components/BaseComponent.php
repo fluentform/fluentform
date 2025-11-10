@@ -140,7 +140,7 @@ class BaseComponent
      */
     protected function getUniqueId($str)
     {
-        return $str . '_' . md5(uniqid(mt_rand(), true));
+        return $str . '_' . md5(uniqid(wp_rand(), true));
     }
     
     /**
@@ -344,8 +344,8 @@ class BaseComponent
     
     protected function printContent($hook, $html, $data, $form)
     {
-        echo apply_filters($hook, $html, $data,
-            $form); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $html is escaped before being passed in.
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name for component content filter
+        echo apply_filters($hook, $html, $data, $form); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $html is escaped before being passed in.
     }
     
     /**

@@ -1,7 +1,9 @@
 <?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
 
 use FluentForm\App\Modules\Acl\Acl;
 
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Admin menu display, no nonce needed
 $page = sanitize_text_field($_GET['page']);
 ?>
 <div class="ff_header">
@@ -16,51 +18,51 @@ $page = sanitize_text_field($_GET['page']);
     <ul class="ff_menu">
         <li class="<?php echo ($page == 'fluent_forms') ? 'active' : '' ?>">
             <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms')); ?>" class="ff_menu_link">
-                <?php _e('Forms', 'fluentform'); ?>
+                <?php esc_html_e('Forms', 'fluentform'); ?>
             </a>
         </li>
         <li class="<?php echo ($page == 'fluent_forms_all_entries') ? 'active' : '' ?>">
             <?php if (Acl::hasPermission('fluentform_entries_viewer')): ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_all_entries'));?>" class="ff_menu_link">
-                    <?php _e('Entries', 'fluentform'); ?>
+                    <?php esc_html_e('Entries', 'fluentform'); ?>
                 </a>
             <?php endif; ?>
         </li>
         <li class="<?php echo ($page == 'fluent_forms_reports') ? 'active' : '' ?>">
             <?php if (Acl::hasPermission('fluentform_entries_viewer')): ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_reports'));?>" class="ff_menu_link">
-                    <?php _e('Reports', 'fluentform'); ?>
+                    <?php esc_html_e('Reports', 'fluentform'); ?>
                 </a>
             <?php endif; ?>
         </li>
         <li class="<?php echo ($page == 'fluent_forms_payment_entries') ? 'active' : '' ?>">
             <?php if ($show_payment_entries && Acl::hasPermission('fluentform_view_payments')): ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_payment_entries')); ?>" class="ff_menu_link">
-                    <?php _e('Payments', 'fluentform'); ?>
+                    <?php esc_html_e('Payments', 'fluentform'); ?>
                 </a>
             <?php endif; ?>
         </li>
         <?php if (Acl::hasPermission('fluentform_settings_manager')): ?>
             <li class="<?php echo ($page == 'fluent_forms_settings') ? 'active' : '' ?>">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_settings')); ?>" class="ff_menu_link">
-                    <?php _e('Global Settings', 'fluentform'); ?>
+                    <?php esc_html_e('Global Settings', 'fluentform'); ?>
                 </a>
             </li>
             <li class="<?php echo ($page == 'fluent_forms_transfer') ? 'active' : '' ?>">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_transfer')); ?>" class="ff_menu_link">
-                    <?php _e('Tools', 'fluentform'); ?>
+                    <?php esc_html_e('Tools', 'fluentform'); ?>
                 </a>
             </li>
             <li class="<?php echo ($page == 'fluent_forms_add_ons') ? 'active' : '' ?>">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_add_ons')); ?>" class="ff_menu_link">
-                    <?php _e('Integrations', 'fluentform'); ?>
+                    <?php esc_html_e('Integrations', 'fluentform'); ?>
                 </a>
             </li>
         <?php endif; ?>
         <li>
             <?php if ($show_payment && Acl::hasPermission('fluentform_view_payments')): ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_settings#payments/general_settings')); ?>" class="ff_menu_link">
-                    <?php _e('Payments', 'fluentform'); ?><span class="ff_new_badge">new</span>
+                    <?php esc_html_e('Payments', 'fluentform'); ?><span class="ff_new_badge">new</span>
                 </a>
             <?php endif; ?>
         </li>
@@ -71,13 +73,13 @@ $page = sanitize_text_field($_GET['page']);
         </li>
         <li class="<?php echo ($page == 'fluent_forms_docs') ? 'active' : '' ?>">
             <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_docs')); ?>" class="ff_menu_link">
-                <?php _e('Support', 'fluentform'); ?>
+                <?php esc_html_e('Support', 'fluentform'); ?>
             </a>
         </li>
         <?php if(!defined('FLUENTFORMPRO')): ?>
             <li>
                 <a target="_blank" rel="noopener" href="<?php echo esc_url(fluentform_upgrade_url()); ?>" class="ff_menu_link ff_menu_link_buy">
-                    <?php _e('Upgrade to Pro', 'fluentform'); ?>
+                    <?php esc_html_e('Upgrade to Pro', 'fluentform'); ?>
                 </a>
             </li>
         <?php endif; ?>

@@ -1,3 +1,6 @@
+<?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
+?>
 <div class="ff_form_wrap ff_screen_<?php echo esc_attr($route); ?>">
     <div class="global-overlay" id="form-setting-overlay"></div>
 	<?php
@@ -19,7 +22,8 @@
         if ( is_array($menu_items) && count($menu_items) < 5){
             if (isset($_SERVER['HTTP_REFERER'])): ?>
                 <div class="ff_menu_back">
-                    <a class="ff_menu_link" href="<?php echo sanitize_url($_SERVER['HTTP_REFERER']) ;?>">
+                    <?php // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitize_url() handles unslashing ?>
+                    <a class="ff_menu_link" href="<?php echo esc_url(sanitize_url($_SERVER['HTTP_REFERER'])) ;?>">
                         <span class="el-icon-arrow-left"></span>
                     </a>
                 </div>

@@ -32,7 +32,7 @@ class Customizer
     {
         if (!fluentformCanUnfilteredHTML()) {
             throw new Exception(
-                __('You need unfiltered_html permission to save Custom CSS & JS', 'fluentform')
+                esc_html__('You need unfiltered_html permission to save Custom CSS & JS', 'fluentform')
             );
         }
 

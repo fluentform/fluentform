@@ -16,9 +16,9 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$dateFormats = (new \FluentForm\App\Services\FormBuilder\Components\DateTime())->getAvailableDateFormats();
+$fluentformDateFormats = (new \FluentForm\App\Services\FormBuilder\Components\DateTime())->getAvailableDateFormats();
 
-$dateConfigSettings = [
+$fluentformDateConfigSettings = [
     'template'         => 'inputTextarea',
     'label'            => __('Advanced Date Configuration', 'fluentform'),
     'placeholder'      => __('Advanced Date Configuration', 'fluentform'),
@@ -31,10 +31,10 @@ $dateConfigSettings = [
 ];
 
 if (! defined('FLUENTFORMPRO')) {
-    $dateConfigSettings['inline_help_text'] = 'Available on Fluent Forms Pro';
+    $fluentformDateConfigSettings['inline_help_text'] = 'Available on Fluent Forms Pro';
 }
 
-$element_customization_settings = [
+$fluentformElementCustomizationSettings = [
     'name' => [
         'template'  => 'nameAttr',
         'label'     => __('Name Attribute', 'fluentform'),
@@ -112,9 +112,9 @@ $element_customization_settings = [
         'creatable'   => true,
         'placeholder' => __('Select Date Format', 'fluentform'),
         'help_text'   => __('Select any date format from the dropdown. The user will be able to choose a date in this given format.', 'fluentform'),
-        'options'     => $dateFormats,
+        'options'     => $fluentformDateFormats,
     ],
-    'date_config' => $dateConfigSettings,
+    'date_config' => $fluentformDateConfigSettings,
     'rows'        => [
         'template'  => 'inputText',
         'label'     => __('Rows', 'fluentform'),
@@ -730,14 +730,14 @@ $element_customization_settings = [
     ],
 ];
 
-$element_customization_settings = apply_filters_deprecated(
+$fluentformElementCustomizationSettings = apply_filters_deprecated(
     'fluentform_editor_element_customization_settings',
     [
-        $element_customization_settings
+        $fluentformElementCustomizationSettings
     ],
     FLUENTFORM_FRAMEWORK_UPGRADE,
     'fluentform/editor_element_customization_settings',
     'Use fluentform/editor_element_customization_settings instead of fluent_editor_element_customization_settings.'
 );
 
-return apply_filters('fluentform/editor_element_customization_settings', $element_customization_settings);
+return apply_filters('fluentform/editor_element_customization_settings', $fluentformElementCustomizationSettings);

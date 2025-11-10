@@ -81,7 +81,7 @@ class Menu
             'clipboard',
             fluentFormMix('libs/clipboard.min.js'),
             [],
-            false,
+            FLUENTFORM_VERSION,
             true
         );
 
@@ -89,7 +89,7 @@ class Menu
             'copier',
             fluentFormMix('js/copier.js'),
             [],
-            false,
+            FLUENTFORM_VERSION,
             true
         );
 
@@ -611,7 +611,7 @@ class Menu
         $form = wpFluent()->table('fluentform_forms')->find($form_id);
 
         if (!$form) {
-            echo '<h2>'.__('No form found', 'fluentform').'</h2>';
+            echo '<h2>' . esc_html__('No form found', 'fluentform') . '</h2>';
             return;
         }
 
@@ -1233,7 +1233,7 @@ class Menu
     {
         wp_enqueue_script('fluentform_admin_notice', fluentformMix('js/admin_notices.js'), [
             'jquery',
-        ], FLUENTFORM_VERSION);
+        ], FLUENTFORM_VERSION, true);
 
         $this->app->view->render('admin.smtp.index', [
             'logo'         => fluentformMix('img/fluentsmtp.svg'),

@@ -42,6 +42,50 @@
             ],
             "description": "A lightweight rest api based framework to build WordPress plugins.",
             "install-path": "../wpfluent/framework"
+        },
+        {
+            "name": "openspout/openspout",
+            "version": "4.0.0",
+            "version_normalized": "4.0.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/openspout/openspout.git",
+                "reference": "v4.x"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/openspout/openspout/zipball/v4.x",
+                "reference": "v4.x",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+                "ext-dom": "*",
+                "ext-fileinfo": "*",
+                "ext-filter": "*",
+                "ext-libxml": "*",
+                "ext-xmlreader": "*",
+                "ext-zip": "*"
+            },
+            "time": "2024-01-01T00:00:00+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "OpenSpout\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adrien Loison",
+                    "email": "adrien@box.com"
+                }
+            ],
+            "description": "PHP Library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way",
+            "install-path": "../openspout"
         }
     ],
     "dev": true,

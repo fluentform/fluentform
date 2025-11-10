@@ -58,19 +58,19 @@ trait ComponentInitTrait
         $element = $this->element();
         if (! $element || ! is_string($element)) {
             $elements = 'text_input, text_email, textarea';
-            wp_die("The element must be one of the available elements, i.e: $elements e.t.c.");
+            wp_die(esc_html("The element must be one of the available elements, i.e: $elements e.t.c."));
         }
 
         $template = $this->template();
         if (! $template || ! is_string($template)) {
             $templates = 'inputText, selectCountry. addressFields';
-            wp_die("The template must be one of the available templates, i.e: $templates e.t.c.");
+            wp_die(esc_html("The template must be one of the available templates, i.e: $templates e.t.c."));
         }
 
         $group = $this->group();
         $groups = ['general', 'advanced', 'container'];
         if (! $group || ! in_array($group, $groups)) {
-            wp_die('Invalid group, available groups: ' . implode(', ', $groups) . '.');
+            wp_die(esc_html('Invalid group, available groups: ' . implode(', ', $groups) . '.'));
         }
     }
 

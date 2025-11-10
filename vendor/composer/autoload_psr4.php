@@ -9,4 +9,5 @@ return array(
     'WPFluent\\' => array($vendorDir . '/wpfluent/framework/src/WPFluent'),
     'FluentForm\\Framework\\' => array($vendorDir . '/wpfluent/framework/src/WPFluent'),
     'FluentForm\\App\\' => array($baseDir . '/app'),
+    'OpenSpout\\' => array($vendorDir . '/openspout/src'),
 );

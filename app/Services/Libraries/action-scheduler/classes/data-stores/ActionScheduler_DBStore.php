@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Third-party library (Action Scheduler)
 
 /**
  * Class ActionScheduler_DBStore

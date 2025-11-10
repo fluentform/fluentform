@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
 do_action('fluentform/global_menu');
 ?>
     <div class="ff_form_wrap">

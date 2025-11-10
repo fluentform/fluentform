@@ -862,15 +862,14 @@ class FormHandler
                 };
 
                 if (!count($arrayFilterRecursive($filteredFormData))) {
+                    $message = Arr::get($settings, 'message');
+                    if (!$message) {
+                        $message = __('Sorry! You can\'t submit an empty form.', 'fluentform');
+                    }
                     wp_send_json([
                         'errors' => [
                             'restricted' => [
-                                __(
-                                    !($m = Arr::get($settings, 'message'))
-                                        ? 'Sorry! You can\'t submit an empty form.'
-                                        : $m,
-                                    'fluentform'
-                                ),
+                                $message,
                             ],
                         ],
                     ], 422);
@@ -1005,7 +1004,7 @@ class FormHandler
             $maxSubmissionCount = apply_filters('fluentform/max_submission_count', 5, $this->form->id);
             $minSubmissionInterval = apply_filters('fluentform/min_submission_interval', 30, $this->form->id);
 
-            $interval = date('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
+            $interval = gmdate('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
 
             $clientIp = sanitize_text_field($this->app->request->getIp());
             $submissionCount = wpFluent()->table('fluentform_submissions')
@@ -1018,8 +1017,11 @@ class FormHandler
                 wp_send_json([
                     'errors' => [
                         'restricted' => [
-                            __(apply_filters('fluentform/too_many_requests', 'Too Many Requests.', $this->form->id),
-                                'fluentform'),
+                            apply_filters(
+                                'fluentform/too_many_requests',
+                                __('Too Many Requests.', 'fluentform'),
+                                $this->form->id
+                            ),
                         ],
                     ],
                 ], 429);

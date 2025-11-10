@@ -86,6 +86,7 @@
                 </div>
             <?php endif; ?>
             <?php
+            // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
             $isShowPreview = true;
 
             if(defined('FLUENTFORMPRO')): ?>
@@ -115,39 +116,41 @@
             ?>
                 <div class="ff_styler_promo">
                     <div class="ff_promo_header">
-                        <?php _e('Advanced Form Styler (Pro)', 'fluentform'); ?>
+                        <?php esc_html_e('Advanced Form Styler (Pro)', 'fluentform'); ?>
                     </div>
                     <div class="ff_promo_body">
-                        <p><a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/fluent-forms-styles/"><?php _e('Advanced Form styler', 'fluentform'); ?></a> <?php _e('is available in Pro version of Fluent Forms. You can style every element of the forms including input fields, form container, success / error messages and many more.', 'fluentform'); ?></p>
+                        <p><a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/fluent-forms-styles/"><?php esc_html_e('Advanced Form styler', 'fluentform'); ?></a> <?php esc_html_e('is available in Pro version of Fluent Forms. You can style every element of the forms including input fields, form container, success / error messages and many more.', 'fluentform'); ?></p>
                         <h5>Other Features</h5>
                         <ul class="ff_feature_list">
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Stripe & PayPal with 6 Payment Integration', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Style Export & Import', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Conditional Email Routing', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Advanced Form Fields', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Quiz & Survey Forms', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Inventory Module', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('40+ Integrations', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Calculated Fields', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Multi-Step Forms', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('File Upload Feature', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('SMS Notifications', 'fluentform'); ?></li>
-                            <li><i class="el-icon el-icon-check"></i> <?php _e('Visual Data Reporting', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Stripe & PayPal with 6 Payment Integration', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Style Export & Import', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Conditional Email Routing', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Advanced Form Fields', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Quiz & Survey Forms', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Inventory Module', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('40+ Integrations', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Calculated Fields', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Multi-Step Forms', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('File Upload Feature', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('SMS Notifications', 'fluentform'); ?></li>
+                            <li><i class="el-icon el-icon-check"></i> <?php esc_html_e('Visual Data Reporting', 'fluentform'); ?></li>
                         </ul>
                         <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
-                            <a target="_blank" rel="nofollow" class="el-button el-button--primary" href="<?php echo esc_url(fluentform_upgrade_url()); ?>"><?php _e('Upgrade to Pro', 'fluentform'); ?></a>
+                            <a target="_blank" rel="nofollow" class="el-button el-button--primary" href="<?php echo esc_url(fluentform_upgrade_url()); ?>"><?php esc_html_e('Upgrade to Pro', 'fluentform'); ?></a>
                         </div>
                         <?php $addOns = (new \FluentForm\App\Modules\AddOnModule())->getPremiumAddOns(); ?>
 
-                        <h5><?php _e('Integrations available in Fluent Forms Pro', 'fluentform'); ?></h5>
+                        <h5><?php esc_html_e('Integrations available in Fluent Forms Pro', 'fluentform'); ?></h5>
                         <ul class="ff_addons">
-                            <?php foreach ($addOns as $addOn): ?>
+                            <?php
+                            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable in foreach loop
+                            foreach ($addOns as $addOn): ?>
                                 <li><img title="<?php echo esc_attr($addOn['title']); ?>" src="<?php echo esc_attr($addOn['logo']); ?>" /></li>
                             <?php endforeach; ?>
                         </ul>
 
                         <div style="text-align: center; margin-top: 40px; margin-bottom: 30px;">
-                            <a target="_blank" rel="nofollow" class="el-button el-button--primary" href="<?php echo esc_url(fluentform_upgrade_url()); ?>"><?php _e('Upgrade to Pro', 'fluentform'); ?></a>
+                            <a target="_blank" rel="nofollow" class="el-button el-button--primary" href="<?php echo esc_url(fluentform_upgrade_url()); ?>"><?php esc_html_e('Upgrade to Pro', 'fluentform'); ?></a>
                         </div>
                     </div>
                 </div>

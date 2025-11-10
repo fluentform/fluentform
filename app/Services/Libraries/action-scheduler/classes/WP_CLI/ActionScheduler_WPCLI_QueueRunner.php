@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Third-party library (Action Scheduler)
 
 use Action_Scheduler\WP_CLI\ProgressBar;
 
