@@ -527,7 +527,7 @@ class Converter
                     $field['plans'][] = [
                         'label'               => self::getComponent()->replaceEditorSmartCodes($option['name'], $form),
                         'value'               => $planValue,
-                        'sub'                 => strip_tags($paymentSummaryText),
+                        'sub'                 => wp_strip_all_tags($paymentSummaryText),
                         'subscription_amount' => $planValue,
                     ];
 
