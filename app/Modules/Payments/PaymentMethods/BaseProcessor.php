@@ -457,6 +457,7 @@ abstract class BaseProcessor
         $data = apply_filters('fluentform/frameless_page_data', $data);
 
         add_filter('pre_get_document_title', function ($title) use ($data) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- document_title_separator is a WordPress core hook
             return $data['title'] . ' ' . apply_filters('document_title_separator', '-') . ' ' . $data['form']->title;
         });
 
