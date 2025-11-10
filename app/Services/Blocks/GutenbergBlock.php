@@ -70,9 +70,9 @@ class GutenbergBlock
             if ($inlineStyle) {
                 $allStyles .= $inlineStyle;
             }
-            if (!empty($individualStyleTag)) {
-                $allStyles .= $individualStyleTag;
-            }
+//            if (!empty($individualStyleTag)) {
+//                $allStyles .= $individualStyleTag;
+//            }
             
             if ($allStyles) {
                 return $allStyles . $formOutput;

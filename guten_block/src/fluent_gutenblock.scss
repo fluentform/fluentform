@@ -784,6 +784,12 @@ $ff-prefix: 'ffblock'; // Prefix namespace for our components
   border-radius: 2px;
 }
 
+.#{$ff-prefix}-radius-box {
+  width: 22px;
+  height: 22px;
+  background: $--color-white;
+}
+
 /* Responsive */
 @media (max-width: 782px) {
   .#{$ff-prefix}-presets-grid { grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); }

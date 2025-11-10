@@ -254,7 +254,8 @@ const FluentBorderControl = ({
                         label={__("Border Radius")}
                         values={border.radius}
                         onChange={(value) => updateBorder({ radius: value })}
-                        showPresetsToggle={false}
+                        showPresetsToggle={true}
+                        presetType="radius"
                     />
                 </>
             )}

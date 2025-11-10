@@ -3,7 +3,7 @@ const { useState, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
 import { arePropsEqual } from '../utils/ComponentUtils';
 
-const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', key: 'px-unit' }, { value: 'em', key: 'em-unit' }, { value: '%', key: 'percent-unit' }], showPresetsToggle = true }) => {
+const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', key: 'px-unit' }, { value: 'em', key: 'em-unit' }, { value: '%', key: 'percent-unit' }], showPresetsToggle = true, presetType = 'spacing' }) => {
     const [activeDevice, setActiveDevice] = useState('desktop');
     const initialLinkedState = values && values[activeDevice] && values[activeDevice].linked !== undefined ?
         values[activeDevice].linked : true;
@@ -225,6 +225,60 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
         }
     ];
 
+    // Border Radius presets
+    const radiusPresets = [
+        {
+            label: __("None"),
+            value: {
+                desktop: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true },
+                tablet: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true },
+                mobile: { unit: 'px', top: '0', right: '0', bottom: '0', left: '0', linked: true }
+            }
+        },
+        {
+            label: __("Small"),
+            value: {
+                desktop: { unit: 'px', top: '3', right: '3', bottom: '3', left: '3', linked: true },
+                tablet: { unit: 'px', top: '3', right: '3', bottom: '3', left: '3', linked: true },
+                mobile: { unit: 'px', top: '3', right: '3', bottom: '3', left: '3', linked: true }
+            }
+        },
+        {
+            label: __("Medium"),
+            value: {
+                desktop: { unit: 'px', top: '5', right: '5', bottom: '5', left: '5', linked: true },
+                tablet: { unit: 'px', top: '5', right: '5', bottom: '5', left: '5', linked: true },
+                mobile: { unit: 'px', top: '5', right: '5', bottom: '5', left: '5', linked: true }
+            }
+        },
+        {
+            label: __("Large"),
+            value: {
+                desktop: { unit: 'px', top: '10', right: '10', bottom: '10', left: '10', linked: true },
+                tablet: { unit: 'px', top: '10', right: '10', bottom: '10', left: '10', linked: true },
+                mobile: { unit: 'px', top: '10', right: '10', bottom: '10', left: '10', linked: true }
+            }
+        },
+        {
+            label: __("Rounded"),
+            value: {
+                desktop: { unit: 'px', top: '15', right: '15', bottom: '15', left: '15', linked: true },
+                tablet: { unit: 'px', top: '15', right: '15', bottom: '15', left: '15', linked: true },
+                mobile: { unit: 'px', top: '15', right: '15', bottom: '15', left: '15', linked: true }
+            }
+        },
+        {
+            label: __("Pill"),
+            value: {
+                desktop: { unit: 'px', top: '50', right: '50', bottom: '50', left: '50', linked: true },
+                tablet: { unit: 'px', top: '50', right: '50', bottom: '50', left: '50', linked: true },
+                mobile: { unit: 'px', top: '50', right: '50', bottom: '50', left: '50', linked: true }
+            }
+        }
+    ];
+
+    const presets = presetType === 'radius' ? radiusPresets : spacePresets;
+
     const applyPreset = (preset) => {
         setCurrentValues(preset.value);
         setIsLinked(preset.value[activeDevice].linked);
@@ -234,6 +288,10 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             onChange(preset.value);
         }
         setShowPresets(false);
+    };
+
+    const getPresetLabel = () => {
+        return presetType === 'radius' ? __("Border Radius Presets") : __("Spacing Presets");
     };
 
     return (
@@ -249,7 +307,7 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
                             isSmall
                             onClick={() => setShowPresets(!showPresets)}
                             className="ffblock-preset-toggle"
-                            label={__("Spacing Presets")}
+                            label={getPresetLabel()}
                         />
                     )}
                     {hasModifiedValues && (
@@ -268,12 +326,23 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             {showPresetsToggle && showPresets && (
                 <div className="ffblock-presets-container">
                     <div className="ffblock-presets-grid">
-                        {spacePresets.map((preset, index) => (
+                        {presets.map((preset, index) => (
                             <Button
                                 key={index}
-                                className="ffblock-preset-button ffblock-preset-text-only"
+                                className={`ffblock-preset-button ${presetType === 'radius' ? '' : 'ffblock-preset-text-only'}`}
                                 onClick={() => applyPreset(preset)}
                             >
+                                {presetType === 'radius' && (
+                                    <div className="ffblock-preset-preview ffblock-radius-preview">
+                                        <div
+                                            className="ffblock-radius-box"
+                                            style={{
+                                                border: '2px solid #dddddd',
+                                                borderRadius: `${preset.value.desktop.top || 0}px`
+                                            }}
+                                        />
+                                    </div>
+                                )}
                                 <span className="ffblock-preset-label">{preset.label}</span>
                             </Button>
                         ))}
