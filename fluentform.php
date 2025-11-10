@@ -1,5 +1,4 @@
 <?php
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.InvalidPrefixPassed -- Hook names with slashes are valid WordPress hook names
 defined('ABSPATH') or die;
 
 /**

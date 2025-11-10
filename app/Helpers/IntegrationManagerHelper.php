@@ -97,7 +97,7 @@ class IntegrationManagerHelper
         
         // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name constructed from deprecated hook
         do_action(
-            $newAction,
+            $newAction, // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name constructed from deprecated hook
             $form,
             $entryId,
             $data,

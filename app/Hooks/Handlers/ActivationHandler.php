@@ -137,7 +137,7 @@ class ActivationHandler
     {
         global $wpdb;
         $formsTable = $wpdb->prefix . 'fluentform_forms';
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared -- Activation check, direct query needed, table name cannot be prepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Activation check, direct query needed, table name is safe (wpdb->prefix)
         $firstForm = $wpdb->get_row('SELECT * FROM ' . $formsTable . ' LIMIT 1');
 
         if (!$firstForm) {

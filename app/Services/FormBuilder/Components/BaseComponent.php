@@ -343,6 +343,7 @@ class BaseComponent
     
     protected function printContent($hook, $html, $data, $form)
     {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name for component content filter
         echo apply_filters($hook, $html, $data, $form); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $html is escaped before being passed in.
     }
     

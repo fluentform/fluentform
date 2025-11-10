@@ -45,7 +45,7 @@ class FormAnalytics
             if ($type == 'char') {
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Migration file, table/column names cannot be prepared
                 $sql = "ALTER TABLE {$table} MODIFY {$column_name} TEXT NOT NULL";
-                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared -- Migration file, schema change is the purpose
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Migration file, schema change is the purpose, table/column names are safe
                 $wpdb->query($sql);
             }
         }
