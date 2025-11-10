@@ -2,6 +2,7 @@
 /**
  * Email Header
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;

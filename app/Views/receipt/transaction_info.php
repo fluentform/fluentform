@@ -1,3 +1,6 @@
+<?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
+?>
 <div class="ffp_payment_info">
     <div class="ffp_payment_info_item ffp_payment_info_item_order_id">
         <div class="ffp_item_heading"><?php esc_html_e('Transaction #', 'fluentform');?></div>

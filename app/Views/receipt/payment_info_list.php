@@ -1,3 +1,6 @@
+<?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
+?>
 <ul class="ffp_payment_info_table">
     <li>
         <b><?php esc_html_e('Amount:', 'fluentform');?></b> <?php echo fluentform_sanitize_html($orderTotal); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></b>

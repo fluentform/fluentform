@@ -86,6 +86,7 @@
                 </div>
             <?php endif; ?>
             <?php
+            // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
             $isShowPreview = true;
 
             if(defined('FLUENTFORMPRO')): ?>
@@ -141,7 +142,9 @@
 
                         <h5><?php esc_html_e('Integrations available in Fluent Forms Pro', 'fluentform'); ?></h5>
                         <ul class="ff_addons">
-                            <?php foreach ($addOns as $addOn): ?>
+                            <?php
+                            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable in foreach loop
+                            foreach ($addOns as $addOn): ?>
                                 <li><img title="<?php echo esc_attr($addOn['title']); ?>" src="<?php echo esc_attr($addOn['logo']); ?>" /></li>
                             <?php endforeach; ?>
                         </ul>

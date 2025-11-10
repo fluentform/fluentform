@@ -95,6 +95,7 @@ class IntegrationManagerHelper
             'Use ' . $newAction . ' instead of ' .$oldAction
         );
         
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name constructed from deprecated hook
         do_action(
             $newAction,
             $form,

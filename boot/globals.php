@@ -36,6 +36,7 @@ if (!function_exists('dd')) {
  *
  * @return mixed
  */
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
 function wpFluentForm($key = null)
 {
     return \FluentForm\App\App::make($key);
@@ -57,6 +58,7 @@ if (! function_exists('wpFluent')) {
     /**
      * @return \FluentForm\Framework\Database\Query\Builder|\FluentForm\Framework\Database\Query\WPDBConnection
      */
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
     function wpFluent()
     {
         return wpFluentForm('db');
@@ -64,6 +66,7 @@ if (! function_exists('wpFluent')) {
 }
 
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
 function wpFluentFormAddComponent(BaseComponent $component)
 {
     return $component->_init();
@@ -178,6 +181,7 @@ function fluentform_get_active_theme_slug()
     return get_option('template');
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
 function getFluentFormCountryList()
 {
     static $countries = null;
@@ -195,6 +199,7 @@ function fluentFormWasSubmitted($action = 'fluentform_submit')
 }
 
 if (!function_exists('isWpAsyncRequest')) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
     function isWpAsyncRequest($action)
     {
         return false !== strpos(wpFluentForm('request')->get('action'), $action);

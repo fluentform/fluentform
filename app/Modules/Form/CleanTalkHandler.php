@@ -58,7 +58,7 @@ class CleanTalkHandler
 
     public static function spamSubmissionCheckWithApi($formData, $form)
     {
-        global $cleantalk_executed;
+        global $fluentformCleantalkExecuted;
         
         $accessKey = ArrayHelper::get(get_option('_fluentform_cleantalk_details'), 'accessKey');
 
@@ -135,7 +135,7 @@ class CleanTalkHandler
 
         $cleantalkPassed = $response->allow == 1 && $response->spam == 0 && $response->account_status == 1;
 
-        $cleantalk_executed = true;
+        $fluentformCleantalkExecuted = true;
 
         return !$cleantalkPassed;
     }

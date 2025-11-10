@@ -352,6 +352,7 @@ class DataLogger
                 'updated_at'  => current_time('mysql')
             ]);
 
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name from action feed
         do_action($actionFeed->action, $feed, $formData, $entry, $form);
 
         /*

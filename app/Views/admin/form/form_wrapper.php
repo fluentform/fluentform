@@ -1,3 +1,6 @@
+<?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
+?>
 <div class="ff_form_wrap ff_screen_<?php echo esc_attr($route); ?>">
     <div class="global-overlay" id="form-setting-overlay"></div>
 	<?php

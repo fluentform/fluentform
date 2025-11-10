@@ -116,7 +116,9 @@
         }
     </style>
 
-    <?php foreach ($form->image_preloads as $imgSrc): ?>
+    <?php
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable in foreach loop
+    foreach ($form->image_preloads as $imgSrc): ?>
         <link rel="preload" href="<?php echo esc_url($imgSrc); ?>" as="image">
     <?php endforeach; ?>
 

@@ -1,3 +1,6 @@
+<?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
+?>
 <table style="width: 100%;border: 1px solid #cbcbcb;" class="table ffp_order_items_table ffp_table table_bordered">
     <thead>
     <tr>

@@ -1,4 +1,6 @@
-<?php defined('ABSPATH') or die;
+<?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.InvalidPrefixPassed -- Hook names with slashes are valid WordPress hook names
+defined('ABSPATH') or die;
 
 /**
  * Plugin Name: Fluent Forms - Customizable Contact Forms, Survey, Quiz, & Conversational Form Builder

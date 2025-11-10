@@ -15,7 +15,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$country_names = [
+$fluentformCountryNames = [
     'AF' => __('Afghanistan', 'fluentform'),
     'AX' => __('Aland Islands', 'fluentform'),
     'AL' => __('Albania', 'fluentform'),
@@ -268,18 +268,18 @@ $country_names = [
     'ZW' => __('Zimbabwe', 'fluentform'),
 ];
 
-$country_names = apply_filters_deprecated(
+$fluentformCountryNames = apply_filters_deprecated(
     'fluent_editor_countries',
     [
-        $country_names
+        $fluentformCountryNames
     ],
     FLUENTFORM_FRAMEWORK_UPGRADE,
     'fluentform/editor_countries',
     'Use fluentform/editor_countries instead of fluent_editor_countries.'
 );
 
-$country_names = apply_filters('fluentform/editor_countries', $country_names);
+$fluentformCountryNames = apply_filters('fluentform/editor_countries', $fluentformCountryNames);
 
-asort($country_names);
+asort($fluentformCountryNames);
 
-return $country_names;
+return $fluentformCountryNames;
