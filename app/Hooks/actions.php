@@ -629,14 +629,13 @@ add_action('save_post', function ($post_id) use ($app) {
     }
 });
 
-$component = new Component($app);
-$component->addRendererActions();
-$component->addFluentFormShortCode();
-$component->addFluentFormDefaultValueParser();
-
-$component->addFluentformSubmissionInsertedFilter();
-$component->addIsRenderableFilter();
-$component->registerInputSanitizers();
+$fluentformComponent = new Component($app);
+$fluentformComponent->addRendererActions();
+$fluentformComponent->addFluentFormShortCode();
+$fluentformComponent->addFluentFormDefaultValueParser();
+$fluentformComponent->addFluentformSubmissionInsertedFilter();
+$fluentformComponent->addIsRenderableFilter();
+$fluentformComponent->registerInputSanitizers();
 
 add_action('wp', function () use ($app) {
     // @todo: We will remove the fluentform_pages check from April 2021
