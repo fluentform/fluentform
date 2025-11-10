@@ -677,7 +677,7 @@ add_action('wp', function () use ($app) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
-            wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'));
+            wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'), [], FLUENTFORM_VERSION);
             if (!defined('FLUENTFORMPRO')) {
                 wp_enqueue_script(
                     'fluentform-preview_app',
@@ -1032,7 +1032,8 @@ add_action('enqueue_block_editor_assets', function () {
         'fluentform-gutenberg-block',
         fluentFormMix('js/fluent_gutenblock.js'),
         ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components','wp-server-side-render', 'wp-block-editor'],
-        FLUENTFORM_VERSION
+        FLUENTFORM_VERSION,
+        true
     );
     wp_enqueue_style(
         'fluentform-gutenberg-block',
@@ -1137,18 +1138,18 @@ add_action('fluentform/before_updating_form',function ($form, $postData){
 add_action('enqueue_block_assets', function() {
     if (\FluentForm\App\Helpers\Helper::isSiteEditor()) {
         // Enqueue WordPress admin CSS for Site Editor iframe
-        wp_enqueue_style('wp-admin-common', admin_url('css/common.css'));
+        wp_enqueue_style('wp-admin-common', admin_url('css/common.css'), [], FLUENTFORM_VERSION);
         if (is_rtl()) {
-            wp_enqueue_style('wp-admin-common-rtl', admin_url('css/common-rtl.css'));
+            wp_enqueue_style('wp-admin-common-rtl', admin_url('css/common-rtl.css'), [], FLUENTFORM_VERSION);
         }
-        wp_enqueue_style('dashicons', admin_url('css/dashicons.css'));
-        wp_enqueue_style('wp-components', admin_url('css/dist/components/style.css'));
+        wp_enqueue_style('dashicons', admin_url('css/dashicons.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_style('wp-components', admin_url('css/dist/components/style.css'), [], FLUENTFORM_VERSION);
         
         // Enqueue Fluent Forms CSS for Site Editor iframe
-        wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'));
-        wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'));
+        wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'), [], FLUENTFORM_VERSION);
        
-        wp_enqueue_style('fluentform-gutenblock', fluentFormMix('css/fluent_gutenblock.css'));
+        wp_enqueue_style('fluentform-gutenblock', fluentFormMix('css/fluent_gutenblock.css'), [], FLUENTFORM_VERSION);
     }
 });
 
