@@ -293,12 +293,8 @@ class TransferService
                 return $itemValue;
             }, $item);
         }, $data);
-        $autoloaderPath = App::getInstance()->make('path.app') . '/Services/OpenSpout/autoload.php';
-        // Check if the file is already included
-        if (!in_array(realpath($autoloaderPath), get_included_files())) {
-            // Include the autoloader file if it has not been included yet
-            require_once $autoloaderPath;
-        }
+        // Load Composer autoloader for OpenSpout
+        require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . gmdate('d-m-Y') . '.' . $type;
         
         // Create writer based on type

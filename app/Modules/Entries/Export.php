@@ -166,7 +166,8 @@ class Export
                 return $itemValue;
             }, $item);
         }, $data);
-        require_once $this->app->make('path.app') . '/Services/OpenSpout/autoload.php';
+        // Load Composer autoloader for OpenSpout
+        require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . wp_date('d-m-Y') . '.' . $type;
         
         // Create writer based on type
