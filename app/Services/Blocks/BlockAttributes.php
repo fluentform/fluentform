@@ -49,6 +49,7 @@ class BlockAttributes
                 'type' => 'string',
                 'default' => '',
             ],
+            // Generated block custom styles
             'customCss' => [
                 'type' => 'string',
                 'default' => '',
