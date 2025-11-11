@@ -36,7 +36,7 @@ trait LogResponseTrait
 
         // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name constructed from deprecated hook
         do_action(
-            $action,
+            $action, // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name constructed from deprecated hook
             $form,
             $entryId,
             $data,

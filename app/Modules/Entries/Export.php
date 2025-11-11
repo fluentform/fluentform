@@ -182,7 +182,7 @@ class Export
                 $writer = new \OpenSpout\Writer\ODS\Writer();
                 break;
             default:
-                throw new \Exception('Unsupported file type: ' . $type);
+                throw new \Exception(sprintf('Unsupported file type: %s', esc_html($type)));
         }
         $writer->openToBrowser($fileName);
         
