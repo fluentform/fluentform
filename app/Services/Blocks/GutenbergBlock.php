@@ -4,7 +4,6 @@ namespace FluentForm\App\Services\Blocks;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Support\Arr;
-use FluentFormPro\classes\FormStyler;
 
 /**
  * GutenbergBlock class for handling Fluent Forms Gutenberg block functionality
@@ -40,7 +39,7 @@ class GutenbergBlock
         $formId = (int)Arr::get($atts, 'formId', 0);
 
         if (!$formId) {
-            return '<div class="fluentform-no-form-selected"><p>' . __('Please select a form', 'fluentformpro') . '</p></div>';
+            return '<div class="fluentform-no-form-selected"><p>' . __('Please select a form', 'fluentform') . '</p></div>';
         }
 
         $className = sanitize_text_field(Arr::get($atts, 'className', ''));
