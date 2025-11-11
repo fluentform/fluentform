@@ -55,7 +55,7 @@ const GENERAL_STYLES = [
     'inputTypography',
     'inputSpacing',
     'inputBorder',
-    'inputBorderHover',
+    'inputBorderFocus',
     'inputTextFocusColor',
     'inputBackgroundFocusColor',
     'inputFocusSpacing',
