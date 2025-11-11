@@ -530,7 +530,7 @@
             editorInserterInContainer: false,
             editorInserterInContainerRepeater: false,
 	        fieldNotSupportInContainerRepeater: false,
-            instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
+            instructionImage: FluentFormApp.plugin_public_url + 'img/help.png',
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false,
             isCommandKeyPressed : false,
