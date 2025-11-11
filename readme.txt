@@ -442,13 +442,18 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.1.5 (Date: October 28, 2025) =
+= 6.1.5 (Date: November 11, 2025) =
 - Adds Gutenberg Block Form Style Customization
-- Adds AI Custom CSS support for form creation
+- Adds AI Custom CSS/JS support for form creation (beta)
 - Adds Conversational Form Editor shortcode support
 - Adds warning message for Name Attribute changes to prevent entry data loss
+- Adds a dropdown in permission manager selection
+- Updates export library to OpenSpout for better compatibility
+- Improves database query performance with optimized indexes
+- Improves accessibility improvements for screen readers
 - Improves translations
 - Improves Design Preview color handling with block themes
+- Improves plugin security and escaping from plugin check suggestions
 - Fixes Payment Form submission failures inside Elementor popups
 - Fixes Custom style CSS backtick insertion issue
 - Fixes country name from "Turkey" to "Türkiye"
