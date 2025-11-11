@@ -1,7 +1,7 @@
 === Fluent Forms - Customizable Contact Forms, Survey, Quiz, & Conversational Form Builder ===
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
-Requires at least: 4.5
+Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 6.1.5
