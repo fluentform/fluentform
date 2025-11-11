@@ -11,7 +11,7 @@ const { InspectorControls, BlockControls } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
 const { apiFetch } = wp;
 const { memo } = wp.element;
-const { SelectControl, PanelBody, Button, Spinner, ToolbarGroup, ToolbarButton } = wp.components;
+const { SelectControl, PanelBody, Spinner, ToolbarGroup, ToolbarButton } = wp.components;
 const { useState, useEffect, useRef, useCallback, useMemo } = wp.element;
 const { useRefEffect } = wp.compose;
 
@@ -29,7 +29,6 @@ const getFormMeta = async (formId, metaKey) => {
 
 function EditComponent({ attributes, setAttributes }) {
     const [isPreviewLoading, setIsPreviewLoading] = useState(false);
-    const [previewDevice, setPreviewDevice] = useState('desktop');
     
     const styleHandlerRef = useRef(null);
     const currentStylesRef = useRef(attributes.styles || {});
@@ -210,23 +209,7 @@ function EditComponent({ attributes, setAttributes }) {
     } else {
         // Regular form selected - show preview only
         mainContent = (
-            <div className={`fluent-form-preview-wrapper preview-device-${previewDevice}`}>
-                <div className="fluent-form-preview-controls">
-                    {[
-                        { device: 'desktop', icon: 'desktop', label: __('Desktop Preview') },
-                        { device: 'tablet', icon: 'tablet', label: __('Tablet Preview') },
-                        { device: 'mobile', icon: 'smartphone', label: __('Mobile Preview') }
-                    ].map(item => (
-                        <Button
-                            key={item.device}
-                            icon={item.icon}
-                            isSmall
-                            isPrimary={previewDevice === item.device}
-                            onClick={() => setPreviewDevice(item.device)}
-                            label={item.label}
-                        />
-                    ))}
-                </div>
+            <div className="fluent-form-preview-wrapper">
                 <ServerSideRender
                     key={`ff-preview`}
                     block="fluentfom/guten-block"

@@ -566,25 +566,9 @@ $ff-prefix: 'ffblock'; // Prefix namespace for our components
   }
 }
 
-/* Preview Device Controls */
-.fluent-form-preview-controls {
-  @include flex(flex-start, center, row, 6px);
-  margin-bottom: 16px;
-}
-
 .fluent-form-preview-wrapper {
   position: relative;
   width: 100%;
-
-  &.preview-device-tablet {
-    max-width: 768px;
-    margin: 0 auto;
-  }
-
-  &.preview-device-mobile {
-    max-width: 480px;
-    margin: 0 auto;
-  }
 }
 
 /* Form Demo and Initial Wrapper */

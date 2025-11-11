@@ -7,7 +7,7 @@ class FluentFormStyleHandler {
     constructor(formId, targetDocument = null) {
         this.formId = formId;
         this.targetDocument = targetDocument || document;
-        this.TABLET_BREAKPOINT = '768px';
+        this.TABLET_BREAKPOINT = '780px';
         this.MOBILE_BREAKPOINT = '480px';
         this.styleElementId = `fluentform-block-custom-styles-${formId}`;
         this.baseSelector = `.fluentform.fluentform_wrapper_${formId}.ff_guten_block.ff_guten_block-${formId}`;
