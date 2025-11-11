@@ -169,28 +169,28 @@ class Export
         // Load Composer autoloader for OpenSpout
         require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . wp_date('d-m-Y') . '.' . $type;
-        
-        // Create writer based on type
+
+        // Create writer based on type using WriterEntityFactory
         switch (strtolower($type)) {
             case 'csv':
-                $writer = new \OpenSpout\Writer\CSV\Writer();
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCSVWriter();
                 break;
             case 'xlsx':
-                $writer = new \OpenSpout\Writer\XLSX\Writer();
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createXLSXWriter();
                 break;
             case 'ods':
-                $writer = new \OpenSpout\Writer\ODS\Writer();
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createODSWriter();
                 break;
             default:
                 throw new \Exception('Unsupported file type: ' . $type);
         }
         $writer->openToBrowser($fileName);
-        
-        // Convert data arrays to Row objects for OpenSpout v4
+
+        // Convert data arrays to Row objects for OpenSpout v3
         $rows = array_map(function ($rowData) {
-            return \OpenSpout\Common\Entity\Row::fromValues($rowData);
+            return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($rowData);
         }, $data);
-        
+
         $writer->addRows($rows);
         $writer->close();
         die();
