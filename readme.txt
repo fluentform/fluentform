@@ -444,7 +444,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 6.1.5 (Date: November 11, 2025) =
 - Adds Gutenberg Block Form Style Customization
-- Adds AI Custom CSS/JS support for form creation (beta)
+- Adds Custom CSS/JS support in form AI creation (beta)
 - Adds Conversational Form Editor shortcode support
 - Adds warning message for Name Attribute changes to prevent entry data loss
 - Adds a dropdown in permission manager selection
