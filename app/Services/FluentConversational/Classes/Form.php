@@ -334,6 +334,10 @@ class Form
             'net_promoter_score'
         ];
 
+        if (defined('FLUENTFORM_SIGNATURE')) {
+            $acceptedFieldElements[] = 'signature';
+        }
+
         $acceptedFieldElements = apply_filters(
             'fluentform/conversational_accepted_field_elements',
             $acceptedFieldElements,

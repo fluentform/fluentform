@@ -85,6 +85,9 @@ class Converter
                             foreach ($files as $file) {
                                 $question['answer'][] = ArrayHelper::get($file, 'data_src');
                             }
+                        } elseif (ArrayHelper::get($field, 'element') == 'signature') {
+                            // Signature is stored as a URL string
+                            $question['answer'] = $value;
                         } elseif (
                             ArrayHelper::get($field, 'element') == 'rangeslider' ||
                             ArrayHelper::get($field, 'element') == 'subscription_payment_component' ||
@@ -407,6 +410,43 @@ class Converter
                 
                 if ($allowedFieldTypes) {
                     $question['accept'] = implode('|', $allowedFieldTypes);
+                }
+            } elseif ('signature' === $field['element']) {
+                // Signature field settings
+                $question['signature_settings'] = [
+                    'background_color' => ArrayHelper::get($field, 'settings.sign_background_color', '#ffffff'),
+                    'border_color'     => ArrayHelper::get($field, 'settings.sign_border_color', '#FFEB3B'),
+                    'pen_color'        => ArrayHelper::get($field, 'settings.sign_pen_color', '#333'),
+                    'pen_size'         => ArrayHelper::get($field, 'settings.sign_pen_size', 2),
+                    'pad_height'       => ArrayHelper::get($field, 'settings.sign_pad_height', 200),
+                    'instruction'      => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.sign_instruction', __('Sign Here', 'fluentform-signature')), $form),
+                ];
+                $question['multiple'] = false;
+                
+                // Enqueue signature scripts and styles
+                if (defined('FLUENTFORM_SIGNATURE')) {
+                    wp_enqueue_style(
+                        'fluentform-signature',
+                        FLUENTFORM_SIGNATURE_URL . 'public/css/fluentform-signature.css',
+                        [],
+                        FLUENTFORM_SIGNATURE_VERSION
+                    );
+                    
+                    wp_enqueue_script(
+                        'signature_pad',
+                        FLUENTFORM_SIGNATURE_URL . 'public/js/signature_pad.js',
+                        ['jquery'],
+                        '2.3.2',
+                        true
+                    );
+                    
+                    wp_enqueue_script(
+                        'fluentform-signature',
+                        FLUENTFORM_SIGNATURE_URL . 'public/js/fluentform-signature.js',
+                        ['jquery', 'signature_pad'],
+                        FLUENTFORM_SIGNATURE_VERSION,
+                        true
+                    );
                 }
             } elseif ('tabular_grid' === $field['element']) {
                 $question['grid_columns'] = $field['settings']['grid_columns'];
@@ -868,6 +908,10 @@ class Converter
             'subscription_payment_component' => 'FlowFormSubscriptionType',
         ];
         
+        if (defined('FLUENTFORM_SIGNATURE')) {
+            $fieldTypes['signature'] = 'FlowFormSignatureType';
+        }
+        
         if (Helper::hasPro()) {
             $fieldTypes['phone'] = 'FlowFormPhoneType';
             $fieldTypes['input_image'] = 'FlowFormFileType';
@@ -1250,7 +1294,11 @@ class Converter
             $data['step_completed'] = (int)$draftForm->step_completed;
             $data['response'] = json_decode($draftForm->response, true);
             
-            $fields = FormFieldsParser::getInputsByElementTypes($form, ['input_file', 'input_image']);
+            $fileFieldTypes = ['input_file', 'input_image'];
+            if (defined('FLUENTFORM_SIGNATURE')) {
+                $fileFieldTypes[] = 'signature';
+            }
+            $fields = FormFieldsParser::getInputsByElementTypes($form, $fileFieldTypes);
             foreach ($fields as $name => $field) {
                 if ($urls = ArrayHelper::get($data['response'], $name)) {
                     foreach ($urls as $index => $url) {
