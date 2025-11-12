@@ -443,12 +443,13 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 6.1.5 (Date: November 12, 2025) =
 - Adds Gutenberg Block Form Style Customization
-- Adds Custom CSS/JS support in form AI creation (beta)
 - Adds Conversational Form Editor shortcode support
+- Adds Custom CSS/JS support in form AI creation (beta)
 - Adds warning message for Name Attribute changes to prevent entry data loss
 - Adds a dropdown in permission manager selection
 - Add signature field support in conversational form (For signature addon)
 - Updates export library to OpenSpout for better compatibility
+- Updates action Scheduler library to latest version
 - Improves database query performance with optimized indexes
 - Improves accessibility improvements for screen readers
 - Improves translations
