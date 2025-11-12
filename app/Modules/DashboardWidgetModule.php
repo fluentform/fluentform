@@ -7,28 +7,54 @@ use FluentForm\App\Models\Submission;
 
 class DashboardWidgetModule
 {
+    /**
+     * Constructor - automatically registers cache invalidation hooks
+     */
+    public function __construct()
+    {
+        $app = \FluentForm\Framework\Foundation\App::getInstance();
+
+        // Clear dashboard widget cache when a new submission is created or status changes
+        $app->addAction('fluentform/submission_inserted', function () {
+            delete_transient('fluentform_dashboard_stats_v1');
+        });
+
+        $app->addAction('fluentform/before_submission_status_change', function () {
+            delete_transient('fluentform_dashboard_stats_v1');
+        });
+    }
+
     public function showStat()
     {
-        global $wpdb;
-        
-        $stats = Submission::select([
-            'fluentform_forms.title',
-            'fluentform_submissions.form_id',
-            wpFluent()->raw('COUNT(' . $wpdb->prefix . 'fluentform_submissions.id) as total'),
-            wpFluent()->raw('MAX(' . $wpdb->prefix . 'fluentform_submissions.id) as max_id'),
-            wpFluent()->raw("SUM(CASE WHEN {$wpdb->prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_count"),
-        ])
-               ->join('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_submissions.form_id')
-               ->groupBy('fluentform_submissions.form_id')
-               ->orderBy('max_id', 'DESC')
-               ->limit(10)
-               ->get();
-        
+        // Check cache first to avoid expensive query on every dashboard load
+        $cacheKey = 'fluentform_dashboard_stats_v1';
+        $stats = get_transient($cacheKey);
+
+        if (false === $stats) {
+            global $wpdb;
+
+            $stats = Submission::select([
+                'fluentform_forms.title',
+                'fluentform_submissions.form_id',
+                wpFluent()->raw('COUNT(' . $wpdb->prefix . 'fluentform_submissions.id) as total'),
+                wpFluent()->raw('MAX(' . $wpdb->prefix . 'fluentform_submissions.id) as max_id'),
+                wpFluent()->raw("SUM(CASE WHEN {$wpdb->prefix}fluentform_submissions.status = 'unread' THEN 1 ELSE 0 END) as unread_count"),
+            ])
+                   ->join('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_submissions.form_id')
+                   ->groupBy('fluentform_submissions.form_id')
+                   ->orderBy('max_id', 'DESC')
+                   ->limit(10)
+                   ->get();
+
+            // Cache for 5 minutes to reduce database load
+            set_transient($cacheKey, $stats, 10 * MINUTE_IN_SECONDS);
+        }
+
         if ( ! $stats || $stats->isEmpty()) {
             echo 'You can see your submission stats here';
             return;
         }
-        
+
         $this->printStats($stats);
     }
 

@@ -432,9 +432,15 @@ class Helper
         return static::$tabIndexStatus;
     }
 
-    public static function isMultiStepForm($formId)
+    public static function isMultiStepForm($formOrId)
     {
-        $form = Form::find($formId);
+        // Accept both form object and form ID to avoid re-querying
+        if (is_object($formOrId)) {
+            $form = $formOrId;
+        } else {
+            $form = Form::find($formOrId);
+        }
+
         if (!$form) {
             return false;
         }
