@@ -25,8 +25,13 @@ class Converter
 
     public static function convert($form)
     {
+        // Return early if form is null or invalid
+        if (!$form || !is_object($form)) {
+            return $form;
+        }
+
         $fields = $form->fields['fields'];
-        
+
         $form->submit_button = $form->fields['submitButton'];
         
         $form->reCaptcha = false;

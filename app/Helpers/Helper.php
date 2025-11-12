@@ -1175,6 +1175,11 @@ class Helper
      */
     public static function shortCodeParseOnValidationMessage($message, $form, $fieldName)
     {
+        // Return early if form is null to prevent errors
+        if ($form === null) {
+            return $message;
+        }
+
         // For validation message there is no entry & form data
         // Add 'current_field' name as data array to resolve {labels.current_field} shortcode if it has
         return ShortCodeParser::parse(

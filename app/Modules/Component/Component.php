@@ -793,6 +793,11 @@ class Component
             return $output;
         }
 
+        // Return early if form is null to prevent errors
+        if ($form === null) {
+            return $output;
+        }
+
         // Get the patterns for default values from the output HTML string.
         // The example of a pattern would be for user ID: {user.ID}
         preg_match_all('/{(.*?)}/', $output, $matches);

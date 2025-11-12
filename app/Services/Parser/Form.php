@@ -108,9 +108,14 @@ class Form
      */
     public function getFields($asArray = false)
     {
-        $fields = json_decode($this->form->form_fields, $asArray);
-
         $default = $asArray ? [] : null;
+
+        // Return default if form_fields is null or empty
+        if (!$this->form || !isset($this->form->form_fields) || $this->form->form_fields === null) {
+            return $default;
+        }
+
+        $fields = json_decode($this->form->form_fields, $asArray);
 
         return Arr::get((array)$fields, 'fields', $default);
     }

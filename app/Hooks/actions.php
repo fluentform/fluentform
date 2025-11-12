@@ -1133,23 +1133,29 @@ add_action('fluentform/before_updating_form',function ($form, $postData){
 },10,2);
 
 
-// Site Editor compatibility - enqueue assets for iframe context
+// WordPress 6.3+ uses iframes for block editor preview
+// Official WordPress solution: Use enqueue_block_assets with proper context checking
+// See: https://make.wordpress.org/core/2023/07/18/miscellaneous-editor-changes-in-wordpress-6-3/
 add_action('enqueue_block_assets', function() {
-    if (\FluentForm\App\Helpers\Helper::isSiteEditor()) {
-        // Enqueue WordPress admin CSS for Site Editor iframe
-        wp_enqueue_style('wp-admin-common', admin_url('css/common.css'), [], FLUENTFORM_VERSION);
-        if (is_rtl()) {
-            wp_enqueue_style('wp-admin-common-rtl', admin_url('css/common-rtl.css'), [], FLUENTFORM_VERSION);
-        }
-        wp_enqueue_style('dashicons', admin_url('css/dashicons.css'), [], FLUENTFORM_VERSION);
-        wp_enqueue_style('wp-components', admin_url('css/dist/components/style.css'), [], FLUENTFORM_VERSION);
-        
-        // Enqueue Fluent Forms CSS for Site Editor iframe
-        wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'), [], FLUENTFORM_VERSION);
-        wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'), [], FLUENTFORM_VERSION);
-       
-        wp_enqueue_style('fluentform-gutenblock', fluentFormMix('css/fluent_gutenblock.css'), [], FLUENTFORM_VERSION);
+    // Check if we're in the block editor context (not frontend)
+    // This works for both the editor UI and the iframe preview in WordPress 6.3+
+    if (!is_admin() && !wp_is_block_theme()) {
+        return;
     }
+
+    // Additional check: Only load if we're actually in a block editor screen
+    if (is_admin()) {
+        $current_screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        if ($current_screen && !$current_screen->is_block_editor()) {
+            return;
+        }
+    }
+
+    // Enqueue Fluent Forms CSS for block editor iframe preview
+    // These styles are necessary for the live form preview in the block editor
+    wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'), [], FLUENTFORM_VERSION);
+    wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'), [], FLUENTFORM_VERSION);
+
 });
 
 
