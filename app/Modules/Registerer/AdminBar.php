@@ -173,7 +173,7 @@ class AdminBar
          
         }
         $items['fluent_forms_community'] = [
-            'title'  => esc_html__( 'Community', 'wpforms-lite' ),
+            'title'  => esc_html__( 'Community', 'fluentform' ),
             'url'   => 'https://www.facebook.com/groups/fluentforms/',
             'meta'   => true
         ];

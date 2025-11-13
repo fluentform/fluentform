@@ -264,14 +264,18 @@
 
                 FluentFormsGlobal.$rest.post(url, data)
                     .then((response) => {
-                        this.$success(response.message);
+                        if (response && response.message) {
+                            this.$success(response.message);
+                        }
 
                         if (response.redirect_url) {
                             window.location.href = response.redirect_url;
                         }
                     })
                     .catch(error => {
-                        this.$fail(error.message);
+                        if (error && error.message) {
+                            this.$fail(error.message);
+                        }
                     })
                     .finally(() => {
                         this.creatingForm = false;

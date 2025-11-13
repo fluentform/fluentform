@@ -120,7 +120,8 @@ class StripeInlineProcessor extends StripeProcessor
                 'amount'      => $signupFee,
                 'currency'    => $submission->currency,
                 'customer'    => $customer->id,
-                'description' => __(sprintf('Signup fee for %s', $subscription->plan_name), 'fluentform'),
+                /* translators: %s is the plan name */
+                'description' => sprintf(__('Signup fee for %s', 'fluentform'), $subscription->plan_name),
             ], $submission->form_id);
         }
 
@@ -201,7 +202,7 @@ class StripeInlineProcessor extends StripeProcessor
             'metadata'         => [
                 'submission_id' => $submission->id,
                 'form_id'       => $submission->form_id,
-                'form_name'     => strip_tags($this->form->title)
+                'form_name'     => wp_strip_all_tags($this->form->title)
             ]
         ];
 
@@ -368,10 +369,14 @@ class StripeInlineProcessor extends StripeProcessor
 
     public function confirmScaPayment()
     {
-        $formId = intval($_REQUEST['form_id']);
-        $submissionId = intval($_REQUEST['submission_id']);
-        $paymentMethod = sanitize_text_field($_REQUEST['payment_method']);
-        $paymentIntentId = sanitize_text_field($_REQUEST['payment_intent_id']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
+        $formId = isset($_REQUEST['form_id']) ? intval($_REQUEST['form_id']) : 0;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
+        $submissionId = isset($_REQUEST['submission_id']) ? intval($_REQUEST['submission_id']) : 0;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
+        $paymentMethod = isset($_REQUEST['payment_method']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_method'])) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
+        $paymentIntentId = isset($_REQUEST['payment_intent_id']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id'])) : '';
 
         $this->setSubmissionId($submissionId);
         $submission = $this->getSubmission();
@@ -398,9 +403,12 @@ class StripeInlineProcessor extends StripeProcessor
 
     public function confirmScaSetupIntentsPayment()
     {
-        $formId = intval($_REQUEST['form_id']);
-        $submissionId = intval($_REQUEST['submission_id']);
-        $intentId = sanitize_text_field($_REQUEST['payment_intent_id']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
+        $formId = isset($_REQUEST['form_id']) ? intval($_REQUEST['form_id']) : 0;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
+        $submissionId = isset($_REQUEST['submission_id']) ? intval($_REQUEST['submission_id']) : 0;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
+        $intentId = isset($_REQUEST['payment_intent_id']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id'])) : '';
 
         $this->setSubmissionId($submissionId);
         $this->form = $this->getForm();

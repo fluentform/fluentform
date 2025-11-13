@@ -1891,8 +1891,11 @@ class Builder
      */
     protected function stripTableForPluck($column)
     {
+        if (is_null($column)) {
+            return $column;
+        }
         $array = preg_split('~\.| ~', $column);
-        return is_null($column) ? $column : end($array);
+        return end($array);
     }
 
     /**

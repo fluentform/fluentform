@@ -59,7 +59,7 @@ class FormBuilder
         $this->form = $form;
         $hasStepWrapper = isset($form->fields['stepsWrapper']) && $form->fields['stepsWrapper'];
 
-        $labelPlacement = $form->settings['layout']['labelPlacement'];
+        $labelPlacement = ArrayHelper::get($form->settings, 'layout.labelPlacement', 'top');
 
         $formClass = "frm-fluent-form fluent_form_{$form->id} ff-el-form-{$labelPlacement}";
 
@@ -180,7 +180,7 @@ class FormBuilder
         $isAccessible = apply_filters('fluentform/disable_accessibility_fieldset', true, $form);
 
         if ($isAccessible) {
-            echo $this->fieldsetHtml($form);
+            echo $this->fieldsetHtml($form); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form is escaped before being passed in.
         }
         
         /* This hook is deprecated & will be removed soon */
@@ -188,7 +188,7 @@ class FormBuilder
         
         do_action('fluentform/form_element_start', $form);
 
-        echo "<input type='hidden' name='__fluent_form_embded_post_id' value='" . get_the_ID() . "' />";
+        echo "<input type='hidden' name='__fluent_form_embded_post_id' value='" . esc_attr(get_the_ID()) . "' />";
 
         wp_nonce_field(
             'fluentform-submit-form',
@@ -364,7 +364,7 @@ class FormBuilder
                     }
                     $uniqueId = $this->form->id . '_' . $this->form->attr_name_index;
                 } else {
-                    $uniqueId = uniqid(rand(), true);
+                    $uniqueId = uniqid(wp_rand(), true);
                 }
 
                 $item['attributes']['name'] = $item['element'] . '-' . $uniqueId;

@@ -97,6 +97,8 @@ class Route {
     storeManager = this.getManagers;
     deleteManager = this.storeManager;
 
+    getUsers = this.getManagers + '/users';
+
     analytics = 'analytics';
     getFormAnalytics = this.analytics + '/{param}'
     resetFormAnalytics = this.analytics + '/{param}/reset/'

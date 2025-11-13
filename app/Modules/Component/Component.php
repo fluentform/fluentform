@@ -514,6 +514,7 @@ class Component
 
         if (is_feed()) {
             global $post;
+            /* translators: %s is the website URL */
             $feedText = sprintf(__('The form can be filled in the actual <a href="%s">website url</a>.', 'fluentform'), get_permalink($post));
     
             $feedText = apply_filters_deprecated(
@@ -538,7 +539,7 @@ class Component
         }
 
         $form->fields = json_decode($form->form_fields, true);
-        if (!$form->fields['fields']) {
+        if (!is_array($form->fields) || empty($form->fields['fields'])) {
             return '';
         }
 
@@ -614,6 +615,7 @@ class Component
             wp_enqueue_script('fluent-form-submission');
         }
 
+        /* translators: %activeStep% is the current step number, %totalStep% is the total number of steps, %stepTitle% is the step title */
         $stepText = __('Step %activeStep% of %totalStep% - %stepTitle%', 'fluentform');
     
         $stepText = apply_filters_deprecated(
@@ -678,6 +680,11 @@ class Component
         $formSettings = $form->settings;
 
         $formSettings = ArrayHelper::only($formSettings, ['layout', 'id']);
+
+        // Ensure restrictions array exists before setting denyEmptySubmission
+        if (!isset($formSettings['restrictions']) || !is_array($formSettings['restrictions'])) {
+            $formSettings['restrictions'] = [];
+        }
 
         $formSettings['restrictions']['denyEmptySubmission'] = [
             'enabled' => false,
@@ -781,6 +788,16 @@ class Component
      */
     public function replaceEditorSmartCodes($output, $form)
     {
+        // Return early if output is null or empty
+        if ($output === null || $output === '') {
+            return $output;
+        }
+
+        // Return early if form is null to prevent errors
+        if ($form === null) {
+            return $output;
+        }
+
         // Get the patterns for default values from the output HTML string.
         // The example of a pattern would be for user ID: {user.ID}
         preg_match_all('/{(.*?)}/', $output, $matches);
@@ -905,9 +922,19 @@ class Component
         $this->app->addFilter('fluentform/is_form_renderable', function ($isRenderable, $form) {
             $checkables = ['limitNumberOfEntries', 'scheduleForm', 'requireLogin'];
 
-            foreach ($form->settings['restrictions'] as $key => $restrictions) {
+            // Ensure settings is an array
+            if (!is_array($form->settings)) {
+                $form->settings = [];
+            }
+
+            // Ensure restrictions exists and is an array before iterating
+            $restrictions = isset($form->settings['restrictions']) && is_array($form->settings['restrictions'])
+                ? $form->settings['restrictions']
+                : [];
+
+            foreach ($restrictions as $key => $restrictionSettings) {
                 if (in_array($key, $checkables)) {
-                    $isRenderable['status'] = $this->{$key}($restrictions, $form, $isRenderable);
+                    $isRenderable['status'] = $this->{$key}($restrictionSettings, $form, $isRenderable);
                     if (!$isRenderable['status']) {
                         $isRenderable['status'] = false;
                         return $isRenderable;
@@ -916,7 +943,7 @@ class Component
             }
            if($form->status == 'unpublished'){
                $isRenderable['status'] = false;
-               $isRenderable['message'] = apply_filters('fluentform/unpublished_form_submission_message',__('Invalid Form!'));
+               $isRenderable['message'] = apply_filters('fluentform/unpublished_form_submission_message',__('Invalid Form!', 'fluentform'));
            }
 
             return $isRenderable;
@@ -1014,7 +1041,7 @@ class Component
             return false;
         }
 
-        $weekDayToday = date('l');   //day of the week
+        $weekDayToday = wp_date('l');   //day of the week
         $selectedWeekDays = ArrayHelper::get($restrictions, 'selectedDays');
         //skip if it was not set initially and $selectedWeekDays is null
         if ($selectedWeekDays && is_array($selectedWeekDays) && !in_array($weekDayToday, $selectedWeekDays)) {
@@ -1295,14 +1322,14 @@ class Component
                 } else {
                     $dateFormat = get_option('date_format') . ' ' . get_option('time_format');
                 }
-                return date($dateFormat, strtotime($form->created_at));
+                return wp_date($dateFormat, strtotime($form->created_at));
             } elseif ('updated_at' == $atts['info']) {
                 if ($atts['date_format']) {
                     $dateFormat = $atts['date_format'];
                 } else {
                     $dateFormat = get_option('date_format') . ' ' . get_option('time_format');
                 }
-                return date($dateFormat, strtotime($form->updated_at));
+                return wp_date($dateFormat, strtotime($form->updated_at));
             } elseif ('payment_total' == $atts['info']) {
                 if (!defined('FLUENTFORMPRO')) {
                     return '';

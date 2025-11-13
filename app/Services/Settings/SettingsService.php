@@ -298,7 +298,7 @@ class SettingsService
 
         $shareUrl = add_query_arg($params, Helper::getFrontendFacingUrl());
         return [
-            'message'   => __('Settings successfully updated'),
+            'message'   => __('Settings successfully updated','fluentform'),
             'share_url' => $shareUrl,
         ];
     }
@@ -336,7 +336,7 @@ class SettingsService
                 'message' => __('Settings save successfully', 'fluentform'),
             ];
         }
-        throw new \Exception(__('Settings save failed', 'fluentform'));
+        throw new \Exception(esc_html__('Settings save failed', 'fluentform'));
     }
     
     public function secureMetaDescription($description) {

@@ -62,7 +62,7 @@ class PaymentSummaryComponent extends BaseFieldManager
             'element' => $this->key,
             'attributes' => array(),
             'settings' => array(
-                'html_codes' => __('<p>Payment Summary will be shown here</p>', 'fluentform'),
+                'html_codes' => '<p>' . __('Payment Summary will be shown here', 'fluentform') . '</p>',
                 'cart_empty_text' => __('No payment items has been selected yet', 'fluentform'),
                 'show_close_button' => false,
                 'conditional_logics' => array(),

@@ -66,6 +66,7 @@ class TermsAndConditions extends BaseComponent
         $link_count = substr_count($data['settings']['tnc_html'], '<a ');
         if($link_count > 0){
             $ariaLabel = sprintf(
+                /* translators: 1: Terms title or HTML label, 2: Number of links in the terms text. */
                 esc_html(_n(
                     'Terms and Conditions: %1$s Contains %2$d link. Use tab navigation to review.',
                     'Terms and Conditions: %1$s Contains %2$d links. Use tab navigation to review.',

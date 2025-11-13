@@ -42,6 +42,7 @@ class OxygenWidget
 
     public function registerAddPlusSubsections()
     {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- oxygen_add_plus_fluentform_form is a third-party plugin hook (Oxygen Builder)
         do_action('oxygen_add_plus_fluentform_form');
     }
 }

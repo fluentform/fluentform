@@ -58,7 +58,7 @@ class CleanTalkHandler
 
     public static function spamSubmissionCheckWithApi($formData, $form)
     {
-        global $cleantalk_executed;
+        global $fluentformCleantalkExecuted;
         
         $accessKey = ArrayHelper::get(get_option('_fluentform_cleantalk_details'), 'accessKey');
 
@@ -76,8 +76,8 @@ class CleanTalkHandler
             'event_token'     => $eventToken,
             'submit_time'     => $submitTime,
             'sender_info'     => json_encode([
-                'REFERRER'   => $_SERVER['HTTP_REFERER'],
-                'USER_AGENT' => htmlspecialchars(@$_SERVER['HTTP_USER_AGENT'])
+                'REFERRER'   => isset($_SERVER['HTTP_REFERER']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_REFERER'])) : '',
+                'USER_AGENT' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : ''
             ]),
             'js_on'           => 1,
             'sender_nickname' => '',
@@ -87,7 +87,7 @@ class CleanTalkHandler
             'agent'           => 'wordpress-fluentforms-' . FLUENTFORM_VERSION,
             'post_info'       => [
                 'comment_type' => 'fluent_forms_vendor_integration__use_api',
-                'post_url'     => $_SERVER['HTTP_REFERER']
+                'post_url'     => isset($_SERVER['HTTP_REFERER']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_REFERER'])) : ''
             ],
             'all_headers'   => strtolower(json_encode(wpFluentForm()->request->header())),
         ];
@@ -135,7 +135,7 @@ class CleanTalkHandler
 
         $cleantalkPassed = $response->allow == 1 && $response->spam == 0 && $response->account_status == 1;
 
-        $cleantalk_executed = true;
+        $fluentformCleantalkExecuted = true;
 
         return !$cleantalkPassed;
     }
@@ -182,12 +182,15 @@ class CleanTalkHandler
         $app = wpFluentForm();
         $ip = sanitize_text_field($app->request->getIp());
         
+        $serverName = isset($_SERVER['SERVER_NAME']) ? sanitize_text_field(wp_unslash($_SERVER['SERVER_NAME'])) : '';
+        $requestUri = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+
         $info = [
             'auth_key'             => $apbct->settings['apikey'],
             'sender_ip'            => $ip,
             'contact_form_subject' => $form->title,
             'referrer'             => urlencode($data['_wp_http_referer']),
-            'page_url'             => htmlspecialchars(@$_SERVER['SERVER_NAME'] . @$_SERVER['REQUEST_URI']),
+            'page_url'             => $serverName . $requestUri,
             'submit_time'          => isset($_SESSION['ct_submit_time']) ? time() - (int)$_SESSION['ct_submit_time'] : null, //@todo Improve this
             'agent'                => 'php-api',
             'js_on'                => 1,

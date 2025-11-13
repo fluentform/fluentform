@@ -22,7 +22,7 @@ return function ($file) {
                 ];
                 foreach ($actions as $action) {
                     add_action($action, function () use ($message) {
-                        printf('<div class="fluentform-admin-notice notice notice-success">%1$s</div>', $message);
+                        printf('<div class="fluentform-admin-notice notice notice-success">%1$s</div>', esc_html($message));
                     });
                 }
             });

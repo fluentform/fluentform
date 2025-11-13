@@ -17,6 +17,7 @@ class ActivationHandler
             if (function_exists('get_sites') && function_exists('get_current_network_id')) {
                 $site_ids = get_sites(['fields' => 'ids', 'network_id' => get_current_network_id()]);
             } else {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Multisite activation, direct query needed
                 $site_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs WHERE site_id = $wpdb->siteid;");
             }
             // Install the plugin for all these sites.
@@ -119,7 +120,8 @@ class ActivationHandler
         global $wpdb;
 
         foreach ($possibleMetaModules as $moduleName => $metaName) {
-            $row = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}fluentform_form_meta` WHERE `meta_key` = '{$metaName}' LIMIT 1");
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Activation check, direct query needed
+            $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM `{$wpdb->prefix}fluentform_form_meta` WHERE `meta_key` = %s LIMIT 1", $metaName));
 
             if ($row) {
                 $moduleStatuses[$moduleName] = 'yes';
@@ -135,6 +137,7 @@ class ActivationHandler
     {
         global $wpdb;
         $formsTable = $wpdb->prefix . 'fluentform_forms';
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Activation check, direct query needed, table name is safe (wpdb->prefix)
         $firstForm = $wpdb->get_row('SELECT * FROM ' . $formsTable . ' LIMIT 1');
 
         if (!$firstForm) {
@@ -156,6 +159,7 @@ class ActivationHandler
                     'form_fields' => json_encode($structure['form_fields']),
                 ];
 
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Activation, inserting default forms
                 $wpdb->insert($formsTable, $insertData, [
                     '%s',
                     '%s',
@@ -171,6 +175,7 @@ class ActivationHandler
                 foreach ($structure['metas'] as $meta) {
                     $meta['value'] = trim(preg_replace('/\s+/', ' ', $meta['value']));
 
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Activation, inserting default form meta
                     $wpdb->insert($wpdb->prefix . 'fluentform_form_meta', [
                         'form_id'  => $formId,
                         'meta_key' => $meta['meta_key'],

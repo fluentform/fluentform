@@ -44,7 +44,9 @@
     }
   }
 }
-#ff_notice_review_query {
+
+#ff_notice_review_query,
+#ff_notice_migration_notice {
   background: #fff;
   margin: 8px 24px 0 24px;
   border-left: 4px solid $--color-success;
@@ -66,5 +68,9 @@
 #ff_notice_review_query + .ff_global_setting_wrap,
 #ff_notice_review_query + .ff_tools_wrap,
 .error_notice_ff_fluentform_pro_license + .ff_tools_wrap {
+  margin-top: 20px;
+}
+
+#ff_reports .fluentform-reports {
   margin-top: 20px;
 }
