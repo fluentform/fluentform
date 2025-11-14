@@ -18,6 +18,20 @@ import calculation from './Pro/calculations';
         const formId = form.form_id_selector;
         const formSelector = '.' + form.form_instance;
 
+        // Helper function to get translated calculation messages
+        function getCalculationMessages(formId) {
+            const messagesVar = 'fluentform_calculation_messages_' + formId;
+            if (window[messagesVar]) {
+                return window[messagesVar];
+            }
+            // Fallback messages
+            return {
+                calculation_error: 'Calculation error occurred',
+                invalid_formula: 'Invalid formula provided',
+                division_by_zero: 'Division by zero error'
+            };
+        }
+
         function sanitizeDynamicValue(input) {
             // Convert input to string if it's not already a string
             if (input === null || input === undefined) {
@@ -136,7 +150,9 @@ import calculation from './Pro/calculations';
         initRepeater($theForm);
         initRepeatButtons($, $theForm);
         formConditional($, $theForm, form, window.fluentFormVars);
-        calculation($, $theForm);
+        // Pass translated calculation messages to calculation module
+        const calculationMessages = getCalculationMessages(form.id);
+        calculation($, $theForm, calculationMessages);
         ratingDom($, $theForm);
         initNetPromoter($, $theForm);
 
