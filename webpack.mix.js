@@ -15,7 +15,8 @@ if (!mix.inProduction()) {
     // During production build we'll remove the existing public
     // directory so that the source-maps are deleted as well.
     let fs = require('fs-extra');
-    fs.remove('assets');
+    fs.removeSync('assets');
+    mix.sourceMaps(false);
 }
 
 mix.webpackConfig({
@@ -58,6 +59,7 @@ mix
     .js('resources/assets/admin/documentation.js', `assets/js/docs.js`)
     .js('resources/assets/admin/form_preview_app.js', `assets/js/form_preview_app.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `assets/js/all_entries.js`)
+    .js('resources/assets/admin/Reports/reports.js', `assets/js/reports.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `assets/js/conversational_design.js`)
     .vue({
         version: 2,
@@ -72,7 +74,7 @@ mix
     .sass('resources/assets/admin/css/admin_notices.scss', `assets/css/admin_notices.css`)
     .sass('resources/assets/admin/css/admin_docs.scss', `assets/css/admin_docs.css`)
     .sass('resources/assets/admin/css/add-ons.scss', 'assets/css/add-ons.css')
-    .sass('resources/assets/admin/css/fluent_gutenblock.scss', 'assets/css/fluent_gutenblock.css')
+    .sass('resources/assets/admin/css/fluent-forms-reports.scss', 'assets/css/fluent-forms-reports.css')
     .sass('resources/assets/admin/css/payment_settings.scss', 'assets/css/payment_settings.css')
     .sass('resources/assets/admin/css/payment_entries.scss', 'assets/css/payment_entries.css')
     .sass('resources/assets/public/scss/fluent-forms-public.scss', `assets/css/fluent-forms-public.css`)
@@ -154,9 +156,17 @@ mix.then(() => {
             return;
         }
     });
+
+    exec('rtlcss assets/css/fluent-forms-reports.css ./assets/css/fluent-forms-reports-rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
 });
 
-mix.js('resources/assets/admin/fluent_gutenblock.js','assets/js/fluent_gutenblock.js').react()
+mix.js('guten_block/src/index.js','assets/js/fluent_gutenblock.js').react()
+mix.sass('guten_block/src/fluent_gutenblock.scss', 'assets/css/fluent_gutenblock.css')
 
 mix
     .copyDirectory('resources/assets/libs', 'assets/libs')

@@ -221,6 +221,14 @@ export default function ($, $theForm, calculationMessages = {}) {
             doCalculation();
         });
 
+        jQuery(document).on('fluentform_reset', function() {
+            calculationFields.val('').prop('defaultValue', '');
+            // For number fields with default value, formula need to be calculated
+            // Call with delay to make sure the number field default value is set
+            setTimeout(function() {
+                doCalculation();
+            }, 100);
+        });
     };
     
     function getRepeatFieldValue(name) {

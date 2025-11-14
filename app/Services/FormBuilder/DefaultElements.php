@@ -1,6 +1,6 @@
 <?php
-$defaultGlobalMessages = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
-$defaultElements = [
+$fluentformDefaultGlobalMessages = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
+$fluentformDefaultElements = [
     'general' => [
         'input_name' => [
             'index'      => 0,
@@ -61,8 +61,8 @@ $defaultElements = [
                         'validation_rules' => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -120,8 +120,8 @@ $defaultElements = [
                         'validation_rules' => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -179,8 +179,8 @@ $defaultElements = [
                         'validation_rules' => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -220,14 +220,14 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                     'email' => [
                         'value'   => true,
-                        'message' => $defaultGlobalMessages['email'],
-                        'global_message' => $defaultGlobalMessages['email'],
+                        'message' => $fluentformDefaultGlobalMessages['email'],
+                        'global_message' => $fluentformDefaultGlobalMessages['email'],
                         'global'  => true
                     ],
                 ],
@@ -263,8 +263,8 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -303,8 +303,8 @@ $defaultElements = [
                 'validation_rules'        => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -338,8 +338,8 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -423,8 +423,8 @@ $defaultElements = [
                         'validation_rules'  => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -480,8 +480,8 @@ $defaultElements = [
                         'validation_rules'  => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -538,8 +538,8 @@ $defaultElements = [
                         'validation_rules'  => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -596,8 +596,8 @@ $defaultElements = [
                         'validation_rules'  => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -655,8 +655,8 @@ $defaultElements = [
                         'validation_rules'  => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -713,8 +713,8 @@ $defaultElements = [
                         'validation_rules'  => [
                             'required' => [
                                 'value'   => false,
-                                'message' => $defaultGlobalMessages['required'],
-                                'global_message' => $defaultGlobalMessages['required'],
+                                'message' => $fluentformDefaultGlobalMessages['required'],
+                                'global_message' => $fluentformDefaultGlobalMessages['required'],
                                 'global'  => true,
                             ],
                         ],
@@ -768,32 +768,32 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                     'numeric' => [
                         'value'   => true,
-                        'message' => $defaultGlobalMessages['numeric'],
-                        'global_message' => $defaultGlobalMessages['numeric'],
+                        'message' => $fluentformDefaultGlobalMessages['numeric'],
+                        'global_message' => $fluentformDefaultGlobalMessages['numeric'],
                         'global'  => true
                     ],
                     'min' => [
                         'value'   => '',
-                        'message' => $defaultGlobalMessages['min'],
-                        'global_message' => $defaultGlobalMessages['min'],
+                        'message' => $fluentformDefaultGlobalMessages['min'],
+                        'global_message' => $fluentformDefaultGlobalMessages['min'],
                         'global'  => true
                     ],
                     'max' => [
                         'value'   => '',
-                        'message' => $defaultGlobalMessages['max'],
-                        'global_message' => $defaultGlobalMessages['max'],
+                        'message' => $fluentformDefaultGlobalMessages['max'],
+                        'global_message' => $fluentformDefaultGlobalMessages['max'],
                         'global'  => true
                     ],
                     'digits' => [
                         'value'   => '',
-                        'message' => $defaultGlobalMessages['digits'],
-                        'global_message' => $defaultGlobalMessages['digits'],
+                        'message' => $fluentformDefaultGlobalMessages['digits'],
+                        'global_message' => $fluentformDefaultGlobalMessages['digits'],
                         'global'  => true
                     ],
                 ],
@@ -845,8 +845,8 @@ $defaultElements = [
                 'validation_rules'   => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -897,8 +897,8 @@ $defaultElements = [
                 'validation_rules'   => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -952,11 +952,14 @@ $defaultElements = [
                 'enable_image_input' => false,
                 'values_visible'     => false,
                 'randomize_options'  => 'no',
+                'enable_other_option' => 'no',
+                'other_option_label' => __('Other', 'fluentform'),
+                'other_option_placeholder' => __('Please specify...', 'fluentform'),
                 'validation_rules'   => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -1007,8 +1010,8 @@ $defaultElements = [
                 'validation_rules'   => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -1040,14 +1043,14 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                     'url' => [
                         'value'   => true,
-                        'message' => $defaultGlobalMessages['url'],
-                        'global_message' => $defaultGlobalMessages['url'],
+                        'message' => $fluentformDefaultGlobalMessages['url'],
+                        'global_message' => $fluentformDefaultGlobalMessages['url'],
                         'global'  => true
                     ],
                 ],
@@ -1082,8 +1085,8 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -1119,27 +1122,27 @@ $defaultElements = [
                 'validation_rules'     => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                     'max_file_size' => [
                         'value'      => 1048576,
                         '_valueFrom' => 'MB',
-                        'message'    => $defaultGlobalMessages['max_file_size'],
-                        'global_message'    => $defaultGlobalMessages['max_file_size'],
+                        'message'    => $fluentformDefaultGlobalMessages['max_file_size'],
+                        'global_message'    => $fluentformDefaultGlobalMessages['max_file_size'],
                         'global'     => true
                     ],
                     'max_file_count' => [
                         'value'   => 1,
-                        'message' => $defaultGlobalMessages['max_file_count'],
-                        'global_message' => $defaultGlobalMessages['max_file_count'],
+                        'message' => $fluentformDefaultGlobalMessages['max_file_count'],
+                        'global_message' => $fluentformDefaultGlobalMessages['max_file_count'],
                         'global'  => true
                     ],
                     'allowed_image_types' => [
                         'value'   => [],
-                        'message' => $defaultGlobalMessages['allowed_image_types'],
-                        'global_message' => $defaultGlobalMessages['allowed_image_types'],
+                        'message' => $fluentformDefaultGlobalMessages['allowed_image_types'],
+                        'global_message' => $fluentformDefaultGlobalMessages['allowed_image_types'],
                         'global'  => true
                     ],
                 ],
@@ -1174,27 +1177,27 @@ $defaultElements = [
                 'validation_rules'     => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                     'max_file_size' => [
                         'value'      => 1048576,
                         '_valueFrom' => 'MB',
-                        'message'    => $defaultGlobalMessages['max_file_size'],
-                        'global_message'    => $defaultGlobalMessages['max_file_size'],
+                        'message'    => $fluentformDefaultGlobalMessages['max_file_size'],
+                        'global_message'    => $fluentformDefaultGlobalMessages['max_file_size'],
                         'global'     => true
                     ],
                     'max_file_count' => [
                         'value'   => 1,
-                        'message' => $defaultGlobalMessages['max_file_count'],
-                        'global_message' => $defaultGlobalMessages['max_file_count'],
+                        'message' => $fluentformDefaultGlobalMessages['max_file_count'],
+                        'global_message' => $fluentformDefaultGlobalMessages['max_file_count'],
                         'global'  => true
                     ],
                     'allowed_file_types' => [
                         'value'   => [],
-                        'message' => $defaultGlobalMessages['allowed_image_types'],
-                        'global_message' => $defaultGlobalMessages['allowed_image_types'],
+                        'message' => $fluentformDefaultGlobalMessages['allowed_image_types'],
+                        'global_message' => $fluentformDefaultGlobalMessages['allowed_image_types'],
                         'global'  => true
                     ],
                 ],
@@ -1226,8 +1229,8 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -1284,8 +1287,8 @@ $defaultElements = [
                 'validation_rules'   => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -1337,8 +1340,8 @@ $defaultElements = [
                 'validation_rules'   => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                         'per_row' => false,
                     ],
@@ -1397,8 +1400,8 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -1452,8 +1455,8 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -1483,8 +1486,8 @@ $defaultElements = [
                 'validation_rules'  => [
                     'required' => [
                         'value'   => true,
-                        'message' => $defaultGlobalMessages['required'],
-                        'global_message' => $defaultGlobalMessages['required'],
+                        'message' => $fluentformDefaultGlobalMessages['required'],
+                        'global_message' => $fluentformDefaultGlobalMessages['required'],
                         'global'  => true,
                     ],
                 ],
@@ -1708,7 +1711,7 @@ $defaultElements = [
 ];
 
 if (! defined('FLUENTFORMPRO')) {
-    $defaultElements['general']['phone'] = [
+    $fluentformDefaultElements['general']['phone'] = [
         'index'          => 17,
         'element'        => 'phone',
         'attributes'     => [],
@@ -1719,7 +1722,7 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputText',
         ],
     ];
-    $defaultElements['advanced']['net_promoter_score'] = [
+    $fluentformDefaultElements['advanced']['net_promoter_score'] = [
         'index'          => 14,
         'element'        => 'net_promoter_score',
         'attributes'     => [],
@@ -1731,7 +1734,7 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'net_promoter',
         ],
     ];
-    $defaultElements['advanced']['quiz_score'] = [
+    $fluentformDefaultElements['advanced']['quiz_score'] = [
         'index'          => 19,
         'element'        => 'quiz_score',
         'attributes'     => [],
@@ -1743,7 +1746,19 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputHidden',
         ],
     ];
-    $defaultElements['advanced']['cpt_selection'] = [
+    $fluentformDefaultElements['advanced']['dynamic_field'] = [
+        'index'          => 19,
+        'element'        => 'dynamic_field',
+        'attributes'     => [],
+        'settings'       => [],
+        'options'        => [],
+        'editor_options' => [
+            'title'      => __('Dynamic Field', 'fluentform'),
+            'icon_class' => 'ff-edit-repeat',
+            'template'   => 'inputHidden',
+        ],
+    ];
+    $fluentformDefaultElements['advanced']['cpt_selection'] = [
         'index'          => 18,
         'element'        => 'cpt_selection',
         'attributes'     => [],
@@ -1756,7 +1771,7 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'select',
         ],
     ];
-    $defaultElements['advanced']['save_progress_button'] = [
+    $fluentformDefaultElements['advanced']['save_progress_button'] = [
         'index'          => 20,
         'element'        => 'save_progress_button',
         'attributes'     => [],
@@ -1768,7 +1783,7 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'customButton',
         ],
     ];
-    $defaultElements['advanced']['rich_text_input'] = [
+    $fluentformDefaultElements['advanced']['rich_text_input'] = [
         'index'          => 19,
         'element'        => 'rich_text_input',
         'attributes'     => [],
@@ -1780,7 +1795,7 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputTextarea',
         ],
     ];
-    $defaultElements['advanced']['chained_select'] = [
+    $fluentformDefaultElements['advanced']['chained_select'] = [
         'index'          => 15,
         'element'        => 'chained_select',
         'attributes'     => [],
@@ -1792,7 +1807,7 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'chainedSelect',
         ],
     ];
-    $defaultElements['advanced']['repeater_field'] = [
+    $fluentformDefaultElements['advanced']['repeater_field'] = [
         'index'          => 17,
         'element'        => 'repeater_field',
         'attributes'     => [],
@@ -1804,7 +1819,7 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'fieldsRepeatSettings',
         ],
     ];
-    $defaultElements['advanced']['rangeslider'] = [
+    $fluentformDefaultElements['advanced']['rangeslider'] = [
         'index'          => 13,
         'element'        => 'rangeslider',
         'attributes'     => [],
@@ -1815,7 +1830,7 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputSlider',
         ],
     ];
-    $defaultElements['advanced']['color-picker'] = [
+    $fluentformDefaultElements['advanced']['color-picker'] = [
         'index'          => 16,
         'element'        => 'color-picker',
         'attributes'     => [],
@@ -1826,11 +1841,22 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputText',
         ],
     ];
+    $fluentformDefaultElements['container']['accordion'] = [
+        'index'          => 18,
+        'element'        => 'accordion',
+        'attributes'     => [],
+        'settings'       => [],
+        'options'        => [],
+        'editor_options' => [
+            'title'      => __('Accordion/Tab', 'fluentform'),
+            'icon_class' => 'ff-edit-section-break',
+            'template'   => 'CustomEditorField',
+        ],
+    ];
 }
 
-// Add coordinate fields to address elements when FluentFormPro is active
 if (defined('FLUENTFORMPRO')) {
-    $defaultElements['general']['address']['fields']['latitude'] = [
+    $fluentformDefaultElements['general']['address']['fields']['latitude'] = [
         'element'    => 'input_hidden',
         'attributes' => [
             'type'  => 'hidden',
@@ -1842,7 +1868,7 @@ if (defined('FLUENTFORMPRO')) {
             'visible' => false,
         ],
     ];
-    $defaultElements['general']['address']['fields']['longitude'] = [
+    $fluentformDefaultElements['general']['address']['fields']['longitude'] = [
         'element'    => 'input_hidden',
         'attributes' => [
             'type'  => 'hidden',
@@ -1856,4 +1882,4 @@ if (defined('FLUENTFORMPRO')) {
     ];
 }
 
-return $defaultElements;
+return $fluentformDefaultElements;

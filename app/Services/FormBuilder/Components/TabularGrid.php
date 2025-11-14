@@ -76,12 +76,13 @@ class TabularGrid extends BaseComponent
         $elMarkup = "<div class='ff-el-input--content'>{$elMarkup}" . fluentform_sanitize_html($elementHelpMessage) . '</div>';
 
         $html = sprintf(
-            "<div data-type='%s' data-name='%s' class='%s'>{$elementLabel}{$elMarkup}</div>",
+            "<div data-type='%s' data-name='%s' class='%s'>%s",
             $data['attributes']['data-type'],
             $data['attributes']['name'],
-            $data['attributes']['class']
-        ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $elementLabel is escaped before being passed in.
-    
+            $data['attributes']['class'],
+            $elementLabel
+        ) . $elMarkup . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $elementLabel is escaped before being passed in.
+            
         $html = apply_filters_deprecated(
             'fluentform_rendering_field_html_' . $elementName,
             [
@@ -125,7 +126,8 @@ class TabularGrid extends BaseComponent
     protected function getElementHelpMessage($data, $form)
     {
         $elementHelpMessage = '';
-        if ('under_input' == $form->settings['layout']['helpMessagePlacement']) {
+        $helpMessagePlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
+        if ('under_input' == $helpMessagePlacement) {
             $elementHelpMessage = $this->getInputHelpMessage($data);
         }
 

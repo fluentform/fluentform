@@ -73,7 +73,7 @@ class ConnectConfig
 
         if (is_wp_error($response)) {
             $message = $response->get_error_message();
-            echo '<div class="ff_message ff_message_error">' . $message . '</div>';
+            echo '<div class="ff_message ff_message_error">' . esc_html($message) . '</div>';
             return;
         }
 
@@ -84,7 +84,7 @@ class ConnectConfig
             if (!$message) {
                 $message = __('Invalid Stripe Request. Please configure stripe payment gateway again', 'fluentform');
             }
-            echo '<div class="ff_message ff_message_error">' . $message . '</div>';
+            echo '<div class="ff_message ff_message_error">' . esc_html($message) . '</div>';
             return;
         }
 
@@ -109,7 +109,7 @@ class ConnectConfig
 
         ?>
         <script type="text/javascript">
-            window.location = "<?php echo admin_url('admin.php?page=fluent_forms_settings#payments/payment_methods'); ?>"
+            window.location = "<?php echo esc_url(admin_url('admin.php?page=fluent_forms_settings#payments/payment_methods')); ?>"
         </script>
         <?php
 

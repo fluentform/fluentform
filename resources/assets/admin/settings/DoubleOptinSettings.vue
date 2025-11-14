@@ -6,15 +6,7 @@
                     <h5 class="title">{{$t('Global Double Optin Settings')}}</h5>
                 </card-head>
                 <card-body>
-                    <notice class="ff_alert_between" type="danger-soft">
-                        <div>
-                            <h6 class="title">{{$t('This is a Pro Feature')}}</h6>
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
-                        </div>
-                        <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrade to Pro')}}
-                        </a>
-                    </notice>
+                    <update-to-pro-content :update-message="$t('Upgrade to get access to import entries.')" v-if="!has_pro"/>
                 </card-body>
             </card>
 
@@ -181,10 +173,12 @@
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import Notice from '@/admin/components/Notice/Notice.vue';
+    import UpdateToProContent from "@/admin/components/_updateToProContent.vue";
 
     export default {
         name: 'DoubleOptinSettings',
         components: {
+            UpdateToProContent,
             wpEditor,
             Card,
             CardHead,

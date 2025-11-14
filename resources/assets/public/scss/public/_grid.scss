@@ -7,7 +7,7 @@
             &.ff_cond_v {
                 display: flex !important;
             }
-            &.mobile {
+            &.mobile:not(.ff_excluded) {
                 display: block !important;
             }
         }

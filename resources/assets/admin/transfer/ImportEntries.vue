@@ -209,17 +209,7 @@
 						<p class="text">{{ $t('Update fluentformpro to get access to import entries.') }}</p>
 					</div>
 				</notice>
-				<notice v-else type="danger-soft" class="ff_alert_between">
-					<div>
-						<h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>
-						<p class="text">{{ $t('Upgrade to get access to import entries.') }}</p>
-					</div>
-					<a target="_blank"
-					   href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-					   class="el-button el-button--danger el-button--small">
-						{{ $t('Upgrade to Pro') }}
-					</a>
-				</notice>
+                <update-to-pro-content :update-message="$t('Upgrade to get access to import entries.')" v-else/>
 			</card-body>
 		</card>
 	</div>
@@ -230,11 +220,13 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
 import Notice from '@/admin/components/Notice/Notice.vue';
+import UpdateToProContent from "@/admin/components/_updateToProContent.vue";
 
 export default {
 	name: 'ImportEntries',
 	props: ['app'],
 	components: {
+        UpdateToProContent,
 		Card,
 		CardHead,
 		CardBody,

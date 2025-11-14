@@ -138,7 +138,7 @@ trait MailChimpSubscriber
                                 }
                             }
                             elseif ('birthday' == $fieldSettings['type']) {
-                                $mergeFields[$fieldName] = date('d/m', strtotime($formFieldValue));
+                                $mergeFields[$fieldName] = gmdate('d/m', strtotime($formFieldValue));
                             } else {
                                 $date = \DateTime::createFromFormat('d/m/Y', $formFieldValue) ?: \DateTime::createFromFormat('m/d/Y', $formFieldValue);
 
@@ -262,7 +262,7 @@ trait MailChimpSubscriber
 
         $result = $MailChimp->put($endPoint, $arguments);
 
-        if (400 == $result['status']) {
+        if (is_array($result) && isset($result['status']) && 400 == $result['status']) {
             if (ArrayHelper::exists($result, 'errors')) {
                 $errors = ArrayHelper::get($result, 'errors');
                 return new \WP_Error(423, $errors);

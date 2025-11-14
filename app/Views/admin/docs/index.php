@@ -1,4 +1,5 @@
 <?php
+    // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
     do_action_deprecated(
         'fluentform_global_menu',
         [
@@ -35,16 +36,16 @@
                                 <div class="mask-2"></div>
                                 <div class="mask-3"></div>
                             </div>
-                            <h3><?php _e('To unlock more features consider upgrading to PRO', 'fluentform') ?></h3>
-                            <a target="_blank" rel="nofollow" class="el-button ff_upgrade_btn_large" href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=kadence"><?php _e('Upgrade to Pro', 'fluentform'); ?></a>
+                            <h3><?php esc_html_e('To unlock more features consider upgrading to PRO', 'fluentform') ?></h3>
+                            <a target="_blank" rel="nofollow" class="el-button ff_upgrade_btn_large" href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=kadence"><?php esc_html_e('Upgrade to Pro', 'fluentform'); ?></a>
                         </div>
                     </div><!-- .el-col -->
                 <?php endif; ?>
 
                 <div class="el-col el-col-12" style="padding-left: 12px; padding-right: 12px">
                     <div class="ff_card h-100">
-                        <h3 class="mb-3"><?php _e('Get Started with Fluent Forms WordPress Plugin', 'fluentform') ?></h3>
-                        <p class="text"><?php _e('Getting started with the Fluent Forms is easier than you could imagine. All our customers are not developers and we want to make your life easier.', 'fluentform') ?></p>
+                        <h3 class="mb-3"><?php esc_html_e('Get Started with Fluent Forms WordPress Plugin', 'fluentform') ?></h3>
+                        <p class="text"><?php esc_html_e('Getting started with the Fluent Forms is easier than you could imagine. All our customers are not developers and we want to make your life easier.', 'fluentform') ?></p>
                         <div class="ff_video_wrap mt-5">
                             <img class="ff_video_img" src="<?php echo esc_url($public_url); ?>img/video-img.jpg"/>
                             <a href="#" id="ff_video_btn" class="ff_icon_btn ff_video_icon">
@@ -55,13 +56,21 @@
                             <div id="ff_dialog_wrapper" class="el-dialog__wrapper hidden">
                                 <div role="dialog" aria-modal="true" class="el-dialog" style="margin-top: 25vh; width: 50%;">
                                     <div class="el-dialog__header mb-5">
-                                        <h4><?php _e( 'Fluent Forms Video Tutorials', 'fluentform' ) ?></h4>
+                                        <h4><?php esc_html_e( 'Fluent Forms Video Tutorials', 'fluentform' ) ?></h4>
                                         <button id="ff_close_btn" type="button" aria-label="Close" class="el-dialog__headerbtn">
                                             <i class="el-dialog__close el-icon el-icon-close"></i>
                                         </button>
                                     </div>
                                     <div class="el-dialog__body">
-                                        <iframe class="w-100" style="height: 340px; border-radius: 8px;" src="https://www.youtube.com/embed/vH0GuhqHA7I?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                        <iframe
+                                                class="w-100"
+                                                style="height: 340px; border-radius: 8px;"
+                                                src="https://www.youtube.com/embed/geJ9ZQGZz2o?si=PYY7lYWilINmngUV"
+                                                title="YouTube video player"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowfullscreen>
+                                        </iframe>
                                     </div>
                                 </div>
                             </div><!-- .el-dialog__wrapper -->
@@ -70,9 +79,9 @@
                 </div><!-- .el-col -->
                 <div class="el-col el-col-12" style="padding-left: 12px; padding-right: 12px">
                     <div class="ff_card h-100">
-                        <h3 class="mb-3"><?php _e('User Guides', 'fluentform') ?></h3>
+                        <h3 class="mb-3"><?php esc_html_e('User Guides', 'fluentform') ?></h3>
                         <p class="text">
-                            <?php _e('Please check the following articles for getting started with Fluent Forms', 'fluentform') ?>
+                            <?php esc_html_e('Please check the following articles for getting started with Fluent Forms', 'fluentform') ?>
                         </p>
                         <ul class="ff_list">
                             <?php foreach ($user_guides as $user_guide): ?>
@@ -95,12 +104,12 @@
                                 </div>
                             </div>
                             <div class="ff_media_body ml-4">
-                                <h3 class="mb-2"><?php _e('Need Expert Support?', 'fluentform') ?></h3>
+                                <h3 class="mb-2"><?php esc_html_e('Need Expert Support?', 'fluentform') ?></h3>
                                 <p class="text mb-4">
-                                    <?php _e('Our Experts would like to assist you for your query and any customization.', 'fluentform') ?>
+                                    <?php esc_html_e('Our Experts would like to assist you for your query and any customization.', 'fluentform') ?>
                                 </p>
                                 <a target="_blank" class="el-button el-button--success el-button--soft" href="https://wpmanageninja.com/support-tickets/">
-                                    <?php _e('Contact Support', 'fluentform') ?>
+                                    <?php esc_html_e('Contact Support', 'fluentform') ?>
                                 </a>
                             </div>
                         </div>
@@ -115,12 +124,12 @@
                                 </div>
                             </div>
                             <div class="ff_media_body ml-4">
-                                <h3 class="mb-2"><?php _e('Documentation', 'fluentform') ?></h3>
+                                <h3 class="mb-2"><?php esc_html_e('Documentation', 'fluentform') ?></h3>
                                 <p class="text mb-4">
-                                    <?php _e('Get detailed and guided instruction to level up your website with the necessary set up.', 'fluentform') ?>
+                                    <?php esc_html_e('Get detailed and guided instruction to level up your website with the necessary set up.', 'fluentform') ?>
                                 </p>
                                 <a target="_blank" class="el-button el-button--primary el-button--soft" href="https://wpmanageninja.com/docs/fluent-form/">
-                                    <?php _e('Visit Documentation', 'fluentform') ?>
+                                    <?php esc_html_e('Visit Documentation', 'fluentform') ?>
                                 </a>
                             </div>
                         </div>
@@ -135,12 +144,12 @@
                                 </div>
                             </div>
                             <div class="ff_media_body ml-4">
-                                <h3 class="mb-2"><?php _e('Facing An Issue Or Problem?', 'fluentform') ?></h3>
+                                <h3 class="mb-2"><?php esc_html_e('Facing An Issue Or Problem?', 'fluentform') ?></h3>
                                 <p class="text mb-4">
-                                    <?php _e('Please report us and we promise we will fix that as soon as humanly possible.', 'fluentform') ?>
+                                    <?php esc_html_e('Please report us and we promise we will fix that as soon as humanly possible.', 'fluentform') ?>
                                 </p>
                                 <a target="_blank" class="el-button el-button--warning el-button--soft" href="https://wpmanageninja.com/support-tickets/">
-                                    <?php _e('Report An Issue', 'fluentform') ?>
+                                    <?php esc_html_e('Report An Issue', 'fluentform') ?>
                                 </a>
                             </div>
                         </div>
@@ -155,12 +164,12 @@
                                 </div>
                             </div>
                             <div class="ff_media_body ml-4">
-                                <h3 class="mb-2"><?php _e('Join our community', 'fluentform') ?></h3>
+                                <h3 class="mb-2"><?php esc_html_e('Join our community', 'fluentform') ?></h3>
                                 <p class="text mb-4">
-                                    <?php _e('We have a strong community where we discuss ideas and help each other.', 'fluentform') ?>
+                                    <?php esc_html_e('We have a strong community where we discuss ideas and help each other.', 'fluentform') ?>
                                 </p>
                                 <a target="_blank" class="el-button el-button--blue el-button--soft" href="https://www.facebook.com/groups/fluentforms/">
-                                    <?php _e('Join community', 'fluentform') ?>
+                                    <?php esc_html_e('Join community', 'fluentform') ?>
                                 </a>
                             </div>
                         </div>
@@ -175,12 +184,12 @@
                                 </div>
                             </div>
                             <div class="ff_media_body ml-4">
-                                <h3 class="mb-2"><?php _e('Show Your Love', 'fluentform') ?></h3>
+                                <h3 class="mb-2"><?php esc_html_e('Show Your Love', 'fluentform') ?></h3>
                                 <p class="text mb-4">
-                                    <?php _e('We need your help to keep developing the plugin. Please review it and spread the love to keep us motivated.', 'fluentform') ?>
+                                    <?php esc_html_e('We need your help to keep developing the plugin. Please review it and spread the love to keep us motivated.', 'fluentform') ?>
                                 </p>
                                 <a target="_blank" class="el-button el-button--danger el-button--soft" href="https://wordpress.org/support/plugin/fluentform/reviews/#new-post">
-                                    <?php _e('Leave a Review', 'fluentform') ?>
+                                    <?php esc_html_e('Leave a Review', 'fluentform') ?>
                                 </a>
                             </div>
                         </div>
@@ -195,12 +204,12 @@
                                 </div>
                             </div>
                             <div class="ff_media_body ml-4">
-                                <h3 class="mb-2"><?php _e('Request a Feature', 'fluentform') ?></h3>
+                                <h3 class="mb-2"><?php esc_html_e('Request a Feature', 'fluentform') ?></h3>
                                 <p class="text mb-4">
-                                    <?php _e('If you need any feature on Fluent Forms, then please request a feature to us with your requirement.', 'fluentform') ?>
+                                    <?php esc_html_e('If you need any feature on Fluent Forms, then please request a feature to us with your requirement.', 'fluentform') ?>
                                 </p>
-                                <a target="_blank" class="el-button el-button--cyan el-button--soft" href="https://github.com/fluentform/fluentform/issues">
-                                    <?php _e('Request Now', 'fluentform') ?>
+                                <a target="_blank" class="el-button el-button--cyan el-button--soft" href="https://fluentforms.com/contact-us/">
+                                    <?php esc_html_e('Request Now', 'fluentform') ?>
                                 </a>
                             </div>
                         </div>

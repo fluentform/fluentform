@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Migrator\Classes;
 
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\Form;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -407,7 +408,7 @@ class GravityFormsMigrator extends BaseMigrator
                         'icon_class' => 'ff-edit-column-' . $colsCount
                     ],
                     'columns'        => $fields,
-                    'uniqElKey'      => 'col' . '_' . md5(uniqid(mt_rand(), true))
+                    'uniqElKey'      => 'col' . '_' . md5(uniqid(wp_rand(), true))
                 ];
             } else {
                 //without container
@@ -866,7 +867,7 @@ class GravityFormsMigrator extends BaseMigrator
                 if ("input_file" == $type && $value = $this->getSubmissionValue($id, $submission)) {
                     $finalValue = $this->migrateFilesAndGetUrls($value);
                 } elseif ("repeater_field" == $type && $value = $this->getSubmissionValue($id, $submission)) {
-                    if ($repeatData = (array)maybe_unserialize($value)) {
+                    if ($repeatData = (array)Helper::safeUnserialize($value)) {
                         $finalValue = [];
                         foreach ($repeatData as $data) {
                             $finalValue[] = array_values($data);

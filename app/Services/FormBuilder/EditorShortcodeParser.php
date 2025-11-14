@@ -2,50 +2,49 @@
 
 namespace FluentForm\App\Services\FormBuilder;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Services\Browser\Browser;
 
 class EditorShortcodeParser
 {
     /**
      * Available dynamic short codes
-     *
      * @var null
      */
     private static $dynamicShortcodes = null;
-
+    
     /**
      * mappings of methods to parse the shortcode
-     *
      * @var array
      */
     private static $handlers = [
         'ip'         => 'parseIp',
         'date.m/d/Y' => 'parseDate',
         'date.d/m/Y' => 'parseDate',
-
+        
         'embed_post.ID'         => 'parsePostProperties',
         'embed_post.post_title' => 'parsePostProperties',
         'embed_post.permalink'  => 'parsePostProperties',
         'http_referer'          => 'parseWPProperties',
-
+        
         'wp.admin_email' => 'parseWPProperties',
         'wp.site_url'    => 'parseWPProperties',
         'wp.site_title'  => 'parseWPProperties',
-
+        
         'user.ID'           => 'parseUserProperties',
         'user.display_name' => 'parseUserProperties',
         'user.first_name'   => 'parseUserProperties',
         'user.last_name'    => 'parseUserProperties',
         'user.user_email'   => 'parseUserProperties',
         'user.user_login'   => 'parseUserProperties',
-
+        
         'browser.name'     => 'parseBrowserProperties',
         'browser.platform' => 'parseBrowserProperties',
-
+        
         'get.param_name'           => 'parseRequestParam',
         'random_string.param_name' => 'parseRandomString',
     ];
-
+    
     /**
      * Filter dynamic shortcodes in input value
      *
@@ -59,13 +58,13 @@ class EditorShortcodeParser
             // it's the css
             return $value;
         }
-
+        
         if (is_null(static::$dynamicShortcodes)) {
             static::$dynamicShortcodes = fluentFormEditorShortCodes();
         }
-
+        
         $filteredValue = '';
-
+        
         foreach (static::parseValue($value) as $handler) {
             if (isset(static::$handlers[$handler])) {
                 return call_user_func_array(
@@ -73,48 +72,48 @@ class EditorShortcodeParser
                     ['{' . $handler . '}', $form]
                 );
             }
-
+            
             if (false !== strpos($handler, 'get.')) {
                 return static::parseRequestParam($handler);
             }
             if (false !== strpos($handler, 'random_string.')) {
                 return static::parseRandomString($handler);
             }
-
+            
             if (false !== strpos($handler, 'user.')) {
-                $value = self::parseUserProperties($handler);
-                if (is_array($value) || is_object($value)) {
+                $parsedValue = self::parseUserProperties($handler);
+                if (is_array($parsedValue) || is_object($parsedValue)) {
                     return '';
                 }
-                return esc_html($value);
+                return esc_html($parsedValue);
             }
-
+            
             if (false !== strpos($handler, 'date.')) {
                 return esc_html(self::parseDate($handler));
             }
-
+            
             if (false !== strpos($handler, 'embed_post.meta.')) {
                 $key = substr(str_replace(['{', '}'], '', $value), 16);
                 global $post;
                 if ($post) {
-                    $value = get_post_meta($post->ID, $key, true);
-                    if (! is_array($value) && ! is_object($value)) {
-                        return esc_html($value);
+                    $metaValue = get_post_meta($post->ID, $key, true);
+                    if (!is_array($metaValue) && !is_object($metaValue)) {
+                        return esc_html($metaValue);
                     }
                 }
                 return '';
             }
-
+            
             if (false !== strpos($handler, 'embed_post.')) {
                 return self::parsePostProperties($handler, $form);
             }
-
+            
             if (false !== strpos($handler, 'cookie.')) {
                 $scookieProperty = substr($handler, strlen('cookie.'));
-
+                
                 return wpFluentForm('request')->cookie($scookieProperty);
             }
-
+            
             if (false !== strpos($handler, 'dynamic.')) {
                 $dynamicKey = substr($handler, strlen('dynamic.'));
                 // maybe has fallback value
@@ -124,40 +123,42 @@ class EditorShortcodeParser
                 if (count($dynamicKey) > 1) {
                     $fallBack = $dynamicKey[1];
                 }
-                $ref = $dynamicKey[0];
-
+                if (isset($dynamicKey[0])) {
+                    $ref = $dynamicKey[0];
+                }
+                
                 if ('payment_summary' == $ref) {
                     return fluentform_sanitize_html('<div class="ff_dynamic_value ff_dynamic_payment_summary" data-ref="payment_summary"><div class="ff_payment_summary"></div><div class="ff_payment_summary_fallback">' . $fallBack . '</div></div>');
                 }
-
+                
                 return fluentform_sanitize_html('<span class="ff_dynamic_value" data-ref="' . $ref . '" data-fallback="' . $fallBack . '">' . $fallBack . '</span>');
             }
-
+            
             // if it's multi line then just return
             if (false !== strpos($handler, PHP_EOL)) { // most probably it's a css
                 return '{' . $handler . '}';
             }
-
+            
             $handlerArray = explode('.', $handler);
-
+            
             if (count($handlerArray) > 1) {
                 // it's a grouped handler
                 $group = array_shift($handlerArray);
                 $parsedValue = apply_filters('fluentform_editor_shortcode_callback_group_' . $group, '{' . $handler . '}', $form, $handlerArray);
                 return apply_filters('fluentform/editor_shortcode_callback_group_' . $group, $parsedValue, $form, $handlerArray);
             }
-
+            
             $parsedValue = apply_filters('fluentform_editor_shortcode_callback_' . $handler, '{' . $handler . '}', $form);
             return apply_filters('fluentform/editor_shortcode_callback_' . $handler, $parsedValue, $form);
         }
-
+        
         return $filteredValue;
     }
-
+    
     /**
      * Parse request query param.
      *
-     * @param string    $value
+     * @param string $value
      * @param \stdClass $form
      *
      * @return string
@@ -167,18 +168,18 @@ class EditorShortcodeParser
         $exploded = explode('.', $value);
         $param = array_pop($exploded);
         $value = wpFluentForm('request')->get($param);
-
-        if (! $value) {
+        
+        if (!$value) {
             return '';
         }
-
+        
         if (is_array($value)) {
             return esc_attr(implode(', ', $value));
         }
-
+        
         return esc_attr($value);
     }
-
+    
     /**
      * Parse the curly braced shortcode into array
      *
@@ -188,7 +189,7 @@ class EditorShortcodeParser
      */
     public static function parseValue($value)
     {
-        if (! is_array($value)) {
+        if (!is_array($value)) {
             return preg_split(
                 '/{(.*?)}/',
                 $value,
@@ -196,14 +197,14 @@ class EditorShortcodeParser
                 PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
             );
         }
-
+        
         return $value;
     }
-
+    
     /**
      * Declare all parsers and must be [private] static methods
      */
-
+    
     /**
      * Parse loggedin user properties
      *
@@ -215,24 +216,28 @@ class EditorShortcodeParser
     {
         if ($user = wp_get_current_user()) {
             $prop = substr(str_replace(['{', '}'], '', $value), 5);
-
+            
             if (false !== strpos($prop, 'meta.')) {
                 $metaKey = substr($prop, strlen('meta.'));
+                $metaKey = sanitize_text_field($metaKey);
+                if (empty($metaKey)) {
+                    return '';
+                }
                 $userId = $user->ID;
                 $data = get_user_meta($userId, $metaKey, true);
-                $data = maybe_unserialize($data);
+                $data = Helper::safeUnserialize($data);
                 if (!is_array($data)) {
                     return esc_html($data);
                 }
                 return esc_html(implode(',', $data));
             }
-
+            
             return esc_html($user->{$prop});
         }
-
+        
         return '';
     }
-
+    
     /**
      * Parse embedded post properties
      *
@@ -243,18 +248,18 @@ class EditorShortcodeParser
     private static function parsePostProperties($value, $form = null)
     {
         global $post;
-        if (! $post) {
+        if (!$post) {
             return '';
         }
-
+        
         $key = $prop = substr(str_replace(['{', '}'], '', $value), 11);
-
+        
         if (false !== strpos($key, 'author.')) {
             $authorProperty = substr($key, strlen('author.'));
             $authorId = $post->post_author;
             if ($authorId) {
                 $data = get_the_author_meta($authorProperty, $authorId);
-                if (! is_array($data)) {
+                if (!is_array($data)) {
                     return esc_html($data);
                 }
             }
@@ -263,7 +268,7 @@ class EditorShortcodeParser
             $metaKey = substr($key, strlen('meta.'));
             $postId = $post->ID;
             $data = get_post_meta($postId, $metaKey, true);
-            if (! is_array($data)) {
+            if (!is_array($data)) {
                 return esc_html($data);
             }
             return '';
@@ -272,23 +277,23 @@ class EditorShortcodeParser
             $postId = $post->ID;
             if (function_exists('get_field')) {
                 $data = get_field($metaKey, $postId, true);
-                if (! is_array($data)) {
+                if (!is_array($data)) {
                     return esc_html($data);
                 }
                 return '';
             }
         }
-
+        
         if ('permalink' == $prop) {
             return site_url(esc_attr(urldecode(wpFluentForm('request')->server('REQUEST_URI'))));
         }
-
+        
         if (property_exists($post, $prop)) {
             return esc_html($post->{$prop});
         }
         return '';
     }
-
+    
     /**
      * Parse WP Properties
      *
@@ -310,10 +315,10 @@ class EditorShortcodeParser
         if ('{http_referer}' == $value) {
             return esc_url(wp_get_referer());
         }
-
+        
         return '';
     }
-
+    
     /**
      * Parse browser/user-agent properties
      *
@@ -329,10 +334,10 @@ class EditorShortcodeParser
         } elseif ('{browser.platform}' == $value) {
             return esc_html($browser->getPlatform());
         }
-
+        
         return '';
     }
-
+    
     /**
      * Parse ip shortcode
      *
@@ -342,10 +347,11 @@ class EditorShortcodeParser
      */
     private static function parseIp($value, $form = null)
     {
-        $ip = wpFluentForm('request')->getIp();
+        $rawIp = wpFluentForm('request')->getIp();
+        $ip = sanitize_text_field($rawIp);
         return $ip ? esc_html($ip) : $value;
     }
-
+    
     /**
      * Parse date shortcode
      *
@@ -356,14 +362,14 @@ class EditorShortcodeParser
     private static function parseDate($value, $form = null)
     {
         $format = substr(str_replace(['}', '{'], '', $value), 5);
-        $date = date($format, strtotime(current_time('mysql')));
+        $date = gmdate($format, strtotime(current_time('mysql')));
         return $date ? esc_html($date) : '';
     }
-
+    
     /**
      * Parse request query param.
      *
-     * @param string    $value
+     * @param string $value
      * @param \stdClass $form
      *
      * @return string
@@ -373,18 +379,18 @@ class EditorShortcodeParser
         $exploded = explode('.', $value);
         $param = array_pop($exploded);
         $value = wpFluentForm('request')->get($param);
-
-        if (! $value) {
+        
+        if (!$value) {
             return '';
         }
-
+        
         if (is_array($value)) {
             return sanitize_textarea_field(implode(', ', $value));
         }
-
+        
         return sanitize_textarea_field($value);
     }
-
+    
     /**
      * Generate random a string with prefix
      *
@@ -397,7 +403,7 @@ class EditorShortcodeParser
         $exploded = explode('.', $value);
         $prefix = array_pop($exploded);
         $value = $prefix . uniqid();
-
+        
         return esc_html(apply_filters('fluentform/shortcode_parser_callback_random_string', $value, $prefix, new static()));
     }
 }

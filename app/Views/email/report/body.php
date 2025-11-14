@@ -1,3 +1,6 @@
+<?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -5,7 +8,7 @@
 <head>
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title><?php _e('Email Summary', 'fluentform'); ?></title>
+    <title><?php esc_html_e('Email Summary', 'fluentform'); ?></title>
     <style type="text/css">
         .summary_table {
             width: 100%;
@@ -120,7 +123,7 @@
                         <td class="alert alert-warning"
                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; vertical-align: top; color: #fff; font-weight: 500; text-align: center; border-radius: 3px 3px 0 0; background-color: #673ab7; margin: 0; padding: 20px;"
                             align="center" bgcolor="#FF9F00" valign="top">
-                            <?php _e('Weekly Email Summary of Your Forms', 'fluentform'); ?>
+                            <?php esc_html_e('Weekly Email Summary of Your Forms', 'fluentform'); ?>
                         </td>
                     </tr>
                     <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -133,8 +136,10 @@
                                     <td class="content-block"
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                         valign="top">
-                                        <b><?php _e('Hello There,', 'fluentform'); ?></b><br/>
-                                        <?php printf(esc_html__('Let\'s see how your forms performed in the last %d days.', 'fluentform'), $days);; ?>
+                                        <b><?php esc_html_e('Hello There,', 'fluentform'); ?></b><br/>
+                                        <?php printf(
+                                          /* translators: %d is the Number Email Summary Days */
+                                          esc_html__('Let\'s see how your forms performed in the last %d days.', 'fluentform'), intval($days));; ?>
                                     </td>
                                 </tr>
                                 <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -144,8 +149,8 @@
                                         <table class="summary_table">
                                             <thead>
                                             <tr>
-                                                <th><?php _e('Form', 'fluentform'); ?></th>
-                                                <th><?php _e('Entries', 'fluentform'); ?></th>
+                                                <th><?php esc_html_e('Form', 'fluentform'); ?></th>
+                                                <th><?php esc_html_e('Entries', 'fluentform'); ?></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -165,12 +170,12 @@
                                         <td class="content-block"
                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                             valign="top">
-                                            <h3><?php _e('Payments', 'fluentform'); ?></h3>
+                                            <h3><?php esc_html_e('Payments', 'fluentform'); ?></h3>
                                             <table class="summary_table">
                                                 <thead>
                                                 <tr>
-                                                    <th><?php _e('Form', 'fluentform'); ?></th>
-                                                    <th><?php _e('Payment Total', 'fluentform'); ?></th>
+                                                    <th><?php esc_html_e('Form', 'fluentform'); ?></th>
+                                                    <th><?php esc_html_e('Payment Total', 'fluentform'); ?></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -192,6 +197,7 @@
                                         valign="top">
                                         <?php
                                         $generateText = sprintf(
+                                            /* translators: 1: opening anchor tag, 2: site name, 3: closing anchor tag */
                                             __('This email has been generated from Fluent Forms at %1$s%2$s%3$s.', 'fluentform'),
                                             '<a href="' .  site_url() . '">',
                                             get_bloginfo('name'),
@@ -226,6 +232,7 @@
                                 align="center" valign="top">
                                 <?php
                                 $footerText = sprintf(
+                                     /* translators: 1: opening anchor tag to site, 2: closing anchor tag, 3: opening anchor tag to settings, 4: closing anchor tag */
                                     __('This email has been sent from %1$syour website%2$s via Fluent Forms. You can disable this email %3$syour website%4$s', 'fluentform'),
                                     '<a href="' .  site_url() . '">',
                                     '</a>',

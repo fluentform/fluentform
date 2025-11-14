@@ -75,6 +75,26 @@ class SubmissionHandlerService
                     return $value !== null && $value !== false && $value !== '';
                 });
             }
+            
+            // Process "Other" options for checkboxes
+            if (strpos($name, '__ff_other_input__') !== false && !empty($input)) {
+                $checkboxFieldName = str_replace('__ff_other_input__', '', $name);
+                
+                if (isset($formDataRaw[$checkboxFieldName]) && is_array($formDataRaw[$checkboxFieldName])) {
+                    $selectedValues = $formDataRaw[$checkboxFieldName];
+                    
+                    // Handle field-specific "Other" values
+                    $otherValue = '__ff_other_' . $checkboxFieldName . '__';
+                    
+                    $key = array_search($otherValue, $selectedValues);
+                    
+                    if ($key !== false) {
+                        $selectedValues[$key] = 'Other: ' . sanitize_text_field($input);
+                        $formDataRaw[$checkboxFieldName] = $selectedValues;
+                    }
+                }
+                unset($formDataRaw[$name]);
+            }
         }
 
         // Parse the form and get the flat inputs with validations.
@@ -129,7 +149,7 @@ class SubmissionHandlerService
         );
         $this->formData = apply_filters('fluentform/insert_response_data', $formData, $formId, $inputConfigs);
         
-        $ipAddress = $this->app->request->getIp();
+        $ipAddress = sanitize_text_field($this->app->request->getIp());
 
         $disableIpLog = apply_filters_deprecated(
             'fluentform_disable_ip_logging',
@@ -155,6 +175,7 @@ class SubmissionHandlerService
             'user_id'       => get_current_user_id(),
             'browser'       => $browser->getBrowser(),
             'device'        => $browser->getPlatform(),
+            'country'       => apply_filters('fluentform/disable_submission_country_detection', false, $formId) ? null : Helper::getCountryCodeFromHeaders(),
             'ip'            => $ipAddress,
             'created_at'    => current_time('mysql'),
             'updated_at'    => current_time('mysql'),

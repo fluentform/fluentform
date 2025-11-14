@@ -21,7 +21,9 @@ class OrderItems
 
         $table = $wpdb->prefix . 'fluentform_order_items';
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration file, direct query needed
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) != $table) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Migration file, schema change is the purpose
             $sql = "CREATE TABLE $table (
 				id int(11) NOT NULL AUTO_INCREMENT,
 				form_id int(11) NOT NULL,
@@ -50,7 +52,8 @@ class OrderItems
         global $wpdb;
         $table = $wpdb->prefix . 'fluentform_order_items';
         // find the data types of each column
-        $results = $wpdb->get_results("DESCRIBE $table");
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration file, checking table structure, %1s is for identifier
+        $results = $wpdb->get_results($wpdb->prepare("DESCRIBE %1s", $table));
         $items = [];
         foreach ($results as $result) {
             $items[$result->Field] = $result->Type;
@@ -61,11 +64,13 @@ class OrderItems
 
         // if not big int convert to big int
         if (!$isBigInItemPrice) {
-            $wpdb->query("ALTER TABLE $table MODIFY item_price BIGINT UNSIGNED");
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration file, schema change is the purpose, %1s is for identifier
+            $wpdb->query($wpdb->prepare("ALTER TABLE %1s MODIFY item_price BIGINT UNSIGNED", $table));
         }
 
         if (!$isBigInitPrice) {
-            $wpdb->query("ALTER TABLE $table MODIFY line_total BIGINT UNSIGNED");
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration file, schema change is the purpose, %1s is for identifier
+            $wpdb->query($wpdb->prepare("ALTER TABLE %1s MODIFY line_total BIGINT UNSIGNED", $table));
         }
     }
 }

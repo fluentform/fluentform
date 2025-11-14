@@ -209,6 +209,7 @@ class FormValidationService
         }
 
         if ($errors) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new ValidationException('', 423, null,  ['errors' => $errors]);
         }
 
@@ -233,11 +234,12 @@ class FormValidationService
             $maxSubmissionCount = apply_filters('fluentform/max_submission_count', 5, $this->form->id);
             $minSubmissionInterval = apply_filters('fluentform/min_submission_interval', 30, $this->form->id);
 
-            $interval = date('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
+            $interval = gmdate('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
 
+            $clientIp = sanitize_text_field($this->app->request->getIp());
             $submissionCount = wpFluent()->table('fluentform_submissions')
                 ->where('status', '!=', 'trashed')
-                ->where('ip', $this->app->request->getIp())
+                ->where('ip', $clientIp ?: '0.0.0.0')
                 ->where('created_at', '>=', $interval)
                 ->count();
 
@@ -245,7 +247,11 @@ class FormValidationService
                 throw new ValidationException('', 429, null,  [
                     'errors' => [
                         'restricted' => [
-                            __(apply_filters('fluentform/too_many_requests', 'Too Many Requests.', $this->form->id), 'fluentform'),
+                            fluentform_sanitize_html(apply_filters(
+                                'fluentform/too_many_requests',
+                                __('Too Many Requests.', 'fluentform'),
+                                $this->form->id
+                            )),
                         ],
                     ]
                 ]);
@@ -282,10 +288,11 @@ class FormValidationService
         $isAllowed = apply_filters('fluentform/is_form_renderable', $isAllowed, $this->form);
 
         if (!$isAllowed['status']) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new ValidationException('', 422, null,  [
                 'errors' => [
                     'restricted' => [
-                        $isAllowed['message'],
+                        fluentform_sanitize_html($isAllowed['message']),
                     ],
                 ],
             ]);
@@ -320,14 +327,14 @@ class FormValidationService
                     array_intersect_key($this->formData, $fields)
                 );
                 if (!count(Helper::arrayFilterRecursive($filteredFormData))) {
-                    $defaultMessage = __('Sorry! You can\'t submit an empty form.','fluentform');
+                    $defaultMessage = esc_html(__('Sorry! You can\'t submit an empty form.','fluentform'));
                     $customMessage = Arr::get($settings, 'message');
-                    $customMessage = apply_filters('fluentform/deny_empty_submission_message', $customMessage, $this->form);
+                    $customMessage = fluentform_sanitize_html(apply_filters('fluentform/deny_empty_submission_message', $customMessage, $this->form));
 
                     throw new ValidationException('', 422, null,  [
                         'errors' => [
                             'restricted' => [
-                                !empty($customMessage) ? $customMessage : $defaultMessage,
+                                !empty($customMessage) ? fluentform_sanitize_html($customMessage) : fluentform_sanitize_html($defaultMessage),
                             ],
                         ],
                     ]);
@@ -350,11 +357,14 @@ class FormValidationService
             return;
         }
 
-        $ip = $this->app->request->getIp();
-        if (is_array($ip)) {
-            $ip = Arr::get($ip, '0');
+        $rawIp = $this->app->request->getIp();
+        if (is_array($rawIp)) {
+            $rawIp = Arr::get($rawIp, '0');
         }
-        $this->checkIpRestriction($settings, $ip);
+        $ip = sanitize_text_field($rawIp);
+        if ($ip) {
+            $this->checkIpRestriction($settings, $ip);
+        }
 
         $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
         if ($isCountryRestrictionEnabled) {
@@ -399,6 +409,7 @@ class FormValidationService
                 );
 
                 $errors = $this->app->applyFilters('fluentForm/nonce_error', $errors);
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 throw new ValidationException('', 422, null, ['errors' => $errors]);
             }
         }
@@ -417,6 +428,7 @@ class FormValidationService
         $errors = [
             '_fluentformakismet' => __('Submission marked as spammed. Please try again', 'fluentform'),
         ];
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
         throw new ValidationException('', 422, null, ['errors' => $errors]);
     }
 
@@ -433,6 +445,7 @@ class FormValidationService
         $errors = [
             '_fluentformcleantalk' => __('Submission marked as spammed. Please try again', 'fluentform'),
         ];
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
         throw new ValidationException('', 422, null, ['errors' => $errors]);
     }
 
@@ -453,6 +466,7 @@ class FormValidationService
         $errors = [
             '_fluentformcleantalk' => __('Submission marked as spammed. Please try again', 'fluentform'),
         ];
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
         throw new ValidationException('', 422, null, ['errors' => $errors]);
     }
 
@@ -561,10 +575,11 @@ class FormValidationService
             $isValid = ReCaptcha::validate($token, $keys['secretKey'], $version);
             
             if (!$isValid) {
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 throw new ValidationException('', 422, null, [
                     'errors' => [
                         'g-recaptcha-response' => [
-                            __('reCaptcha verification failed, please try again.', 'fluentform'),
+                            esc_html(__('reCaptcha verification failed, please try again.', 'fluentform')),
                         ],
                     ],
                 ]);
@@ -583,7 +598,6 @@ class FormValidationService
         if ($this->shouldSkipCaptchaValidation('hcaptcha')) {
             return;
         }
-
         $hasAutoHcap = apply_filters_deprecated(
             'ff_has_auto_hcaptcha',
             [
@@ -606,7 +620,7 @@ class FormValidationService
                 throw new ValidationException('', 422, null, [
                     'errors' => [
                         'h-captcha-response' => [
-                            __('hCaptcha verification failed, please try again.', 'fluentform'),
+                            esc_html(__('hCaptcha verification failed, please try again.', 'fluentform')),
                         ],
                     ],
                 ]);
@@ -648,7 +662,7 @@ class FormValidationService
                 throw new ValidationException('', 422, null, [
                     'errors' => [
                         'cf-turnstile-response' => [
-                            __('Turnstile verification failed, please try again.', 'fluentform'),
+                            esc_html(__('Turnstile verification failed, please try again.', 'fluentform')),
                         ],
                     ],
                 ]);
@@ -694,8 +708,7 @@ class FormValidationService
         $token = Helper::getIpinfo();
         
         if (!$token) {
-            $message = __('Sorry! Please provide valid token for ipinfo.io in global settings.', 'fluentform');
-            self::throwValidationException($message);
+            return false;
         }
         
         $url = 'https://ipinfo.io/' . $ip . '?token=' . $token;
@@ -717,21 +730,29 @@ class FormValidationService
      * @throws ValidationException
      */
     private function getIpBasedOnCountry($ip) {
-        $request = wp_remote_get("http://www.geoplugin.net/php.gp?ip={$ip}");
+        $request = wp_remote_get("https://apip.cc/api-json/{$ip}");
         $code = wp_remote_retrieve_response_code($request);
 
-        $message = __('Sorry! There is an error occurred in getting Country using geoplugin.net. Please check form settings and try again.', 'fluentform');
+        $message = __('Sorry! There is an error occurred in getting Country using ip-api.com. Please check form settings and try again.', 'fluentform');
 
         if ($code === 200) {
             $body = wp_remote_retrieve_body($request);
-            $body = unserialize($body);
+            $body = \json_decode($body, true);
+            $status = Arr::get($body, 'status', false) === 'success';
+            
+            if (!$status) {
+                return Helper::getCountryCodeFromHeaders();
+            }
 
-            if ($country = Arr::get($body,'geoplugin_countryCode')) {
+            if ($country = Arr::get($body,'CountryCode')) {
                 return $country;
             } else {
                 self::throwValidationException($message);
             }
         } else {
+            if ($country = Helper::getCountryCodeFromHeaders()) {
+                return $country;
+            }
             self::throwValidationException($message);
         }
     }
@@ -800,6 +821,11 @@ class FormValidationService
                 self::throwValidationException($message);
             }
         }
+//        else {
+//            $defaultMessage = __('Sorry! There is an error occurred in getting Country. Please check form settings and try again.', 'fluentform');
+//            $message = apply_filters('fluentform/country_restriction_message', $defaultMessage, $this->form);
+//            self::throwValidationException($message);
+//        }
     }
 
     private function checkKeyWordRestriction($settings)
@@ -853,15 +879,20 @@ class FormValidationService
         throw new ValidationException('', 422, null,  [
             'errors' => [
                 'restricted' => [
-                    $message
+                    fluentform_sanitize_html($message)
                 ],
             ],
         ]);
     }
 
     /**
-     * Check if captcha validation should be skipped when autoload captcha is enabled
+     * Check if captcha validation should be skipped based on autoload captcha settings
      *
+     * When autoload captcha is enabled, only the selected captcha type should be validated.
+     * This method returns true if the current captcha type is NOT the selected autoload type,
+     * preventing unnecessary validation of multiple captcha types on the same form.
+     *
+     * @param string $captchaType The captcha type to check ('recaptcha', 'hcaptcha', 'turnstile')
      * @return bool True if validation should be skipped, false otherwise
      */
     private function shouldSkipCaptchaValidation($captchaType)
@@ -876,12 +907,11 @@ class FormValidationService
 
         $selectedCaptchaType = Arr::get($globalSettings, 'misc.captcha_type');
 
-        // If the current captcha type is the selected autoload type, don't skip validation
+        // If the current captcha type matches the selected autoload type, proceed with validation
         if ($captchaType === $selectedCaptchaType) {
             return false;
         }
 
-        // If autoload_captcha is enabled and this is not the selected type, skip validation
-        return true;
+        return true; // Skip validation for non-selected captcha types
     }
 }

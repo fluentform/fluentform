@@ -66,7 +66,7 @@ class AdminNoticeController extends Controller
             'notice'        => $notice,
             'show_logo'     => false,
             'show_hide_nag' => false,
-            'logo_url'      => fluentformMix('img/fluent_icon.png')
+            'logo_url'      => fluentformMix('img/fluent_icon.svg')
         ));
     }
     

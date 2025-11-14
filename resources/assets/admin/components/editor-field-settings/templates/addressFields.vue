@@ -95,19 +95,24 @@
             <el-select v-model="editItem.settings.autocomplete_provider" placeholder="Select provider" style="width: 100%;">
                 <el-option label="None" value="none" />
                 <el-option label="Google Maps" value="google" :disabled="!has_gmap_api" />
-                <el-option label="Browser Geolocation (HTML5)" value="html5" :disabled="!has_pro" />
+                <el-option label="OpenStreetMap Geolocation (Nominatim)" value="html5" :disabled="!has_pro" />
             </el-select>
         </el-form-item>
 
         <small v-if="!has_gmap_api && editItem.settings.autocomplete_provider === 'google'">
            {{$t('Google Maps API key required. Configure in FluentForm Pro settings.')}}
         </small>
+
+        <small v-if="editItem.settings.autocomplete_provider === 'html5'" class="mb-3" style="display: inline-block;">
+            {{ $t("Address autocomplete with OpenStreetMap (Nominatim) is limited to 1 request per second across all users and attribution required. Best for forms with low traffic. For high-traffic sites, consider Google Maps.") }}
+        </small>
+
         <small v-if="!has_pro">
            {{$t('Autocomplete with Coordinates is available in Fluent Forms Pro.')}}
         </small>
 
         <!-- HTML5 Locate Radio (manual) -->
-        <el-form-item v-if="editItem.settings.autocomplete_provider === 'html5'" :label="$t('HTML5 Locate')">
+        <el-form-item v-if="editItem.settings.autocomplete_provider === 'html5'" :label="$t('OpenStreetMap Locate')">
             <el-radio-group size="small" v-model="editItem.settings.enable_auto_locate">
                 <el-radio-button label="on_load">{{ $t('On Page Load') }}</el-radio-button>
                 <el-radio-button label="on_click">{{ $t('On Click') }}</el-radio-button>

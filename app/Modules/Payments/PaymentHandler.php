@@ -101,6 +101,10 @@ class PaymentHandler
         add_filter('fluentform/all_entry_labels_with_payment', array($this, 'modifySingleEntryLabels'), 10, 3);
         
         add_action('fluentform/rendering_payment_form', function ($form) {
+            if (Helper::isElementorEditor()) {
+                return;
+            }
+
             $src = fluentformMix('js/payment_handler.js');
             $version = FLUENTFORM_VERSION;
 
@@ -134,9 +138,11 @@ class PaymentHandler
                     'not_found'                => __('No payment item selected yet', 'fluentform'),
                     'discount:'                => __('Discount:', 'fluentform'),
                     'processing_text'          => __('Processing payment. Please wait...', 'fluentform'),
-                    'confirming_text'          => __('Confirming payment. Please wait...', 'fluentform'),
+                    'confirming_text'           => __('Confirming payment. Please wait...', 'fluentform'),
+                    /* translators: %s is the item name */
                     'Signup Fee for %s'        => __('Signup Fee for %s', 'fluentform'),
-                    'Signup Fee for %1s - %2s' => __('Signup Fee for %1s - %2s', 'fluentform'),
+                    /* translators: 1: item name, 2: plan name */
+                    'Signup Fee for %1$s - %2$s' => __('Signup Fee for %1$s - %2$s', 'fluentform'),
                 ]
             ]);
             
@@ -208,12 +214,13 @@ class PaymentHandler
             
         }, 11, 1);
         
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Public payment callback from gateway, nonce not applicable, verified by transaction_hash in validateFrameLessPage()
         if (isset($_GET['fluentform_payment']) && isset($_GET['payment_method'])) {
             add_action('wp', function () {
-                $data = $_GET;
-                
-                $type = sanitize_text_field($_GET['fluentform_payment']);
-                
+                $data = $_GET; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Data sanitized below and verified by validateFrameLessPage()
+
+                $type = isset($_GET['fluentform_payment']) ? sanitize_text_field(wp_unslash($_GET['fluentform_payment'])) : '';
+
                 if ($type == 'view' && $route = ArrayHelper::get($data, 'route')) {
                     do_action_deprecated(
                         'fluent_payment_view_' . $route,
@@ -226,9 +233,9 @@ class PaymentHandler
                     );
                     do_action('fluentform/payment_view_' . $route, $data);
                 }
-                
+
                 $this->validateFrameLessPage($data);
-                $paymentMethod = sanitize_text_field($_GET['payment_method']);
+                $paymentMethod = isset($_GET['payment_method']) ? sanitize_text_field(wp_unslash($_GET['payment_method'])) : '';
                 do_action_deprecated(
                     'fluent_payment_frameless_' . $paymentMethod,
                     [
@@ -241,10 +248,12 @@ class PaymentHandler
                 do_action('fluentform/payment_frameless_' . $paymentMethod, $data);
             });
         }
-        
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended -- End of payment callback processing
+
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- IPN callback from payment gateway, verified by gateway signature
         if (isset($_REQUEST['fluentform_payment_api_notify'])) {
             add_action('wp', function () {
-                $paymentMethod = sanitize_text_field($_REQUEST['payment_method']);
+                $paymentMethod = isset($_REQUEST['payment_method']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_method'])) : '';
                 do_action_deprecated(
                     'fluentform_ipn_endpoint_' . $paymentMethod,
                     [
@@ -256,7 +265,8 @@ class PaymentHandler
                 do_action('fluentform/ipn_endpoint_' . $paymentMethod);
             });
         }
-        
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended -- End of IPN webhook processing
+
         add_filter('fluentform/editor_vars', function ($vars) {
             $settings = PaymentHelper::getCurrencyConfig($vars['form_id']);
             $vars['payment_settings'] = $settings;
@@ -322,21 +332,22 @@ class PaymentHandler
     
     public function getGlobalSettingsPaymentVars($globalSettingVars)
     {
-        
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin page, nonce verified by WordPress admin
         if (isset($_GET['ff_stripe_connect'])) {
             $data = ArrayHelper::only($_GET, ['ff_stripe_connect', 'mode', 'state', 'code']);
             ConnectConfig::verifyAuthorizeSuccess($data);
         }
-        
+
         $paymentSettings = PaymentHelper::getPaymentSettings();
         $isSettingsAvailable = PaymentHelper::hasPaymentSettings();
-        
+
         $nav = 'general';
-        
+
         if (isset($_REQUEST['nav'])) {
-            $nav = sanitize_text_field($_REQUEST['nav']);
+            $nav = sanitize_text_field(wp_unslash($_REQUEST['nav']));
         }
-        
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended -- End of admin page GET parameter processing
+
         $paymentMethods = apply_filters_deprecated(
             'fluentformpro_available_payment_methods',
             [
@@ -383,13 +394,16 @@ class PaymentHandler
     
     public function handleAjaxEndpoints()
     {
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Nonce verified by Acl::verify()
         if (isset($_REQUEST['form_id'])) {
             Acl::verify('fluentform_forms_manager');
         } else {
             Acl::verify('fluentform_settings_manager');
         }
-        
-        $route = sanitize_text_field($_REQUEST['route']);
+
+        $route = isset($_REQUEST['route']) ? sanitize_text_field(wp_unslash($_REQUEST['route'])) : '';
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended -- End of AJAX endpoint nonce verification by Acl::verify()
+
         (new AjaxEndpoints())->handleEndpoint($route);
     }
     
@@ -515,9 +529,9 @@ class PaymentHandler
         }
         
         $originalUid = Helper::getSubmissionMeta($submissionId, '_entry_uid_hash');
-        
+
         if ($originalUid != $uid) {
-            die(__('Transaction UID is invalid', 'fluentform'));
+            die(esc_html__('Transaction UID is invalid', 'fluentform'));
         }
         
         return true;

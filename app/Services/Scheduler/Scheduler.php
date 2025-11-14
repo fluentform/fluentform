@@ -30,7 +30,7 @@ class Scheduler
             return;
         }
 
-        $currentDay = date('D');
+        $currentDay = wp_date('D');
         $reportingDay = $settings['sending_day'];
     
         $config = apply_filters_deprecated(
@@ -80,7 +80,7 @@ class Scheduler
             $days = 7;
         }
 
-        $reportDateFrom = date('Y-m-d', time() - $days * 86400); // 7 days
+        $reportDateFrom = gmdate('Y-m-d', time() - $days * 86400); // 7 days
         $submissionCounts = Submission::select([
                 wpFluent()->raw("COUNT({$wpdb->prefix}fluentform_submissions.id) as total"),
                 'fluentform_submissions.form_id',
@@ -160,7 +160,7 @@ class Scheduler
         $headers = [
             'Content-Type: text/html; charset=utf-8'
         ];
-
+        /* translators: %s is the Number Email Summary Days */
         $emailSubject = sprintf(esc_html__('Email Summary of Your Forms (Last %d Days)', 'fluentform'), $days);
 
         if (isset($settings['subject']) && $settings['subject']) {
@@ -222,7 +222,7 @@ class Scheduler
             return;
         }
         $seconds = $deleteDaysCount * 86400;
-        $deleteTo = date('Y-m-d H:i:s', time() - $seconds);
+        $deleteTo = gmdate('Y-m-d H:i:s', time() - $seconds);
         // delete 60 days old analytics data
         FormAnalytics::where('created_at', '<', $deleteTo)
             ->delete();

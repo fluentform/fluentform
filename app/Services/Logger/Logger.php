@@ -42,10 +42,10 @@ class Logger
             })
             ->when($startDate && $endDate, function ($q) use ($startDate, $endDate, $dateColumn) {
                 // Concatenate time if not time included on start/end date string
-                if ($startDate != date("Y-m-d H:i:s", strtotime($startDate))) {
+                if ($startDate != gmdate("Y-m-d H:i:s", strtotime($startDate))) {
                     $startDate .= ' 00:00:01';
                 }
-                if ($endDate != date("Y-m-d H:i:s", strtotime($endDate))) {
+                if ($endDate != gmdate("Y-m-d H:i:s", strtotime($endDate))) {
                     $endDate .= ' 23:59:59';
                 }
                 return $q->where($dateColumn, '>=', $startDate)
@@ -294,6 +294,7 @@ class Logger
 
         if (!$ids) {
             throw new ValidationException(
+               // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 __('No selections found', 'fluentform')
             );
         }

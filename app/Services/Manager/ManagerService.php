@@ -161,8 +161,17 @@ class ManagerService
         }
         
         if ($errors) {
+            // Escape all error messages before throwing
+            $escapedErrors = array_map(function($errorMessages) {
+                if (is_array($errorMessages)) {
+                    return array_map('esc_html', $errorMessages);
+                }
+                return esc_html($errorMessages);
+            }, $errors);
+
             throw new ValidationException('', 0, null, [
-                'errors' => $errors,
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Error messages are escaped above
+                'errors' => $escapedErrors,
             ]);
         }
     }

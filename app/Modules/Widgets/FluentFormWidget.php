@@ -599,7 +599,7 @@ class FluentFormWidget extends Widget_Base
         $this->start_controls_section(
             'section_form_fields_style',
             [
-                'label' => __('Input & Textarea', 'fluentform'),
+                'label' => __('Input & Text Area', 'fluentform'),
                 'tab'   => Controls_Manager::TAB_STYLE,
             ]
         );
@@ -1838,6 +1838,7 @@ class FluentFormWidget extends Widget_Base
                     'condition' => [
                         'show_form_progressbar' => 'yes',
                     ],
+                    // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Elementor widget parameter, not WP_Query
                     'exclude' => [
                         'image',
                     ],
@@ -1932,6 +1933,7 @@ class FluentFormWidget extends Widget_Base
                     'condition' => [
                         'show_form_progressbar' => 'yes',
                     ],
+                    // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Elementor widget parameter, not WP_Query
                     'exclude' => [
                         'image',
                     ],

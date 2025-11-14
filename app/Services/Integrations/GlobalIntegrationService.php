@@ -75,13 +75,15 @@ class GlobalIntegrationService
         $moduleKey = sanitize_text_field(Arr::get($args, 'module_key'));
         $moduleStatus = sanitize_text_field(Arr::get($args, 'module_status'));
         if (!$moduleKey || !in_array($moduleStatus, ['yes', 'no'])) {
-            throw new Exception(__('Status updated failed. Not valid module or status', 'fluentform'));
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
+            throw new Exception(__('Status update failed. Not valid module or status', 'fluentform'));
         }
         try {
             $modules = (array)get_option('fluentform_global_modules_status');
             $modules[$moduleKey] = $moduleStatus;
             update_option('fluentform_global_modules_status', $modules, 'no');
         } catch (Exception $e) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new Exception($e->getMessage());
         }
     }

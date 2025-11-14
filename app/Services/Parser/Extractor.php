@@ -89,16 +89,19 @@ class Extractor
         foreach ($fields as $field) {
             // If the field is a Container (collection of other fields)
             // then we will recursively call this function to resolve.
-            if ($field['element'] === 'container') {
-                foreach ($field['columns'] as $item) {
-                    $this->looper($item['fields']);
+            if (Arr::get($field, 'element') === 'container') {
+                $columns = Arr::get($field, 'columns', []);
+                foreach ($columns as $item) {
+                    $itemFields = Arr::get($item, 'fields', []);
+                    $this->looper($itemFields);
                 }
             }
 
             // Now the field is supposed to be a flat field.
             // We can extract the desired keys as we want.
             else {
-                if (in_array($field['element'], $this->inputTypes)) {
+                $element = Arr::get($field, 'element');
+                if ($element && in_array($element, $this->inputTypes)) {
                     $this->extractField($field);
                 }
             }
@@ -136,16 +139,19 @@ class Extractor
 
             // If the field is a Container (collection of other fields)
             // then we will recursively call this function to resolve.
-            if ($field['element'] === 'container') {
-                foreach ($field['columns'] as $item) {
-                    $this->looperEssential($formData, $item['fields']);
+            if (Arr::get($field, 'element') === 'container') {
+                $columns = Arr::get($field, 'columns', []);
+                foreach ($columns as $item) {
+                    $itemFields = Arr::get($item, 'fields', []);
+                    $this->looperEssential($formData, $itemFields);
                 }
             }
 
             // Now the field is supposed to be a flat field.
             // We can extract the desired keys as we want.
             else {
-                if (in_array($field['element'], $this->inputTypes)) {
+                $element = Arr::get($field, 'element');
+                if ($element && in_array($element, $this->inputTypes)) {
                     $this->extractField($field);
                 }
             }
@@ -205,7 +211,7 @@ class Extractor
      */
     protected function setElement()
     {
-        $this->result[$this->attribute]['element'] = $this->field['element'];
+        $this->result[$this->attribute]['element'] = Arr::get($this->field, 'element', '');
         return $this;
     }
 
