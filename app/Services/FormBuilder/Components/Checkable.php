@@ -81,7 +81,7 @@ class Checkable extends BaseComponent
 
         // Add "Other" option if enabled
         $enableOtherOption = ArrayHelper::get($data, 'settings.enable_other_option') === 'yes';
-        if ($enableOtherOption && $data['attributes']['type'] === 'checkbox' && defined('FLUENTFORMPRO')) {
+        if ($enableOtherOption && in_array($data['attributes']['type'], ['checkbox', 'radio']) && defined('FLUENTFORMPRO')) {
             $fieldName = sanitize_text_field(str_replace(['[', ']'], '', $data['attributes']['name']));
             $otherLabel = ArrayHelper::get($data, 'settings.other_option_label', __('Other', 'fluentform'));
             $formattedOptions[] = [
