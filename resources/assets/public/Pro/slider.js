@@ -730,9 +730,11 @@ class FluentFormSlider {
             // Prepare synchronized progress animation
             // Alias totalSteps just for separation of concern when computing completeness for the progress bar
             const completenessTotalSteps = totalSteps;
-            const progressPromise = (animationType === 'none')
-                ? this.animateProgressToStep(this.activeStep, completenessTotalSteps, window.ffTransitionTimeOut || 500)
-                : this.animateProgressToStep(this.activeStep, completenessTotalSteps, animDuration);
+            // For 'none' animation type, use animDuration but ensure minimum 50ms for fast skipping
+            const progressDuration = (animationType === 'none') 
+                ? (animDuration === 0 ? 0 : (animDuration < 50 ? 50 : (animDuration < 200 ? animDuration : (window.ffTransitionTimeOut || 500))))
+                : animDuration;
+            const progressPromise = this.animateProgressToStep(this.activeStep, completenessTotalSteps, progressDuration);
 
             const completeStepChange = function () {
                 let isFormReset = goBackToStep === 0 && !isScrollTop;
@@ -774,9 +776,21 @@ class FluentFormSlider {
                     }
 
                     if (childDomCounts === hiddenDomCounts) {
-                        $activeStepDom.find(`.step-nav button[data-action=${actionType}], .step-nav img[data-action=${actionType}]`).click();
-                        resolve(); // Ensure that we resolve the promise here if we are skipping steps
-                        return;
+                        // Step is empty, skip to next step with faster animation
+                        const nextStep = actionType === 'prev' ? self.activeStep - 1 : self.activeStep + 1;
+                        if (nextStep >= 0 && nextStep < totalSteps) {
+                            const animationType = $(formSteps[nextStep]).closest('.ff-step-container').data('animation_type');
+                            const fastAnimDuration = (animationType === 'none') ? 50 : 100;
+                            self.updateSlider(nextStep, fastAnimDuration, isScrollTop, actionType)
+                                .then(() => {
+                                    resolve();
+                                })
+                                .catch(error => {
+                                    console.error("An error occurred during step skip:", error);
+                                    resolve();
+                                });
+                            return;
+                        }
                     }
                 }
 
@@ -862,7 +876,8 @@ class FluentFormSlider {
 
                 case 'none':
                 default:
-                    const conditionalDelay = window.ffTransitionTimeOut || 500;
+                    const defaultDelay = window.ffTransitionTimeOut || 500;
+                    const conditionalDelay = (animDuration < 50 && animDuration > 0) ? 50 : (animDuration < defaultDelay ? animDuration : defaultDelay);
                     contentPromise = new Promise((res) => setTimeout(res, conditionalDelay));
                     break;
             }
