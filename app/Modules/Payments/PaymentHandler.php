@@ -467,7 +467,10 @@ class PaymentHandler
     {
         $formFields = FormFieldsParser::getPaymentFields($form);
         if ($formFields && is_array($formFields)) {
-            $labels = ArrayHelper::except($labels, array_keys($formFields));
+            $fieldsToRemove = array_filter($formFields, function($field) {
+                return ArrayHelper::get($field, 'element') !== 'rangeslider';
+            });
+            $labels = ArrayHelper::except($labels, array_keys($fieldsToRemove));
         }
         return $labels;
     }
