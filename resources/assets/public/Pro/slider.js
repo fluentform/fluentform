@@ -214,7 +214,7 @@ class FluentFormSlider {
                         // Clone the first row for additional rows
                         let $firstRow = $el.find('.ff_repeater_cont_row:first');
                         let $freshCopy = $firstRow.clone();
-                        
+
                         $freshCopy.find('.ff_repeater_cell').each(function (i, cell) {
                             let el = $(this).find('.ff-el-form-control:last-child');
                             let newId = 'ffrpt-' + (new Date()).getTime() + '_' + index + '_' + i;
@@ -223,14 +223,14 @@ class FluentFormSlider {
                                 id: newId
                             };
                             el.prop(itemProp);
-                            
+
                             // Update the 'for' attribute of the label
                             $(this).find('label').attr('for', newId);
                         });
-                        
+
                         $freshCopy.insertAfter($el.find('.ff_repeater_cont_row:last'));
                     });
-                    
+
                     // Fix the names for all rows
                     this.$theForm.trigger('repeater-container-names-update', [$el]);
                     $el.trigger('repeat_change');
@@ -511,7 +511,9 @@ class FluentFormSlider {
          * Eligible inputs are those inside a field group and not hidden by ff_excluded on self or any ancestor
          * @param {object} $step - jQuery step element
          * @return {boolean}
+         *
          */
+        //@Todo Check thi
         isStepAllFieldsHidden($step) {
             const $ = this.$;
             const $groups = $step.find('.ff-el-group').not('.ff-custom_html');
@@ -730,10 +732,23 @@ class FluentFormSlider {
             // Prepare synchronized progress animation
             // Alias totalSteps just for separation of concern when computing completeness for the progress bar
             const completenessTotalSteps = totalSteps;
+
             // For 'none' animation type, use animDuration but ensure minimum 50ms for fast skipping
-            const progressDuration = (animationType === 'none') 
-                ? (animDuration === 0 ? 0 : (animDuration < 50 ? 50 : (animDuration < 200 ? animDuration : (window.ffTransitionTimeOut || 500))))
-                : animDuration;
+            let progressDuration;
+            if (animationType === 'none') {
+                if (animDuration === 0) {
+                    progressDuration = 0;
+                } else if (animDuration < 50) {
+                    progressDuration = 50;
+                } else if (animDuration < 200) {
+                    progressDuration = animDuration;
+                } else {
+                    progressDuration = window.ffTransitionTimeOut || 500;
+                }
+            } else {
+                progressDuration = animDuration;
+            }
+
             const progressPromise = this.animateProgressToStep(this.activeStep, completenessTotalSteps, progressDuration);
 
             const completeStepChange = function () {
@@ -777,10 +792,11 @@ class FluentFormSlider {
 
                     if (childDomCounts === hiddenDomCounts) {
                         // Step is empty, skip to next step with faster animation
+                        // This recursively calls updateSlider until a non-empty step is found
                         const nextStep = actionType === 'prev' ? self.activeStep - 1 : self.activeStep + 1;
                         if (nextStep >= 0 && nextStep < totalSteps) {
-                            const animationType = $(formSteps[nextStep]).closest('.ff-step-container').data('animation_type');
-                            const fastAnimDuration = (animationType === 'none') ? 50 : 100;
+                            const nextStepAnimationType = $(formSteps[nextStep]).closest('.ff-step-container').data('animation_type');
+                            const fastAnimDuration = (nextStepAnimationType === 'none') ? 50 : 100;
                             self.updateSlider(nextStep, fastAnimDuration, isScrollTop, actionType)
                                 .then(() => {
                                     resolve();
@@ -877,7 +893,14 @@ class FluentFormSlider {
                 case 'none':
                 default:
                     const defaultDelay = window.ffTransitionTimeOut || 500;
-                    const conditionalDelay = (animDuration < 50 && animDuration > 0) ? 50 : (animDuration < defaultDelay ? animDuration : defaultDelay);
+                    let conditionalDelay;
+                    if (animDuration < 50 && animDuration > 0) {
+                        conditionalDelay = 50;
+                    } else if (animDuration < defaultDelay) {
+                        conditionalDelay = animDuration;
+                    } else {
+                        conditionalDelay = defaultDelay;
+                    }
                     contentPromise = new Promise((res) => setTimeout(res, conditionalDelay));
                     break;
             }
