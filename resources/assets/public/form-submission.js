@@ -1656,7 +1656,12 @@ jQuery(document).ready(function () {
                     }
 
                     if (el.hasClass('ff_el_with_extended_validation')) {
-                        var isValid = iti.isValidNumber();
+                        let isValid;
+                        if ('yes' === el.data('strict_validation') && typeof iti.isValidNumberPrecise === 'function') {
+                            isValid = iti.isValidNumberPrecise();
+                        } else {
+                            isValid = iti.isValidNumber();
+                        }
                         if (isValid) {
                             el.val(iti.getNumber());
                             return true;
