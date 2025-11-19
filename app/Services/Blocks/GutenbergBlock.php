@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Blocks;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Form;
 use FluentForm\Framework\Support\Arr;
 
 /**
@@ -37,6 +38,12 @@ class GutenbergBlock
     public static function render($atts)
     {
         $formId = (int)Arr::get($atts, 'formId', 0);
+
+        // Check has formId but form not found
+        // Auto select latest form id
+        if ($formId && !Form::where('id', $formId)->exists()) {
+            $formId = Form::latest('id')->value('id');
+        }
 
         if (!$formId) {
             return '<div class="fluentform-no-form-selected"><p>' . __('Please select a form', 'fluentform') . '</p></div>';
@@ -73,10 +80,6 @@ class GutenbergBlock
             if ($inlineStyle) {
                 $allStyles .= $inlineStyle;
             }
-//            if (!empty($individualStyleTag)) {
-//                $allStyles .= $individualStyleTag;
-//            }
-            
             if ($allStyles) {
                 return $allStyles . $formOutput;
             }

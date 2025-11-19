@@ -116,7 +116,18 @@ function EditComponent({ attributes, setAttributes }) {
         }
 
         if (attributes.formId) {
-            checkIfConversationalForm(attributes.formId);
+            let formId = attributes.formId;
+            const hasForm = config.forms?.find(form => form.id == formId);
+            if (!hasForm) {
+                formId = config.forms?.find(form => !!form.id)?.id;
+                if (!formId) {
+                    formId = ''
+                }
+                setAttributes({ formId : formId });
+            }
+            if (formId) {
+                checkIfConversationalForm(formId);
+            }
         }
     }, []); // Only run on mount
 
