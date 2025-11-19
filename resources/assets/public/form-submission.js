@@ -1195,193 +1195,57 @@ jQuery(document).ready(function () {
 
             // Handle "Other" option for checkboxes and radio fields
             initOtherOptionHandlers: function() {
-                jQuery(document).on('mousedown', '.ff-other-option input[type="checkbox"]', function() {
-                    var $checkbox = jQuery(this);
-                    if (!$checkbox.closest('.ff-other-option').length) {
+                // Handle checkbox "Other" option - show/hide text input
+                jQuery(document).on("change", ".ff-other-option input[type=\"checkbox\"]", function() {
+                    let $checkbox = jQuery(this);
+                    let $wrapper = $checkbox.closest(".ff-el-form-check").find(".ff-other-input-wrapper");
+                    if (!$wrapper.length) {
                         return;
                     }
-                    $checkbox.data('ff-pre-click-checked', $checkbox.is(':checked'));
-                });
-                
-                jQuery(document).on('click', '.ff-other-option input[type="checkbox"]', function(e) {
-                    var $checkbox = jQuery(this);
-                    
-                    if (!$checkbox.closest('.ff-other-option').length) {
-                        return;
-                    }
-                    
-                    if ($checkbox.data('ff-label-handled')) {
-                        $checkbox.removeData('ff-label-handled');
-                        $checkbox.removeData('ff-pre-click-checked');
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    }
-                    
-                    $checkbox.removeData('ff-pre-click-checked');
-                    
-                    setTimeout(function() {
-                        $checkbox.removeData('ff-label-handled');
-                        $checkbox.removeData('ff-pre-click-checked');
-                    }, 100);
-                });
-                
-                jQuery(document).on('click', 'label.ff-other-option.ff-el-form-check-label', function(e) {
-                    var $target = jQuery(e.target);
-                    var $label = jQuery(this);
-                    var $checkbox = $label.find('input[type="checkbox"]');
-                    
-                    if (!$checkbox.length || $checkbox.attr('type') !== 'checkbox' || !$checkbox.closest('.ff-other-option').length) {
-                        return;
-                    }
-                    
-                    var originalTarget = e.originalEvent ? e.originalEvent.target : e.target;
-                    if (e.target === $checkbox[0] || originalTarget === $checkbox[0] || e.target.tagName === 'INPUT' || originalTarget.tagName === 'INPUT') {
-                        return;
-                    }
-                    
-                    if ($target.closest('.ff-other-input-wrapper').length) {
-                        return;
-                    }
-                    
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    
-                    var preClickChecked = $checkbox.data('ff-pre-click-checked');
-                    if (preClickChecked === undefined) {
-                        preClickChecked = $checkbox.is(':checked');
-                    }
-                    
-                    var newState = !preClickChecked;
-                    $checkbox.prop('checked', newState);
-                    $checkbox.data('ff-label-handled', true);
-                    $checkbox.trigger('change');
-                    $checkbox.removeData('ff-pre-click-checked');
-                    
-                    setTimeout(function() {
-                        $checkbox.removeData('ff-label-handled');
-                    }, 100);
-                    
-                    return false;
-                });
-                
-                jQuery(document).on('mousedown', 'label.ff-other-option.ff-el-form-check-label', function(e) {
-                    var $target = jQuery(e.target);
-                    var $label = jQuery(this);
-                    var $checkbox = $label.find('input[type="checkbox"]');
-                    
-                    if (!$checkbox.length || $checkbox.attr('type') !== 'checkbox') {
-                        return;
-                    }
-                    
-                    var originalTarget = e.originalEvent ? e.originalEvent.target : e.target;
-                    if (e.target === $checkbox[0] || originalTarget === $checkbox[0] || e.target.tagName === 'INPUT' || originalTarget.tagName === 'INPUT') {
-                        return;
-                    }
-                    
-                    if (!$target.closest('.ff-other-input-wrapper').length) {
-                        $checkbox.data('ff-pre-click-checked', $checkbox.is(':checked'));
-                    }
-                });
-                
-                jQuery(document).on('change', '.ff-other-option input[type="checkbox"]', function(e) {
-                    var $checkbox = jQuery(this);
-                    var $formCheck = $checkbox.closest('.ff-el-form-check');
-                    var $wrapper = $formCheck.find('.ff-other-input-wrapper');
 
-                    if ($checkbox.is(':checked')) {
-                        $formCheck.addClass('ff_item_selected');
-                        if ($wrapper.length) {
-                            $wrapper.show();
+                    if ($checkbox.is(":checked")) {
+                        $wrapper.show();
+                        // Only focus if input is empty to avoid blur conflicts
+                        let $input = $wrapper.find(".ff-el-form-control");
+                        if ($input.val().trim() === "") {
                             setTimeout(function() {
-                                $wrapper.find('.ff-el-form-control').focus();
-                            }, 10);
+                                $input.focus();
+                            }, 50);
                         }
                     } else {
-                        $formCheck.removeClass('ff_item_selected');
-                        if ($wrapper.length) {
                         $wrapper.hide();
-                        $wrapper.find('.ff-el-form-control').val('');
-                        }
+                        $wrapper.find(".ff-el-form-control").val("");
                     }
                 });
 
-                // Handle radio "Other" option
-                jQuery(document).on('change', '.ff-other-option input[type="radio"]', function(e) {
-                    var $radio = jQuery(this);
-                    var $fieldContainer = $radio.closest('.ff-el-input--content');
-                    var $formCheck = $radio.closest('.ff-el-form-check');
-                    var $wrapper = $formCheck.find('.ff-other-input-wrapper');
+                // Handle radio "Other" option - show/hide text input
+                jQuery(document).on("change", ".ff-other-option input[type=\"radio\"]", function() {
+                    let $radio = jQuery(this);
+                    let $fieldContainer = $radio.closest(".ff-el-input--content");
+                    let $wrapper = $radio.closest(".ff-el-form-check").find(".ff-other-input-wrapper");
                     if (!$wrapper.length) {
-                        $wrapper = $radio.closest('label').next('.ff-other-input-wrapper');
+                        $wrapper = $radio.closest("label").next(".ff-other-input-wrapper");
                     }
 
-                    if ($radio.is(':checked')) {
-                        $fieldContainer.find('.ff-other-input-wrapper').hide();
+                    if ($radio.is(":checked")) {
+                        // Hide all other input wrappers in this field
+                        $fieldContainer.find(".ff-other-input-wrapper").hide();
+                        // Show this one
                         if ($wrapper.length) {
                             $wrapper.show();
-                            setTimeout(function() {
-                                $wrapper.find('.ff-el-form-control').focus();
-                            }, 10);
-                        } else {
-                            console.warn('Other input wrapper not found for radio field');
+                            $wrapper.find(".ff-el-form-control").focus();
                         }
                     }
                 });
-
-                jQuery(document).on('change', '.ff-el-input--content input[type="radio"]', function() {
-                    var $radio = jQuery(this);
-                    if ($radio.closest('.ff-other-option').length) {
+                // Hide "Other" text input when selecting non-Other radio option
+                jQuery(document).on("change", ".ff-el-input--content input[type=\"radio\"]", function() {
+                    let $radio = jQuery(this);
+                    if ($radio.closest(".ff-other-option").length) {
                         return;
                     }
-                    var $fieldContainer = $radio.closest('.ff-el-input--content');
-                    $fieldContainer.find('.ff-other-input-wrapper').hide();
-                    $fieldContainer.find('.ff-other-input-wrapper .ff-el-form-control').val('');
-                });
-
-                var recentCheckboxClick = null;
-                
-                jQuery(document).on('mousedown', '.ff-el-input--content input[type="checkbox"], .ff-el-input--content label.ff-el-form-check-label', function() {
-                    var $clickedElement = jQuery(this);
-                    var $checkbox = this.tagName === 'LABEL' 
-                        ? ($clickedElement.attr('for') ? jQuery('#' + $clickedElement.attr('for')) : $clickedElement.find('input[type="checkbox"]'))
-                        : $clickedElement;
-                    
-                    if ($checkbox.length && !$checkbox.closest('.ff-other-option').length) {
-                        recentCheckboxClick = $checkbox.closest('.ff-el-input--content')[0];
-                        setTimeout(function() {
-                            recentCheckboxClick = null;
-                        }, 200);
-                    }
-                });
-                
-                jQuery(document).on('blur', '.ff-el-form-check-input .ff-other-input-wrapper .ff-el-form-control', function() {
-                    var $textInput = jQuery(this);
-                    var $wrapper = $textInput.closest('.ff-other-input-wrapper');
-                    var $fieldContainer = $textInput.closest('.ff-el-input--content');
-                    var fieldName = $wrapper.data('field');
-                    var $checkbox = $fieldContainer.find('.ff-other-option input[type="checkbox"][value*="' + fieldName + '"]');
-                    var $radio = $fieldContainer.find('.ff-other-option input[type="radio"][value*="' + fieldName + '"]');
-
-                    setTimeout(function() {
-                        if (recentCheckboxClick === $fieldContainer[0]) {
-                            return;
-                        }
-                        
-                        if ($textInput.val().trim() === '') {
-                            if ($checkbox.length) {
-                                $checkbox.prop('checked', false);
-                                $checkbox.closest('.ff-el-form-check').removeClass('ff_item_selected');
-                                $wrapper.hide();
-                            }
-                            if ($radio.length && $radio.is(':checked')) {
-                                $radio.prop('checked', false);
-                                $radio.closest('.ff-el-form-check').removeClass('ff_item_selected');
-                                $wrapper.hide();
-                            }
-                        }
-                    }, 10);
+                    let $fieldContainer = $radio.closest(".ff-el-input--content");
+                    $fieldContainer.find(".ff-other-input-wrapper").hide();
+                    $fieldContainer.find(".ff-other-input-wrapper .ff-el-form-control").val("");
                 });
             },
 
