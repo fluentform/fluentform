@@ -131,12 +131,12 @@ class FluentCartCheckoutIntegration {
             formInstance.validate($inputs);
         } catch (error) {
                 if (error && error.constructor && error.constructor.name === 'ffValidationError') {
-                formInstance.showErrorMessages(error.messages);
-                formInstance.scrollToFirstError(350);
+                    formInstance.showErrorMessages(error.messages);
+                    formInstance.scrollToFirstError(350);
                     e.preventDefault();
                     e.stopPropagation();
                     e.stopImmediatePropagation();
-                return false;
+                    return false;
                 }
             }
         }, true);

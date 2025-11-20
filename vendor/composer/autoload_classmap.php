@@ -75,6 +75,7 @@ return array(
     'FluentForm\\App\\Modules\\Entries\\EntryQuery' => $baseDir . '/app/Modules/Entries/EntryQuery.php',
     'FluentForm\\App\\Modules\\Entries\\Export' => $baseDir . '/app/Modules/Entries/Export.php',
     'FluentForm\\App\\Modules\\Entries\\Report' => $baseDir . '/app/Modules/Entries/Report.php',
+    'FluentForm\\App\\Modules\\FluentCart\\FluentCartIntegration' => $baseDir . '/app/Modules/FluentCart/FluentCartIntegration.php',
     'FluentForm\\App\\Modules\\Form\\AkismetHandler' => $baseDir . '/app/Modules/Form/AkismetHandler.php',
     'FluentForm\\App\\Modules\\Form\\CleanTalkHandler' => $baseDir . '/app/Modules/Form/CleanTalkHandler.php',
     'FluentForm\\App\\Modules\\Form\\Form' => $baseDir . '/app/Modules/Form/Form.php',
