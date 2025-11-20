@@ -323,8 +323,10 @@ class MailChimpIntegration extends IntegrationManagerController
         }
 
         $formattedLists = [];
-        foreach ($lists['lists'] as $list) {
-            $formattedLists[$list['id']] = $list['name'];
+        if (is_array($lists) && isset($lists['lists'])) {
+            foreach ($lists['lists'] as $list) {
+                $formattedLists[$list['id']] = $list['name'];
+            }
         }
 
         return $formattedLists;

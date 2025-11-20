@@ -15,7 +15,8 @@ if (!mix.inProduction()) {
     // During production build we'll remove the existing public
     // directory so that the source-maps are deleted as well.
     let fs = require('fs-extra');
-    fs.remove('assets');
+    fs.removeSync('assets');
+    mix.sourceMaps(false);
 }
 
 mix.webpackConfig({

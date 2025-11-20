@@ -108,9 +108,14 @@ class Form
      */
     public function getFields($asArray = false)
     {
-        $fields = json_decode($this->form->form_fields, $asArray);
-
         $default = $asArray ? [] : null;
+
+        // Return default if form_fields is null or empty
+        if (!$this->form || !isset($this->form->form_fields) || $this->form->form_fields === null) {
+            return $default;
+        }
+
+        $fields = json_decode($this->form->form_fields, $asArray);
 
         return Arr::get((array)$fields, 'fields', $default);
     }
@@ -293,7 +298,7 @@ class Form
      * @param array $with array
      * @return array
      */
-    public function getPaymentFields($with = ['element'])
+    public function getPaymentFields($with = ['element', 'settings'])
     {
         $fields = $this->getInputs($with);
 
@@ -318,6 +323,9 @@ class Form
         $paymentElements = apply_filters('fluentform/form_payment_fields', $data);
 
         return array_filter($fields, function ($field) use ($paymentElements) {
+            if ($field['element'] === 'rangeslider') {
+                return Arr::get($field, 'settings.enable_target_product', 'no') === 'yes';
+            }
             return in_array($field['element'], $paymentElements);
         });
     }

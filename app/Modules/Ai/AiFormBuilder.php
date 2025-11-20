@@ -80,7 +80,7 @@ class AiFormBuilder extends FormService
         }
         $fluentFormFields = array_filter($fluentFormFields);
         if (!$fluentFormFields) {
-            throw new Exception(__('Empty form. Please try again!', 'fluentform'));
+            throw new Exception(esc_html__('Empty form. Please try again!', 'fluentform'));
         }
         $title = Arr::get($form, 'title', '');
         return $this->saveForm($fluentFormFields, $title, $hasStep, $isConversational, $customCss, $customJs);
@@ -111,9 +111,9 @@ class AiFormBuilder extends FormService
         ];
 
         $result = (new FluentFormAIAPI())->makeRequest($queryArgs);
-        
+
         if (is_wp_error($result)) {
-            throw new Exception($result->get_error_message());
+            throw new Exception(esc_html($result->get_error_message()));
         }
        
         $response = trim(Arr::get($result, 'response', ''), '"');
@@ -123,7 +123,7 @@ class AiFormBuilder extends FormService
 
         $decoded = json_decode($response, true);
         if (json_last_error() !== JSON_ERROR_NONE || empty($decoded) || empty($decoded['fields'])) {
-            throw new Exception(__('Invalid response: Please try again!', 'fluentform'));
+            throw new Exception(esc_html__('Invalid response: Please try again!', 'fluentform'));
         }
         return $decoded;
     }
@@ -437,7 +437,7 @@ class AiFormBuilder extends FormService
         $startingQuery = "Create a form for ";
         $query = Sanitizer::sanitizeTextField(Arr::get($args, 'query'));
         if (empty($query)) {
-            throw new Exception(__('Query is empty!', 'fluentform'));
+            throw new Exception(esc_html__('Query is empty!', 'fluentform'));
         }
         
         $additionalQuery = Sanitizer::sanitizeTextField(Arr::get($args, 'additional_query'));

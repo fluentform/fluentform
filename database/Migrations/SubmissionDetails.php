@@ -15,7 +15,9 @@ class SubmissionDetails
 
         $charsetCollate = $wpdb->get_charset_collate();
         $table = $wpdb->prefix . 'fluentform_entry_details';
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Migration file, direct query needed
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) != $table) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Migration file, schema change is the purpose
             $sql = "CREATE TABLE $table (
 			  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  `form_id` BIGINT(20) UNSIGNED NULL,

@@ -17,7 +17,9 @@ class FormAnalytics
 
         $table = $wpdb->prefix . 'fluentform_form_analytics';
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Migration file, direct query needed
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) != $table) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Migration file, schema change is the purpose
             $sql = "CREATE TABLE $table (
 			  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			  `form_id` INT UNSIGNED NULL,
@@ -41,7 +43,9 @@ class FormAnalytics
             $dataType = $wpdb->get_col_length($table, $column_name);
             $type = $dataType['type'] ?? false;
             if ($type == 'char') {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Migration file, table/column names cannot be prepared
                 $sql = "ALTER TABLE {$table} MODIFY {$column_name} TEXT NOT NULL";
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Migration file, schema change is the purpose, table/column names are safe
                 $wpdb->query($sql);
             }
         }

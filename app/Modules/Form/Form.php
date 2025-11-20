@@ -640,7 +640,7 @@ class Form
             'Use fluentform/form_duplicated instead of flentform_form_duplicated.'
         );
 
-        do_action('flentform/form_duplicated', $newFormId);
+        do_action('fluentform/form_duplicated', $newFormId);
 
         wp_send_json([
             'message'  => __('Form has been successfully duplicated.', 'fluentform'),

@@ -45,7 +45,7 @@ class TextArea extends BaseComponent
         }
 
         $ariaLabelledBy = 'label_' . ArrayHelper::get($data, 'attributes.id');
-        $elMarkup = '<textarea aria-invalid="false" aria-required="' . $ariaRequired . '" aria-labelledby="' . $ariaLabelledBy . '" %s>%s</textarea>';
+        $elMarkup = '<textarea aria-required="' . $ariaRequired . '" aria-labelledby="' . $ariaLabelledBy . '" %s>%s</textarea>';
 
         $atts = $this->buildAttributes($data['attributes']);
 

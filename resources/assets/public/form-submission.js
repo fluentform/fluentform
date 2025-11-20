@@ -1006,7 +1006,7 @@ jQuery(document).ready(function () {
 
                     try {
                         let widgetId = $el.attr(widgetIdAttr);
-                        
+
                         if (type === 'g-recaptcha' || type === 'h-captcha') {
                             if (widgetId && $el.find('iframe').length > 0) {
                                 return; // Already rendered properly
@@ -1120,6 +1120,7 @@ jQuery(document).ready(function () {
                 this.initCheckableActive();
                 this.maybeInitSpamTokenProtection();
                 this.maybeHandleCleanTalkSubmitTime();
+                this.initOtherOptionHandlers();
             },
 
             maybeInitSpamTokenProtection: function() {
@@ -1200,6 +1201,62 @@ jQuery(document).ready(function () {
                         }
                     });
                 }
+            },
+
+            // Handle "Other" option for checkboxes and radio fields
+            initOtherOptionHandlers: function() {
+                // Handle checkbox "Other" option - show/hide text input
+                jQuery(document).on("change", ".ff-other-option input[type=\"checkbox\"]", function() {
+                    let $checkbox = jQuery(this);
+                    let $wrapper = $checkbox.closest(".ff-el-form-check").find(".ff-other-input-wrapper");
+                    if (!$wrapper.length) {
+                        return;
+                    }
+
+                    if ($checkbox.is(":checked")) {
+                        $wrapper.show();
+                        // Only focus if input is empty to avoid blur conflicts
+                        let $input = $wrapper.find(".ff-el-form-control");
+                        if ($input.val().trim() === "") {
+                            setTimeout(function() {
+                                $input.focus();
+                            }, 50);
+                        }
+                    } else {
+                        $wrapper.hide();
+                        $wrapper.find(".ff-el-form-control").val("");
+                    }
+                });
+
+                // Handle radio "Other" option - show/hide text input
+                jQuery(document).on("change", ".ff-other-option input[type=\"radio\"]", function() {
+                    let $radio = jQuery(this);
+                    let $fieldContainer = $radio.closest(".ff-el-input--content");
+                    let $wrapper = $radio.closest(".ff-el-form-check").find(".ff-other-input-wrapper");
+                    if (!$wrapper.length) {
+                        $wrapper = $radio.closest("label").next(".ff-other-input-wrapper");
+                    }
+
+                    if ($radio.is(":checked")) {
+                        // Hide all other input wrappers in this field
+                        $fieldContainer.find(".ff-other-input-wrapper").hide();
+                        // Show this one
+                        if ($wrapper.length) {
+                            $wrapper.show();
+                            $wrapper.find(".ff-el-form-control").focus();
+                        }
+                    }
+                });
+                // Hide "Other" text input when selecting non-Other radio option
+                jQuery(document).on("change", ".ff-el-input--content input[type=\"radio\"]", function() {
+                    let $radio = jQuery(this);
+                    if ($radio.closest(".ff-other-option").length) {
+                        return;
+                    }
+                    let $fieldContainer = $radio.closest(".ff-el-input--content");
+                    $fieldContainer.find(".ff-other-input-wrapper").hide();
+                    $fieldContainer.find(".ff-other-input-wrapper .ff-el-form-control").val("");
+                });
             },
 
             /**
@@ -1609,7 +1666,12 @@ jQuery(document).ready(function () {
                     }
 
                     if (el.hasClass('ff_el_with_extended_validation')) {
-                        var isValid = iti.isValidNumber();
+                        let isValid;
+                        if ('yes' === el.data('strict_validation') && typeof iti.isValidNumberPrecise === 'function') {
+                            isValid = iti.isValidNumberPrecise();
+                        } else {
+                            isValid = iti.isValidNumber();
+                        }
                         if (isValid) {
                             el.val(iti.getNumber());
                             return true;
@@ -1724,7 +1786,7 @@ jQuery(document).ready(function () {
                     dropdown.style.overflowY = 'auto';
 
                     // Find and style the scrollable list
-                    const scrollableList = 
+                    const scrollableList =
                         dropdown.querySelector('.choices__list[role="listbox"]') ||
                         dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
                     if (scrollableList) {

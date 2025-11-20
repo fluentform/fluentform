@@ -140,7 +140,7 @@ class BaseComponent
      */
     protected function getUniqueId($str)
     {
-        return $str . '_' . md5(uniqid(mt_rand(), true));
+        return $str . '_' . md5(uniqid(wp_rand(), true));
     }
     
     /**
@@ -192,7 +192,8 @@ class BaseComponent
     protected function buildElementLabel($data, $form)
     {
         $helpMessage = '';
-        if ('with_label' == $form->settings['layout']['helpMessagePlacement']) {
+        $helpMessagePlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
+        if ('with_label' == $helpMessagePlacement) {
             $helpMessage = $this->getLabelHelpMessage($data);
         }
         
@@ -239,8 +240,8 @@ class BaseComponent
         );
         
         $labelHelpText = $inputHelpText = '';
-        
-        $labelPlacement = $form->settings['layout']['helpMessagePlacement'];
+
+        $labelPlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
         if ('with_label' == $labelPlacement) {
             $labelHelpText = $this->getLabelHelpMessage($data);
         } elseif ('on_focus' == $labelPlacement) {
@@ -343,8 +344,7 @@ class BaseComponent
     
     protected function printContent($hook, $html, $data, $form)
     {
-        echo apply_filters($hook, $html, $data,
-            $form); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $html is escaped before being passed in.
+        echo apply_filters($hook, $html, $data, $form); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound,WordPress.Security.EscapeOutput.OutputNotEscaped -- Dynamic hook name for component content filter. $html is escaped before being passed in.
     }
     
     /**

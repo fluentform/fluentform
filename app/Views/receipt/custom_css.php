@@ -1,3 +1,6 @@
+<?php
+// phpcs:ignore Internal.NoCodeFound -- View file contains CSS, not PHP code
+?>
 <style type="text/css">
     .ffp_table {
         empty-cells: show;

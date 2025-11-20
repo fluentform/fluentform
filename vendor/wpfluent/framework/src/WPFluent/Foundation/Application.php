@@ -125,9 +125,10 @@ class Application extends Container
     protected function registerTextdomain()
     {
         $this->addAction('init', function() {
-            load_plugin_textdomain(
-                $this->config->get('app.text_domain'), false, $this->textDomainPath()
-            );
+//            Loaded by WP after 6.1
+//            load_plugin_textdomain(
+//                $this->config->get('app.text_domain'), false, $this->textDomainPath()
+//            );
         });
     }
 

@@ -244,7 +244,7 @@ class CalderaMigrator extends BaseMigrator
         foreach ($form['fields'] as $field) {
             $prefixTypes = ArrayHelper::get($this->fieldPrefix(), $field['type'], '');
 
-            // FieldSlug for Manual Formula   
+            // FieldSlug for Manual Formula
             $fieldSlug[$field['slug']] = '{' . $prefixTypes . '.' . $field['slug'] . '}';
 
             // FieldID for Direct Formula
@@ -401,7 +401,7 @@ class CalderaMigrator extends BaseMigrator
                         'icon_class' => $colsCount . 'dashicons dashicons-align-center'
                     ],
                     'columns'        => $columns,
-                    'uniqElKey'      => 'col' . '_' . md5(uniqid(mt_rand(), true))
+                    'uniqElKey'      => 'col' . '_' . md5(uniqid(wp_rand(), true))
                 ];
             } else {
                 //without container

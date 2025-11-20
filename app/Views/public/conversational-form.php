@@ -6,7 +6,7 @@
     <meta http-equiv="Imagetoolbar" content="No"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo esc_html($meta['title']); ?></title>
-    <meta name="description" content="<?php echo esc_attr(strip_tags($meta['description'])) ?>">
+    <meta name="description" content="<?php echo esc_attr(wp_strip_all_tags($meta['description'])) ?>">
 
     <?php if (!empty($meta['featured_image'])): ?>
         <meta property="og:image" content="<?php echo esc_url($meta['featured_image']); ?>"/>
@@ -14,11 +14,12 @@
 
     <meta property="og:title" content="<?php echo esc_html($meta['title']); ?>"/>
 
-    <meta property="og:description" content="<?php echo esc_attr(strip_tags($meta['description'])) ?>"/>
+    <meta property="og:description" content="<?php echo esc_attr(wp_strip_all_tags($meta['description'])) ?>"/>
 
     <?php if (!empty($meta['google_font_href'])): ?>
 
         <link rel="preconnect" href="https://fonts.gstatic.com/">
+        <?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Conversational form uses standalone page without WordPress theme ?>
         <link id="ffc_google_font" href='<?php echo esc_url($meta['google_font_href']); ?>' rel="stylesheet" type="text/css">
     <?php endif; ?>
 
@@ -90,15 +91,15 @@
         do_action('fluentform/conversational_frame_head');
     ?>
     <style id="ffc_generated_css" type="text/css">
-        <?php echo $generated_css; ?>
+        <?php echo $generated_css; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Sanitized when saving ?>
     </style>
 
     <style id="ffc_font_css" type="text/css">
-        <?php echo fluentformSanitizeCSS($meta['font_css']); ?>
+        <?php echo fluentformSanitizeCSS($meta['font_css']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
     </style>
 
     <style type="text/css">
-        <?php echo fluentformSanitizeCSS($submit_css); ?>
+        <?php echo fluentformSanitizeCSS($submit_css); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         .ffc_loading_screen {
             height: 100vh;
             width: 100%;
@@ -115,17 +116,19 @@
         }
     </style>
 
-    <?php foreach ($form->image_preloads as $imgSrc): ?>
+    <?php
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable in foreach loop
+    foreach ($form->image_preloads as $imgSrc): ?>
         <link rel="preload" href="<?php echo esc_url($imgSrc); ?>" as="image">
     <?php endforeach; ?>
 
 </head>
-<body class="ff_conversation_page_body  ff_conversation_page_<?php echo $form_id; ?>">
+<body class="ff_conversation_page_body  ff_conversation_page_<?php echo esc_attr($form_id); ?>">
 <div class="ffc_conv_wrapper">
-    <div class="frm-fluent-form ff_conv_app ff_conv_app_frame fluent_form_<?php echo $form_id; ?> ff_conv_app_<?php echo $form_id; ?> ffc_media_hide_mob_<?php echo esc_attr($design['hide_media_on_mobile']); ?>" data-form_id="<?php echo $form_id ?>">
+    <div class="frm-fluent-form ff_conv_app ff_conv_app_frame fluent_form_<?php echo esc_attr($form_id); ?> ff_conv_app_<?php echo esc_attr($form_id); ?> ffc_media_hide_mob_<?php echo esc_attr($design['hide_media_on_mobile']); ?>" data-form_id="<?php echo esc_attr($form_id) ?>">
         <div data-var_name="fluent_forms_global_var" class="ffc_conv_form" style="width: 100%" id="ffc_app_landing">
             <div class="ffc_loading_screen">
-                <h2><?php _e('Loading...', 'fluentform'); ?></h2>
+                <h2><?php esc_html_e('Loading...', 'fluentform'); ?></h2>
             </div>
         </div>
     </div>

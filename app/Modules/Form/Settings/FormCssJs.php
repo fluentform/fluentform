@@ -143,7 +143,7 @@ class FormCssJs
                 add_action($action, function () use ($css, $cssId) {
                     ?>
                     <style id="<?php echo esc_attr($cssId); ?>" type="text/css">
-                        <?php echo fluentformSanitizeCSS($css); ?>
+                        <?php echo fluentformSanitizeCSS($css); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentformSanitizeCSS() removes HTML tags, CSS is safe in style context ?>
                     </style>
 
                     <?php
@@ -151,7 +151,7 @@ class FormCssJs
             } else {
                 ?>
                 <style id="<?php echo esc_attr($cssId); ?>" type="text/css">
-                    <?php echo fluentformSanitizeCSS($css); ?>
+                    <?php echo fluentformSanitizeCSS($css); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentformSanitizeCSS() removes HTML tags, CSS is safe in style context ?>
                 </style>
                 <?php
             }
@@ -170,7 +170,7 @@ class FormCssJs
                             var formId = "<?php echo esc_attr($formId); ?>";
                             var $ = jQuery;
                             try {
-                                <?php echo fluentform_kses_js($customJS); ?>
+                                <?php echo fluentform_kses_js($customJS); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentform_kses_js() removes script tags, JS is safe in script context ?>
                             } catch (e) {
                                 console.warn('Error in custom JS of Fluentform ID: ' + formId);
                                 console.error(e);

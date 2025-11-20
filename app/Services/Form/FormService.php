@@ -100,7 +100,7 @@ class FormService
             
             return $form;
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new Exception(esc_html($e->getMessage()));
         }
     }
     
@@ -123,7 +123,7 @@ class FormService
         
         if (!$existingForm) {
             throw new Exception(
-                __("The form couldn't be found.", 'fluentform')
+                esc_html__("The form couldn't be found.", 'fluentform')
             );
         }
         
@@ -158,7 +158,7 @@ class FormService
             return $this->model->with('formMeta')->findOrFail($id);
         } catch (Exception $e) {
             throw new Exception(
-                __("The form couldn't be found.", 'fluentform')
+                esc_html__("The form couldn't be found.", 'fluentform')
             );
         }
     }
@@ -193,7 +193,7 @@ class FormService
             $form = Form::with('conversationalMeta')->findOrFail($id);
         } catch (Exception $e) {
             throw new Exception(
-                __("The form couldn't be found.", 'fluentform')
+                esc_html__("The form couldn't be found.", 'fluentform')
             );
         }
         
@@ -242,13 +242,14 @@ class FormService
             $forms[$item['category']][$key] = [
                 'class'      => $itemClass,
                 'tags'       => Arr::get($item, 'tag', ''),
-                'title'      => $item['title'],
-                'brief'      => $item['brief'],
-                'category'   => $item['category'],
-                'screenshot' => $item['screenshot'],
-                'createable' => $item['createable'],
-                'is_pro'     => Arr::get($item, 'is_pro'),
-                'type'       => isset($item['type']) ? $item['type'] : 'form',
+                'title'      => Arr::get($item, 'title', ''),
+                'brief'      => Arr::get($item, 'brief', ''),
+                'category'   => Arr::get($item, 'category', ''),
+                'screenshot' => Arr::get($item, 'screenshot', ''),
+                'createable' => $item['createable'] ?? false,
+                'prev_link'  => $item['prev_link'] ?? false,
+                'is_pro'     => $item['is_pro'] ?? false,
+                'type'       => Arr::get($item, 'type', 'form'),
             ];
         }
         $dropDownForms = [
@@ -578,7 +579,7 @@ class FormService
             ];
         } catch (Exception $e) {
             throw new Exception(
-                __("The form couldn't be found.", 'fluentform')
+                esc_html__("The form couldn't be found.", 'fluentform')
             );
         }
     }

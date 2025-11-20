@@ -159,6 +159,7 @@ class GlobalNotificationManager
                     $action,
                     'Use ' . $action . ' instead of fluentform_integration_notify_' . $feed['meta_key']
                 );
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name constructed from deprecated hook
                 do_action($action, $feed, $formData, $entry, $form);
             }
         }
