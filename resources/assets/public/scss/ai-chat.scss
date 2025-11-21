@@ -1,0 +1,631 @@
+// AI Chat Interface Styles
+// Modern, clean design with CSS variables for easy customization
+
+:root {
+    --ff-ai-primary: #2563eb;
+    --ff-ai-bg-light: #f9fafb;
+    --ff-ai-text-dark: #111827;
+    --ff-ai-text-gray: #6b7280;
+    --ff-ai-text-light: #9ca3af;
+    --ff-ai-border: #e5e7eb;
+    --ff-ai-radius: 0.5rem;
+    --ff-ai-radius-lg: 0.75rem;
+    --ff-ai-radius-full: 9999px;
+    --ff-ai-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+// Main Interface Container
+.ff-ai-chat-interface {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh;
+    width: 100%;
+    background: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+// Header
+.ff-ai-chat-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    background: white;
+    border-bottom: 1px solid var(--ff-ai-border);
+}
+
+.ff-ai-chat-title {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ff-ai-text-dark);
+
+    svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--ff-ai-primary);
+    }
+}
+
+.ff-ai-chat-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ff-ai-chat-action-btn {
+    padding: 0.5rem 1rem;
+    background: var(--ff-ai-primary);
+    color: white;
+    border: none;
+    border-radius: var(--ff-ai-radius);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #1d4ed8;
+    }
+}
+
+// Messages Container
+.ff-ai-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    scroll-behavior: smooth;
+    background: var(--ff-ai-bg-light);
+    width: 100%;
+
+    // Center content when there are few messages (ChatGPT style)
+    &.ff-ai-chat-messages-centered {
+        justify-content: center;
+    }
+}
+
+// Individual Message
+.ff-ai-chat-message {
+    display: flex;
+    gap: 0.75rem;
+    animation: slideIn 0.3s ease;
+    align-items: flex-start;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+
+    &.ff-ai-chat-message-user {
+        flex-direction: row-reverse;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ff-ai-chat-message-avatar {
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--ff-ai-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1f2937;
+    color: white;
+    font-size: 0.875rem;
+
+    svg {
+        width: 1.125rem;
+        height: 1.125rem;
+    }
+
+    .ff-ai-chat-message-user & {
+        background: #10b981;
+    }
+}
+
+.ff-ai-chat-message-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    max-width: 65%;
+
+    .ff-ai-chat-message-user & {
+        align-items: flex-end;
+    }
+
+    .ff-ai-chat-message-assistant & {
+        align-items: flex-start;
+    }
+}
+
+.ff-ai-chat-message-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ff-ai-text-gray);
+    padding: 0 0.25rem;
+}
+
+.ff-ai-chat-message-bubble {
+    padding: 0.75rem 1rem;
+    border-radius: var(--ff-ai-radius-lg);
+    background: white;
+    color: var(--ff-ai-text-dark);
+    line-height: 1.6;
+    box-shadow: var(--ff-ai-shadow);
+    font-size: 0.9375rem;
+    word-wrap: break-word;
+    width: fit-content;
+    max-width: 100%;
+
+    .ff-ai-chat-message-user & {
+        background: var(--ff-ai-primary);
+        color: white;
+    }
+}
+
+.ff-ai-chat-message-time {
+    font-size: 0.6875rem;
+    color: var(--ff-ai-text-light);
+    padding: 0 0.25rem;
+}
+
+// Quick Reply Buttons
+.ff-ai-chat-quick-replies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.ff-ai-chat-quick-reply-btn {
+    padding: 0.5rem 1rem;
+    background: white;
+    color: var(--ff-ai-primary);
+    border: 1.5px solid var(--ff-ai-primary);
+    border-radius: var(--ff-ai-radius-full);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+        background: var(--ff-ai-primary);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+// Validation Error Display
+.ff-ai-chat-validation-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: #fee2e2;
+    border-left: 3px solid #dc2626;
+    border-radius: var(--ff-ai-radius);
+    font-size: 0.875rem;
+    color: #991b1b;
+    animation: shake 0.5s ease;
+
+    svg {
+        flex-shrink: 0;
+        color: #dc2626;
+    }
+
+    span {
+        flex: 1;
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+    }
+}
+
+// Progress Bar
+.ff-ai-chat-progress {
+    flex-shrink: 0;
+    padding: 1rem 2rem;
+    background: white;
+    border-top: 1px solid var(--ff-ai-border);
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.ff-ai-chat-progress-bar {
+    height: 0.5rem;
+    background: var(--ff-ai-bg-light);
+    border-radius: var(--ff-ai-radius-full);
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.ff-ai-chat-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ff-ai-primary) 0%, #667eea 100%);
+    border-radius: var(--ff-ai-radius-full);
+    transition: width 0.3s ease;
+}
+
+.ff-ai-chat-progress-text {
+    font-size: 0.875rem;
+    color: var(--ff-ai-text-gray);
+    text-align: center;
+}
+
+// Input Area
+.ff-ai-chat-input-wrapper {
+    flex-shrink: 0;
+    padding: 1.25rem 2rem 1.5rem;
+    background: white;
+    border-top: 1px solid var(--ff-ai-border);
+    display: flex;
+    justify-content: center;
+}
+
+.ff-ai-chat-input-container {
+    max-width: 900px;
+    width: 100%;
+}
+
+.ff-ai-chat-input-form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    background: white;
+    border: 1px solid var(--ff-ai-border);
+    border-radius: var(--ff-ai-radius-lg);
+    padding: 0.75rem 1rem;
+    transition: all 0.2s;
+
+    &:focus-within {
+        border-color: var(--ff-ai-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+}
+
+.ff-ai-chat-input-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.ff-ai-chat-input-action-btn {
+    padding: 0.375rem;
+    background: transparent;
+    border: none;
+    border-radius: var(--ff-ai-radius);
+    cursor: pointer;
+    color: var(--ff-ai-text-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    &:hover {
+        background: var(--ff-ai-bg-light);
+        color: var(--ff-ai-text-dark);
+    }
+}
+
+.ff-ai-chat-input-field {
+    flex: 1;
+    padding: 0.5rem 0;
+    border: none;
+    font-size: 0.9375rem;
+    font-family: inherit;
+    resize: none;
+    min-height: 1.5rem;
+    max-height: 8rem;
+    line-height: 1.5;
+
+    &:focus {
+        outline: none;
+    }
+
+    &::placeholder {
+        color: var(--ff-ai-text-light);
+    }
+
+    &:disabled {
+        background: transparent;
+        cursor: not-allowed;
+    }
+}
+
+.ff-ai-chat-send-btn {
+    padding: 0.5rem;
+    background: var(--ff-ai-primary);
+    color: white;
+    border: none;
+    border-radius: var(--ff-ai-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    &:hover:not(:disabled) {
+        background: #1d4ed8;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.ff-ai-chat-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Footer
+.ff-ai-chat-footer {
+    flex-shrink: 0;
+    padding: 0.75rem 1.5rem;
+    text-align: center;
+    background: white;
+    border-top: 1px solid var(--ff-ai-border);
+}
+
+.ff-ai-chat-footer-text {
+    font-size: 0.75rem;
+    color: var(--ff-ai-text-light);
+    margin: 0;
+
+    a {
+        color: var(--ff-ai-text-gray);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+
+        &:hover {
+            color: var(--ff-ai-primary);
+        }
+    }
+}
+
+// Loading State
+.ff-ai-chat-loading {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.ff-ai-chat-loading-dots {
+    display: flex;
+    gap: 0.375rem;
+
+    span {
+        width: 0.5rem;
+        height: 0.5rem;
+        background: #9ca3af;
+        border-radius: var(--ff-ai-radius-full);
+        animation: bounce 1.4s infinite ease-in-out both;
+
+        &:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        &:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+    }
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+// Completion State
+.ff-ai-chat-completed {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    text-align: center;
+    background: var(--ff-ai-bg-light);
+    animation: fadeIn 0.5s ease;
+
+    svg {
+        color: #10b981;
+        stroke-width: 2;
+        animation: scaleIn 0.6s ease 0.2s both;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--ff-ai-text-dark);
+        margin: 0;
+        animation: slideUp 0.5s ease 0.3s both;
+    }
+
+    p {
+        font-size: 1rem;
+        color: var(--ff-ai-text-gray);
+        margin: 0;
+        max-width: 500px;
+        animation: slideUp 0.5s ease 0.4s both;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ff-ai-chat-completed-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    animation: slideUp 0.5s ease 0.5s both;
+}
+
+.ff-ai-chat-action-btn-primary {
+    padding: 0.75rem 1.5rem;
+    background: var(--ff-ai-primary);
+    color: white;
+    border: none;
+    border-radius: var(--ff-ai-radius);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #1d4ed8;
+    }
+}
+
+.ff-ai-chat-action-btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background: white;
+    color: var(--ff-ai-text-dark);
+    border: 1px solid var(--ff-ai-border);
+    border-radius: var(--ff-ai-radius);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background: var(--ff-ai-bg-light);
+    }
+}
+
+// Error Message
+.ff-ai-chat-error {
+    padding: 1.25rem;
+    background: #fee2e2;
+    border-left: 4px solid #dc2626;
+    border-radius: var(--ff-ai-radius);
+    margin: 1rem 2rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ff-ai-chat-error-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: #991b1b;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+
+    svg {
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+
+    span {
+        flex: 1;
+    }
+}
+
+.ff-ai-chat-error-action {
+    padding: 0.625rem 1.25rem;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: var(--ff-ai-radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #b91c1c;
+    }
+}
+

@@ -61,11 +61,14 @@ mix
     .js('resources/assets/admin/AllEntries/all-entries.js', `assets/js/all_entries.js`)
     .js('resources/assets/admin/Reports/reports.js', `assets/js/reports.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `assets/js/conversational_design.js`)
+    .js('resources/assets/admin/ai_chat_settings.js', `assets/js/ai_chat_settings.js`)
+    .js('resources/assets/public/ai-chat-main.js', `assets/js/ai-chat.js`)
     .vue({
         version: 2,
         extractStyles: true
     })
     .js('resources/assets/admin/fluent_forms_editor_helper.js', `assets/js/fluent_forms_editor_helper.js`)
+    .sass('resources/assets/public/scss/ai-chat.scss', 'assets/css/ai-chat.css')
 
     .sass('resources/assets/admin/css/element-ui-css.scss', `assets/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `assets/css/fluent-forms-admin-sass.css`)
@@ -83,6 +86,7 @@ mix
     .sass('resources/assets/public/scss/choices.scss', `assets/css/choices.css`)
     .sass('resources/assets/elementor/fluent-forms-elementor-widget.scss', `assets/css/fluent-forms-elementor-widget.css`)
     .sass('resources/assets/admin/conversion_templates/design_css.scss', `assets/css/conversational_design.css`)
+    .sass('resources/assets/admin/ai_chat_settings.scss', `assets/css/ai_chat_settings.css`)
     .sass('resources/assets/public/scss/skins/_payment.scss', 'assets/css/payment_skin.css')
     .sass('resources/assets/public/scss/skins/_transactions.scss', 'assets/css/fluentform_transactions.css')
     .sass('resources/assets/public/scss/frameless.scss', 'assets/css/frameless.css')

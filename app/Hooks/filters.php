@@ -65,16 +65,16 @@ add_action('fluentform/before_form_validation',function (){
         if ($input['is_disabled']) {
             continue;
         }
-        
+
         add_filter('fluentform/has_' . $input['type'], function () use ($input) {
             $option = get_option('_fluentform_global_form_settings');
             $autoload = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.autoload_captcha');
             $type = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.captcha_type');
-            
+
             if ($autoload && $type == $input['type']) {
                 return true;
             }
-            
+
             return false;
         });
     }
@@ -403,6 +403,20 @@ $app->addFilter('fluentform/editor_element_settings_placement', function($placem
     $placements['recaptcha']['general'][] = 'render_recaptcha_v3_badge';
     return $placements;
 }, 10, 2);
+
+
+// Add AI Chat as a top-level menu item in the form admin menu
+add_filter('fluentform/form_admin_menu', function ($menus, $form_id, $form) {
+    $menus['ai_chat'] = [
+        'title' => __('AI Chat', 'fluentform'),
+        'slug'  => 'ai_chat',
+        'hash'  => 'ai_chat_settings',
+        'route' => '/ai-chat-settings',
+        'url'   => admin_url('admin.php?page=fluent_forms&form_id=' . $form_id . '&route=ai-chat-settings'),
+    ];
+
+    return $menus;
+}, 20, 3);
 
 
 /*

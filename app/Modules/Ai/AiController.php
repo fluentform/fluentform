@@ -13,5 +13,9 @@ class AiController
     public function boot()
     {
         new AiFormBuilder();
+
+        // Boot AI Chat module
+        $aiChatController = new \FluentForm\App\Modules\AiChat\AiChatController();
+        $aiChatController->boot();
     }
 }
