@@ -554,7 +554,8 @@
             autosaveTimer: null,
             autosaveDelay: 30000, // 30 seconds delay
             autosaveEnabled: false,
-            isComponentReady: false
+            isComponentReady: false,
+            autosaveTimestampInterval: null
         }
     },
 
@@ -742,7 +743,7 @@
 
                 this.clearEditableObject(); // Empty {editItem} after form saved
                 saveBtn.html('<i class="el-icon-loading mr-1"></i> Save Form');
-                
+
                 // Cancel any pending autosave when manual save starts
                 this.cancelAutosave();
             } else {
@@ -806,7 +807,7 @@
                 this.canUndo = canUndo;
                 this.canRedo = canRedo;
                 jQuery(document).trigger('updateUndoState');
-                
+
                 // Trigger autosave if enabled and not performing undo/redo
                 if (this.autosaveEnabled && !this.isPerformingUndoRedo && !this.form_saving && this.isComponentReady && currentContent) {
                     this.scheduleAutosave();
@@ -1432,7 +1433,7 @@
         // Use nextTick to ensure form is fully initialized
         this.$nextTick(() => {
             this.isComponentReady = true;
-            
+
             if (window.FluentFormApp?.autosave_enabled) {
                 this.autosaveEnabled = window.FluentFormApp.autosave_enabled;
             }
@@ -1468,10 +1469,16 @@
         document.removeEventListener('keydown', this.initKeyboardSave);
         document.removeEventListener('keydown', this.initKeyboardUndoRedo);
         document.removeEventListener('keydown', this.initKeyboardDelete);
-        
+
         // Cancel any pending autosave
         this.cancelAutosave();
-        
+
+        // Clear timestamp updater interval
+        if (this.autosaveTimestampInterval) {
+            clearInterval(this.autosaveTimestampInterval);
+            this.autosaveTimestampInterval = null;
+        }
+
         if (this.undoRedoManager) {
             this.undoRedoManager.off('undo');
             this.undoRedoManager.off('redo');

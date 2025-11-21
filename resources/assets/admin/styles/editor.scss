@@ -1324,43 +1324,6 @@ mark {
   }
 }
 
-// Autosave indicator
-.ff-autosave-indicator {
-  display: inline-block;
-  margin-left: 12px;
-  font-size: 13px;
-  color: #909399;
-  vertical-align: middle;
-  transition: opacity 0.3s ease;
-
-  i {
-    margin-right: 4px;
-    font-size: 14px;
-    animation: spin 1s linear infinite;
-  }
-
-  .el-icon-success {
-    color: #67c23a;
-    animation: none;
-  }
-
-  .el-icon-loading {
-    color: #409eff;
-  }
-
-  .ff-autosave-text {
-    vertical-align: middle;
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-}
 
 
 

@@ -132,7 +132,7 @@
                     form_settings: JSON.stringify(this.formSettings),
                     email_report: JSON.stringify(this.email_report),
                     integration_failure_notification: JSON.stringify(this.integration_failure_notification),
-                    autosave_enabled: this.formSettings.misc.autosave_enabled || 'yes'
+                    autosave_enabled: this.formSettings.misc?.autosave_enabled || 'no'
                 };
 
                 FluentFormsGlobal.$rest.post(url, data)
