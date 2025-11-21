@@ -701,6 +701,27 @@
                         </el-radio-group>
                     </el-form-item>
                 </div>
+
+                <!-- Form Editor Autosave -->
+                <div class="el-form-item-wrap">
+                    <el-form-item class="ff-form-item-flex ff-form-item mb-3 ff-form-setting-label-width">
+                        <template slot="label">
+                            <span>
+                                {{ $t('Form Editor Autosave') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{ $t('Enable this to automatically save form changes after 30 seconds of inactivity for all forms.') }}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </span>
+                        </template>
+                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg"
+                                v-model="misc.autosave_enabled"></el-switch>
+                    </el-form-item>
+                </div>
             </card-body>
         </card>
     </el-form>
@@ -852,6 +873,10 @@
             }
             if (!this.data.misc.default_admin_date_time) {
                 this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
+            }
+
+            if (!this.data.misc.autosave_enabled) {
+                this.$set(this.data.misc, 'autosave_enabled', 'no');
             }
 
             if (!this.data.misc.tokenBasedProtectionStatus) {

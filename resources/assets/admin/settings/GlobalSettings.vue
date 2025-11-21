@@ -128,10 +128,11 @@
                 const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
 
                 let data = {
-                    key: ['SaveGlobalLayoutSettings', 'EmailSummarySettings'],
+                    key: ['SaveGlobalLayoutSettings', 'EmailSummarySettings', 'AutosaveSettings'],
                     form_settings: JSON.stringify(this.formSettings),
                     email_report: JSON.stringify(this.email_report),
-                    integration_failure_notification: JSON.stringify(this.integration_failure_notification)
+                    integration_failure_notification: JSON.stringify(this.integration_failure_notification),
+                    autosave_enabled: this.formSettings.misc.autosave_enabled || 'yes'
                 };
 
                 FluentFormsGlobal.$rest.post(url, data)
