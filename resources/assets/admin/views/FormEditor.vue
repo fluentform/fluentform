@@ -552,7 +552,7 @@
                 { key: 'input_password', label: 'Password' },
             ],
             autosaveTimer: null,
-            autosaveDelay: 30000, // 30 seconds delay
+            autosaveDelay: 20000, // 20 seconds delay
             autosaveEnabled: false,
             isComponentReady: false,
             autosaveTimestampInterval: null
