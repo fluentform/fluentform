@@ -1,0 +1,51 @@
+const { __ } = wp.i18n;
+const { TabPanel } = wp.components;
+const { memo } = wp.element;
+
+import TabGeneral from './TabGeneral';
+import TabMisc from './TabMisc';
+function Tabs({ attributes, updateStyles, handlePresetChange}) {
+    return (
+        <TabPanel
+            className="fluent-form-block-style-tabs"
+            activeClass="is-active"
+            tabs={[
+                { name: 'general', title: __('General'), key: 'general-tab' },
+                { name: 'misc', title: __('Misc'), key: 'misc-tab' },
+            ]}
+        >
+            {(tab) => {
+                if (tab.name === 'general') {
+                    return (
+                        <div key="general-tab-content">
+                            <TabGeneral
+                                attributes={attributes}
+                                updateStyles={updateStyles}
+                                handlePresetChange={handlePresetChange}
+                            />
+                        </div>
+                    );
+                } else if (tab.name === 'misc') {
+                    return (
+                        <div key="misc-tab-content">
+                            <TabMisc
+                                attributes={attributes}
+                                updateStyles={updateStyles}
+                            />
+                        </div>
+                    );
+                }
+                return null;
+            }}
+        </TabPanel>
+    );
+}
+
+export default memo(Tabs, (prevProps, nextProps) => {
+    if (prevProps.updateStyles !== nextProps.updateStyles ||
+        prevProps.handlePresetChange !== nextProps.handlePresetChange
+    ) {
+        return false;
+    }
+    return prevProps.attributes === nextProps.attributes;
+});

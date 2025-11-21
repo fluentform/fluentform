@@ -85,7 +85,14 @@ const formConditional = function ($, $theForm, form) {
                     }
                     $parent.removeClass('ff_excluded')
                         .addClass('ff_cond_v')
-                        .slideDown(200);
+                        .slideDown(200, function() {
+                            // Check if this container has range sliders that need reinitialization
+                            if ($parent.find('input[type="range"]').length > 0) {
+                                setTimeout(function() {
+                                    $theForm.trigger('reInitRangeSliders');
+                                }, 50);
+                            }
+                        });
                 } else {
                     $parent.removeClass('ff_cond_v')
                         .addClass('ff_excluded')

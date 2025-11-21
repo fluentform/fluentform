@@ -432,9 +432,15 @@ class Helper
         return static::$tabIndexStatus;
     }
 
-    public static function isMultiStepForm($formId)
+    public static function isMultiStepForm($formOrId)
     {
-        $form = Form::find($formId);
+        // Accept both form object and form ID to avoid re-querying
+        if (is_object($formOrId)) {
+            $form = $formOrId;
+        } else {
+            $form = Form::find($formOrId);
+        }
+
         if (!$form) {
             return false;
         }
@@ -695,7 +701,6 @@ class Helper
         if ($key) {
             return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId . '&form=' . $key);
         }
-
         return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId);
     }
 
@@ -948,6 +953,7 @@ class Helper
 
     public static function isBlockEditor()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking REST API context
         return defined('REST_REQUEST') && REST_REQUEST && !empty($_REQUEST['context']) && $_REQUEST['context'] === 'edit';
     }
 
@@ -1017,6 +1023,13 @@ class Helper
                     ArrayHelper::get($rawField, 'settings.advanced_options', []),
                     'value'
                 );
+                
+                // Add field-specific __ff_other__ to options if "Other" option is enabled
+                if (in_array($fieldType, ['input_checkbox', 'input_radio']) &&
+                    ArrayHelper::get($rawField, 'settings.enable_other_option') === 'yes') {
+                    $fieldName = sanitize_key(str_replace(['[', ']'], '', ArrayHelper::get($rawField, 'attributes.name', '')));
+                    $options[] = '__ff_other_' . $fieldName . '__';
+                }
             } elseif ("dynamic_field" == $fieldType) {
                 $dynamicFetchValue = 'yes' == ArrayHelper::get($rawField, 'settings.dynamic_fetch');
                 if ($dynamicFetchValue) {
@@ -1047,15 +1060,28 @@ class Helper
                 case 'input_checkbox':
                 case 'multi_select':
                 case 'dynamic_field_options':
+            
                     $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
                     if ($skipValidationInputsWithOptions) {
                         break;
                     }
                     if (is_array($inputValue)) {
-                        $isValid = array_diff($inputValue, $options);
+                        // Handle field-specific "Other" options for checkboxes
+                        $filteredValues = array_filter($inputValue, function($value) {
+                            // Skip field-specific other values and processed other values
+                            return !preg_match('/^__ff_other_.*__$/', $value) &&
+                                   !preg_match('/^Other:\s/', $value);
+                        });
+                        $isValid = array_diff($filteredValues, $options);
                         $isValid = empty($isValid);
                     } else {
-                        $isValid = in_array($inputValue, $options);
+                        // Handle field-specific "Other" option for single values
+                        if (preg_match('/^__ff_other_.*__$/', $inputValue) ||
+                            preg_match('/^Other:\s/', $inputValue)) {
+                            $isValid = true;
+                        } else {
+                            $isValid = in_array($inputValue, $options);
+                        }
                     }
                     break;
                 case 'input_number':
@@ -1149,6 +1175,11 @@ class Helper
      */
     public static function shortCodeParseOnValidationMessage($message, $form, $fieldName)
     {
+        // Return early if form is null to prevent errors
+        if ($form === null) {
+            return $message;
+        }
+
         // For validation message there is no entry & form data
         // Add 'current_field' name as data array to resolve {labels.current_field} shortcode if it has
         return ShortCodeParser::parse(
@@ -1277,7 +1308,6 @@ class Helper
         }
         return sanitize_text_field(trim($values));
     }
-
     public static function getFrontendFacingUrl($args = '')
     {
         return home_url($args);
@@ -1316,12 +1346,14 @@ class Helper
         foreach ($headers as $header) {
             // Try directly from $_SERVER
             if (isset($_SERVER[$header])) {
-                $code = trim($_SERVER[$header]);
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Country code from CDN/proxy header, validated below
+                $code = trim(sanitize_text_field(wp_unslash($_SERVER[$header])));
             } // Try with HTTP_ prefix if not already present
             elseif (strpos($header, 'HTTP_') !== 0) {
                 $httpHeader = 'HTTP_' . str_replace('-', '_', strtoupper($header));
                 if (isset($_SERVER[$httpHeader])) {
-                    $code = trim($_SERVER[$httpHeader]);
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Country code from CDN/proxy header, validated below
+                    $code = trim(sanitize_text_field(wp_unslash($_SERVER[$httpHeader])));
                 } else {
                     continue;
                 }
@@ -1349,5 +1381,55 @@ class Helper
             return @unserialize(trim($data), ['allowed_classes' => false]);
         }
         return $data;
+    }
+
+	/**
+	 * If elementor editor is open
+	 * @return bool
+	 */
+    public static function isElementorEditor()
+    {
+        return defined('ELEMENTOR_VERSION') &&
+            class_exists('\Elementor\Plugin') &&
+            isset(\Elementor\Plugin::$instance) &&
+            \Elementor\Plugin::$instance->editor->is_edit_mode();
+    }
+
+    /**
+     * Check if we're in block editor context (Site Editor, Template Editor, or Post/Page Editor)
+     * Covers all Gutenberg block editor contexts including mobile/tablet preview iframes
+     * @return bool
+     */
+    public static function isSiteEditor()
+    {
+        if (!is_admin() || !function_exists('get_current_screen')) {
+            return false;
+        }
+
+        $screen = get_current_screen();
+
+        // Check for Site Editor and Template Editor contexts
+        if ($screen && in_array($screen->base, ['site-editor', 'edit-site', 'appearance_page_gutenberg-edit-site'], true )) {
+            return true;
+        }
+
+        // Check for Post/Page block editor contexts
+        if ($screen && in_array($screen->base, ['post', 'page'], true) && $screen->is_block_editor()) {
+            return true;
+        }
+
+        // Check for custom post types with block editor
+        if ($screen && $screen->is_block_editor()) {
+            return true;
+        }
+
+        // Fallback checks for various block editor contexts
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- REQUEST_URI used for string comparison only
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking block editor context
+        return isset( $_GET['_wp-find-template'] ) ||
+               strpos( $request_uri, 'site-editor.php' ) !== false ||
+               // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking REST API context
+               (defined('REST_REQUEST') && REST_REQUEST && !empty($_REQUEST['context']) && $_REQUEST['context'] === 'edit');
     }
 }

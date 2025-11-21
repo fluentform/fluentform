@@ -106,7 +106,7 @@ class BaseIntegration
         ], [
             'name.required'              => __('Feed Name is required', 'fluentform'),
             'list.required'              => __(' List is required', 'fluentform'),
-            'fieldEmailAddress.required' => __('Email Address is required'),
+            'fieldEmailAddress.required'  => __('Email Address is required', 'fluentform')
         ])->validate();
 
         if ($validate->fails()) {

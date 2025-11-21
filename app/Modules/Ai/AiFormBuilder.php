@@ -55,6 +55,8 @@ class AiFormBuilder extends FormService
         $fluentFormFields = [];
         $fields = Arr::get($form, 'fields', []);
         $isConversational = Arr::isTrue($form, 'is_conversational');
+        $customCss = Arr::get($form, 'custom_css', '');
+        $customJs = Arr::get($form, 'custom_js', '');
         $hasStep = false;
         $lastFieldIndex = count($fields) - 1;
 
@@ -78,10 +80,10 @@ class AiFormBuilder extends FormService
         }
         $fluentFormFields = array_filter($fluentFormFields);
         if (!$fluentFormFields) {
-            throw new Exception(__('Empty form. Please try again!', 'fluentform'));
+            throw new Exception(esc_html__('Empty form. Please try again!', 'fluentform'));
         }
         $title = Arr::get($form, 'title', '');
-        return $this->saveForm($fluentFormFields, $title, $hasStep, $isConversational);
+        return $this->saveForm($fluentFormFields, $title, $hasStep, $isConversational, $customCss, $customJs);
     }
 
     /**
@@ -109,9 +111,9 @@ class AiFormBuilder extends FormService
         ];
 
         $result = (new FluentFormAIAPI())->makeRequest($queryArgs);
-        
+
         if (is_wp_error($result)) {
-            throw new Exception($result->get_error_message());
+            throw new Exception(esc_html($result->get_error_message()));
         }
        
         $response = trim(Arr::get($result, 'response', ''), '"');
@@ -121,7 +123,7 @@ class AiFormBuilder extends FormService
 
         $decoded = json_decode($response, true);
         if (json_last_error() !== JSON_ERROR_NONE || empty($decoded) || empty($decoded['fields'])) {
-            throw new Exception(__('Invalid response: Please try again!', 'fluentform'));
+            throw new Exception(esc_html__('Invalid response: Please try again!', 'fluentform'));
         }
         return $decoded;
     }
@@ -301,7 +303,7 @@ class AiFormBuilder extends FormService
         return $customForm;
     }
     
-    protected function saveForm($formattedInputs, $title, $isStepForm = false, $isConversational = false)
+    protected function saveForm($formattedInputs, $title, $isStepForm = false, $isConversational = false, $customCss = '', $customJs = '')
     {
         $customForm = $this->prepareCustomForm($formattedInputs, $isStepForm);
         $data = Form::prepare($customForm);
@@ -325,6 +327,13 @@ class AiFormBuilder extends FormService
         }
 
         FormMeta::store($form, $formMeta);
+
+        if ($customCss = fluentformSanitizeCSS($customCss)) {
+            Helper::setFormMeta($form->id, '_custom_form_css', $customCss);
+        }
+        if ($customJs = fluentform_kses_js($customJs)) {
+            Helper::setFormMeta($form->id, '_custom_form_js', $customJs);
+        }
         
         do_action('fluentform/inserted_new_form', $form->id, $data);
         return $form;
@@ -428,7 +437,7 @@ class AiFormBuilder extends FormService
         $startingQuery = "Create a form for ";
         $query = Sanitizer::sanitizeTextField(Arr::get($args, 'query'));
         if (empty($query)) {
-            throw new Exception(__('Query is empty!', 'fluentform'));
+            throw new Exception(esc_html__('Query is empty!', 'fluentform'));
         }
         
         $additionalQuery = Sanitizer::sanitizeTextField(Arr::get($args, 'additional_query'));

@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.0.5
+**Stable tag:** 6.1.5
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -158,6 +158,37 @@ Yes, you can use 2 column or 3 column containers and you can build forms.
 Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also import in pro version.
 
 ## Changelog
+
+### 6.1.5 (Date: October 28, 2025) =
+- Adds Gutenberg Block Form Style Customization
+- Adds AI Custom CSS support for form creation
+- Adds Conversational Form Editor shortcode support ({get.text}, {ip}, etc.)
+- Adds warning message for Name Attribute changes to prevent entry data loss
+- Adds Dynamic field greyed-out (Pro Feature) visibility
+- Improves many untranslatable strings throughout the plugin. eg: ("for each month", "Signup Fee for", etc.)
+- Improves Design Preview color handling with block themes
+- Fixes Payment Form submission failures inside Elementor popups
+- Fixes Custom style CSS backtick insertion issue
+- Fixes country name from "Turkey" to "Türkiye" across all references
+- Fixes {user.meta.meta_key} shortcode for non-English languages
+- Fixes Advanced Filter UX issue with persistent dialog box
+- Fixes textarea line break in entry import/export
+- Fixes Entries table showing option values instead of labels for radio/select fields
+- Fixes Quantity field default value not working with conditional logic
+
+### 6.1.4 (Date: September 23, 2025) =
+- Fixes Elementor backend editor not working when Fluent Forms was added
+- Fixes the multiple choice field not working in Elementor popup
+- Fixes Report Page UI not properly showing in RTL
+- Fixes Stripe payment error when global auto-load CAPTCHA is enabled in conversational forms
+- Fixes the Conversational Form Phone Field to return numbers in the full International format
+- Fixes Custom User Meta Fields not populating
+- Fixes the phone field search input style height
+- Fixes email notification triggering for empty payment method form
+- Fixes the PDF Download link in confirmation message
+- Fixes PHP 8 compatibility issues with Excel exports
+- Fixes the range slider in conversational forms causing incorrect progress percentage
+
 
 ### 6.1.0 (Date: August 26, 2025) =
 - Adds Fluent Forms Report module

@@ -98,6 +98,12 @@
             },
             changeContentEvent() {
                 let content = wp.editor.getContent(this.editor_id);
+
+                // Remove auto inserted http:// for {pdf.download_link.id} shortcodes. The shortcode will handle the protocol.
+                if (content && content.includes('http://{pdf.download_link.')) {
+                    content = content.replace(/http:\/\/{pdf.download_link./g, '{pdf.download_link.');
+                }
+
                 this.$emit('input', this.customSanitize(content));
             },
 

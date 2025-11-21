@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
 use FluentForm\Framework\Helpers\ArrayHelper;
 ?>
 
@@ -18,63 +19,63 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 						class="ff_list_button_link ff-page-scroll"
 						data-route_key="<?php echo esc_attr($form_settings_route); ?>"
 						href="#confirmation-settings">
-						<?php echo __('Settings', 'fluentform'); ?>
+						<?php echo esc_html(__('Settings', 'fluentform')); ?>
 					</a>
 					<ul class="ff_list_submenu">
 						<li>
 							<a class="ff-page-scroll" href="#confirmation-settings">
-								<?php echo __('Confirmation Settings', 'fluentform'); ?>
+								<?php echo esc_html(__('Confirmation Settings', 'fluentform')); ?>
 							</a>
 						</li>
 						<?php if(defined('FLUENTFORMPRO') && $has_double_opt_in): ?>
 							<li>
 								<a class="ff-page-scroll"
 									href="#double-optin-confirmation">
-									<?php echo __('Double Opt-in Confirmation', 'fluentform'); ?>
+									<?php echo esc_html(__('Double Opt-in Confirmation', 'fluentform')); ?>
 								</a>
 							</li>
 						<?php endif?>
                         <?php if (defined('FLUENTFORMPRO') && \FluentForm\App\Helpers\IntegrationManagerHelper::isIntegrationEnabled('admin_approval')): ?>
                             <li>
                                 <a class="ff-page-scroll" href="#admin_approval">
-                                    <?php echo __('Admin Approval', 'fluentform'); ?>
+                                    <?php echo esc_html(__('Admin Approval', 'fluentform')); ?>
                                 </a>
                             </li>
                         <?php endif ?>
 						<li>
 							<a class="ff-page-scroll"
 								href="#form-layout">
-								<?php echo __('Form Layout', 'fluentform'); ?>
+								<?php echo esc_html(__('Form Layout', 'fluentform')); ?>
 							</a>
 						</li>
 						<li>
 							<a class="ff-page-scroll"
 								href="#scheduling-and-restrictions">
-								<?php echo __('Scheduling & Restrictions', 'fluentform'); ?>
+								<?php echo esc_html(__('Scheduling & Restrictions', 'fluentform')); ?>
 							</a>
 						</li>
 						<li>
 							<a class="ff-page-scroll"
 								href="#advanced-form-validation">
-								<?php echo __('Advanced Form Validation', 'fluentform'); ?>
+								<?php echo esc_html(__('Advanced Form Validation', 'fluentform')); ?>
 							</a>
 						</li>
 						<li>
 							<a class="ff-page-scroll"
 								href="#survey-result">
-								<?php echo __('Survey Result', 'fluentform'); ?>
+								<?php echo esc_html(__('Survey Result', 'fluentform')); ?>
 							</a>
 						</li>
 						<li>
 							<a class="ff-page-scroll"
 								href="#compliance-settings">
-								<?php echo __('Compliance Settings', 'fluentform'); ?>
+								<?php echo esc_html(__('Compliance Settings', 'fluentform')); ?>
 							</a>
 						</li>
 						<li>
 							<a class="ff-page-scroll"
 								href="#other">
-								<?php echo __('Other', 'fluentform'); ?>
+								<?php echo esc_html(__('Other', 'fluentform')); ?>
 							</a>
 						</li>
 					</ul>

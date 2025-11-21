@@ -46,7 +46,7 @@ export default {
                 },
                 no_style: {
                     name: 'No Style',
-                    backgroundColor: '##1a7efb',
+                    backgroundColor: '#1a7efb',
                     color: '#ffffff'
                 },
                 red: {

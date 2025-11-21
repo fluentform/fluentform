@@ -61,6 +61,11 @@ class FormFieldsParser
             $form = wpFluent()->table('fluentform_forms')->find($form);
         }
 
+        // Return empty array if form is still not found or is null
+        if (!$form || !is_object($form)) {
+            return [];
+        }
+
         if (!isset(static::$forms[$form->id])) {
             static::$forms[$form->id] = [];
         }

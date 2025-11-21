@@ -62,12 +62,14 @@ class AjaxEndpoints
     {
         global $wpdb;
         $table = $wpdb->prefix . 'fluentform_transactions';
-        $cols = $wpdb->get_col("DESC {$table}", 0);
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Checking table structure, %1s is for identifier
+        $cols = $wpdb->get_col($wpdb->prepare("DESC %1s", $table), 0);
 
         if ($cols && in_array('subscription_id', $cols) && in_array('transaction_hash', $cols)) {
             // We are good
         } else {
-            $wpdb->query("DROP TABLE IF EXISTS {$table}");
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Migration, dropping table to recreate, %1s is for identifier
+            $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %1s", $table));
             Migration::migrate();
             // Migrate the database
             Submissions::migrate(true); // Add payment_total
@@ -76,7 +78,8 @@ class AjaxEndpoints
 
     public function updateGlobalSettings()
     {
-        $settings = wp_unslash($_REQUEST['settings']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in route registration, sanitized in updatePaymentSettings()
+        $settings = isset($_REQUEST['settings']) ? wp_unslash($_REQUEST['settings']) : [];
 
         // Update settings
         $settings = PaymentHelper::updatePaymentSettings($settings);
@@ -92,7 +95,8 @@ class AjaxEndpoints
 
     public function getPaymentMethodSettings()
     {
-        $method = sanitize_text_field($_REQUEST['method']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
+        $method = isset($_REQUEST['method']) ? sanitize_text_field(wp_unslash($_REQUEST['method'])) : '';
 
         $paymentSettings = apply_filters_deprecated(
             'fluentform_payment_settings_' . $method,
@@ -113,8 +117,10 @@ class AjaxEndpoints
 
     public function savePaymentMethodSettings()
     {
-        $method = sanitize_text_field($_REQUEST['method']);
-        $settings = wp_unslash($_REQUEST['settings']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
+        $method = isset($_REQUEST['method']) ? sanitize_text_field(wp_unslash($_REQUEST['method'])) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in route registration, sanitized in validation filter
+        $settings = isset($_REQUEST['settings']) ? wp_unslash($_REQUEST['settings']) : [];
 
         $settingsValidation = apply_filters_deprecated(
             'fluentform_payment_method_settings_validation_' . $method,
@@ -157,7 +163,8 @@ class AjaxEndpoints
 
     public function getFormSettings()
     {
-        $formId = intval($_REQUEST['form_id']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
+        $formId = isset($_REQUEST['form_id']) ? (int) $_REQUEST['form_id'] : 0;
         $settings = PaymentHelper::getFormSettings($formId, 'admin');
         $form = wpFluent()->table('fluentform_forms')->find($formId);
         $addressFields = array_values(FormFieldsParser::getAddressFields($form));
@@ -176,8 +183,10 @@ class AjaxEndpoints
 
     public function saveFormSettings()
     {
-        $formId = intval($_REQUEST['form_id']);
-        $settings = wp_unslash($_REQUEST['settings']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
+        $formId = isset($_REQUEST['form_id']) ? (int) $_REQUEST['form_id'] : 0;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in route registration, sanitized in setFormMeta()
+        $settings = isset($_REQUEST['settings']) ? wp_unslash($_REQUEST['settings']) : [];
         Helper::setFormMeta($formId, '_payment_settings', $settings);
 
         wp_send_json_success([
@@ -187,8 +196,9 @@ class AjaxEndpoints
 
     public function updateTransaction()
     {
-        $transactionData = $_REQUEST['transaction'];
-        $transactionId = intval($transactionData['id']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce verified in route registration, data sanitized below
+        $transactionData = isset($_REQUEST['transaction']) ? $_REQUEST['transaction'] : [];
+        $transactionId = (int) $transactionData['id'];
         $oldTransaction = wpFluent()->table('fluentform_transactions')
             ->find($transactionId);
 
@@ -209,7 +219,8 @@ class AjaxEndpoints
             ->where('id', $transactionId)
             ->update($updateData);
 
-        $subscriptionId = intval(ArrayHelper::get($_REQUEST, 'subscription_id', '0'));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
+        $subscriptionId = (int) ArrayHelper::get($_REQUEST, 'subscription_id', '0');
         if ($subscriptionId) {
             $existingSubscription = wpFluent()->table('fluentform_subscriptions')
                                         ->find($subscriptionId);
@@ -302,6 +313,7 @@ class AjaxEndpoints
 
     public function disconnectStripeConnect()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
         return ConnectConfig::disconnect($_REQUEST, true);
     }
 
@@ -321,7 +333,8 @@ class AjaxEndpoints
 
     public function cancelSubscription()
     {
-        $subscriptionId = intval(ArrayHelper::get($_REQUEST, 'subscription_id'));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
+        $subscriptionId = (int) ArrayHelper::get($_REQUEST, 'subscription_id');
 
         $subscription = fluentFormApi('submissions')->getSubscription($subscriptionId);
 
@@ -331,8 +344,10 @@ class AjaxEndpoints
             ], 423);
         }
 
-        $transactionId = intval(ArrayHelper::get($_REQUEST, 'transaction_id', '0'));
-        $submissionId = intval(ArrayHelper::get($_REQUEST, 'submission_id', '0'));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
+        $transactionId = (int) ArrayHelper::get($_REQUEST, 'transaction_id', '0');
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
+        $submissionId = (int) ArrayHelper::get($_REQUEST, 'submission_id', '0');
 
         $oldTransaction = wpFluent()->table('fluentform_transactions')
                                     ->find($transactionId);

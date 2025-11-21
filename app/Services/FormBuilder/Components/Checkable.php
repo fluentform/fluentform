@@ -78,6 +78,20 @@ class Checkable extends BaseComponent
         if ('yes' == ArrayHelper::get($data, 'settings.randomize_options')) {
             shuffle($formattedOptions);
         }
+
+        // Add "Other" option if enabled
+        $enableOtherOption = ArrayHelper::get($data, 'settings.enable_other_option') === 'yes';
+        if ($enableOtherOption && $data['attributes']['type'] === 'checkbox' && defined('FLUENTFORMPRO')) {
+            $fieldName = sanitize_text_field(str_replace(['[', ']'], '', $data['attributes']['name']));
+            $otherLabel = ArrayHelper::get($data, 'settings.other_option_label', __('Other', 'fluentform'));
+            $formattedOptions[] = [
+                'label'      => $otherLabel,
+                'value'      => '__ff_other_' . $fieldName . '__',
+                'calc_value' => '',
+                'image'      => '',
+                'is_other'   => true,
+            ];
+        }
 //        @todo : Find a alternative screen reader support
 //        $legendId = $this->getUniqueid(str_replace(['[', ']'], ['', ''], $data['attributes']['name']));
 //        $elMarkup .= '<fieldset role="group"  style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;" aria-labelledby="legend_' . $legendId . '">';
@@ -129,8 +143,24 @@ class Checkable extends BaseComponent
             }
     
             $disabled = ArrayHelper::get($option, 'disabled') ? 'disabled' : '';
-
-            $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$disabled} {$atts} id='{$id}' aria-label='{$this->removeShortcode($ariaLabel)}' aria-invalid='false' aria-required={$ariaRequired}> <span>" . $label . '</span></label>';
+            
+            $isOtherOption = ArrayHelper::get($option, 'is_other', false);
+            $otherClass = $isOtherOption ? ' ff-other-option' : '';
+            
+            $elMarkup .= "<label class='ff-el-form-check-label{$otherClass}' for={$id}><input {$disabled} {$atts} id='{$id}' aria-label='{$this->removeShortcode($ariaLabel)}' aria-invalid='false' aria-required={$ariaRequired}> <span>" . $label . '</span></label>';
+            
+            // Add text input for "Other" option
+            if ($isOtherOption && defined('FLUENTFORMPRO')) {
+                $otherPlaceholder = ArrayHelper::get($data, 'settings.other_option_placeholder', __('Please specify...', 'fluentform'));
+                $fieldName = str_replace(['[', ']'], '', $data['attributes']['name']);
+                $otherInputName = $fieldName . '__ff_other_input__';
+                $otherValue = '';
+                
+                $elMarkup .= "<div class='ff-other-input-wrapper' style='display: none;' data-field='{$fieldName}'>";
+                $elMarkup .= "<input type='text' name='" . esc_attr($otherInputName) . "' class='ff-el-form-control' placeholder='" . esc_attr($otherPlaceholder) . "' value='" . esc_attr($otherValue) . "'>";
+                $elMarkup .= "</div>";
+            }
+            
             $elMarkup .= '</div>';
         }
 

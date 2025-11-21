@@ -191,7 +191,7 @@ class FormDataParser
                         <thead>
                             <tr>
                                 <?php foreach ($repeatColumns as $repeatColumn) : ?>
-                                <th><?php echo fluentform_sanitize_html(ArrayHelper::get($repeatColumn, 'settings.label')); ?>
+                                <th><?php echo fluentform_sanitize_html(ArrayHelper::get($repeatColumn, 'settings.label')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentform_sanitize_html() removes XSS vectors and uses wp_kses() with allowed tags ?>
                                 </th>
                                 <?php endforeach; ?>
                             </tr>
@@ -202,7 +202,7 @@ class FormDataParser
                             <tr>
                                 <?php for ($j = 0; $j < $columns; $j++) : ?>
                                 <td>
-                                    <?php echo fluentform_sanitize_html($value[$j][$i]); ?>
+                                    <?php echo fluentform_sanitize_html($value[$j][$i]); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentform_sanitize_html() removes XSS vectors and uses wp_kses() with allowed tags ?>
                                 </td>
                                 <?php endfor; ?>
                             </tr>
@@ -323,6 +323,18 @@ class FormDataParser
     public static function formatCheckBoxValues($values, $field, $isHtml = false)
     {
         if (!$isHtml) {
+            if (
+                defined('FLUENTFORM_RENDERING_ENTRIES') &&
+                $values && is_array($values) &&
+                $options = ArrayHelper::get($field, 'raw.settings.advanced_options', [])
+            ) {
+                $options = array_column($options, 'label', 'value');
+                foreach ($values as &$value) {
+                    if ($label = ArrayHelper::get($options, $value)) {
+                        $value = $label;
+                    }
+                }
+            }
             return self::formatValue($values);
         }
 

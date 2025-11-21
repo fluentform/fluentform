@@ -336,6 +336,15 @@ jQuery(document).ready(function () {
                                 response: res
                             });
 
+                            const customSuccessEvent = new CustomEvent('fluentform_submission_success', {
+                                detail: {
+                                    form: $theForm[0],
+                                    config: form,
+                                    response: res
+                                }
+                            });
+                            document.dispatchEvent(customSuccessEvent);
+
                             if ('redirectUrl' in res.data.result) {
                                 if (res.data.result.message) {
                                     $('<div/>', {
@@ -396,7 +405,19 @@ jQuery(document).ready(function () {
                                 response: res
                             });
 
-                            if (!res || !res.responseJSON || !res.responseJSON || !res.responseJSON.errors) {
+
+                            const customFailedEvent = new CustomEvent('fluentform_submission_failed', {
+                                detail: {
+                                    form: $theForm[0],
+                                    response: res,
+                                    config: form
+                                }
+                            });
+                            document.dispatchEvent(customFailedEvent);
+
+
+                            if (!res || !res.responseJSON || !(res.responseJSON.data || res.responseJSON.errors)) {
+
                                 showErrorMessages(res.responseText);
                                 return;
                             }
@@ -406,7 +427,7 @@ jQuery(document).ready(function () {
                                 addHiddenData(res.responseJSON.append_data);
                             }
 
-                            showErrorMessages(res.responseJSON.errors);
+                            showErrorMessages(res.responseJSON.errors || res.responseJSON.data);
 
                             scrollToFirstError(350);
 
@@ -978,7 +999,7 @@ jQuery(document).ready(function () {
 
                     try {
                         let widgetId = $el.attr(widgetIdAttr);
-                        
+
                         if (type === 'g-recaptcha' || type === 'h-captcha') {
                             if (widgetId && $el.find('iframe').length > 0) {
                                 return; // Already rendered properly
@@ -1089,6 +1110,7 @@ jQuery(document).ready(function () {
                 this.initCheckableActive();
                 this.maybeInitSpamTokenProtection();
                 this.maybeHandleCleanTalkSubmitTime();
+                this.initOtherOptionHandlers();
             },
 
             maybeInitSpamTokenProtection: function() {
@@ -1171,6 +1193,40 @@ jQuery(document).ready(function () {
                 }
             },
 
+            // Handle "Other" option for checkboxes
+            initOtherOptionHandlers: function() {
+                jQuery(document).on('change', '.ff-other-option input[type="checkbox"]', function() {
+                    var $checkbox = jQuery(this);
+                    var $wrapper = $checkbox.closest('.ff-el-form-check').find('.ff-other-input-wrapper');
+
+                    if (!$wrapper.length) {
+                        return;
+                    }
+
+                    if ($checkbox.is(':checked')) {
+                        $wrapper.show();
+                        $wrapper.find('.ff-el-form-control').focus();
+                    } else {
+                        $wrapper.hide();
+                        $wrapper.find('.ff-el-form-control').val('');
+                    }
+                });
+
+                // Clear "Other" checkbox when text input is empty scoped to specific field
+                jQuery(document).on('blur', '.ff-other-input-wrapper .ff-el-form-control', function() {
+                    var $textInput = jQuery(this);
+                    var $wrapper = $textInput.closest('.ff-other-input-wrapper');
+                    var fieldName = $wrapper.data('field');
+                    var $checkbox = $textInput.closest('.ff-el-input--content').find('.ff-other-option input[value*="' + fieldName + '"]');
+
+                    if ($textInput.val().trim() === '') {
+                        $checkbox.prop('checked', false);
+                        $checkbox.closest('.ff-el-form-check').removeClass('ff_item_selected');
+                        $wrapper.hide();
+                    }
+                });
+            },
+
             /**
              * Init choice2
              *
@@ -1193,7 +1249,16 @@ jQuery(document).ready(function () {
                         silent: true,
                         shouldSort: false,
                         searchEnabled: true,
-                        searchResultLimit: 50
+                        searchResultLimit: 50,
+                        searchFloor: 1,
+                        searchChoices: true,
+                        fuseOptions: {
+                            threshold: 0.1,
+                            distance: 200,
+                            ignoreLocation: true,
+                            tokenize: true,
+                            matchAllTokens: false,
+                        }
                     };
 
 
@@ -1203,7 +1268,12 @@ jQuery(document).ready(function () {
                     if (parseInt(maxSelection)) {
                         args.maxItemCount = parseInt(maxSelection);
                         args.maxItemText = function (maxItemCount) {
-                            let message = window.fluentFormVars.choice_js_vars.maxItemText;
+                            let message;
+                            if (maxItemCount === 1) {
+                                message = window.fluentFormVars.choice_js_vars.maxItemTextSingular;
+                            } else {
+                                message = window.fluentFormVars.choice_js_vars.maxItemTextPlural;
+                            }
                             message = message.replace('%%maxItemCount%%', maxItemCount);
                             return message;
                         }
@@ -1657,7 +1727,7 @@ jQuery(document).ready(function () {
                     dropdown.style.overflowY = 'auto';
 
                     // Find and style the scrollable list
-                    const scrollableList = 
+                    const scrollableList =
                         dropdown.querySelector('.choices__list[role="listbox"]') ||
                         dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
                     if (scrollableList) {

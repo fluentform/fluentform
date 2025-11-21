@@ -1,9 +1,10 @@
-<?php defined('ABSPATH') or die;
+<?php
+defined('ABSPATH') or die;
 
 /**
- * Plugin Name: Fluent Forms
+ * Plugin Name: Fluent Forms - Customizable Contact Forms, Survey, Quiz, & Conversational Form Builder
  * Description: Contact Form By Fluent Forms is the advanced Contact form plugin with drag and drop, multi column supported form builder plugin
- * Version: 6.1.2
+ * Version: 6.1.6
  * Author: Contact Form - WPManageNinja LLC
  * Author URI: https://fluentforms.com
  * Plugin URI: https://wpmanageninja.com/wp-fluent-form/
@@ -16,7 +17,7 @@ defined('ABSPATH') or die;
 defined('FLUENTFORM') or define('FLUENTFORM', true);
 define('FLUENTFORM_DIR_PATH', plugin_dir_path(__FILE__));
 define('FLUENTFORM_FRAMEWORK_UPGRADE', '4.3.22');
-defined('FLUENTFORM_VERSION') or define('FLUENTFORM_VERSION', '6.1.2');
+defined('FLUENTFORM_VERSION') or define('FLUENTFORM_VERSION', '6.1.6');
 defined('FLUENTFORM_MINIMUM_PRO_VERSION') or define('FLUENTFORM_MINIMUM_PRO_VERSION', '6.0.0');
 
 if (!defined('FLUENTFORM_HAS_NIA')) {
@@ -28,3 +29,5 @@ require __DIR__.'/vendor/autoload.php';
 call_user_func(function($bootstrap) {
     $bootstrap(__FILE__);
 }, require(__DIR__.'/boot/app.php'));
+
+

@@ -107,6 +107,28 @@ const registerRepeaterHandler = function ($theForm) {
         }
     });
 
+    // Name fixing event handler for repeater container
+    $theForm.on('repeater-container-names-update', function(e, $repeaterList) {
+        let rootName = $repeaterList.attr('data-root_name');
+        let firstTabIndex = 0;
+        $repeaterList.find('.ff_repeater_cont_row').each(function (i, row) {
+            var els = jQuery(this).find('.ff-el-form-control');
+            els.each(function (index, el) {
+                let $el = jQuery(el);
+                if(i == 0) {
+                    firstTabIndex = $el.attr('tabindex');
+                }
+                $el.prop({
+                    'name': rootName+'['+i+'][]'
+                });
+                $el.attr('data-name', rootName+'_'+index+'_'+i);
+                if(firstTabIndex) {
+                    $el.attr('tabindex', firstTabIndex);
+                }
+            });
+        });
+    });
+
     $theForm.on('click', '.js-repeater .repeat-plus', function (e) {
         let $btnPlus = jQuery(this);
         let $table = $btnPlus.closest('table');
@@ -199,7 +221,6 @@ const registerRepeaterHandler = function ($theForm) {
         let $repeaterList = $btnPlus.closest('.ff-repeater-container');
         let $row = $btnPlus.closest('.ff_repeater_cont_row');
         let maxRepeat = parseInt($repeaterList.attr('data-max_repeat'));
-        let rootName = $repeaterList.attr('data-root_name');
 
         let existingCount = $repeaterList.find('.ff_repeater_cont_row').length;
 
@@ -228,27 +249,9 @@ const registerRepeaterHandler = function ($theForm) {
         });
         $freshCopy.insertAfter($row);
 
-        // Now let's fix the name
-        let firstTabIndex = 0;
-        $repeaterList.find('.ff_repeater_cont_row').each(function (i, row) {
-            var els = jQuery(this).find('.ff-el-form-control');
-            els.each(function (index, el) {
-                let $el = jQuery(el);
-                if(i == 0) {
-                    firstTabIndex = $el.attr('tabindex');
-                }
-                $el.prop({
-                    'name': rootName+'['+i+'][]'
-                });
-                $el.attr('data-name',  rootName+'_'+index+'_'+i);
-                if(firstTabIndex) {
-                    $el.attr('tabindex',  firstTabIndex);
-                }
-            });
-        });
-
+        // Trigger name fixing event
+        $theForm.trigger('repeater-container-names-update', [$repeaterList]);
         $freshCopy.find('.ff-el-form-control')[0].focus();
-
         $repeaterList.trigger('repeat_change');
 
         if(maxRepeat && existingCount+1 == maxRepeat) {
@@ -264,11 +267,12 @@ const registerRepeaterHandler = function ($theForm) {
         if ($repeaterList.find('.ff_repeater_cont_row').length > 1) {
             $row.remove();
             $repeaterList.removeClass('repeat-maxed');
+            
+            // Trigger name fixing event
+            $theForm.trigger('repeater-container-names-update', [$repeaterList]);
             $repeaterList.trigger('repeat_change');
         }
     });
-
-
 };
 const registerKeyboardShort = function ($theForm) {
 

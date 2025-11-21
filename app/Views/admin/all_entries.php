@@ -39,6 +39,7 @@
     </div>
 </div>
 <?php
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable
     $dashboard_notices = apply_filters_deprecated(
         'fluentform_dashboard_notices',
         [
@@ -48,10 +49,12 @@
         'fluentform/dashboard_notices',
         'Use fluentform/dashboard_notices instead of fluentform_dashboard_notices.'
     );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable
 $notices = apply_filters('fluentform/dashboard_notices', $dashboard_notices);
 
 if ($notices) {
     echo '<div class="ff_global_notices">';
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in foreach loop
     foreach ($notices as $noticeKey => $notice) :
         ?>
         <div class="ff_global_notice ff_notice_<?php echo esc_attr($notice['type']); ?>">

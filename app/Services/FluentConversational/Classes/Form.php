@@ -204,6 +204,7 @@ class Form
             $paramKey = $slug;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public form display, no nonce needed
         if(!isset($_REQUEST[$paramKey])) {
             return;
         }
@@ -327,11 +328,15 @@ class Form
             'hcaptcha',
             'turnstile',
             'quiz_score',
-            'rangeslider',
             'save_progress_button',
             'dynamic_field',
-            'rangeslider'
+            'rangeslider',
+            'net_promoter_score'
         ];
+
+        if (defined('FLUENTFORM_SIGNATURE')) {
+            $acceptedFieldElements[] = 'signature';
+        }
 
         $acceptedFieldElements = apply_filters(
             'fluentform/conversational_accepted_field_elements',
@@ -432,7 +437,7 @@ class Form
                         continue;
                     }
                     $src = add_query_arg('ver', $cssStyle->ver, $cssStyle->src);
-
+                    // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Completely a custom rendering page.
                     echo "<link rel='stylesheet' id='" . esc_attr($styleName) . "' href='" . esc_url($src) . "' type='text/css' media='all' />\n";
                 }
             });
@@ -708,8 +713,8 @@ class Form
         ], $form);
 
         if (is_array($isRenderable) && !$isRenderable['status'] && !Acl::hasAnyFormPermission($formId)) {
-     
-            echo "<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>".wp_kses_post($isRenderable['message'])."</div>";
+
+            echo wp_kses_post("<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>" . $isRenderable['message'] . "</div>");
             exit(200);
         }
 
@@ -783,7 +788,7 @@ class Form
 
         if (is_array($isRenderable) && !$isRenderable['status']) {
             if (!Acl::hasAnyFormPermission($form->id)) {
-                echo "<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>" . wp_kses_post($isRenderable['message']) . '</h1>';
+                echo wp_kses_post("<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>" . $isRenderable['message'] . '</h1>');
                 exit();
             }
         }
@@ -940,6 +945,7 @@ class Form
     {
         $vars = apply_filters('fluentform/save_progress_vars', [
             'ajaxurl'                   => admin_url('admin-ajax.php'),
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized in getFrontendFacingUrl()
             'source_url'                => Helper::getFrontendFacingUrl($_SERVER['REQUEST_URI']),
             'form_id'                   => $formId,
             'nonce'                     => wp_create_nonce(),

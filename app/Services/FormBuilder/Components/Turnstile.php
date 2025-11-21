@@ -44,7 +44,7 @@ class Turnstile extends BaseComponent
         if (!wp_script_is('turnstile')) {
             wp_enqueue_script(
                 'turnstile',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit', // phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile requires loading from their CDN for CAPTCHA functionality
                 [],
                 FLUENTFORM_VERSION,
                 true

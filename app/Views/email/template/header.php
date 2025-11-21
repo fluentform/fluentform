@@ -2,6 +2,7 @@
 /**
  * Email Header
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -46,7 +47,7 @@ $contentType = apply_filters('fluentform/email_content_type_header', $contentTyp
     <head>
         <meta http-equiv="Content-Type" content="<?php echo esc_attr($contentType); ?>" />
         <meta name="x-apple-disable-message-reformatting" />
-        <title><?php echo get_bloginfo( 'name', 'display' ); ?></title>
+        <title><?php echo esc_html(get_bloginfo( 'name', 'display' )); ?></title>
     </head>
     <body <?php echo is_rtl() ? 'rightmargin' : 'leftmargin'; ?>="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
         <div id="wrapper" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'?>">
@@ -55,7 +56,7 @@ $contentType = apply_filters('fluentform/email_content_type_header', $contentTyp
                         <div id="template_header_image">
                             <?php
                                 if ( $headerImage ) {
-                                    echo '<p style="margin-top:0;"><img src="' . esc_url( $headerImage ) . '" alt="' . get_bloginfo( 'name', 'display' ) . '" /></p>';
+                                    echo '<p style="margin-top:0;"><img src="' . esc_url( $headerImage ) . '" alt="' . esc_attr(get_bloginfo( 'name', 'display' )) . '" /></p>';
                                 }
                             ?>
                         </div>

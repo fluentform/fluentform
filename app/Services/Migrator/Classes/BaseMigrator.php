@@ -21,8 +21,10 @@ abstract class BaseMigrator
     {
         if (!$this->exist()) {
             wp_send_json_error([
-                //translators: %s Target Plugin Name
-                'message' => sprintf(__('%s is not installed.', 'fluentform'), $this->title),
+                'message' => sprintf(
+                    /* translators: %s Target Plugin Name */
+                    __('%s is not installed.', 'fluentform'),
+                    $this->title),
             ]);
         }
     
@@ -1717,7 +1719,7 @@ abstract class BaseMigrator
             $baseurl = wp_upload_dir()['baseurl'] . '/fluentform/';
 
             if (!file_exists($basDir) || (file_exists($basDir) && !is_dir($basDir))) {
-                mkdir($basDir);
+                wp_mkdir_p($basDir);
             }
 
             $destination = $basDir . $file_name;

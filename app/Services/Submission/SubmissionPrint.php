@@ -20,6 +20,7 @@ class SubmissionPrint
         $form = Helper::getForm($formId);
         $submissions = Submission::whereIn('id', $submissionIds)->orderBy('id', $orderBy)->get();
         if (!$submissions || !$form) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new \Exception(__('Invalid Submissions', 'fluentform'));
         }
         $pdfBody = $this->getBody($submissions, $form);
@@ -74,31 +75,31 @@ class SubmissionPrint
         ?>
         .ff_pdf_wrapper, p, li, td, th {
         color: <?php
-        echo $mainColor; ?>;
+        echo esc_attr($mainColor); ?>;
         font-size: <?php
-        echo $fontSize; ?>px;
+        echo esc_attr($fontSize); ?>px;
         }
 
         .ff_all_data, table {
         empty-cells: show;
         border-collapse: collapse;
         border: 1px solid <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         width: 100%;
         color: <?php
-        echo $mainColor; ?>;
+        echo esc_attr($mainColor); ?>;
         }
         hr {
         color: <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         background-color: <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         }
         .ff_all_data th {
         border-bottom: 1px solid <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         border-top: 1px solid <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         padding-bottom: 10px !important;
         }
         .ff_all_data tr td {
@@ -109,7 +110,7 @@ class SubmissionPrint
 
         .ff_all_data tr td, .ff_all_data tr th {
         border: 1px solid <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         text-align: left;
         }
 

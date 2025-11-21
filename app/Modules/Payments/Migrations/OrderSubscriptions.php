@@ -21,7 +21,9 @@ class OrderSubscriptions
 
         $table = $wpdb->prefix . 'fluentform_subscriptions';
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration file, direct query needed
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) != $table) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Migration file, schema change is the purpose
             $sql = "CREATE TABLE $table (
 				id int(20) NOT NULL AUTO_INCREMENT,
 				submission_id int(11),

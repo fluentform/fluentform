@@ -139,6 +139,7 @@ class FluentFormAsyncRequest
                     'updated_at' => current_time('mysql')
                 ]);
 
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name for async request
             do_action($action, $feed, $formData, $entry, $form);
         }
 
@@ -204,6 +205,7 @@ class FluentFormAsyncRequest
                 'updated_at' => current_time('mysql')
             ]);
 
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name for async request
         do_action($action, $feed, $formData, $entry, $form);
 
         $this->maybeFinished($submission->id, $form);
