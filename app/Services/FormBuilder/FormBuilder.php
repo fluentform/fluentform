@@ -165,7 +165,11 @@ class FormBuilder
         );
         
         do_action('fluentform/before_form_render', $form, $atts);
-        echo '<form ' . $formAtts . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $formAtts is escaped before being passed in.
+        
+        $tag = 'form';
+        $tag = apply_filters('fluentform/replace_form_tag_' . $form->id, $tag);
+
+        echo '<' . $tag . ' ' . $formAtts . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $formAtts is escaped before being passed in.
     
         $isAccessible = apply_filters_deprecated(
             'fluentform_disable_accessibility_fieldset',
@@ -203,7 +207,7 @@ class FormBuilder
             echo '</fieldset>';
         }
 
-        echo "</form><div id='fluentform_" . (int) $form->id . "_errors' class='ff-errors-in-stack ";
+        echo "</" . $tag . "><div id='fluentform_" . (int) $form->id . "_errors' class='ff-errors-in-stack ";
 
         echo esc_attr($extraCssClass) . '_errors ' . esc_attr($instanceCssClass) . "_errors'></div></div>";
 

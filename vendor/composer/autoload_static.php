@@ -111,6 +111,7 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
         'FluentForm\\App\\Modules\\Entries\\EntryQuery' => __DIR__ . '/../..' . '/app/Modules/Entries/EntryQuery.php',
         'FluentForm\\App\\Modules\\Entries\\Export' => __DIR__ . '/../..' . '/app/Modules/Entries/Export.php',
         'FluentForm\\App\\Modules\\Entries\\Report' => __DIR__ . '/../..' . '/app/Modules/Entries/Report.php',
+        'FluentForm\\App\\Modules\\FluentCart\\FluentCartIntegration' => __DIR__ . '/../..' . '/app/Modules/FluentCart/FluentCartIntegration.php',
         'FluentForm\\App\\Modules\\Form\\AkismetHandler' => __DIR__ . '/../..' . '/app/Modules/Form/AkismetHandler.php',
         'FluentForm\\App\\Modules\\Form\\CleanTalkHandler' => __DIR__ . '/../..' . '/app/Modules/Form/CleanTalkHandler.php',
         'FluentForm\\App\\Modules\\Form\\Form' => __DIR__ . '/../..' . '/app/Modules/Form/Form.php',

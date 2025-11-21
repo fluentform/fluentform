@@ -1,7 +1,7 @@
 <?php
 
-use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Modules\Component\Component;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 /**
@@ -1164,3 +1164,10 @@ add_action('enqueue_block_assets', function() {
 if (defined('WP_CLI') && WP_CLI) {
     \WP_CLI::add_command('fluentform', '\FluentForm\App\Modules\CLI\Commands');
 }
+
+add_action('fluentcart_loaded', function ($app) {
+    // Initialize Fluent Form Integration
+    if (defined('FLUENTCART_VERSION')) {
+        new \FluentForm\App\Modules\FluentCart\FluentCartIntegration(wpFluentForm());
+    }
+});
