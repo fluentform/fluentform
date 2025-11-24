@@ -235,6 +235,9 @@
 
     // Other option input wrapper
     .ff-other-input-wrapper {
+      input{
+        background: inherit;
+      }
       margin-top: 8px;
       display: none;
     }
