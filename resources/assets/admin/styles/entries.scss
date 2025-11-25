@@ -470,6 +470,9 @@ a.input-image:hover {
   .el-checkbox__label {
     padding-left: 5px;
   }
+  & + .compact_input {
+    margin-left: 15px;
+  }
 }
 
 .ff_report_body {
@@ -806,3 +809,387 @@ span.ff_tag {
     }
   }
 }
+
+// AI Features Styles
+.ff_ai_features_dashboard {
+  .ff_ai_section_title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .ff_ai_features_content {
+    min-height: 150px;
+  }
+  
+  .ff_ai_features_results {
+    .ff_ai_section {
+      margin-bottom: 24px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.ff_ai_summary_section,
+.ff_ai_analytics_section {
+  margin-bottom: 16px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $border-color !important;
+  
+  &:last-child {
+    margin-bottom: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $border-color !important;
+  }
+  
+  h4 {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $base-color;
+  }
+  
+  h5 {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: $base-color;
+  }
+}
+
+
+.ff_ai_trends_chart {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  height: 120px;
+  padding: 8px 0;
+}
+
+.ff_ai_trend_bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ff_ai_trend_value {
+  background: $--color-primary;
+  color: white;
+  padding: 4px 6px;
+  border-radius: 3px 3px 0 0;
+  min-width: 28px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  width: 100%;
+  max-width: 60px;
+}
+
+.ff_ai_trend_label {
+  font-size: 11px;
+  color: $base-text;
+  text-align: center;
+  word-break: break-word;
+}
+
+.ff_ai_complaints_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  
+  li {
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    background: #fef2f2;
+    border-left: 3px solid $--color-danger;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 1.5;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.ff_ai_keywords_cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ff_ai_keyword_tag {
+  padding: 4px 8px;
+  background: #e0e7ff;
+  border-radius: 3px;
+  color: #4338ca;
+  font-size: 12px;
+}
+
+.ff_ai_segment {
+  padding: 10px 12px;
+  background: #f7fafc;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.ff_ai_segment_item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding: 4px 0;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.ff_ai_segment_label {
+  color: $base-text;
+}
+
+.ff_ai_segment_value {
+  font-weight: 600;
+  color: $--color-primary;
+}
+
+
+// AI Analytics Styles
+.ff_ai_dropoff_stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.ff_ai_stat_card {
+  padding: 12px;
+  background: #f7fafc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.ff_ai_stat_value {
+  font-size: 24px;
+  font-weight: bold;
+  color: $--color-primary;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.ff_ai_stat_label {
+  font-size: 12px;
+  color: $base-text;
+}
+
+.ff_ai_field_dropoffs {
+  margin-top: 12px;
+}
+
+.ff_ai_dropoff_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: #fef2f2;
+  border-left: 3px solid $--color-danger;
+  border-radius: 3px;
+  font-size: 13px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.ff_ai_field_name {
+  font-weight: 500;
+}
+
+.ff_ai_dropoff_count {
+  color: $--color-danger;
+  font-weight: 600;
+}
+
+.ff_ai_field_completion_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ff_ai_field_completion_item {
+  padding: 10px 12px;
+  background: #f7fafc;
+  border-radius: 4px;
+}
+
+.ff_ai_field_info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ff_ai_field_label {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.ff_ai_required_badge {
+  padding: 2px 6px;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.ff_ai_completion_bar_wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ff_ai_completion_bar {
+  flex: 1;
+  height: 6px;
+  background: $--color-primary;
+  border-radius: 3px;
+}
+
+.ff_ai_completion_percent {
+  font-size: 12px;
+  font-weight: 600;
+  color: $--color-primary;
+  min-width: 45px;
+  text-align: right;
+}
+
+.ff_ai_suggestions_list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ff_ai_suggestion_item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #eff6ff;
+  border-left: 3px solid $--color-primary;
+  border-radius: 3px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ff_ai_suggestion_content {
+  flex: 1;
+}
+
+.ff_ai_suggestion_text {
+  line-height: 1.5;
+}
+
+.ff_ai_empty_state {
+  padding: 20px;
+  text-align: center;
+  color: #909399;
+  font-style: italic;
+  background-color: #f5f7fa;
+  border-radius: 4px;
+  margin-top: 10px;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+// AI Fraud Score Styles (Compact)
+.ff_fraud_score_wrap {
+  .ff_fraud_score_compact {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .ff_fraud_score_badge {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    
+    &.ff_fraud_low {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    &.ff_fraud_medium {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    &.ff_fraud_high {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  }
+  
+  .ff_fraud_score_value {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+  }
+  
+  .ff_fraud_reasons {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid $border-color;
+  }
+  
+  .ff_fraud_reasons_list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .ff_fraud_reason_item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 13px;
+    line-height: 1.5;
+    
+    i {
+      margin-top: 2px;
+      flex-shrink: 0;
+      
+      &.ff_fraud_low {
+        color: #065f46;
+      }
+      
+      &.ff_fraud_medium {
+        color: #92400e;
+      }
+      
+      &.ff_fraud_high {
+        color: #991b1b;
+      }
+    }
+  }
+}
+

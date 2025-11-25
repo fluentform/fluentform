@@ -468,6 +468,7 @@
                                 :form_id="form_id">
                         </email-resend>
                         <el-checkbox class="compact_input" v-model="isCompact" @change="handleCompactView">{{ $t('Compact View') }}</el-checkbox>
+                        <el-checkbox class="compact_input" v-model="showAiInsights" @change="handleAiInsightsToggle">{{ $t('AI-Powered Form Insights') }}</el-checkbox>
                     </div>
                 </el-col>
                 <el-col :xs="24" :sm="16" :lg="12">
@@ -539,6 +540,16 @@
             </div>
 
         </div>
+
+        <!-- AI Features (Pro) -->
+        <template v-if="aiFeaturesEnabled && showAiInsights">
+            <div class="ff_ai_features_wrap mt-4">
+                <ai-features-dashboard 
+                    :form_id="form_id"
+                    :filters="currentFilters"
+                ></ai-features-dashboard>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -555,6 +566,7 @@
     import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
     import AdvancedSearch from "@/admin/views/_AdvancedSearch";
     import Notice from '@/admin/components/Notice/Notice.vue'
+    import AiFeaturesDashboard from '@/admin/views/AiFeatures/AiFeaturesDashboard.vue';
 
     export default {
         name: 'FormEntries',
@@ -569,9 +581,13 @@
             SectionHead,
             SectionHeadContent,
 	        Notice,
-            ImportEntriesModal
+            ImportEntriesModal,
+            AiFeaturesDashboard
         },
         watch: {
+            form_id() {
+                this.loadAiInsightsState();
+            },
             search_string() {
                 if (!this.search_string.length) {
                     this.getData();
@@ -634,6 +650,7 @@
                 payment_statuses: window.fluent_form_entries_vars.payment_statuses,
                 has_payment: !!window.fluent_form_entries_vars.has_payment,
                 isCompact: true,
+                showAiInsights: false,
                 basicFilter: false,
                 filter_date_range: null,
                 autoDeleteStatus: window.fluent_form_entries_vars.enabled_auto_delete,
@@ -697,7 +714,8 @@
                 app: window.fluent_forms_global_var,
                 advanced_filter_active : false,
                 advanced_filter : {},
-                exportWithNotes : false
+                exportWithNotes : false,
+                aiFeaturesEnabled: window.fluent_form_entries_vars.ai_features_enabled
             }
         },
         computed: {
@@ -791,7 +809,28 @@
 
 	        dateColWidth() {
 		        return window.fluent_forms_global_var.disable_time_diff ? '180' : '120';
-	        }
+	        },
+            currentFilters() {
+                const filters = {
+                    form_id: this.form_id,
+                    entry_type: this.entry_type,
+                    search: this.search_string,
+                    sort_by: this.sort_by,
+                    payment_statuses: this.selectedPaymentStatuses,
+                    page: this.paginate.current_page,
+                    per_page: this.paginate.per_page
+                };
+                
+                if (this.hasEnabledDateFilter) {
+                    filters.date_range = this.filter_date_range;
+                }
+                
+                if (this.advanced_filter_active) {
+                    filters.advanced_filter = this.advanced_filter;
+                }
+                
+                return filters;
+            }
         },
         methods: {
             getStatusName(status) {
@@ -1201,6 +1240,13 @@
             handleCompactView() {
                 localStorage.setItem('compactView', this.isCompact);
             },
+            handleAiInsightsToggle() {
+                localStorage.setItem('showAiInsights_' + this.form_id, this.showAiInsights);
+            },
+            loadAiInsightsState() {
+                const savedState = localStorage.getItem('showAiInsights_' + this.form_id);
+                this.showAiInsights = savedState === 'true';
+            },
             handleCheckAllFieldsChange(val) {
                 const fields = Object.keys(this.input_labels);
                 const shortCodes= Object.keys(this.editor_shortcodes);
@@ -1270,6 +1316,7 @@
 		        this.$copy();
 	        });
             this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
+            this.loadAiInsightsState();
             this.fieldsToExport = Object.keys(this.input_labels)
             this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
             this.loadLastExportFields();
