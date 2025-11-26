@@ -32,9 +32,6 @@ class Form
         // elements
         new WelcomeScreen();
 
-        // Boot AI Chat functionality
-        $aiChatForm = new \FluentForm\App\Modules\AiChat\Classes\AiChatForm();
-        $aiChatForm->boot();
     }
 
     public function pushDesignTab($menuItems, $formId)
@@ -578,9 +575,6 @@ class Form
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
-            'ai_chat_enabled'          => $this->isAiChatEnabled($formId),
-            'ai_chat_display_mode'     => $this->getAiChatDisplayMode($formId),
-            'ai_chat_nonce'            => wp_create_nonce('fluentform_ai_chat')
         ]);
 
         $hasSaveProgressButton = false;
@@ -770,9 +764,6 @@ class Form
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
             'rest'                     => Helper::getRestInfo(),
-            'ai_chat_enabled'          => $this->isAiChatEnabled($formId),
-            'ai_chat_display_mode'     => $this->getAiChatDisplayMode($formId),
-            'ai_chat_nonce'            => wp_create_nonce('fluentform_ai_chat')
         ]);
         
         $hasSaveProgressButton = false;
@@ -983,27 +974,4 @@ class Form
         wp_localize_script('fluent_forms_conversational_form', 'form_state_save_vars', $vars);
     }
 
-    /**
-     * Check if AI Chat is enabled for this form
-     *
-     * @param int $formId
-     * @return bool
-     */
-    protected function isAiChatEnabled($formId)
-    {
-        $aiConfig = Helper::getFormMeta($formId, 'ai_chat_config', []);
-        return ArrayHelper::get($aiConfig, 'enabled', false) === true;
-    }
-
-    /**
-     * Get AI Chat display mode for this form
-     *
-     * @param int $formId
-     * @return string
-     */
-    protected function getAiChatDisplayMode($formId)
-    {
-        $aiConfig = Helper::getFormMeta($formId, 'ai_chat_config', []);
-        return ArrayHelper::get($aiConfig, 'display_mode', 'overlay');
-    }
 }

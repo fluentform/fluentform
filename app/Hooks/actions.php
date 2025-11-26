@@ -71,7 +71,6 @@ $app->addAction(
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
-    (new \FluentForm\App\Modules\Ai\AiController())->boot();
     (new \FluentForm\App\Modules\Report\ReportHandler())->register($app);
 }, 9);
 
@@ -84,10 +83,6 @@ $app->addAction('fluentform/form_application_view_entries', function ($form_id) 
     (new \FluentForm\App\Modules\Entries\Entries())->renderEntries($form_id);
 });
 
-// Add AI Chat Settings admin screen
-$app->addAction('fluentform/form_application_view_ai-chat-settings', function ($form_id) {
-    (new \FluentForm\App\Modules\AiChat\Classes\AiChatForm())->renderAiChatSettings($form_id);
-});
 
 
 $app->addAction('fluentform/after_form_navigation', function ($form_id) use ($app) {

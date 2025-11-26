@@ -143,7 +143,6 @@ import PaymentSettings from './components/settings/PaymentSettings.vue';
 import QuizSettings from './components/settings/QuizSettings.vue';
 import FFWpmlSettings from './components/settings/FFWpmlSettings.vue';
 import CustomComponent from './components/CustomComponent.vue';
-import AiChatSettings from './components/AiChatSettings.vue';
 
 const routes = [
     {
@@ -220,11 +219,6 @@ const routes = [
         path: '/ff-wpml',
         name: 'ff_wpml',
         component: FFWpmlSettings
-    },
-    {
-        path: '/ai-chat-settings',
-        name: 'ai-chat-settings',
-        component: AiChatSettings
     },
     {
         path: '/custom-settings-component/:component_name',

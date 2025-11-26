@@ -405,18 +405,6 @@ $app->addFilter('fluentform/editor_element_settings_placement', function($placem
 }, 10, 2);
 
 
-// Add AI Chat as a top-level menu item in the form admin menu
-add_filter('fluentform/form_admin_menu', function ($menus, $form_id, $form) {
-    $menus['ai_chat'] = [
-        'title' => __('AI Chat', 'fluentform'),
-        'slug'  => 'ai_chat',
-        'hash'  => 'ai_chat_settings',
-        'route' => '/ai-chat-settings',
-        'url'   => admin_url('admin.php?page=fluent_forms&form_id=' . $form_id . '&route=ai-chat-settings'),
-    ];
-
-    return $menus;
-}, 20, 3);
 
 
 /*
