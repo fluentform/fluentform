@@ -69,6 +69,7 @@ class ConditionAssesor
     public static function assess(&$conditional, &$inputs)
     {
         if ($conditional['field']) {
+            $conditional['value'] = self::parseSmartCode($conditional['value'], $inputs);
             $accessor = rtrim(str_replace(['[', ']', '*'], ['.'], $conditional['field']), '.');
 
             if (!Arr::has($inputs, $accessor)) {
@@ -149,5 +150,30 @@ class ConditionAssesor
         }
 
         return false;
+    }
+
+    private static function parseSmartCode($value, $inputs)
+    {
+        if (is_string($value) && strpos($value, '{') !== false) {
+            // check if it contains {inputs.
+            if (strpos($value, '{inputs.') !== false) {
+                $value = preg_replace_callback('/{inputs\.(.*?)}/', function ($matches) use ($inputs) {
+                    $key = $matches[1];
+                    $key = rtrim(str_replace(['[', ']', '*'], ['.'], $key), '.');
+                    return Arr::get($inputs, $key, '');
+                }, $value);
+            }
+
+            // check if it contains {user.
+            if (strpos($value, '{user.') !== false) {
+                $value = preg_replace_callback('/{user\.(.*?)}/', function ($matches) {
+                    $key = $matches[1];
+                    $user = wp_get_current_user();
+                    return $user->{$key};
+                }, $value);
+            }
+        }
+
+        return $value;
     }
 }

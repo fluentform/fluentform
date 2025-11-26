@@ -244,7 +244,19 @@
                                         :label="label" :value="value"
                                 ></el-option>
                             </el-select>
-                            <el-input v-else :placeholder="$t('Enter a value')" v-model="items[key].value"></el-input>
+                            <div class="flex" v-else>
+                                <el-input :placeholder="$t('Enter a value')" v-model="items[key].value"></el-input>
+                                <el-dropdown class="ml-1" trigger="click" @command="handleShortCodeClick($event, items[key])" size="small">
+                                    <el-button size="small" class="el-dropdown-link">
+                                        <i class="el-icon-plus"></i>
+                                    </el-button>
+                                    <el-dropdown-menu slot="dropdown" class="ff_dropdown_menu">
+                                        <el-dropdown-item v-for="(field, fieldKey) in fields" :key="fieldKey" :command="fieldKey">
+                                            {{ field.admin_label || fieldKey }}
+                                        </el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </div>
                         </template>
                     </div>
                 </el-col>
@@ -406,6 +418,12 @@
 			    };
 			    return operators[operator] || operator;
 		    },
+            handleShortCodeClick(fieldKey, item) {
+                if(!item.value) {
+                    item.value = '';
+                }
+                item.value += '{inputs.' + fieldKey + '}';
+            }
 	    },
 	    mounted() {
 		    if (this.conditionals.type === 'group') {
