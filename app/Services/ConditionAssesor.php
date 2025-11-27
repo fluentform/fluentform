@@ -186,14 +186,17 @@ class ConditionAssesor
                 
                 try {
                     $parsed = EditorShortcodeParser::filter('{' . $smartCode . '}', $form);
+                    
+                    if ($parsed === '' || $parsed === '{' . $smartCode . '}') {
+                        return $matches[0];
+                    }
+                    
                     return $parsed;
                 } catch (\Exception $e) {
-                    // Continue to return original if parsing fails
+                    return $matches[0];
                 }
-                
-                // Return original smart code if not handled
-                return $matches[0];
             }, $value);
+            
             return $processedValue;
         } catch (\Exception $e) {
             return $value;

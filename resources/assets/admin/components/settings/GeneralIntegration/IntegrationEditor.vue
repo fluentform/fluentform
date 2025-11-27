@@ -136,7 +136,8 @@
                                     <filter-fields
                                             :fields="inputs"
                                             :conditionals="settings[field.key]"
-                                            :hasPro="has_pro"/>
+                                            :hasPro="has_pro"
+                                            :editorShortcodes="editorShortcodes"/>
 
                                     <update-to-pro-content :update-message="$t('Upgrade to get access to import entries.')" v-if="!has_pro"/>
                                 </template>

@@ -139,7 +139,7 @@
                                     </el-tooltip>
                                 </template>
 
-                                <FilterFields :fields="inputs" :conditionals="selected.conditionals" :hasPro="has_pro"></FilterFields>
+                                <FilterFields :fields="inputs" :conditionals="selected.conditionals" :hasPro="has_pro" :editorShortcodes="editorShortcodes"></FilterFields>
                             </el-form-item>
                         </template>
                     </template>
