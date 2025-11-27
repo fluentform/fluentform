@@ -254,7 +254,7 @@
                                 ></el-option>
                             </el-select>
                                 <input-popover-dropdown
-                                        :data="editorShortcodes"
+                                        :data="filteredEditorShortcodes"
                                         size="medium"
                                         @command="(code) => insertShortcodeToValue(items[key], code)"
                                         style="flex-shrink: 0;"
@@ -264,7 +264,7 @@
                                     v-else
                                     :placeholder="$t('Enter a value')"
                                     v-model="items[key].value"
-                                    :data="editorShortcodes"
+                                    :data="filteredEditorShortcodes"
                                     :field-type="'text'"
                             ></input-popover>
                         </template>
@@ -324,6 +324,10 @@
             editorShortcodes: {
                 type: Array,
                 default: () => []
+            },
+            supportedEditorShortcodes: {
+                type: Array,
+                default: () => ['input', 'general']
             }
         },
         data() {
@@ -347,7 +351,18 @@
 		        return this.conditionals.type === 'group'
 			        ? (this.conditionals.condition_groups || [])
 			        : (this.conditionals.conditions || []);
-	        }
+	        },
+            filteredEditorShortcodes() {
+		        return this.editorShortcodes.filter((item) => {
+                    const itemTitle = item.title.toLowerCase();
+                    for (const supportedItem of this.supportedEditorShortcodes) {
+                        if (itemTitle.includes(supportedItem)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            }
         },
 	    methods: {
 		    add(index) {
@@ -456,15 +471,18 @@
 		    }
 		    
 		    if (this.editorShortcodes && this.editorShortcodes.length > 0) {
-		        let shortcodes = Object.assign(
-		            { "{get.param_name}": this.$t("Populate by GET Param") },
-		            this.editorShortcodes[0].shortcodes
+                let index = this.editorShortcodes.findIndex(item => item.title.toLowerCase().includes('general'));
+                if (index === -1) {
+                    index = 0;
+                }
+		        const shortcodes = Object.assign(
+		            {
+                        "{get.param_name}": this.$t("Populate by GET Param"),
+                        "{cookie.cookie_name}": this.$t("Cookie Value")
+                    },
+		            this.editorShortcodes[index].shortcodes
 		        );
-		        
-		        shortcodes['{cookie.cookie_name}'] = this.$t("Cookie Value");
-		        shortcodes['{inputs.field_name}'] = this.$t("Form Field Value");
-		        
-		        this.editorShortcodes[0].shortcodes = shortcodes;
+		        this.editorShortcodes[index].shortcodes = shortcodes;
 		    }
 	    }
     };
