@@ -27,7 +27,7 @@ class AiFormBuilder extends FormService
     public function buildForm()
     {
         try {
-            Acl::verifyNonce();
+            Acl::verify('fluentform_forms_manager');
             $form = $this->generateForm($this->app->request->all());
             $form = $this->prepareAndSaveForm($form);
             wp_send_json_success([
@@ -440,7 +440,17 @@ class AiFormBuilder extends FormService
             throw new Exception(esc_html__('Query is empty!', 'fluentform'));
         }
         
+        // Validate query length to prevent abuse (max 2000 characters)
+        if (strlen($query) > 2000) {
+            throw new Exception(esc_html__('Query is too long. Please limit your prompt to 2000 characters.', 'fluentform'));
+        }
+        
         $additionalQuery = Sanitizer::sanitizeTextField(Arr::get($args, 'additional_query'));
+        
+        // Validate additional query length (max 1000 characters)
+        if ($additionalQuery && strlen($additionalQuery) > 1000) {
+            throw new Exception(esc_html__('Additional query is too long. Please limit to 1000 characters.', 'fluentform'));
+        }
         
         if ($additionalQuery) {
             $query .= "\n including questions for information like  " . $additionalQuery . ".";
