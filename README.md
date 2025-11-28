@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.1.5
+**Stable tag:** 6.1.8
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -158,6 +158,10 @@ Yes, you can use 2 column or 3 column containers and you can build forms.
 Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also import in pro version.
 
 ## Changelog
+
+### 6.1.8 (Date: November 28, 2025) =
+- Improves client IP detection
+- Improves sanitizations and security
 
 ### 6.1.5 (Date: October 28, 2025) =
 - Adds Gutenberg Block Form Style Customization
