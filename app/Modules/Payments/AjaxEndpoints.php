@@ -79,7 +79,14 @@ class AjaxEndpoints
     public function updateGlobalSettings()
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in route registration, sanitized in updatePaymentSettings()
-        $settings = isset($_REQUEST['settings']) ? wp_unslash($_REQUEST['settings']) : [];
+        $request = wpFluentForm()->request;
+        $settings = wp_unslash($request->get('settings', []));
+        
+        $sanitizeMap = [
+            'status'   => 'sanitize_text_field',
+            'currency' => 'sanitize_text_field',
+        ];
+        $settings = fluentform_backend_sanitizer($settings, $sanitizeMap);
 
         // Update settings
         $settings = PaymentHelper::updatePaymentSettings($settings);
@@ -96,7 +103,8 @@ class AjaxEndpoints
     public function getPaymentMethodSettings()
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $method = isset($_REQUEST['method']) ? sanitize_text_field(wp_unslash($_REQUEST['method'])) : '';
+        $request = wpFluentForm()->request;
+        $method = sanitize_text_field($request->get('method', ''));
 
         $paymentSettings = apply_filters_deprecated(
             'fluentform_payment_settings_' . $method,
@@ -118,9 +126,16 @@ class AjaxEndpoints
     public function savePaymentMethodSettings()
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $method = isset($_REQUEST['method']) ? sanitize_text_field(wp_unslash($_REQUEST['method'])) : '';
+        $request = wpFluentForm()->request;
+        $method = sanitize_text_field($request->get('method', ''));
+        $settings = wp_unslash($request->get('settings', []));
+        
+        $sanitizeMap = [
+            'status' => 'sanitize_text_field',
+        ];
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in route registration, sanitized in validation filter
-        $settings = isset($_REQUEST['settings']) ? wp_unslash($_REQUEST['settings']) : [];
+        $settings = fluentform_backend_sanitizer($settings, $sanitizeMap);
+
 
         $settingsValidation = apply_filters_deprecated(
             'fluentform_payment_method_settings_validation_' . $method,
@@ -163,8 +178,8 @@ class AjaxEndpoints
 
     public function getFormSettings()
     {
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $formId = isset($_REQUEST['form_id']) ? (int) $_REQUEST['form_id'] : 0;
+        $request = wpFluentForm()->request;
+        $formId = intval($request->get('form_id', 0));
         $settings = PaymentHelper::getFormSettings($formId, 'admin');
         $form = wpFluent()->table('fluentform_forms')->find($formId);
         $addressFields = array_values(FormFieldsParser::getAddressFields($form));
@@ -184,9 +199,17 @@ class AjaxEndpoints
     public function saveFormSettings()
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $formId = isset($_REQUEST['form_id']) ? (int) $_REQUEST['form_id'] : 0;
+        $request = wpFluentForm()->request;
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in route registration, sanitized in setFormMeta()
-        $settings = isset($_REQUEST['settings']) ? wp_unslash($_REQUEST['settings']) : [];
+        $formId = intval($request->get('form_id', 0));
+        $settings = wp_unslash($request->get('settings', []));
+        
+        $sanitizeMap = [
+            'enabled'  => 'rest_sanitize_boolean',
+            'currency' => 'sanitize_text_field',
+        ];
+        $settings = fluentform_backend_sanitizer($settings, $sanitizeMap);
+        
         Helper::setFormMeta($formId, '_payment_settings', $settings);
 
         wp_send_json_success([
@@ -197,8 +220,43 @@ class AjaxEndpoints
     public function updateTransaction()
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce verified in route registration, data sanitized below
-        $transactionData = isset($_REQUEST['transaction']) ? $_REQUEST['transaction'] : [];
-        $transactionId = (int) $transactionData['id'];
+        $request = wpFluentForm()->request;
+        $transactionData = $request->get('transaction', []);
+        
+        $sanitizeMap = [
+            'transaction'     => function ($value) {
+                if (is_array($value)) {
+                    $sanitized = [
+                        'id'                 => intval(ArrayHelper::get($value, 'id')),
+                        'status'             => sanitize_text_field(ArrayHelper::get($value, 'status')),
+                        'payer_name'         => sanitize_text_field(ArrayHelper::get($value, 'payer_name')),
+                        'payer_email'        => sanitize_email(ArrayHelper::get($value, 'payer_email')),
+                        'charge_id'          => sanitize_text_field(ArrayHelper::get($value, 'charge_id')),
+                        'refund_amount'      => floatval(ArrayHelper::get($value, 'refund_amount')),
+                        'refund_note'        => sanitize_text_field(ArrayHelper::get($value, 'refund_note')),
+                        'should_run_actions' => sanitize_text_field(ArrayHelper::get($value, 'should_run_actions')),
+                    ];
+                    // Handle billing_address and shipping_address (may be arrays)
+                    if (isset($value['billing_address'])) {
+                        $sanitized['billing_address'] = is_array($value['billing_address'])
+                            ? array_map('sanitize_text_field', $value['billing_address'])
+                            : sanitize_text_field($value['billing_address']);
+                    }
+                    if (isset($value['shipping_address'])) {
+                        $sanitized['shipping_address'] = is_array($value['shipping_address'])
+                            ? array_map('sanitize_text_field', $value['shipping_address'])
+                            : sanitize_text_field($value['shipping_address']);
+                    }
+                    return $sanitized;
+                }
+                return $value;
+            },
+            'subscription_id' => 'intval',
+        ];
+        $requestData = fluentform_backend_sanitizer($request->all(), $sanitizeMap);
+        $transactionData = $requestData['transaction'];
+        
+        $transactionId = $transactionData['id'];
         $oldTransaction = wpFluent()->table('fluentform_transactions')
             ->find($transactionId);
 
@@ -220,7 +278,7 @@ class AjaxEndpoints
             ->update($updateData);
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $subscriptionId = (int) ArrayHelper::get($_REQUEST, 'subscription_id', '0');
+        $subscriptionId = ArrayHelper::get($requestData, 'subscription_id', 0);
         if ($subscriptionId) {
             $existingSubscription = wpFluent()->table('fluentform_subscriptions')
                                         ->find($subscriptionId);
@@ -314,7 +372,15 @@ class AjaxEndpoints
     public function disconnectStripeConnect()
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        return ConnectConfig::disconnect($_REQUEST, true);
+        $request = wpFluentForm()->request;
+        $attributes = $request->all();
+        
+        $sanitizeMap = [
+            'mode' => 'sanitize_text_field',
+        ];
+        $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+        
+        return ConnectConfig::disconnect($attributes, true);
     }
 
     public function getWpPages()
@@ -334,7 +400,17 @@ class AjaxEndpoints
     public function cancelSubscription()
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $subscriptionId = (int) ArrayHelper::get($_REQUEST, 'subscription_id');
+        $request = wpFluentForm()->request;
+        $attributes = $request->all();
+        
+        $sanitizeMap = [
+            'subscription_id' => 'intval',
+            'transaction_id' => 'intval',
+            'submission_id' => 'intval',
+        ];
+        $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+        
+        $subscriptionId = ArrayHelper::get($attributes, 'subscription_id');
 
         $subscription = fluentFormApi('submissions')->getSubscription($subscriptionId);
 
@@ -345,9 +421,9 @@ class AjaxEndpoints
         }
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $transactionId = (int) ArrayHelper::get($_REQUEST, 'transaction_id', '0');
+        $transactionId = ArrayHelper::get($attributes, 'transaction_id', 0);
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $submissionId = (int) ArrayHelper::get($_REQUEST, 'submission_id', '0');
+        $submissionId = ArrayHelper::get($attributes, 'submission_id', 0);
 
         $oldTransaction = wpFluent()->table('fluentform_transactions')
                                     ->find($transactionId);
