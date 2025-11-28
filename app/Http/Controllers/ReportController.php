@@ -11,7 +11,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->form($this->request->all())
+                $reportService->form($this->getSanitizedReportParams())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -28,7 +28,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->submissions($this->request->all())
+                $reportService->submissions($this->getSanitizedReportParams())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -62,7 +62,7 @@ class ReportController extends Controller
     public function netRevenue(ReportService $reportService)
     {
         try {
-            $data = apply_filters('fluentform/reports/revenue_analysis', [], $this->request->all());
+            $data = apply_filters('fluentform/reports/revenue_analysis', [], $this->getSanitizedReportParams());
             return $this->sendSuccess($data);
             
         } catch (Exception $e) {
@@ -79,7 +79,7 @@ class ReportController extends Controller
     public function submissionsAnalysis()
     {
         try {
-            $data = apply_filters('fluentform/reports/submissions_analysis', [], $this->request->all());
+            $data = apply_filters('fluentform/reports/submissions_analysis', [], $this->getSanitizedReportParams());
             return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
@@ -96,7 +96,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getOverviewChart($this->request->all())
+                $reportService->getOverviewChart($this->getSanitizedReportParams())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -113,7 +113,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getRevenueChart($this->request->all())
+                $reportService->getRevenueChart($this->getSanitizedReportParams())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -129,7 +129,7 @@ class ReportController extends Controller
     public function getCompletionRate()
     {
         try {
-            $data = apply_filters('fluentform/reports/completion_rate', [], $this->request->all());
+            $data = apply_filters('fluentform/reports/completion_rate', [], $this->getSanitizedReportParams());
             return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
@@ -146,7 +146,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getFormStats($this->request->all())
+                $reportService->getFormStats($this->getSanitizedReportParams())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -162,7 +162,7 @@ class ReportController extends Controller
     public function getHeatmapData()
     {
         try {
-            $data = apply_filters('fluentform/reports/heatmap_data', [], $this->request->all());
+            $data = apply_filters('fluentform/reports/heatmap_data', [], $this->getSanitizedReportParams());
             return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
@@ -178,7 +178,7 @@ class ReportController extends Controller
     public function getCountryHeatmap(ReportService $reportService)
     {
         try {
-            $data = apply_filters('fluentform/reports/country_heatmap', [], $this->request->all());
+            $data = apply_filters('fluentform/reports/country_heatmap', [], $this->getSanitizedReportParams());
             return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
@@ -195,7 +195,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getApiLogs($this->request->all())
+                $reportService->getApiLogs($this->getSanitizedReportParams())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -212,7 +212,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getTopPerformingForms($this->request->all())
+                $reportService->getTopPerformingForms($this->getSanitizedReportParams())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -228,7 +228,7 @@ class ReportController extends Controller
     public function getSubscriptions()
     {
         try {
-            $data = apply_filters('fluentform/reports/subscriptions', [], $this->request->all());
+            $data = apply_filters('fluentform/reports/subscriptions', [], $this->getSanitizedReportParams());
             return $this->sendSuccess($data);
         } catch (Exception $e) {
             return $this->sendError([
@@ -245,12 +245,17 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getPaymentTypes($this->request->all())
+                $reportService->getPaymentTypes($this->getSanitizedReportParams())
             );
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    private function getSanitizedReportParams()
+    {
+        return fluentFormSanitizer($this->request->all());
     }
 }

@@ -5,6 +5,7 @@ namespace FluentForm\App\Http\Controllers;
 use Exception;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\App\Services\Form\HistoryService;
+use FluentForm\Framework\Support\Arr;
 
 class FormController extends Controller
 {
@@ -16,8 +17,24 @@ class FormController extends Controller
      */
     public function index(FormService $formService)
     {
+        $attributes = $this->request->all();
+        
+        // Sanitize scalar fields via helper (all sanitizers centralized here)
+        $attributes = fluentform_backend_sanitizer($attributes, [
+            'search' => 'sanitize_text_field',
+            'status' => 'sanitize_text_field',
+            'sort_by' => function($value) {
+                $sanitized = sanitize_sql_orderby($value);
+                return $sanitized !== false ? $sanitized : '';
+            },
+            'sort_column' => function($value) {
+                $sanitized = sanitize_sql_orderby($value);
+                return $sanitized !== false ? $sanitized : '';
+            },
+        ]);
+        
         return $this->sendSuccess(
-            $formService->get($this->request->all())
+            $formService->get($attributes)
         );
     }
 
@@ -188,7 +205,6 @@ class FormController extends Controller
                 'message' => $e->getMessage(),
             ], 422);
         }
-    
     }
     public function ping()
     {
