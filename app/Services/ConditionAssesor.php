@@ -87,12 +87,16 @@ class ConditionAssesor
         }
 
         // Smart Codes
-        if (isset($conditional['value']) && (is_string($conditional['value']) || is_array($conditional['value']))) {
-            $conditional['value'] = self::processSmartCodesInValue($conditional['value'], $inputs, $form);
+        $processedValue = $conditional['value'] ?? null;
+        if (isset($processedValue) && (is_string($processedValue) || is_array($processedValue))) {
+            if (is_string($processedValue)) {
+                $processedValue = trim($processedValue);
+            }
+            $processedValue = self::processSmartCodesInValue($processedValue, $inputs, $form);
         }
 
         $operator = $conditional['operator'];
-        $conditionValue = $conditional['value'] ?? null;
+        $conditionValue = $processedValue;
 
         // Normalize values for array comparisons
         $normalize = function ($val) {
@@ -172,7 +176,13 @@ class ConditionAssesor
                 if (is_array($inputValue)) {
                     $inputValue = implode(' ', $inputValue);
                 }
-                return (bool) preg_match('/' . $conditionValue . '/', $inputValue);
+                $pattern = '/' . $conditionValue . '/';
+                $result = @preg_match($pattern, $inputValue);
+                if ($result === false) {
+                    // Invalid regex pattern, handle gracefully
+                    return false;
+                }
+                return (bool) $result;
         }
 
         return false;
@@ -184,8 +194,8 @@ class ConditionAssesor
             return $value;
         }
 
-        if (preg_match('/^{inputs\.[^}]+}$/', trim($value))) {
-            $fieldName = substr(trim($value), 8, -1);
+        if (preg_match('/^{inputs\.[^}]+}$/', $value)) {
+            $fieldName = substr($value, 8, -1);
             $fieldKey = str_replace(['[', ']'], ['.', ''], $fieldName);
             
             $resolvedValue = Arr::get($inputs, $fieldKey, '');

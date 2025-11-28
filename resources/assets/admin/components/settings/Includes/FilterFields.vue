@@ -475,14 +475,16 @@
                 if (index === -1) {
                     index = 0;
                 }
-		        const shortcodes = Object.assign(
-		            {
-                        "{get.param_name}": this.$t("Populate by GET Param"),
-                        "{cookie.cookie_name}": this.$t("Cookie Value")
-                    },
-		            this.editorShortcodes[index].shortcodes
-		        );
+                if (index >= 0 && this.editorShortcodes[index]) {
+		            const shortcodes = Object.assign(
+                        {
+                            "{get.param_name}": this.$t("Populate by GET Param"),
+                            "{cookie.cookie_name}": this.$t("Cookie Value")
+                        },
+		                this.editorShortcodes[index].shortcodes
+		            );
 		        this.editorShortcodes[index].shortcodes = shortcodes;
+                }
 		    }
 	    }
     };
