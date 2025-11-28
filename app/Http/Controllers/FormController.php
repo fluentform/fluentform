@@ -47,7 +47,15 @@ class FormController extends Controller
     public function store(FormService $formService)
     {
         try {
-            $form = $formService->store($this->request->all());
+            $attributes = $this->request->all();
+            
+            $sanitizeMap = [
+                'title' => 'sanitize_text_field',
+                'template_id' => 'intval',
+            ];
+            $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+            
+            $form = $formService->store($attributes);
 
             return $this->sendSuccess([
                 'formId'       => $form->id,
@@ -66,7 +74,14 @@ class FormController extends Controller
     public function duplicate(FormService $formService)
     {
         try {
-            $form = $formService->duplicate($this->request->all());
+            $attributes = $this->request->all();
+            
+            $sanitizeMap = [
+                'form_id' => 'intval',
+            ];
+            $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+            
+            $form = $formService->duplicate($attributes);
 
             return $this->sendSuccess([
                 'message'  => __('Form has been successfully duplicated.', 'fluentform'),
@@ -83,7 +98,7 @@ class FormController extends Controller
     public function find(FormService $formService)
     {
         try {
-            $id = $this->request->get('form_id');
+            $id = intval($this->request->get('form_id'));
 
             $form = $formService->find($id);
 
@@ -98,7 +113,7 @@ class FormController extends Controller
     public function delete(FormService $formService)
     {
         try {
-            $id = $this->request->get('form_id');
+            $id = intval($this->request->get('form_id'));
 
             $formService->delete($id);
 
@@ -115,7 +130,15 @@ class FormController extends Controller
     public function update(FormService $formService)
     {
         try {
-            $formService->update($this->request->all());
+            $attributes = $this->request->all();
+            
+            $sanitizeMap = [
+                'form_id' => 'intval',
+                'title'   => 'sanitize_text_field',
+            ];
+            $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+            
+            $formService->update($attributes);
 
             return $this->sendSuccess([
                 'message' => __('The form is successfully updated.', 'fluentform'),
@@ -130,7 +153,8 @@ class FormController extends Controller
     public function convert(FormService $formService)
     {
         try {
-            $formService->convert($this->request->get('form_id'));
+            $formId = intval($this->request->get('form_id'));
+            $formService->convert($formId);
 
             return $this->sendSuccess([
                 'message' => __('The form is successfully converted.', 'fluentform'),
@@ -194,7 +218,7 @@ class FormController extends Controller
     public function clearEditHistory(HistoryService $historyService)
     {
         try {
-            $id =  (int)$this->request->get('form_id');
+            $id = intval($this->request->get('form_id'));
           
             $historyService->delete($id);
             return $this->sendSuccess([

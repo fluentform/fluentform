@@ -65,8 +65,15 @@ class SubmissionController extends Controller
     public function resources(SubmissionService $submissionService)
     {
         try {
+            $attributes = $this->request->all();
+            
+            $sanitizeMap = [
+                'form_id' => 'intval',
+            ];
+            $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+            
             return $this->sendSuccess(
-                $submissionService->resources($this->request->all())
+                $submissionService->resources($attributes)
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -239,8 +246,21 @@ class SubmissionController extends Controller
     public function print(SubmissionService $submissionService)
     {
         try {
+            $attributes = $this->request->all();
+            
+            $sanitizeMap = [
+                'entry_ids' => function($value) {
+                    if (is_array($value)) {
+                        return array_map('intval', $value);
+                    }
+                    return [];
+                },
+                'form_id' => 'intval',
+            ];
+            $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+            
             return $this->sendSuccess(
-                $submissionService->getPrintContent($this->request->all())
+                $submissionService->getPrintContent($attributes)
             );
         } catch (Exception $e) {
             return $this->sendError([
