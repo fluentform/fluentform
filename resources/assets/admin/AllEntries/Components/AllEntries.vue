@@ -252,7 +252,7 @@ export default {
             chart_status: 'yes',
             entry_status: '',
             search: '',
-            radioOption: localStorage.getItem('ff_entries_date_filter') || 'all',
+            radioOption: localStorage.getItem('ff_entries_date_filter') || 'last-month',
             showImportEntriesModal: false,
             app: window.fluent_forms_global_var
         }
@@ -401,7 +401,6 @@ export default {
             this.chart_status = status;
         }
         localStorage.removeItem('entriesCurrentPage');
-        this.fetchEntries();
     }
 };
 </script>
