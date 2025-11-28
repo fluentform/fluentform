@@ -13,7 +13,7 @@
                         <i class="ff-icon ff-icon-info-filled text-primary" />
                     </el-tooltip>
                 </template>
-                <filter-fields :hasPro="hasPro" :labels="labels" :conditionals="settings" :fields="inputs"></filter-fields>
+                <filter-fields :hasPro="hasPro" :labels="labels" :conditionals="settings" :fields="inputs" :editorShortcodes="editorShortcodes"></filter-fields>
             </el-form-item>
             <template v-if="settings.status">
                 <el-form-item class="ff-form-item">
@@ -83,7 +83,7 @@
         components: {
             FilterFields
         },
-        props: ['settings', 'inputs', 'hasPro'],
+        props: ['settings', 'inputs', 'hasPro', 'editorShortcodes'],
         data() {
             return {
                 labels: {
