@@ -210,18 +210,9 @@ class ConditionAssesor
                     
                     return $value !== null && $value !== '' ? $value : '';
                 }
-                
-                try {
-                    $parsed = EditorShortcodeParser::filter('{' . $smartCode . '}', $form);
-                    
-                    if ($parsed === '' || $parsed === '{' . $smartCode . '}') {
-                        return $matches[0];
-                    }
-                    
-                    return $parsed;
-                } catch (\Exception $e) {
-                    return $matches[0];
-                }
+
+                // @todo Support general shortcodes in future
+                return '';
             }, $value);
             
             return $processedValue;
