@@ -87,29 +87,32 @@ class ConditionAssesor
             }
 
             $conditionValue = is_null($conditionValue) ? '' : $conditionValue;
-
+            
             switch ($conditional['operator']) {
                 case '=':
                     if (is_array($inputValue) && is_array($conditionValue)) {
-                        $difference = array_diff(Arr::flatten($inputValue), Arr::flatten($conditionValue));
-                        return count($difference) === 0;
+                        $flatInput = Arr::flatten($inputValue);
+                        $flatCondition = Arr::flatten($conditionValue);
+                        sort($flatInput);
+                        sort($flatCondition);
+                        return $flatInput == $flatCondition;
                     }
-
-                    if(is_array($conditionValue)) {
+                    
+                    if (is_array($conditionValue)) {
                         return in_array($inputValue, Arr::flatten($conditionValue));
                     }
                     if (is_array($inputValue)) {
-                       return in_array($conditionValue, Arr::flatten($inputValue));
+                        return in_array($conditionValue, Arr::flatten($inputValue));
                     }
                     return $inputValue == $conditionValue;
                 case '!=':
-                    if(is_array($inputValue) && is_array($conditionValue)) {
+                    if (is_array($inputValue) && is_array($conditionValue)) {
                         return count(array_intersect(Arr::flatten($inputValue), Arr::flatten($conditionValue))) == 0;
                     }
-                    if(is_array($conditionValue)) {
+                    if (is_array($conditionValue)) {
                         return !in_array($inputValue, Arr::flatten($conditionValue));
                     }
-                    if(is_array($inputValue)) {
+                    if (is_array($inputValue)) {
                         return !in_array($conditionValue, Arr::flatten($inputValue));
                     }
                     return $inputValue != $conditionValue;
@@ -130,28 +133,28 @@ class ConditionAssesor
                 case 'doNotContains':
                     return !Str::contains($inputValue, $conditionValue);
                 case 'length_equal':
-                    if(is_array($inputValue)) {
+                    if (is_array($inputValue)) {
                         return count($inputValue) == $conditionValue;
                     }
-                    $inputValue = strval($inputValue);
+                    $inputValue = (string)$inputValue;
                     return strlen($inputValue) == $conditionValue;
                 case 'length_less_than':
-                    if(is_array($inputValue)) {
+                    if (is_array($inputValue)) {
                         return count($inputValue) < $conditionValue;
                     }
-                    $inputValue = strval($inputValue);
+                    $inputValue = (string)$inputValue;
                     return strlen($inputValue) < $conditionValue;
                 case 'length_greater_than':
-                    if(is_array($inputValue)) {
-                        return count($inputValue) > $conditional['value'];
+                    if (is_array($inputValue)) {
+                        return count($inputValue) > $conditionValue;
                     }
-                    $inputValue = strval($inputValue);
-                    return strlen($inputValue) > $conditional['value'];
+                    $inputValue = (string)$inputValue;
+                    return strlen($inputValue) > $conditionValue;
                 case 'test_regex':
-                    if(is_array($inputValue)) {
+                    if (is_array($inputValue)) {
                         $inputValue = implode(' ', $inputValue);
                     }
-                    $result = preg_match('/'.$conditionValue.'/', $inputValue);
+                    $result = preg_match('/' . $conditionValue . '/', $inputValue);
                     return !!$result;
             }
         }
