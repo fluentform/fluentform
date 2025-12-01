@@ -222,39 +222,31 @@ class AjaxEndpoints
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce verified in route registration, data sanitized below
         $request = wpFluentForm()->request;
         $transactionData = $request->get('transaction', []);
+        if (is_array($transactionData)) {
+            $transactionData['id'] = intval(ArrayHelper::get($transactionData, 'id'));
+            $transactionData['status'] = sanitize_text_field(ArrayHelper::get($transactionData, 'status'));
+            $transactionData['payer_name'] = sanitize_text_field(ArrayHelper::get($transactionData, 'payer_name'));
+            $transactionData['payer_email'] = sanitize_email(ArrayHelper::get($transactionData, 'payer_email'));
+            $transactionData['charge_id'] = sanitize_text_field(ArrayHelper::get($transactionData, 'charge_id'));
+            $transactionData['refund_amount'] = floatval(ArrayHelper::get($transactionData, 'refund_amount'));
+            $transactionData['refund_note'] = sanitize_text_field(ArrayHelper::get($transactionData, 'refund_note'));
+            $transactionData['should_run_actions'] = sanitize_text_field(ArrayHelper::get($transactionData, 'should_run_actions'));
+            
+            // Handle billing_address and shipping_address
+            if (isset($transactionData['billing_address'])) {
+                $transactionData['billing_address'] = is_array($transactionData['billing_address']) 
+                    ? array_map('sanitize_text_field', $transactionData['billing_address'])
+                    : sanitize_text_field($transactionData['billing_address']);
+            }
+            if (isset($transactionData['shipping_address'])) {
+                $transactionData['shipping_address'] = is_array($transactionData['shipping_address']) 
+                    ? array_map('sanitize_text_field', $transactionData['shipping_address'])
+                    : sanitize_text_field($transactionData['shipping_address']);
+            }
+        }
         
-        $sanitizeMap = [
-            'transaction'     => function ($value) {
-                if (is_array($value)) {
-                    $sanitized = [
-                        'id'                 => intval(ArrayHelper::get($value, 'id')),
-                        'status'             => sanitize_text_field(ArrayHelper::get($value, 'status')),
-                        'payer_name'         => sanitize_text_field(ArrayHelper::get($value, 'payer_name')),
-                        'payer_email'        => sanitize_email(ArrayHelper::get($value, 'payer_email')),
-                        'charge_id'          => sanitize_text_field(ArrayHelper::get($value, 'charge_id')),
-                        'refund_amount'      => floatval(ArrayHelper::get($value, 'refund_amount')),
-                        'refund_note'        => sanitize_text_field(ArrayHelper::get($value, 'refund_note')),
-                        'should_run_actions' => sanitize_text_field(ArrayHelper::get($value, 'should_run_actions')),
-                    ];
-                    // Handle billing_address and shipping_address (may be arrays)
-                    if (isset($value['billing_address'])) {
-                        $sanitized['billing_address'] = is_array($value['billing_address'])
-                            ? array_map('sanitize_text_field', $value['billing_address'])
-                            : sanitize_text_field($value['billing_address']);
-                    }
-                    if (isset($value['shipping_address'])) {
-                        $sanitized['shipping_address'] = is_array($value['shipping_address'])
-                            ? array_map('sanitize_text_field', $value['shipping_address'])
-                            : sanitize_text_field($value['shipping_address']);
-                    }
-                    return $sanitized;
-                }
-                return $value;
-            },
-            'subscription_id' => 'intval',
-        ];
-        $requestData = fluentform_backend_sanitizer($request->all(), $sanitizeMap);
-        $transactionData = $requestData['transaction'];
+        // Sanitize subscription_id separately
+        $subscriptionId = intval($request->get('subscription_id', 0));
         
         $transactionId = $transactionData['id'];
         $oldTransaction = wpFluent()->table('fluentform_transactions')
@@ -278,7 +270,6 @@ class AjaxEndpoints
             ->update($updateData);
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
-        $subscriptionId = ArrayHelper::get($requestData, 'subscription_id', 0);
         if ($subscriptionId) {
             $existingSubscription = wpFluent()->table('fluentform_subscriptions')
                                         ->find($subscriptionId);
