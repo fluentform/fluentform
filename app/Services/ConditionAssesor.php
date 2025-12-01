@@ -154,8 +154,13 @@ class ConditionAssesor
                     if (is_array($inputValue)) {
                         $inputValue = implode(' ', $inputValue);
                     }
-                    $result = preg_match('/' . $conditionValue . '/', $inputValue);
-                    return !!$result;
+                    $pattern = '/' . $conditionValue . '/';
+                    $result = @preg_match($pattern, $inputValue);
+                    if ($result === false) {
+                        // Invalid regex pattern, handle gracefully
+                        return false;
+                    }
+                    return (bool) $result;
             }
         }
 
