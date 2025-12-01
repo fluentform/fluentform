@@ -11,7 +11,7 @@ const { InspectorControls, BlockControls } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
 const { apiFetch } = wp;
 const { memo } = wp.element;
-const { SelectControl, PanelBody, Spinner, ToolbarGroup, ToolbarButton, Button } = wp.components;
+const { SelectControl, PanelBody, Spinner, ToolbarGroup, ToolbarButton } = wp.components;
 const { useState, useEffect, useRef, useCallback, useMemo } = wp.element;
 const { useRefEffect } = wp.compose;
 
@@ -47,7 +47,11 @@ function EditComponent({ attributes, setAttributes }) {
         if (css === false) {
             return;
         }
-        css = JSON.stringify(css);
+        if (css) {
+            css = JSON.stringify(css);
+        } else {
+            css = '';
+        }
         if (css !== attributes.customCss) {
             setAttributes({ customCss: css });
         }
@@ -167,23 +171,11 @@ function EditComponent({ attributes, setAttributes }) {
             </PanelBody>
 
             {attributes.formId && !attributes.isConversationalForm && (
-                <>
-                    <Tabs
-                        attributes={attributes}
-                        updateStyles={updateStyles}
-                        handlePresetChange={handlePresetChange}
-                    />
-                    <PanelBody title={__('Actions')} initialOpen={false}>
-                        <Button
-                            isDestructive
-                            variant="secondary"
-                            onClick={resetStyles}
-                            style={{ width: '100%', justifyContent: 'center' }}
-                        >
-                            {__('Reset All Styles')}
-                        </Button>
-                    </PanelBody>
-                </>
+                <Tabs
+                    attributes={attributes}
+                    updateStyles={updateStyles}
+                    handlePresetChange={handlePresetChange}
+                />
             )}
         </InspectorControls>
     );
@@ -265,6 +257,17 @@ function EditComponent({ attributes, setAttributes }) {
                             onClick={() => window.open(`admin.php?page=fluent_forms&route=editor&form_id=${attributes.formId}`, '_blank', 'noopener')}
                         />
                     </ToolbarGroup>
+                    {
+                        attributes.customCss && (
+                            <ToolbarGroup>
+                                <ToolbarButton
+                                    icon="image-rotate"
+                                    label={__('Reset All Styles')}
+                                    onClick={resetStyles}
+                                />
+                            </ToolbarGroup>
+                        )
+                    }
                 </BlockControls>
             )}
             {mainContent}
