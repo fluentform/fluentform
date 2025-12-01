@@ -69,147 +69,122 @@ class ConditionAssesor
 
     public static function assess(&$conditional, &$inputs, $form = null)
     {
-        if (empty($conditional['field'])) {
-            return false;
-        }
+        if ($conditional['field']) {
+            $accessor = rtrim(str_replace(['[', ']', '*'], ['.'], $conditional['field']), '.');
 
-        $accessor = rtrim(str_replace(['[', ']', '*'], ['.'], $conditional['field']), '.');
-
-        if (!Arr::has($inputs, $accessor)) {
-            return false;
-        }
-
-        $inputValue = Arr::get($inputs, $accessor);
-
-        // Numeric formatting
-        if ($numericFormatter = Arr::get($conditional, 'numeric_formatter')) {
-            $inputValue = Helper::getNumericValue($inputValue, $numericFormatter);
-        }
-
-        // Smart Codes
-        $processedValue = $conditional['value'] ?? null;
-        if (isset($processedValue) && (is_string($processedValue) || is_array($processedValue))) {
-            if (is_string($processedValue)) {
-                $processedValue = trim($processedValue);
+            if (!Arr::has($inputs, $accessor)) {
+                return false;
             }
-            $processedValue = self::processSmartCodesInValue($processedValue, $inputs, $form);
-        }
+            $inputValue = Arr::get($inputs, $accessor);
 
-        $operator = $conditional['operator'];
-        $conditionValue = $processedValue;
-
-        // Normalize values for array comparisons
-        $normalize = function ($val) {
-            if (is_array($val)) {
-                $arr = array_values($val);
-                sort($arr);
-                return implode(', ', $arr);
+            if ($numericFormatter = Arr::get($conditional, 'numeric_formatter')) {
+                $inputValue = Helper::getNumericValue($inputValue, $numericFormatter);
+            }
+            $conditionValue = Arr::get($conditional, 'value');
+            $isArrayAcceptable = in_array($conditional['operator'], ['=', '!=']);
+            if (!empty($conditionValue) && is_string($conditionValue)) {
+                $conditionValue = self::processSmartCodesInValue($conditionValue, $inputs, $form, $isArrayAcceptable);
             }
 
-            if (is_string($val) && strpos($val, ',') !== false) {
-                $arr = array_map('trim', explode(',', $val));
-                sort($arr);
-                return implode(', ', $arr);
+            $conditionValue = is_null($conditionValue) ? '' : $conditionValue;
+
+            switch ($conditional['operator']) {
+                case '=':
+                    if (is_array($inputValue) && is_array($conditionValue)) {
+                        $difference = array_diff(Arr::flatten($inputValue), Arr::flatten($conditionValue));
+                        return count($difference) === 0;
+                    }
+
+                    if(is_array($conditionValue)) {
+                        return in_array($inputValue, Arr::flatten($conditionValue));
+                    }
+                    if (is_array($inputValue)) {
+                       return in_array($conditionValue, Arr::flatten($inputValue));
+                    }
+                    return $inputValue == $conditionValue;
+                case '!=':
+                    if(is_array($inputValue) && is_array($conditionValue)) {
+                        return count(array_intersect(Arr::flatten($inputValue), Arr::flatten($conditionValue))) == 0;
+                    }
+                    if(is_array($conditionValue)) {
+                        return !in_array($inputValue, Arr::flatten($conditionValue));
+                    }
+                    if(is_array($inputValue)) {
+                        return !in_array($conditionValue, Arr::flatten($inputValue));
+                    }
+                    return $inputValue != $conditionValue;
+                case '>':
+                    return $inputValue > $conditionValue;
+                case '<':
+                    return $inputValue < $conditionValue;
+                case '>=':
+                    return $inputValue >= $conditionValue;
+                case '<=':
+                    return $inputValue <= $conditionValue;
+                case 'startsWith':
+                    return Str::startsWith($inputValue, $conditionValue);
+                case 'endsWith':
+                    return Str::endsWith($inputValue, $conditionValue);
+                case 'contains':
+                    return Str::contains($inputValue, $conditionValue);
+                case 'doNotContains':
+                    return !Str::contains($inputValue, $conditionValue);
+                case 'length_equal':
+                    if(is_array($inputValue)) {
+                        return count($inputValue) == $conditionValue;
+                    }
+                    $inputValue = strval($inputValue);
+                    return strlen($inputValue) == $conditionValue;
+                case 'length_less_than':
+                    if(is_array($inputValue)) {
+                        return count($inputValue) < $conditionValue;
+                    }
+                    $inputValue = strval($inputValue);
+                    return strlen($inputValue) < $conditionValue;
+                case 'length_greater_than':
+                    if(is_array($inputValue)) {
+                        return count($inputValue) > $conditional['value'];
+                    }
+                    $inputValue = strval($inputValue);
+                    return strlen($inputValue) > $conditional['value'];
+                case 'test_regex':
+                    if(is_array($inputValue)) {
+                        $inputValue = implode(' ', $inputValue);
+                    }
+                    $result = preg_match('/'.$conditionValue.'/', $inputValue);
+                    return !!$result;
             }
-
-            return $val;
-        };
-
-        switch ($operator) {
-            case '=':
-            case '!=':
-                if (is_array($inputValue) && !is_array($conditionValue) && is_string($conditionValue) && strpos($conditionValue, ',') === false) {
-                    $result = in_array($conditionValue, $inputValue);
-                    return $operator === '=' ? $result : !$result;
-                }
-
-                $left  = $normalize($inputValue);
-                $right = $normalize($conditionValue);
-
-                return $operator === '='
-                    ? ($left == $right)
-                    : ($left != $right);
-
-            case '>':
-                return $inputValue >  $conditionValue;
-
-            case '<':
-                return $inputValue <  $conditionValue;
-
-            case '>=':
-                return $inputValue >= $conditionValue;
-                
-            case '<=':
-                return $inputValue <= $conditionValue;
-
-            case 'startsWith':
-                return Str::startsWith($inputValue, $conditionValue);
-
-            case 'endsWith':
-                return Str::endsWith($inputValue, $conditionValue);
-
-            case 'contains':
-                return Str::contains($inputValue, $conditionValue);
-
-            case 'doNotContains':
-                return !Str::contains($inputValue, $conditionValue);
-
-            case 'length_equal':
-                return (is_array($inputValue)
-                    ? count($inputValue)
-                    : strlen((string) $inputValue)
-                ) == $conditionValue;
-
-            case 'length_less_than':
-                return (is_array($inputValue)
-                    ? count($inputValue)
-                    : strlen((string) $inputValue)
-                ) < $conditionValue;
-
-            case 'length_greater_than':
-                return (is_array($inputValue)
-                    ? count($inputValue)
-                    : strlen((string) $inputValue)
-                ) > $conditionValue;
-
-            case 'test_regex':
-                if (is_array($inputValue)) {
-                    $inputValue = implode(' ', $inputValue);
-                }
-                $pattern = '/' . $conditionValue . '/';
-                $result = @preg_match($pattern, $inputValue);
-                if ($result === false) {
-                    // Invalid regex pattern, handle gracefully
-                    return false;
-                }
-                return (bool) $result;
         }
 
         return false;
     }
 
-    private static function processSmartCodesInValue($value, &$inputs, $form = null)
+    private static function processSmartCodesInValue($value, &$inputs, $form = null, $isArrayAcceptable = true)
     {
         if (strpos($value, '{') === false) {
             return $value;
         }
 
-        if (preg_match('/^{inputs\.[^}]+}$/', $value)) {
-            $fieldName = substr($value, 8, -1);
+        if (preg_match('/^{inputs\.([^}]+)}$/', $value, $inputMatches)) {
+            $fieldName = $inputMatches[1];
             $fieldKey = str_replace(['[', ']'], ['.', ''], $fieldName);
             
-            $resolvedValue = Arr::get($inputs, $fieldKey, '');
+            $resolvedValue = Arr::get($inputs, $fieldKey);
             
-            if ($resolvedValue === '' && $fieldKey !== $fieldName) {
-                $resolvedValue = Arr::get($inputs, $fieldName, '');
+            if ($resolvedValue === null && $fieldKey !== $fieldName) {
+                $resolvedValue = Arr::get($inputs, $fieldName);
             }
-            
+
             // Return array if it's an array, otherwise return string
             if (is_array($resolvedValue)) {
-                return $resolvedValue;
+                if ($isArrayAcceptable) {
+                    return $resolvedValue;
+                } else {
+                    return fluentImplodeRecursive(', ', $resolvedValue);
+                }
             }
             
-            return $resolvedValue !== null && $resolvedValue !== '' ? $resolvedValue : '';
+            return !is_null($resolvedValue) ? $resolvedValue : '';
         }
 
         try {

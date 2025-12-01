@@ -217,7 +217,7 @@
                             <el-option-group :label="$t('General Operators')">
                                 <el-option value="=" :label="$t('equal')"></el-option>
                                 <el-option value="!=" :label="$t('not equal')"></el-option>
-                                <template v-if="fields[logic.field] && !Object.keys(fields[logic.field].options || {}).length">
+                                <template v-if="isNotCheckableField(logic.field)">
                                     <el-option value=">" :label="$t('greater than')"></el-option>
                                     <el-option value="<" :label="$t('less than')"></el-option>
                                     <el-option value=">=" :label="$t('greater than or equal')"></el-option>
@@ -372,6 +372,13 @@
 				    this.items.splice(index + 1, 0, {...this.defaultRules});
 			    }
 		    },
+            isNotCheckableField(name) {
+                const field = this.fields[name] || {};
+                if (field) {
+                    return !(Object.keys(field?.options || {}).length || field.element === 'repeater_field');
+                }
+                return true;
+            },
 		    remove(index) {
 			    if (this.conditionals.type === 'group') {
 				    this.removeCondition(0, index);
@@ -452,7 +459,7 @@
 			    return operators[operator] || operator;
 		    },
 		    insertShortcodeToValue(item, code) {
-			    if (!item.value) {
+			    if (!item.value || code.includes('{inputs.')) {
 				    item.value = code;
 			    } else {
 				    item.value = item.value + code;
@@ -483,7 +490,7 @@
                         },
 		                this.editorShortcodes[index].shortcodes
 		            );
-		        this.editorShortcodes[index].shortcodes = shortcodes;
+		            this.editorShortcodes[index].shortcodes = shortcodes;
                 }
 		    }
 	    }
