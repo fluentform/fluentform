@@ -327,7 +327,7 @@
             },
             supportedEditorShortcodes: {
                 type: Array,
-                default: () => ['input', 'general']
+                default: () => ['input']
             }
         },
         data() {
