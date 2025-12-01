@@ -175,16 +175,10 @@ class ConditionAssesor
                 $resolvedValue = Arr::get($inputs, $fieldName);
             }
 
-            // Return array if it's an array, otherwise return string
-            if (is_array($resolvedValue)) {
-                if ($isArrayAcceptable) {
-                    return $resolvedValue;
-                } else {
-                    return fluentImplodeRecursive(', ', $resolvedValue);
-                }
+            // Return array if it's an array
+            if (is_array($resolvedValue) && $isArrayAcceptable) {
+                return $resolvedValue;
             }
-            
-            return !is_null($resolvedValue) ? $resolvedValue : '';
         }
 
         try {
