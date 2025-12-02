@@ -36,7 +36,12 @@ class GlobalSettingsService
 
     public function store($attributes = [])
     {
-        $key = sanitize_text_field(Arr::get($attributes, 'key'));
+        $key = Arr::get($attributes, 'key');
+        if (is_array($key)) {
+            $key = array_map('sanitize_text_field', $key);
+        } else {
+            $key = sanitize_text_field($key);
+        }
 
         $globalSettingsHelper = new GlobalSettingsHelper();
 
