@@ -82,7 +82,7 @@ class ConditionAssesor
             }
             $conditionValue = Arr::get($conditional, 'value');
             $isArrayAcceptable = in_array($conditional['operator'], ['=', '!=']);
-            if (!empty($conditionValue) && is_string($conditionValue)) {
+            if (!empty($conditionValue) && is_string($conditionValue) && $conditional['operator'] !== 'test_regex') {
                 $conditionValue = self::processSmartCodesInValue($conditionValue, $inputs, $form, $isArrayAcceptable);
             }
 
