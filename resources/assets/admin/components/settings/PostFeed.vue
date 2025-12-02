@@ -266,6 +266,7 @@
                         <filter-fields :fields="form_fields"
                             :conditionals="feed.value.conditionals"
                             :hasPro="hasPro"
+                            :editorShortcodes="editorShortcodes"
                             :labels="{
                                 status_label: 'Enable conditional logic',
                                 notification_if_start: 'Run this integration if',

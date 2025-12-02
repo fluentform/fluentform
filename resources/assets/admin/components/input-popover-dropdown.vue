@@ -21,6 +21,7 @@
         </el-popover>
         <el-button class="editor-add-shortcode"
                    v-popover:input-popover1
+                   :size="size"
                    type="primary">
             {{ $t('Add Shortcodes') }}
             <i class="el-icon-arrow-down el-icon--right"></i>
@@ -32,7 +33,11 @@
     export default {
         name: 'inputPopoverDropdown',
         props: {
-            data: Array
+            data: Array,
+            size: {
+                type: String,
+                default: 'small'
+            }
         },
         methods: {
             insertShortcode(code) {
