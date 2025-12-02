@@ -54,7 +54,8 @@ var _wp$components = wp.components,
   PanelBody = _wp$components.PanelBody,
   Spinner = _wp$components.Spinner,
   ToolbarGroup = _wp$components.ToolbarGroup,
-  ToolbarButton = _wp$components.ToolbarButton;
+  ToolbarButton = _wp$components.ToolbarButton,
+  Button = _wp$components.Button;
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useEffect = _wp$element.useEffect,
@@ -183,6 +184,26 @@ function EditComponent(_ref2) {
       setIsPreviewLoading(false);
     }, 300);
   }, [setAttributes]);
+  var resetStyles = useCallback(function () {
+    // eslint-disable-next-line no-alert
+    if (!window.confirm(__('Are you sure you want to reset all styles? This cannot be undone.'))) {
+      return;
+    }
+    setIsPreviewLoading(true);
+    setAttributes({
+      styles: {},
+      customCss: '',
+      themeStyle: ''
+    });
+
+    // Clear the style handler cache if needed
+    if (styleHandlerRef.current) {
+      styleHandlerRef.current.updateStyles({});
+    }
+    setTimeout(function () {
+      setIsPreviewLoading(false);
+    }, 300);
+  }, [setAttributes]);
   var serverAttributes = useMemo(function () {
     return _objectSpread(_objectSpread({}, attributes), {}, {
       styles: {},
@@ -228,10 +249,25 @@ function EditComponent(_ref2) {
         })) || [],
         onChange: handleFormChange
       })
-    }), attributes.formId && !attributes.isConversationalForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      attributes: attributes,
-      updateStyles: updateStyles,
-      handlePresetChange: handlePresetChange
+    }), attributes.formId && !attributes.isConversationalForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_tabs_Tabs__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        attributes: attributes,
+        updateStyles: updateStyles,
+        handlePresetChange: handlePresetChange
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(PanelBody, {
+        title: __('Actions'),
+        initialOpen: false,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Button, {
+          isDestructive: true,
+          variant: "secondary",
+          onClick: resetStyles,
+          style: {
+            width: '100%',
+            justifyContent: 'center'
+          },
+          children: __('Reset All Styles')
+        })
+      })]
     })]
   }, "ff-inspector-controls");
   var mainContent;

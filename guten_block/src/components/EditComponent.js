@@ -29,7 +29,7 @@ const getFormMeta = async (formId, metaKey) => {
 
 function EditComponent({ attributes, setAttributes }) {
     const [isPreviewLoading, setIsPreviewLoading] = useState(false);
-    
+
     const styleHandlerRef = useRef(null);
     const currentStylesRef = useRef(attributes.styles || {});
     useEffect(() => {
@@ -47,7 +47,11 @@ function EditComponent({ attributes, setAttributes }) {
         if (css === false) {
             return;
         }
-        css = JSON.stringify(css);
+        if (css) {
+            css = JSON.stringify(css);
+        } else {
+            css = '';
+        }
         if (css !== attributes.customCss) {
             setAttributes({ customCss: css });
         }
@@ -93,7 +97,29 @@ function EditComponent({ attributes, setAttributes }) {
 
     const handlePresetChange = useCallback((newPreset) => {
         setIsPreviewLoading(true);
-        setAttributes({ themeStyle: newPreset});
+        setAttributes({ themeStyle: newPreset });
+
+        setTimeout(() => {
+            setIsPreviewLoading(false);
+        }, 300);
+    }, [setAttributes]);
+
+    const resetStyles = useCallback(() => {
+        if (!window.confirm(__('Are you sure you want to reset all styles? This cannot be undone.'))) {
+            return;
+        }
+
+        setIsPreviewLoading(true);
+        setAttributes({
+            styles: {},
+            customCss: '',
+            themeStyle: ''
+        });
+
+        // Clear the style handler cache if needed
+        if (styleHandlerRef.current) {
+            styleHandlerRef.current.updateStyles({});
+        }
 
         setTimeout(() => {
             setIsPreviewLoading(false);
@@ -101,7 +127,7 @@ function EditComponent({ attributes, setAttributes }) {
     }, [setAttributes]);
 
     const serverAttributes = useMemo(() => {
-        return {...attributes, styles: {}, customCss: '' };
+        return { ...attributes, styles: {}, customCss: '' };
     }, [attributes.formId, attributes.themeStyle]);
 
     // Initial setup effect
@@ -221,20 +247,31 @@ function EditComponent({ attributes, setAttributes }) {
 
     return (
         <div ref={blockRef} className="fluentform-guten-wrapper">
-            { inspectorControls }
-            { attributes.formId && (
+            {inspectorControls}
+            {attributes.formId && (
                 <BlockControls>
                     <ToolbarGroup>
                         <ToolbarButton
                             icon="edit"
-                            label={ __('Edit Form') }
-                            onClick={ () => window.open(`admin.php?page=fluent_forms&route=editor&form_id=${ attributes.formId }`, '_blank', 'noopener') }
+                            label={__('Edit Form')}
+                            onClick={() => window.open(`admin.php?page=fluent_forms&route=editor&form_id=${attributes.formId}`, '_blank', 'noopener')}
                         />
                     </ToolbarGroup>
+                    {
+                        attributes.customCss && (
+                            <ToolbarGroup>
+                                <ToolbarButton
+                                    icon="image-rotate"
+                                    label={__('Reset All Styles')}
+                                    onClick={resetStyles}
+                                />
+                            </ToolbarGroup>
+                        )
+                    }
                 </BlockControls>
-            ) }
-            { mainContent }
-            { loadingOverlay }
+            )}
+            {mainContent}
+            {loadingOverlay}
         </div>
     );
 }
