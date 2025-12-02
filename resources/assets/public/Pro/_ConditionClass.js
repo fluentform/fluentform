@@ -5,6 +5,7 @@ class ConditionApp {
         this.formData = formData;
         this.counter = 0;
         this.field_statues = {};
+        this.elementCache = {};
     }
 
     setFields(fields) {
@@ -12,10 +13,12 @@ class ConditionApp {
     }
 
     setFormData(data) {
+        this.elementCache = {};
         this.formData = data;
     }
 
     getCalculatedStatuses() {
+        this.elementCache = {};
         for (const key of Object.keys(this.fields)) {
             let item = this.fields[key];
             this.field_statues[key] = this.evaluate(item, key);
@@ -86,9 +89,7 @@ class ConditionApp {
                 continue;
             }
             try {
-                console.log('Evaluating group rules:', group.rules);
                 const result = this.evaluateRuleGroup(group.rules);
-                console.log('Group evaluation result:', result);
                 if (result === true) {
                     return true;
                 }
@@ -124,7 +125,11 @@ class ConditionApp {
     getItemEvaluateValue(item, val) {
         val = val || null;
 
-        const $el = jQuery(`[name='${item.field}']`);
+        let $el = this.elementCache[item.field];
+        if (!$el || !$el.length) {
+            $el = jQuery(`[name='${item.field}']`);
+            this.elementCache[item.field] = $el;
+        }
 
         if (item.operator == '=') {
 
