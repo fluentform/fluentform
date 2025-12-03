@@ -979,6 +979,12 @@ class Converter
             'nationalMode'     => true,
             'autoPlaceholder'  => 'aggressive',
             'formatOnDisplay'  => true,
+            'validationNumberTypes' => [
+                'MOBILE',
+                'FIXED_LINE_OR_MOBILE',
+                'FIXED_LINE',
+                'TOLL_FREE',
+            ]
         ];
         
         if ($geoLocate) {
