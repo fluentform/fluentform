@@ -5,6 +5,11 @@
                 <div v-for="(option,index) in item.settings.advanced_options" :key="index" style="line-height: 25px;">
                     <input type="radio" :value="option.value" v-model="item.attributes.value"> {{ option.label }}
                 </div>
+                <!-- Other option for radio -->
+                <div v-if="item.settings.enable_other_option === 'yes'" class="ff-el-form-check ff-other-option" style="line-height: 25px;">
+                    <input type="radio" :value="'other_' + item.attributes.name" v-model="item.attributes.value" >
+                    {{ item.settings.other_option_label || 'Other' }}
+                </div>
             </template>
             <template v-else>
                 <div v-for="(option,index) in item.settings.advanced_options" :key="index" style="line-height: 25px;">
