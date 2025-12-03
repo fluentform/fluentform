@@ -372,8 +372,6 @@ class GlobalSettingsHelper
 
         update_option('_fluentform_global_form_settings', $settings, 'no');
 
-        return [
-            'message' => __('Autosave settings has been saved', 'fluentform')
-        ];
+        return true;
     }
 }
