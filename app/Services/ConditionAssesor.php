@@ -192,7 +192,7 @@ class ConditionAssesor
         try {
             $processedValue = preg_replace_callback('/{+(.*?)}/', function ($matches) use ($inputs, $form) {
                 $smartCode = $matches[1];
-                
+
                 if (false !== strpos($smartCode, 'inputs.')) {
                     $fieldName = substr($smartCode, strlen('inputs.'));
                     
@@ -212,9 +212,11 @@ class ConditionAssesor
                 }
 
                 // @todo Support general shortcodes in future
-                return '';
+
+                // Always return the original value if we don't have a match
+                return $matches[0];
             }, $value);
-            
+
             return $processedValue;
         } catch (\Exception $e) {
             return $value;
