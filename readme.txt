@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.10
+Stable tag: 6.1.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -437,6 +437,10 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.1.11 (Date: December 4, 2025) =
+- Fixes issue with saving showing invalid json
+- Fixes default behavior of regex in advanced validation
 
 = 6.1.10 (Date: December 2, 2025) =
 - Fix global settings save issue
