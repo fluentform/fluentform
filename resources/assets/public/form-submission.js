@@ -1480,7 +1480,13 @@ jQuery(document).ready(function () {
                                 return el.parents('.ff-el-group').find('input:checked').length;
                             }
                         }
-                        return $('[name="' + el.prop('name') + '"]:checked').length;
+                        const checked = $('[name="' + el.prop('name') + '"]:checked');
+                        const name = el.prop('name').replace('[]', '');
+                        if (checked.length && checked.val() === `__ff_other_${name}__`) {
+                            const otherInputField = $(`[name="${name}__ff_other_input__"]`);
+                            return otherInputField.val()
+                        }
+                        return checked.length;
                     } else if (type.startsWith('select')) {
                         var selected = el.find(':selected');
                         return !!(selected.length && selected.val().length);

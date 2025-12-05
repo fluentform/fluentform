@@ -314,7 +314,8 @@
             <FilterFields
             :fields="fields"
             :hasPro="has_pro"
-            :conditionals="editing_item.conditionals"/>
+            :conditionals="editing_item.conditionals"
+            :editorShortcodes="editor_Shortcodes"/>
 
         </el-form-item>
         

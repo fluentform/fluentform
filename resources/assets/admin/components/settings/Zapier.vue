@@ -109,7 +109,8 @@
                         <FilterFields
                         :fields="inputs"
                         :hasPro="has_pro"
-                        :conditionals="selected.value.conditionals"></FilterFields>
+                        :conditionals="selected.value.conditionals"
+                        :editorShortcodes="editorShortcodes"></FilterFields>
 
                     </el-form-item>
 

@@ -54,13 +54,31 @@ const formConditional = function ($, $theForm, form) {
 
             $.each(watchableFields, (name, el) => {
                 el.on('keyup change', () => {
+                    if ($theForm.hasClass('ff_force_hide') || $theForm.hasClass('ff_submitting')) {
+                        return;
+                    }
                     formData = getFormData();
                     conditionAppInstance.setFormData(formData);
-                    debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    setTimeout(() => {
+                        debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    }, 0);
                 });
             });
 
-            hideShowElements(conditionAppInstance.getCalculatedStatuses());
+            jQuery(document.body).on('fluentform_reset', function(event, resetForm) {
+                if (!resetForm || !resetForm.length || resetForm[0] !== $theForm[0] || $theForm.hasClass('ff_force_hide')) {
+                    return;
+                }
+                setTimeout(() => {
+                    formData = getFormData();
+                    conditionAppInstance.setFormData(formData);
+                    hideShowElements(conditionAppInstance.getCalculatedStatuses());
+                }, 0);
+            });
+
+            setTimeout(() => {
+                hideShowElements(conditionAppInstance.getCalculatedStatuses());
+            }, 0);
         };
 
         const debounce = (func, delay = 300) => {
