@@ -306,6 +306,7 @@ class Menu
             'disable_time_diff'        => Helper::isDefaultWPDateEnabled(),
             'wp_date_time_format'      => Helper::getDefaultDateTimeFormatForMoment(),
             'server_time'              => current_time('mysql'),
+            'ace_path_url'             => fluentformMix('libs/ace'),
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));

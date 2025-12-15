@@ -73,6 +73,7 @@ add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
     (new \FluentForm\App\Modules\Ai\AiController())->boot();
     (new \FluentForm\App\Modules\Report\ReportHandler())->register($app);
+    new \FluentForm\App\Modules\Form\DefaultStyleApplicator();
 }, 9);
 
 add_action('admin_enqueue_scripts', function () use ($app) {

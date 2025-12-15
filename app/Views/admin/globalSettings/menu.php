@@ -95,6 +95,16 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                         <?php esc_html_e('Miscellaneous', 'fluentform'); ?>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="ff-page-scroll"
+                                       data-section-id="#default-style-template"
+                                       data-hash="settings"
+                                       href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                           'hash' => 'settings'
+                                       ])); ?>">
+                                        <?php esc_html_e('Default Style Template', 'fluentform'); ?>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
