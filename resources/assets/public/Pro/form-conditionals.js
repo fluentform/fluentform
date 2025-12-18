@@ -94,6 +94,7 @@ const formConditional = function ($, $theForm, form) {
         }, form.debounce_time || 300);
 
         const hideShowElements = function (items) {
+            let timeoutId;
             $.each(items, (itemName, status) => {
                 const el = getElement(itemName);
                 let $parent = el.closest('.has-conditions');
@@ -106,7 +107,10 @@ const formConditional = function ($, $theForm, form) {
                         .slideDown(200, function() {
                             // Check if this container has range sliders that need reinitialization
                             if ($parent.find('input[type="range"]').length > 0) {
-                                setTimeout(function() {
+                                if (timeoutId) {
+                                    clearTimeout(timeoutId);
+                                }
+                                timeoutId = setTimeout(function() {
                                     $theForm.trigger('reInitRangeSliders');
                                 }, 50);
                             }
