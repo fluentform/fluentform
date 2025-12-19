@@ -271,6 +271,36 @@ class GlobalSettingsHelper
         ]);
     }
 
+    public function storeCalculationSpamProtection($attributes)
+    {
+        $data = Arr::get($attributes, 'calculationSpamProtection');
+
+        if ('clear-settings' == $data) {
+            delete_option('_fluentform_calculation_spam_protection_details');
+            update_option('_fluentform_calculation_spam_protection_status', 'no');
+
+            return([
+                'message' => __('Your calculation spam protection settings are deleted.', 'fluentform'),
+                'status'  => true,
+            ]);
+        }
+
+        $settingsData = [
+            'enabled'    => Arr::get($data, 'enabled', false) === 'true' ? true : false,
+            'difficulty' => sanitize_text_field(Arr::get($data, 'difficulty', 'medium')),
+        ];
+
+        update_option('_fluentform_calculation_spam_protection_details', $settingsData);
+
+        $status = Arr::get($data, 'enabled', false) === 'true' ? true : false;
+        update_option('_fluentform_calculation_spam_protection_status', $status, 'no');
+
+        return([
+            'message' => __('Calculation spam protection settings saved successfully.', 'fluentform'),
+            'status'  => $status,
+        ]);
+    }
+
     public function storeSaveGlobalLayoutSettings($attributes)
     {
         $settings = Arr::get($attributes, 'form_settings');

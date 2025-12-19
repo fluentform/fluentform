@@ -314,7 +314,7 @@ class FormService
         $isReCaptchaDisabled = !get_option('_fluentform_reCaptcha_keys_status', false);
         $isHCaptchaDisabled = !get_option('_fluentform_hCaptcha_keys_status', false);
         $isTurnstileDisabled = !get_option('_fluentform_turnstile_keys_status', false);
-        
+        $isCalculationSpamProtectionDisabled = !get_option('_fluentform_calculation_spam_protection_status', false);
         $disabled = [
             'recaptcha'   => [
                 'disabled'    => $isReCaptchaDisabled,
@@ -332,6 +332,12 @@ class FormService
                 'disabled'    => $isTurnstileDisabled,
                 'title'       => __('Turnstile', 'fluentform'),
                 'description' => __('Please enter a valid API key on Global Settings->Security->Turnstile', 'fluentform'),
+                'hidePro'     => true,
+            ],
+            'calculation_spam_protection' => [
+                'disabled'    => $isCalculationSpamProtectionDisabled,
+                'title'       => __('Calculation Spam Protection', 'fluentform'),
+                'description' => __('Please enable the settings on Global Settings->Security->Calculation Spam Protection', 'fluentform'),
                 'hidePro'     => true,
             ],
         ];

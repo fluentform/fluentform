@@ -8,6 +8,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Modules\CalculationSpamProtection\CalculationSpamProtection;
 
 class Converter
 {
@@ -37,6 +38,7 @@ class Converter
         $form->reCaptcha = false;
         $form->hCaptcha = false;
         $form->turnstile = false;
+        $form->calculationSpamProtection = false;
         $form->hasCalculation = false;
         
         $questions = [];
@@ -792,6 +794,21 @@ class Converter
                 if ('interaction-only' === $appearance) {
                     continue;
                 }
+            } elseif ('calculation_spam_protection' === $field['element']) {
+                $settings = get_option('_fluentform_calculation_spam_protection_details', ['enabled' => false, 'difficulty' => 'medium']);
+                $difficulty = isset($settings['difficulty']) ? $settings['difficulty'] : 'medium';
+                
+                $questionData = CalculationSpamProtection::generateQuestion($difficulty);
+                
+                $question['name'] = 'ff-calculation-answer';
+                $question['id'] = 'ff-calculation-answer';
+                $question['calculationQuestion'] = $questionData['question'];
+                $question['encryptedAnswer'] = $questionData['answer'];
+                $question['answerFieldName'] = 'ff-calculation-answer';
+                $question['questionFieldName'] = 'ff-calculation-question';
+                $question['answer'] = '';
+                
+                $form->calculationSpamProtection = true;
             } elseif ('payment_coupon' === $field['element']) {
                 if ($hasSaveAndResume && $saveAndResumeData) {
                     if ($coupons = ArrayHelper::get($saveAndResumeData, 'response.__ff_all_applied_coupons')) {
@@ -904,6 +921,7 @@ class Converter
             'recaptcha'                      => 'FlowFormReCaptchaType',
             'hcaptcha'                       => 'FlowFormHCaptchaType',
             'turnstile'                      => 'FlowFormTurnstileType',
+            'calculation_spam_protection'    => 'FlowFormCalculationSpamProtectionType',
             'address'                        => 'FlowFormAddressType',
             'input_name'                     => 'FlowFormNameType',
             'ffc_custom'                     => 'FlowFormCustomType',

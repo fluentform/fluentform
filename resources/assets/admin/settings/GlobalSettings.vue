@@ -56,7 +56,8 @@
                 captcha_status: {
                     'hcaptcha': false,
                     'recaptcha': false,
-                    'turnstile': false
+                    'turnstile': false,
+                    'calculation_spam_protection': false
                 },
             }
         },
@@ -73,7 +74,8 @@
                         '_fluentform_reCaptcha_keys_status',
                         '_fluentform_hCaptcha_keys_status',
 	                    '_fluentform_global_default_message_setting_fields',
-                        '_fluentform_turnstile_keys_status'
+                        '_fluentform_turnstile_keys_status',
+                        '_fluentform_calculation_spam_protection_status'
                     ]
                 })
                     .then(response => {
@@ -111,7 +113,8 @@
                         this.captcha_status = {
                             hcaptcha: response._fluentform_hCaptcha_keys_status,
                             recaptcha: response._fluentform_reCaptcha_keys_status,
-                            turnstile: response._fluentform_turnstile_keys_status
+                            turnstile: response._fluentform_turnstile_keys_status,
+                            calculation_spam_protection: response._fluentform_calculation_spam_protection_status
                         }
                     })
                     .catch(e => {

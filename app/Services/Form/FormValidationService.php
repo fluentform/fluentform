@@ -8,6 +8,7 @@ use FluentForm\App\Modules\Form\AkismetHandler;
 use FluentForm\App\Modules\Form\CleanTalkHandler;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Modules\CalculationSpamProtection\CalculationSpamProtection;
 use FluentForm\App\Modules\HCaptcha\HCaptcha;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
@@ -56,6 +57,7 @@ class FormValidationService
         $this->validateReCaptcha();
         $this->validateHCaptcha();
         $this->validateTurnstile();
+        $this->validateCalculationSpamProtection();
 
         foreach ($fields as $fieldName => $field) {
             if (isset($formData[$fieldName])) {
@@ -663,6 +665,51 @@ class FormValidationService
                     'errors' => [
                         'cf-turnstile-response' => [
                             esc_html(__('Turnstile verification failed, please try again.', 'fluentform')),
+                        ],
+                    ],
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Validate calculation spam protection.
+     *
+     * @throws ValidationException
+     */
+    private function validateCalculationSpamProtection()
+    {
+        if ($this->shouldSkipCaptchaValidation('calculation_spam_protection')) {
+            return;
+        }
+        $autoInclude = apply_filters('fluentform/has_calculation_spam_protection', false);
+        $disableCalculationSpamProtection = apply_filters('fluentform/disable_captcha', false, $this->form, 'calculation_spam_protection');
+
+        FormFieldsParser::resetData();
+        if (!$disableCalculationSpamProtection && (FormFieldsParser::hasElement($this->form, 'calculation_spam_protection') || $autoInclude)) {
+            $answerFieldName = 'ff-calculation-answer';
+            $questionFieldName = 'ff-calculation-question';
+            
+            $userAnswer = Arr::get($this->formData, $answerFieldName);
+            $encryptedAnswer = Arr::get($this->formData, $questionFieldName);
+            
+            if (empty($userAnswer) || empty($encryptedAnswer)) {
+                throw new ValidationException('', 422, null, [
+                    'errors' => [
+                        $answerFieldName => [
+                            esc_html(__('Calculation answer is missing. Please try again.', 'fluentform')),
+                        ],
+                    ],
+                ]);
+            }
+            
+            $isValid = CalculationSpamProtection::validate($userAnswer, $encryptedAnswer);
+            
+            if (!$isValid) {
+                throw new ValidationException('', 422, null, [
+                    'errors' => [
+                        $answerFieldName => [
+                            esc_html(__('Calculation answer is incorrect. Please try again.', 'fluentform')),
                         ],
                     ],
                 ]);

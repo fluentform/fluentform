@@ -111,6 +111,13 @@ return [
     'turnstile' => [
         'turnstile',
     ],
+    'calculation_spam_protection' => [
+        'calculation spam protection',
+        'calculation',
+        'spam',
+        'protection',
+        'math'
+    ],
     'custom_html' => [
         'custom html',
     ],

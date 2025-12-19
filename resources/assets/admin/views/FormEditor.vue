@@ -476,6 +476,8 @@
     import ListConversion from '../components/nested-list-conversion.vue';
     import recaptcha from '../components/modals/Recaptcha.vue';
     import hcaptcha from '../components/modals/Hcaptcha.vue';
+    import calculationSpamProtection from '../components/modals/CalculationSpamProtection.vue';
+    import turnstile from '../components/modals/Turnstile.vue';
     import searchElement from '../components/searchElement.vue';
     import EditorSidebar from '../components/EditorSidebar.vue';
     import RenameForm from '../components/modals/RenameForm.vue';
@@ -501,7 +503,11 @@
         submitButton,
         EditorSidebar,
         searchElement,
-        editorInserter
+        editorInserter,
+        recaptcha,
+        hcaptcha,
+        turnstile,
+        calculationSpamProtection
     },
     data() {
         return {
@@ -932,7 +938,7 @@
                 }
             }
 
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
+            const captchas = ['recaptcha', 'hcaptcha', 'turnstile', 'calculation_spam_protection'];
             if (this.isAutoloadCaptchaEnabled && captchas.includes(item.element)) {
                 this.$message({
                     message: this.$t('Captcha has been enabled globally.'),
@@ -1018,7 +1024,7 @@
                 return false;
             }
 
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
+            const captchas = ['recaptcha', 'hcaptcha', 'turnstile', 'calculation_spam_protection'];
             if (this.isAutoloadCaptchaEnabled && captchas.includes(freshCopy.element)) {
                 this.$message({
                     message: this.$t('Captcha has been enabled globally.'),
@@ -1456,7 +1462,7 @@
         * Maybe Autoload Captcha
          */
         if (this.isAutoloadCaptchaEnabled) {
-            const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
+            const captchas = ['recaptcha', 'hcaptcha', 'turnstile', 'calculation_spam_protection'];
             setTimeout(() => {
                 this.form.dropzone = this.form.dropzone.filter(el => !captchas.includes(el.element));
             }, 100);
