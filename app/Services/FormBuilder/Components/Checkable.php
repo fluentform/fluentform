@@ -147,7 +147,7 @@ class Checkable extends BaseComponent
             $isOtherOption = ArrayHelper::get($option, 'is_other', false);
             $otherClass = $isOtherOption ? ' ff-other-option' : '';
 
-            $elMarkup .= "<label class='ff-el-form-check-label{$otherClass}'><input {$disabled} {$atts} id='{$id}' aria-label='{$this->removeShortcode($ariaLabel)}' aria-invalid='false' aria-required={$ariaRequired}> <span>" . $label . '</span></label>';
+            $elMarkup .= "<label class='ff-el-form-check-label{$otherClass}' for='{$id}'><input {$disabled} {$atts} id='{$id}' aria-label='{$this->removeShortcode($ariaLabel)}' aria-invalid='false' aria-required={$ariaRequired}> <span>" . $label . '</span></label>';
             
             // Add text input for "Other" option
             if ($isOtherOption && defined('FLUENTFORMPRO')) {
