@@ -325,7 +325,9 @@ class SubmissionHandlerService
 
             $confirmation['messageToShow'] = apply_filters('fluentform/submission_message_parse',
                 $confirmation['messageToShow'], $insertId, $formData, $form);
-            
+
+            $confirmation['messageToShow'] = do_shortcode($confirmation['messageToShow']);
+
             $message = ShortCodeParser::parse(
                 $confirmation['messageToShow'],
                 $insertId,
@@ -339,7 +341,7 @@ class SubmissionHandlerService
             $message = fluentform_sanitize_html($message);
 
             $returnData = [
-                'message' => do_shortcode($message),
+                'message' => $message,
                 'action'  => $confirmation['samePageFormBehavior'],
             ];
         } else {
