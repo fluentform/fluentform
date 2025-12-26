@@ -1198,7 +1198,7 @@ jQuery(document).ready(function () {
                 // Handle checkbox "Other" option - show/hide text input
                 jQuery(document).on("change", ".ff-other-option input[type=\"checkbox\"]", function() {
                     let $checkbox = jQuery(this);
-                    let $wrapper = $checkbox.closest(".ff-el-form-check").find(".ff-other-input-wrapper");
+                    let $wrapper = $checkbox.closest(".ff-el-input--content").find(".ff-other-input-wrapper");
                     if (!$wrapper.length) {
                         return;
                     }
@@ -1222,7 +1222,7 @@ jQuery(document).ready(function () {
                 jQuery(document).on("change", ".ff-other-option input[type=\"radio\"]", function() {
                     let $radio = jQuery(this);
                     let $fieldContainer = $radio.closest(".ff-el-input--content");
-                    let $wrapper = $radio.closest(".ff-el-form-check").find(".ff-other-input-wrapper");
+                    let $wrapper = $fieldContainer.find(".ff-other-input-wrapper");
                     if (!$wrapper.length) {
                         $wrapper = $radio.closest("label").next(".ff-other-input-wrapper");
                     }
