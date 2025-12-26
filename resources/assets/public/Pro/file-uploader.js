@@ -395,7 +395,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
         }
 
         // Maximum file size validation
-        if ('max_file_size' in rules && file['size'] > rules['max_file_size']['value']) {
+        if ('max_file_size' in rules && rules['max_file_size']['value'] > 0 && file['size'] > rules['max_file_size']['value']) {
             validationErrors.push(rules['max_file_size']['message']);
         }
 
