@@ -322,6 +322,14 @@ class SubmissionHandlerService
                 'fluentform/submission_message_parse',
                 'Use fluentform/submission_message_parse instead of fluentform_submission_message_parse.'
             );
+            // If there is any fluentform shortcode then parse it first, and replace it with a placeholder to replace it later with actual value.
+            $shortCodeValue = '';
+            $confirmation['messageToShow'] = preg_replace_callback('/\[\bfluentform\b[^\]]*\]/', function ($metches) use (&$shortCodeValue) {
+                if (isset($metches[0])) {
+                    $shortCodeValue = do_shortcode($metches[0]);
+                }
+                return '__fluentfrom_shortcode_value__';
+            }, $confirmation['messageToShow']);
 
             $confirmation['messageToShow'] = apply_filters('fluentform/submission_message_parse',
                 $confirmation['messageToShow'], $insertId, $formData, $form);
@@ -340,6 +348,10 @@ class SubmissionHandlerService
 
             $message = fluentform_sanitize_html($message);
 
+            // Replace the fluentform shortcode placeholder with actual shortcode value
+            if (strpos($message, '__fluentfrom_shortcode_value__') !== false) {
+                $message = str_replace('__fluentfrom_shortcode_value__', $shortCodeValue, $message);
+            }
             $returnData = [
                 'message' => $message,
                 'action'  => $confirmation['samePageFormBehavior'],
