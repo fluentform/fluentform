@@ -67,6 +67,13 @@ $app->addAction(
     }
 );
 
+$app->addAction(
+    'fluentform/global_settings_component_calculation_spam_protection',
+    function () use ($app) {
+        (new \FluentForm\App\Modules\Renderer\GlobalSettings\Settings($app))->render();
+    }
+);
+
 // From Backend.php
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();

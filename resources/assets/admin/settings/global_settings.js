@@ -7,6 +7,7 @@ import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
 import turnstile from './turnstile.vue';
 import cleantalk from './cleantalk.vue';
+import CalculationSpamProtection from './CalculationSpamProtection.vue';
 import pdf_settings from './Pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
@@ -132,6 +133,7 @@ const components = {
     h_captcha: hCaptcha,
     turnstile: turnstile,
     cleantalk: cleantalk,
+    calculation_spam_protection: CalculationSpamProtection,
     pdf_settings: pdf_settings,
     'general-integration-settings': GeneralIntegrationSettings,
     'double_optin_settings': DoubleOptinSettings,

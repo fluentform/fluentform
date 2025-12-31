@@ -75,6 +75,12 @@ class GlobalSearchService
                 "tags"  => ['global', 'security', 'turnstile']
             ],
             [
+                "title" => 'Global Settings > Security > Calculation Spam Protection',
+                "icon"  => '',
+                "path"  => '?page=fluent_forms_settings#calculation_spam_protection',
+                "tags"  => ['global', 'security', 'calculation spam protection']
+            ],
+            [
                 "title" => 'Global Settings > Managers',
                 "icon"  => '',
                 "path"  => '?page=fluent_forms_settings#managers',

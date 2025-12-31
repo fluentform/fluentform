@@ -1160,6 +1160,8 @@ class Helper
             'g-recaptcha-response',
             'h-captcha-response',
             'cf-turnstile-response',
+            'ff-calculation-answer',
+            'ff-calculation-question',
             '__stripe_payment_method_id',
             '__ff_all_applied_coupons',
             '__entry_intermediate_hash',

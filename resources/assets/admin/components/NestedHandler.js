@@ -10,6 +10,7 @@ import formStep from './templates/formStep.vue'
 import recaptcha from './templates/recaptcha.vue'
 import hcaptcha from './templates/hcaptcha.vue'
 import turnstile from './templates/turnstile.vue'
+import calculationSpamProtection from './templates/calculationSpamProtection.vue'
 import inputText from './templates/inputText.vue'
 import inputSlider from './templates/inputSlider'
 import inputFile from './templates/inputFile.vue'
@@ -76,6 +77,7 @@ export default {
         ff_recaptcha: recaptcha,
         ff_hcaptcha: hcaptcha,
         ff_turnstile: turnstile,
+        ff_calculationSpamProtection: calculationSpamProtection,
         ff_inputRadio: inputRadio,
         ff_inputCheckable: inputCheckable,
         ff_nameFields: nameFields,

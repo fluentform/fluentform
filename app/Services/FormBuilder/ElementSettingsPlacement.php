@@ -354,6 +354,14 @@ return [
             'validation_rules'
         ],
     ],
+    'calculation_spam_protection' => [
+        'general' => [
+            'label',
+            'label_placement',
+            'name',
+            'validation_rules',
+        ],
+    ],
     'custom_html' => [
         'general' => [
             'html_codes',

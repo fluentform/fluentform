@@ -1553,6 +1553,22 @@ $fluentformDefaultElements = [
                 'template'           => 'turnstile',
             ],
         ],
+        'calculation_spam_protection' => [
+            'index'      => 4,
+            'element'    => 'calculation_spam_protection',
+            'attributes' => ['name' => 'ff-calculation-answer'],
+            'settings'   => [
+                'label'            => __('Spam Protection', 'fluentform'),
+                'label_placement'  => '',
+                'validation_rules' => []
+            ],
+            'editor_options' => [
+                'title'              => __('Calculation Spam Protection', 'fluentform'),
+                'icon_class'         => 'ff-edit-recaptha',
+                'why_disabled_modal' => 'turnstile',
+                'template'           => 'calculationSpamProtection',
+            ],
+        ],
         'shortcode' => [
             'index'      => 4,
             'element'    => 'shortcode',

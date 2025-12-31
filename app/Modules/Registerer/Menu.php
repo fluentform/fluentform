@@ -1114,6 +1114,11 @@ class Menu
             'title' => 'CleanTalk',
         ];
 
+        $components['CalculationSpamProtection'] = [
+            'hash'  => 'calculation_spam_protection',
+            'title' => 'Calculation Spam Protection',
+        ];
+
         $customLinks = apply_filters('fluentform/global_settings_menu', []);
         $this->app->view->render('admin.globalSettings.menu', [
             'components'       => $components,

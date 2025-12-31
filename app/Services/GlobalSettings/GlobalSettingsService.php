@@ -50,6 +50,7 @@ class GlobalSettingsService
             'storeHCaptcha',
             'storeTurnstile',
             'storeCleantalk',
+            'storeCalculationSpamProtection',
             'storeSaveGlobalLayoutSettings',
             'storeMailChimpSettings',
             'storeEmailSummarySettings',
