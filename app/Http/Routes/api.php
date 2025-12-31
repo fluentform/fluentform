@@ -104,7 +104,8 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
         $router->get('/', 'FormIntegrationController@find');
         $router->post('/', 'FormIntegrationController@update');
         $router->delete('/', 'FormIntegrationController@delete');
-        
+        $router->post('/update-order', 'FormIntegrationController@updateOrder');
+
         $router->get('/integration-list-id', 'FormIntegrationController@integrationListComponent');
     });
 });

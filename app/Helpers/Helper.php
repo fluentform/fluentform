@@ -1437,5 +1437,57 @@ class Helper
                strpos( $request_uri, 'site-editor.php' ) !== false ||
                // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking REST API context
                (defined('REST_REQUEST') && REST_REQUEST && !empty($_REQUEST['context']) && $_REQUEST['context'] === 'edit');
+
+    }
+
+    public static function sortFeeds($feeds, $formId)
+    {
+        if (empty($feeds)) {
+            return $feeds;
+        }
+
+        $orderMeta = FormMeta::where('form_id', $formId)
+            ->where('meta_key', '_integration_order')
+            ->first();
+
+        if (!$orderMeta) {
+            return $feeds;
+        }
+
+        $savedOrder = json_decode($orderMeta->value, true);
+
+        if (!is_array($savedOrder) || empty($savedOrder)) {
+            return $feeds;
+        }
+
+        $isCollection = is_object($feeds) && method_exists($feeds, 'sort');
+
+        $callback = function ($a, $b) use ($savedOrder) {
+            $idA = is_array($a) ? $a['id'] : $a->id;
+            $idB = is_array($b) ? $b['id'] : $b->id;
+
+            $posA = array_search($idA, $savedOrder);
+            $posB = array_search($idB, $savedOrder);
+
+            if ($posA === false) {
+                $posA = 999999;
+            }
+            if ($posB === false) {
+                $posB = 999999;
+            }
+
+            return $posA - $posB;
+        };
+
+        if ($isCollection) {
+            return $feeds->sort($callback)->values();
+        }
+
+        if (is_array($feeds)) {
+            usort($feeds, $callback);
+            return $feeds;
+        }
+
+        return $feeds;
     }
 }
