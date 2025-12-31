@@ -2,6 +2,7 @@ import './helpers';
 
 import Vue from 'vue';
 import Router from 'vue-router';
+import Vddl from 'vddl';
 
 import Errors from '../common/Errors';
 import locale from 'element-ui/lib/locale';
@@ -55,6 +56,7 @@ global.ffSettingsEvents = new Vue();
 // Set locale
 locale.use(lang);
 Vue.use(Router);
+Vue.use(Vddl);
 
 Vue.use(CollapseItem);
 Vue.use(DropdownMenu);
