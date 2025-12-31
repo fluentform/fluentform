@@ -190,7 +190,7 @@
                     </el-skeleton>
                 </div>
 
-                
+
 
 
                 <div v-if="!has_pro" class="ff_upgrade_section">

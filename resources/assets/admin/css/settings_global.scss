@@ -531,88 +531,6 @@
     border: 2px dashed $--color-primary;
   }
 
-  // Email Notifications Hint & Footer
-  .ff_email_hint {
-    margin-top: 16px;
-    padding: 12px 16px;
-    background: mix($--color-primary, $--color-white, 4%);
-    border-radius: $border-radius;
-    border: 1px solid mix($--color-primary, $--color-white, 10%);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-
-    .ff_email_hint_content {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: $--color-text-regular;
-
-      >i {
-        color: $--color-primary;
-        font-size: 16px;
-      }
-
-      span {
-        font-weight: 500;
-      }
-    }
-
-    .ff_email_hint_link {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 13px;
-      color: $--color-primary;
-      font-weight: 600;
-      white-space: nowrap;
-      margin-left: 8px;
-
-      &:hover {
-        text-decoration: underline;
-      }
-
-      i {
-        font-size: 12px;
-      }
-    }
-
-    .ff_integration_footer_links {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .ff_separator {
-        color: $border-color;
-        font-size: 12px;
-      }
-
-      .ff_footer_link {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 13px;
-        color: $--color-text-regular;
-        transition: color 0.2s;
-
-        i {
-          font-size: 14px;
-          opacity: 0.7;
-        }
-
-        &:hover {
-          color: $--color-primary;
-
-          i {
-            opacity: 1;
-          }
-        }
-      }
-    }
-  }
 
 }
 
@@ -622,8 +540,6 @@
     .ff_integration_actions {
       flex-direction: column;
       align-items: stretch;
-
-
     }
   }
 }

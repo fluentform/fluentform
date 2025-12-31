@@ -107,6 +107,8 @@ class FormIntegrationController extends Controller
             if (!is_array($order)) {
                 $order = [];
             }
+            
+            $order = array_map('intval', $order);
 
             $result = $integrationService->updateOrder($formId, $order);
             return $this->sendSuccess($result);
