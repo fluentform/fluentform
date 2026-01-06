@@ -105,7 +105,14 @@ jQuery(document).ready(function () {
                 };
 
                 var getTheForm = function () {
-                    return $('body').find('form' + formSelector);
+                    let $form = $('body').find('form' + formSelector);
+                    if (!$form.length) {
+                        $form = $('body').find('div' + formSelector);
+                        if ($form.length && !$form.attr('data-form_id')) {
+                            $form = $form.closest('form');
+                        }
+                    }
+                    return $form;
                 };
 
                 var maybeInlineForm = function () {
@@ -1103,7 +1110,10 @@ jQuery(document).ready(function () {
                     showFormSubmissionProgress,
                     addFieldValidationRule,
                     removeFieldValidationRule,
-                    hideFormSubmissionProgress
+                    hideFormSubmissionProgress,
+                    triggerSubmission: function() {
+                        submissionAjaxHandler($theForm);
+                    }
                 }
 
                 fluentFormAppStore[formInstanceSelector] = appInstance;
@@ -1752,6 +1762,28 @@ jQuery(document).ready(function () {
         });
 
         fluentFormCommonActions.init();
+
+        // Listen for custom form submission trigger events
+        jQuery(document).on('fluentform_trigger_submission', function(event, formId) {
+            const $theForm = jQuery('[data-form_id="' + formId + '"]');
+            
+            if (!$theForm.length) {
+                console.warn('FluentForm: Form not found for ID ' + formId);
+                return;
+            }
+            
+            const formInstance = window.fluentFormApp($theForm);
+            
+            if (formInstance && typeof formInstance.triggerSubmission === 'function') {
+                try {
+                    formInstance.triggerSubmission();
+                } catch (error) {
+                    console.error('FluentForm: Error triggering submission for form ID ' + formId, error);
+                }
+            } else {
+                console.warn('FluentForm: Form instance not found or triggerSubmission method not available for form ID ' + formId);
+            }
+        });
 
         // Choices.js dropdown handling
         function initChoicesDropdownHandling() {
