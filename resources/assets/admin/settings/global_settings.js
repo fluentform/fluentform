@@ -145,6 +145,12 @@ if (is_payment_compatible) {
     components.payment_component = PaymentSettings;
 }
 
+window.fluentformGlobalSettingsComponents = window.fluentformGlobalSettingsComponents || {};
+
+if (Object.keys(window.fluentformGlobalSettingsComponents).length > 0) {
+    Object.assign(components, window.fluentformGlobalSettingsComponents);
+}
+
 new Vue({
     el: '#ff_global_settings_option_app',
     components: components,

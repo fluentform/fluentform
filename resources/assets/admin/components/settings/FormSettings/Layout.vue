@@ -634,6 +634,9 @@
                         <el-radio :disabled="!captcha_status.recaptcha" label="recaptcha">{{ $t('Google ReCaptcha') }}</el-radio>
                         <el-radio :disabled="!captcha_status.hcaptcha"  label="hcaptcha">{{ $t('hCaptcha') }}</el-radio>
                         <el-radio :disabled="!captcha_status.turnstile"  label="turnstile">{{ $t('Turnstile') }}</el-radio>
+                        <template v-for="(option, key) in additionalCaptchaOptions">
+                            <el-radio :disabled="!option.enabled" :label="key">{{ $t(option.label) }}</el-radio>
+                        </template>
                     </el-radio-group>
                 </div>
                 <!-- Toggle Admin Top Navigation -->
@@ -807,10 +810,40 @@
         },
         computed:{
             hasCaptcha(){
-                return !!this.captcha_status.hcaptcha || !!this.captcha_status.recaptcha || !!this.captcha_status.turnstile;
+                const baseCaptchas = !!this.captcha_status.hcaptcha || !!this.captcha_status.recaptcha || !!this.captcha_status.turnstile;
+                // Allow external plugins to extend captcha status check
+                const additionalCaptchas = this.$options.filters && this.$options.filters.fluentform_has_captcha ? 
+                    this.$options.filters.fluentform_has_captcha(this.captcha_status) : false;
+                return baseCaptchas || additionalCaptchas;
+            },
+            additionalCaptchaOptions() {
+                const options = {};
+                if (window.fluentformAdditionalCaptchaTypes && Array.isArray(window.fluentformAdditionalCaptchaTypes)) {
+                    window.fluentformAdditionalCaptchaTypes.forEach(function(type) {
+                        if (this.captcha_status[type] !== undefined) {
+                            options[type] = {
+                                enabled: !!this.captcha_status[type],
+                                label: this.getCaptchaLabel(type)
+                            };
+                        }
+                    }.bind(this));
+                }
+                return options;
             }
         },
         methods:{
+            getCaptchaLabel(type) {
+                if (typeof window !== 'undefined' && window.fluentformCaptchaLabels && window.fluentformCaptchaLabels[type]) {
+                    return window.fluentformCaptchaLabels[type];
+                }
+
+                const labels = {
+                    'recaptcha': 'Google ReCaptcha',
+                    'hcaptcha': 'hCaptcha',
+                    'turnstile': 'Turnstile'
+                };
+                return labels[type] || type;
+            },
             scrollTo() {
                 let pageScollLink = jQuery('.ff-page-scroll');
                 let hash = window.location.hash;

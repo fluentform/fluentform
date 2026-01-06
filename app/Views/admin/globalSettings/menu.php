@@ -164,12 +164,12 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                 <?php esc_html_e('Security', 'fluentform'); ?>
                             </a>
                             <ul class="ff_list_submenu">
+                                <?php 
+                                $securityHashes = ['re_captcha', 'h_captcha', 'turnstile', 'cleantalk'];
+                                $securityHashes = apply_filters('fluentform/security_settings_hashes', $securityHashes);
+                                ?>
                                 <?php foreach ($components as $componentName => $component): ?>
-                                    <?php if (ArrayHelper::get($component, 'hash') == 're_captcha'
-                                        || ArrayHelper::get($component, 'hash') == 'h_captcha'
-                                        || ArrayHelper::get($component, 'hash') == 'turnstile'
-                                        || ArrayHelper::get($component, 'hash') == 'cleantalk'
-                                    ) : ?>
+                                    <?php if (in_array(ArrayHelper::get($component, 'hash'), $securityHashes)) : ?>
 
                                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
                                             $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
@@ -247,10 +247,9 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
                                     <?php
-                                        if (ArrayHelper::get($component, 'hash') != 're_captcha'
-                                            && ArrayHelper::get($component, 'hash') != 'h_captcha'
-                                            && ArrayHelper::get($component, 'hash') != 'turnstile'
-                                            && ArrayHelper::get($component, 'hash') != 'cleantalk'
+                                        $securityHashes = ['re_captcha', 'h_captcha', 'turnstile', 'cleantalk'];
+                                        $securityHashes = apply_filters('fluentform/security_settings_hashes', $securityHashes);
+                                        if (!in_array(ArrayHelper::get($component, 'hash'), $securityHashes)
                                             && ArrayHelper::get($component, 'query.component') != 'payment_settings'
                                             && ArrayHelper::get($component, 'query.component') != 'license_page'
                                             && ArrayHelper::get($component, 'hash') != 'admin_approval'

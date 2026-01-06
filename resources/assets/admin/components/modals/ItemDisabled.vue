@@ -92,10 +92,13 @@
     import hcaptcha from './Hcaptcha.vue';
     import turnstile from './Turnstile.vue';
 
+    // Allow external plugins to register modal components
+    const externalModalComponents = window.fluentformItemDisabledComponents || {};
+    
     export default {
         name: 'ItemDisabled',
         props: ['visibility', 'modal', 'value'],
-        components: { hcaptcha, recaptcha, turnstile },
+        components: { hcaptcha, recaptcha, turnstile, ...externalModalComponents },
         data() {
             return {
                 contentComponent: '',
@@ -105,6 +108,8 @@
             modal() {
                 if (this.modal && this.modal.contentComponent) {
                     this.contentComponent = this.modal.contentComponent
+                } else if (this.modal && this.modal.why_disabled_modal && externalModalComponents[this.modal.why_disabled_modal]) {
+                    this.contentComponent = externalModalComponents[this.modal.why_disabled_modal];
                 }
             }
         },
