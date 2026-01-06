@@ -11,6 +11,15 @@ export class Payment_handler {
         this.appliedCoupons = {};
         this.totalAmount = 0;
         this.formPaymentConfig = window['fluentform_payment_config_' + formId];
+
+        // Helper function to get translated payment messages
+        this.getPaymentMessage = function(key, fallback) {
+            const messagesVar = 'fluentform_payment_messages_' + formId;
+            if (window[messagesVar] && window[messagesVar][key]) {
+                return window[messagesVar][key];
+            }
+            return fallback;
+        };
     }
 
     init() {
@@ -177,7 +186,7 @@ export class Payment_handler {
             }
 
             html += '<table class="table ffp_table input_items_table">';
-            html += `<thead><tr><th>${this.$t("item")}</th><th>${this.$t("price")}</th><th>${this.$t("qty")}</th><th>${this.$t("line_total")}</th></tr></thead>`;
+            html += `<thead><tr><th>${this.getPaymentMessage("item_label", "Item")}</th><th>${this.getPaymentMessage("price_label", "Price")}</th><th>${this.getPaymentMessage("qty_label", "Qty")}</th><th>${this.getPaymentMessage("line_total_label", "Line Total")}</th></tr></thead>`;
             html += '<tbody>';
             jQuery.each(items, (index, item) => {
                 if (item.price === 0 || item.price) {
@@ -194,7 +203,7 @@ export class Payment_handler {
             let footerRows = '';
             let runningTotal = totalAmount;
             if (discounts.length) {
-                footerRows += `<tr><th class="item_right" colspan="3">${this.$t("Sub Total")}</th><th>${this.getFormattedPrice(totalAmount)}</th></tr>`;
+                footerRows += `<tr><th class="item_right" colspan="3">${this.getPaymentMessage("sub_total_label", "Sub Total")}</th><th>${this.getFormattedPrice(totalAmount)}</th></tr>`;
                 jQuery.each(discounts, (index, discount) => {
                     let discountAmount = discount.amount;
                     if (discount.coupon_type === 'percent') {
@@ -329,7 +338,7 @@ export class Payment_handler {
         if (remaining_qty < quantity) {
             this.formInstance?.addFieldValidationRule(name, 'force_failed', {
                 value: true,
-                message: 'This Item is Stock Out'
+                message: this.getPaymentMessage('stock_out_message', 'This Item is Stock Out')
             });
             return;
         }
@@ -351,9 +360,9 @@ export class Payment_handler {
 
         let signupLabel = '';
         if (planTitle) {
-            signupLabel = this.$t('Signup Fee for %1s - %2s', label, planTitle);
+            signupLabel = this.getPaymentMessage('signup_fee_label', 'Signup Fee') + ' for ' + label + ' - ' + planTitle;
         } else {
-            signupLabel = this.$t('Signup Fee for %s', label);
+            signupLabel = this.getPaymentMessage('signup_fee_label', 'Signup Fee') + ' for ' + label;
         }
 
         if (initialAmount) {
@@ -367,7 +376,7 @@ export class Payment_handler {
             }
 
             if (hasTrialDays) {
-                label += ' ' + this.$t('(Trial)');
+                label += ' (' + this.getPaymentMessage('trial_label', 'Trial') + ')';
                 itemValue = 0;
             }
 
@@ -746,7 +755,7 @@ export class Payment_handler {
                         'id': that.formId + '_success',
                         'class': 'ff-message-success ff_msg_temp'
                     })
-                        .html(that.$t('processing_text'))
+                        .html(that.getPaymentMessage('processing_text', 'Processing...'))
                         .insertAfter(that.$form);
                     that.toggleStripeInlineCardError();
                     var dfd = jQuery.Deferred();
@@ -764,7 +773,7 @@ export class Payment_handler {
                                 'id': that.formId + '_success',
                                 'class': 'ff-message-success ff_msg_temp'
                             })
-                                .html(that.$t('processing_text'))
+                                .html(that.getPaymentMessage('processing_text', 'Processing...'))
                                 .insertAfter(that.$form);
                             formData.data += '&' + jQuery.param({
                                 '__stripe_payment_method_id': result.paymentMethod.id
@@ -856,7 +865,7 @@ export class Payment_handler {
             'id': this.formId + '_success',
             'class': 'ff-message-success ff_msg_temp'
         })
-            .html(this.$t('confirming_text'))
+            .html(this.getPaymentMessage('confirming_text', 'Confirming...'))
             .insertAfter(this.$form);
 
         this.formInstance.showFormSubmissionProgress(this.$form);
