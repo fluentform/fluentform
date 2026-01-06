@@ -677,6 +677,29 @@ class Component
             wp_localize_script('fluent-form-submission', 'fluentFormVars', $vars);
         }
 
+        // Localize JavaScript messages for translation
+        $this->localizeJavaScriptMessages($form);
+
+        // Add global messages (only once)
+        if (!wp_script_is('fluent-form-submission', 'done')) {
+            $globalMessages = [
+                'javascript_handler_failed' => __('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again', 'fluentform')
+            ];
+            $globalMessages = apply_filters('fluentform/form_submission_messages', $globalMessages, $form);
+            wp_localize_script('fluent-form-submission', 'fluentform_submission_messages_global', $globalMessages);
+
+            // Add global address messages
+            $globalAddressMessages = [
+                'please_wait' => __('Please wait ...', 'fluentform'),
+                'location_not_determined' => __('Could not determine address from location.', 'fluentform'),
+                'address_fetch_failed' => __('Failed to fetch address from coordinates.', 'fluentform'),
+                'geolocation_failed' => __('Geolocation failed or was denied.', 'fluentform'),
+                'geolocation_not_supported' => __('Geolocation is not supported by this browser.', 'fluentform')
+            ];
+            $globalAddressMessages = apply_filters('fluentform/address_autocomplete_messages', $globalAddressMessages, $form);
+            wp_localize_script('fluent-form-submission', 'fluentform_address_messages_global', $globalAddressMessages);
+        }
+
         $formSettings = $form->settings;
 
         $formSettings = ArrayHelper::only($formSettings, ['layout', 'id']);
@@ -1006,7 +1029,7 @@ class Component
         $count = $query->count();
 
         if ($count >= $maxAllowedEntries) {
-            $isRenderable['message'] = $restrictions['limitReachedMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/entry_limit_reached_message', $restrictions['limitReachedMsg'], $form);
             return false;
         }
 
@@ -1031,12 +1054,12 @@ class Component
         $end = strtotime($restrictions['end']);
 
         if ($time < $start) {
-            $isRenderable['message'] = $restrictions['pendingMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/schedule_form_pending_message', $restrictions['pendingMsg'], $form->id);
             return false;
         }
 
         if ($time >= $end) {
-            $isRenderable['message'] = $restrictions['expiredMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/schedule_form_expired_message', $restrictions['expiredMsg'], $form->id);
 
             return false;
         }
@@ -1066,7 +1089,7 @@ class Component
         }
 
         if (!($isLoggedIn = is_user_logged_in())) {
-            $isRenderable['message'] = $restrictions['requireLoginMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/form_requires_login_message', $restrictions['requireLoginMsg'], $form);
         }
 
         return $isLoggedIn;
@@ -1441,5 +1464,65 @@ class Component
             return ob_get_clean();
         });
 
+    }
+
+    private function localizeJavaScriptMessages($form)
+    {
+        // Form submission messages
+        $submissionMessages = [
+            'file_upload_in_progress' => __('File upload in progress. Please wait...', 'fluentform'),
+            'javascript_handler_failed' => __('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again', 'fluentform')
+        ];
+        $submissionMessages = apply_filters('fluentform/form_submission_messages', $submissionMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_submission_messages_' . $form->id, $submissionMessages);
+
+        // Payment handler messages
+        $paymentMessages = [
+            'stock_out_message' => __('This Item is Stock Out', 'fluentform'),
+            'item_label' => __('Item', 'fluentform'),
+            'price_label' => __('Price', 'fluentform'),
+            'qty_label' => __('Qty', 'fluentform'),
+            'line_total_label' => __('Line Total', 'fluentform'),
+            'sub_total_label' => __('Sub Total', 'fluentform'),
+            'discount_label' => __('Discount', 'fluentform'),
+            'total_label' => __('Total', 'fluentform'),
+            'signup_fee_label' => __('Signup Fee', 'fluentform'),
+            'trial_label' => __('Trial', 'fluentform'),
+            'processing_text' => __('Processing...', 'fluentform'),
+            'confirming_text' => __('Confirming...', 'fluentform')
+        ];
+        $paymentMessages = apply_filters('fluentform/payment_handler_messages', $paymentMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_payment_messages_' . $form->id, $paymentMessages);
+
+        // Form save progress messages
+        $saveProgressMessages = [
+            'copy_button' => __('Copy', 'fluentform'),
+            'email_button' => __('Email', 'fluentform'),
+            'email_placeholder' => __('Your Email Here', 'fluentform'),
+            'copy_success' => __('Copied', 'fluentform')
+        ];
+        $saveProgressMessages = apply_filters('fluentform/form_save_progress_messages', $saveProgressMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_save_progress_messages_' . $form->id, $saveProgressMessages);
+
+        // Address autocomplete messages
+        $addressMessages = [
+            'please_wait' => __('Please wait ...', 'fluentform'),
+            'location_not_determined' => __('Could not determine address from location.', 'fluentform'),
+            'address_fetch_failed' => __('Failed to fetch address from coordinates.', 'fluentform'),
+            'geolocation_failed' => __('Geolocation failed or was denied.', 'fluentform'),
+            'geolocation_not_supported' => __('Geolocation is not supported by this browser.', 'fluentform')
+        ];
+        $addressMessages = apply_filters('fluentform/address_autocomplete_messages', $addressMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_address_messages_' . $form->id, $addressMessages);
+
+        // Payment gateway messages
+        $gatewayMessages = [
+            'request_failed' => __('Request failed. Please try again', 'fluentform'),
+            'payment_failed' => __('Payment process failed!', 'fluentform'),
+            'no_method_found' => __('No method found', 'fluentform'),
+            'processing_text' => __('Processing...', 'fluentform')
+        ];
+        $gatewayMessages = apply_filters('fluentform/payment_gateway_messages', $gatewayMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_gateway_messages_' . $form->id, $gatewayMessages);
     }
 }
