@@ -730,6 +730,7 @@ class Menu
             'route' => '/custom-css-js',
         ];
 
+
         $settingsMenus = array_filter(array_merge($settingsMenus, $externalMenuItems));
 
         $currentRoute = sanitize_key($this->app->request->get('sub_route', ''));
@@ -869,6 +870,11 @@ class Menu
         $formId = (int) $this->app->request->get('form_id');
 
         $form = wpFluent()->table('fluentform_forms')->find($formId);
+
+        // Return early if form not found
+        if (!$form) {
+            wp_die(__('Form not found', 'fluentform'));
+        }
 
         do_action_deprecated(
             'fluentform_loading_editor_assets',

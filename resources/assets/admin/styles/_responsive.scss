@@ -67,6 +67,7 @@
   .ff_screen_conversational_design,
   .ff_screen_msformentries,
   .ff_screen_editor,
+  .ff_screen_ai-chat-settings,
   .ff_screen_inventory_list {
     padding: 0;
   }
@@ -253,7 +254,7 @@
     }
   }
   .ff_sidebar_toggle{
-   display: flex; 
+   display: flex;
   }
   .ff_header{
     margin-left: -10px;

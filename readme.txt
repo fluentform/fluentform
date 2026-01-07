@@ -437,7 +437,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
-
 = 6.1.12 (Date: December 26, 2025) =
 - Fixes delay with condition and range slider field
 - Fixes top performing form report count

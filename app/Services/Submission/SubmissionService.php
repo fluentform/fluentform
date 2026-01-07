@@ -75,8 +75,28 @@ class SubmissionService
                 $submission->fill(['status' => 'read'])->save();
             }
 
+            // Generate serial_number if missing (e.g., incomplete AI chat submissions)
+            if (is_null($submission->serial_number)) {
+                $previousItem = wpFluent()->table('fluentform_submissions')
+                    ->where('form_id', $submission->form_id)
+                    ->whereNotNull('serial_number')
+                    ->orderBy('serial_number', 'DESC')
+                    ->first();
+
+                $serialNumber = 1;
+                if ($previousItem && isset($previousItem->serial_number)) {
+                    $serialNumber = $previousItem->serial_number + 1;
+                }
+
+                wpFluent()->table('fluentform_submissions')
+                    ->where('id', $submissionId)
+                    ->update(['serial_number' => $serialNumber]);
+
+                $submission->serial_number = $serialNumber;
+            }
+
             $meta = $submission->submissionMeta;
-            if($meta){
+            if($meta && !empty($meta)){
                 $submission->_entry_uid_hash = Arr::get($meta, '0.value');
 
                 // Only generate entry_uid_link if front-end entry view is enabled
@@ -85,6 +105,11 @@ class SubmissionService
                     $link = site_url('?ff_entry=1&hash='. $submission->_entry_uid_hash);
                     $submission->entry_uid_link  = $link;
                 }
+            } else {
+                // Generate _entry_uid_hash if missing (e.g., incomplete AI chat submissions)
+                $uidHash = md5(wp_generate_uuid4() . $submissionId);
+                Helper::setSubmissionMeta($submissionId, '_entry_uid_hash', $uidHash, $submission->form_id);
+                $submission->_entry_uid_hash = $uidHash;
             }
             $submission = FormDataParser::parseFormEntry($submission, $form, null, true);
 

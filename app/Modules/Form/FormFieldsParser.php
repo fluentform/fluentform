@@ -32,6 +32,11 @@ class FormFieldsParser
             $form = \FluentForm\App\Models\Form::find($form);
         }
 
+        // Return early if form is null or not an object
+        if (!$form || !is_object($form)) {
+            return;
+        }
+
         if (isset(static::$formsWith[$form->id]) && array_diff(static::$formsWith[$form->id], $with)) {
             static::$forms[$form->id] = [];
         }
