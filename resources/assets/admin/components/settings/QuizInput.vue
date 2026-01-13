@@ -88,6 +88,10 @@
                 </span>
             </div>
         </transition>
+        <div class="quiz-field-setting" v-if="input.enabled == true && showPerQuestionTimer">
+            <div class="lead-title mb-2">{{ $t('Timer Duration (seconds)') }}</div>
+            <el-input-number size="small" v-model="input.timer_duration" controls-position="right" :min="1" :max="3600"></el-input-number>
+        </div>
     </div>
 </template>
 
@@ -103,6 +107,9 @@ export default {
         },
         is_personality_quiz :{
             type: Boolean,
+        },
+        quiz_settings: {
+            type: Object,
         }
     },
     data() {
@@ -113,6 +120,13 @@ export default {
                 includes_all: 'Includes All',
                 not_includes: 'Not Includes',
             },
+        }
+    },
+    computed: {
+        showPerQuestionTimer() {
+            return this.quiz_settings &&
+                   this.quiz_settings.timer_enabled &&
+                   (this.quiz_settings.timer_type === 'per_question' || this.quiz_settings.timer_type === 'both');
         }
     },
     methods: {

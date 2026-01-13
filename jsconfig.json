@@ -5,6 +5,6 @@
       "@/*": ["./resources/assets/*"]
     }
   },
-  "include": ["resources/assets/**/*", "guten_block/src/edit.js", "guten_block/src/save.js"],
+  "include": ["resources/assets/**/*", "guten_block/src/edit.js", "guten_block/src/save.js", "../fluentformpro/src/assets/public/quiz-retake.js", "../fluentformpro/src/assets/public/quiz-review.js", "../fluentformpro/src/assets/public/quiz-timer.js"],
   "exclude": ["node_modules", "resources/assets/libs/**/*"]
 }
