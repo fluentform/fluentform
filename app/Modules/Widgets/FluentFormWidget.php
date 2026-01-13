@@ -107,6 +107,21 @@ class FluentFormWidget extends Widget_Base
         );
 
         $this->add_control(
+            'theme_style',
+            [
+                'label'   => __('Form Style Template', 'fluentform'),
+                'type'    => Controls_Manager::SELECT2,
+                'label_block' => true,
+                'multiple'    => false,
+                'options' => $this->getStylePresets(),
+                'default' => '',
+                'condition' => [
+                    'form_list!' => '0',
+                ],
+            ]
+        );
+
+        $this->add_control(
             'custom_title_description',
             [
                 'label'        => __('Custom Title & Description', 'fluentform'),
@@ -2434,6 +2449,14 @@ class FluentFormWidget extends Widget_Base
         $this->end_controls_section();
     }
 
+    private function getStylePresets()
+    {
+        return [
+            'ffs_default' => __('Default', 'fluentform'),
+            'ffs_inherit_theme' => __('Inherit Theme Style', 'fluentform'),
+        ];
+    }
+
     /**
      * Render the widget output on the frontend.
      *
@@ -2476,6 +2499,12 @@ class FluentFormWidget extends Widget_Base
         if ($form_container_alignment) {
             $this->add_render_attribute('fluentform_widget_wrapper', 'class', 'fluentform-widget-align-' . $form_container_alignment . '');
         }
+        
+        if (isset($theme_style)) {
+            $theme_style = sanitize_text_field($theme_style);
+        } else {
+            $theme_style = '';
+        }
 
         if (!empty($form_list)) { ?>
 
@@ -2496,7 +2525,7 @@ class FluentFormWidget extends Widget_Base
                 </div>
             <?php } ?>
 
-            <?php echo do_shortcode('[fluentform id="' . $form_list . '"]'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form_list is escaped before being passed in.?>
+            <?php echo do_shortcode('[fluentform id="' . $form_list . '" theme="' . $theme_style . '"]'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form_list is escaped before being passed in.?>
             </div>
 
             <?php
