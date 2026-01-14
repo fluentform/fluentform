@@ -376,6 +376,10 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }
+        if (!isset($item['settings']['mobile_keyboard_type'])) {
+            $item['settings']['mobile_keyboard_type'] = '';
+        }
+
         return $item;
     });
 

@@ -133,6 +133,7 @@ return [
             'placeholder',
             'validation_rules',
             'numeric_formatter',
+            'mobile_keyboard_type',
         ],
         'advanced' => [
             'value',
