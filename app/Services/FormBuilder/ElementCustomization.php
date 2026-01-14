@@ -602,10 +602,6 @@ $fluentformElementCustomizationSettings = [
         'help_text' => __('Choose which keyboard appears when users tap this field on mobile devices.', 'fluentform'),
         'options'   => [
             [
-                'value' => '',
-                'label' => __('Default (Numeric)', 'fluentform'),
-            ],
-            [
                 'value' => 'numeric',
                 'label' => __('Numeric (0-9)', 'fluentform'),
             ],
