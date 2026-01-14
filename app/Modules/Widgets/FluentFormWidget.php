@@ -107,6 +107,18 @@ class FluentFormWidget extends Widget_Base
         );
 
         $this->add_control(
+            'form_edit_button',
+            [
+                'type'      => Controls_Manager::RAW_HTML,
+                'raw'       => '<a href="#" class="fluentform-edit-link" style="display: block; text-align: center; padding: 10px; margin-top: 10px; background-color: #6EC1E4; color: #fff; border-radius: 3px; text-decoration: none; cursor: pointer;" target="_blank" rel="noopener" data-form-id="">' . esc_html__('Edit Form', 'fluentform') . '</a>',
+                'content_classes' => 'fluentform-edit-button-wrapper',
+                'condition' => [
+                    'form_list!' => '0',
+                ],
+            ]
+        );
+
+        $this->add_control(
             'theme_style',
             [
                 'label'   => __('Form Style Template', 'fluentform'),
