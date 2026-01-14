@@ -13,6 +13,8 @@
 
             <inputText v-if="childFields.indexOf('maxlength') != -1 && field.attributes.maxlength" :listItem="{type: 'number', label: $t('Max text length')}" v-model="field.attributes.maxlength"></inputText>
 
+            <customSelect v-if="childFields.indexOf('mobile_keyboard_type') != -1" :listItem="{label: $t('Mobile Keyboard'), help_text: $t('Choose which keyboard appears when users tap this field on mobile devices'), options: [{value: '', label: $t('Default (Numeric)')}, {value: 'numeric', label: $t('Numeric (0-9)')}, {value: 'tel', label: $t('Telephone (0-9 + * #)')}]}" v-model="field.settings.mobile_keyboard_type"></customSelect>
+
             <customSelect v-if="childFields.indexOf('temp_mask_list') != -1" :listItem="{label: $t('Mask Input'), options: field.settings.temp_mask_list}" v-model="field.settings.temp_mask"></customSelect>
 
             <template v-if="field.settings.temp_mask == 'custom'">
