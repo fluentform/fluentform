@@ -596,21 +596,6 @@ $fluentformElementCustomizationSettings = [
         'help_text' => __('Select the format of numbers that are allowed in this field. You have the option to use a comma or a dot as the decimal separator.', 'fluentform'),
         'options'   => \FluentForm\App\Helpers\Helper::getNumericFormatters(),
     ],
-    'mobile_keyboard_type' => [
-        'template'  => 'select',
-        'label'     => __('Mobile Keyboard', 'fluentform'),
-        'help_text' => __('Choose which keyboard appears when users tap this field on mobile devices.', 'fluentform'),
-        'options'   => [
-            [
-                'value' => 'numeric',
-                'label' => __('Numeric (0-9)', 'fluentform'),
-            ],
-            [
-                'value' => 'tel',
-                'label' => __('Telephone (0-9 + * #)', 'fluentform'),
-            ],
-        ],
-    ],
     'unique_validation_message' => [
         'template'   => 'inputText',
         'label'      => __('Validation Message for Duplicate', 'fluentform'),

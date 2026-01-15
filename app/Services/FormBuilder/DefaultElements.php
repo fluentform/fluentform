@@ -765,7 +765,6 @@ $fluentformDefaultElements = [
                 'prefix_label'      => '',
                 'suffix_label'      => '',
                 'numeric_formatter' => '',
-                'mobile_keyboard_type' => '',
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,

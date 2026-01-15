@@ -53,13 +53,6 @@ class Text extends BaseComponent
                 '1.14.15',
                 true
             );
-
-            // Auto-detect and apply numeric keyboard for numeric masks
-            $mask = $data['attributes']['data-mask'];
-            if ($this->isNumericMask($mask)) {
-                $data['attributes']['inputmode'] = 'numeric';
-                $data['attributes']['pattern'] = '[0-9]*';
-            }
         }
 
         if ('input_number' == $data['element'] || 'custom_payment_component' == $data['element']) {
@@ -99,20 +92,12 @@ class Text extends BaseComponent
                     'fluentform/disable_input_mode',
                     'Use fluentform/disable_input_mode instead of fluentform_disable_inputmode'
                 );
-
-                if (! apply_filters('fluentform/disable_input_mode', $isDisable)) {
-                    // Use mobile_keyboard_type setting
-                    $inputMode = ArrayHelper::get($data, 'settings.mobile_keyboard_type');
-                    if (!$inputMode) {
-                        $inputMode = 'numeric'; // Default for number fields
+                if (!apply_filters('fluentform/disable_input_mode', $isDisable)) {
+                    $inputMode = apply_filters('fluentform/number_input_mode', ArrayHelper::get($data, 'attributes.inputmode'), $data, $form);
+                    if (! $inputMode) {
+                        $inputMode = 'numeric';
                     }
-                    $inputMode = apply_filters('fluentform/number_input_mode', $inputMode, $data, $form);
                     $data['attributes']['inputmode'] = $inputMode;
-
-                    // Add pattern for iOS Safari compatibility
-                    if ($inputMode === 'numeric') {
-                        $data['attributes']['pattern'] = '[0-9]*';
-                    }
                 }
             }
 
@@ -167,7 +152,7 @@ class Text extends BaseComponent
         $elMarkup = $this->buildInputGroup($data, $form);
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
-    
+
         $html = apply_filters_deprecated(
             'fluentform_rendering_field_html_' . $elementName,
             [
@@ -206,23 +191,5 @@ class Text extends BaseComponent
             return $wrapper;
         }
         return $input;
-    }
-
-    /**
-     * Check if a mask pattern is purely numeric
-     *
-     * @param string $mask The mask pattern
-     * @return bool True if mask is numeric only
-     */
-    private function isNumericMask($mask)
-    {
-        if (empty($mask)) {
-            return false;
-        }
-
-        // Check if mask contains only numeric placeholders and separators
-        // 0 = required digit, 9 = optional digit
-        // Common separators: / : - space
-        return (bool) preg_match('/^(?=.*[09])[09\/:\-\s]+$/', $mask);
     }
 }
