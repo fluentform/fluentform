@@ -85,6 +85,12 @@
                                     >
                                     </field-mapper>
                                 </el-form-item>
+                                <quiz-category-settings v-model="settings.categories"></quiz-category-settings>
+                                <quiz-social-sharing-settings
+                                    :settings.sync="settings"
+                                    :editorShortcodes="editorShortcodes"
+                                    :errors="errors"
+                                ></quiz-social-sharing-settings>
                                 <el-form-item :label="$t('Quiz Questions')" class="quiz-questions ff-form-item">
                                     <p v-if="resultType == 'personality'">{{ $t('Personality quiz has no right or wrong answer, just enable the questions. Make sure the answers value match with the personality options values. That is all.') }}</p>
                                     <template v-if="quizFields">
@@ -128,6 +134,8 @@
     import QuizInput from "./QuizInput";
     import QuizTimerSettings from "./QuizTimerSettings";
     import QuizRetakeSettings from "./QuizRetakeSettings";
+    import QuizCategorySettings from "./QuizCategorySettings";
+    import QuizSocialSharingSettings from "./QuizSocialSharingSettings";
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
     import Card from '@/admin/components/Card/Card.vue';
@@ -149,6 +157,8 @@
             QuizInput,
             QuizTimerSettings,
             QuizRetakeSettings,
+            QuizCategorySettings,
+            QuizSocialSharingSettings,
             Card,
             CardHead,
             CardBody,

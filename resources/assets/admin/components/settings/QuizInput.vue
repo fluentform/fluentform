@@ -19,6 +19,21 @@
                     <div class="lead-title mb-2">{{ $t('Score') }}</div>
                     <el-input-number size="small" v-model="input.points" controls-position="right" :min="1" :max="100"></el-input-number>
                 </div>
+                <div class="quiz-field-setting">
+                    <div class="lead-title mb-2">{{ $t('Negative Points') }}</div>
+                    <el-input-number size="small" v-model="input.negative_points" controls-position="right" :min="0" :max="100"></el-input-number>
+                </div>
+                <div class="quiz-field-setting" v-if="quiz_settings.categories && quiz_settings.categories.length > 0">
+                    <div class="lead-title mb-2">{{ $t('Category') }}</div>
+                    <el-select size="small" style="width: 100%" v-model="input.category" :placeholder="$t('Select Category')">
+                        <el-option
+                            v-for="(category, index) in quiz_settings.categories"
+                            :key="index"
+                            :label="category.name"
+                            :value="category.name">
+                        </el-option>
+                    </el-select>
+                </div>
                 <div class="quiz-field-setting" v-if="ifNeedsCondition(input.element) && hasOptions(input)">
                    <div class="lead-title mb-2"> {{ $t('Condition') }}</div>
                     <el-select @change="resetValue(input)"  size="small" style="width: 100%" v-model="input.condition"
@@ -69,29 +84,56 @@
                         </el-option>
                     </el-select>
                 </div>
+                <div class="quiz-field-setting" v-if="showPerQuestionTimer">
+                    <div class="lead-title mb-2">{{ $t('Timer Duration (seconds)') }}</div>
+                    <el-input-number class="w-100" size="small" v-model="input.timer_duration" controls-position="right" :min="1" :max="3600"></el-input-number>
+                </div>
             </div>
         </transition>
         <transition v-if="input.has_advance_scoring == 'yes'">
             <div>
-                <span v-for="(item, key) in original_input.options" class="quiz-field" :key="key">
-                    <div  class="quiz-field-setting">
-                       <el-input-number
-                            size="small"
-                            v-model="input.advance_points[key]"
-                            controls-position="right"
-                            :min="0" :max="100">
-                       </el-input-number>
+                <div class="quiz-field">
+                    <div class="quiz-field-setting" v-if="quiz_settings.categories && quiz_settings.categories.length > 0">
+                        <div class="lead-title mb-2">{{ $t('Category') }}</div>
+                        <el-select size="small" style="width: 100%" v-model="input.category" :placeholder="$t('Select Category')">
+                            <el-option
+                                v-for="(category, index) in quiz_settings.categories"
+                                :key="index"
+                                :label="category.name"
+                                :value="category.name">
+                            </el-option>
+                        </el-select>
                     </div>
-                    <div class="quiz-field-setting" >
-                        {{ item }}
+                    <div class="quiz-field-setting" v-if="showPerQuestionTimer">
+                        <div class="lead-title mb-2">{{ $t('Timer Duration (seconds)') }}</div>
+                        <el-input-number class="w-100" size="small" v-model="input.timer_duration" controls-position="right" :min="1" :max="3600"></el-input-number>
                     </div>
-                </span>
+                </div>
+                <el-table :data="tableData" border size="small" style="margin-top: 15px;">
+                    <el-table-column :label="$t('Points')" width="150">
+                        <template slot-scope="scope">
+                            <el-input-number
+                                size="small"
+                                v-model="input.advance_points[scope.row.key]"
+                                controls-position="right"
+                                :min="0" :max="100">
+                            </el-input-number>
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="$t('Negative Points')" width="150">
+                        <template slot-scope="scope">
+                            <el-input-number
+                                size="small"
+                                v-model="input.advance_negative_points[scope.row.key]"
+                                controls-position="right"
+                                :min="0" :max="100">
+                            </el-input-number>
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="$t('Option')" prop="label"></el-table-column>
+                </el-table>
             </div>
         </transition>
-        <div class="quiz-field-setting" v-if="input.enabled == true && showPerQuestionTimer">
-            <div class="lead-title mb-2">{{ $t('Timer Duration (seconds)') }}</div>
-            <el-input-number size="small" v-model="input.timer_duration" controls-position="right" :min="1" :max="3600"></el-input-number>
-        </div>
     </div>
 </template>
 
@@ -127,6 +169,15 @@ export default {
             return this.quiz_settings &&
                    this.quiz_settings.timer_enabled &&
                    (this.quiz_settings.timer_type === 'per_question' || this.quiz_settings.timer_type === 'both');
+        },
+        tableData() {
+            if (!this.original_input.options) {
+                return [];
+            }
+            return Object.keys(this.original_input.options).map(key => ({
+                key: key,
+                label: this.original_input.options[key]
+            }));
         }
     },
     methods: {
@@ -151,6 +202,19 @@ export default {
                 this.input.advance_points = this.original_input.advance_points
             }
         },
+        setDefaultNegativePoints(){
+            if (!this.input.advance_negative_points) {
+                this.$set(this.input, 'advance_negative_points', {});
+            }
+            let isEmpty = Object.keys(this.input.advance_negative_points).length === 0;
+            if (isEmpty && this.original_input.options){
+                let negativePoints = {};
+                Object.keys(this.original_input.options).forEach(key => {
+                    negativePoints[key] = 0;
+                });
+                this.input.advance_negative_points = negativePoints;
+            }
+        },
         hasOptions(item){
            return Object.keys(this.input.advance_points).length !== 0;
         }
@@ -161,6 +225,7 @@ export default {
             this.$set(this.input, 'has_advance_scoring', 'no');
         }
         this.setDefaultPoints();
+        this.setDefaultNegativePoints();
     }
 }
 </script>
