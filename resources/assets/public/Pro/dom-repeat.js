@@ -133,6 +133,12 @@ const registerRepeaterHandler = function ($theForm) {
         let $btnPlus = jQuery(this);
         let $table = $btnPlus.closest('table');
         let $tr = $btnPlus.closest('tr');
+        
+        // Get default values to update the new row
+        let defaultValues = $tr.find('td :input').map(function () {
+            return jQuery(this).val();
+        }).get();
+
         let maxRepeat = parseInt($table.attr('data-max_repeat'));
 
         let existingCount = $table.find('tbody tr').length;
@@ -157,7 +163,11 @@ const registerRepeaterHandler = function ($theForm) {
                 el.mask(dataMask);
             }
         });
-        $freshCopy.insertAfter($tr);
+        let $insertedRow = $freshCopy.insertAfter($tr);
+
+        $insertedRow.find('td:has(:input)').each(function (i) {
+            jQuery(this).find(':input').val(defaultValues[i]);
+        });
 
         // Now let's fix the name
         let rootName = $table.attr('data-root_name');
