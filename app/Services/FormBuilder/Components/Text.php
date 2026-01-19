@@ -53,6 +53,25 @@ class Text extends BaseComponent
                 '1.14.15',
                 true
             );
+
+            // Apply mobile keyboard type to mask fields
+            $isDisable = apply_filters('fluentform/disable_input_mode', false);
+
+            if (!$isDisable) {
+                $mobileKeyboardType = ArrayHelper::get($data, 'settings.mobile_keyboard_type');
+
+                $inputMode = null;
+                if (!empty($mobileKeyboardType)) {
+                    $inputMode = $mobileKeyboardType;
+                }
+                // Empty = no inputmode (current behavior for masks)
+
+                $inputMode = apply_filters('fluentform/mask_input_mode', $inputMode, $data, $form);
+
+                if ($inputMode) {
+                    $data['attributes']['inputmode'] = $inputMode;
+                }
+            }
         }
 
         if ('input_number' == $data['element'] || 'custom_payment_component' == $data['element']) {
@@ -83,6 +102,7 @@ class Text extends BaseComponent
                 );
                 do_action('fluentform/rendering_calculation_form', $form, $data);
             } else {
+                // Apply mobile keyboard type setting
                 $isDisable = apply_filters_deprecated(
                     'fluentform_disable_inputmode',
                     [
@@ -92,12 +112,33 @@ class Text extends BaseComponent
                     'fluentform/disable_input_mode',
                     'Use fluentform/disable_input_mode instead of fluentform_disable_inputmode'
                 );
+
                 if (!apply_filters('fluentform/disable_input_mode', $isDisable)) {
-                    $inputMode = apply_filters('fluentform/number_input_mode', ArrayHelper::get($data, 'attributes.inputmode'), $data, $form);
-                    if (! $inputMode) {
+                    $mobileKeyboardType = ArrayHelper::get($data, 'settings.mobile_keyboard_type_number');
+
+                    // Seed from existing attribute, if any
+                    $inputMode = ArrayHelper::get($data, 'attributes.inputmode');
+
+                    if ($mobileKeyboardType === 'none') {
+                        // Explicitly disabled via setting
+                        $inputMode = null;
+                    } elseif ($mobileKeyboardType !== null && $mobileKeyboardType !== '') {
+                        // Use configured value when explicitly set
+                        $inputMode = $mobileKeyboardType;
+                    } elseif ($inputMode === null) {
+                        // No existing attribute and no explicit setting: default for backward compatibility
                         $inputMode = 'numeric';
                     }
-                    $data['attributes']['inputmode'] = $inputMode;
+
+                    // Allow filter override
+                    $inputMode = apply_filters('fluentform/number_input_mode', $inputMode, $data, $form);
+
+                    if ($inputMode !== null) {
+                        $data['attributes']['inputmode'] = $inputMode;
+                    } elseif ($mobileKeyboardType === 'none' && isset($data['attributes']['inputmode'])) {
+                        // Explicitly disabled: ensure attribute is removed
+                        unset($data['attributes']['inputmode']);
+                    }
                 }
             }
 
