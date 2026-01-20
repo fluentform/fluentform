@@ -1,6 +1,6 @@
 <template>
     <el-form-item>
-        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text" :badge="listItem.badge" ></elLabel>
 
         <el-select class="el-fluid" :multiple="isMultiple" v-model="model" :filterable="listItem.filterable" :allow-create="listItem.creatable" :placeholder="listItem.placeholder">
             <el-option

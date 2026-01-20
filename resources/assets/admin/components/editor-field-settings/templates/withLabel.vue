@@ -1,6 +1,6 @@
 <template>
     <el-form-item>
-        <elLabel slot="label" :label="fieldOpt.label" :helpText="fieldOpt.help_text"></elLabel>
+        <elLabel slot="label" :label="fieldOpt.label" :helpText="fieldOpt.help_text" :badge="fieldOpt.badge" :badgeUntil="fieldOpt.badge_until"></elLabel>
         <slot></slot>
     </el-form-item>
 </template>

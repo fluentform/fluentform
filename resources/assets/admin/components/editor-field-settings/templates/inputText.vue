@@ -1,6 +1,6 @@
 <template>
     <el-form-item>
-        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text" :badge="listItem.badge" ></elLabel>
         <el-input v-model="model" :type="listItem.type"></el-input>
     </el-form-item>
 </template>
