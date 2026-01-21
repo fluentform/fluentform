@@ -383,6 +383,9 @@
                     </card-body>
                 </card>
 
+                <!-- Automated Reminder Settings -->
+                <automated-reminders v-if="hasPro && has_save_and_resume" id="automated-reminders" :settings.sync="automated_reminder_settings" :email-fields="emailFields" />
+
                 <!-- Appearance Settings -->
                 <card id="form-layout">
                     <card-head>
@@ -769,6 +772,7 @@
     import wpEditor from '@/common/_wp_editor';
     import form_restriction from './FormSettings/Restrictions';
     import SurveyResult from './FormSettings/SurveyResult';
+    import AutomatedReminders from './FormSettings/AutomatedReminders';
     import errorView from '@/common/errorView';
     import AddConfirmation from './Includes/AddConfirmation.vue'
     import AdvancedValidation from "./Includes/AdvancedValidation";
@@ -803,6 +807,7 @@
             errorView,
             AddConfirmation,
             SurveyResult,
+            AutomatedReminders,
             AdvancedValidation,
             VideoDoc,
             inputPopover,
@@ -869,7 +874,15 @@
                 conv_form_per_step_save: false,
                 conv_form_resume_from_last_step: false,
                 hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume,
-                front_end_entry_view: false
+                front_end_entry_view: false,
+                has_save_and_resume: !!window.FluentFormApp.has_save_and_resume,
+                automated_reminder_settings: {
+                    enabled: 'no',
+                    intervals: [],
+                    email_field: '_reminder_email',
+                    email_subject: this.$t('Complete your submission for {form_name}'),
+                    email_body: '<p>Hello,</p>\n<p>You started filling out the form "{form_name}" but did not complete it.</p>\n<p>We noticed you have an incomplete submission. Would you like to complete it?</p>\n<p>Click the button below to resume where you left off:</p>\n<p>\n    <a style="color: #ffffff; background-color: #3f9eff; text-decoration: none; font-weight: normal; font-style: normal; padding: 0.5rem 1rem; border-color: #0072ff; display: inline-block; border-radius: 3px;" href="{resume_link}">Complete Your Submission</a>\n</p>\n<p>If you have any questions, please feel free to contact us.</p>\n<p>Thank you!</p>'
+                }
             }
         },
         computed: {
@@ -986,7 +999,10 @@
                         this.double_optin = response.double_optin;
                         this.admin_approval = response.admin_approval;
                         this.affiliate_wp = response.affiliate_wp;
-                        this.front_end_entry_view = response?.front_end_entry_view
+                        this.front_end_entry_view = response?.front_end_entry_view;
+                        if (response?.automated_reminder_settings) {
+                            this.automated_reminder_settings = response.automated_reminder_settings;
+                        }
                     })
                     .catch(e => {
                         this.setDefaultSettings();
@@ -1016,7 +1032,8 @@
                     double_optin: JSON.stringify(this.double_optin),
                     admin_approval: JSON.stringify(this.admin_approval),
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
-	                  front_end_entry_view: JSON.stringify(this.front_end_entry_view)
+                    front_end_entry_view: JSON.stringify(this.front_end_entry_view),
+                    automated_reminder_settings: JSON.stringify(this.automated_reminder_settings)
                 }
                 FluentFormsGlobal.$post(data)
                     .then(response => {

@@ -1,5 +1,6 @@
 <?php
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 ?>
 
@@ -39,6 +40,20 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <li>
                                 <a class="ff-page-scroll" href="#admin_approval">
                                     <?php echo esc_html(__('Admin Approval', 'fluentform')); ?>
+                                </a>
+                            </li>
+                        <?php endif ?>
+                        <?php 
+                          if (
+                            defined('FLUENTFORMPRO') &&
+                            Helper::getFormMeta($form_id, 'step_data_persistency_status') == 'yes' || 
+                            Helper::getFormMeta($form_id, 'form_save_state_status') == 'yes' || 
+                            Helper::getFormMeta($form_id, 'conv_form_per_step_save')
+                          ):
+                        ?>
+                            <li>
+                                <a class="ff-page-scroll" href="#automated-reminders">
+                                    <?php echo esc_html(__('Automated Reminders', 'fluentformpro')); ?>
                                 </a>
                             </li>
                         <?php endif ?>
