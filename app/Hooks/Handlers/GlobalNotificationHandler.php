@@ -4,6 +4,7 @@ namespace FluentForm\App\Hooks\Handlers;
 
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -110,8 +111,19 @@ class GlobalNotificationHandler
             if (! $entry) {
                 $entry = $this->globalNotificationService->getEntry($insertId, $form);
             }
-            // skip emails which will be sent on payment form submit otherwise email is sent after payment success
-            if (!! $form->has_payment && ('notifications' == $feed['meta_key'])) {
+            // Check if this is an offline payment and handle integrations accordingly
+            $selectedPaymentMethod = Helper::getSubmissionMeta($insertId, '_selected_payment_method');
+            
+            if ($selectedPaymentMethod === 'test') {
+                $paymentMethodFields = FormFieldsParser::getInputsByElementTypes($form, ['payment_method'], ['settings']);
+                $runIntegrations = ArrayHelper::get($paymentMethodFields, 'payment_method.settings.payment_methods.test.settings.run_integrations.value', 'yes');
+                
+                $isPaymentStatusChange = (current_action() === 'fluentform/run_actions_after_update_transaction_as_paid' || did_action('fluentform/run_actions_after_update_transaction_as_paid') > 0);
+                
+                if ($runIntegrations === 'no' && !$isPaymentStatusChange) {
+                    continue;
+                }
+            } else if (!! $form->has_payment && ('notifications' == $feed['meta_key'])) {
                 if (('payment_form_submit' == ArrayHelper::get($feed, 'settings.feed_trigger_event'))) {
                     continue;
                 }
