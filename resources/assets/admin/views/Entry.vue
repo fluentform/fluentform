@@ -225,6 +225,32 @@
                         </card-body>
                     </card>
 
+                    <!-- AI Fraud Score Card -->
+                    <card v-if="fraudScore && aiFeaturesEnabled" class="entry_info_box">
+                        <card-head>
+                            <div class="entry_info_box_title">
+                                {{$t('AI Fraud Score')}}
+                            </div>
+                        </card-head>
+                        <card-body>
+                            <div class="ff_fraud_score_wrap">
+                                <div class="ff_fraud_score_compact">
+                                    <div class="ff_fraud_score_badge" :class="getFraudScoreClass(fraudScore.score)">
+                                        <div class="ff_fraud_score_value">{{fraudScore.score}}</div>
+                                    </div>
+                                </div>
+                                <div v-if="fraudScore.reasons && fraudScore.reasons.length > 0" class="ff_fraud_reasons">
+                                    <div class="ff_fraud_reasons_list">
+                                        <div v-for="(reason, index) in fraudScore.reasons" :key="index" class="ff_fraud_reason_item">
+                                            <i class="el-icon-warning" :class="getFraudScoreClass(fraudScore.score)"></i>
+                                            <span>{{reason}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </card-body>
+                    </card>
+
                     <card v-for="(widget, widgetKey) in widgets" class="entry_info_box" :key="widgetKey">
                         <card-head>
                             <div class="entry_info_box_title">
@@ -352,7 +378,10 @@
                 googleMap: null,
                 mapMarkers: [],
                 mapBounds: null,
-                reload_logs: false
+                reload_logs: false,
+                fraudScore: null,
+                fraudScoreLoading: false,
+                aiFeaturesEnabled: window.fluent_form_entries_vars.ai_features_enabled || false
             }
         },
         computed: {
@@ -388,6 +417,7 @@
                     })
                     .then(() => {
                         this.getEntryResources();
+                        this.fetchFraudScore();
 						const statusUpdate = window.fluent_form_entries_vars.update_status;
 						if (
 							statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
@@ -568,6 +598,43 @@
 
                         return result;
                     }, {});
+            },
+            fetchFraudScore() {
+                // Only fetch if AI features are enabled
+                if (!this.aiFeaturesEnabled) {
+                    return;
+                }
+                
+                if (!window.FluentFormsGlobal || !window.FluentFormsGlobal.$get) {
+                    return;
+                }
+                
+                this.fraudScoreLoading = true;
+                FluentFormsGlobal.$get({
+                    action: 'fluentform_ai_fraud_score',
+                    submission_id: this.entry_id
+                })
+                .then(response => {
+                    if (response.success && response.data && response.data.fraud_score) {
+                        this.fraudScore = response.data.fraud_score;
+                    }
+                })
+                .fail(error => {
+                    // Silently fail - fraud score is optional
+                    console.log('Fraud score fetch error:', error);
+                })
+                .always(() => {
+                    this.fraudScoreLoading = false;
+                });
+            },
+            getFraudScoreClass(score) {
+                if (score >= 70) {
+                    return 'ff_fraud_high';
+                } else if (score >= 40) {
+                    return 'ff_fraud_medium';
+                } else {
+                    return 'ff_fraud_low';
+                }
             },
 
             initializeGMap(lat, lng) {
