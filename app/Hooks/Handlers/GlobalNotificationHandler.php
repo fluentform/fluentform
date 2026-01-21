@@ -117,6 +117,14 @@ class GlobalNotificationHandler
                 }
             }
             
+            // skip integrations which will be sent on payment form submit otherwise integration is sent after payment success
+            if (!! $form->has_payment && ('notifications' != $feed['meta_key'])) {
+                $feedTriggerEvent = ArrayHelper::get($feed, 'settings.feed_trigger_event', 'payment_success');
+                if ('payment_form_submit' == $feedTriggerEvent) {
+                    continue;
+                }
+            }
+            
             // It's sync
             $processedValues = $feed['settings'];
             unset($processedValues['conditionals']);
@@ -192,5 +200,112 @@ class GlobalNotificationHandler
             do_action('fluentform/global_notify_completed', $insertId, $form);
             return;
         }
+    }
+
+    public function notifyOnSubmitPaymentForm($submissionId, $submissionData, $form)
+    {
+        // Handle integration notifications for form submit
+        $integrationKeys = apply_filters('fluentform/global_notification_types', [], $form->id);
+
+        if (!$integrationKeys) {
+            return;
+        }
+        
+        $integrationFeeds = [];
+        if ($integrationKeys) {
+            $integrationFeeds = wpFluent()->table('fluentform_form_meta')
+                ->where('form_id', $form->id)
+                ->whereIn('meta_key', $integrationKeys)
+                ->get();
+        }
+
+        if ($integrationFeeds) {
+            $formData = $this->getFormData($submissionId);
+            $notificationManager = new \FluentForm\App\Services\Integrations\GlobalNotificationManager(wpFluentForm());
+
+            $activeIntegrationFeeds = $notificationManager->getEnabledFeeds($integrationFeeds, $formData, $submissionId);
+            if ($activeIntegrationFeeds) {
+                $onSubmitIntegrationFeeds = array_filter($activeIntegrationFeeds, function ($feed) {
+                    $feedTriggerEvent = ArrayHelper::get($feed, 'settings.feed_trigger_event', 'payment_success');
+                    return 'payment_form_submit' == $feedTriggerEvent;
+                });
+
+                if ($onSubmitIntegrationFeeds) {
+                    $entry = $this->getEntry($submissionId);
+
+                    foreach ($onSubmitIntegrationFeeds as $feed) {
+                        $metaKey = '_ff_on_submit_integration_' . $feed['meta_key'] . '_sent';
+                        if ('yes' === Helper::getSubmissionMeta($submissionId, $metaKey)) {
+                            continue;
+                        }
+
+                        $processedValues = $feed['settings'];
+                        unset($processedValues['conditionals']);
+                        unset($processedValues['feed_trigger_event']);
+
+                        $processedValues = ShortCodeParser::parse(
+                            $processedValues,
+                            $submissionId,
+                            $formData,
+                            $form,
+                            false,
+                            $feed['meta_key']
+                        );
+                        $feed['processedValues'] = $processedValues;
+
+                        // Check if this integration should run async or sync
+                        $integrationKey = $feed['meta_key'];
+                        $isAsync = apply_filters('fluentform/notifying_async_' . $integrationKey, true, $form->id);
+                        
+                        $actionName = 'fluentform/integration_notify_' . $feed['meta_key'];
+                        
+                        if ($isAsync) {
+                            // Queue for async processing
+                            $scheduler = $this->app['fluentFormAsyncRequest'];
+                            $scheduleAction = [
+                                'action'     => $actionName,
+                                'form_id'    => $form->id,
+                                'origin_id'  => $submissionId,
+                                'feed_id'    => $feed['id'],
+                                'type'       => 'submission_action',
+                                'status'     => 'pending',
+                                'data'       => maybe_serialize($feed),
+                                'created_at' => current_time('mysql'),
+                                'updated_at' => current_time('mysql'),
+                            ];
+                            
+                            $queueId = $scheduler->queue($scheduleAction);
+                            as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId], 'fluentform');
+                        } else {
+                            // Run synchronously
+                            do_action($actionName, $feed, $formData, $entry, $form);
+                        }
+
+                        // Mark this integration as processed for form submit
+                        Helper::setSubmissionMeta($submissionId, $metaKey, 'yes', $form->id);
+                    }
+                }
+            }
+        }
+    }
+
+    private function getFormData($submissionId)
+    {
+        $submission = wpFluent()->table('fluentform_submissions')
+            ->where('id', $submissionId)
+            ->first();
+
+        if (! $submission) {
+            return false;
+        }
+
+        return json_decode($submission->response, true);
+    }
+
+    private function getEntry($submissionId)
+    {
+        return wpFluent()->table('fluentform_submissions')
+            ->where('id', $submissionId)
+            ->first();
     }
 }
