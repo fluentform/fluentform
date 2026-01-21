@@ -73,6 +73,11 @@ export default {
         },
         isCaptcha(){
             let isCaptcha = this.value == 'g-recaptcha-response' || this.value == 'h-captcha-response' || this.value == 'cf-turnstile-response';
+            
+            if (!isCaptcha && typeof window !== 'undefined' && window.fluentformExternalCaptchaFieldNames) {
+                isCaptcha = window.fluentformExternalCaptchaFieldNames.indexOf(this.value) !== -1;
+            }
+            
             return isCaptcha;
         }
 

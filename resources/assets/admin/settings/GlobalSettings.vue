@@ -112,6 +112,10 @@
                             hcaptcha: response._fluentform_hCaptcha_keys_status,
                             recaptcha: response._fluentform_reCaptcha_keys_status,
                             turnstile: response._fluentform_turnstile_keys_status
+                        };
+                        if (window.fluentformExtendCaptchaStatus && typeof window.fluentformExtendCaptchaStatus === 'function') {
+                            const extended = window.fluentformExtendCaptchaStatus(response, this.captcha_status);
+                            Object.assign(this.captcha_status, extended);
                         }
                     })
                     .catch(e => {

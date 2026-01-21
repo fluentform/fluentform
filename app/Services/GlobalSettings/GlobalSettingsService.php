@@ -82,8 +82,14 @@ class GlobalSettingsService
 
         do_action('fluentform/saving_global_settings_with_key_method', $attributes);
 
+        $result = null;
         if (in_array($method, $allowedMethods)) {
-            return $globalSettingsHelper->{$method}($attributes);
+            $result = $globalSettingsHelper->{$method}($attributes);
         }
+        
+        // Allow external plugins to modify the result
+        $result = apply_filters('fluentform/global_settings_store_result', $result, $attributes);
+        
+        return $result;
     }
 }
