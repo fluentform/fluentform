@@ -568,7 +568,7 @@ $fluentformElementCustomizationSettings = [
     'suffix_label' => [
         'template'  => 'inputText',
         'label'     => __('Suffix Label', 'fluentform'),
-        'help_text' => __('Provide Input Suffix Label. It will show in the input field as suffix label', 'fluentform'),
+        'help_text' => __('Provide Input Suffix Label or Icon or SVG. It will show in the input field as suffix label', 'fluentform'),
     ],
     'is_unique' => [
         'template'  => 'inputYesNoCheckBox',
