@@ -4,6 +4,7 @@ namespace FluentForm\App\Services\Integrations;
 
 use FluentForm\App\Models\FormMeta;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\App\Helpers\Helper;
 
 class FormIntegrationService
 {
@@ -197,7 +198,7 @@ class FormIntegrationService
             $feeds = FormMeta::whereIn('meta_key', $notificationKeys)->where('form_id', $formId)->get();
         }
         $formattedFeeds = [];
-      
+
         if (!empty($feeds)) {
             foreach ($feeds as $feed) {
                 $data = json_decode($feed->value, true);
@@ -229,6 +230,9 @@ class FormIntegrationService
                 $formattedFeeds[] = $feedData;
             }
         }
+
+        $formattedFeeds = Helper::sortFeeds($formattedFeeds, $formId);
+
         $availableIntegrations = apply_filters_deprecated(
             'fluentform_get_available_form_integrations',
             [
@@ -240,7 +244,7 @@ class FormIntegrationService
             'Use fluentform/get_available_form_integrations instead of fluentform_get_available_form_integrations.'
         );
         $availableIntegrations = apply_filters('fluentform/get_available_form_integrations', $availableIntegrations, $formId);
-        
+
         return ([
             'feeds'                  => $formattedFeeds,
             'available_integrations' => $availableIntegrations,
@@ -252,5 +256,32 @@ class FormIntegrationService
     {
         FormMeta::where('id',$id)->delete();
     }
-    
+
+    public function updateOrder($formId, $order)
+    {
+        $formId = intval($formId);
+        $order = array_map('intval', $order);
+
+        // Store the order as a form meta
+        $existingMeta = FormMeta::where('form_id', $formId)
+            ->where('meta_key', '_integration_order')
+            ->first();
+
+        $data = [
+            'form_id'  => $formId,
+            'meta_key' => '_integration_order',
+            'value'    => json_encode($order),
+        ];
+
+        if ($existingMeta) {
+            FormMeta::where('id', $existingMeta->id)->update($data);
+        } else {
+            FormMeta::insert($data);
+        }
+
+        return [
+            'message' => __('Integration order updated successfully', 'fluentform'),
+        ];
+    }
+
 }

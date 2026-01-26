@@ -86,6 +86,7 @@ class Route {
     deleteFormIntegration = this.findIntegration;
     getIntegrations = this.findIntegration + "/form-integrations";
     getFormIntegrationList = this.findIntegration + '/integration-list-id';
+    updateIntegrationOrder = this.findIntegration + '/update-order';
 
     getGlobalSettings = 'global-settings';
     storeGlobalSettings = this.getGlobalSettings;

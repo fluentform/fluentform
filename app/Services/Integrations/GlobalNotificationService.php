@@ -11,6 +11,8 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Models\Submission;
 
 
+use FluentForm\App\Helpers\Helper;
+
 class GlobalNotificationService
 {
     public function checkCondition($parsedValue, $formData, $insertId)
@@ -102,7 +104,14 @@ class GlobalNotificationService
     
     public function getNotificationFeeds($form, $feedMetaKeys)
     {
-        return FormMeta::where('form_id', $form->id)->whereIn('meta_key', $feedMetaKeys)->orderBy('id', 'ASC')->get();
+        $feeds = FormMeta::where('form_id', $form->id)
+            ->whereIn('meta_key', $feedMetaKeys)
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $feeds = Helper::sortFeeds($feeds, $form->id);
+
+        return $feeds;
     }
-    
+
 }
