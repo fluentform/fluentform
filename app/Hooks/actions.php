@@ -304,7 +304,25 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             return $element;
         });
     }
-
+    
+    $prefixSuffixInputs = [
+        'textarea',
+        'input_url',
+        'input_password',
+    ];
+    
+    foreach ($prefixSuffixInputs as $inputType) {
+        add_filter('fluentform/editor_init_element_' . $inputType, function ($item) {
+            if (!isset($item['settings']['prefix_label'])) {
+                $item['settings']['prefix_label'] = '';
+            }
+            if (!isset($item['settings']['suffix_label'])) {
+                $item['settings']['suffix_label'] = '';
+            }
+            return $item;
+        });
+    }
+    
     add_filter('fluentform/editor_init_element_gdpr_agreement', function ($element) {
         if (!isset($element['settings']['required_field_message'])) {
             $element['settings']['required_field_message'] = '';
