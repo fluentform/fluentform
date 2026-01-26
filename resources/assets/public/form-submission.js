@@ -1783,6 +1783,21 @@ jQuery(document).ready(function () {
                         scrollableList.style.touchAction = 'pan-y';
                     }
                 }, { passive: true });
+
+                const choicesContainer = choicesInstance.passedElement.element.closest('.choices');
+                if (choicesContainer) {
+                    choicesContainer.addEventListener('focus', function(e) {
+                        if (!choicesContainer.classList.contains('is-open')) {
+                            choicesInstance.showDropdown();
+                        }
+                    }, true);
+
+                    choicesContainer.addEventListener('keydown', function(e) {
+                        if (e.key === 'Tab' && choicesContainer.classList.contains('is-open')) {
+                            choicesInstance.hideDropdown();
+                        }
+                    });
+                }
             });
         }
 
