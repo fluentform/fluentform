@@ -1,6 +1,7 @@
 <?php
 
 use FluentForm\App\Modules\Component\Component;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -651,12 +652,15 @@ add_action('wp', function () use ($app) {
                 FLUENTFORM_VERSION,
                 true
             );
-            wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
-                'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-                'ajaxurl'                  => Helper::getAjaxUrl(),
-                'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
-                'rest'                     => Helper::getRestInfo()
-            ]);
+            $globalVars = [
+                'ajaxurl'              => Helper::getAjaxUrl(),
+                'global_search_active' => apply_filters('fluentform/global_search_active', 'yes'),
+                'rest'                 => Helper::getRestInfo()
+            ];
+            if (Acl::hasAnyFormPermission()) {
+                $globalVars['fluent_forms_admin_nonce'] = wp_create_nonce('fluent_forms_admin_nonce');
+            }
+            wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', $globalVars);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($app->request->get('preview_id')));
             $postId = get_the_ID() ?: 0;
