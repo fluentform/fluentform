@@ -295,7 +295,7 @@ class HistoryService
 
         if ($existingHistoryCount === 0) {
             // Use a clear label for the first stored revision of the form
-            $changeTitle = function_exists('__') ? __('Initial state', 'fluentform') : 'Initial state';
+            $changeTitle = __('Initial state', 'fluentform');
         }
         $historyEntry = [
             'change_title' => $changeTitle,
