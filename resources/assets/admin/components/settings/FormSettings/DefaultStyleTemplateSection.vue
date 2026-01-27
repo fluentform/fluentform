@@ -115,7 +115,28 @@
                                 />
                             </el-form-item>
                         </div>
+                        <template >
+                        <div class="el-form-item-wrap">
+                          <el-form-item class="ff-form-item">
+                            <template slot="label">
+                              {{ $t('Form Styler Theme') }}
+                            </template>
+                            <el-select
+                              v-model="default_style_template.styler_theme"
+                              :placeholder="$t('Select a theme')"
+                              class="w-100"
+                            >
+                              <el-option
+                                v-for="(preset, key) in stylePresets"
+                                :key="key"
+                                :value="key"
+                                :label="preset.label"
+                              ></el-option>
+                            </el-select>
+                          </el-form-item>
+                        </div>
 
+                      </template>
 
                         <!-- Form Styler Section (Pro Feature) -->
                         <template v-if="hasPro">
@@ -142,41 +163,19 @@
                                     ></el-switch>
                                 </el-form-item>
                             </div>
-
-                            <template v-if="default_style_template.styler_enabled === 'yes'">
-                                <div class="el-form-item-wrap">
-                                    <el-form-item class="ff-form-item">
-                                        <template slot="label">
-                                            {{ $t('Form Styler Theme') }}
-                                        </template>
-                                        <el-select
-                                            v-model="default_style_template.styler_theme"
-                                            :placeholder="$t('Select a theme')"
-                                            class="w-100"
-                                        >
-                                            <el-option
-                                                v-for="(preset, key) in stylePresets"
-                                                :key="key"
-                                                :value="key"
-                                                :label="preset.label"
-                                            ></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </div>
-                                <div class="el-form-item-wrap">
-                                    <el-form-item class="ff-form-item">
-                                        <template slot="label">
-                                            {{ $t('Form Styler Styles (JSON)') }}
-                                        </template>
-                                        <el-input
-                                            type="textarea"
-                                            :rows="6"
-                                            v-model="styler_styles_json"
-                                            :placeholder="$t('Enter Form Styler styles as JSON')"
-                                        ></el-input>
-                                    </el-form-item>
-                                </div>
-                            </template>
+                            <div class="el-form-item-wrap">
+                            <el-form-item class="ff-form-item">
+                              <template slot="label">
+                                {{ $t('Form Styler Styles (JSON)') }}
+                              </template>
+                              <el-input
+                                type="textarea"
+                                :rows="6"
+                                v-model="styler_styles_json"
+                                :placeholder="$t('Enter Form Styler styles as JSON')"
+                              ></el-input>
+                            </el-form-item>
+                          </div>
                         </template>
 
                         <!-- Clear Settings Button -->
@@ -271,11 +270,11 @@
                     .then(response => {
                         // Copy custom CSS
                         this.$set(this.default_style_template, 'custom_css', response.css || '');
+                        this.$set(this.default_style_template, 'styler_theme', response.styler_theme);
 
                         // Copy Form Styler theme if Pro is available
                         if (this.hasPro) {
                             if(response.styler_theme) {
-                                this.$set(this.default_style_template, 'styler_theme', response.styler_theme);
                                 this.$set(this.default_style_template, 'styler_enabled', 'yes');
                             }
                             if(response.styler_styles) {
