@@ -134,9 +134,9 @@ class Route {
 
     // Suggested Plugins
     suggestedPlugins = 'suggested-plugins';
-    'suggested-plugins/check-plugin-statuses' = this.suggestedPlugins + '/check-plugin-statuses';
-    'suggested-plugins/install-plugin' = this.suggestedPlugins + '/install-plugin';
-    'suggested-plugins/activate-plugin' = this.suggestedPlugins + '/activate-plugin';
+    suggestedPluginsCheckStatuses = this.suggestedPlugins + '/check-plugin-statuses';
+    suggestedPluginsInstallPlugin = this.suggestedPlugins + '/install-plugin';
+    suggestedPluginsActivatePlugin = this.suggestedPlugins + '/activate-plugin';
 
 }
 
