@@ -414,6 +414,7 @@ class AddOnModule
         wp_localize_script('fluentform-modules', 'fluent_suggested_plugins', [
             'plugins' => $suggestedPlugins,
             'nonce' => wp_create_nonce('fluent_forms_suggested_plugins'),
+            'assets_url' => fluentformMix('img/suggested-plugins/'),
         ]);
 
         wpFluentForm('view')->render('admin.addons.suggested_plugins', []);
@@ -427,45 +428,68 @@ class AddOnModule
     public function getSuggestedPlugins()
     {
         $plugins = [
-            'fluent-crm' => [
-                'title' => __('FluentCRM', 'fluentform'),
-                'description' => __('Email Marketing Automation and CRM Plugin for WordPress', 'fluentform'),
-                'logo' => 'https://ps.w.org/fluent-crm/assets/icon-256x256.png',
-                'slug' => 'fluent-crm/fluent-crm.php',
-                'basename' => 'fluent-crm',
-                'badge_type' => 'official',
-                'author' => 'WPManageNinja',
-                'wporg_url' => 'https://wordpress.org/plugins/fluent-crm/',
-            ],
-            'cloud-storage-manager' => [
+              'cloud-storage-manager' => [
                 'title' => __('Cloud Storage Manager for Fluent Forms', 'fluentform'),
                 'description' => __('Cloud Storage Manager bridges the gap between your fluent forms and popular cloud storage platforms.', 'fluentform'),
-                'logo' => 'https://ps.w.org/cloud-storage-manager/assets/icon-256x256.png',
+                'logo' => 'cloud-storage-manager.png',
                 'slug' => 'cloud-storage-manager/cloud-storage-manager.php',
                 'basename' => 'cloud-storage-manager',
                 'badge_type' => 'verified',
-                'author' => 'WPManageNinja',
                 'wporg_url' => 'https://wordpress.org/plugins/cloud-storage-manager/',
+            ],
+             'fluent-pdf' => [
+                'title' => __('Fluent Forms PDF', 'fluentform'),
+                'description' => __('Generate PDF from Fluent Forms Submissions and Send via Email or Download', 'fluentform'),
+                'logo' => 'fluent-pdf.svg',
+                'slug' => 'fluent-pdf/fluent-pdf.php',
+                'basename' => 'fluent-pdf',
+                'badge_type' => 'official',
+                'wporg_url' => 'https://wordpress.org/plugins/fluent-pdf/',
+            ],
+            'fluent-crm' => [
+                'title' => __('FluentCRM', 'fluentform'),
+                'description' => __('Email Marketing Automation and CRM Plugin for WordPress', 'fluentform'),
+                'logo' => 'fluent-crm.svg',
+                'slug' => 'fluent-crm/fluent-crm.php',
+                'basename' => 'fluent-crm',
+                'badge_type' => 'official',
+                'wporg_url' => 'https://wordpress.org/plugins/fluent-crm/',
             ],
             'fluent-support' => [
                 'title' => __('Fluent Support', 'fluentform'),
                 'description' => __('WordPress Helpdesk and Customer Support Ticket Plugin', 'fluentform'),
-                'logo' => 'https://ps.w.org/fluent-support/assets/icon-256x256.png',
+                'logo' => 'fluent-support.svg',
                 'slug' => 'fluent-support/fluent-support.php',
                 'basename' => 'fluent-support',
-                'badge_type' => 'verified',
-                'author' => 'WPManageNinja',
+                'badge_type' => 'official',
                 'wporg_url' => 'https://wordpress.org/plugins/fluent-support/',
             ],
             'wp-social-reviews' => [
                 'title' => __('WP Social Ninja', 'fluentform'),
                 'description' => __('Best Social Media Plugin for WordPress to Showcase Social Feeds, Reviews, and Chat Widgets', 'fluentform'),
-                'logo' => 'https://ps.w.org/wp-social-reviews/assets/icon-256x256.png',
+                'logo' => 'wp-social-reviews.gif',
                 'slug' => 'wp-social-reviews/wp-social-reviews.php',
                 'basename' => 'wp-social-reviews',
-                'badge_type' => 'community',
-                'author' => 'WPManageNinja',
+                'badge_type' => 'official',
                 'wporg_url' => 'https://wordpress.org/plugins/wp-social-reviews/',
+            ],
+            'fluent-community' => [
+                'title' => __('Fluent Community', 'fluentform'),
+                'description' => __('Build Your Own Community & Membership Site with Fluent Community', 'fluentform'),
+                'logo' => 'fluent-community.svg',
+                'slug' => 'fluent-community/fluent-community.php',
+                'basename' => 'fluent-community',
+                'badge_type' => 'official',
+                'wporg_url' => 'https://wordpress.org/plugins/fluent-community/',
+            ],
+            'multilingual-forms-fluent-forms-wpml' => [
+                'title' => __('Multilingual Forms for Fluent Forms (WPML)', 'fluentform'),
+                'description' => __('Make Fluent Forms multilingual with WPML integration', 'fluentform'),
+                'logo' => 'wpml-ff.png',
+                'slug' => 'multilingual-forms-fluent-forms-wpml/multilingual-forms-fluent-forms-wpml.php',
+                'basename' => 'multilingual-forms-fluent-forms-wpml',
+                'badge_type' => 'official',
+                'wporg_url' => 'https://wordpress.org/plugins/multilingual-forms-fluent-forms-wpml/',
             ],
         ];
 

@@ -12,7 +12,7 @@
                         <div class="ff_media_group">
                             <div class="ff_media_head">
                                 <div class="ff_icon_btn dark-soft md square">
-                                    <img v-if="plugin.logo" :src="plugin.logo" :alt="plugin.title" />
+                                    <img v-if="plugin.logo" :src="getLogoUrl(plugin.logo)" :alt="plugin.title" />
                                 </div>
                             </div>
 
@@ -22,7 +22,7 @@
 
                                     <!-- Official Badge -->
                                     <el-tooltip v-if="plugin.badge_type === 'official'" effect="dark" placement="top">
-                                        <div slot="content">{{ $t('Core plugins developed by your team') }}</div>
+                                        <div slot="content">{{ $t('Core plugins developed by Fluent team') }}</div>
                                         <span class="plugin_badge plugin_badge_official">
                                             {{ $t('Official') }}
                                         </span>
@@ -90,9 +90,9 @@
                                     {{ $t('Activate') }}
                                 </el-button>
 
-                                <!-- Installed Badge -->
+                                <!-- Active Badge -->
                                 <span v-else-if="plugin.status === 'active'" class="installed_status">
-                                    {{ $t('Installed') }}
+                                    {{ $t('Already Active') }}
                                 </span>
 
                                 <!-- Learn More Link -->
@@ -123,7 +123,8 @@
         data() {
             return {
                 plugins: window.fluent_suggested_plugins?.plugins || {},
-                nonce: window.fluent_suggested_plugins?.nonce || ''
+                nonce: window.fluent_suggested_plugins?.nonce || '',
+                assetsUrl: window.fluent_suggested_plugins?.assets_url || ''
             }
         },
         computed: {
@@ -132,6 +133,14 @@
             }
         },
         methods: {
+            getLogoUrl(logo) {
+                // If logo already has http/https, return as is (for backward compatibility)
+                if (logo && (logo.startsWith('http://') || logo.startsWith('https://'))) {
+                    return logo;
+                }
+                // Otherwise combine with assets_url
+                return this.assetsUrl + logo;
+            },
             installPlugin(pluginKey) {
                 this.$set(this.plugins[pluginKey], 'status', 'installing');
 
@@ -179,33 +188,7 @@
                     this.$set(this.plugins[pluginKey], 'status', 'inactive');
                     this.$fail(error.message || this.$t('Failed to activate plugin'));
                 });
-            },
-
-            checkPluginStatuses() {
-                // Check status of all plugins on mount
-                const url = FluentFormsGlobal.$rest.route('suggested-plugins/check-plugin-statuses');
-                FluentFormsGlobal.$rest.post(url, {
-                    plugins: Object.keys(this.plugins).map(key => this.plugins[key].slug)
-                })
-                .then((response) => {
-                    if (response && response.statuses) {
-                        Object.entries(response.statuses).forEach(([slug, status]) => {
-                            // Find plugin by slug and update status
-                            Object.entries(this.plugins).forEach(([key, plugin]) => {
-                                if (plugin.slug === slug) {
-                                    this.$set(this.plugins[key], 'status', status);
-                                }
-                            });
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Failed to check plugin statuses:', error);
-                });
             }
-        },
-        mounted() {
-            this.checkPluginStatuses();
         }
     }
 </script>
@@ -320,7 +303,6 @@
               }
 
                 .el-button--small {
-                    min-width: 120px;
                     line-height: 1;
                 }
 
@@ -328,12 +310,11 @@
                     display: inline-flex;
                     align-items: center;
                     padding: 7px 16px;
-                    background: $--color-primary;
-                    color: $white;
+                    background: $--color-primary-light-9;
+                    color: $--color-primary;
                     border-radius: 4px;
                     font-size: 13px;
                     font-weight: 500;
-                    min-width: 120px;
                     justify-content: center;
                 }
             }
