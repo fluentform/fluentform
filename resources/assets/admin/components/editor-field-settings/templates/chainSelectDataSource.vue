@@ -44,9 +44,26 @@
                     </template>
                 </el-input>
 
+                <div v-if="urlFileList.length > 0" style="margin-top: 15px;">
+                    <div class="el-upload-list el-upload-list--text">
+                        <div class="el-upload-list__item is-success">
+                            <a class="el-upload-list__item-name" :href="urlFileList[0].url" target="_blank">
+                                <i class="el-icon-document"></i>
+                                {{ urlFileList[0].name }}
+                            </a>
+                            <label class="el-upload-list__item-status-label">
+                                <i class="el-icon-upload-success el-icon-circle-check"></i>
+                            </label>
+                            <i class="el-icon-close" @click="onRemove"></i>
+                        </div>
+                    </div>
+                </div>
+
                 <el-button
+                    v-if="dataSourceUrl && urlFileList.length > 0"
                     type="text"
                     class="pull-right btn-danger"
+                    style="margin-top: 10px;"
                     :loading="removing"
                     @click="deleteDataSource"
                 >{{ $t('Clear Data Source') }}
@@ -77,7 +94,7 @@
                 if (!this.dataSourceUrl) return;
 
                 this.fetching = true;
-
+                
                 FluentFormsGlobal.$post({
                     action: 'fluentform_chained_select_file_upload',
                     ...this.dataSourceInfo,
@@ -85,6 +102,11 @@
                 }).then(response => {
                     if (response.data.headers) {
                         this.editItem.settings.data_source = response.data;
+                        this.$notify.success({
+                            offset: 32,
+                            title: 'Success',
+                            message: this.$t('CSV file fetched and loaded successfully.')
+                        });
                     }
                 }).fail(response => {
                     this.$notify.error({
@@ -102,6 +124,23 @@
             onRemove(file, fileList) {
                 this.deleteDataSource();
             },
+            getFileNameFromUrl(url) {
+                if (!url) return '';
+                try {
+                    const urlObj = new URL(url);
+                    const pathname = urlObj.pathname;
+                    const fileName = pathname.split('/').pop();
+                    if (fileName && fileName.includes('.')) {
+                        return fileName;
+                    }
+                    if (urlObj.searchParams.get('output') === 'csv' || urlObj.searchParams.get('format') === 'csv') {
+                        return 'data.csv';
+                    }
+                    return 'remote-file.csv';
+                } catch (e) {
+                    return 'remote-file.csv';
+                }
+            },
             deleteDataSource() {
                 if (this.dataSourceType === 'url' && !this.dataSourceUrl) return;
 
@@ -118,6 +157,7 @@
                     this.editItem.settings.data_source.name = '';
                     this.editItem.settings.data_source.meta_key = null;
                     this.editItem.settings.data_source.headers = response.data.headers;
+                    this.dataSourceUrl = '';
                     this.$notify.success({
                         offset: 32,
                         title: 'Success',
@@ -132,11 +172,13 @@
         },
         computed: {
             dataSourceInfo() {
+                const formId = window.FluentFormApp?.form_id || window.FluentFormApp.form.id;
                 return {
                     type: this.dataSourceType,
                     meta_key: this.fieldMetaKey,
                     name: this.editItem.attributes.name,
-                    form_id: window.FluentFormApp.form.id
+                    form_id: formId,
+                    fluent_forms_admin_nonce: window.fluent_forms_global_var?.fluent_forms_admin_nonce
                 };
             },
             fileList() {
@@ -146,6 +188,20 @@
                     fileList = [{
                         url: this.editItem.settings.data_source.url,
                         name: this.editItem.settings.data_source.name
+                    }];
+                }
+
+                return fileList;
+            },
+            urlFileList() {
+                let fileList = [];
+
+                if (this.dataSourceType === 'url' && this.dataSourceUrl) {
+                    const fileName = this.getFileNameFromUrl(this.dataSourceUrl);
+                    fileList = [{
+                        url: this.dataSourceUrl,
+                        name: fileName || this.$t('CSV File'),
+                        status: 'success'
                     }];
                 }
 

@@ -69,6 +69,15 @@ jQuery(document).ready(function () {
             var formId = form.form_id_selector;
             var formSelector = '.' + formInstanceSelector;
 
+            // Helper function to get translated submission messages
+            function getSubmissionMessage(key, fallback) {
+                const messagesVar = 'fluentform_submission_messages_' + form.id;
+                if (window[messagesVar] && window[messagesVar][key]) {
+                    return window[messagesVar][key];
+                }
+                return fallback;
+            }
+
             /**
              * Form Handler module
              * @param  validator Factory
@@ -228,7 +237,7 @@ jQuery(document).ready(function () {
 
                             let text = $('<span/>', {
                                 class: 'error-text',
-                                text: 'File upload in progress. Please wait...'
+                                text: getSubmissionMessage('file_upload_in_progress', 'File upload in progress. Please wait...')
                             });
                             return $(formSelector + '_errors').html(errorHtml.append(text, cross)).show();
                         }
@@ -276,6 +285,10 @@ jQuery(document).ready(function () {
                         if (!(e instanceof ffValidationError)) {
                             throw e;
                         }
+                        $theForm.trigger('fluentform_validation_failed', {
+                            form: $theForm,
+                            response: e.messages
+                        });
                         showErrorMessages(e.messages);
                         scrollToFirstError(350);
                     }
@@ -1198,7 +1211,7 @@ jQuery(document).ready(function () {
                 // Handle checkbox "Other" option - show/hide text input
                 jQuery(document).on("change", ".ff-other-option input[type=\"checkbox\"]", function() {
                     let $checkbox = jQuery(this);
-                    let $wrapper = $checkbox.closest(".ff-el-form-check").find(".ff-other-input-wrapper");
+                    let $wrapper = $checkbox.closest(".ff-el-input--content").find(".ff-other-input-wrapper");
                     if (!$wrapper.length) {
                         return;
                     }
@@ -1222,7 +1235,7 @@ jQuery(document).ready(function () {
                 jQuery(document).on("change", ".ff-other-option input[type=\"radio\"]", function() {
                     let $radio = jQuery(this);
                     let $fieldContainer = $radio.closest(".ff-el-input--content");
-                    let $wrapper = $radio.closest(".ff-el-form-check").find(".ff-other-input-wrapper");
+                    let $wrapper = $fieldContainer.find(".ff-other-input-wrapper");
                     if (!$wrapper.length) {
                         $wrapper = $radio.closest("label").next(".ff-other-input-wrapper");
                     }
@@ -1770,6 +1783,21 @@ jQuery(document).ready(function () {
                         scrollableList.style.touchAction = 'pan-y';
                     }
                 }, { passive: true });
+
+                const choicesContainer = choicesInstance.passedElement.element.closest('.choices');
+                if (choicesContainer) {
+                    choicesContainer.addEventListener('focus', function(e) {
+                        if (!choicesContainer.classList.contains('is-open')) {
+                            choicesInstance.showDropdown();
+                        }
+                    }, true);
+
+                    choicesContainer.addEventListener('keydown', function(e) {
+                        if (e.key === 'Tab' && choicesContainer.classList.contains('is-open')) {
+                            choicesInstance.hideDropdown();
+                        }
+                    });
+                }
             });
         }
 
@@ -1789,7 +1817,7 @@ jQuery(document).ready(function () {
         jQuery('<div/>', {
             'class': 'error text-danger ff_msg_temp'
         })
-            .html('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
+            .html(window.fluentform_submission_messages_global?.javascript_handler_failed || 'Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
             .insertAfter(jQuery(this));
     });
 });

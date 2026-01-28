@@ -425,13 +425,20 @@ abstract class BaseProcessor
             $title = $returnData['title'];
         } else if ($returnData['type'] == 'success') {
             $title = __('Payment Success', 'fluentform');
+            $title = apply_filters('fluentform/payment_success_title', $title, $this->getSubmission(), $form);
         } else {
             $title = __('Payment Failed', 'fluentform');
+            $title = apply_filters('fluentform/payment_failed_title', $title, $this->getSubmission(), $form);
         }
 
         $message = $returnData['error'];
         if (!$message) {
             $message = $returnData['result']['message'];
+        }
+
+        // Apply payment message filter
+        if ($message) {
+            $message = apply_filters('fluentform/payment_confirmation_message', $message, $this->getSubmission(), $form);
         }
 
         $data = [
@@ -688,11 +695,13 @@ abstract class BaseProcessor
         if ($type == 'paid') {
             $returnData = $this->getReturnData();
         } else {
+            $pendingTitle = __('Payment was not marked as paid', 'fluentformpro');
+            $pendingMessage = __('Looks like you have is still on pending status', 'fluentformpro');
             $returnData = [
                 'insert_id' => $submission->id,
-                'title'     => __('Payment was not marked as paid', 'fluentform'),
+                'title'     => apply_filters('fluentform/payment_pending_title', $pendingTitle, $submission, $form),
                 'result'    => false,
-                'error'     => __('Looks like you have is still on pending status', 'fluentform')
+                'error'     => apply_filters('fluentform/payment_pending_message', $pendingMessage, $submission, $form)
             ];
         }
 

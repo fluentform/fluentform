@@ -67,6 +67,7 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
         'FluentForm\\App\\Http\\Controllers\\SubmissionHandlerController' => __DIR__ . '/../..' . '/app/Http/Controllers/SubmissionHandlerController.php',
         'FluentForm\\App\\Http\\Controllers\\SubmissionLogController' => __DIR__ . '/../..' . '/app/Http/Controllers/SubmissionLogController.php',
         'FluentForm\\App\\Http\\Controllers\\SubmissionNoteController' => __DIR__ . '/../..' . '/app/Http/Controllers/SubmissionNoteController.php',
+        'FluentForm\\App\\Http\\Controllers\\SuggestedPluginsController' => __DIR__ . '/../..' . '/app/Http/Controllers/SuggestedPluginsController.php',
         'FluentForm\\App\\Http\\Policies\\FormPolicy' => __DIR__ . '/../..' . '/app/Http/Policies/FormPolicy.php',
         'FluentForm\\App\\Http\\Policies\\GlobalSettingsPolicy' => __DIR__ . '/../..' . '/app/Http/Policies/GlobalSettingsPolicy.php',
         'FluentForm\\App\\Http\\Policies\\PublicPolicy' => __DIR__ . '/../..' . '/app/Http/Policies/PublicPolicy.php',
