@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Http\Controllers;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+
 
 class SuggestedPluginsController extends Controller
 {
@@ -19,7 +19,7 @@ class SuggestedPluginsController extends Controller
 
         $plugins = wpFluentForm('request')->get('plugins', []);
         
-        if (empty($plugins) ||!is_array($plugins)) {
+        if (empty($plugins) || !is_array($plugins)) {
             return $this->sendError([
                 'message' => __('No plugins specified.', 'fluentform')
             ], 400);
@@ -98,7 +98,8 @@ class SuggestedPluginsController extends Controller
 
         return $this->sendSuccess([
             'message' => __('Plugin installed successfully.', 'fluentform')
-        ]);}
+        ]);
+    }
 
     /**
      * Activate an installed plugin.

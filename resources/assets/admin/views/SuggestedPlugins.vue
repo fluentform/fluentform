@@ -138,7 +138,7 @@
                 const plugin = this.plugins[pluginKey];
 
                 const url = FluentFormsGlobal.$rest.route('suggested-plugins/install-plugin');
-              console.log('url',url);
+
                 FluentFormsGlobal.$rest.post(url, {
                     plugin_slug: plugin.basename
                 })
