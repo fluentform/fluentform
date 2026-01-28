@@ -57,6 +57,7 @@ return [
             'data-mask',
             'data-mask-reverse',
             'data-clear-if-not-match',
+            'mobile_keyboard_type',
             'validation_rules',
         ],
         'advanced' => [
@@ -135,6 +136,7 @@ return [
             'placeholder',
             'validation_rules',
             'numeric_formatter',
+            'mobile_keyboard_type_number',
         ],
         'advanced' => [
             'value',
