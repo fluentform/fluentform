@@ -516,6 +516,10 @@ class AddOnModule
             return 'not_installed';
         }
 
+        // Ensure is_plugin_active function is available
+        if (!function_exists('is_plugin_active')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
         // Check if plugin is active
         if (is_plugin_active($pluginSlug)) {
             return 'active';
