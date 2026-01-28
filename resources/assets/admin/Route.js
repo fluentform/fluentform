@@ -124,13 +124,19 @@ class Route {
     reportPaymentTypes = this.report + '/payment-types';
 
     //pro routes
-    inventory ='inventory';
-    getInventoryList = this.inventory ;
-    storeInventory = this.inventory ;
+    inventory = 'inventory';
+    getInventoryList = this.inventory;
+    storeInventory = this.inventory;
 
     noticeAction = 'notice';
 
     globalSearch = 'global-search';
+
+    // Suggested Plugins
+    suggestedPlugins = 'suggested-plugins';
+    'suggested-plugins/check-plugin-statuses' = this.suggestedPlugins + '/check-plugin-statuses';
+    'suggested-plugins/install-plugin' = this.suggestedPlugins + '/install-plugin';
+    'suggested-plugins/activate-plugin' = this.suggestedPlugins + '/activate-plugin';
 
 }
 

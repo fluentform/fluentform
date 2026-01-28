@@ -39,6 +39,7 @@ return array(
     'FluentForm\\App\\Http\\Controllers\\SubmissionHandlerController' => $baseDir . '/app/Http/Controllers/SubmissionHandlerController.php',
     'FluentForm\\App\\Http\\Controllers\\SubmissionLogController' => $baseDir . '/app/Http/Controllers/SubmissionLogController.php',
     'FluentForm\\App\\Http\\Controllers\\SubmissionNoteController' => $baseDir . '/app/Http/Controllers/SubmissionNoteController.php',
+    'FluentForm\\App\\Http\\Controllers\\SuggestedPluginsController' => $baseDir . '/app/Http/Controllers/SuggestedPluginsController.php',
     'FluentForm\\App\\Http\\Policies\\FormPolicy' => $baseDir . '/app/Http/Policies/FormPolicy.php',
     'FluentForm\\App\\Http\\Policies\\GlobalSettingsPolicy' => $baseDir . '/app/Http/Policies/GlobalSettingsPolicy.php',
     'FluentForm\\App\\Http\\Policies\\PublicPolicy' => $baseDir . '/app/Http/Policies/PublicPolicy.php',

@@ -94,8 +94,15 @@ $app->addAction('media_buttons', function () {
     (new \FluentForm\App\Modules\EditorButtonModule())->addButton();
 });
 
+/*
+ * Addons Page
+ */
 $app->addAction('fluentform/addons_page_render_fluentform_add_ons', function () {
     (new \FluentForm\App\Modules\AddOnModule())->showFluentAddOns();
+});
+
+$app->addAction('fluentform/addons_page_render_suggested_plugins', function () {
+    (new \FluentForm\App\Modules\AddOnModule())->showSuggestedPlugins();
 });
 
 $app->addAction('fluentform/global_menu', function () use ($app) {

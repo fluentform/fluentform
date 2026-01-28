@@ -38,6 +38,9 @@ class AddOnModule
             'Use fluentform/addons_extra_menu instead of fluentform_addons_extra_menu'
         );
 
+        // Add suggested plugins tab
+        $extraMenus['suggested_plugins'] = __('Suggested Plugins', 'fluentform');
+
         $extraMenus = apply_filters('fluentform/addons_extra_menu', $extraMenus);
 
         $current_menu_item = 'fluentform_add_ons';
@@ -397,5 +400,103 @@ class AddOnModule
                 'category'     => 'crm',
             ],
         ];
+    }
+
+    /**
+     * Show the suggested plugins list.
+     */
+    public function showSuggestedPlugins()
+    {
+        wp_enqueue_script('fluentform-modules');
+
+        $suggestedPlugins = $this->getSuggestedPlugins();
+
+        wp_localize_script('fluentform-modules', 'fluent_suggested_plugins', [
+            'plugins' => $suggestedPlugins,
+            'nonce' => wp_create_nonce('fluent_forms_suggested_plugins'),
+        ]);
+
+        wpFluentForm('view')->render('admin.addons.suggested_plugins', []);
+    }
+
+    /**
+     * Get the list of suggested WordPress plugins.
+     *
+     * @return array
+     */
+    public function getSuggestedPlugins()
+    {
+        $plugins = [
+            'fluent-crm' => [
+                'title' => __('FluentCRM', 'fluentform'),
+                'description' => __('Email Marketing Automation and CRM Plugin for WordPress', 'fluentform'),
+                'logo' => 'https://ps.w.org/fluent-crm/assets/icon-256x256.png',
+                'slug' => 'fluent-crm/fluent-crm.php',
+                'basename' => 'fluent-crm',
+                'badge_type' => 'official',
+                'author' => 'WPManageNinja',
+                'wporg_url' => 'https://wordpress.org/plugins/fluent-crm/',
+            ],
+            'cloud-storage-manager' => [
+                'title' => __('Cloud Storage Manager for Fluent Forms', 'fluentform'),
+                'description' => __('Cloud Storage Manager bridges the gap between your fluent forms and popular cloud storage platforms.', 'fluentform'),
+                'logo' => 'https://ps.w.org/cloud-storage-manager/assets/icon-256x256.png',
+                'slug' => 'cloud-storage-manager/cloud-storage-manager.php',
+                'basename' => 'cloud-storage-manager',
+                'badge_type' => 'verified',
+                'author' => 'WPManageNinja',
+                'wporg_url' => 'https://wordpress.org/plugins/cloud-storage-manager/',
+            ],
+            'fluent-support' => [
+                'title' => __('Fluent Support', 'fluentform'),
+                'description' => __('WordPress Helpdesk and Customer Support Ticket Plugin', 'fluentform'),
+                'logo' => 'https://ps.w.org/fluent-support/assets/icon-256x256.png',
+                'slug' => 'fluent-support/fluent-support.php',
+                'basename' => 'fluent-support',
+                'badge_type' => 'verified',
+                'author' => 'WPManageNinja',
+                'wporg_url' => 'https://wordpress.org/plugins/fluent-support/',
+            ],
+            'wp-social-reviews' => [
+                'title' => __('WP Social Ninja', 'fluentform'),
+                'description' => __('Best Social Media Plugin for WordPress to Showcase Social Feeds, Reviews, and Chat Widgets', 'fluentform'),
+                'logo' => 'https://ps.w.org/wp-social-reviews/assets/icon-256x256.png',
+                'slug' => 'wp-social-reviews/wp-social-reviews.php',
+                'basename' => 'wp-social-reviews',
+                'badge_type' => 'community',
+                'author' => 'WPManageNinja',
+                'wporg_url' => 'https://wordpress.org/plugins/wp-social-reviews/',
+            ],
+        ];
+
+        // Add status to each plugin
+        foreach ($plugins as $key => &$plugin) {
+            $plugin['status'] = $this->getPluginStatus($plugin['slug']);
+        }
+
+        return $plugins;
+    }
+
+    /**
+     * Get the installation and activation status of a plugin.
+     *
+     * @param string $pluginSlug The plugin slug (e.g., 'fluent-crm/fluent-crm.php')
+     * @return string 'active', 'inactive', or 'not_installed'
+     */
+    private function getPluginStatus($pluginSlug)
+    {
+        // Check if plugin file exists
+        $pluginFile = WP_PLUGIN_DIR . '/' . $pluginSlug;
+        
+        if (!file_exists($pluginFile)) {
+            return 'not_installed';
+        }
+
+        // Check if plugin is active
+        if (is_plugin_active($pluginSlug)) {
+            return 'active';
+        }
+
+        return 'inactive';
     }
 }
