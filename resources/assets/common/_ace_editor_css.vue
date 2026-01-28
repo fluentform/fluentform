@@ -15,7 +15,7 @@
         props: ['value', 'mode', 'editor_id', 'aceLoaded'],
         data() {
             return {
-                ace_path: window.FluentFormApp.ace_path_url,
+                ace_path: window.FluentFormApp?.ace_path_url || window.fluent_forms_global_var?.ace_path_url || '',
                 editorError: '',
                 loading: true,
                 editor: null
@@ -24,14 +24,25 @@
 
         watch: {
             aceLoaded(status) {
-                console.log('watcheraceeditcss')
                 if (status && !this.editor) {
                     this.initEditor();
+                }
+            },
+            value(newVal) {
+                // Sync external value changes into Ace editor
+                if (this.editor && newVal !== this.editor.getValue()) {
+                    this.editor.setValue(newVal || '', -1);
                 }
             }
         },
         methods: {
             initEditor() {
+                if (typeof ace === 'undefined') {
+                    console.error('ACE editor not loaded yet');
+                    this.loading = false;
+                    return;
+                }
+
                 ace.config.set("workerPath", this.ace_path);
                 ace.config.set("modePath", this.ace_path);
                 ace.config.set("themePath", this.ace_path);

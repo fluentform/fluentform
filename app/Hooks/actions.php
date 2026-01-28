@@ -68,6 +68,11 @@ $app->addAction(
     }
 );
 
+// Register DefaultStyleApplicator on init so it works for REST API requests too
+add_action('init', function () {
+    new \FluentForm\App\Modules\Form\DefaultStyleApplicator();
+}, 9);
+
 // From Backend.php
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();

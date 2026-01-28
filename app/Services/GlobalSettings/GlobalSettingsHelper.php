@@ -374,4 +374,43 @@ class GlobalSettingsHelper
 
         return true;
     }
+
+    public function storeDefaultStyleTemplate($attributes)
+    {
+        $data = Arr::get($attributes, 'settings');
+
+        if (is_string($data) && $data === 'clear-settings') {
+            delete_option('_fluentform_default_style_template');
+
+            return [
+                'message' => __('Default style template has been cleared.', 'fluentform'),
+                'status'  => true,
+            ];
+        }
+
+        if (is_string($data)) {
+            $data = json_decode($data, true);
+        }
+
+        $sanitizedData = [
+            'enabled'        => Arr::get($data, 'enabled', 'no'),
+            'custom_css'     => fluentformSanitizeCSS(Arr::get($data, 'custom_css', '')),
+            'styler_enabled' => Arr::get($data, 'styler_enabled', 'no'),
+            'styler_theme'   => sanitize_text_field(Arr::get($data, 'styler_theme', '')),
+            'styler_styles'  => [],
+            'source_form_id' => absint(Arr::get($data, 'source_form_id', 0)),
+        ];
+
+        $stylerStyles = Arr::get($data, 'styler_styles');
+        if ($stylerStyles && is_array($stylerStyles)) {
+            $sanitizedData['styler_styles'] = $stylerStyles;
+        }
+
+        update_option('_fluentform_default_style_template', $sanitizedData, 'no');
+
+        return [
+            'message' => __('Default style template has been saved successfully.', 'fluentform'),
+            'status'  => true,
+        ];
+    }
 }
