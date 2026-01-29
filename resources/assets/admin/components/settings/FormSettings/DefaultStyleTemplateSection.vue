@@ -164,7 +164,7 @@
                                 </el-form-item>
                             </div>
                             <div class="el-form-item-wrap">
-                            <el-form-item class="ff-form-item">
+                            <el-form-item class="ff-form-item" v-if="default_style_template.styler_enabled === 'yes'">
                               <template slot="label">
                                 {{ $t('Form Styler Styles (JSON)') }}
                               </template>

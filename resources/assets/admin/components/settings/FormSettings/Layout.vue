@@ -289,6 +289,8 @@
             </card-body>
         </card>
 
+        <default-style-template-section :default_style_template.sync="default_style_template" />
+
         <card id="miscellaneous">
             <card-head>
                 <card-head-group>
@@ -724,8 +726,6 @@
                 </div>
             </card-body>
         </card>
-
-        <default-style-template-section :default_style_template.sync="default_style_template" />
     </el-form>
 </template>
 

@@ -28,6 +28,21 @@
 
                         <input type="file" id="fileUpload" class="file-input ff_input_width" @click="clear">
                     </el-form-item>
+
+                    <el-form-item v-if="hasDefaultStyle" class="ff-form-item">
+                        <el-checkbox v-model="applyDefaultStyle">
+                            {{ $t('Apply default form style to imported forms') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('If enabled, the default form style configured in global settings will be applied to imported forms. Otherwise, forms will keep their original styling.') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </el-checkbox>
+                    </el-form-item>
+
                     <el-button type="primary" icon="el-icon-success" @click="importForms" :loading="importing">
                         {{ $t('Import Forms') }}
                     </el-button>
@@ -74,7 +89,9 @@
                 forms: this.app.forms,
                 selected: [],
                 importing: false,
-                importedForms: false
+                importedForms: false,
+                applyDefaultStyle: false,
+                hasDefaultStyle: window.fluent_forms_global_var?.has_default_style || false
             }
         },
         methods: {
@@ -90,6 +107,7 @@
                 let data = new FormData();
                 data.append('format', 'json');
                 data.append('file', file);
+                data.append('apply_default_style', this.applyDefaultStyle ? '1' : '0');
                 data.append('action', 'fluentform-import-forms');
 	            data.append('fluent_forms_admin_nonce', window.fluent_forms_global_var.fluent_forms_admin_nonce);
 

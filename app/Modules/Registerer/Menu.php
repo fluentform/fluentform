@@ -281,6 +281,13 @@ class Menu
 
         wp_enqueue_script('fluent_forms_global');
 
+        // Check if default style is enabled
+        $defaultTemplate = get_option('_fluentform_default_style_template');
+        $hasDefaultStyle = false;
+        if ($defaultTemplate && is_array($defaultTemplate)) {
+            $hasDefaultStyle = \FluentForm\Framework\Helpers\ArrayHelper::get($defaultTemplate, 'enabled') === 'yes';
+        }
+
         $globalVars = [
             'ajaxurl'              => Helper::getAjaxUrl(),
             'admin_i18n'           => TranslationString::getAdminI18n(),
@@ -306,6 +313,7 @@ class Menu
             'disable_time_diff'    => Helper::isDefaultWPDateEnabled(),
             'wp_date_time_format'  => Helper::getDefaultDateTimeFormatForMoment(),
             'server_time'          => current_time('mysql'),
+            'has_default_style'    => $hasDefaultStyle,
         ];
 
         if (Acl::hasAnyFormPermission()) {

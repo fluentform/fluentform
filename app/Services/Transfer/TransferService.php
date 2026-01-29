@@ -45,9 +45,11 @@ class TransferService
     }
 
     /**
+     * @param File $file The uploaded JSON file
+     * @param bool $applyDefaultStyle Whether to apply default style settings to imported forms
      * @throws Exception
      */
-    public static function importForms($file)
+    public static function importForms($file, $applyDefaultStyle = false)
     {
         if ($file instanceof File) {
             $forms = \json_decode($file->getContents(), true);
@@ -113,8 +115,13 @@ class TransferService
                             }
                         }
                     }
-               
+
                     do_action('fluentform/form_imported', $formId);
+
+                    // Apply default style if requested
+                    if ($applyDefaultStyle) {
+                        do_action('fluentform/inserted_new_form', $formId, $form);
+                    }
                 }
 
                 return ([

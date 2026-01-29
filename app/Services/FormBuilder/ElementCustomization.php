@@ -603,11 +603,7 @@ $fluentformElementCustomizationSettings = [
         'options'   => [
             [
                 'value' => '',
-                'label' => __('Default', 'fluentform'),
-            ],
-            [
-                'value' => 'none',
-                'label' => __('None', 'fluentform'),
+                'label' => __('Standard Keyboard', 'fluentform'),
             ],
             [
                 'value' => 'numeric',
@@ -630,14 +626,6 @@ $fluentformElementCustomizationSettings = [
         'options'   => [
             [
                 'value' => '',
-                'label' => __('Default', 'fluentform'),
-            ],
-            [
-                'value' => 'none',
-                'label' => __('None', 'fluentform'),
-            ],
-            [
-                'value' => 'numeric',
                 'label' => __('Numeric (0-9)', 'fluentform'),
             ],
             [
