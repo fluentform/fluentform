@@ -43,37 +43,13 @@ class SubmissionHandlerService
     public function handleSubmission($formDataRaw, $formId)
     {
         $this->prepareHandler($formId, $formDataRaw);
-        /**
-         * Filter to enable preventing duplicate serial numbers across multiple requests in same millisecond
-         * @param bool $enable Set to true to prevent duplicate serial numbers.
-         * @param int  $formId The ID of the current form.
-         */
-        $useTransactionLock = apply_filters('fluentform/prevent_duplicate_serial_numbers', false, $formId);
-        if ($useTransactionLock) {
-            $db = wpFluent();
-            $db->beginTransaction();
-            try {
-                $insertData = $this->handleValidation();
-                if ($returnData = $this->isSpamAndSkipProcessing($insertData)) {
-                    $db->commit();
-                    return $returnData;
-                }
-                $insertId = $this->insertSubmission($insertData, $formDataRaw, $formId);
-                $db->commit();
-                return $this->processSubmissionData($insertId, $this->formData, $this->form);
-            } catch (\Exception $e) {
-                $db->rollBack();
-                throw $e;
-            }
-        } else {
-            $insertData = $this->handleValidation();
-            if ($returnData = $this->isSpamAndSkipProcessing($insertData)) {
-                return $returnData;
-            }
-            $insertId = $this->insertSubmission($insertData, $formDataRaw, $formId);
-
-            return $this->processSubmissionData($insertId, $this->formData, $this->form);
+        $insertData = $this->handleValidation();
+        if ($returnData = $this->isSpamAndSkipProcessing($insertData)) {
+            return $returnData;
         }
+        $insertId = $this->insertSubmission($insertData, $formDataRaw, $formId);
+
+        return $this->processSubmissionData($insertId, $this->formData, $this->form);
     }
 
     /**
@@ -157,25 +133,7 @@ class SubmissionHandlerService
         if (!$formData) {
             $formData = $this->formData;
         }
-        /**
-         * Filter to enable preventing duplicate serial numbers across multiple requests in same millisecond
-         *
-         * @param bool $enable Set to true to prevent duplicate serial numbers.
-         * @param int  $formId The ID of the current form.
-         */
-        $useTransactionLock = apply_filters('fluentform/prevent_duplicate_serial_numbers', false, $formId);
-        $previousItem = null;
-        if ($useTransactionLock) {
-            $query = Submission::query();
-            $previousItem = $query
-                ->where('form_id', $formId)
-                ->orderBy('id', 'DESC')
-                ->limit(1)
-                ->lock('FOR UPDATE')
-                ->first();
-        } else {
-            $previousItem = Submission::where('form_id', $formId)->orderBy('id', 'DESC')->first();
-        }
+        $previousItem = Submission::where('form_id', $formId)->orderBy('id', 'DESC')->first();
         $serialNumber = 1;
         if ($previousItem) {
             $serialNumber = $previousItem->serial_number + 1;

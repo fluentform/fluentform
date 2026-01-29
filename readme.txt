@@ -448,7 +448,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Improves multiselect accessibility with Choices.js dropdown
 - Improves form title generation in form history
 - Improves form saving UX
-- Fixes serial number concurrency in submission (opt-in via fluentform/prevent_duplicate_serial_numbers filter)
 
 = 6.1.14 (Date: January 15, 2026) =
 - Fixes issue with numeric field
