@@ -428,6 +428,15 @@ class AddOnModule
     public function getSuggestedPlugins()
     {
         $plugins = [
+            'fluent-cart' => [
+                'title'       => __('FluentCart A New Era of eCommerce', 'fluentform'),
+                'description' => __('It is a performance-first, self-hosted eCommerce platform for WordPres', 'fluentform'),
+                'logo'        => 'fcart.svg',
+                'slug'        => 'fluent-cart/fluent-cart.php',
+                'basename'    => 'fluent-cart',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/fluent-cart/',
+            ],
             'multilingual-forms-fluent-forms-wpml' => [
                 'title'       => __('Multilingual Forms for Fluent Forms (WPML)', 'fluentform'),
                 'description' => __('Make Fluent Forms multilingual with WPML integration', 'fluentform'),
