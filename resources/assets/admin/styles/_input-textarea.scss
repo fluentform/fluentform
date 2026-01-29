@@ -1,0 +1,53 @@
+.ff-textarea-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+
+    .ff-textarea-input {
+        flex: 1;
+    }
+
+    .ff-textarea-prefix,
+    .ff-textarea-suffix {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        padding: 0 10px;
+        background-color: #F5F7FA;
+        border: 1px solid #DCDFE6;
+        color: #909399;
+        font-size: 14px;
+    }
+
+    .ff-textarea-prefix {
+        border-right: 0;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+
+    .ff-textarea-suffix {
+        border-left: 0;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+
+    /* Ensure textarea corners are squared when adjacent to prefix/suffix */
+    .ff-textarea-prefix+.ff-textarea-input .el-textarea__inner {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+
+    .ff-textarea-input:has(+ .ff-textarea-suffix) .el-textarea__inner,
+    .ff-textarea-input+.ff-textarea-suffix~* {
+        .el-textarea__inner {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+        }
+    }
+
+    /* For when there's a suffix after textarea */
+    &:has(.ff-textarea-suffix) .ff-textarea-input .el-textarea__inner {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+}

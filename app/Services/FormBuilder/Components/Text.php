@@ -116,28 +116,15 @@ class Text extends BaseComponent
                 if (!apply_filters('fluentform/disable_input_mode', $isDisable)) {
                     $mobileKeyboardType = ArrayHelper::get($data, 'settings.mobile_keyboard_type_number');
 
-                    // Seed from existing attribute, if any
-                    $inputMode = ArrayHelper::get($data, 'attributes.inputmode');
-
-                    if ($mobileKeyboardType === 'none') {
-                        // Explicitly disabled via setting
-                        $inputMode = null;
-                    } elseif ($mobileKeyboardType !== null && $mobileKeyboardType !== '') {
-                        // Use configured value when explicitly set
-                        $inputMode = $mobileKeyboardType;
-                    } elseif ($inputMode === null) {
-                        // No existing attribute and no explicit setting: default for backward compatibility
-                        $inputMode = 'numeric';
-                    }
+                    // Default to 'numeric' for backward compatibility
+                    // If user explicitly sets 'decimal', use that instead
+                    $inputMode = !empty($mobileKeyboardType) ? $mobileKeyboardType : 'numeric';
 
                     // Allow filter override
                     $inputMode = apply_filters('fluentform/number_input_mode', $inputMode, $data, $form);
 
-                    if ($inputMode !== null) {
+                    if ($inputMode) {
                         $data['attributes']['inputmode'] = $inputMode;
-                    } elseif ($mobileKeyboardType === 'none' && isset($data['attributes']['inputmode'])) {
-                        // Explicitly disabled: ensure attribute is removed
-                        unset($data['attributes']['inputmode']);
                     }
                 }
             }
