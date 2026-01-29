@@ -50,28 +50,14 @@ class SubmissionHandlerService
          */
         $useTransactionLock = apply_filters('fluentform/prevent_duplicate_serial_numbers', false, $formId);
         if ($useTransactionLock) {
-            $insertData = $this->handleValidation();
-            if ($returnData = $this->isSpamAndSkipProcessing($insertData)) {
-                return $returnData;
-            }
-
             $db = wpFluent();
             $db->beginTransaction();
             try {
-                $query = Submission::query();
-                $previousItem = $query
-                    ->where('form_id', $formId)
-                    ->orderBy('id', 'DESC')
-                    ->limit(1)
-                    ->lock('FOR UPDATE')
-                    ->first();
-
-                $serialNumber = 1;
-                if ($previousItem) {
-                    $serialNumber = $previousItem->serial_number + 1;
+                $insertData = $this->handleValidation();
+                if ($returnData = $this->isSpamAndSkipProcessing($insertData)) {
+                    $db->commit();
+                    return $returnData;
                 }
-                $insertData['serial_number'] = $serialNumber;
-
                 $insertId = $this->insertSubmission($insertData, $formDataRaw, $formId);
                 $db->commit();
                 return $this->processSubmissionData($insertId, $this->formData, $this->form);
