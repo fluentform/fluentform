@@ -96,6 +96,10 @@
                                 </span>
 
                                 <!-- Learn More Link -->
+                                <el-button
+                                    size="small"
+                                    type="secondary"
+                                >
                                 <a
                                     v-if="plugin.wporg_url"
                                     :href="plugin.wporg_url"
@@ -104,8 +108,9 @@
                                     class="text-secondary"
                                     style="font-size: 14px; text-decoration: none;"
                                 >
-                                    {{ $t('Learn More') }} <i class="el-icon-arrow-right"></i>
+                                    {{ $t('Learn More') }}
                                 </a>
+                                </el-button>
                             </div>
                         </div>
                     </div>
