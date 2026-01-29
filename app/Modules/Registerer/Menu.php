@@ -798,7 +798,11 @@ class Menu
             ],
             'countries'            => getFluentFormCountryList(),
             'getIpInfo'            => Helper::getIpinfo(),
-            'has_conv_form_save_and_resume' => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.12', '>=')
+            'has_conv_form_save_and_resume' => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.12', '>='),
+            'has_save_and_resume' =>
+                Helper::getFormMeta($form_id, 'step_data_persistency_status') == 'yes' ||
+                Helper::getFormMeta($form_id, 'form_save_state_status') == 'yes' ||
+                Helper::getFormMeta($form_id, 'conv_form_per_step_save')
         ]);
 
         $this->app->view->render('admin.form.settings', [
