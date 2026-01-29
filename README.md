@@ -159,6 +159,17 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
+### 6.1.15 (Date: January 30, 2026) =
+- Adds prefix and suffix support for textarea, url and password input
+- Adds suggested plugin page to show verified plugins
+- Adds mobile keyboard type options for number and mask input
+- Adds default form style share and apply to newly created forms
+- Improves AI form builder security
+- Improves multiselect accessibility
+- Improves form title generation in form history
+- Improves form saving UX
+- Fixes serial number concurrency in submission using hook
+
 ### 6.1.13 (Date: January 14, 2026) =
 - Adds mobile keyboard type option for numeric and Mask Input fields
 - Adds 'Inherit Theme' option for Form Style Template in Elementor widget

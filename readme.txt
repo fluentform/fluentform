@@ -438,6 +438,17 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 6.1.15 (Date: January 30, 2026) =
+- Adds prefix/suffix options for textarea, URL and password fields
+- Adds mobile keyboard type options for number and mask inputs
+- Adds default form style sharing for new forms
+- Adds verified plugins suggestions page
+- Improves AI form builder security
+- Improves multiselect accessibility
+- Improves form title generation in form history
+- Improves form saving UX
+- Fixes serial number concurrency in submission using hook
+
 = 6.1.14 (Date: January 15, 2026) =
 - Fixes issue with numeric field
 - Adds a Form edit button in elementor form widget
