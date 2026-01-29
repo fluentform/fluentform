@@ -77,7 +77,7 @@
                                     type="primary"
                                     @click="installPlugin(pluginKey)"
                                 >
-                                    {{ $t('Install') }} {{ plugin.title }}
+                                    {{ $t('Install') }}
                                 </el-button>
 
                                 <!-- Activate Button (already installed but inactive) -->

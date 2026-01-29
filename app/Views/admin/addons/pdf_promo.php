@@ -14,15 +14,6 @@
                 </a>
             </div>
         <?php else:
-            do_action_deprecated(
-                'fluentform_addons_page_render_fluentform_pdf_settings',
-                [
-
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/addons_page_render_fluentform_pdf_settings',
-                'Use fluentform/addons_page_render_fluentform_pdf_settings instead of fluentform_addons_page_render_fluentform_pdf_settings.'
-            );
             do_action('fluentform/addons_page_render_fluentform_pdf_settings');
         endif; ?>
 
