@@ -37,14 +37,6 @@
         border-bottom-left-radius: 0 !important;
     }
 
-    .ff-textarea-input:has(+ .ff-textarea-suffix) .el-textarea__inner,
-    .ff-textarea-input+.ff-textarea-suffix~* {
-        .el-textarea__inner {
-            border-top-right-radius: 0 !important;
-            border-bottom-right-radius: 0 !important;
-        }
-    }
-
     /* For when there's a suffix after textarea */
     &:has(.ff-textarea-suffix) .ff-textarea-input .el-textarea__inner {
         border-top-right-radius: 0 !important;
