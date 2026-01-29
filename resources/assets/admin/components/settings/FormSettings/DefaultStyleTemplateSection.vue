@@ -220,7 +220,7 @@
         data() {
             return {
                 aceLoaded: false,
-                ace_path: window.FluentFormApp?.ace_path_url || window.fluent_forms_global_var?.ace_path_url || '',
+                ace_path: window.FluentFormApp?.ace_path_url,
                 forms: window.fluent_forms_global_var?.forms || [],
                 selectedFormId: null,
                 loadingFormStyles: false,
