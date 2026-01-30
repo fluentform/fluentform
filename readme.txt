@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.15
+Stable tag: 6.1.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -440,6 +440,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 6.1.16 (Date: January 30, 2026) =
 - Fix input image issue in conversational form
+- Fix form entries export issue
 
 = 6.1.15 (Date: January 29, 2026) =
 - Adds default form style option which will auto apply to all new forms with form styler(pro) support
