@@ -438,6 +438,9 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 6.1.16 (Date: January 30, 2026) =
+- Fix input image issue in conversational form
+
 = 6.1.15 (Date: January 29, 2026) =
 - Adds default form style option which will auto apply to all new forms with form styler(pro) support
 - Adds option to apply  default style to imported forms
