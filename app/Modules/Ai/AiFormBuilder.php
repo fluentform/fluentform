@@ -56,7 +56,6 @@ class AiFormBuilder extends FormService
         $fields = Arr::get($form, 'fields', []);
         $isConversational = Arr::isTrue($form, 'is_conversational');
         $customCss = Arr::get($form, 'custom_css', '');
-        $customJs = Arr::get($form, 'custom_js', '');
         $hasStep = false;
         $lastFieldIndex = count($fields) - 1;
 
@@ -83,7 +82,7 @@ class AiFormBuilder extends FormService
             throw new Exception(esc_html__('Empty form. Please try again!', 'fluentform'));
         }
         $title = Arr::get($form, 'title', '');
-        return $this->saveForm($fluentFormFields, $title, $hasStep, $isConversational, $customCss, $customJs);
+        return $this->saveForm($fluentFormFields, $title, $hasStep, $isConversational, $customCss);
     }
 
     /**
@@ -303,7 +302,7 @@ class AiFormBuilder extends FormService
         return $customForm;
     }
     
-    protected function saveForm($formattedInputs, $title, $isStepForm = false, $isConversational = false, $customCss = '', $customJs = '')
+    protected function saveForm($formattedInputs, $title, $isStepForm = false, $isConversational = false, $customCss = '')
     {
         $customForm = $this->prepareCustomForm($formattedInputs, $isStepForm);
         $data = Form::prepare($customForm);
@@ -330,9 +329,6 @@ class AiFormBuilder extends FormService
 
         if ($customCss = fluentformSanitizeCSS($customCss)) {
             Helper::setFormMeta($form->id, '_custom_form_css', $customCss);
-        }
-        if ($customJs = fluentform_kses_js($customJs)) {
-            Helper::setFormMeta($form->id, '_custom_form_js', $customJs);
         }
         
         do_action('fluentform/inserted_new_form', $form->id, $data);

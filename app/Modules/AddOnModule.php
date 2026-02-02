@@ -38,6 +38,9 @@ class AddOnModule
             'Use fluentform/addons_extra_menu instead of fluentform_addons_extra_menu'
         );
 
+        // Add suggested plugins tab
+        $extraMenus['suggested_plugins'] = __('Suggested Plugins', 'fluentform');
+
         $extraMenus = apply_filters('fluentform/addons_extra_menu', $extraMenus);
 
         $current_menu_item = 'fluentform_add_ons';
@@ -397,5 +400,143 @@ class AddOnModule
                 'category'     => 'crm',
             ],
         ];
+    }
+
+    /**
+     * Show the suggested plugins list.
+     */
+    public function showSuggestedPlugins()
+    {
+        wp_enqueue_script('fluentform-modules');
+
+        $suggestedPlugins = $this->getSuggestedPlugins();
+
+        wp_localize_script('fluentform-modules', 'fluent_suggested_plugins', [
+            'plugins' => $suggestedPlugins,
+            'nonce' => wp_create_nonce('fluent_forms_suggested_plugins'),
+            'assets_url' => fluentformMix('img/suggested-plugins/'),
+        ]);
+
+        wpFluentForm('view')->render('admin.addons.suggested_plugins', []);
+    }
+
+    /**
+     * Get the list of suggested WordPress plugins.
+     *
+     * @return array
+     */
+    public function getSuggestedPlugins()
+    {
+        $plugins = [
+            'fluent-cart' => [
+                'title'       => __('FluentCart A New Era of eCommerce', 'fluentform'),
+                'description' => __('It is a performance-first, self-hosted eCommerce platform for WordPres', 'fluentform'),
+                'logo'        => 'fcart.svg',
+                'slug'        => 'fluent-cart/fluent-cart.php',
+                'basename'    => 'fluent-cart',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/fluent-cart/',
+            ],
+            'multilingual-forms-fluent-forms-wpml' => [
+                'title'       => __('Multilingual Forms for Fluent Forms (WPML)', 'fluentform'),
+                'description' => __('Make Fluent Forms multilingual with WPML integration', 'fluentform'),
+                'logo'        => 'wpml-ff.png',
+                'slug'        => 'multilingual-forms-fluent-forms-wpml/multilingual-forms-fluent-forms-wpml.php',
+                'basename'    => 'multilingual-forms-fluent-forms-wpml',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/multilingual-forms-fluent-forms-wpml/',
+            ],
+            'cloud-storage-manager'                => [
+                'title'       => __('Cloud Storage Manager for Fluent Forms', 'fluentform'),
+                'description' => __('Cloud Storage Manager bridges the gap between your fluent forms and popular cloud storage platforms.',
+                    'fluentform'),
+                'logo'        => 'cloud-storage-manager.png',
+                'slug'        => 'cloud-storage-manager/cloud-storage-manager.php',
+                'basename'    => 'cloud-storage-manager',
+                'badge_type'  => 'verified',
+                'wporg_url'   => 'https://wordpress.org/plugins/cloud-storage-manager/',
+            ],
+            'fluent-pdf'                           => [
+                'title'       => __('Fluent Forms PDF', 'fluentform'),
+                'description' => __('Generate PDF from Fluent Forms Submissions and Send via Email or Download',
+                    'fluentform'),
+                'logo'        => 'fluent-pdf.svg',
+                'slug'        => 'fluentforms-pdf/fluentforms-pdf.php',
+                'basename'    => 'fluentforms-pdf',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/fluentforms-pdf/',
+            ],
+            'fluent-community'                     => [
+                'title'       => __('Fluent Community', 'fluentform'),
+                'description' => __('Build Your Own Community & Membership Site with Fluent Community', 'fluentform'),
+                'logo'        => 'fluent-community.svg',
+                'slug'        => 'fluent-community/fluent-community.php',
+                'basename'    => 'fluent-community',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/fluent-community/',
+            ],
+            'fluent-support'                       => [
+                'title'       => __('Fluent Support', 'fluentform'),
+                'description' => __('WordPress Helpdesk and Customer Support Ticket Plugin', 'fluentform'),
+                'logo'        => 'fluent-support.svg',
+                'slug'        => 'fluent-support/fluent-support.php',
+                'basename'    => 'fluent-support',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/fluent-support/',
+            ],
+            'wp-social-reviews'                    => [
+                'title'       => __('WP Social Ninja', 'fluentform'),
+                'description' => __('Best Social Media Plugin for WordPress to Showcase Social Feeds, Reviews, and Chat Widgets',
+                    'fluentform'),
+                'logo'        => 'wp-social-reviews.gif',
+                'slug'        => 'wp-social-reviews/wp-social-reviews.php',
+                'basename'    => 'wp-social-reviews',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/wp-social-reviews/',
+            ],
+            'fluent-crm'                           => [
+                'title'       => __('FluentCRM', 'fluentform'),
+                'description' => __('Email Marketing Automation and CRM Plugin for WordPress', 'fluentform'),
+                'logo'        => 'fluent-crm.svg',
+                'slug'        => 'fluent-crm/fluent-crm.php',
+                'basename'    => 'fluent-crm',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/fluent-crm/',
+            ],
+        ];
+
+        // Add status to each plugin
+        foreach ($plugins as $key => &$plugin) {
+            $plugin['status'] = $this->getPluginStatus($plugin['slug']);
+        }
+
+        return $plugins;
+    }
+
+    /**
+     * Get the installation and activation status of a plugin.
+     *
+     * @param string $pluginSlug The plugin slug (e.g., 'fluent-crm/fluent-crm.php')
+     * @return string 'active', 'inactive', or 'not_installed'
+     */
+    private function getPluginStatus($pluginSlug)
+    {
+        // Check if plugin file exists
+        $pluginFile = WP_PLUGIN_DIR . '/' . $pluginSlug;
+        
+        if (!file_exists($pluginFile)) {
+            return 'not_installed';
+        }
+
+        // Ensure is_plugin_active function is available
+        if (!function_exists('is_plugin_active')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        // Check if plugin is active
+        if (is_plugin_active($pluginSlug)) {
+            return 'active';
+        }
+
+        return 'inactive';
     }
 }

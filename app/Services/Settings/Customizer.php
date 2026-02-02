@@ -16,8 +16,17 @@ class Customizer
         foreach ($metaKeys as $metaKey) {
             $value = Helper::getFormMeta($formId, $metaKey, '');
             
+            // If the meta doesn't exist or is empty, skip it
+            if ($value === '' || $value === null) {
+                continue;
+            }
+
             if ($metaKey === '_custom_form_css') {
                 $result['css'] = $value;
+            } elseif ($metaKey === '_ff_selected_style') {
+                $result['styler_theme'] = $value;
+            } elseif ($metaKey === '_ff_form_styles') {
+                $result['styler_styles'] = $value;
             } elseif ($metaKey === '_custom_form_js') {
                 $result['js'] = $value;
             } else {

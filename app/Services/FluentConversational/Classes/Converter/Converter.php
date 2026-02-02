@@ -85,10 +85,15 @@ class Converter
                 } else {
                     $value = $questionId ? ArrayHelper::get($response, $questionId) : null;
                     if (!empty($value)) {
-                        if (ArrayHelper::get($field, 'element') == 'input_file') {
+                        if (in_array(ArrayHelper::get($field, 'element'), ['input_file', 'input_image'])) {
                             $files = ArrayHelper::get($response, $questionId);
                             foreach ($files as $file) {
-                                $question['answer'][] = ArrayHelper::get($file, 'data_src');
+                                if (is_array($file)) {
+                                    $question['answer'][] = ArrayHelper::get($file, 'data_src');
+                                } else {
+                                    // Already a plain URL string (legacy or non-encrypted)
+                                    $question['answer'][] = $file;
+                                }
                             }
                         } elseif (ArrayHelper::get($field, 'element') == 'signature') {
                             // Signature is stored as a URL string
@@ -426,7 +431,7 @@ class Converter
                     'pen_color'        => ArrayHelper::get($field, 'settings.sign_pen_color', '#333'),
                     'pen_size'         => ArrayHelper::get($field, 'settings.sign_pen_size', 2),
                     'pad_height'       => ArrayHelper::get($field, 'settings.sign_pad_height', 200),
-                    'instruction'      => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.sign_instruction', __('Sign Here', 'fluentform-signature')), $form),
+                    'instruction'      => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.sign_instruction', __('Sign Here', 'fluentform')), $form),
                 ];
                 $question['multiple'] = false;
                 
@@ -979,6 +984,12 @@ class Converter
             'nationalMode'     => true,
             'autoPlaceholder'  => 'aggressive',
             'formatOnDisplay'  => true,
+            'validationNumberTypes' => [
+                'MOBILE',
+                'FIXED_LINE_OR_MOBILE',
+                'FIXED_LINE',
+                'TOLL_FREE',
+            ]
         ];
         
         if ($geoLocate) {
@@ -1329,12 +1340,27 @@ class Converter
             $fields = FormFieldsParser::getInputsByElementTypes($form, $fileFieldTypes);
             foreach ($fields as $name => $field) {
                 if ($urls = ArrayHelper::get($data['response'], $name)) {
+                    if (!is_array($urls)) {
+                        // Single value (e.g. signature stored as a string)
+                        $urls = [$urls];
+                    }
                     foreach ($urls as $index => $url) {
+                        if (is_array($url)) {
+                            // Already wrapped (e.g. from a previous load) — keep as-is
+                            continue;
+                        }
+                        if (!is_string($url) || $url === '[object Object]') {
+                            // Corrupted data — skip this entry
+                            unset($data['response'][$name][$index]);
+                            continue;
+                        }
                         $data['response'][$name][$index] = [
                             "data_src" => $url,
                             "url"      => \FluentForm\App\Helpers\Helper::maybeDecryptUrl($url)
                         ];
                     }
+                    // Re-index in case entries were removed
+                    $data['response'][$name] = array_values($data['response'][$name]);
                 }
             }
             unset(

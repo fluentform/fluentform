@@ -177,3 +177,11 @@ $router->post('notice', 'AdminNoticeController@noticeActions')->withPolicy('Form
 */
 $router->get('global-search', 'GlobalSearchController@index')->withPolicy('FormPolicy');
 
+/*
+* Suggested Plugins
+*/
+$router->prefix('suggested-plugins')->withPolicy('FormPolicy')->group(function ($router) {
+    $router->post('check-plugin-statuses', 'SuggestedPluginsController@checkPluginStatuses');
+    $router->post('install-plugin', 'SuggestedPluginsController@installPlugin');
+    $router->post('activate-plugin', 'SuggestedPluginsController@activatePlugin');
+});

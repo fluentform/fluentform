@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.9
+Stable tag: 6.1.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -438,7 +438,44 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.1.9 (Date: December 2, 2025) =
+= 6.1.16 (Date: January 30, 2026) =
+- Fix input image issue in conversational form
+- Fix form entries export issue
+
+= 6.1.15 (Date: January 29, 2026) =
+- Adds default form style option which will auto apply to all new forms with form styler(pro) support
+- Adds option to apply  default style to imported forms
+- Adds prefix/suffix options for textarea, URL and password fields
+- Adds mobile keyboard type options for number and mask inputs
+- Adds verified plugins suggestions page
+- Improves AI form builder security
+- Improves multiselect accessibility with Choices.js dropdown
+- Improves form title generation in form history
+- Improves form saving UX
+
+= 6.1.14 (Date: January 15, 2026) =
+- Fixes issue with numeric field
+- Adds a Form edit button in elementor form widget
+
+= 6.1.13 (Date: January 14, 2026) =
+- Adds mobile keyboard type option for numeric and Mask Input fields
+- Adds 'Inherit Theme' option for Form Style Template in Elementor widget
+- Adds more string translation support for WPML
+- Improves country names according to the latest ISO 3166-1 alpha-2 list
+- Fixes Business Logo upload issue in payment settings
+- Fixes Dynamic SmartCode not working for conversational forms
+
+= 6.1.12 (Date: December 26, 2025) =
+- Fixes delay with condition and range slider field
+- Fixes top performing form report count
+- Fixes Button Style “Other Option” input issue with images
+- Improves security and sanitization for confirmation messages
+
+= 6.1.11 (Date: December 4, 2025) =
+- Fixes issue with saving showing invalid json
+- Fixes default behavior of regex in advanced validation
+
+= 6.1.10 (Date: December 2, 2025) =
 - Fix global settings save issue
 - Support other option in Conversational Form
 - Fix form submission delay issue for a large condition set

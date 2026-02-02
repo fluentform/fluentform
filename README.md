@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.1.8
+**Stable tag:** 6.1.13
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,9 +159,40 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.1.8 (Date: November 28, 2025) =
-- Improves client IP detection
-- Improves sanitizations and security
+### 6.1.15 (Date: January 30, 2026) =
+- Adds prefix and suffix support for textarea, url and password input
+- Adds suggested plugin page to show verified plugins
+- Adds mobile keyboard type options for number and mask input
+- Adds default form style share and apply to newly created forms
+- Improves AI form builder security
+- Improves multiselect accessibility
+- Improves form title generation in form history
+- Improves form saving UX
+- Fixes serial number concurrency in submission using hook
+
+### 6.1.13 (Date: January 14, 2026) =
+- Adds mobile keyboard type option for numeric and Mask Input fields
+- Adds 'Inherit Theme' option for Form Style Template in Elementor widget
+- Adds more string translation support for WPML
+- Improves country names according to the latest ISO 3166-1 alpha-2 list
+- Fixes Business Logo upload issue in payment settings
+- Fixes Dynamic SmartCode not working for conversational forms
+
+### 6.1.12 (Date: December 26, 2025) =
+- Fixes delay with condition and range slider field
+- Fixes top performing form report count
+- Fixes Button Style “Other Option” input issue with images
+- Improves security and sanitization for confirmation messages
+
+### 6.1.11 (Date: December 4, 2025) =
+- Fixes issue with saving showing invalid json
+- Fixes default behavior of regex in advanced validation
+
+### 6.1.10 (Date: December 2, 2025) =
+- Fix global settings save issue
+- Support other option in Conversational Form
+- Fix form submission delay issue for a large condition set
+
 
 ### 6.1.5 (Date: October 28, 2025) =
 - Adds Gutenberg Block Form Style Customization
@@ -222,46 +253,6 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
 - Fixes WP Text Editor sanitizer removing links in success messages with search parameters
 - Fixes Object Injection Vulnerability unserialize issue when using user profile specific shortcodes
-
-### 6.0.4 (Date: May 29, 2025) =
-- Improve honeypot condition check
-- Fix the net promoter score field's zero (0) value in the visual report
-- Fix the multi-select values in the submission including commas
-- Fix tooltip/help message
-- Fix conversational form address field meta smartcode
-- Fix conversational form section break image layout position
-- Fix email attachment missing for WordPress subdirectory
-- Fix conversational form name and address fields prefilled using URL params
-- Fix keyword-based restriction if IPInfo access key is provided
-- Fix conversational form invisible turnstile autoload
-- Fix email notification/integration sending after payment status change to paid
-- Fix turnstile with WP Rocket compatibility
-
-### 6.0.3 (Date: April 16, 2025) =
-- Adds hooks for disable captcha validation
-- Adds filter to control response as html on checkable field
-- Adds filter to control Mailchimp timout
-- Improves rating field accessibility
-- Fixes Cross-Site Scripting vulnerability CVE ID: CVE-2025-3615
-- Fixes Textdomain early load
-- Fixes cleantalk toggle in misc settings
-- Fixes analytics visual report showing empty
-- Fixes aria-label separately in address field
-
-### 6.0.0 (Date: March 19, 2025)
-- Adds Payment fields for free users (except coupon fields)
-- Adds Stripe payment gateway for free users (1.9% fee per transaction)
-- Adds Advanced Conditionals group for enhanced form logic
-- Adds FluentFormAI for creating AI assisted forms
-- Adds New Form Templates
-- Improves hCaptcha settings saving method
-- Improves Captchas Loading after first interactions on Popups
-- Improves CleanTalk API
-- Improves spam processing logs
-- Fixes Stripe fields language issues
-- Fixes "customer_name" issue for Stripe
-- Fixes conditional {dynamic.} shortcode in Custom HTML fields
-- Fixes front end facing site_url with home_url
 
 [View complete changelog history](https://fluentforms.com/docs/changelog/)
 

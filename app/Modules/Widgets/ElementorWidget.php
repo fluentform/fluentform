@@ -27,5 +27,10 @@ class ElementorWidget
     public function enqueueAssets()
     {
         wp_enqueue_style('fluentform-elementor-widget', fluentformMix('css/fluent-forms-elementor-widget.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_script('fluentform-elementor', fluentformMix('js/fluent-forms-elementor-widget.js'), [], FLUENTFORM_VERSION, true);
+
+        wp_localize_script('fluentform-elementor', 'fluentformElementor', [
+            'adminUrl' => admin_url('admin.php'),
+        ]);
     }
 }

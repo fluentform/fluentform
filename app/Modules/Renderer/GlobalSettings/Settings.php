@@ -54,7 +54,8 @@ class Settings
             'cleantalk_activated'   => CleanTalkHandler::isPluginEnabled(),
             'has_pro'               => Helper::hasPro(),
             'is_payment_compatible' => Helper::isPaymentCompatible(),
-            'form_settings_str'     => TranslationString::getGlobalSettingsI18n()
+            'form_settings_str'     => TranslationString::getGlobalSettingsI18n(),
+            'ace_path_url'          => fluentformMix('libs/ace'),
         ];
         if (Helper::isPaymentCompatible()) {
             $globalSettingAppData = apply_filters('fluentform/global_settings_component_settings_data', $globalSettingAppData);
