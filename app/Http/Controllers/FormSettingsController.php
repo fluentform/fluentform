@@ -63,6 +63,7 @@ class FormSettingsController extends Controller
     {
         $metaKeys = [
             '_custom_form_css',
+            '_custom_form_js',
             '_ff_selected_style',
             '_ff_form_styles'
         ];
