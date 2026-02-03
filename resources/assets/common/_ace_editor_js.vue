@@ -25,6 +25,11 @@
                 if (status && !this.editor) {
                     this.initEditor();
                 }
+            },
+            value(newVal) {
+                if (this.editor && newVal !== this.editor.getValue()) {
+                    this.editor.setValue(newVal || '', -1);
+                }
             }
         },
         methods: {
