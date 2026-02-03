@@ -1,4 +1,17 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
+
+import includes from 'lodash/includes';
+import startCase from 'lodash/startCase';
+import map from 'lodash/map';
+import each from 'lodash/each';
+import chunk from 'lodash/chunk';
+import has from 'lodash/has';
+import snakeCase from 'lodash/snakeCase';
+import cloneDeep from 'lodash/cloneDeep';
+import filter from 'lodash/filter';
+import isEmpty from 'lodash/isEmpty';
 
 /*
     Funciton Type: Array Function
@@ -25,19 +38,18 @@ if (typeof String.prototype.ucWords === "undefined") {
     }
 }
 
-// import lodash methods
-// and assign it as prefixed property to window object
+// Lodash methods assigned to window object
 window._ff = {
-    includes: require('lodash/includes'),
-    startCase: require('lodash/startCase'),
-    map: require('lodash/map'),
-    each: require('lodash/each'),
-    chunk: require('lodash/chunk'),
-    has: require('lodash/has'),
-    snakeCase: require('lodash/snakeCase'),
-    cloneDeep: require('lodash/cloneDeep'),
-    filter: require('lodash/filter'),
-    isEmpty: require('lodash/isEmpty'),
+    includes,
+    startCase,
+    map,
+    each,
+    chunk,
+    has,
+    snakeCase,
+    cloneDeep,
+    filter,
+    isEmpty,
     unique: (value, index, self) => self.indexOf(value) === index
 };
 
@@ -100,15 +112,14 @@ export const humanDiffTime  = (date)=> {
         return '';
     }
     if (window.fluent_forms_global_var.disable_time_diff) {
-        const dateMoment = moment(dateString);
-        return dateMoment.format(window.fluent_forms_global_var.wp_date_time_format);
+        return dayjs(dateString).format(window.fluent_forms_global_var.wp_date_time_format);
     }
 
     const endTime = new Date();
     const appStartTime = new Date();
     const timeDiff = endTime - appStartTime;
-    const dateObj = moment(dateString);
-    return dateObj.from(moment(window.fluent_forms_global_var.server_time).add(timeDiff, 'milliseconds'));
+    const dateObj = dayjs(dateString);
+    return dateObj.from(dayjs(window.fluent_forms_global_var.server_time).add(timeDiff, 'milliseconds'));
 }
 
 export const tooltipDateTime  = (date)=> {
@@ -116,7 +127,7 @@ export const tooltipDateTime  = (date)=> {
         return '';
     }
 
-    const dateMoment = moment(date);
+    const dateInstance = dayjs(date);
     const globalConfig = window.fluent_forms_global_var;
 
     if (globalConfig.disable_time_diff) {
@@ -125,13 +136,13 @@ export const tooltipDateTime  = (date)=> {
         const serverTime = window.fluent_forms_global_var.server_time;
         const timeDifference = currentTime - serverTime;
 
-        const adjustedServerTime = moment(globalConfig.server_time)
+        const adjustedServerTime = dayjs(globalConfig.server_time)
             .add(timeDifference, 'milliseconds');
 
-        return dateMoment.from(adjustedServerTime);
+        return dateInstance.from(adjustedServerTime);
     }
 
-    return dateMoment.format(globalConfig.wp_date_time_format);
+    return dateInstance.format(globalConfig.wp_date_time_format);
 }
 export function _$t(string, ...args) {
     if (args.length === 0) {

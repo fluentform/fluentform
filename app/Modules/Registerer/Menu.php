@@ -10,6 +10,7 @@ use FluentForm\App\Modules\DocumentationModule;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\Manager\FormManagerService;
+use FluentForm\App\Services\Vite;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -44,9 +45,9 @@ class Menu
 
         $app = $this->app;
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluent_forms_global',
-            fluentFormMix('js/fluent_forms_global.js'),
+            'resources/assets/admin/fluent_forms_global.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -69,170 +70,169 @@ class Menu
             $reportsCss = fluentFormMix('css/fluent-forms-reports-rtl.css');
         }
 
-        wp_register_style(
+        Vite::enqueueStyle(
             'fluentform_settings_global',
-            $settingsGlobalStyle,
+            'resources/assets/admin/css/settings_global.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'clipboard',
-            fluentFormMix('libs/clipboard.min.js'),
+            'node_modules/clipboard/dist/clipboard.min.js',
             [],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'copier',
-            fluentFormMix('js/copier.js'),
+            'resources/assets/admin/copier.js',
             [],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform_form_settings',
-            fluentFormMix('js/form_settings_app.js'),
+            'resources/assets/admin/form_settings_app.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluent_all_forms',
-            fluentFormMix('js/fluent-all-forms-admin.js'),
+            'resources/assets/admin/all_forms_app.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_style(
+        Vite::enqueueStyle(
             'fluent_all_forms',
-            $allFormsStyle,
+            'resources/assets/admin/css/fluent-all-forms.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform_editor_script',
-            fluentFormMix('js/fluent-forms-editor.js'),
+            'resources/assets/admin/editor_app.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-
-        wp_register_style(
+        Vite::enqueueStyle(
             'fluentform_editor_style',
-            $fluentFormAdminEditorStyles,
+            'resources/assets/admin/css/fluent-forms-admin.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
         );
 
-        wp_register_style(
+        Vite::enqueueStyle(
             'fluentform_editor_sass',
-            $fluentFormAdminCSS,
+            'resources/assets/admin/styles/index.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform-transfer-js',
-            fluentFormMix('js/fluentform-transfer.js'),
+            'resources/assets/admin/transfer/transfer.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform-global-settings-js',
-            fluentFormMix('js/fluentform-global-settings.js'),
+            'resources/assets/admin/settings/global_settings.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform-modules',
-            fluentFormMix('js/modules.js'),
+            'resources/assets/admin/modules.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform-docs',
-            fluentFormMix('js/docs.js'),
+            'resources/assets/admin/documentation.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform_form_entries',
-            fluentFormMix('js/form_entries.js'),
+            'resources/assets/admin/form_entries_app.js',
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform_reports',
-            fluentFormMix('js/reports.js'),
+            'resources/assets/admin/Reports/reports.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_style(
+        Vite::enqueueStyle(
             'fluentform_reports',
-            $reportsCss,
+            'resources/assets/admin/css/fluent-forms-reports.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform_all_entries',
-            fluentFormMix('js/all_entries.js'),
+            'resources/assets/admin/AllEntries/all-entries.js',
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform_chart_js',
-            fluentFormMix('libs/chartjs/chart.min.js'),
+            'resources/assets/libs/chartjs/chart.min.js',
             [],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::enqueueScript(
             'fluentform_vue_chart_js',
-            fluentFormMix('libs/chartjs/vue-chartjs.min.js'),
+            'resources/assets/libs/chartjs/vue-chartjs.min.js',
             [],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_style(
+        Vite::enqueueStyle(
             'fluentform-add-ons',
-            $addOnsCss,
+            'resources/assets/admin/css/add-ons.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
         );
 
-        wp_register_style(
+        Vite::enqueueStyle(
             'fluentform_doc_style',
-            $adminDocCss,
+            'resources/assets/admin/css/admin_docs.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
@@ -250,13 +250,9 @@ class Menu
             return $footerContent;
         });
 
-        $elementUIStyle = fluentFormMix('css/element-ui-css.css');
-        if (is_rtl()) {
-            $elementUIStyle = fluentFormMix('css/element-ui-css-rtl.css');
-        }
-        wp_enqueue_style(
+        Vite::enqueueStyle(
             'fluentform_global_elements',
-            $elementUIStyle,
+            'resources/assets/admin/css/element-ui-css.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
@@ -829,6 +825,7 @@ class Menu
         );
     
         $data = [
+            'ajaxurl'                 => Helper::getAjaxUrl(),
             'plugin'                  => $this->app->config->get('app.slug'),
             'formsCount'              => $formsCount,
             'hasPro'                  => defined('FLUENTFORMPRO'),

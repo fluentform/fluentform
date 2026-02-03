@@ -206,7 +206,7 @@
 
 <script type="text/babel">
 import { scrollTop } from '../../helpers'
-import moment from 'moment';
+import dayjs from 'dayjs';
 
     export default {
         name: 'payments',
@@ -258,7 +258,7 @@ import moment from 'moment';
                     })
             },
 	        submittedAt(date) {
-		        return moment(date).format('MMM DD, YYYY');
+		        return dayjs(date).format('MMM DD, YYYY');
 	        },
             tableRowClassName({row}) {
                 if(row.transaction_type == 'refund') {

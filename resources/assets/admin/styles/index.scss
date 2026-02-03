@@ -1,0 +1,78 @@
+// Combined admin styles entry point for Vite
+// This replaces index.less for the Vite build
+
+// Import splitpanes CSS (direct CSS import)
+@import "~splitpanes/dist/splitpanes.css";
+
+// Splitpanes overrides
+.default-theme {
+    &.splitpanes {
+        .splitpanes__splitter {
+            border-left: none;
+        }
+    }
+}
+
+.splitpanes.default-theme .splitpanes__pane {
+    background-color: transparent;
+}
+
+// Grid system (converted from LESS)
+// Note: The original LESS grid system is kept in grid.less for reference
+// This is a simplified SCSS version
+
+/* === v-grid === */
+.v-row {
+    display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-right: -15px;
+
+    > [class*="v-col--"] {
+        box-sizing: border-box;
+    }
+
+    .v-col--auto {
+        width: 100%;
+    }
+}
+
+// Generate column classes
+$cols: (5, 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 55, 60, 65, 66, 70, 75, 80, 85, 90, 95, 100);
+
+@each $col in $cols {
+    .v-row {
+        .v-col--#{$col} {
+            width: #{$col * 1%};
+            padding-right: 15px;
+
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+
+        &.v-row--no-gutter {
+            .v-col--#{$col} {
+                width: #{$col * 1%};
+            }
+        }
+    }
+}
+
+// Auto columns (1-10)
+@for $i from 1 through 10 {
+    .v-row {
+        .v-col--auto:nth-last-child(#{$i}),
+        .v-col--auto:nth-last-child(#{$i}) ~ .v-col--auto {
+            width: calc((100% - 15px * #{$i - 1}) / #{$i});
+        }
+
+        &.v-row--no-gutter {
+            .v-col--auto:nth-last-child(#{$i}),
+            .v-col--auto:nth-last-child(#{$i}) ~ .v-col--auto {
+                width: calc(100% / #{$i});
+            }
+        }
+    }
+}

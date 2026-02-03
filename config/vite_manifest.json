@@ -1,0 +1,643 @@
+{
+  "_Acl-Ce45lYWr.js": {
+    "file": "js/chunks/Acl-Ce45lYWr.js",
+    "name": "Acl"
+  },
+  "_BtnGroupItem-Ev89ayHv.js": {
+    "file": "js/chunks/BtnGroupItem-Ev89ayHv.js",
+    "name": "BtnGroupItem",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_CardHead-BlahpP7R.js": {
+    "file": "js/chunks/CardHead-BlahpP7R.js",
+    "name": "CardHead",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_CardHeadGroup-DQxAuQdG.js": {
+    "file": "js/chunks/CardHeadGroup-DQxAuQdG.js",
+    "name": "CardHeadGroup",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_CustomComponent-f0Y4kzfR.js": {
+    "file": "js/chunks/CustomComponent-f0Y4kzfR.js",
+    "name": "CustomComponent",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_input-popover-DFEZlPWA.js",
+      "_PhotoUploader-vz9AdJCh.js"
+    ]
+  },
+  "_Errors-C7IcqkuN.js": {
+    "file": "js/chunks/Errors-C7IcqkuN.js",
+    "name": "Errors",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_ImportForms-DziJar-Z.js": {
+    "file": "js/chunks/ImportForms-DziJar-Z.js",
+    "name": "ImportForms",
+    "imports": [
+      "_CardHead-BlahpP7R.js",
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_ItemDisabled-DTJgyRcB.js": {
+    "file": "js/chunks/ItemDisabled-DTJgyRcB.js",
+    "name": "ItemDisabled",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_PhotoUploader-vz9AdJCh.js"
+    ]
+  },
+  "_Notice-DsIe_wdu.js": {
+    "file": "js/chunks/Notice-DsIe_wdu.js",
+    "name": "Notice",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_PhotoUploader-vz9AdJCh.js": {
+    "file": "js/chunks/PhotoUploader-vz9AdJCh.js",
+    "name": "PhotoUploader",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_SectionHead-DUDHhNra.js": {
+    "file": "js/chunks/SectionHead-DUDHhNra.js",
+    "name": "SectionHead",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_TabItem-D1Y8PPkc.js": {
+    "file": "js/chunks/TabItem-D1Y8PPkc.js",
+    "name": "TabItem",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "__updateToProContent-BOdCvWIf.js": {
+    "file": "js/chunks/_updateToProContent-BOdCvWIf.js",
+    "name": "_updateToProContent",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_chartView-CHLvyjQW.js": {
+    "file": "js/chunks/chartView-CHLvyjQW.js",
+    "name": "chartView",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_Notice-DsIe_wdu.js",
+      "__updateToProContent-BOdCvWIf.js",
+      "_helpers-B-ClM6Na.js"
+    ]
+  },
+  "_confirmRemove-DPlTtTeK.js": {
+    "file": "js/chunks/confirmRemove-DPlTtTeK.js",
+    "name": "confirmRemove",
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_element-ui.common-Bln8ih5d.js": {
+    "file": "js/chunks/element-ui.common-Bln8ih5d.js",
+    "name": "element-ui.common",
+    "imports": [
+      "_helpers-B-ClM6Na.js"
+    ]
+  },
+  "_en-D7zzbkJt.js": {
+    "file": "js/chunks/en-D7zzbkJt.js",
+    "name": "en",
+    "imports": [
+      "_helpers-B-ClM6Na.js",
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_helpers-B-ClM6Na.js": {
+    "file": "js/chunks/helpers-B-ClM6Na.js",
+    "name": "helpers"
+  },
+  "_input-popover-DFEZlPWA.js": {
+    "file": "js/chunks/input-popover-DFEZlPWA.js",
+    "name": "input-popover",
+    "imports": [
+      "_Errors-C7IcqkuN.js",
+      "_element-ui.common-Bln8ih5d.js"
+    ]
+  },
+  "_notifier-J0HF9NxT.js": {
+    "file": "js/chunks/notifier-J0HF9NxT.js",
+    "name": "notifier"
+  },
+  "_purify.es-A66Cw1IH.js": {
+    "file": "js/chunks/purify.es-A66Cw1IH.js",
+    "name": "purify.es"
+  },
+  "_slider-DJF6SgXg.js": {
+    "file": "js/chunks/slider-DJF6SgXg.js",
+    "name": "slider"
+  },
+  "_vddl.runtime.esm-B4XZ20kK.js": {
+    "file": "js/chunks/vddl.runtime.esm-B4XZ20kK.js",
+    "name": "vddl.runtime.esm"
+  },
+  "_vue-router.esm-C7GX67NX.js": {
+    "file": "js/chunks/vue-router.esm-C7GX67NX.js",
+    "name": "vue-router.esm"
+  },
+  "guten_block/src/fluent_gutenblock.scss": {
+    "file": "css/fluent_gutenblock.css",
+    "src": "guten_block/src/fluent_gutenblock.scss",
+    "isEntry": true
+  },
+  "guten_block/src/index.js": {
+    "file": "js/fluent_gutenblock.js",
+    "name": "js/fluent_gutenblock",
+    "src": "guten_block/src/index.js",
+    "isEntry": true
+  },
+  "resources/assets/admin/AllEntries/all-entries.js": {
+    "file": "js/all_entries.js",
+    "name": "js/all_entries",
+    "src": "resources/assets/admin/AllEntries/all-entries.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_en-D7zzbkJt.js",
+      "_chartView-CHLvyjQW.js",
+      "_BtnGroupItem-Ev89ayHv.js",
+      "_SectionHead-DUDHhNra.js",
+      "_helpers-B-ClM6Na.js",
+      "_notifier-J0HF9NxT.js",
+      "_Notice-DsIe_wdu.js",
+      "__updateToProContent-BOdCvWIf.js"
+    ]
+  },
+  "resources/assets/admin/Reports/reports.js": {
+    "file": "js/reports.js",
+    "name": "js/reports",
+    "src": "resources/assets/admin/Reports/reports.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_en-D7zzbkJt.js",
+      "_CardHead-BlahpP7R.js",
+      "_Notice-DsIe_wdu.js",
+      "_notifier-J0HF9NxT.js",
+      "_helpers-B-ClM6Na.js"
+    ],
+    "css": [
+      "fluentform-transfer.css"
+    ]
+  },
+  "resources/assets/admin/admin_notices.js": {
+    "file": "js/admin_notices.js",
+    "name": "js/admin_notices",
+    "src": "resources/assets/admin/admin_notices.js",
+    "isEntry": true
+  },
+  "resources/assets/admin/all_forms_app.js": {
+    "file": "js/fluent-all-forms-admin.js",
+    "name": "js/fluent-all-forms-admin",
+    "src": "resources/assets/admin/all_forms_app.js",
+    "isEntry": true,
+    "imports": [
+      "_helpers-B-ClM6Na.js",
+      "_element-ui.common-Bln8ih5d.js",
+      "_en-D7zzbkJt.js",
+      "_Acl-Ce45lYWr.js",
+      "_confirmRemove-DPlTtTeK.js",
+      "_CardHead-BlahpP7R.js",
+      "_Notice-DsIe_wdu.js",
+      "_ImportForms-DziJar-Z.js",
+      "_BtnGroupItem-Ev89ayHv.js",
+      "_SectionHead-DUDHhNra.js",
+      "_notifier-J0HF9NxT.js"
+    ],
+    "css": [
+      "fluent-all-forms-admin.css"
+    ]
+  },
+  "resources/assets/admin/assets/editor-icons/fonts/fluentformeditors.eot": {
+    "file": "fonts/fluentformeditors.eot",
+    "src": "resources/assets/admin/assets/editor-icons/fonts/fluentformeditors.eot"
+  },
+  "resources/assets/admin/assets/editor-icons/fonts/fluentformeditors.svg": {
+    "file": "fluentformeditors.svg",
+    "src": "resources/assets/admin/assets/editor-icons/fonts/fluentformeditors.svg"
+  },
+  "resources/assets/admin/assets/editor-icons/fonts/fluentformeditors.ttf": {
+    "file": "fonts/fluentformeditors.ttf",
+    "src": "resources/assets/admin/assets/editor-icons/fonts/fluentformeditors.ttf"
+  },
+  "resources/assets/admin/assets/editor-icons/fonts/fluentformeditors.woff": {
+    "file": "fonts/fluentformeditors.woff",
+    "src": "resources/assets/admin/assets/editor-icons/fonts/fluentformeditors.woff"
+  },
+  "resources/assets/admin/assets/icons/fonts/fluentform.eot": {
+    "file": "fonts/fluentform.eot",
+    "src": "resources/assets/admin/assets/icons/fonts/fluentform.eot"
+  },
+  "resources/assets/admin/assets/icons/fonts/fluentform.svg": {
+    "file": "fluentform.svg",
+    "src": "resources/assets/admin/assets/icons/fonts/fluentform.svg"
+  },
+  "resources/assets/admin/assets/icons/fonts/fluentform.ttf": {
+    "file": "fonts/fluentform.ttf",
+    "src": "resources/assets/admin/assets/icons/fonts/fluentform.ttf"
+  },
+  "resources/assets/admin/assets/icons/fonts/fluentform.woff": {
+    "file": "fonts/fluentform.woff",
+    "src": "resources/assets/admin/assets/icons/fonts/fluentform.woff"
+  },
+  "resources/assets/admin/conversion_templates/conversational_design.js": {
+    "file": "js/conversational_design.js",
+    "name": "js/conversational_design",
+    "src": "resources/assets/admin/conversion_templates/conversational_design.js",
+    "isEntry": true,
+    "imports": [
+      "_helpers-B-ClM6Na.js",
+      "_element-ui.common-Bln8ih5d.js",
+      "_en-D7zzbkJt.js",
+      "_PhotoUploader-vz9AdJCh.js",
+      "_CardHead-BlahpP7R.js",
+      "_purify.es-A66Cw1IH.js",
+      "_TabItem-D1Y8PPkc.js",
+      "_notifier-J0HF9NxT.js"
+    ]
+  },
+  "resources/assets/admin/conversion_templates/design_css.scss": {
+    "file": "css/conversational_design.css",
+    "src": "resources/assets/admin/conversion_templates/design_css.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/copier.js": {
+    "file": "js/copier.js",
+    "name": "js/copier",
+    "src": "resources/assets/admin/copier.js",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/add-ons.scss": {
+    "file": "css/add-ons.css",
+    "src": "resources/assets/admin/css/add-ons.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/admin_docs.scss": {
+    "file": "css/admin_docs.css",
+    "src": "resources/assets/admin/css/admin_docs.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/admin_notices.scss": {
+    "file": "css/admin_notices.css",
+    "src": "resources/assets/admin/css/admin_notices.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/element-ui-css.scss": {
+    "file": "css/element-ui-css.css",
+    "src": "resources/assets/admin/css/element-ui-css.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/fluent-all-forms.scss": {
+    "file": "css/fluent-all-forms.css",
+    "src": "resources/assets/admin/css/fluent-all-forms.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/fluent-forms-admin.scss": {
+    "file": "css/fluent-forms-admin-sass.css",
+    "src": "resources/assets/admin/css/fluent-forms-admin.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/fluent-forms-reports.scss": {
+    "file": "css/fluent-forms-reports.css",
+    "src": "resources/assets/admin/css/fluent-forms-reports.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/fonts/element-icons.ttf": {
+    "file": "fonts/element-icons.ttf",
+    "src": "resources/assets/admin/css/fonts/element-icons.ttf"
+  },
+  "resources/assets/admin/css/fonts/element-icons.woff": {
+    "file": "fonts/element-icons.woff",
+    "src": "resources/assets/admin/css/fonts/element-icons.woff"
+  },
+  "resources/assets/admin/css/payment_entries.scss": {
+    "file": "css/payment_entries.css",
+    "src": "resources/assets/admin/css/payment_entries.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/payment_settings.scss": {
+    "file": "css/payment_settings.css",
+    "src": "resources/assets/admin/css/payment_settings.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/css/settings_global.scss": {
+    "file": "css/settings_global.css",
+    "src": "resources/assets/admin/css/settings_global.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/documentation.js": {
+    "file": "js/docs.js",
+    "name": "js/docs",
+    "src": "resources/assets/admin/documentation.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_helpers-B-ClM6Na.js"
+    ]
+  },
+  "resources/assets/admin/editor_app.js": {
+    "file": "js/fluent-forms-editor.js",
+    "name": "js/fluent-forms-editor",
+    "src": "resources/assets/admin/editor_app.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_helpers-B-ClM6Na.js",
+      "_vddl.runtime.esm-B4XZ20kK.js",
+      "_en-D7zzbkJt.js",
+      "_notifier-J0HF9NxT.js",
+      "_Errors-C7IcqkuN.js",
+      "_ItemDisabled-DTJgyRcB.js",
+      "_purify.es-A66Cw1IH.js",
+      "_BtnGroupItem-Ev89ayHv.js",
+      "_Notice-DsIe_wdu.js",
+      "_input-popover-DFEZlPWA.js",
+      "_PhotoUploader-vz9AdJCh.js"
+    ],
+    "css": [
+      "fluent-forms-editor.css"
+    ]
+  },
+  "resources/assets/admin/fluent_forms_editor_helper.js": {
+    "file": "js/fluent_forms_editor_helper.js",
+    "name": "js/fluent_forms_editor_helper",
+    "src": "resources/assets/admin/fluent_forms_editor_helper.js",
+    "isEntry": true
+  },
+  "resources/assets/admin/fluent_forms_global.js": {
+    "file": "js/fluent_forms_global.js",
+    "name": "js/fluent_forms_global",
+    "src": "resources/assets/admin/fluent_forms_global.js",
+    "isEntry": true
+  },
+  "resources/assets/admin/fluentform_editor_script.js": {
+    "file": "js/fluentform_editor_script.js",
+    "name": "js/fluentform_editor_script",
+    "src": "resources/assets/admin/fluentform_editor_script.js",
+    "isEntry": true
+  },
+  "resources/assets/admin/form_entries_app.js": {
+    "file": "js/form_entries.js",
+    "name": "js/form_entries",
+    "src": "resources/assets/admin/form_entries_app.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_helpers-B-ClM6Na.js",
+      "_vue-router.esm-C7GX67NX.js",
+      "_vddl.runtime.esm-B4XZ20kK.js",
+      "_en-D7zzbkJt.js",
+      "_Acl-Ce45lYWr.js",
+      "_confirmRemove-DPlTtTeK.js",
+      "_Notice-DsIe_wdu.js",
+      "_BtnGroupItem-Ev89ayHv.js",
+      "_SectionHead-DUDHhNra.js",
+      "_chartView-CHLvyjQW.js",
+      "_Errors-C7IcqkuN.js",
+      "_CardHead-BlahpP7R.js",
+      "_CardHeadGroup-DQxAuQdG.js",
+      "_notifier-J0HF9NxT.js",
+      "__updateToProContent-BOdCvWIf.js"
+    ]
+  },
+  "resources/assets/admin/form_preview_app.js": {
+    "file": "js/form_preview_app.js",
+    "name": "js/form_preview_app",
+    "src": "resources/assets/admin/form_preview_app.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_helpers-B-ClM6Na.js"
+    ]
+  },
+  "resources/assets/admin/form_settings_app.js": {
+    "file": "js/form_settings_app.js",
+    "name": "js/form_settings_app",
+    "src": "resources/assets/admin/form_settings_app.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_helpers-B-ClM6Na.js",
+      "_vue-router.esm-C7GX67NX.js",
+      "_Errors-C7IcqkuN.js",
+      "_en-D7zzbkJt.js",
+      "_notifier-J0HF9NxT.js",
+      "_BtnGroupItem-Ev89ayHv.js",
+      "_CardHead-BlahpP7R.js",
+      "_CardHeadGroup-DQxAuQdG.js",
+      "_confirmRemove-DPlTtTeK.js",
+      "_input-popover-DFEZlPWA.js",
+      "_ItemDisabled-DTJgyRcB.js",
+      "_CustomComponent-f0Y4kzfR.js",
+      "_PhotoUploader-vz9AdJCh.js",
+      "_TabItem-D1Y8PPkc.js",
+      "_Notice-DsIe_wdu.js",
+      "__updateToProContent-BOdCvWIf.js"
+    ],
+    "css": [
+      "form_settings_app.css"
+    ]
+  },
+  "resources/assets/admin/modules.js": {
+    "file": "js/modules.js",
+    "name": "js/modules",
+    "src": "resources/assets/admin/modules.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_helpers-B-ClM6Na.js",
+      "_notifier-J0HF9NxT.js"
+    ],
+    "css": [
+      "modules.css"
+    ]
+  },
+  "resources/assets/admin/payment_entries.js": {
+    "file": "js/payment_entries.js",
+    "name": "js/payment_entries",
+    "src": "resources/assets/admin/payment_entries.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_en-D7zzbkJt.js",
+      "_Acl-Ce45lYWr.js",
+      "_helpers-B-ClM6Na.js"
+    ]
+  },
+  "resources/assets/admin/settings/global_settings.js": {
+    "file": "js/fluentform-global-settings.js",
+    "name": "js/fluentform-global-settings",
+    "src": "resources/assets/admin/settings/global_settings.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_en-D7zzbkJt.js",
+      "_CardHead-BlahpP7R.js",
+      "_Notice-DsIe_wdu.js",
+      "_CardHeadGroup-DQxAuQdG.js",
+      "_helpers-B-ClM6Na.js",
+      "__updateToProContent-BOdCvWIf.js",
+      "_CustomComponent-f0Y4kzfR.js",
+      "_notifier-J0HF9NxT.js",
+      "_Errors-C7IcqkuN.js",
+      "_input-popover-DFEZlPWA.js",
+      "_confirmRemove-DPlTtTeK.js",
+      "_BtnGroupItem-Ev89ayHv.js",
+      "_PhotoUploader-vz9AdJCh.js"
+    ],
+    "css": [
+      "fluentform-global-settings.css"
+    ]
+  },
+  "resources/assets/admin/styles/index.scss": {
+    "file": "css/fluent-forms-admin.css",
+    "src": "resources/assets/admin/styles/index.scss",
+    "isEntry": true
+  },
+  "resources/assets/admin/transfer/transfer.js": {
+    "file": "js/fluentform-transfer.js",
+    "name": "js/fluentform-transfer",
+    "src": "resources/assets/admin/transfer/transfer.js",
+    "isEntry": true,
+    "imports": [
+      "_element-ui.common-Bln8ih5d.js",
+      "_en-D7zzbkJt.js",
+      "_notifier-J0HF9NxT.js",
+      "_helpers-B-ClM6Na.js",
+      "_CardHead-BlahpP7R.js",
+      "_ImportForms-DziJar-Z.js",
+      "_confirmRemove-DPlTtTeK.js",
+      "_BtnGroupItem-Ev89ayHv.js",
+      "_Notice-DsIe_wdu.js",
+      "__updateToProContent-BOdCvWIf.js"
+    ],
+    "css": [
+      "fluentform-transfer.css"
+    ]
+  },
+  "resources/assets/elementor/fluent-forms-elementor-widget.js": {
+    "file": "js/fluent-forms-elementor-widget.js",
+    "name": "js/fluent-forms-elementor-widget",
+    "src": "resources/assets/elementor/fluent-forms-elementor-widget.js",
+    "isEntry": true
+  },
+  "resources/assets/elementor/fluent-forms-elementor-widget.scss": {
+    "file": "css/fluent-forms-elementor-widget.css",
+    "src": "resources/assets/elementor/fluent-forms-elementor-widget.scss",
+    "isEntry": true
+  },
+  "resources/assets/preview/preview.scss": {
+    "file": "css/preview.css",
+    "src": "resources/assets/preview/preview.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/fluentform-advanced.js": {
+    "file": "js/fluentform-advanced.js",
+    "name": "js/fluentform-advanced",
+    "src": "resources/assets/public/fluentform-advanced.js",
+    "isEntry": true,
+    "imports": [
+      "_slider-DJF6SgXg.js"
+    ]
+  },
+  "resources/assets/public/form-save-progress.js": {
+    "file": "js/form-save-progress.js",
+    "name": "js/form-save-progress",
+    "src": "resources/assets/public/form-save-progress.js",
+    "isEntry": true,
+    "imports": [
+      "_slider-DJF6SgXg.js"
+    ]
+  },
+  "resources/assets/public/form-submission.js": {
+    "file": "js/form-submission.js",
+    "name": "js/form-submission",
+    "src": "resources/assets/public/form-submission.js",
+    "isEntry": true
+  },
+  "resources/assets/public/media-capture.js": {
+    "file": "js/media-capture.js",
+    "name": "js/media-capture",
+    "src": "resources/assets/public/media-capture.js",
+    "isEntry": true
+  },
+  "resources/assets/public/payment_handler.js": {
+    "file": "js/payment_handler.js",
+    "name": "js/payment_handler",
+    "src": "resources/assets/public/payment_handler.js",
+    "isEntry": true,
+    "imports": [
+      "_helpers-B-ClM6Na.js"
+    ]
+  },
+  "resources/assets/public/scss/choices.scss": {
+    "file": "css/choices.css",
+    "src": "resources/assets/public/scss/choices.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/scss/fluent-forms-public.scss": {
+    "file": "css/fluent-forms-public.css",
+    "src": "resources/assets/public/scss/fluent-forms-public.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/scss/fluentform-public-default.scss": {
+    "file": "css/fluentform-public-default.css",
+    "src": "resources/assets/public/scss/fluentform-public-default.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/scss/frameless.scss": {
+    "file": "css/frameless.css",
+    "src": "resources/assets/public/scss/frameless.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/scss/media-capture.scss": {
+    "file": "css/media-capture.css",
+    "src": "resources/assets/public/scss/media-capture.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/scss/skins/_payment.scss": {
+    "file": "css/payment_skin.css",
+    "src": "resources/assets/public/scss/skins/_payment.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/scss/skins/_transactions.scss": {
+    "file": "css/fluentform_transactions.css",
+    "src": "resources/assets/public/scss/skins/_transactions.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/scss/themes/index.scss": {
+    "file": "css/ff-themes.css",
+    "src": "resources/assets/public/scss/themes/index.scss",
+    "isEntry": true
+  },
+  "resources/assets/public/transactions_ui.js": {
+    "file": "js/fluentform_transactions_ui.js",
+    "name": "js/fluentform_transactions_ui",
+    "src": "resources/assets/public/transactions_ui.js",
+    "isEntry": true
+  },
+  "resources/img/grid-shape.png": {
+    "file": "grid-shape.png",
+    "src": "resources/img/grid-shape.png"
+  }
+}

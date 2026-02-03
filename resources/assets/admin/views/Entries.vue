@@ -544,7 +544,7 @@
 
 <script type="text/babel">
     import Confirm from "@/admin/components/confirmRemove.vue";
-    import moment from 'moment';
+    import dayjs from 'dayjs';
     import each from 'lodash/each';
     import EmailResend from './Helpers/_ResentEmailNotification'
     import ColumnDragAndDrop from "./ColumnDragAndDrop";
@@ -1150,7 +1150,7 @@
                     format = 'MMM DD, YYYY';
                 }
                 let dateString = (date === undefined) ? null : date;
-                let dateObj = moment(dateString);
+                let dateObj = dayjs(dateString);
                 return dateObj.isValid() ? dateObj.format(format) : null;
             },
 	        filterDateRangedPicked() {

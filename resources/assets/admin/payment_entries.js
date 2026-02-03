@@ -24,19 +24,7 @@ import {
 } from 'element-ui';
 import App from './PaymentEntries/App.vue';
 import globalSearch from './global_search';
-import {_$t} from "@/admin/helpers";
-let tooltipDateTime = function(dateTime) {
-    return dateTime;
-};
-let humanDiffTime = function(dateTime) {
-    return dateTime;
-};
-try {
-    const helpers = require('./helpers');
-    tooltipDateTime = helpers.tooltipDateTime || tooltipDateTime;
-    humanDiffTime = helpers.humanDiffTime || humanDiffTime;
-} catch (error) {
-}
+import {_$t, tooltipDateTime, humanDiffTime} from "@/admin/helpers";
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;

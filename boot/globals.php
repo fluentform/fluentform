@@ -51,7 +51,7 @@ function wpFluentForm($key = null)
  */
 function fluentFormMix($path = '')
 {
-    return wpFluentForm('url.assets') . ltrim($path, '/');
+    return \FluentForm\App\Services\Vite::asset($path);
 }
 
 if (! function_exists('wpFluent')) {

@@ -685,9 +685,9 @@ add_action('wp', function () use ($app) {
     if ($fluentFormPages) {
         add_action('wp_enqueue_scripts', function () use ($app) {
             wp_enqueue_script('jquery');
-            wp_enqueue_script(
+            \FluentForm\App\Services\Vite::enqueueScript(
                 'fluent_forms_global',
-                fluentFormMix('js/fluent_forms_global.js'),
+                'resources/assets/admin/fluent_forms_global.js',
                 ['jquery'],
                 FLUENTFORM_VERSION,
                 true
@@ -723,9 +723,9 @@ add_action('wp', function () use ($app) {
             wp_enqueue_script('fluent-form-submission');
             wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'), [], FLUENTFORM_VERSION);
             if (!defined('FLUENTFORMPRO')) {
-                wp_enqueue_script(
+                \FluentForm\App\Services\Vite::enqueueScript(
                     'fluentform-preview_app',
-                    fluentFormMix('js/form_preview_app.js'),
+                    'resources/assets/admin/form_preview_app.js',
                     ['jquery'],
                     FLUENTFORM_VERSION,
                     true

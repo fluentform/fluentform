@@ -295,7 +295,7 @@ Vue.mixin({
             }
 
             const dateString = (date === undefined) ? null : date;
-            const dateObj = moment(dateString);
+            const dateObj = dayjs(dateString);
 
             return dateObj.isValid() ? dateObj.format(format) : null;
         },
@@ -304,7 +304,7 @@ Vue.mixin({
 
 // Global error handling...
 import Errors from '../common/Errors'
-import moment from "moment";
+import dayjs from "dayjs";
 
 global.Errors = Errors;
 
