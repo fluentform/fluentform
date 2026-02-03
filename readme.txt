@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.16
+Stable tag: 6.1.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -437,6 +437,11 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.1.17 (Date: February 3, 2026) =
+- Fix conversational form subscription plan not showing in payment summary when first option is selected
+- Fix Custom JS disappearing after reload
+- Fix conversational form “Other Option” field not appearing for radio buttons using Button Style
 
 = 6.1.16 (Date: January 30, 2026) =
 - Fix input image issue in conversational form
