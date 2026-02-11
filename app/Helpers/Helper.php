@@ -131,6 +131,90 @@ class Helper
         return $statuses;
     }
 
+    /**
+     * Check if form has standalone select_country or address with country sub-field as select_country.
+     *
+     * @param int $formId
+     * @return bool
+     */
+    public static function formHasCountryField($formId)
+    {
+        if (!$formId) {
+            return false;
+        }
+
+        static $cache = [];
+        if (isset($cache[$formId])) {
+            return $cache[$formId];
+        }
+
+        $form = Form::find($formId);
+        if (!$form || empty($form->form_fields)) {
+            $cache[$formId] = false;
+            return false;
+        }
+
+        $parsed = json_decode($form->form_fields, true);
+        $fields = ArrayHelper::get($parsed, 'fields', []);
+
+        foreach ((array) $fields as $field) {
+            if (ArrayHelper::get($field, 'element') === 'select_country') {
+                $cache[$formId] = true;
+                return true;
+            }
+            if (ArrayHelper::get($field, 'element') === 'address') {
+                $countryField = ArrayHelper::get($field, 'fields.country');
+                if ($countryField && ArrayHelper::get($countryField, 'element') === 'select_country') {
+                    $cache[$formId] = true;
+                    return true;
+                }
+            }
+        }
+
+        $cache[$formId] = false;
+
+        return false;
+    }
+
+    /**
+     * Resolve search term to country codes when it matches country names (exact or partial).
+     * Only runs when form has address/country fields. Enables searching by "Netherlands" when stored as "NL".
+     *
+     * @param string   $search
+     * @param int|null $formId When provided, only resolves if form has country fields.
+     * @return array Search terms to use (original + matching country codes, or just original).
+     */
+    public static function resolveCountrySearchTerm($search, $formId = null)
+    {
+        $search = trim($search);
+        $terms = [$search];
+
+        if ($formId && !static::formHasCountryField($formId)) {
+            return $terms;
+        }
+
+        if (mb_strlen($search) < 3) {
+            return $terms;
+        }
+
+        $countries = \getFluentFormCountryList();
+        if (!is_array($countries)) {
+            return $terms;
+        }
+
+        $searchLower = mb_strtolower($search);
+        $matchedCodes = [];
+
+        foreach ($countries as $code => $name) {
+            $nameLower = mb_strtolower($name);
+            if ($searchLower === $nameLower || false !== strpos($nameLower, $searchLower) || false !== strpos($searchLower, $nameLower)) {
+                $matchedCodes[] = $code;
+            }
+        }
+
+        return array_unique(array_merge($terms, $matchedCodes));
+    }
+
     public static function getReportableInputs()
     {
         $data = [
