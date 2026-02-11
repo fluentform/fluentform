@@ -213,7 +213,49 @@
                                 </el-form>
                             </div>
                             <div class="ff_landing_settings_wrapper ffc_sidebar_body" v-else-if="active_tab == 'share'">
-                                <p>{{ $t('Share your form by unique URL or copy and paste the shortcode to embed in your page and post') }}</p>
+                                <el-form label-position="top">
+                                    <el-form-item class="ff-form-item">
+                                        <template slot="label">
+                                            {{ $t('Pretty URL') }}
+                                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                                <div slot="content">
+                                                    <p>{{ $t('Enable a clean, memorable URL for your landing page.') }}</p>
+                                                </div>
+                                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                            </el-tooltip>
+                                        </template>
+                                        <el-switch
+                                            v-model="prettyUrl.enabled"
+                                            active-text=""
+                                            inactive-text=""
+                                        ></el-switch>
+                                    </el-form-item>
+
+                                    <el-form-item v-if="prettyUrl.enabled" class="ff-form-item">
+                                        <template slot="label">
+                                            {{ $t('URL Slug') }}
+                                        </template>
+                                        <el-input
+                                            v-model="prettyUrl.slug"
+                                            :placeholder="$t('my-form')"
+                                            @input="sanitizePrettyUrlSlug"
+                                        />
+                                        <p class="text-note mt-1" v-if="prettyUrl.slug">
+                                            {{ prettyUrlPreview }}
+                                        </p>
+                                    </el-form-item>
+
+                                    <el-form-item>
+                                        <el-button
+                                            :loading="prettyUrl.saving"
+                                            type="primary"
+                                            icon="el-icon-success"
+                                            size="small"
+                                            @click="saveSettings()">
+                                            {{ $t('%s Settings', prettyUrl.saving ? 'Saving' : 'Save') }}
+                                        </el-button>
+                                    </el-form-item>
+                                </el-form>
                             </div>
                         </div>
                         <div class="ff_landing_preview ffc_design_container">
@@ -289,16 +331,30 @@
                 },
                 active_tab: 'design',
                 show_frame: true,
-                setup: false
+                setup: false,
+                prettyUrl: {
+                    slug: '',
+                    enabled: false,
+                    pretty_url: '',
+                    saving: false
+                },
+                prettyUrlBaseSlug: 'form'
             }
         },
         computed: {
             final_share_url() {
+                if (this.prettyUrl.enabled && this.prettyUrl.pretty_url) {
+                    return this.prettyUrl.pretty_url;
+                }
                 if(this.settings.share_url_salt) {
                     return this.share_url + '&form='+this.settings.share_url_salt;
                 } else {
                     return this.share_url;
                 }
+            },
+            prettyUrlPreview() {
+                const base = window.location.origin + '/' + this.prettyUrlBaseSlug + '/';
+                return base + (this.prettyUrl.slug || 'my-form') + '/';
             }
         },
         watch: {
@@ -321,17 +377,28 @@
         methods: {
             saveSettings(silence) {
                 this.saving = true;
+                this.prettyUrl.saving = true;
                 this.show_frame = false;
 
                 let data = {
                     action: 'ff_store_landing_page_settings',
                     form_id: this.form_id,
-                    settings: this.settings
+                    settings: this.settings,
+                    pretty_url: {
+                        slug: this.prettyUrl.slug,
+                        enabled: this.prettyUrl.enabled
+                    }
                 };
 
                 FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.share_url = response.data.share_url;
+                        if (response.data.slug) {
+                            this.prettyUrl.slug = response.data.slug;
+                        }
+                        if (response.data.pretty_url !== undefined) {
+                            this.prettyUrl.pretty_url = response.data.pretty_url;
+                        }
                         if(!silence) {
                             this.$success(response.data.message);
                         }
@@ -339,10 +406,13 @@
                         this.setup = true;
                     })
                     .fail(error => {
-
+                        if (error.responseJSON && error.responseJSON.data) {
+                            this.$fail(error.responseJSON.data.message);
+                        }
                     })
                     .always(() => {
                         this.saving = false;
+                        this.prettyUrl.saving = false;
                         this.show_frame = true;
                     });
             },
@@ -391,6 +461,11 @@
                         this.settings.media_x_position = parseInt(this.settings.media_x_position);
                         this.settings.media_y_position = parseInt(this.settings.media_y_position);
 
+                        // Populate pretty URL data
+                        this.prettyUrl.slug = response.data.slug || '';
+                        this.prettyUrl.enabled = !!response.data.slug_enabled;
+                        this.prettyUrl.pretty_url = response.data.pretty_url || '';
+                        this.prettyUrlBaseSlug = response.data.base_slug || 'form';
                     })
                     .fail(error => {
                         if (!error.responseJSON) {
@@ -432,6 +507,13 @@
                     }
                 }
 	            this.saveSettings(true);
+            },
+            sanitizePrettyUrlSlug(value) {
+                this.prettyUrl.slug = value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9-]/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
             },
             changeDeviceType (type) {
                 this.settings.remember_device_type = type;

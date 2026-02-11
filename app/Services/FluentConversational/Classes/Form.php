@@ -20,6 +20,7 @@ class Form
     public function boot()
     {
         add_action('wp', [$this, 'render'], 100);
+        add_action('wp', [$this, 'handlePrettyUrl'], 99);
 
         add_filter('fluentform/editor_components', [$this, 'filterAcceptedFields'], 999, 2);
 
@@ -218,6 +219,42 @@ class Form
             }
             $shareKey = ArrayHelper::get($request, 'form');
             $this->renderFormHtml($formId, $shareKey);
+        }
+    }
+
+    /**
+     * Handle pretty URL requests for conversational forms.
+     * This runs before the regular render() to check for pretty URL slugs.
+     * Uses the Pro's FormPrettyUrlService for URL handling.
+     *
+     * @return void
+     */
+    public function handlePrettyUrl()
+    {
+        // Only process if pro is enabled
+        if (!defined('FLUENTFORMPRO') || !class_exists('FluentFormPro\classes\SharePage\FormPrettyUrlService')) {
+            return;
+        }
+
+        $slug = get_query_var(\FluentFormPro\classes\SharePage\FormPrettyUrlService::getRewriteTag());
+
+        if (empty($slug) || wp_doing_ajax()) {
+            return;
+        }
+
+        $slug = sanitize_title($slug);
+
+        $form = \FluentFormPro\classes\SharePage\FormPrettyUrlService::getFormBySlug($slug);
+
+        if (!$form) {
+            return;
+        }
+
+        $formId = $form->id;
+
+        // For conversational forms, render as conversational (not landing page)
+        if (Helper::isConversionForm($formId)) {
+            $this->renderFormHtml($formId, '');
         }
     }
 

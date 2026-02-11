@@ -21,16 +21,7 @@
                         <p>{{ $t('Set your social sharing meta texts and form messages here') }}</p>
                     </div>
                     <div v-else-if="active_tab == 'share'">
-                        <p
-                            v-html="
-                                $t(
-                                    'Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post',
-                                    '<em>',
-                                    '</em>'
-                                )
-                            "
-                        >
-                        </p>
+                        <p v-html="$t('Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post', '<em>', '</em>')"></p>
                     </div>
                     <div v-if="(active_tab == 'design' && has_pro) || active_tab == 'meta'" class="ffc_design_submit">
                         <el-button icon="el-icon-success" size="medium" type="primary" @click="saveDesignSettings()">
@@ -44,7 +35,17 @@
                                 :design_settings="design_settings"
                                 :form_id="form_id"/>
                 <meta-setting-view v-else-if="active_tab == 'meta'" :meta_settings="meta_settings"/>
-                <sharing-view v-else-if="active_tab == 'share'" :form_id="form_id" :share_url="share_url" :meta_settings="meta_settings"/>
+                <sharing-view
+                    v-else-if="active_tab == 'share'"
+                    :form_id="form_id"
+                    :share_url="share_url"
+                    :meta_settings="meta_settings"
+                    :has_pro="has_pro"
+                    :pretty_url="pretty_url"
+                    :base_slug="base_slug"
+                    :saving="saving"
+                    @save-pretty-url="savePrettyUrl"
+                />
             </div>
         </template>
         <h3 v-else>{{ $t('Loading Design... Please wait') }}</h3>
@@ -84,7 +85,13 @@ export default {
             loading: true,
             share_url: '',
             has_pro: !!window.ffc_conv_vars.has_pro,
-            fonts: window.ffc_conv_vars.fonts
+            fonts: window.ffc_conv_vars.fonts,
+            pretty_url: {
+                slug: '',
+                enabled: false,
+                pretty_url: ''
+            },
+            base_slug: 'form'
         }
     },
     methods: {
@@ -110,6 +117,36 @@ export default {
                     this.saving = false;
                 });
         },
+        savePrettyUrl(prettyUrlData) {
+            this.saving = true;
+
+            let data = {
+                design_settings: this.design_settings,
+                meta_settings: this.meta_settings,
+                generated_css: this.generated_css,
+                pretty_url: {
+                    slug: prettyUrlData.slug,
+                    enabled: prettyUrlData.enabled
+                }
+            };
+
+            FluentFormsGlobal.$rest.post(FluentFormsGlobal.$rest.route('storeFormSettingsConversationalDesign', this.form_id), data)
+                .then(response => {
+                    this.$success(response.message);
+                    if (response.pretty_url !== undefined) {
+                        this.pretty_url.pretty_url = response.pretty_url;
+                    }
+                    if (response.slug !== undefined) {
+                        this.pretty_url.slug = response.slug;
+                    }
+                })
+                .catch(error => {
+                    this.$fail(error.message);
+                })
+                .finally(() => {
+                    this.saving = false;
+                });
+        },
         fetchSettings() {
             this.loading = true;
             FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route('getFormSettingsConversationalDesign', this.form_id))
@@ -120,6 +157,16 @@ export default {
                     this.meta_settings = response.meta_settings;
                     this.has_pro = !!response.has_pro;
                     this.setBaseUrl();
+
+                    // Populate pretty URL data
+                    if (response.pretty_url) {
+                        this.pretty_url = {
+                            slug: response.pretty_url.slug || '',
+                            enabled: !!response.pretty_url.enabled,
+                            pretty_url: response.pretty_url.pretty_url || ''
+                        };
+                        this.base_slug = response.pretty_url.base_slug || 'form';
+                    }
                 })
                 .catch(error => {
                     console.log(error);
