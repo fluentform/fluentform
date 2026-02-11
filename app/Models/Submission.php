@@ -3,6 +3,7 @@
 namespace FluentForm\App\Models;
 
 use Exception;
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Support\Arr;
@@ -115,12 +116,17 @@ class Submission extends Model
                 return $q->where('fluentform_submissions.created_at', '>=', $startDate)
                     ->where('fluentform_submissions.created_at', '<=', $endDate);
             })
-            ->when($search, function ($q) use ($search) {
-                return $q->where(function ($q) use ($search) {
-                    return $q->where('fluentform_submissions.id', 'LIKE', "%{$search}%")
-                        ->orWhere('response', 'LIKE', "%{$search}%")
-                        ->orWhere('fluentform_submissions.status', 'LIKE', "%{$search}%")
-                        ->orWhere('fluentform_submissions.created_at', 'LIKE', "%{$search}%");
+            ->when($search, function ($q) use ($search, $formId) {
+                $terms = Helper::resolveCountrySearchTerm($search, $formId);
+                return $q->where(function ($q) use ($terms) {
+                    foreach ($terms as $term) {
+                        $q->orWhere(function ($q) use ($term) {
+                            return $q->where('fluentform_submissions.id', 'LIKE', "%{$term}%")
+                                ->orWhere('fluentform_submissions.response', 'LIKE', "%{$term}%")
+                                ->orWhere('fluentform_submissions.status', 'LIKE', "%{$term}%")
+                                ->orWhere('fluentform_submissions.created_at', 'LIKE', "%{$term}%");
+                        });
+                    }
                 });
             })
             ->when($wheres, function ($q) use ($wheres) {
@@ -285,13 +291,13 @@ class Submission extends Model
                 ->whereIn('origin_id', $submissionIds)
                 ->where('type', 'submission_action')
                 ->delete();
-
         } catch (Exception $exception) {
             // ...
         }
     }
 
-    public function allSubmissions($attributes = []) {
+    public function allSubmissions($attributes = [])
+    {
         $customQuery = $this->customQuery($attributes);
         $search = Arr::get($attributes, 'search');
         $allowFormIds = FormManagerService::getUserAllowedForms();
@@ -303,10 +309,10 @@ class Submission extends Model
                 }
             ])
             ->select(['id', 'form_id', 'status', 'created_at', 'browser', 'currency', 'total_paid'])
-            ->when($allowFormIds, function ($q) use ($allowFormIds){
+            ->when($allowFormIds, function ($q) use ($allowFormIds) {
                 return $q->whereIn('form_id', $allowFormIds);
             })
-            ->when($search, function ($q) use ($search){
+            ->when($search, function ($q) use ($search) {
                 return $q->orWhereHas('form', function ($q) use ($search) {
                     return $q->orWhere('title', 'LIKE', "%{$search}%");
                 });
@@ -391,7 +397,7 @@ class Submission extends Model
                 return $q2->where('status', $status);
             })
             ->get();
-        
+
 
         foreach ($items as $item) {
             $range[$item->date] = $item->count;
