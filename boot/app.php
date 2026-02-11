@@ -76,7 +76,7 @@ return function ($file) {
     
     (new FluentConversational)->boot();
     (new FormsMigrator())->boot();
-    
+
     /* Plugin Meta Links */
     
     add_filter('plugin_row_meta', 'fluentform_plugin_row_meta', 10, 2);
