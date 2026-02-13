@@ -21,3 +21,5 @@ public/js/*.css
 jsconfig.json
 composer.lock
 assets/report.html
+CLAUDE.md
+.claude/
