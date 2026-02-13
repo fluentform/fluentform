@@ -73,6 +73,16 @@
                         let targetHash = e.target.hash;
                         e.preventDefault();
 
+                        // Toggle the card collapse state
+                        let cardEl = jQuery(targetHash)[0];
+                        if (cardEl && cardEl.__vue__) {
+                            let vm = cardEl.__vue__;
+                            let cardVm = ('isCollapsed' in vm) ? vm : vm.$children && vm.$children.find(function(c) { return 'isCollapsed' in c; });
+                            if (cardVm) {
+                                cardVm.isCollapsed = !cardVm.isCollapsed;
+                            }
+                        }
+
                         jQuery(targetHash).addClass('highlight-border');
 
                         const $settingsForm = jQuery('.ff_settings_form');

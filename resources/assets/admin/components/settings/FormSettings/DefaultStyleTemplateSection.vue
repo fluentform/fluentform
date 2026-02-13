@@ -1,5 +1,5 @@
 <template>
-    <card id="default-style-template" collapsible>
+    <card id="default-style-template" collapsible default-collapsed>
         <card-head>
             <card-head-group>
                 <h5 class="title">{{ $t('Default Style Template') }}</h5>

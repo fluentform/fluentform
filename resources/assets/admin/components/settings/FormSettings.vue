@@ -39,7 +39,7 @@
                 </card>
 
                 <!--Double Opt-in settings-->
-                <card v-if="double_optin" id="double-optin-confirmation" collapsible>
+                <card v-if="double_optin" id="double-optin-confirmation" collapsible default-collapsed>
                     <card-head>
                         <h5 class="title">{{ $t('Double Optin Confirmation') }}</h5>
                     </card-head>
@@ -168,7 +168,7 @@
                 </card>
 
               <!--Entry Frontend View-->
-              <card  id="front_end_view" v-if="front_end_entry_view" collapsible>
+              <card  id="front_end_view" v-if="front_end_entry_view" collapsible default-collapsed>
                 <card-head>
                   <h5 class="title">{{ $t('Front End Entry View') }}</h5>
                 </card-head>
@@ -257,7 +257,7 @@
               </card>
 
                 <!--Admin approval settings-->
-                <card v-if="admin_approval" id="admin_approval" collapsible>
+                <card v-if="admin_approval" id="admin_approval" collapsible default-collapsed>
                     <card-head>
                         <h5 class="title">{{ $t('Admin approval') }}</h5>
                         <p
@@ -384,7 +384,7 @@
                 </card>
 
                 <!-- Appearance Settings -->
-                <card id="form-layout" collapsible>
+                <card id="form-layout" collapsible default-collapsed>
                     <card-head>
                         <card-head-group class="justify-between">
                             <h5 class="title">{{ $t('Form Layout') }}</h5>
@@ -514,7 +514,7 @@
                 </card>
 
                 <!-- Form Restrictions -->
-                <card id="scheduling-and-restrictions" collapsible>
+                <card id="scheduling-and-restrictions" collapsible default-collapsed>
                     <card-head>
                         <card-head-group class="justify-between">
                             <h5 class="title">{{ $t('Scheduling & Restrictions') }}</h5>
@@ -532,7 +532,7 @@
                 </card>
 
                 <!-- Advanced form validation -->
-                <card id="advanced-form-validation" collapsible>
+                <card id="advanced-form-validation" collapsible default-collapsed>
                     <card-head>
                         <card-head-group class="justify-between">
                             <h5 class="title">{{ $t('Advanced Form Validation') }}</h5>
@@ -559,7 +559,7 @@
                 </card>
 
                 <!-- Survey Result -->
-                <card id="survey-result" collapsible>
+                <card id="survey-result" collapsible default-collapsed>
                     <card-head>
                         <card-head-group class="justify-between">
                             <h5 class="title">{{ $t('Survey Result') }}</h5>
@@ -573,7 +573,7 @@
                 </card>
 
                 <!-- Compliance Settings -->
-                <card id="compliance-settings" collapsible>
+                <card id="compliance-settings" collapsible default-collapsed>
                     <card-head>
                         <card-head-group>
                             <h5 class="title">{{ $t('Compliance Settings') }}</h5>
@@ -639,7 +639,7 @@
                 </card>
 
                 <!-- Other -->
-                <card id="other" collapsible>
+                <card id="other" collapsible default-collapsed>
                     <card-head>
                         <card-head-group>
                             <h5 class="title">{{ $t('Other') }}</h5>
@@ -670,7 +670,7 @@
                 </card>
 
                 <!-- Affiliate Setting -->
-                <card v-if="affiliate_wp" collapsible>
+                <card v-if="affiliate_wp" collapsible default-collapsed>
                     <card-head>
                         <h5 class="title">{{ $t('Affiliate') }}</h5>
                     </card-head>
@@ -711,7 +711,7 @@
                 </card>
 
                 <!-- per step save data for conversation form -->
-                <card v-if="is_conversion_form && hasConvFormSaveAndResume" id="conv_form_per_step_save" collapsible>
+                <card v-if="is_conversion_form && hasConvFormSaveAndResume" id="conv_form_per_step_save" collapsible default-collapsed>
                     <card-head>
                         <card-head-group>
                             <h5 class="title">{{ $t('Conversational Form Per Step Save') }}</h5>
