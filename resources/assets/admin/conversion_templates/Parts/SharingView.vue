@@ -235,9 +235,9 @@
             sanitizeSlug(value) {
                 this.localPrettyUrl.slug = value
                     .toLowerCase()
-                    .replace(/[^a-z0-9_-]/g, '-')
+                    .replace(/[^a-z0-9-]/g, '-')
                     .replace(/-+/g, '-')
-                    .replace(/^-|-$/g, '');
+                    .replace(/^-/, '');
             },
             savePrettyUrl() {
                 this.$emit('save-pretty-url', {

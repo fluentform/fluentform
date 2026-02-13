@@ -513,7 +513,7 @@
                     .toLowerCase()
                     .replace(/[^a-z0-9-]/g, '-')
                     .replace(/-+/g, '-')
-                    .replace(/^-|-$/g, '');
+                    .replace(/^-/, '');
             },
             changeDeviceType (type) {
                 this.settings.remember_device_type = type;
