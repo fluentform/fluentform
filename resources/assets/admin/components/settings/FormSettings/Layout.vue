@@ -1,6 +1,6 @@
 <template>
     <el-form ref="form-layout" label-position="top">
-        <card id="settings">
+        <card id="settings" collapsible>
             <card-head>
                 <h5 class="title">{{ $t('Global Layout Settings') }}</h5>
             </card-head>
@@ -86,7 +86,7 @@
             </card-body>
         </card>
 
-        <card id="email-summaries">
+        <card id="email-summaries" collapsible default-collapsed>
             <card-head>
                 <h5 class="title">{{ $t('Email Summaries') }}</h5>
                 <p class="text">
@@ -188,7 +188,7 @@
         </card>
 
         <!-- Integration Failure Notification-->
-        <card id="integration-failure-notification">
+        <card id="integration-failure-notification" collapsible default-collapsed>
             <card-head>
                 <h5 class="title">{{ $t('Integration Failure Email Notification') }}</h5>
                 <p class="text">
@@ -244,7 +244,7 @@
         </card>
 
         <!-- Default Messages -->
-        <card id="default-messages">
+        <card id="default-messages" collapsible :default-collapsed="true">
             <card-head>
                 <h5 class="title">{{$t('Validation Messages') }}</h5>
                 <p
@@ -291,7 +291,7 @@
 
         <default-style-template-section :default_style_template.sync="default_style_template" />
 
-        <card id="miscellaneous">
+        <card id="miscellaneous" collapsible default-collapsed>
             <card-head>
                 <card-head-group>
                     <h5 class="title">{{ $t('Miscellaneous') }}</h5>
@@ -826,6 +826,16 @@
                         jQuery(this).on("click", function(e){
                             let targetId = jQuery(this).attr("data-section-id");
                             e.preventDefault();
+
+                            // Expand the card if it's collapsed
+                            let cardEl = jQuery(targetId)[0];
+                            if (cardEl && cardEl.__vue__) {
+                                let vm = cardEl.__vue__;
+                                let cardVm = ('isCollapsed' in vm) ? vm : vm.$children && vm.$children.find(function(c) { return 'isCollapsed' in c; });
+                                if (cardVm) {
+                                    cardVm.isCollapsed = !cardVm.isCollapsed;
+                                }
+                            }
 
                             jQuery(targetId).addClass('highlight-border');
 

@@ -105,4 +105,40 @@
         box-shadow: none;
         border: 1px solid $border-color;
     }
+    &--collapsible {
+        .ff_card_head {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+        .ff_card_head_content {
+            flex: 1;
+            min-width: 0;
+        }
+        .ff_card_head_chevron {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            margin-left: 12px;
+            margin-top: 2px;
+            color: #606266;
+            transition: transform 0.3s ease;
+            transform: rotate(90deg);
+            &--collapsed {
+                transform: rotate(0deg);
+            }
+        }
+    }
+    &--collapsed {
+        .ff_card_head {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+    }
 }
