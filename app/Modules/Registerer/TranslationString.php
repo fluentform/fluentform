@@ -145,8 +145,8 @@ class TranslationString
             'Shortcode for Classic Form' => __('Shortcode for Classic Form', 'fluentform'),
             'Meta' => __('Meta', 'fluentform'),
             'Set your social sharing meta texts and form messages here' => __('Set your social sharing meta texts and form messages here', 'fluentform'),
-            'Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post' => /* translators: %1$s and %2$s are HTML tags for shortcode formatting */
-            __('Share your form by unique URL or copy and paste the %1$sshortcode%2$s to embed in your page and post', 'fluentform'),
+            'Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post' => /* translators: %s are HTML tags for shortcode formatting */
+            __('Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post', 'fluentform'),
             'Loading Design... Please wait' => __('Loading Design... Please wait', 'fluentform'),
             'File Upload Text' => __('File Upload Text', 'fluentform'),
             'File Upload Size Limit Text' => __('File Upload Size Limit Text', 'fluentform'),

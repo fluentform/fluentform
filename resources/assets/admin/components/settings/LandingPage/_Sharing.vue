@@ -2,9 +2,7 @@
     <div class="ffc_sharing_settings">
         <div class="mb-5">
             <h2 class="mb-2">{{ $t('Share Your Form') }}</h2>
-            <p class="fs-17">
-                {{ $t('Share your form by unique URL or copy and paste the shortcode to embed in your page and post') }}
-            </p>
+            <p class="fs-17" v-html="$t('Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post', '<em>', '</em>')"></p>
         </div>
         <el-row :gutter="24">
             <el-col :md="12" :sm="24">
@@ -13,9 +11,9 @@
                     <p>{{ $t('Get the link or share on social sites') }}</p>
                     <el-input v-model="share_url" :readonly="true">
                         <el-button
-                            @click="copyText()" 
+                            @click="copyText()"
                             class="copy_share"
-                            :data-clipboard-text='share_url' 
+                            :data-clipboard-text='share_url'
                             slot="append"
                             icon="ff-icon ff-icon-copy">
                         </el-button>
@@ -49,32 +47,39 @@
             </el-col>
             <el-col :md="12" :sm="24">
                 <div class="fcc_card">
+                    <h5 class="mb-2">{{ $t('QR Code') }}</h5>
+                    <p>{{ $t('Scan to open the form on mobile devices') }}</p>
+                    <qr-code-preview :url="share_url" />
+                </div>
+            </el-col>
+            <el-col :md="12" :sm="24">
+                <div class="fcc_card">
                     <h5 class="mb-2">{{ $t('Shortcode') }}</h5>
                     <p>{{ $t('Use this following shortcode in your Page or Post') }}</p>
                     <el-input v-model="classic_shortcode" :readonly="true">
-                        <el-button 
-                            @click="copyText()" 
-                            class="copy_share" 
+                        <el-button
+                            @click="copyText()"
+                            class="copy_share"
                             :data-clipboard-text='classic_shortcode'
-                            slot="append" 
+                            slot="append"
                             icon="ff-icon ff-icon-copy">
                         </el-button>
                     </el-input>
                 </div>
             </el-col>
-             <el-col :span="24">
+             <el-col :md="12" :sm="24">
                 <div class="fcc_card">
                     <h5 class="mb-2">{{ $t('Embed via HTML Code') }}</h5>
                     <p class="mb-3">{{ $t('Want to use this form in another domain or another site or even outside WordPress? Use the following code') }}</p>
 
-                    <textarea 
+                    <textarea
                         :value="textareaValue"
-                        style="width: 100%" 
-                        type="textarea" 
-                        :rows="5" 
+                        style="width: 100%"
+                        type="textarea"
+                        :rows="5"
                         :readonly="true"
                     >
-                    </textarea>             
+                    </textarea>
                     <div class="mt-3">
                         <p style="font-style: italic;" class="fs-14">- {{ $t('You can customize the height property.') }}</p>
                         <p style="font-style: italic;" class="fs-14">- {{ $t('Please check if your wp hosting server supports iframe.') }}</p>
@@ -86,15 +91,19 @@
 </template>
 
 <script type="text/babel">
+import QrCodePreview from '../QrCodePreview.vue';
+
 export default {
     name: 'SharingView',
-    props: ['share_url', 'form_id'],
-    data(){
-        return {
-            textareaValue: `<iframe id="fluentform" width="100%" loading="lazy" height="500px" style="min-height: 500px; width: 100%;" frameborder="0" src="${this.share_url}&embedded=1" onload="this.style.height=(this.contentWindow.document.body.scrollHeight+40)+'px';"></iframe>`
-        }
+    components: {
+        QrCodePreview
     },
+    props: ['share_url', 'form_id'],
     computed: {
+        textareaValue() {
+            const separator = this.share_url.includes('?') ? '&' : '?';
+            return `<iframe id="fluentform" width="100%" loading="lazy" height="500px" style="min-height: 500px; width: 100%;" frameborder="0" src="${this.share_url}${separator}embedded=1" onload="this.style.height=(this.contentWindow.document.body.scrollHeight+40)+'px';"></iframe>`;
+        },
         smart_shortcode() {
             return '[fluentform type="conversational" id="' + this.form_id + '"]';
         },
