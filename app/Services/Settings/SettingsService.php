@@ -173,10 +173,26 @@ class SettingsService
             'url'                        => 'sanitize_url',
             'webhook'                    => 'sanitize_url',
             'textTitle'                  => 'sanitize_text_field',
-            'conv_form_per_step_save'    => 'rest_sanitize_boolean'
+            'conv_form_per_step_save'    => 'rest_sanitize_boolean',
+            'send_to_type'               => 'sanitize_text_field',
+            'custom_recipients'          => 'sanitize_text_field',
+            'sending_day'                => 'sanitize_text_field',
         ];
 
-        return fluentform_backend_sanitizer($settings, $sanitizerMap);
+        $settings = fluentform_backend_sanitizer($settings, $sanitizerMap);
+
+        if (isset($settings['per_form_email_summary']) && is_array($settings['per_form_email_summary'])) {
+            $perFormSummaryMap = [
+                'status'            => 'sanitize_text_field',
+                'send_to_type'      => 'sanitize_text_field',
+                'custom_recipients' => 'sanitize_text_field',
+                'sending_day'       => 'sanitize_text_field',
+                'subject'           => 'sanitize_text_field',
+            ];
+            $settings['per_form_email_summary'] = fluentform_backend_sanitizer($settings['per_form_email_summary'], $perFormSummaryMap);
+        }
+
+        return $settings;
     }
 
     public function store($attributes = [])
