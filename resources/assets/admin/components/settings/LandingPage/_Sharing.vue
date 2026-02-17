@@ -2,7 +2,7 @@
     <div class="ffc_sharing_settings">
         <div class="mb-5">
             <h2 class="mb-2">{{ $t('Share Your Form') }}</h2>
-            <p class="fs-17" v-html="$t('Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post', '<em>', '</em>')"></p>
+            <p class="fs-17" v-html="$t('Share your form by unique URL or copy and paste the %1$sshortcode%2$s to embed in your page and post', '<em>', '</em>')"></p>
         </div>
         <el-row :gutter="24">
             <el-col :md="12" :sm="24">

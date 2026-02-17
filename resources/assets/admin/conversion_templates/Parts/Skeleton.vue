@@ -21,7 +21,7 @@
                         <p>{{ $t('Set your social sharing meta texts and form messages here') }}</p>
                     </div>
                     <div v-else-if="active_tab == 'share'">
-                        <p v-html="$t('Share your form by unique URL or copy and paste the %sshortcode%s to embed in your page and post', '<em>', '</em>')"></p>
+                        <p v-html="$t('Share your form by unique URL or copy and paste the %1$sshortcode%2$s to embed in your page and post', '<em>', '</em>')"></p>
                     </div>
                     <div v-if="(active_tab == 'design' && has_pro) || active_tab == 'meta'" class="ffc_design_submit">
                         <el-button icon="el-icon-success" size="medium" type="primary" @click="saveDesignSettings()">
