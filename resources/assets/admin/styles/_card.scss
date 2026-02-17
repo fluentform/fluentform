@@ -45,6 +45,10 @@
         border-bottom: 1px solid $border-color;
         margin-bottom: 26px;
         padding-bottom: 16px;
+        // Wrapper is always present for consistent DOM; display:contents keeps slot content as direct flex children so Reports/Landing/FormSettings layouts are unchanged. Overridden in &--collapsible.
+        .ff_card_head_content {
+            display: contents;
+        }
         .text{
             margin-top: 10px;
         }
@@ -114,6 +118,7 @@
             justify-content: space-between;
         }
         .ff_card_head_content {
+            display: block;
             flex: 1;
             min-width: 0;
         }
@@ -126,12 +131,20 @@
             height: 24px;
             margin-left: 12px;
             margin-top: 2px;
-            color: #606266;
-            transition: transform 0.3s ease;
+            border-radius: 4px;
+            color: $--color-text-regular;
+            transition: transform 0.3s ease, background-color 0.2s ease, box-shadow 0.2s ease;
             transform: rotate(90deg);
             &--collapsed {
                 transform: rotate(0deg);
             }
+        }
+        .ff_card_head:hover .ff_card_head_chevron {
+            background-color: rgba($--color-text-regular, 0.08);
+        }
+        .ff_card_head:focus-visible .ff_card_head_chevron {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba($--color-primary, 0.3);
         }
     }
     &--collapsed {

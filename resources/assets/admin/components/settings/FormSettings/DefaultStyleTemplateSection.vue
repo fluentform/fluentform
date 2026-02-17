@@ -1,6 +1,6 @@
 <template>
-    <card id="default-style-template" collapsible default-collapsed>
-        <card-head>
+    <card ref="defaultStyleTemplateCard" id="default-style-template" collapsible default-collapsed>
+        <card-head :aria-label="defaultStyleTemplateAriaLabel">
             <card-head-group>
                 <h5 class="title">{{ $t('Default Style Template') }}</h5>
                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
@@ -217,6 +217,11 @@
                 required: true
             }
         },
+        computed: {
+            defaultStyleTemplateAriaLabel() {
+                return this.$t('Toggle section: Default Style Template');
+            }
+        },
         data() {
             return {
                 aceLoaded: false,
@@ -258,6 +263,11 @@
             }
         },
         methods: {
+            expandCard() {
+                if (this.$refs.defaultStyleTemplateCard && typeof this.$refs.defaultStyleTemplateCard.expand === 'function') {
+                    this.$refs.defaultStyleTemplateCard.expand();
+                }
+            },
             copyFormStyles() {
                 if (!this.selectedFormId) {
                     return;

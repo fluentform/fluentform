@@ -289,7 +289,7 @@
             </card-body>
         </card>
 
-        <default-style-template-section :default_style_template.sync="default_style_template" />
+        <default-style-template-section ref="defaultStyleTemplateSection" :default_style_template.sync="default_style_template" />
 
         <card id="miscellaneous" collapsible default-collapsed>
             <card-head>
@@ -735,7 +735,7 @@
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import Notice from '@/admin/components/Notice/Notice.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
-    import { scrollTop } from '@/admin/helpers';
+    import { scrollToSettingsSection } from '@/admin/helpers';
     import UpdateToProContent from '@/admin/components/_updateToProContent.vue';
     import DefaultStyleTemplateSection from './DefaultStyleTemplateSection.vue';
 
@@ -818,41 +818,24 @@
             }
         },
         methods:{
+            // Scroll to section; expand the card if it's collapsed (for collapsible cards like default-style-template).
             scrollTo() {
+                const self = this;
                 let pageScollLink = jQuery('.ff-page-scroll');
                 let hash = window.location.hash;
                 if(hash.indexOf('fluent_forms_settings')){
                     pageScollLink.each(function(){
                         jQuery(this).on("click", function(e){
-                            let targetId = jQuery(this).attr("data-section-id");
                             e.preventDefault();
-
-                            // Expand the card if it's collapsed
-                            let cardEl = jQuery(targetId)[0];
-                            if (cardEl && cardEl.__vue__) {
-                                let vm = cardEl.__vue__;
-                                let cardVm = ('isCollapsed' in vm) ? vm : vm.$children && vm.$children.find(function(c) { return 'isCollapsed' in c; });
-                                if (cardVm) {
-                                    cardVm.isCollapsed = !cardVm.isCollapsed;
-                                }
-                            }
-
-                            jQuery(targetId).addClass('highlight-border');
-
-                            const $settingsOption = jQuery('.ff_global_settings_option');
-
-                            if ($settingsOption.length) {
-	                            const menuHeight = jQuery('.ff_header').first()?.outerHeight() || 0;
-	                            const wpAdminBarHeight = jQuery('#wpadminbar').outerHeight() || 0;
-                                const top = jQuery(targetId).offset().top + $settingsOption.scrollTop() - (wpAdminBarHeight + menuHeight + $settingsOption.position().top);
-                                scrollTop(top, 'fast', '.ff_global_settings_option').then((_) => {
-                                    if(targetId.length) {
-                                        setTimeout(() => {
-                                            jQuery(targetId).not(this).removeClass('highlight-border');
-                                        }, 500);
+                            const $link = jQuery(this);
+                            scrollToSettingsSection($link, '.ff_global_settings_option', {
+                                getTargetId: ($l) => $l.attr("data-section-id") || '',
+                                afterScroll: (targetId) => {
+                                    if (targetId === '#default-style-template' && self.$refs.defaultStyleTemplateSection && typeof self.$refs.defaultStyleTemplateSection.expandCard === 'function') {
+                                        self.$refs.defaultStyleTemplateSection.expandCard();
                                     }
-                                })
-                            }
+                                }
+                            });
                         });
                     });
                 }
