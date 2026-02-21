@@ -363,7 +363,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 $.post(fluentFormVars.ajaxUrl, {
                     path: filePath,
                     attachment_id : attachmentId,
-                    action: 'fluentform_delete_uploaded_file'
+                    action: 'fluentform_delete_uploaded_file',
+                    _fluentform_file_delete_nonce: fluentFormVars.file_delete_nonce
                 })
                     .then(function (response) {
                         var element = $this.closest('.ff-el-input--content').find('input');

@@ -655,6 +655,7 @@ class Component
                 'clearIfNotMatch' => false,
             ],
             'nonce'                         => wp_create_nonce(),
+            'file_delete_nonce'             => wp_create_nonce('fluentform_file_delete'),
             'form_id'                       => $form_id,
             'step_change_focus'             => true,
             'has_cleantalk'                 => \FluentForm\App\Modules\Form\CleanTalkHandler::isCleantalkActivated(),
