@@ -221,7 +221,7 @@ class Export
     {
         $query = wpFluent()->table($this->tableName)
             ->where('form_id', $formId)
-            ->orderBy('id', $this->request->get('sort_by', 'DESC'));
+            ->orderBy('id', Helper::sanitizeOrderValue($this->request->get('sort_by', 'DESC')));
 
         if ('fluentform_submissions' == $this->tableName) {
             $dateRange = $this->request->get('date_range');
