@@ -707,8 +707,8 @@ class SubmissionService
             }
         }
 
-        foreach ($entryItems as $entryItem) {
-            EntryDetails::insert($entryItem);
+        if ($entryItems) {
+            EntryDetails::insert($entryItems);
         }
 
         return true;
