@@ -132,17 +132,18 @@ class SubmissionController extends Controller
         }
     }
     
-    public function remove(Submission $submission, $submissionId)
+    public function remove(SubmissionService $submissionService, $submissionId)
     {
         try {
-            $submission::remove([$submissionId]);
-	        do_action( 'fluentform/submission_deleted', $submissionId );;
+            $submission = Submission::findOrFail($submissionId);
+            $submissionService->deleteEntries([$submissionId], $submission->form_id);
+            do_action('fluentform/submission_deleted', $submissionId);
 
             return $this->sendSuccess([
                 'message' => __('Selected submission successfully deleted Permanently', 'fluentform'),
             ]);
-    
-        } catch (Exception $e){
+
+        } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
