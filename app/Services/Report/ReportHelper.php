@@ -936,7 +936,7 @@ class ReportHelper
 
                 if ($minDateRecord && $minDateRecord->min_date) {
                     $query->selectRaw("MIN(DATE(created_at)) as date_group")
-                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDateRecord->min_date}') / 3) as group_num")
+                        ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), ?) / 3) as group_num", [$minDateRecord->min_date])
                         ->groupBy('group_num');
                 } else {
                     $query->selectRaw('DATE(created_at) as date_group')
