@@ -91,7 +91,9 @@ class TransactionShortcodes
     public function registerReceiptShortcode($atts, $content = '')
     {
        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a public shortcode for displaying receipt
-       $data = $_REQUEST;
+       $data = [
+           'transaction' => isset($_REQUEST['transaction']) ? sanitize_text_field(wp_unslash($_REQUEST['transaction'])) : '',
+       ];
        return $this->renderPaymentReceiptPage($data, false);
     }
 
