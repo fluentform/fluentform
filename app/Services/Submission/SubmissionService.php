@@ -76,33 +76,12 @@ class SubmissionService
             }
 
             $meta = $submission->submissionMeta;
-            if($meta){
+            if ($meta) {
                 $submission->_entry_uid_hash = Arr::get($meta, '0.value');
-
-                // Only generate entry_uid_link if front-end entry view is enabled
-                $frontEndSettings = Helper::getFormMeta($submission->form_id, 'front_end_entry_view', []);
-                if (Arr::get($frontEndSettings, 'status') === 'yes') {
-                    $link = site_url('?ff_entry=1&hash='. $submission->_entry_uid_hash);
-                    $submission->entry_uid_link  = $link;
-                }
+                $this->setEntryUidLink($submission);
             }
             $submission = FormDataParser::parseFormEntry($submission, $form, null, true);
-
-
-            if ($submission->user_id) {
-                $user = get_user_by('ID', $submission->user_id);
-                if ($user) {
-                    $userDisplayName = trim($user->first_name . ' ' . $user->last_name);
-                    if (!$userDisplayName) {
-                        $userDisplayName = $user->display_name;
-                    }
-                    $submission->user = [
-                        'ID'        => $user->ID,
-                        'name'      => $userDisplayName,
-                        'permalink' => get_edit_user_link($user->ID),
-                    ];
-                }
-            }
+            $this->enrichWithUser($submission);
 
             $submission = apply_filters_deprecated(
                 'fluentform_single_response_data',
@@ -179,35 +158,14 @@ class SubmissionService
                 $submission->fill(['status' => 'read'])->save();
             }
 
-            // Load submission meta and set entry_uid_link if front-end view is enabled
             $meta = $submission->submissionMeta()->where('meta_key', '_entry_uid_hash')->first();
             if ($meta && $meta->value) {
                 $submission->_entry_uid_hash = $meta->value;
-
-                // Only generate entry_uid_link if front-end entry view is enabled
-                $frontEndSettings = Helper::getFormMeta($submission->form_id, 'front_end_entry_view', []);
-                if (Arr::get($frontEndSettings, 'status') === 'yes') {
-                    $link = site_url('?ff_entry=1&hash='. $submission->_entry_uid_hash);
-                    $submission->entry_uid_link = $link;
-                }
+                $this->setEntryUidLink($submission);
             }
 
             $submission = FormDataParser::parseFormEntry($submission, $form, null, $isHtml);
-
-            if ($submission->user_id) {
-                $user = get_user_by('ID', $submission->user_id);
-                if ($user) {
-                    $userDisplayName = trim($user->first_name . ' ' . $user->last_name);
-                    if (!$userDisplayName) {
-                        $userDisplayName = $user->display_name;
-                    }
-                    $submission->user = [
-                        'ID'        => $user->ID,
-                        'name'      => $userDisplayName,
-                        'permalink' => get_edit_user_link($user->ID),
-                    ];
-                }
-            }
+            $this->enrichWithUser($submission);
 
             return apply_filters('fluentform/find_submission', $submission, $form->id);
         } catch (Exception $e) {
@@ -724,5 +682,36 @@ class SubmissionService
     {
         $content = (new SubmissionPrint())->getContent($attr);
         return array('success' => true, 'content' => $content);
+    }
+
+    private function setEntryUidLink($submission)
+    {
+        $frontEndSettings = Helper::getFormMeta($submission->form_id, 'front_end_entry_view', []);
+        if (Arr::get($frontEndSettings, 'status') === 'yes') {
+            $submission->entry_uid_link = site_url('?ff_entry=1&hash=' . $submission->_entry_uid_hash);
+        }
+    }
+
+    private function enrichWithUser($submission)
+    {
+        if (!$submission->user_id) {
+            return;
+        }
+
+        $user = get_user_by('ID', $submission->user_id);
+        if (!$user) {
+            return;
+        }
+
+        $userDisplayName = trim($user->first_name . ' ' . $user->last_name);
+        if (!$userDisplayName) {
+            $userDisplayName = $user->display_name;
+        }
+
+        $submission->user = [
+            'ID'        => $user->ID,
+            'name'      => $userDisplayName,
+            'permalink' => get_edit_user_link($user->ID),
+        ];
     }
 }
