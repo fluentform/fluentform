@@ -637,6 +637,47 @@ class SubmissionService
         ]);
     }
 
+    public function updateEntryDiffs($entryId, $formId, $formData)
+    {
+        EntryDetails::where('submission_id', $entryId)
+            ->where('form_id', $formId)
+            ->whereIn('field_name', array_keys($formData))
+            ->delete();
+
+        $entryItems = [];
+        foreach ($formData as $dataKey => $dataValue) {
+            if (!$dataValue) {
+                continue;
+            }
+
+            if (is_array($dataValue)) {
+                foreach ($dataValue as $subKey => $subValue) {
+                    $entryItems[] = [
+                        'form_id'        => $formId,
+                        'submission_id'  => $entryId,
+                        'field_name'     => $dataKey,
+                        'sub_field_name' => $subKey,
+                        'field_value'    => maybe_serialize($subValue),
+                    ];
+                }
+            } else {
+                $entryItems[] = [
+                    'form_id'        => $formId,
+                    'submission_id'  => $entryId,
+                    'field_name'     => $dataKey,
+                    'sub_field_name' => '',
+                    'field_value'    => $dataValue,
+                ];
+            }
+        }
+
+        if ($entryItems) {
+            EntryDetails::insert($entryItems);
+        }
+
+        return true;
+    }
+
     public function recordEntryDetails($entryId, $formId, $data)
     {
         $formData = Arr::except($data, Helper::getWhiteListedFields($formId));

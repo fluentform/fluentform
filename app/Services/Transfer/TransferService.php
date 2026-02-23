@@ -165,9 +165,11 @@ class TransferService
         $withNotes = isset($args['with_notes']);
        
         //filter out unselected fields
-        foreach ($inputLabels as $key => $value) {
-            if (!in_array($key,$selectedLabels) && isset($inputLabels[$key])) {
-                unset($inputLabels[$key]); // Remove the element with the specified key
+        if (!empty($selectedLabels)) {
+            foreach ($inputLabels as $key => $value) {
+                if (!in_array($key, $selectedLabels) && isset($inputLabels[$key])) {
+                    unset($inputLabels[$key]);
+                }
             }
         }
         
@@ -277,7 +279,24 @@ class TransferService
 
     private static function getSubmissions($args)
     {
-        $query = (new Submission)->customQuery($args);
+        $tableName = Arr::get($args, 'table');
+
+        if ($tableName) {
+            $query = wpFluent()->table($tableName)
+                ->where('form_id', (int) Arr::get($args, 'form_id'))
+                ->orderBy('id', Helper::sanitizeOrderValue(Arr::get($args, 'sort_by', 'DESC')));
+
+            $searchString = Arr::get($args, 'search');
+            if ($searchString) {
+                $query->where(function ($q) use ($searchString) {
+                    $q->where('id', 'LIKE', "%{$searchString}%")
+                        ->orWhere('response', 'LIKE', "%{$searchString}%");
+                });
+            }
+        } else {
+            $query = (new Submission)->customQuery($args);
+        }
+
         $entries = fluentFormSanitizer(Arr::get($args, 'entries', []));
         $query->when(is_array($entries) && (count($entries) > 0), function ($q) use ($entries) {
             return $q->whereIn('id', $entries);

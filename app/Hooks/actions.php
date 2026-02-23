@@ -87,7 +87,7 @@ add_action('admin_enqueue_scripts', function () use ($app) {
 
 // Add Entries Menu
 $app->addAction('fluentform/form_application_view_entries', function ($form_id) {
-    (new \FluentForm\App\Modules\Entries\Entries())->renderEntries($form_id);
+    (new \FluentForm\App\Modules\Entries\EntryViewRenderer())->renderEntries($form_id);
 });
 
 $app->addAction('fluentform/after_form_navigation', function ($form_id) use ($app) {

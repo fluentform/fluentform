@@ -231,5 +231,20 @@ class Scheduler
         \FluentForm\App\Models\Scheduler::where('created_at', '<', $deleteTo)
             ->delete();
 
+        // Clean temp uploads older than 2 days
+        if (defined('FLUENTFORM_UPLOAD_DIR')) {
+            $tempDir = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/temp/';
+            if (is_dir($tempDir)) {
+                $files = glob($tempDir . '*');
+                if (!empty($files)) {
+                    $twoDaysAgo = time() - 172800;
+                    foreach ($files as $file) {
+                        if (is_file($file) && basename($file) !== 'index.php' && filemtime($file) < $twoDaysAgo) {
+                            wp_delete_file($file);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
