@@ -821,11 +821,6 @@ class FormValidationService
                 self::throwValidationException($message);
             }
         }
-//        else {
-//            $defaultMessage = __('Sorry! There is an error occurred in getting Country. Please check form settings and try again.', 'fluentform');
-//            $message = apply_filters('fluentform/country_restriction_message', $defaultMessage, $this->form);
-//            self::throwValidationException($message);
-//        }
     }
 
     private function checkKeyWordRestriction($settings)
