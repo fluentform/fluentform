@@ -597,11 +597,27 @@ class FormService
             $postTypes[] = $postTypeName;
         }
         
+        global $wpdb;
+        $typeIn = implode("','", array_map('esc_sql', $postTypes));
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $typeIn is escaped above
+        $matchingIds = $wpdb->get_col($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('{$typeIn}') AND post_status != 'trash' AND post_content LIKE %s",
+            '%fluentform%'
+        ));
+
+        if (empty($matchingIds)) {
+            return [
+                'locations' => [],
+                'status'    => false,
+            ];
+        }
+
         $params = array(
             'post_type'      => $postTypes,
-            'posts_per_page' => -1
+            'posts_per_page' => -1,
+            'post__in'       => $matchingIds,
         );
-        
+
         $params = apply_filters_deprecated(
             'fluentform_find_shortcode_params',
             [
@@ -612,7 +628,7 @@ class FormService
             'Use fluentform/find_shortcode_params instead of fluentform_find_shortcode_params.'
         );
         $params = apply_filters('fluentform/find_shortcode_params', $params);
-        
+
         $formLocations = [];
         $posts = get_posts($params);
         foreach ($posts as $post) {
