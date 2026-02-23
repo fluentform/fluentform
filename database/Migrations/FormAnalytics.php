@@ -29,7 +29,7 @@ class FormAnalytics
 			  `browser` CHAR(30) NULL,
 			  `city` VARCHAR (100) NULL,
 			  `country` VARCHAR (100) NULL,
-			  `ip` CHAR(15) NULL,
+			  `ip` VARCHAR(45) NULL,
 			  `count` INT DEFAULT 1,
 			  `created_at` TIMESTAMP NULL,
 			  PRIMARY KEY (`id`) ) $charsetCollate;";
@@ -46,6 +46,16 @@ class FormAnalytics
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Migration file, table/column names cannot be prepared
                 $sql = "ALTER TABLE {$table} MODIFY {$column_name} TEXT NOT NULL";
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Migration file, schema change is the purpose, table/column names are safe
+                $wpdb->query($sql);
+            }
+
+            // widen ip column from CHAR(15) to VARCHAR(45) for IPv6 support
+            $ipDataType = $wpdb->get_col_length($table, 'ip');
+            $ipLength = $ipDataType['length'] ?? 0;
+            if ($ipLength < 45) {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Migration file, table name is safe
+                $sql = "ALTER TABLE {$table} MODIFY `ip` VARCHAR(45) NULL";
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Migration file, schema change is the purpose
                 $wpdb->query($sql);
             }
         }
