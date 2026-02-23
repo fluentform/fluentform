@@ -112,8 +112,8 @@ class SuggestedPluginsController extends Controller
             ], 403);
         }
 
-        $pluginSlug = wpFluentForm('request')->get('plugin_slug');
-        
+        $pluginSlug = sanitize_text_field(wpFluentForm('request')->get('plugin_slug'));
+
         if (empty($pluginSlug)) {
             return $this->sendError([
                 'message' => __('Plugin slug is required.', 'fluentform')
