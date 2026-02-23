@@ -91,16 +91,15 @@ class SubmissionService
 
             if ($submission->user_id) {
                 $user = get_user_by('ID', $submission->user_id);
-                $userDisplayName = trim($user->first_name . ' ' . $user->last_name);
-                if (!$userDisplayName) {
-                    $userDisplayName = $user->display_name;
-                }
-
                 if ($user) {
+                    $userDisplayName = trim($user->first_name . ' ' . $user->last_name);
+                    if (!$userDisplayName) {
+                        $userDisplayName = $user->display_name;
+                    }
                     $submission->user = [
                         'ID'        => $user->ID,
                         'name'      => $userDisplayName,
-                        'permalink' => get_edit_user_link($user->ID)
+                        'permalink' => get_edit_user_link($user->ID),
                     ];
                 }
             }
@@ -197,15 +196,15 @@ class SubmissionService
 
             if ($submission->user_id) {
                 $user = get_user_by('ID', $submission->user_id);
-                $userDisplayName = trim($user->first_name . ' ' . $user->last_name);
-                if (!$userDisplayName) {
-                    $userDisplayName = $user->display_name;
-                }
                 if ($user) {
+                    $userDisplayName = trim($user->first_name . ' ' . $user->last_name);
+                    if (!$userDisplayName) {
+                        $userDisplayName = $user->display_name;
+                    }
                     $submission->user = [
                         'ID'        => $user->ID,
                         'name'      => $userDisplayName,
-                        'permalink' => get_edit_user_link($user->ID)
+                        'permalink' => get_edit_user_link($user->ID),
                     ];
                 }
             }
