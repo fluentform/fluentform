@@ -349,6 +349,12 @@ class SubmissionService
     {
         $formId = intval(Arr::get($attributes, 'form_id'));
         $metaKey = sanitize_text_field(Arr::get($attributes, 'meta_key'));
+
+        $allowedKeys = ['_visible_columns', '_columns_order'];
+        if (!in_array($metaKey, $allowedKeys)) {
+            throw new \Exception(__('Invalid meta key for column settings.', 'fluentform'));
+        }
+
         $metaValue = wp_unslash(Arr::get($attributes, 'settings'));
 
         FormMeta::persist($formId, $metaKey, $metaValue);
