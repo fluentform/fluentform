@@ -160,7 +160,7 @@ class TransactionShortcodes
         $this->verifyNonce();
         if ($route == 'get_subscription_transactions') {
             $this->sendSubscriptionPayments();
-        } else if ('cancel_transaction') {
+        } else if ($route == 'cancel_transaction') {
             $this->cancelSubscriptionAjax();
         }
     }
