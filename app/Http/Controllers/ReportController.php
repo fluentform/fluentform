@@ -7,11 +7,29 @@ use FluentForm\App\Services\Report\ReportService;
 
 class ReportController extends Controller
 {
+    private function sanitizeReportAttributes()
+    {
+        $sanitizeMap = [
+            'form_id'  => 'intval',
+            'period'   => 'sanitize_text_field',
+            'group_by' => 'sanitize_text_field',
+            'status'   => 'sanitize_text_field',
+        ];
+
+        $attributes = fluentform_backend_sanitizer($this->request->all(), $sanitizeMap);
+
+        if (isset($attributes['date_range']) && is_array($attributes['date_range'])) {
+            $attributes['date_range'] = array_map('sanitize_text_field', $attributes['date_range']);
+        }
+
+        return $attributes;
+    }
+
     public function form(ReportService $reportService)
     {
         try {
             return $this->sendSuccess(
-                $reportService->form($this->request->all())
+                $reportService->form($this->sanitizeReportAttributes())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -28,7 +46,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->submissions($this->request->all())
+                $reportService->submissions($this->sanitizeReportAttributes())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -96,7 +114,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getOverviewChart($this->request->all())
+                $reportService->getOverviewChart($this->sanitizeReportAttributes())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -113,7 +131,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getRevenueChart($this->request->all())
+                $reportService->getRevenueChart($this->sanitizeReportAttributes())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -146,7 +164,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getFormStats($this->request->all())
+                $reportService->getFormStats($this->sanitizeReportAttributes())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -195,7 +213,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getApiLogs($this->request->all())
+                $reportService->getApiLogs($this->sanitizeReportAttributes())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -212,7 +230,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getTopPerformingForms($this->request->all())
+                $reportService->getTopPerformingForms($this->sanitizeReportAttributes())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -245,7 +263,7 @@ class ReportController extends Controller
     {
         try {
             return $this->sendSuccess(
-                $reportService->getPaymentTypes($this->request->all())
+                $reportService->getPaymentTypes($this->sanitizeReportAttributes())
             );
         } catch (Exception $e) {
             return $this->sendError([
