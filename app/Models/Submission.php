@@ -321,8 +321,8 @@ class Submission extends Model
 
     public static function report($attributes)
     {
-        $from = gmdate('Y-m-d H:i:s', strtotime('-30 days', current_time('timestamp')));
-        $to = gmdate('Y-m-d H:i:s', strtotime('+1 days', current_time('timestamp')));
+        $from = date('Y-m-d H:i:s', strtotime('-30 days'));
+        $to = date('Y-m-d H:i:s', strtotime('+1 days'));
         $formId = Arr::get($attributes, 'form_id');
         $status = Arr::get($attributes, 'entry_status');
         $start = Arr::get($attributes, 'date_range.0', '');
@@ -340,17 +340,18 @@ class Submission extends Model
                 ->first();
 
             if ($firstItem && $firstItem->created_at) {
-                $from = $firstItem->created_at;
-                $to = current_time('mysql');
+                $from = date('Y-m-d H:i:s', strtotime($firstItem->created_at));
+                $to = date('Y-m-d H:i:s');
             }
         }
 
+
         if ($start && $startTime = strtotime($start)) {
-            $from = gmdate('Y-m-d 00:00:00', $startTime);
+            $from = date('Y-m-d 00:00:00', $startTime);
         }
 
-        if ($end && $endTime = strtotime($end)) {
-            $to = gmdate('Y-m-d 23:59:59', $endTime);
+        if ($end  && $endTime = strtotime($end)) {
+            $to = date('Y-m-d 23:59:59', $endTime);
         }
 
         $period = new \DatePeriod(new \DateTime($from), new \DateInterval('P1D'), new \DateTime($to));
