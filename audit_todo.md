@@ -374,3 +374,18 @@ Each item below is a self-contained fix. Sub-agents should pick items and mark t
 - [ ] `TRACE-RC-4` -- Add sanitization to report controller endpoints
 - [ ] `TRACE-UI-4` -- Fix trash count on permanent delete in `Entries.vue:947`
 - [ ] `SEC-L3` -- Review JS sanitization regex for edge cases
+
+
+= 6.1.18 (Date: February 24, 2026) =
+- Fixes file delete endpoint lacking nonce verification allowing unauthorized media attachment deletion
+- Fixes subscription cancellation authorization bypass in payment shortcodes
+- Fixes plugin activation endpoint accepting arbitrary plugin slugs
+- Adds nonce and permission checks to select_group AJAX handler
+- Adds input sanitization to all report data endpoints
+- Adds sanitization to payment receipt shortcode request parameters
+- Fixes SQL LIKE wildcard injection in field uniqueness validation
+- Fixes mixed SQL escaping patterns in post type queries
+- Strengthens CSS sanitization to block external @import URLs
+- Improves script tag removal in JavaScript sanitizer
+- Fixes nonce retry losing HTTP method for DELETE/PUT/PATCH requests
+- Fixes entry deletion not validating submission existence and form ownership

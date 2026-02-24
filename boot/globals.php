@@ -480,32 +480,12 @@ function fluentformSanitizeCSS($css)
         return '';
     }
 
+    // Convert to string if not already
     if (!is_string($css)) {
         $css = (string) $css;
     }
-
-    // Block HTML tags
-    if (preg_match('#</?\w+#', $css)) {
-        return '';
-    }
-
-    // Block CSS-based attack vectors
-    $dangerousPatterns = [
-        '#expression\s*\(#i',
-        '#url\s*\(\s*["\']?\s*javascript\s*:#i',
-        '#behavior\s*:#i',
-        '#-moz-binding\s*:#i',
-        '#@import\s+["\']?https?://#i',
-        '#@import\s+url\(#i',
-    ];
-
-    foreach ($dangerousPatterns as $pattern) {
-        if (preg_match($pattern, $css)) {
-            return '';
-        }
-    }
-
-    return $css;
+    
+    return preg_match('#</?\w+#', $css) ? '' : $css;
 }
 
 function fluentformCanUnfilteredHTML()
