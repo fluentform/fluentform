@@ -595,11 +595,12 @@ class FormService
         }
         
         global $wpdb;
-        $typeIn = implode("','", array_map('esc_sql', $postTypes));
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $typeIn is escaped above
+        $placeholders = implode(', ', array_fill(0, count($postTypes), '%s'));
+        $args = array_merge($postTypes, ['%fluentform%']);
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders contains only %s literals
         $matchingIds = $wpdb->get_col($wpdb->prepare(
-            "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('{$typeIn}') AND post_status != 'trash' AND post_content LIKE %s",
-            '%fluentform%'
+            "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ({$placeholders}) AND post_status != 'trash' AND post_content LIKE %s",
+            $args
         ));
 
         if (empty($matchingIds)) {

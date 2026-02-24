@@ -457,7 +457,7 @@ class TransactionShortcodes
         $userid = get_current_user_id();
         $submission = fluentFormApi('submissions')->find($subscription->submission_id);
 
-        if (!$submission && $submission->user_id != $userid || $this->canCancelSubscription($submission)) {
+        if (!$submission || ($submission->user_id != $userid && !$this->canCancelSubscription($subscription))) {
             $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
         }
     

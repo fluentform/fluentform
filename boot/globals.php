@@ -495,6 +495,8 @@ function fluentformSanitizeCSS($css)
         '#url\s*\(\s*["\']?\s*javascript\s*:#i',
         '#behavior\s*:#i',
         '#-moz-binding\s*:#i',
+        '#@import\s+["\']?https?://#i',
+        '#@import\s+url\(#i',
     ];
 
     foreach ($dangerousPatterns as $pattern) {

@@ -120,6 +120,16 @@ class SuggestedPluginsController extends Controller
             ], 400);
         }
 
+        if (!function_exists('get_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        if (!array_key_exists($pluginSlug, get_plugins())) {
+            return $this->sendError([
+                'message' => __('Invalid plugin.', 'fluentform')
+            ], 400);
+        }
+
         $result = activate_plugin($pluginSlug);
 
         if (is_wp_error($result)) {

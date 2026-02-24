@@ -482,6 +482,7 @@ class Helper
                     $escapedKey = json_encode($fieldName);
                     $escapedValue = json_encode($inputValue);
                     $searchPattern = trim($escapedKey, '"') . '":' . $escapedValue;
+                    $searchPattern = addcslashes($searchPattern, '%_');
 
                     $exist = Submission::where('form_id', $form->id)
                         ->where('response', 'LIKE', '%' . $searchPattern . '%')
