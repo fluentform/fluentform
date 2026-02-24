@@ -139,6 +139,7 @@ class TransferService
             define('FLUENTFORM_EXPORTING_ENTRIES', true);
         }
         $formId = (int)Arr::get($args, 'form_id');
+        $tableName = Arr::get($args, 'table');
         try {
             $form = Form::findOrFail($formId);
         } catch (Exception $e) {
@@ -229,7 +230,20 @@ class TransferService
                     $temp[] = implode(", ",$notes->toArray());
                 }
             }
-            
+
+            if (!$tableName) {
+                if ($form->has_payment) {
+                    $temp[] = round(($submission->payment_total ?? 0) / 100, 1);
+                    $temp[] = $submission->payment_status ?? '';
+                    $temp[] = $submission->currency ?? '';
+                }
+                $temp[] = $submission->id ?? '';
+                $temp[] = $submission->status ?? '';
+                $temp[] = $submission->created_at ?? '';
+            }
+
+            $temp = apply_filters('fluentform/export_entry_metadata', $temp, $submission, $form, $args);
+
             $exportData[] = $temp;
         }
 
@@ -245,6 +259,19 @@ class TransferService
         if($withNotes){
             $inputLabels[] = __('Notes','fluentform');
         }
+
+        if (!$tableName) {
+            if ($form->has_payment) {
+                $inputLabels[] = 'payment_total';
+                $inputLabels[] = 'payment_status';
+                $inputLabels[] = 'currency';
+            }
+            $inputLabels[] = 'entry_id';
+            $inputLabels[] = 'entry_status';
+            $inputLabels[] = 'created_at';
+        }
+        $inputLabels = apply_filters('fluentform/export_entry_metadata_labels', $inputLabels, $form, $args);
+
         $data = array_merge([array_values($inputLabels)], $exportData);
         
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);

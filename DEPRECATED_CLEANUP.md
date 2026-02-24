@@ -21,6 +21,7 @@
 ### `app/Modules/Entries/Export.php` (~277 lines)
 - **Why:** Marked `@deprecated` in favor of `TransferService`. Its only remaining consumer was `StepFormEntries` in Pro, which passed `'fluentform_draft_submissions'` as the table name.
 - **Where migrated:** `TransferService::getSubmissions()` now accepts an optional `table` key in `$args`. When provided, it queries that table directly with basic `form_id`/`search`/`sort_by` filters instead of going through the `Submission` model (which applies status/date/favorites/payment filters that don't apply to draft submissions). Pro's `StepFormEntries` now calls `TransferService::exportEntries()` with `['table' => 'fluentform_draft_submissions']` merged into the request args.
+- **Version guard:** The Pro call is wrapped in `class_exists(TransferService::class) && method_exists(TransferService::class, 'exportEntries')`. If core updates before Pro (or vice versa), the handler returns a JSON error asking the user to update Fluent Forms instead of fataling.
 - **Bonus fix:** `TransferService::exportEntries()` now null-guards the `fields_to_export` filter loop, preventing a PHP 8+ `in_array()` type error when the arg is absent (as it is for draft exports).
 
 ---
