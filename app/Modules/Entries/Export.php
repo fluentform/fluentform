@@ -17,7 +17,6 @@ class Export
 
     public function __construct(Application $application, $tableName = 'fluentform_submissions')
     {
-        _deprecated_function(__CLASS__, '5.3', 'TransferService::exportEntries()');
         $this->app = $application;
         $this->request = $application->request;
         $this->tableName = $tableName;
@@ -28,7 +27,6 @@ class Export
      */
     public function index()
     {
-        _deprecated_function(__METHOD__, '5.3', 'TransferService::exportEntries()');
 
         $args = $this->request->get();
 
