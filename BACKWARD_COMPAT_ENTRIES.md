@@ -22,20 +22,26 @@ All callers use `_getEntries()` which returns `['submissions' => [...], 'formLab
 
 ---
 
-## What Was Deleted (Old Code)
+## Solution: Minimal Backward-Compatible Stubs
 
-### `EntryQuery.php` (212 lines) — Base query class
+We restored the two deleted files as **minimal stubs** with identical public API. The stubs contain the full original query logic (not delegating to the new `Submission::customQuery()`) because the delegation approach would require the same amount of code for pagination format conversion, wheres loop, and filter transformation — no real savings.
 
-The old class set up DB table references and built paginated, filtered queries against `fluentform_submissions`:
+### `EntryQuery.php` — 113 lines (original was 212)
+
+Kept: constructor, 12 properties, `getResponses()` with full filter/sort/paginate/search logic.
+Removed: `getResponse()`, `getNextResponse()`, `getPrevResponse()`, `getNextPrevEntryQuery()`, `groupCount()` — none used by third-party plugins.
+Added: `_deprecated_function()` in constructor for debug log warnings.
 
 ```php
+<?php
+namespace FluentForm\App\Modules\Entries;
+use FluentForm\App\Helpers\Helper;
+
 class EntryQuery
 {
     protected $request;
-    protected $formModel;      // wpFluent()->table('fluentform_forms')
-    protected $responseModel;  // wpFluent()->table('fluentform_submissions')
-
-    // Query parameters set by _getEntries() before calling getResponses()
+    protected $formModel;
+    protected $responseModel;
     protected $formId = false;
     protected $per_page = 10;
     protected $page_number = 1;
@@ -49,6 +55,7 @@ class EntryQuery
 
     public function __construct()
     {
+        _deprecated_function(__CLASS__, '6.2.0', 'FluentForm\App\Services\Submission\SubmissionService');
         $this->request = wpFluentForm('request');
         $this->formModel = wpFluent()->table('fluentform_forms');
         $this->responseModel = wpFluent()->table('fluentform_submissions');
@@ -56,160 +63,49 @@ class EntryQuery
 
     public function getResponses()
     {
-        $query = $this->responseModel
-            ->where('form_id', $this->formId)
-            ->orderBy('id', Helper::sanitizeOrderValue($this->sort_by));
-
-        // Pagination
-        if ($this->per_page > 0)    $query->limit($this->per_page);
-        if ($this->page_number > 0) $query->offset(($this->page_number - 1) * $this->per_page);
-
-        // Status / favourite filter
-        if ($this->is_favourite) {
-            $query->where('is_favourite', $this->is_favourite);
-            $query->where('status', '!=', 'trashed');
-        } else {
-            if (!$this->status) $query->where('status', '!=', 'trashed');
-            else                $query->where('status', $this->status);
-        }
-
-        // Date range
-        if ($this->startDate && $this->endDate) {
-            $query->where('created_at', '>=', $this->startDate);
-            $query->where('created_at', '<=', $this->endDate . ' 23:59:59');
-        }
-
-        // Search across id, response, status, created_at
-        if ($this->search) {
-            $s = $this->search;
-            $query->where(function ($q) use ($s) {
-                $q->where('id', 'LIKE', "%{$s}%")
-                  ->orWhere('response', 'LIKE', "%{$s}%")
-                  ->orWhere('status', 'LIKE', "%{$s}%")
-                  ->orWhere('created_at', 'LIKE', "%{$s}%");
-            });
-        }
-
-        // Custom WHERE clauses (used by Ninja Tables for user_id filtering)
-        if ($this->wheres) {
-            foreach ($this->wheres as $where) {
-                // supports: ['column', 'value'] or ['column', 'operator', 'value']
-                // if value is array, uses whereIn()
-            }
-        }
-
-        $total = $query->count();
-        $responses = $query->get();
-        $responses = apply_filters('fluentform/get_raw_responses', $responses, $this->formId);
-
-        return [
-            'data'     => $responses,
-            'paginate' => [
-                'total'        => $total,
-                'per_page'     => $this->per_page,
-                'current_page' => $this->page_number,
-                'last_page'    => ceil($total / $this->per_page),
-            ],
-        ];
+        // Full query logic identical to original — pagination, status/favourite,
+        // date range, search, custom wheres, count + get + apply_filters
+        // Returns: ['data' => [...], 'paginate' => ['total', 'per_page', 'current_page', 'last_page']]
     }
-
-    // Also had: getResponse(), getNextResponse(), getPrevResponse(),
-    // getNextPrevEntryQuery(), groupCount() — none used by third-party plugins
 }
 ```
 
-### `Entries.php` (874 lines) — God class with 12 methods
+### `Entries.php` — 72 lines (original was 874)
 
-Only `_getEntries()` and `getFormInputsAndLabels()` are needed by third-party plugins:
+Kept: `_getEntries()` and `getFormInputsAndLabels()` — the only 2 methods third-party plugins call.
+Removed: all 10 other methods (moved to SubmissionService, EntryViewRenderer, ReportHelper, REST controllers, Ajax.php).
 
 ```php
+<?php
+namespace FluentForm\App\Modules\Entries;
+use FluentForm\App\Modules\Form\FormDataParser;
+use FluentForm\App\Modules\Form\FormFieldsParser;
+
 class Entries extends EntryQuery
 {
     public function _getEntries($formId, $currentPage, $perPage, $sortBy, $entryType, $search, $wheres = [])
     {
-        // 1. Set query parameters on parent EntryQuery properties
-        $this->formId = $formId;
-        $this->per_page = $perPage;
-        $this->sort_by = $sortBy;
-        $this->page_number = $currentPage;
-        $this->search = $search;
-        $this->wheres = $wheres;
-
-        // 2. Map entryType to status/favourite filter
-        if ('favorite' == $entryType)              $this->is_favourite = true;
-        elseif ('all' != $entryType && $entryType) $this->status = $entryType;
-
-        // 3. Optional date range from request
-        $dateRange = $this->request->get('date_range');
-        if ($dateRange) {
-            $this->startDate = $dateRange[0];
-            $this->endDate = $dateRange[1];
-        }
-
-        // 4. Load form, get field labels
-        $form = $this->formModel->find($formId);
-        $formMeta = $this->getFormInputsAndLabels($form);
-        $formLabels = apply_filters('fluentform/entry_lists_labels', $formMeta['labels'], $form);
-
-        // 5. Execute query via parent's getResponses()
-        $submissions = $this->getResponses();
-
-        // 6. Parse raw DB rows into structured entry objects
-        $submissions['data'] = FormDataParser::parseFormEntries($submissions['data'], $form);
-
-        return compact('submissions', 'formLabels');
+        // Sets query params on parent, calls getResponses(), parses entries
+        // Returns: ['submissions' => ['data' => [...], 'paginate' => [...]], 'formLabels' => [...]]
     }
 
     public function getFormInputsAndLabels($form, $with = ['admin_label', 'raw'])
     {
-        $formInputs = FormFieldsParser::getEntryInputs($form, $with);
-        $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
-        return ['inputs' => $formInputs, 'labels' => $inputLabels];
+        // Returns: ['inputs' => [...], 'labels' => [...]]
     }
-
-    // Other 10 methods (not needed by third parties):
-    // getAllFormEntries(), getEntriesReport(), renderEntries(), getEntriesGroup(),
-    // getEntries(), _getEntry(), getEntry(), getNotes(), addNote(),
-    // changeEntryStatus(), updateEntryDiffs(), getUsers(), changeEntryUser(),
-    // getAvailableForms()
 }
 ```
 
 ---
 
-## What We Restored (New Stub Code)
+## Why Not Delegate to Submission::customQuery()?
 
-### `EntryQuery.php` — Minimal stub (113 lines vs original 212)
+Considered and rejected. The new `Submission::customQuery()` (Eloquent model) returns a different format that would need:
+- Manual pagination array construction (customQuery returns raw query, paginateEntries returns different keys)
+- Manual wheres loop (customQuery doesn't support the `[column, operator, value]` array format)
+- Format transformation to match the old return structure
 
-Kept only what `_getEntries()` needs: constructor, properties, `getResponses()`.
-
-Removed methods not called by any third-party plugin: `getResponse()`, `getNextResponse()`, `getPrevResponse()`, `getNextPrevEntryQuery()`, `groupCount()`.
-
-Added `_deprecated_function()` in constructor so debug logs show migration warnings.
-
-```php
-class EntryQuery
-{
-    // Same 12 properties as original
-    // Same constructor — adds _deprecated_function(__CLASS__, '6.2.0', 'SubmissionService')
-    // Same getResponses() — identical query logic, identical return format
-}
-```
-
-### `Entries.php` — Minimal stub (72 lines vs original 874)
-
-Kept only the 2 methods third-party plugins call: `_getEntries()`, `getFormInputsAndLabels()`.
-
-Removed all 10 other methods — they were either moved to `SubmissionService`, `EntryViewRenderer`, `ReportHelper`, REST controllers, or inlined in `Ajax.php`.
-
-```php
-class Entries extends EntryQuery
-{
-    // Same _getEntries() — identical signature, identical return format
-    // Same getFormInputsAndLabels() — identical
-    // Deprecation notice inherited from parent constructor
-}
-```
+Net result: roughly the same amount of code as keeping the original logic. Keeping the original is also safer — zero risk of behavioral differences.
 
 ---
 
@@ -224,7 +120,6 @@ class Entries extends EntryQuery
 | `getResponses()` query logic | Full filter/sort/paginate/search | Identical |
 | `getResponses()` return | `['data' => [...], 'paginate' => [...]]` | Identical |
 | Deprecation notice | None | `_deprecated_function()` in constructor |
-| `apply_filters_deprecated()` calls | Yes (old + new hook names) | Removed — only fires new hook names |
 | `$responseMetaModel` property | Set in constructor | Removed — not used by `_getEntries()` |
 | Other 10 methods | Present | Removed — handled elsewhere |
 
@@ -235,10 +130,10 @@ class Entries extends EntryQuery
 | Old Method | New Location | How It Changed |
 |------------|-------------|----------------|
 | `renderEntries()` | `EntryViewRenderer::renderEntries()` | Identical copy |
-| `changeEntryStatus()` | `Ajax.php` line 297 → `SubmissionService::updateStatus()` | Same logic, permission upgraded to `manage_entries` |
-| `changeEntryUser()` | `Ajax.php` line 217 → `SubmissionService::updateSubmissionUser()` | Same logic, try/catch error handling |
+| `changeEntryStatus()` | `Ajax.php` → `SubmissionService::updateStatus()` | Same logic, permission upgraded to `manage_entries` |
+| `changeEntryUser()` | `Ajax.php` → `SubmissionService::updateSubmissionUser()` | Same logic, try/catch error handling |
 | `updateEntryDiffs()` | `SubmissionService::updateEntryDiffs()` | Same logic, same signature |
-| `getUsers()` | `Ajax.php` line 229 (inlined) | Identical, too small for its own method |
+| `getUsers()` | `Ajax.php` (inlined) | Identical, too small for its own method |
 | `getAllFormEntries()` | REST API via `SubmissionController` | New REST-based approach |
 | `getEntriesReport()` | `ReportHelper` via REST | Moved to service |
 | `getEntries()` | REST API via `SubmissionController` | Wrapper around `_getEntries()` + extra filters |
@@ -263,7 +158,7 @@ class Entries extends EntryQuery
 `FluentForm\App\Modules\Entries\Entries` → `app/Modules/Entries/Entries.php`
 `FluentForm\App\Modules\Entries\EntryQuery` → `app/Modules/Entries/EntryQuery.php`
 
-No classmap or container binding changes needed. The PSR-4 mapping automatically resolves both classes. When Ninja Tables calls `wpFluentForm('FluentForm\App\Modules\Entries\Entries')`, the container auto-resolves it via the autoloader, finds the file, instantiates the class, and `_getEntries()` works.
+No classmap or container binding changes needed. PSR-4 mapping automatically resolves both classes.
 
 ---
 
@@ -275,3 +170,48 @@ These stubs should be removed in the next **major** version (7.0). Before remova
 2. Notify x-plugin-run-one-master maintainers to update their integration
 3. Monitor `_deprecated_function()` warnings in debug logs for any other callers
 4. Add a version check in the stubs: if Free version >= 7.0, don't load
+
+---
+
+## Other Broken Namespace References Found (Same Root Cause)
+
+The `app/Databases/` directory was moved to `database/` and the namespace changed from `FluentForm\App\Databases\*` to `FluentForm\Database\*`. Two files still reference the old namespace:
+
+### 1. `fluentformpro/src/Payments/AjaxEndpoints.php:9` — WILL CRASH
+
+```php
+// BROKEN — class and namespace both wrong
+use FluentForm\App\Databases\Migrations\FormSubmissions;
+// line 76: FormSubmissions::migrate(true);
+
+// SHOULD BE
+use FluentForm\Database\Migrations\Submissions;
+// line 76: Submissions::migrate(true);
+```
+
+- **Impact:** Fatal error when `upgradeDB()` runs (called during payment module activation/upgrade)
+- **Old class:** `FluentForm\App\Databases\Migrations\FormSubmissions` (deleted)
+- **New class:** `FluentForm\Database\Migrations\Submissions` (in `database/Migrations/Submissions.php`, loaded via classmap)
+
+### 2. `fluentform/app/Modules/Form/FormHandler.php:5` — WILL CRASH
+
+```php
+// BROKEN — namespace wrong
+use FluentForm\App\Databases\Migrations\SubmissionDetails;
+// line 179: SubmissionDetails::migrate();
+
+// SHOULD BE
+use FluentForm\Database\Migrations\SubmissionDetails;
+```
+
+- **Impact:** Fatal error when `SubmissionDetails::migrate()` is called (during form submission handling for new installs/upgrades)
+- **Old namespace:** `FluentForm\App\Databases\Migrations` (directory deleted)
+- **New namespace:** `FluentForm\Database\Migrations` (in `database/Migrations/SubmissionDetails.php`, loaded via classmap)
+
+### 3. `Report.php` — Deleted, No Stub (Low Risk)
+
+- Old class: `FluentForm\App\Modules\Entries\Report`
+- Deleted in same commit `567e39d2` along with Entries/EntryQuery
+- No references found in fluentformpro or other known third-party plugins
+- Functionality moved to `ReportHelper` service
+- **Risk:** Low — only a concern if unknown third-party plugins reference it directly

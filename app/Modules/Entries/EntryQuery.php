@@ -27,7 +27,6 @@ class EntryQuery
 
     public function __construct()
     {
-        _deprecated_function(__CLASS__, '6.2.0', 'FluentForm\App\Services\Submission\SubmissionService');
         $this->request = wpFluentForm('request');
         $this->formModel = wpFluent()->table('fluentform_forms');
         $this->responseModel = wpFluent()->table('fluentform_submissions');
