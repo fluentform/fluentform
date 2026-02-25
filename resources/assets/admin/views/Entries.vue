@@ -944,7 +944,9 @@
                         const statusToBeDecreased = this.entries[index].status;
                         this.counts[statusToBeDecreased] -= 1;
 
-                        this.counts.trashed += 1;
+                        if (this.entry_type !== 'trashed') {
+                            this.counts.trashed += 1;
+                        }
 
                         this.entries.splice(index, 1);
 

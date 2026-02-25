@@ -128,17 +128,6 @@ $app->addAction('wp_ajax_fluentform-convert-to-conversational', function () use 
     (new \FluentForm\App\Modules\Form\Form($app))->convertToConversational();
 });
 
-$app->addAction('wp_ajax_fluentform_get_all_entries', function () {
-    dd('wp_ajax_fluentform_get_all_entries');
-    Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->getAllFormEntries();
-});
-
-$app->addAction('wp_ajax_fluentform_get_all_entries_report', function () {
-    dd('wp_ajax_fluentform_get_all_entries_report');
-    Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->getEntriesReport();
-});
 
 $app->addAction('wp_ajax_fluentform-form-inputs', function () use ($app) {
     dd('wp_ajax_fluentform-form-inputs');
@@ -218,57 +207,42 @@ $app->addAction('wp_ajax_fluentform-load-editor-components', function () use ($a
     (new \FluentForm\App\Modules\Component\Component($app))->index();
 });
 
-$app->addAction('wp_ajax_fluentform-form-entry-counts', function () {
-    dd('wp_ajax_fluentform-form-entry-counts');
-    Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->getEntriesGroup();
-});
 
-$app->addAction('wp_ajax_fluentform-form-entries', function () {
-    dd('wp_ajax_fluentform-form-entries');
-    Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->getEntries();
-});
-
-$app->addAction('wp_ajax_fluentform-form-report', function () use ($app) {
-    dd('wp_ajax_fluentform-form-report');
-    $formId = intval($app->request->get('form_id'));
-    Acl::verify('fluentform_entries_viewer', $formId);
-    (new \FluentForm\App\Modules\Entries\Report($app))->getReport($formId);
-});
 
 $app->addAction('wp_ajax_fluentform-form-entries-export', function () use ($app) {
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Transfer\Transfer())->exportEntries();
 });
 
-$app->addAction('wp_ajax_fluentform-get-entry', function () {
-    //No usage found
+$app->addAction('wp_ajax_fluentform-update-entry-user', function () use ($app) {
     Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->getEntry();
+    $userId = intval($app->request->get('user_id'));
+    $submissionId = intval($app->request->get('submission_id'));
+    try {
+        $result = (new \FluentForm\App\Services\Submission\SubmissionService())->updateSubmissionUser($userId, $submissionId);
+        wp_send_json_success($result);
+    } catch (\Exception $e) {
+        wp_send_json_error(['message' => $e->getMessage()], 423);
+    }
 });
 
-$app->addAction('wp_ajax_fluentform-update-entry-user', function () {
+$app->addAction('wp_ajax_fluentform-get-users', function () use ($app) {
     Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->changeEntryUser();
+    $search = sanitize_text_field($app->request->get('search'));
+    $users = get_users([
+        'search' => "*{$search}*",
+        'number' => 50,
+    ]);
+    $formattedUsers = [];
+    foreach ($users as $user) {
+        $formattedUsers[] = [
+            'ID'    => $user->ID,
+            'label' => $user->display_name . ' - ' . $user->user_email,
+        ];
+    }
+    wp_send_json_success(['users' => $formattedUsers]);
 });
 
-$app->addAction('wp_ajax_fluentform-get-users', function () {
-    Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->getUsers();
-});
-
-$app->addAction('wp_ajax_fluentform-get-entry-notes', function () {
-    dd('wp_ajax_fluentform-get-entry-notes');
-    Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->getNotes();
-});
-
-$app->addAction('wp_ajax_fluentform-add-entry-note', function () {
-    dd('wp_ajax_fluentform-add-entry-note');
-    Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Entries())->addNote();
-});
 
 $app->addAction('wp_ajax_fluentform-get-entry-logs', function () use ($app) {
     dd('wp_ajax_fluentform-get-entry-logs');
@@ -320,9 +294,17 @@ $app->addAction('wp_ajax_fluentform_delete_api_logs_by_ids', function () use ($a
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->deleteApiLogsByIds();
 });
 
-$app->addAction('wp_ajax_fluentform-change-entry-status', function () {
+$app->addAction('wp_ajax_fluentform-change-entry-status', function () use ($app) {
     Acl::verify('fluentform_manage_entries');
-    (new \FluentForm\App\Modules\Entries\Entries())->changeEntryStatus();
+    $attributes = [
+        'entry_id' => intval($app->request->get('entry_id')),
+        'status'   => sanitize_text_field($app->request->get('status')),
+    ];
+    $newStatus = (new \FluentForm\App\Services\Submission\SubmissionService())->updateStatus($attributes);
+    wp_send_json_success([
+        'message' => sprintf(__('Item has been marked as %s', 'fluentform'), $newStatus),
+        'status'  => $newStatus,
+    ], 200);
 });
 
 
@@ -380,6 +362,7 @@ $app->addAction('wp_ajax_fluentform_renew_rest_nonce', function () {
  */
 
 add_action('wp_ajax_fluentform_select_group_ajax_data', function () {
+    Acl::verify('fluentform_dashboard_access');
     $requestData = wpFluentForm('request')->all();
     $ajaxList = apply_filters('fluentform/select_group_component_ajax_options', [], $requestData);
     wp_send_json_success($ajaxList);

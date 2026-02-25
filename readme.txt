@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.17
+Stable tag: 6.1.18
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -437,6 +437,13 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.1.18 (Date: February 25, 2026) =
+- Improves file delete endpoint security
+- Adds input sanitization to all report data endpoints
+- Adds sanitization to payment receipt shortcode request parameters
+- Fixes SQL LIKE wildcard injection in field uniqueness validation
+- Fixes mixed SQL escaping patterns in post type queries
 
 = 6.1.17 (Date: February 3, 2026) =
 - Fix conversational form subscription plan not showing in payment summary when first option is selected

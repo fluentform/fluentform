@@ -479,12 +479,14 @@ class Helper
                 // if form has pending payment then the value doesn't exist in EntryDetails table
                 // further checking on Submission table if the value exists
                 if (!$exist && $form->has_payment) {
-                    $allSubmission = Submission::where('form_id', $form->id)->get()->toArray();
+                    $escapedKey = json_encode($fieldName);
+                    $escapedValue = json_encode($inputValue);
+                    $searchPattern = trim($escapedKey, '"') . '":' . $escapedValue;
+                    $searchPattern = addcslashes($searchPattern, '%_');
 
-                    foreach ($allSubmission as $submission) {
-                        $response = json_decode(ArrayHelper::get($submission, 'response'), true);
-                        $exist = $inputValue == ArrayHelper::get($response, $fieldName);
-                    }
+                    $exist = Submission::where('form_id', $form->id)
+                        ->where('response', 'LIKE', '%' . $searchPattern . '%')
+                        ->exists();
                 }
 
                 if ($exist) {

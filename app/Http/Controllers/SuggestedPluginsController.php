@@ -112,11 +112,21 @@ class SuggestedPluginsController extends Controller
             ], 403);
         }
 
-        $pluginSlug = wpFluentForm('request')->get('plugin_slug');
-        
+        $pluginSlug = sanitize_text_field(wpFluentForm('request')->get('plugin_slug'));
+
         if (empty($pluginSlug)) {
             return $this->sendError([
                 'message' => __('Plugin slug is required.', 'fluentform')
+            ], 400);
+        }
+
+        if (!function_exists('get_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        if (!array_key_exists($pluginSlug, get_plugins())) {
+            return $this->sendError([
+                'message' => __('Invalid plugin.', 'fluentform')
             ], 400);
         }
 

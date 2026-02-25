@@ -91,7 +91,9 @@ class TransactionShortcodes
     public function registerReceiptShortcode($atts, $content = '')
     {
        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a public shortcode for displaying receipt
-       $data = $_REQUEST;
+       $data = [
+           'transaction' => isset($_REQUEST['transaction']) ? sanitize_text_field(wp_unslash($_REQUEST['transaction'])) : '',
+       ];
        return $this->renderPaymentReceiptPage($data, false);
     }
 
@@ -160,7 +162,7 @@ class TransactionShortcodes
         $this->verifyNonce();
         if ($route == 'get_subscription_transactions') {
             $this->sendSubscriptionPayments();
-        } else if ('cancel_transaction') {
+        } else if ($route == 'cancel_transaction') {
             $this->cancelSubscriptionAjax();
         }
     }
@@ -455,7 +457,7 @@ class TransactionShortcodes
         $userid = get_current_user_id();
         $submission = fluentFormApi('submissions')->find($subscription->submission_id);
 
-        if (!$submission && $submission->user_id != $userid || $this->canCancelSubscription($submission)) {
+        if (!$submission || ($submission->user_id != $userid && !$this->canCancelSubscription($subscription))) {
             $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
         }
     

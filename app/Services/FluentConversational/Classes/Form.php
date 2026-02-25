@@ -568,7 +568,8 @@ class Form
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
-            'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n()
+            'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
         ]);
 
         $hasSaveProgressButton = false;
@@ -757,7 +758,8 @@ class Form
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
-            'rest'                     => Helper::getRestInfo()
+            'rest'                     => Helper::getRestInfo(),
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
         ]);
         
         $hasSaveProgressButton = false;

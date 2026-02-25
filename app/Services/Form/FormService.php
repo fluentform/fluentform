@@ -7,10 +7,7 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Support\Arr;
-use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 
@@ -597,11 +594,28 @@ class FormService
             $postTypes[] = $postTypeName;
         }
         
+        global $wpdb;
+        $placeholders = implode(', ', array_fill(0, count($postTypes), '%s'));
+        $args = array_merge($postTypes, ['%fluentform%']);
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders contains only %s literals
+        $matchingIds = $wpdb->get_col($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ({$placeholders}) AND post_status != 'trash' AND post_content LIKE %s",
+            $args
+        ));
+
+        if (empty($matchingIds)) {
+            return [
+                'locations' => [],
+                'status'    => false,
+            ];
+        }
+
         $params = array(
             'post_type'      => $postTypes,
-            'posts_per_page' => -1
+            'posts_per_page' => -1,
+            'post__in'       => $matchingIds,
         );
-        
+
         $params = apply_filters_deprecated(
             'fluentform_find_shortcode_params',
             [
@@ -612,7 +626,7 @@ class FormService
             'Use fluentform/find_shortcode_params instead of fluentform_find_shortcode_params.'
         );
         $params = apply_filters('fluentform/find_shortcode_params', $params);
-        
+
         $formLocations = [];
         $posts = get_posts($params);
         foreach ($posts as $post) {

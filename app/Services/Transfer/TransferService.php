@@ -139,6 +139,7 @@ class TransferService
             define('FLUENTFORM_EXPORTING_ENTRIES', true);
         }
         $formId = (int)Arr::get($args, 'form_id');
+        $tableName = Arr::get($args, 'table');
         try {
             $form = Form::findOrFail($formId);
         } catch (Exception $e) {
@@ -165,9 +166,11 @@ class TransferService
         $withNotes = isset($args['with_notes']);
        
         //filter out unselected fields
-        foreach ($inputLabels as $key => $value) {
-            if (!in_array($key,$selectedLabels) && isset($inputLabels[$key])) {
-                unset($inputLabels[$key]); // Remove the element with the specified key
+        if (!empty($selectedLabels)) {
+            foreach ($inputLabels as $key => $value) {
+                if (!in_array($key, $selectedLabels) && isset($inputLabels[$key])) {
+                    unset($inputLabels[$key]);
+                }
             }
         }
         
@@ -227,7 +230,20 @@ class TransferService
                     $temp[] = implode(", ",$notes->toArray());
                 }
             }
-            
+
+            if (!$tableName) {
+                if ($form->has_payment) {
+                    $temp[] = round(($submission->payment_total ?? 0) / 100, 1);
+                    $temp[] = $submission->payment_status ?? '';
+                    $temp[] = $submission->currency ?? '';
+                }
+                $temp[] = $submission->id ?? '';
+                $temp[] = $submission->status ?? '';
+                $temp[] = $submission->created_at ?? '';
+            }
+
+            $temp = apply_filters('fluentform/export_entry_metadata', $temp, $submission, $form, $args);
+
             $exportData[] = $temp;
         }
 
@@ -243,6 +259,19 @@ class TransferService
         if($withNotes){
             $inputLabels[] = __('Notes','fluentform');
         }
+
+        if (!$tableName) {
+            if ($form->has_payment) {
+                $inputLabels[] = 'payment_total';
+                $inputLabels[] = 'payment_status';
+                $inputLabels[] = 'currency';
+            }
+            $inputLabels[] = 'entry_id';
+            $inputLabels[] = 'entry_status';
+            $inputLabels[] = 'created_at';
+        }
+        $inputLabels = apply_filters('fluentform/export_entry_metadata_labels', $inputLabels, $form, $args);
+
         $data = array_merge([array_values($inputLabels)], $exportData);
         
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
@@ -277,7 +306,24 @@ class TransferService
 
     private static function getSubmissions($args)
     {
-        $query = (new Submission)->customQuery($args);
+        $tableName = Arr::get($args, 'table');
+
+        if ($tableName) {
+            $query = wpFluent()->table($tableName)
+                ->where('form_id', (int) Arr::get($args, 'form_id'))
+                ->orderBy('id', Helper::sanitizeOrderValue(Arr::get($args, 'sort_by', 'DESC')));
+
+            $searchString = Arr::get($args, 'search');
+            if ($searchString) {
+                $query->where(function ($q) use ($searchString) {
+                    $q->where('id', 'LIKE', "%{$searchString}%")
+                        ->orWhere('response', 'LIKE', "%{$searchString}%");
+                });
+            }
+        } else {
+            $query = (new Submission)->customQuery($args);
+        }
+
         $entries = fluentFormSanitizer(Arr::get($args, 'entries', []));
         $query->when(is_array($entries) && (count($entries) > 0), function ($q) use ($entries) {
             return $q->whereIn('id', $entries);

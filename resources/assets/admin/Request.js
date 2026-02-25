@@ -1,5 +1,6 @@
 export default function (method, route, data = {}) {
     const url = `${window.fluent_forms_global_var.rest.url}/${route}`;
+    const originalMethod = method;
 
     const headers = { "X-WP-Nonce": window.fluent_forms_global_var.rest.nonce };
 
@@ -27,9 +28,9 @@ export default function (method, route, data = {}) {
                     }).then(response => {
                         if (response.nonce) {
                             window.fluent_forms_global_var.rest.nonce = response.nonce;
-                            method = method.toLowerCase();
+                            const retryMethod = originalMethod.toLowerCase();
 
-                            window.FluentFormsGlobal.$rest[method](route, data).then(response => {
+                            window.FluentFormsGlobal.$rest[retryMethod](route, data).then(response => {
                                 resolve(response)
                             })
                             .fail(errors => reject(errors.responseJSON));
