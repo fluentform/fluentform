@@ -122,6 +122,9 @@
                                         <span v-if="hasPermission('fluentform_entries_viewer')" class="row-actions-item ff_entries">
                                                 <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a>
                                         </span>
+                                        <span v-if="hasPro() && hasPermission('fluentform_forms_manager')" class="row-actions-item">
+                                                <a :href="scope.row.ai_chat_settings_url"> {{ $t('AI Settings') }}</a>
+                                        </span>
                                         <span v-if="scope.row.conversion_preview" class="row-actions-item ff_entries">
                                                 <a target="_blank" :href="scope.row.conversion_preview"> {{ $t('Conversational Preview') }}</a>
                                         </span>

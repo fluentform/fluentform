@@ -140,6 +140,7 @@ class Form
             $form->settings_url = Helper::getFormSettingsUrl($form);
             $form->entries_url = Helper::getFormAdminPermalink('entries', $form);
             $form->analytics_url = Helper::getFormAdminPermalink('analytics', $form);
+            $form->ai_chat_settings_url = Helper::getFormAdminPermalink('ai-chat-settings', $form);
 
             // Use pre-fetched counts instead of individual queries
             $form->total_views = $viewsMap[$form->id] ?? 0;
