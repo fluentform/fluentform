@@ -20,3 +20,4 @@ public_build
 !/assets/js/fluent_gutenblock.js
 CLAUDE.md
 .claude/
+/tests/
