@@ -438,6 +438,11 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 6.1.19 (Date: - , 2026) =
+- Adds fluentform/submission_inserted_error hook for third-party plugin error recovery
+- Adds fluentform/submission_inserted_completed hook that always fires after submission processing
+- Improves error logging in submission hook exception handling
+
 = 6.1.18 (Date: February 25, 2026) =
 - Improves file delete endpoint security
 - Adds input sanitization to all report data endpoints

@@ -251,10 +251,19 @@ class SubmissionHandlerService
             );
 
         } catch (\Exception $e) {
+            do_action('fluentform/submission_inserted_error', $insertId, $formData, $form, $e);
             if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('Fluent Forms: Exception in submission_inserted hook: ' . $e->getMessage());
                 $error = $e->getMessage();
             }
         }
+
+        /*
+         * Fires after all submission_inserted hooks have been attempted,
+         * regardless of whether an exception occurred.
+         * Use this hook if you need a guaranteed execution point after submission insertion.
+         */
+        do_action('fluentform/submission_inserted_completed', $insertId, $formData, $form);
 
         do_action_deprecated(
             'fluentform_before_submission_confirmation', [
