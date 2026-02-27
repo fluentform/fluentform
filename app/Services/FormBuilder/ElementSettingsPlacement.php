@@ -332,6 +332,7 @@ return [
             'label',
             'description',
             'align',
+            'heading_level',
         ],
         'advanced' => [
             'class',

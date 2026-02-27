@@ -60,6 +60,7 @@ class ActivationHandler
                     'file_upload_locations'    => '',
                     'admin_top_nav_status'    => 'yes',
                     'default_admin_date_time' => 'time_diff',
+                    'enhanced_accessibility'  => 'no',
                 ],
                 
             ], 'no');

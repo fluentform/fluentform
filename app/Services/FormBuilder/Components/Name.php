@@ -96,7 +96,7 @@ class Name extends Select
 
                     $elMarkup = '<select ' . $atts . '>' . $options . '</select>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts and $options are escaped before being passed in.
                 } else {
-                    $elMarkup = '<input ' . $atts . 'aria-invalid="false" aria-required='.$ariaRequired.'>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
+                    $elMarkup = '<input ' . $atts . 'aria-invalid="false" aria-required="'.$ariaRequired.'">'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
                 }
 
                 $inputTextMarkup = $this->buildElementMarkup($elMarkup, $field, $form);

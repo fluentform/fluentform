@@ -724,6 +724,30 @@
                                 v-model="misc.autosave_enabled"></el-switch>
                     </el-form-item>
                 </div>
+
+                <!-- Enhanced Accessibility -->
+                <div class="el-form-item-wrap">
+                    <el-form-item class="ff-form-item-flex ff-form-item mb-3 ff-form-setting-label-width">
+                        <template slot="label">
+                            <span>
+                                <span>
+                                    {{ $t('Enhanced Accessibility (WCAG 2.1 AA)') }}
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>
+                                                {{ $t('Enable enhanced accessibility features for WCAG 2.1 Level AA compliance. Adds ARIA attributes, screen reader announcements, keyboard navigation, and improved focus management. Turn this off if your custom styles depend on the original form markup structure.') }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </span>
+                                <p class="text-note mt-1">{{ $t('Recommended for public-facing forms') }}</p>
+                            </span>
+                        </template>
+                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg"
+                                v-model="misc.enhanced_accessibility"></el-switch>
+                    </el-form-item>
+                </div>
             </card-body>
         </card>
     </el-form>
@@ -888,6 +912,10 @@
 
             if (!this.data.misc.tokenBasedProtectionStatus) {
                 this.$set(this.data.misc, 'tokenBasedProtectionStatus', 'no');
+            }
+
+            if (!this.data.misc.enhanced_accessibility) {
+                this.$set(this.data.misc, 'enhanced_accessibility', 'no');
             }
 
             if (!("isAnalyticsDisabled" in this.data.misc)) {

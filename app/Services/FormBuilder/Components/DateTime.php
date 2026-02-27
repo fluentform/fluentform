@@ -54,7 +54,7 @@ class DateTime extends BaseComponent
 
         $ariaLabel = esc_html__(' Use arrow keys to navigate dates. Press enter to select a date.', 'fluentform') ;
         $label = ArrayHelper::get($data,'settings.label');
-        $elMarkup = "<input  aria-label='".$label.$ariaLabel."'  aria-haspopup='dialog' data-type-datepicker data-format='" . esc_attr($dateFormat) . "' " . $atts . " aria-invalid='false' aria-required={$ariaRequired}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
+        $elMarkup = '<input aria-label="' . esc_attr($label . $ariaLabel) . '" aria-haspopup="dialog" data-type-datepicker data-format="' . esc_attr($dateFormat) . '" ' . $atts . ' aria-invalid="false" aria-required="' . $ariaRequired . '">'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
         $config = $this->getDateFormatConfigJSON($data['settings'], $form);
         $customConfig = $this->getCustomConfig($data['settings']);
         $this->loadToFooter($config, $customConfig, $form, $id);

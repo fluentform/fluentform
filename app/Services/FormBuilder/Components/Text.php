@@ -83,6 +83,9 @@ class Text extends BaseComponent
                 $data['attributes']['class'] .= ' ff_has_formula';
                 $data['attributes']['readonly'] = true;
                 $data['attributes']['type'] = 'text';
+                if (Helper::isAccessibilityEnabled()) {
+                    $data['attributes']['aria-live'] = 'polite';
+                }
 
                 add_filter('fluentform/form_class', function ($css_class, $targetForm) use ($form) {
                     if ($targetForm->id == $form->id) {
@@ -203,7 +206,7 @@ class Text extends BaseComponent
             $ariaRequired = 'true';
         }
 
-        $input = '<input ' . $this->buildAttributes($data['attributes'], $form) . ' aria-invalid="false" aria-required='.$ariaRequired.'>';
+        $input = '<input ' . $this->buildAttributes($data['attributes'], $form) . ' aria-invalid="false" aria-required="'.$ariaRequired.'">';
         $prefix = ArrayHelper::get($data, 'settings.prefix_label');
         $suffix = ArrayHelper::get($data, 'settings.suffix_label');
         if ($prefix || $suffix) {

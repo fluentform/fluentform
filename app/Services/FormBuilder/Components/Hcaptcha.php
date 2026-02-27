@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
+use FluentForm\App\Helpers\Helper;
+
 class Hcaptcha extends BaseComponent
 {
     /**
@@ -55,10 +57,12 @@ class Hcaptcha extends BaseComponent
             );
         }
 
+        $captchaAriaLabel = Helper::isAccessibilityEnabled() ? "
+		aria-label='" . esc_attr__('CAPTCHA verification', 'fluentform') . "'" : '';
         $hcaptchaBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
 		id='fluentform-hcaptcha-{$form->id}-{$form->instance_index}'
-		class='ff-el-hcaptcha h-captcha'></div>";
+		class='ff-el-hcaptcha h-captcha'" . $captchaAriaLabel . "></div>";
 
         $label = '';
         if (! empty($data['settings']['label'])) {

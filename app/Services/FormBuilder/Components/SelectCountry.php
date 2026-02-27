@@ -54,7 +54,14 @@ class SelectCountry extends BaseComponent
             $ariaRequired = 'true';
         }
 
-        $elMarkup = '<select ' . $this->buildAttributes($data['attributes']) . "aria-invalid='false' aria-required=$ariaRequired><option value=''>" . wp_strip_all_tags($placeholder) . '</option>';
+        if (Helper::isAccessibilityEnabled()) {
+            $label = ArrayHelper::get($data, 'settings.label', '');
+            if ($label) {
+                $data['attributes']['aria-label'] = wp_strip_all_tags($label);
+            }
+        }
+
+        $elMarkup = '<select ' . $this->buildAttributes($data['attributes']) . "aria-invalid='false' aria-required='$ariaRequired'><option value=''>" . wp_strip_all_tags($placeholder) . '</option>';
 
         if ('priority_based' == $activeList) {
             $selectCountries = ArrayHelper::get($data, 'settings.country_list.priority_based', []);

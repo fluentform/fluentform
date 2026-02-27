@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
+use FluentForm\App\Helpers\Helper as AppHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\Framework\Support\Helper;
@@ -53,16 +54,87 @@ class BaseComponent
      */
     protected function buildAttributes($attributes, $form = null)
     {
+        // Auto-add HTML autocomplete attribute for known field types
+        if (AppHelper::isAccessibilityEnabled() && !isset($attributes['autocomplete']) && isset($attributes['name'])) {
+            $autocomplete = static::getAutocompleteValue($attributes);
+            if ($autocomplete) {
+                $attributes['autocomplete'] = $autocomplete;
+            }
+        }
+
         $atts = '';
-        
+
         foreach ($attributes as $key => $value) {
             if ($value || 0 === $value || '0' === $value) {
                 $value = htmlspecialchars($value);
                 $atts .= esc_attr($key) . '="' . $value . '" ';
             }
         }
-        
+
         return $atts;
+    }
+
+    /**
+     * Get the HTML autocomplete value for a field based on its name/type.
+     *
+     * @param array $attributes
+     * @return string|null
+     */
+    protected static function getAutocompleteValue($attributes)
+    {
+        $name = $attributes['name'] ?? '';
+        $type = $attributes['type'] ?? '';
+
+        // Skip types that should never have autocomplete
+        $excludeTypes = ['hidden', 'checkbox', 'radio', 'file', 'button', 'submit', 'reset', 'image'];
+        if (in_array($type, $excludeTypes, true)) {
+            return null;
+        }
+
+        // Type-based mapping
+        if ($type === 'email') {
+            return 'email';
+        }
+        if ($type === 'tel') {
+            return 'tel';
+        }
+        if ($type === 'url') {
+            return 'url';
+        }
+
+        // Simple field name mapping
+        $simpleMap = [
+            'email' => 'email',
+            'phone' => 'tel',
+        ];
+        if (isset($simpleMap[$name])) {
+            return $simpleMap[$name];
+        }
+
+        // Composite subfield mapping (names[first_name], address_1[city], etc.)
+        if (preg_match('/\[([^\]]+)\]$/', $name, $matches)) {
+            $subfield = $matches[1];
+
+            $subfieldMap = [
+                // Name subfields
+                'first_name'     => 'given-name',
+                'middle_name'    => 'additional-name',
+                'last_name'      => 'family-name',
+                // Address subfields
+                'address_line_1' => 'address-line1',
+                'address_line_2' => 'address-line2',
+                'city'           => 'address-level2',
+                'state'          => 'address-level1',
+                'zip'            => 'postal-code',
+                'country'        => 'country-name',
+            ];
+
+            if (isset($subfieldMap[$subfield])) {
+                return $subfieldMap[$subfield];
+            }
+        }
+
+        return null;
     }
     
     /**
@@ -202,7 +274,7 @@ class BaseComponent
         $requiredClass = $this->getRequiredClass(ArrayHelper::get($data, 'settings.validation_rules', []));
         $classes = trim('ff-el-input--label ' . $requiredClass . $this->getAsteriskPlacement($form));
         
-        return "<div class='" . esc_attr($classes) . "'><label aria-label='" . esc_attr($this->removeShortcode($label)) . "' for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label) . '</label>' . $helpMessage . '</div>';
+        return "<div class='" . esc_attr($classes) . "'><label for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label) . '</label>' . $helpMessage . '</div>';
     }
     
     /**
@@ -240,16 +312,34 @@ class BaseComponent
         );
         
         $labelHelpText = $inputHelpText = '';
+        $helpId = '';
+
+        $a11yEnabled = AppHelper::isAccessibilityEnabled();
+
+        // Generate help message ID for aria-describedby association
+        if ($a11yEnabled && !empty($data['settings']['help_message']) && isset($data['attributes']['id'])) {
+            $helpId = 'help_' . $data['attributes']['id'];
+        }
 
         $labelPlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
         if ('with_label' == $labelPlacement) {
             $labelHelpText = $this->getLabelHelpMessage($data);
         } elseif ('on_focus' == $labelPlacement) {
-            $inputHelpText = $this->getInputHelpMessage($data, 'ff-hidden');
+            $inputHelpText = $this->getInputHelpMessage($data, 'ff-hidden', $helpId);
         } elseif ('after_label' == $labelPlacement) {
-            $inputHelpText = $this->getInputHelpMessage($data, 'ff_ahm');
+            $inputHelpText = $this->getInputHelpMessage($data, 'ff_ahm', $helpId);
         } else {
-            $inputHelpText = $this->getInputHelpMessage($data);
+            $inputHelpText = $this->getInputHelpMessage($data, '', $helpId);
+        }
+
+        // Inject aria-describedby into the first form element if help message exists
+        if ($a11yEnabled && $helpId && $inputHelpText) {
+            $elMarkup = preg_replace(
+                '/<(input|select|textarea)\s/',
+                '<$1 aria-describedby="' . esc_attr($helpId) . '" ',
+                $elMarkup,
+                1
+            );
         }
         
         $forStr = '';
@@ -263,26 +353,12 @@ class BaseComponent
         
         if (!empty($data['settings']['label'])) {
             $label = ArrayHelper::get($data, 'settings.label');
-            $ariaLabel = $label;
-            
-            $hasShortCodeIndex = strpos($label, '{dynamic.');
-            
-            //Handle name field duplicate label accessibility
-            $isNameField = strpos(ArrayHelper::get($data, 'attributes.name', ''), 'name') !== false;
-            if ($isNameField) {
-                $ariaLabel = '';
-            } elseif ($hasShortCodeIndex !== false) {
-                $ariaLabel = trim(substr($label, 0, $hasShortCodeIndex));
-            } else {
-                $ariaLabel = $label;
-            }
-            
+
             $labelMarkup = sprintf(
-                '<div class="%1$s"><label %2$s %3$s %4$s>%5$s</label>%6$s</div>',
+                '<div class="%1$s"><label %2$s %3$s>%4$s</label>%5$s</div>',
                 esc_attr($labelClass),
                 $forStr,
                 $LabelId,
-                $ariaLabel != '' ? 'aria-label="' . esc_attr($this->removeShortcode($label)) . '"' : '',
                 fluentform_sanitize_html($label),
                 fluentform_sanitize_html($labelHelpText)
             );
@@ -315,8 +391,11 @@ class BaseComponent
     {
         if (isset($data['settings']['help_message']) && '' != $data['settings']['help_message']) {
             $text = htmlspecialchars($data['settings']['help_message']);
-            $icon = '<svg width="16" height="16" viewBox="0 0 25 25"><path d="m329 393l0-46c0-2-1-4-2-6-2-2-4-3-7-3l-27 0 0-146c0-3-1-5-3-7-2-1-4-2-7-2l-91 0c-3 0-5 1-7 2-1 2-2 4-2 7l0 46c0 2 1 5 2 6 2 2 4 3 7 3l27 0 0 91-27 0c-3 0-5 1-7 3-1 2-2 4-2 6l0 46c0 3 1 5 2 7 2 1 4 2 7 2l128 0c3 0 5-1 7-2 1-2 2-4 2-7z m-36-256l0-46c0-2-1-4-3-6-2-2-4-3-7-3l-54 0c-3 0-5 1-7 3-2 2-3 4-3 6l0 46c0 3 1 5 3 7 2 1 4 2 7 2l54 0c3 0 5-1 7-2 2-2 3-4 3-7z m182 119c0 40-9 77-29 110-20 34-46 60-80 80-33 20-70 29-110 29-40 0-77-9-110-29-34-20-60-46-80-80-20-33-29-70-29-110 0-40 9-77 29-110 20-34 46-60 80-80 33-20 70-29 110-29 40 0 77 9 110 29 34 20 60 46 80 80 20 33 29 70 29 110z" transform="scale(0.046875 0.046875)"></path></svg>';
-            return sprintf('<div class="ff-el-tooltip" data-content="%s">%s</div>', $text, $icon);
+            $icon = '<svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 25 25"><path d="m329 393l0-46c0-2-1-4-2-6-2-2-4-3-7-3l-27 0 0-146c0-3-1-5-3-7-2-1-4-2-7-2l-91 0c-3 0-5 1-7 2-1 2-2 4-2 7l0 46c0 2 1 5 2 6 2 2 4 3 7 3l27 0 0 91-27 0c-3 0-5 1-7 3-1 2-2 4-2 6l0 46c0 3 1 5 2 7 2 1 4 2 7 2l128 0c3 0 5-1 7-2 1-2 2-4 2-7z m-36-256l0-46c0-2-1-4-3-6-2-2-4-3-7-3l-54 0c-3 0-5 1-7 3-2 2-3 4-3 6l0 46c0 3 1 5 3 7 2 1 4 2 7 2l54 0c3 0 5-1 7-2 2-2 3-4 3-7z m182 119c0 40-9 77-29 110-20 34-46 60-80 80-33 20-70 29-110 29-40 0-77-9-110-29-34-20-60-46-80-80-20-33-29-70-29-110 0-40 9-77 29-110 20-34 46-60 80-80 33-20 70-29 110-29 40 0 77 9 110 29 34 20 60 46 80 80 20 33 29 70 29 110z" transform="scale(0.046875 0.046875)"></path></svg>';
+            if (AppHelper::isAccessibilityEnabled()) {
+                return sprintf('<div class="ff-el-tooltip" data-content="%s" aria-label="%s" tabindex="0" role="note">%s</div>', $text, $text, $icon);
+            }
+            return sprintf('<div class="ff-el-tooltip" data-content="%s" aria-label="%s">%s</div>', $text, $text, $icon);
         }
     }
     
@@ -327,12 +406,13 @@ class BaseComponent
      *
      * @return string [Html]
      */
-    protected function getInputHelpMessage($data, $hideClass = '')
+    protected function getInputHelpMessage($data, $hideClass = '', $id = '')
     {
         $class = trim('ff-el-help-message ' . $hideClass);
-        
+        $idAttr = $id ? " id='" . esc_attr($id) . "'" : '';
+
         if (isset($data['settings']['help_message']) && !empty($data['settings']['help_message'])) {
-            return "<div class='" . esc_attr($class) . "'>" . fluentform_sanitize_html($data['settings']['help_message']) . '</div>';
+            return "<div{$idAttr} class='" . esc_attr($class) . "'>" . fluentform_sanitize_html($data['settings']['help_message']) . '</div>';
         }
         return false;
     }

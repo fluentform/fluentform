@@ -229,6 +229,37 @@ $fluentformElementCustomizationSettings = [
             ],
         ],
     ],
+    'heading_level' => [
+        'template'  => 'select',
+        'label'     => __('Heading Level', 'fluentform'),
+        'help_text' => __('Choose the appropriate heading level to match the page structure.', 'fluentform'),
+        'options'   => [
+            [
+                'value' => 'h1',
+                'label' => 'H1',
+            ],
+            [
+                'value' => 'h2',
+                'label' => 'H2',
+            ],
+            [
+                'value' => 'h3',
+                'label' => 'H3',
+            ],
+            [
+                'value' => 'h4',
+                'label' => 'H4',
+            ],
+            [
+                'value' => 'h5',
+                'label' => 'H5',
+            ],
+            [
+                'value' => 'h6',
+                'label' => 'H6',
+            ],
+        ],
+    ],
     'shortcode' => [
         'template'  => 'inputText',
         'label'     => __('Shortcode', 'fluentform'),
