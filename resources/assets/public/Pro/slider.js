@@ -356,9 +356,11 @@ class FluentFormSlider {
         $(formSteps[this.activeStep]).css('display', 'block');
 
         // Add accessibility attributes
-        formSteps.attr('role', 'group');
-        formSteps.attr('aria-hidden', 'true');
-        $(formSteps[this.activeStep]).attr('aria-hidden', 'false');
+        if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+            formSteps.attr('role', 'group');
+            formSteps.attr('aria-hidden', 'true');
+            $(formSteps[this.activeStep]).attr('aria-hidden', 'false');
+        }
 
         $(formSteps[this.activeStep]).addClass('active');
         $(stepTitles[this.activeStep]).addClass('active');
@@ -394,25 +396,30 @@ class FluentFormSlider {
         }
 
         // Add this line to assign step numbers to each title
+        var a11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
         $.each(stepTitlesNavs, function (i, elm) {
             $(elm).attr('data-step-number', i);
 
-            // Also add these for accessibility and visual indication
-            $(elm).attr({
-                'role': 'button',
-                'tabindex': '0',
-                'aria-label': 'Go to step ' + (i + 1),
+            var navAttrs = {
                 'style': 'cursor: pointer;'
-            });
+            };
+            if (a11y) {
+                navAttrs['role'] = 'button';
+                navAttrs['tabindex'] = '0';
+                navAttrs['aria-label'] = 'Go to step ' + (i + 1);
+            }
+            $(elm).attr(navAttrs);
         });
 
         stepTitlesNavs.on('click keydown', function (e) {
-            // Handle keyboard events
-            if (e.type === 'keydown' && !(e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32)) {
-                return;
-            }
-
+            // Handle keyboard events - only when a11y is enabled
             if (e.type === 'keydown') {
+                if (!(window.fluentFormVars && window.fluentFormVars.a11yEnabled)) {
+                    return;
+                }
+                if (!(e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32)) {
+                    return;
+                }
                 e.preventDefault();
             }
 
@@ -480,6 +487,9 @@ class FluentFormSlider {
                 transition: 'width 0.3s ease-in-out',
                 width: completeness + '%'
             });
+            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                progressBar.attr('aria-valuenow', parseInt(completeness));
+            }
 
             if (completeness) {
                 progressBar.append(span.text(parseInt(completeness) + '%'))
@@ -496,9 +506,11 @@ class FluentFormSlider {
                 .replace('%stepTitle%', stepTitle);
 
             // Add ARIA live region for step announcements
-            this.$theForm.find('.ff-el-progress-status')
-                .html(stepText)
-                .attr('aria-live', 'polite');
+            var $progressStatus = this.$theForm.find('.ff-el-progress-status')
+                .html(stepText);
+            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                $progressStatus.attr('aria-live', 'polite');
+            }
 
             stepTitles.css('display', 'none');
             $(stepTitles[activeStep]).css('display', 'inline');
@@ -554,6 +566,9 @@ class FluentFormSlider {
             }
 
             progressBar.css('width', completeness + '%');
+            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                progressBar.attr('aria-valuenow', parseInt(completeness));
+            }
 
             return new Promise(resolve => {
                 let resolved = false;
@@ -679,8 +694,12 @@ class FluentFormSlider {
                 }
             }
 
-            formSteps.css('display', 'none').removeClass('active').attr('aria-hidden', 'true');
-            $(formSteps[this.activeStep]).css('display', 'block').addClass('active').attr('aria-hidden', 'false');
+            formSteps.css('display', 'none').removeClass('active');
+            var $activeStep = $(formSteps[this.activeStep]).css('display', 'block').addClass('active');
+            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                formSteps.attr('aria-hidden', 'true');
+                $activeStep.attr('aria-hidden', 'false');
+            }
 
             // Change step title
             stepTitles.removeClass('ff_active ff_completed');
@@ -765,6 +784,22 @@ class FluentFormSlider {
                 // Update progress bar and titles after animation completes
                 self.stepProgressBarHandle({activeStep: self.activeStep, totalSteps});
 
+                // Announce step change to screen readers
+                if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                    var srAnnounce = self.$theForm.find('.ff-sr-step-announce');
+                    if (!srAnnounce.length) {
+                        srAnnounce = $('<span/>', {
+                            'class': 'ff-sr-step-announce ff-support-sr-only',
+                            'role': 'status',
+                            'aria-live': 'polite',
+                            'aria-atomic': 'true'
+                        }).appendTo(self.$theForm);
+                    }
+                    if (!isFormReset) {
+                        srAnnounce.text('Step ' + (self.activeStep + 1) + ' of ' + totalSteps);
+                    }
+                }
+
                 // Show submit button on last step
                 if (formSteps.last().hasClass('active')) {
                     self.$theForm.find('button[type="submit"]').css('visibility', 'visible');
@@ -814,6 +849,25 @@ class FluentFormSlider {
                 self.$theForm.find('.fluentform-step.active').find('.step-nav button[data-action="prev"]').css('visibility', 'visible');
                 self.$theForm.find('.fluentform-step.active').find('.step-nav img[data-action="next"]').css('visibility', 'visible');
                 self.$theForm.find('.fluentform-step.active').find('.step-nav img[data-action="prev"]').css('visibility', 'visible');
+
+                // Announce step change to screen readers
+                if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                    var srAnnounce = self.$theForm.find('.ff-step-sr-announce');
+                    if (!srAnnounce.length) {
+                        srAnnounce = $('<span/>', {
+                            'class': 'ff-step-sr-announce ff-support-sr-only',
+                            'role': 'status',
+                            'aria-live': 'polite'
+                        }).prependTo(self.$theForm.find('.ff-step-container'));
+                    }
+                    var stepLabel = stepTitles.eq(self.activeStep).text() || '';
+                    srAnnounce.text(
+                        (self.fluentFormVars.step_text || 'Step %activeStep% of %totalStep%')
+                            .replace('%activeStep%', self.activeStep + 1)
+                            .replace('%totalStep%', totalSteps)
+                            .replace('%stepTitle%', stepLabel)
+                    );
+                }
 
                 resolve(); // Resolve the promise after animations, scrolling, and step skipping logic
             };

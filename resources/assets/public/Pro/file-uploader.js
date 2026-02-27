@@ -43,6 +43,19 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 style: 'font-size:12px; margin-top: 15px;' + (maxColumnWidth ? `max-width:${maxColumnWidth}px;` : '')
             });
             element.closest('div').append(uploadedList);
+
+            // Screen reader status announcements for upload
+            var a11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
+            var uploadStatus;
+            if (a11y) {
+                uploadStatus = $('<div/>', {
+                    class: 'ff-upload-status ff-support-sr-only',
+                    'aria-live': 'polite',
+                    'role': 'status'
+                });
+                element.closest('div').append(uploadStatus);
+            }
+
             // original width for preview filename ellipsis
             let maxWidth = uploadedList.width();
 
@@ -173,23 +186,38 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     });
 
                     // Set inline progress bar
-                    var progressBarInline = $(`
+                    var progressBarInline;
+                    if (a11y) {
+                        progressBarInline = $(`
+									<div class="ff-upload-progress-inline ff-el-progress">
+										<div class="ff-el-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="${data.files[0].name}"></div>
+									</div>
+								`);
+                    } else {
+                        progressBarInline = $(`
 									<div class="ff-upload-progress-inline ff-el-progress">
 										<div class="ff-el-progress-bar"></div>
 									</div>
 								`);
+                    }
 
                     var fileName = $('<div/>', {
                         class: 'ff-upload-filename',
                         text: data.files[0].name
                     });
 
-                    var removeBtn = $('<span/>', {
+                    var removeBtnAttrs = {
                         'data-href': '#',
                         'data-attachment-id':'',
                         'html': '&times;',
                         'class': 'ff-upload-remove'
-                    });
+                    };
+                    if (a11y) {
+                        removeBtnAttrs['role'] = 'button';
+                        removeBtnAttrs['tabindex'] = '0';
+                        removeBtnAttrs['aria-label'] = 'Remove ' + data.files[0].name;
+                    }
+                    var removeBtn = $('<span/>', removeBtnAttrs);
 
                     var fileSize = $('<div>', {
                         class: 'ff-upload-filesize ff-inline-block',
@@ -216,9 +244,12 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 },
                 progress: function (e, data) {
                     let progress = parseInt(data.loaded / data.total * 100, 10);
-                    data.context
+                    var $bar = data.context
                         .find('.ff-el-progress-bar')
                         .css('width', progress + '%');
+                    if (a11y) {
+                        $bar.attr('aria-valuenow', progress);
+                    }
                     data.context
                         .find('.ff-upload-progress-inline-text')
                         .text(fluentFormVars.uploading_txt);
@@ -229,11 +260,18 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                         if ('error' in data.result.data.files[0]) {
                             // Error given by WP (wp_handle_upload)
                             showUploadError('Upload Error: ' + data.result.data.files[0].error);
+                            if (a11y && uploadStatus) {
+                                uploadStatus.text(data.files[0].name + ' upload failed.');
+                            }
                             data.context.remove();
                         } else {
                             data.context
                                 .find('.ff-upload-progress-inline-text')
                                 .text(fluentFormVars.upload_completed_txt);
+
+                            if (a11y && uploadStatus) {
+                                uploadStatus.text(data.files[0].name + ' uploaded successfully.');
+                            }
 
                             rules['max_file_count']['remaining'] -= 1;
                             data.context.attr('data-src', data.result.data.files[0].url);
@@ -261,6 +299,9 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 },
                 fail: function (e, data) {
                     let errors = [];
+                    if (a11y && uploadStatus) {
+                        uploadStatus.text(data.files[0].name + ' upload failed.');
+                    }
                     data.context?.remove();
                     if (data.jqXHR?.responseJSON && data.jqXHR?.responseJSON.errors) {
                         $.each(data.jqXHR.responseJSON.errors, function (key, error) {
@@ -344,7 +385,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
      * @return {void}
      */
     var registerFileRemove = function () {
-        $form.find('.ff-uploaded-list').on('click', '.ff-upload-remove', function (e) {
+        $form.find('.ff-uploaded-list').on('click keydown', '.ff-upload-remove', function (e) {
+            if (e.type === 'keydown' && e.which !== 13 && e.which !== 32) return;
             e.preventDefault();
             var elFiles,
                 $this = $(this),

@@ -937,6 +937,19 @@ class Helper
         return $autosaveEnabled === 'yes';
     }
 
+    public static function isAccessibilityEnabled()
+    {
+        static $enabled = null;
+        if ($enabled === null) {
+            $enabled = 'yes' === ArrayHelper::get(
+                get_option('_fluentform_global_form_settings'),
+                'misc.enhanced_accessibility',
+                'no'
+            );
+        }
+        return $enabled;
+    }
+
     public static function maybeDecryptUrl($url)
     {
         $uploadDir = str_replace('/', '\/', FLUENTFORM_UPLOAD_DIR . '/temp');

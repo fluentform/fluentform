@@ -149,6 +149,10 @@ class FormBuilder
             $wrapperClasses .= ' ' . $themeStyle . '_wrap';
         }
 
+        if (Helper::isAccessibilityEnabled()) {
+            $wrapperClasses .= ' ff-a11y-enabled';
+        }
+
         $wrapperClasses = apply_filters('fluentform/form_wrapper_classes', $wrapperClasses, $form);
         ob_start();
 
@@ -205,7 +209,8 @@ class FormBuilder
 
         echo "</form><div id='fluentform_" . (int) $form->id . "_errors' class='ff-errors-in-stack ";
 
-        echo esc_attr($extraCssClass) . '_errors ' . esc_attr($instanceCssClass) . "_errors'></div></div>";
+        $errorA11yAttrs = Helper::isAccessibilityEnabled() ? " role='alert' aria-live='assertive' aria-atomic='true'" : "";
+        echo esc_attr($extraCssClass) . '_errors ' . esc_attr($instanceCssClass) . "_errors'" . $errorA11yAttrs . "></div></div>";
 
         do_action_deprecated(
             'fluentform_after_form_render',
@@ -596,8 +601,8 @@ class FormBuilder
     private function fieldsetHtml($form)
     {
         return '<fieldset  style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;">
-                    <legend class="ff_screen_reader_title" style="display: block; margin: 0!important;padding: 0!important;height: 0!important;text-indent: -999999px;width: 0!important;overflow:hidden;">'
-                            .$form->title.
+                    <legend class="ff_screen_reader_title" style="position: absolute!important;width: 1px!important;height: 1px!important;padding: 0!important;margin: -1px!important;overflow: hidden!important;clip: rect(0,0,0,0)!important;white-space: nowrap!important;border: 0!important;">'
+                            .esc_html($form->title).
                     '</legend>';
     }
 }

@@ -95,6 +95,7 @@ const formConditional = function ($, $theForm, form) {
 
         const hideShowElements = function (items) {
             let timeoutId;
+            const a11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
             $.each(items, (itemName, status) => {
                 const el = getElement(itemName);
                 let $parent = el.closest('.has-conditions');
@@ -102,9 +103,15 @@ const formConditional = function ($, $theForm, form) {
                     if ($parent.css('height') == '0px') {
                         $parent.attr("style", "");
                     }
-                    $parent.removeClass('ff_excluded')
-                        .addClass('ff_cond_v')
-                        .slideDown(200, function() {
+                    var $chain = $parent.removeClass('ff_excluded')
+                        .addClass('ff_cond_v');
+                    if (a11y) {
+                        $chain.attr('aria-hidden', 'false');
+                    }
+                    $chain.slideDown(200, function() {
+                            if (a11y) {
+                                $parent.find('input, select, textarea').removeAttr('tabindex');
+                            }
                             // Check if this container has range sliders that need reinitialization
                             if ($parent.find('input[type="range"]').length > 0) {
                                 if (timeoutId) {
@@ -116,9 +123,15 @@ const formConditional = function ($, $theForm, form) {
                             }
                         });
                 } else {
-                    $parent.removeClass('ff_cond_v')
-                        .addClass('ff_excluded')
-                        .slideUp(200);
+                    var $hideChain = $parent.removeClass('ff_cond_v')
+                        .addClass('ff_excluded');
+                    if (a11y) {
+                        $hideChain.attr('aria-hidden', 'true');
+                    }
+                    $hideChain.slideUp(200);
+                    if (a11y) {
+                        $parent.find('input, select, textarea').attr('tabindex', '-1');
+                    }
                 }
             });
             $theForm.trigger('do_calculation');

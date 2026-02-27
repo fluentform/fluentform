@@ -660,6 +660,7 @@ class Component
             'step_change_focus'             => true,
             'has_cleantalk'                 => \FluentForm\App\Modules\Form\CleanTalkHandler::isCleantalkActivated(),
             'pro_payment_script_compatible' => Helper::isProPaymentScriptCompatible(),
+            'a11yEnabled'                   => Helper::isAccessibilityEnabled(),
         ];
     
         $data = apply_filters_deprecated(

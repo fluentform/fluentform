@@ -80,6 +80,8 @@ class Address extends BaseComponent
             $fields = ArrayHelper::get($data, 'fields');
             $data['fields'] = array_merge(array_flip($order), $fields);
         }
+        $a11yEnabled = Helper::isAccessibilityEnabled();
+
         ob_start();
         echo '<div ' . $atts . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
         do_action_deprecated(
@@ -93,9 +95,16 @@ class Address extends BaseComponent
             'Use fluentform/rendering_address_field instead of fluentform_rendering_address_field.'
         );
         do_action('fluentform/rendering_address_field', $data, $form);
+
+        if ($a11yEnabled) {
+            echo '<fieldset style="border:0;padding:0;margin:0;min-width:0;">';
+            $fieldLabel = !empty($data['settings']['label']) ? $data['settings']['label'] : __('Address', 'fluentform');
+            echo '<legend class="ff-support-sr-only">' . fluentform_sanitize_html($fieldLabel) . '</legend>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        }
+
         if ($label = $data['settings']['label']):
             echo "<div class='ff-el-input--label'>";
-            echo '<label aria-label="'.esc_attr($this->removeShortcode($label)).'">' . fluentform_sanitize_html($data['settings']['label']) . '</label>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentform_sanitize_html escaped
+            echo '<label>' . fluentform_sanitize_html($data['settings']['label']) . '</label>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fluentform_sanitize_html escaped
             echo '</div>';
         endif;
         echo "<div class='ff-el-input--content'>";
@@ -138,6 +147,14 @@ class Address extends BaseComponent
                         'Use fluentform/before_render_item instead of fluentform_before_render_item.'
                     );
                     $item = apply_filters('fluentform/before_render_item', $item, $form);
+
+                    if ($a11yEnabled) {
+                        $subLabel = ArrayHelper::get($item, 'settings.label', '');
+                        if ($subLabel) {
+                            $item['attributes']['aria-label'] = wp_strip_all_tags($subLabel);
+                        }
+                    }
+
                     echo "<div class='ff-t-cell'>";
                     do_action_deprecated(
                         'fluentform_render_item_' . $item['element'],
@@ -157,6 +174,11 @@ class Address extends BaseComponent
         }
 
         echo '</div>';
+
+        if ($a11yEnabled) {
+            echo '</fieldset>';
+        }
+
         echo '</div>';
 
         $html = ob_get_clean();

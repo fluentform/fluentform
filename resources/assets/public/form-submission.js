@@ -360,16 +360,21 @@ jQuery(document).ready(function () {
 
                             if ('redirectUrl' in res.data.result) {
                                 if (res.data.result.message) {
-                                    $('<div/>', {
+                                    var successAttrs = {
                                         'id': formId + '_success',
-                                        'class': 'ff-message-success',
-                                        'role': 'status',
-                                        'aria-live': 'polite'
-                                    })
+                                        'class': 'ff-message-success'
+                                    };
+                                    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                                        successAttrs['role'] = 'alert';
+                                        successAttrs['aria-live'] = 'assertive';
+                                        successAttrs['tabindex'] = '-1';
+                                    }
+                                    var $successDiv = $('<div/>', successAttrs)
                                         .html(res.data.result.message)
-                                        .insertAfter($theForm)
-                                        .focus()
-                                    ;
+                                        .insertAfter($theForm);
+                                    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                                        $successDiv.focus();
+                                    }
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
 
@@ -381,18 +386,28 @@ jQuery(document).ready(function () {
                                 if ($(successMsgSelector).length) {
                                     $(successMsgSelector).slideUp('fast');
                                 }
-                                $('<div/>', {
+                                var successMsgAttrs = {
                                     'id': successMsgId,
-                                    'class': 'ff-message-success',
-                                    'role': 'status',
-                                    'aria-live': 'polite'
-                                })
+                                    'class': 'ff-message-success'
+                                };
+                                if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                                    successMsgAttrs['role'] = 'alert';
+                                    successMsgAttrs['aria-live'] = 'assertive';
+                                    successMsgAttrs['tabindex'] = '-1';
+                                }
+                                var $successMsg = $('<div/>', successMsgAttrs)
                                     .html(res.data.result.message)
-                                    .insertAfter($theForm)
-                                    .focus()
-                                ;
+                                    .insertAfter($theForm);
+                                if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                                    $successMsg.focus();
+                                }
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
+                                if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                                    $theForm.find('[aria-invalid="true"]').attr('aria-invalid', 'false');
+                                    $theForm.find('[aria-describedby^="error_"]').removeAttr('aria-describedby');
+                                }
+                                $theForm.find('.error.text-danger').remove();
 
                                 if (res.data.result.action == 'hide_form') {
                                     $theForm.hide().addClass('ff_force_hide');
@@ -496,6 +511,19 @@ jQuery(document).ready(function () {
                         .addClass('disabled')
                         .addClass('ff-working')
                         .prop('disabled', true);
+
+                    // Announce submission progress to screen readers
+                    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                        var srAnnounce = $form.find('.ff-sr-announce');
+                        if (!srAnnounce.length) {
+                            srAnnounce = $('<span/>', {
+                                'class': 'ff-sr-announce ff-support-sr-only',
+                                'role': 'status',
+                                'aria-live': 'polite'
+                            }).appendTo($form);
+                        }
+                        srAnnounce.text(fluentFormVars.sending_str || 'Submitting form...');
+                    }
                 };
 
                 var hideFormSubmissionProgress = function ($form) {
@@ -506,12 +534,24 @@ jQuery(document).ready(function () {
                         .removeClass('ff-working')
                         .attr('disabled', false);
                     $theForm.parent().find('.ff_msg_temp').remove();
+                    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                        $form.find('.ff-sr-announce').text('');
+                    }
                 }
 
                 var formResetHandler = function ($this) {
                     if ($('.ff-step-body', $theForm).length) {
                         fireUpdateSlider(0, fluentFormVars.stepAnimationDuration, false);
                     }
+
+                    // Clear all validation states
+                    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                        $this.find('[aria-invalid="true"]').attr('aria-invalid', 'false');
+                        $this.find('[aria-describedby^="error_"]').removeAttr('aria-describedby');
+                    }
+                    $this.find('.ff-el-is-error').removeClass('ff-el-is-error');
+                    $this.find('.error.text-danger').remove();
+
                     $this.find('.ff-el-repeat .ff-t-cell').each(function () {
                         $(this).find('input').not(':first').remove();
                     });
@@ -642,10 +682,18 @@ jQuery(document).ready(function () {
                     var errorSetting = form['settings']['layout']['errorMessagePlacement'];
                     if (errorSetting && errorSetting != 'stackToBottom') {
                         var firstError = $theForm.find('.ff-el-is-error').first();
-                        if (firstError.length && !isElementInViewport(firstError[0])) {
-                            $('html, body').delay(animDuration).animate({
-                                scrollTop: firstError.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20
-                            }, animDuration);
+                        if (firstError.length) {
+                            if (!isElementInViewport(firstError[0])) {
+                                $('html, body').delay(animDuration).animate({
+                                    scrollTop: firstError.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20
+                                }, animDuration);
+                            }
+                            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                                var firstInput = firstError.find('input, select, textarea').first();
+                                if (firstInput.length) {
+                                    setTimeout(function() { firstInput.focus(); }, animDuration + 50);
+                                }
+                            }
                         }
                     }
                 };
@@ -784,7 +832,9 @@ jQuery(document).ready(function () {
                         var element = getElement(elementName);
                         if (element) {
                             var name = element.attr('name');
-                            element.attr('aria-invalid', 'true');
+                            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                                element.attr('aria-invalid', 'true');
+                            }
                             var el = $('[name=\'' + name + '\']').first();
                             if (el) {
                                 el.closest('.ff-el-group').addClass('ff-el-is-error');
@@ -824,9 +874,16 @@ jQuery(document).ready(function () {
                         showErrorInStack([message]);
                         return;
                     }
-                    el.attr('aria-invalid', 'true');
-                    div = $('<div/>', {class: 'error text-danger'});
+                    var a11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
+                    if (a11y) {
+                        el.attr('aria-invalid', 'true');
+                    }
+                    var errorId = 'error_' + (el.attr('id') || el.attr('name') || '').replace(/[\[\]]/g, '_');
+                    div = $('<div/>', {class: 'error text-danger', id: errorId});
                     div.attr('role', 'alert');
+                    if (a11y) {
+                        el.attr('aria-describedby', errorId);
+                    }
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     if (el.closest('.ff-el-input--content').length) {
                         el.closest('.ff-el-input--content').find('div.error').remove();
@@ -844,7 +901,10 @@ jQuery(document).ready(function () {
                             return;
                         }
 
-                        $(this).attr('aria-invalid', 'false');
+                        if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                            $(this).attr('aria-invalid', 'false');
+                            $(this).removeAttr('aria-describedby');
+                        }
 
                         var errorSetting = form['settings']['layout']['errorMessagePlacement'];
                         if (errorSetting || errorSetting != 'stackToBottom') {
@@ -922,8 +982,8 @@ jQuery(document).ready(function () {
                         });
                     });
 
-                    $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
-                        let content = $(this).data('content');
+                    var showTooltip = function (el) {
+                        let content = $(el).data('content');
                         let $popContent = $('.ff-el-pop-content');
                         if (!$popContent.length) {
                             $('<div/>', {
@@ -940,22 +1000,27 @@ jQuery(document).ready(function () {
                         const formWidth = $theForm.innerWidth() - 20;
                         $popContent.css('max-width', formWidth);
 
-                        const iconLeft = $(this).offset().left;
+                        const iconLeft = $(el).offset().left;
                         const contentWidth = $popContent.outerWidth();
                         const contentHeight = $popContent.outerHeight();
 
                         let tipLeftPosition = iconLeft - (contentWidth / 2) + 10;
 
-
                         if (tipLeftPosition < 15) {
                             tipLeftPosition = 15;
                         }
 
-                        $popContent.css('top', $(this).offset().top - contentHeight - 5);
+                        $popContent.css('top', $(el).offset().top - contentHeight - 5);
                         $popContent.css('left', tipLeftPosition);
-                    });
-                    $theForm.find('.ff-el-tooltip').on('mouseleave', function () {
+                    };
+                    var hideTooltip = function () {
                         $('.ff-el-pop-content').remove();
+                    };
+                    $theForm.find('.ff-el-tooltip').on('mouseenter focusin', function () {
+                        showTooltip(this);
+                    });
+                    $theForm.find('.ff-el-tooltip').on('mouseleave focusout', function () {
+                        hideTooltip();
                     });
 
                     $(document).on('lity:open', function () {
@@ -1217,7 +1282,8 @@ jQuery(document).ready(function () {
                     }
 
                     if ($checkbox.is(":checked")) {
-                        $wrapper.show();
+                        $wrapper.show().attr('aria-hidden', 'false');
+                        $wrapper.find('.ff-el-form-control').removeAttr('tabindex');
                         // Only focus if input is empty to avoid blur conflicts
                         let $input = $wrapper.find(".ff-el-form-control");
                         if ($input.val().trim() === "") {
@@ -1226,7 +1292,8 @@ jQuery(document).ready(function () {
                             }, 50);
                         }
                     } else {
-                        $wrapper.hide();
+                        $wrapper.hide().attr('aria-hidden', 'true');
+                        $wrapper.find('.ff-el-form-control').attr('tabindex', '-1');
                         $wrapper.find(".ff-el-form-control").val("");
                     }
                 });
@@ -1242,10 +1309,12 @@ jQuery(document).ready(function () {
 
                     if ($radio.is(":checked")) {
                         // Hide all other input wrappers in this field
-                        $fieldContainer.find(".ff-other-input-wrapper").hide();
+                        $fieldContainer.find(".ff-other-input-wrapper").hide().attr('aria-hidden', 'true');
+                        $fieldContainer.find(".ff-other-input-wrapper .ff-el-form-control").attr('tabindex', '-1');
                         // Show this one
                         if ($wrapper.length) {
-                            $wrapper.show();
+                            $wrapper.show().attr('aria-hidden', 'false');
+                            $wrapper.find('.ff-el-form-control').removeAttr('tabindex');
                             $wrapper.find(".ff-el-form-control").focus();
                         }
                     }
@@ -1257,8 +1326,8 @@ jQuery(document).ready(function () {
                         return;
                     }
                     let $fieldContainer = $radio.closest(".ff-el-input--content");
-                    $fieldContainer.find(".ff-other-input-wrapper").hide();
-                    $fieldContainer.find(".ff-other-input-wrapper .ff-el-form-control").val("");
+                    $fieldContainer.find(".ff-other-input-wrapper").hide().attr('aria-hidden', 'true');
+                    $fieldContainer.find(".ff-other-input-wrapper .ff-el-form-control").attr('tabindex', '-1').val("");
                 });
             },
 
@@ -1801,13 +1870,58 @@ jQuery(document).ready(function () {
             });
         }
 
+        function initChoicesA11y() {
+            if (!(window.fluentFormVars && window.fluentFormVars.a11yEnabled)) {
+                return;
+            }
+            if (!$.isFunction(window.Choices)) {
+                return;
+            }
+            $('.ff_has_multi_select').each(function() {
+                var choicesInstance = $(this).data('choicesjs');
+                if (!choicesInstance || !choicesInstance.passedElement) return;
+
+                var choicesContainer = choicesInstance.passedElement.element.closest('.choices');
+                if (!choicesContainer) return;
+
+                var $trigger = $(choicesContainer).find('.choices__inner');
+                if (!$trigger.length) return;
+
+                $trigger.attr('aria-haspopup', 'listbox');
+                $trigger.attr('aria-expanded', 'false');
+
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                    $trigger.attr('aria-expanded', 'true');
+                    var $listbox = $(choicesContainer).find('.choices__list--dropdown .choices__list');
+                    if ($listbox.length && !$listbox.attr('role')) {
+                        $listbox.attr('role', 'listbox');
+                    }
+                });
+
+                choicesInstance.passedElement.element.addEventListener('hideDropdown', function() {
+                    $trigger.attr('aria-expanded', 'false');
+                });
+
+                choicesInstance.passedElement.element.addEventListener('choice', function(e) {
+                    setTimeout(function() {
+                        $(choicesContainer).find('.choices__item--selectable[role="option"]')
+                            .removeAttr('aria-selected');
+                        $(choicesContainer).find('.choices__item--selectable.is-highlighted[role="option"]')
+                            .attr('aria-selected', 'true');
+                    }, 50);
+                });
+            });
+        }
+
         // Initialize with proper timing
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(initChoicesDropdownHandling, 100);
+                setTimeout(initChoicesA11y, 150);
             });
         } else {
             setTimeout(initChoicesDropdownHandling, 100);
+            setTimeout(initChoicesA11y, 150);
         }
     })(window.fluentFormVars, jQuery);
 

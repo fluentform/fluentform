@@ -185,7 +185,8 @@ export class Payment_handler {
                 html += '<div class="ffp_table_close"><span class="ffp_close_icon" data-name="' + name + '">&times;</span></div>';
             }
 
-            html += '<table class="table ffp_table input_items_table">';
+            var a11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
+            html += '<table class="table ffp_table input_items_table"' + (a11y ? ' aria-label="' + this.getPaymentMessage('summary_label', 'Payment Summary') + '"' : '') + '>';
             html += `<thead><tr><th>${this.getPaymentMessage("item_label", "Item")}</th><th>${this.getPaymentMessage("price_label", "Price")}</th><th>${this.getPaymentMessage("qty_label", "Qty")}</th><th>${this.getPaymentMessage("line_total_label", "Line Total")}</th></tr></thead>`;
             html += '<tbody>';
             jQuery.each(items, (index, item) => {
@@ -457,6 +458,20 @@ export class Payment_handler {
         jQuery.each(couponCodes, (index, codeWrapper) => {
             let $codeWrapper = jQuery(codeWrapper);
             let $btn = $codeWrapper.find('.ff_input-group-append');
+            var a11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
+            if (a11y) {
+                $btn.attr({
+                    'role': 'button',
+                    'tabindex': '0',
+                    'aria-label': this.getPaymentMessage('apply_coupon_label', 'Apply coupon code')
+                });
+                $btn.on('keydown', (e) => {
+                    if (e.which === 13 || e.which === 32) {
+                        e.preventDefault();
+                        $btn.trigger('click');
+                    }
+                });
+            }
             $btn.on('click', () => {
                 const $input = $codeWrapper.find('input.ff_coupon_item');
                 let code = $input.val();
@@ -518,7 +533,8 @@ export class Payment_handler {
 
     recordCouponMessage($wrapper, coupon_code, message, type) {
         if (!$wrapper.find('.ff_coupon_responses').length) {
-            $wrapper.append('<ul class="ff_coupon_responses"></ul>');
+            var a11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
+            $wrapper.append('<ul class="ff_coupon_responses"' + (a11y ? ' aria-live="polite"' : '') + '></ul>');
         }
 
         const $responseDiv = $wrapper.find('.ff_coupon_responses');
@@ -789,6 +805,16 @@ export class Payment_handler {
 
     toggleStripeInlineCardError(error) {
         const $errorDiv = this.$form.find('.ff_card-errors');
+
+        if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+            if (!$errorDiv.attr('role')) {
+                $errorDiv.attr({
+                    'role': 'alert',
+                    'aria-live': 'assertive',
+                    'aria-atomic': 'true'
+                });
+            }
+        }
 
         if (error) {
             $errorDiv.html(error.message);

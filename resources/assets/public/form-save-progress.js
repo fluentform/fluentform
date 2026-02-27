@@ -97,22 +97,28 @@ import formSlider from "./Pro/slider";
                             if ($(savingResponseMsg).length) {
                                 $(savingResponseMsg).slideUp('fast');
                             }
-                            $('<div/>', {
+                            var saveSuccessAttrs = {
                                 'id': saveProgressMessage,
                                 'class': 'ff-message-success ff-el-group'
-                            })
+                            };
+                            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                                saveSuccessAttrs['role'] = 'status';
+                                saveSuccessAttrs['aria-live'] = 'polite';
+                            }
+                            $('<div/>', saveSuccessAttrs)
                                 .html(data.data.message)
                                 .insertBefore($saveBttn.closest('.ff-el-group'));
                         }
 
                         //Show Link in Input
                         const copyIcon = getSaveProgressMessage('copy_button', window.form_state_save_vars.copy_button || 'Copy');
+                        var a11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
                         let inputDiv =
                             `<div class="ff-el-input--content">
                                 <div class="ff_input-group">
-                                    <input readonly value="${ data.data.saved_url }" class="ff-el-form-control" >
+                                    <input readonly value="${ data.data.saved_url }" class="ff-el-form-control"${a11y ? ' aria-label="' + getSaveProgressMessage('save_link_label', 'Saved form link') + '"' : ''}>
                                     <div class="ff_input-group-append">
-                                        <button class="ff-btn ff-btn-md ff_btn_style ff_btn_copy_link ff_input-group-text">${copyIcon}</button>
+                                        <button${a11y ? ' type="button"' : ''} class="ff-btn ff-btn-md ff_btn_style ff_btn_copy_link ff_input-group-text"${a11y ? ' aria-label="' + getSaveProgressMessage('copy_link_label', 'Copy save link') + '"' : ''}>${copyIcon}</button>
                                     </div>
                                 </div>
                             </div>`;
@@ -121,7 +127,13 @@ import formSlider from "./Pro/slider";
                         $(this).closest('.ff-el-group').after(
                             inputGroup
                         )
-                        inputGroup.fadeIn();
+                        if (a11y) {
+                            inputGroup.fadeIn(400, function() {
+                                inputGroup.find('input.ff-el-form-control').trigger('focus');
+                            });
+                        } else {
+                            inputGroup.fadeIn(400);
+                        }
 
                         // Add Enter key handler for saved state link input
                         inputGroup.find('input.ff-el-form-control').on('keypress', function(e) {
@@ -138,9 +150,9 @@ import formSlider from "./Pro/slider";
                             let emailDiv =
                                 `<div class="ff-el-input--content">
                                     <div class="ff_input-group">
-                                        <input type="email" class="ff-el-form-control" placeholder="${emailPlaceholderStr}">
+                                        <input type="email" class="ff-el-form-control" placeholder="${emailPlaceholderStr}"${a11y ? ' aria-label="' + getSaveProgressMessage('email_label', 'Email address for save link') + '"' : ''}>
                                         <div class="ff_input-group-append">
-                                            <button class="ff-btn ff-btn-md ff_btn_style ff_btn_is_email ff_input-group-text">${emailIcon}</button>
+                                            <button${a11y ? ' type="button"' : ''} class="ff-btn ff-btn-md ff_btn_style ff_btn_is_email ff_input-group-text"${a11y ? ' aria-label="' + getSaveProgressMessage('email_link_label', 'Email save link') + '"' : ''}>${emailIcon}</button>
                                         </div>
                                     </div>
                                 </div>`;
@@ -164,10 +176,15 @@ import formSlider from "./Pro/slider";
                     if ($(savingResponseMsg).length) {
                         $(savingResponseMsg).slideUp('fast');
                     }
-                    $('<div/>', {
+                    var saveErrorAttrs = {
                         'id': saveProgressMessage,
                         'class': 'ff-message-success ff-el-group text-danger'
-                    })
+                    };
+                    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                        saveErrorAttrs['role'] = 'alert';
+                        saveErrorAttrs['aria-live'] = 'assertive';
+                    }
+                    $('<div/>', saveErrorAttrs)
                         .html(error.responseJSON.data.message)
                         .insertBefore($saveBttn.closest('.ff-el-group'));
 
@@ -184,6 +201,9 @@ import formSlider from "./Pro/slider";
             navigator.clipboard.writeText(copiedText);
             const copySuccess = getSaveProgressMessage('copy_success', window.form_state_save_vars.copy_success_button || 'Copied');
             $(this).html(`${copySuccess}`);
+            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                $(this).attr('aria-label', copySuccess);
+            }
         });
 
         $(formSelector).on('click', '.ff_btn_is_email', function (e) {
@@ -212,10 +232,15 @@ import formSlider from "./Pro/slider";
                     if ($(responseMessageSelector).length) {
                         $(responseMessageSelector).slideUp('fast');
                     }
-                    $('<div/>', {
+                    var emailSuccessAttrs = {
                         'id': emailResponse,
                         'class': 'ff-message-success ff-el-group'
-                    })
+                    };
+                    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                        emailSuccessAttrs['role'] = 'status';
+                        emailSuccessAttrs['aria-live'] = 'polite';
+                    }
+                    $('<div/>', emailSuccessAttrs)
                         .html(data.data.response)
                         .insertAfter(emailBtn);
 
@@ -228,10 +253,15 @@ import formSlider from "./Pro/slider";
                     if ($(responseMessageSelector).length) {
                         $(responseMessageSelector).slideUp('fast');
                     }
-                    $('<div/>', {
+                    var emailErrorAttrs = {
                         'id': emailResponse,
                         'class': 'ff-message-success ff-el-group text-danger'
-                    })
+                    };
+                    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                        emailErrorAttrs['role'] = 'alert';
+                        emailErrorAttrs['aria-live'] = 'assertive';
+                    }
+                    $('<div/>', emailErrorAttrs)
                         .html(error.responseJSON.data.Error)
                         .insertAfter(emailBtn);
                 }

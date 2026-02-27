@@ -122,6 +122,17 @@
     }
   }
 
+  .ff-a11y-enabled & input[type=checkbox],
+  .ff-a11y-enabled & input[type=radio] {
+    width: 24px;
+    height: 14px;
+
+    &:after {
+      width: 24px;
+      height: 24px;
+      background-size: 12px;
+    }
+  }
 }
 
 .ff-el-image-holder {
