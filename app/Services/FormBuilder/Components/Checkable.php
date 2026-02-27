@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Checkable extends BaseComponent
@@ -66,13 +67,6 @@ class Checkable extends BaseComponent
 
         $hasImageOption = ArrayHelper::get($data, 'settings.enable_image_input');
 
-        if ($hasImageOption) {
-            if (empty($data['settings']['layout_class'])) {
-                $data['settings']['layout_class'] = 'ff_list_buttons';
-            }
-            $elMarkup .= '<div class="ff_el_checkable_photo_holders">';
-        }
-
         $data['settings']['container_class'] .= ' ' . ArrayHelper::get($data, 'settings.layout_class');
 
         if ('yes' == ArrayHelper::get($data, 'settings.randomize_options')) {
@@ -92,11 +86,18 @@ class Checkable extends BaseComponent
                 'is_other'   => true,
             ];
         }
-//        @todo : Find a alternative screen reader support
-//        $legendId = $this->getUniqueid(str_replace(['[', ']'], ['', ''], $data['attributes']['name']));
-//        $elMarkup .= '<fieldset role="group"  style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;" aria-labelledby="legend_' . $legendId . '">';
-//
-//        $elMarkup .= '<legend  style="  position: absolute;width: 1px;height: 1px;padding: 0;margin: 0;overflow: hidden;clip: rect(0, 0, 0, 0);border: 0;"  role="heading" id="legend_' . $legendId . '" class="ff-sreader-only">' . esc_attr($this->removeShortcode($data['settings']['label'])) . '</legend>';
+        $legendId = $this->getUniqueid(str_replace(['[', ']'], ['', ''], $data['attributes']['name']));
+        if (Helper::isAccessibilityEnabled()) {
+            $elMarkup .= '<div role="group" aria-labelledby="legend_' . esc_attr($legendId) . '">';
+            $elMarkup .= '<span class="ff-support-sr-only" id="legend_' . esc_attr($legendId) . '">' . esc_attr($this->removeShortcode($data['settings']['label'])) . '</span>';
+        }
+
+        if ($hasImageOption) {
+            if (empty($data['settings']['layout_class'])) {
+                $data['settings']['layout_class'] = 'ff_list_buttons';
+            }
+            $elMarkup .= '<div class="ff_el_checkable_photo_holders">';
+        }
 
         $otherInputHtml = '';
         foreach ($formattedOptions as $option) {
@@ -147,7 +148,7 @@ class Checkable extends BaseComponent
             $isOtherOption = ArrayHelper::get($option, 'is_other', false);
             $otherClass = $isOtherOption ? ' ff-other-option' : '';
 
-            $elMarkup .= "<label class='ff-el-form-check-label{$otherClass}' for='{$id}'><input {$disabled} {$atts} id='{$id}' aria-label='{$this->removeShortcode($ariaLabel)}' aria-invalid='false' aria-required={$ariaRequired}> <span>" . $label . '</span></label>';
+            $elMarkup .= "<label class='ff-el-form-check-label{$otherClass}' for='{$id}'><input {$disabled} {$atts} id='{$id}' aria-invalid='false' aria-required='{$ariaRequired}'> <span>" . $label . '</span></label>';
             
             // Add text input for "Other" option
             if ($isOtherOption && defined('FLUENTFORMPRO')) {
@@ -157,8 +158,8 @@ class Checkable extends BaseComponent
                 $otherValue = '';
 
                 $marginTop = $hasImageOption ? '20px' : '8px';
-                $otherInputHtml .= "<div class='ff-other-input-wrapper' style='display: none; margin-top: {$marginTop};' data-field='{$fieldName}'>";
-                $otherInputHtml .= "<input type='text' name='" . esc_attr($otherInputName) . "' class='ff-el-form-control' placeholder='" . esc_attr($otherPlaceholder) . "' value='" . esc_attr($otherValue) . "'>";
+                $otherInputHtml .= "<div class='ff-other-input-wrapper' style='display: none; margin-top: {$marginTop};' aria-hidden='true' data-field='{$fieldName}'>";
+                $otherInputHtml .= "<input type='text' name='" . esc_attr($otherInputName) . "' class='ff-el-form-control' tabindex='-1' placeholder='" . esc_attr($otherPlaceholder) . "' value='" . esc_attr($otherValue) . "'>";
                 $otherInputHtml .= "</div>";
             }
             
@@ -171,7 +172,9 @@ class Checkable extends BaseComponent
         if ($otherInputHtml) {
             $elMarkup .= $otherInputHtml;
         }
-//        $elMarkup .= '</fieldset>';
+        if (Helper::isAccessibilityEnabled()) {
+            $elMarkup .= '</div>';
+        }
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
     

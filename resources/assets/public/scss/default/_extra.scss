@@ -19,14 +19,21 @@
       line-height: 1.5;
       border-radius: 7px;
       position: relative;
-      transition: background-color 0.15s ease-in-out,
-      border-color 0.15s ease-in-out,
-      box-shadow 0.15s ease-in-out;
+      @media (prefers-reduced-motion: no-preference) {
+        transition: background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+      }
       &:focus,
       &:hover {
         outline: 0;
         text-decoration: none;
         opacity: 0.8;
+      }
+      &:focus-visible {
+        outline: 2px solid var(--fluentform-primary, #409EFF);
+        outline-offset: 2px;
+        opacity: 1;
       }
     }
 
@@ -81,6 +88,11 @@
         font-size: 13px;
         line-height: 1.5;
         border-radius: 3px;
+
+        .ff-a11y-enabled & {
+          min-height: 44px;
+          min-width: 44px;
+        }
       }
     }
   }
@@ -99,7 +111,9 @@
       background-clip: padding-box;
       border: 1px solid $border-color;
       border-radius: $border-radius;
-      transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+      @media (prefers-reduced-motion: no-preference) {
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+      }
       margin-bottom: 0;
       max-width: 100%;
       font-family: -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -108,6 +122,10 @@
         background-color: #fff;
         border-color: $primary;
         outline: none;
+      }
+      &:focus-visible {
+        outline: 2px solid var(--fluentform-primary, #409EFF);
+        outline-offset: -1px;
       }
     }
 
@@ -195,7 +213,9 @@ select#{$el-prefix}-form-control {
       border-top-left-radius: 20px;
       border-bottom-left-radius: 20px;
       overflow: hidden;
-      animation: ff_move 2s linear infinite;
+      @media (prefers-reduced-motion: no-preference) {
+        animation: ff_move 2s linear infinite;
+      }
     }
   }
 }
@@ -217,4 +237,28 @@ select#{$el-prefix}-form-control {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+@media (forced-colors: active) {
+  .ff-default {
+    #{$el-prefix}-form-control {
+      border: 1px solid CanvasText;
+      &:focus {
+        outline: 2px solid Highlight;
+      }
+    }
+  }
+  #{$prefix}_btn_style,
+  .ff-btn-submit {
+    border: 1px solid ButtonText;
+    &:focus {
+      outline: 2px solid Highlight;
+    }
+  }
+  .ff-el-is-error #{$el-prefix}-form-control {
+    border-color: LinkText;
+  }
+  .error.text-danger {
+    forced-color-adjust: none;
+  }
 }

@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class SectionBreak extends BaseComponent
@@ -42,7 +43,16 @@ class SectionBreak extends BaseComponent
             ArrayHelper::except($data['attributes'], 'name')
         );
         $html = "<div {$atts}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
-        $html .= "<h3 class='ff-el-section-title'>" . fluentform_sanitize_html($data['settings']['label']) . '</h3>';
+        if (Helper::isAccessibilityEnabled()) {
+            $headingLevel = ArrayHelper::get($data, 'settings.heading_level', 'h3');
+            $allowedLevels = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+            if (!in_array($headingLevel, $allowedLevels, true)) {
+                $headingLevel = 'h3';
+            }
+        } else {
+            $headingLevel = 'h3';
+        }
+        $html .= "<{$headingLevel} class='ff-el-section-title'>" . fluentform_sanitize_html($data['settings']['label']) . "</{$headingLevel}>";
         $html .= "<div class='ff-section_break_desk'>" . fluentform_sanitize_html($data['settings']['description']) . '</div>';
         $html .= '<hr />';
         $html .= '</div>';

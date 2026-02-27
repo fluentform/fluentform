@@ -342,7 +342,11 @@ class PaymentMethods extends BaseFieldManager
 
             $elMarkup .= "<div class='{$parentClass}'>";
 
-            $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$atts} id='{$id}'> <span>{$method['title']}</span></label>";
+            $ariaLabel = '';
+            if (Helper::isAccessibilityEnabled()) {
+                $ariaLabel = " aria-label='" . esc_attr(sprintf(__('Pay with %s', 'fluentform'), $method['title'])) . "'";
+            }
+            $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$atts} id='{$id}'{$ariaLabel}> <span>{$method['title']}</span></label>";
             $elMarkup .= "</div>";
     
             $selectedMarkups .= apply_filters_deprecated(

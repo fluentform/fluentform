@@ -391,7 +391,7 @@ $fluentformDefaultElements = [
                         'value'       => '',
                         'id'          => '',
                         'class'       => '',
-                        'placeholder' => __('Address Line 1', 'fluentform'),
+                        'placeholder' => '',
                     ],
                     'settings' => [
                         'container_class'   => '',
@@ -448,7 +448,7 @@ $fluentformDefaultElements = [
                         'value'       => '',
                         'id'          => '',
                         'class'       => '',
-                        'placeholder' => __('Address Line 2', 'fluentform'),
+                        'placeholder' => '',
                     ],
                     'settings' => [
                         'container_class'   => '',
@@ -505,7 +505,7 @@ $fluentformDefaultElements = [
                         'value'       => '',
                         'id'          => '',
                         'class'       => '',
-                        'placeholder' => __('City', 'fluentform'),
+                        'placeholder' => '',
                     ],
                     'settings' => [
                         'container_class'   => '',
@@ -563,7 +563,7 @@ $fluentformDefaultElements = [
                         'value'       => '',
                         'id'          => '',
                         'class'       => '',
-                        'placeholder' => __('State', 'fluentform'),
+                        'placeholder' => '',
                     ],
                     'settings' => [
                         'container_class'   => '',
@@ -621,7 +621,7 @@ $fluentformDefaultElements = [
                         'value'       => '',
                         'id'          => '',
                         'class'       => '',
-                        'placeholder' => __('Zip', 'fluentform'),
+                        'placeholder' => '',
                         'required'    => false,
                     ],
                     'settings' => [
@@ -1398,6 +1398,7 @@ $fluentformDefaultElements = [
                 'label'              => __('Section Break', 'fluentform'),
                 'description'        => __('Some description about this section', 'fluentform'),
                 'align'              => 'left',
+                'heading_level'      => 'h3',
                 'conditional_logics' => [],
             ],
             'editor_options' => [

@@ -100,6 +100,15 @@ export default function ($, $theForm, calculationMessages = {}) {
     let repeaterInputsTriggerCache = {};
     mexp.addToken(mexpToken);
 
+    if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+        calculationFields.each(function() {
+            var $f = jQuery(this);
+            if ($f[0].type !== 'text' && !$f.attr('aria-live')) {
+                $f.attr('aria-live', 'polite');
+            }
+        });
+    }
+
     var doCalculation = function () {
         jQuery.each(calculationFields, (index, field) => {
             var $field = jQuery(field);

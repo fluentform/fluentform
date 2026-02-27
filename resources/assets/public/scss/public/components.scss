@@ -139,6 +139,12 @@
             color: var(--ff-rating-active-color);
           }
         }
+
+        &.ff-rating-kbd-focus svg {
+          outline: 2px solid var(--fluentform-primary, #409EFF);
+          outline-offset: 2px;
+          border-radius: 2px;
+        }
       }
 
       label:hover,
@@ -391,6 +397,11 @@
             flex: 1 1 auto;
             min-width: 0;
           }
+        }
+
+        .ff-a11y-enabled & {
+          overflow: clip;
+          padding: 3px;
         }
       }
 
@@ -952,6 +963,17 @@
           text-shadow: 1px 1px 1px #000 !important;
           color: $danger;
         }
+
+        .ff-a11y-enabled & {
+          min-width: 44px;
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          top: 0;
+          right: 0;
+          padding: 0;
+        }
       }
 
       &-filename {
@@ -1313,4 +1335,35 @@
 
 .iti-mobile .iti--container {
   z-index: 9999;
+}
+
+@media (forced-colors: active) {
+  .fluentform {
+    .ff-el-form-control {
+      border: 1px solid ButtonText;
+    }
+
+    .ff-btn, .ff-btn-submit {
+      border: 1px solid ButtonText;
+      forced-color-adjust: none;
+    }
+
+    .ff-el-form-check input[type="checkbox"],
+    .ff-el-form-check input[type="radio"] {
+      forced-color-adjust: none;
+    }
+
+    *:focus-visible {
+      outline: 2px solid Highlight !important;
+      outline-offset: 2px;
+    }
+
+    .jss-ff-el-ratings svg {
+      forced-color-adjust: none;
+    }
+
+    .error.text-danger, #{$prefix}-errors-in-stack {
+      color: LinkText;
+    }
+  }
 }

@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class TabularGrid extends BaseComponent
@@ -33,17 +34,38 @@ class TabularGrid extends BaseComponent
         $columnLabels = $data['settings']['grid_columns'];
 
         $fieldType = $data['settings']['tabular_field_type'];
-        $columnHeaders = implode('</th><th>', array_values($columnLabels));
         $elementHelpMessage = $this->getElementHelpMessage($data, $form);
         $elementLabel = $this->setClasses($data)->buildElementLabel($data, $form);
 
-        $elMarkup = "<table class='ff-table ff-checkable-grids ff_flexible_table' role='table'><thead><tr><th></th><th>" . fluentform_sanitize_html($columnHeaders) . '</th></tr></thead><tbody>';
+        $a11yEnabled = Helper::isAccessibilityEnabled();
+        $fieldId = esc_attr($data['attributes']['name']);
+
+        if ($a11yEnabled) {
+            $elMarkup = "<table class='ff-table ff-checkable-grids ff_flexible_table' role='table'><thead><tr><th></th>";
+            $colIndex = 0;
+            foreach (array_values($columnLabels) as $colLabel) {
+                $elMarkup .= '<th scope="col" id="ff_grid_' . $fieldId . '_col_' . $colIndex . '">' . fluentform_sanitize_html($colLabel) . '</th>';
+                $colIndex++;
+            }
+            $elMarkup .= '</tr></thead><tbody>';
+        } else {
+            $columnHeaders = implode('</th><th>', array_values($columnLabels));
+            $elMarkup = "<table class='ff-table ff-checkable-grids ff_flexible_table' role='table'><thead><tr><th></th><th>" . fluentform_sanitize_html($columnHeaders) . '</th></tr></thead><tbody>';
+        }
 
         $tabIndex = \FluentForm\App\Helpers\Helper::getNextTabIndex();
+        $rowIndex = 0;
         foreach ($this->makeTabularData($data) as $index => $row) {
-            $elMarkup .= '<tr role="row"">';
-            $elMarkup .= "<td class='ff_grid_header' role='cell'>" . fluentform_sanitize_html($row['label']) . '</td>';
+            if ($a11yEnabled) {
+                $rowHeaderId = 'ff_grid_' . $fieldId . '_row_' . $rowIndex;
+                $elMarkup .= '<tr role="row">';
+                $elMarkup .= "<th scope='row' id='" . esc_attr($rowHeaderId) . "' class='ff_grid_header'>" . fluentform_sanitize_html($row['label']) . '</th>';
+            } else {
+                $elMarkup .= '<tr role="row"">';
+                $elMarkup .= "<td class='ff_grid_header' role='cell'>" . fluentform_sanitize_html($row['label']) . '</td>';
+            }
             $isRowChecked = in_array($row['name'], $checked) ? 'checked' : '';
+            $colIndex = 0;
             foreach ($row['columns'] as $column) {
                 $name = $data['attributes']['name'] . '[' . $row['name'] . ']';
                 $name = 'checkbox' == $fieldType ? ($name . '[]') : $name;
@@ -65,10 +87,17 @@ class TabularGrid extends BaseComponent
                     $ariaRequired = 'true';
                 }
 
-                $input = '<input aria-label="'. $row['name'] .'-'. $column['label'] . '" ' . $attributes . " {$isChecked} aria-invalid='false' aria-required={$ariaRequired}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $attributes is escaped before being passed in.
+                if ($a11yEnabled) {
+                    $colHeaderId = 'ff_grid_' . $fieldId . '_col_' . $colIndex;
+                    $input = '<input aria-labelledby="' . esc_attr($rowHeaderId . ' ' . $colHeaderId) . '" ' . $attributes . " {$isChecked} aria-invalid='false' aria-required='{$ariaRequired}'>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $attributes is escaped before being passed in.
+                } else {
+                    $input = '<input aria-label="'. $row['name'] .'-'. $column['label'] . '" ' . $attributes . " {$isChecked} aria-invalid='false' aria-required='{$ariaRequired}'>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $attributes is escaped before being passed in.
+                }
                 $elMarkup .= "<td data-label='" . fluentform_sanitize_html($column['label']) . "'>{$input}</td>";
+                $colIndex++;
             }
             $elMarkup .= '</tr>';
+            $rowIndex++;
         }
 
         $elMarkup .= '</tbody></table>';
