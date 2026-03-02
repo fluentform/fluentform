@@ -11,6 +11,8 @@ Skill files provide deep codebase knowledge to Claude Code. They are auto-loaded
 | `workflow-bugfix.md` | Fixing bugs or security vulnerabilities |
 | `workflow-forms.md` | Working on form builder, fields, rendering, submissions, entries |
 | `workflow-integrations.md` | Working on notifications, integrations, webhooks, conditional logic |
+| `workflow-payments.md` | Working on payment processing, Stripe, transactions, subscriptions |
+| `workflow-conversational.md` | Working on conversational form mode, design editor, share pages |
 
 ## Documentation Hierarchy
 
