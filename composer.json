@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "wpfluent/framework": "^1.0",
+        "wpfluent/framework": "^2.11.4",
         "openspout/openspout": "^3.0"
     },
     "autoload": {
@@ -30,7 +30,8 @@
             "FluentForm\\Framework\\": "vendor/wpfluent/framework/src/WPFluent"
         },
         "classmap": [
-            "database/"
+            "database/",
+            "app/Compat/"
         ],
         "files": []
     },

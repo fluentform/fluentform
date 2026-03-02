@@ -62,7 +62,7 @@ class GlobalNotificationManager
             ->orderBy('id', 'ASC')
             ->get();
 
-        if (! $feeds) {
+        if ($feeds->isEmpty()) {
             do_action_deprecated(
                 'fluentform_global_notify_completed',
                 [

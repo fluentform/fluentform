@@ -11,6 +11,7 @@ use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Foundation\Application;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Menu
@@ -46,27 +47,27 @@ class Menu
 
         wp_register_script(
             'fluent_forms_global',
-            fluentFormMix('js/fluent_forms_global.js'),
+            Enqueue::getStaticFilePath('js/fluent_forms_global.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        $settingsGlobalStyle = fluentFormMix('css/settings_global.css');
-        $allFormsStyle = fluentFormMix('css/fluent-all-forms.css');
-        $fluentFormAdminEditorStyles = fluentFormMix('css/fluent-forms-admin-sass.css');
-        $fluentFormAdminCSS = fluentFormMix('css/fluent-forms-admin.css');
-        $addOnsCss = fluentFormMix('css/add-ons.css');
-        $adminDocCss = fluentFormMix('css/admin_docs.css');
-        $reportsCss = fluentFormMix('css/fluent-forms-reports.css');
+        $settingsGlobalStyle = Enqueue::getStaticFilePath('css/settings_global.css');
+        $allFormsStyle = Enqueue::getStaticFilePath('css/fluent-all-forms.css');
+        $fluentFormAdminEditorStyles = Enqueue::getStaticFilePath('css/fluent-forms-admin-sass.css');
+        $fluentFormAdminCSS = Enqueue::getStaticFilePath('css/fluent-forms-admin.css');
+        $addOnsCss = Enqueue::getStaticFilePath('css/add-ons.css');
+        $adminDocCss = Enqueue::getStaticFilePath('css/admin_docs.css');
+        $reportsCss = Enqueue::getStaticFilePath('css/fluent-forms-reports.css');
         if (is_rtl()) {
-            $settingsGlobalStyle = fluentFormMix('css/settings_global_rtl.css');
-            $allFormsStyle = fluentFormMix('css/fluent-all-forms-rtl.css');
-            $fluentFormAdminEditorStyles = fluentFormMix('css/fluent-forms-admin-sass-rtl.css');
-            $fluentFormAdminCSS = fluentFormMix('css/fluent-forms-admin-rtl.css');
-            $addOnsCss = fluentFormMix('css/add-ons-rtl.css');
-            $adminDocCss = fluentFormMix('css/admin_docs_rtl.css');
-            $reportsCss = fluentFormMix('css/fluent-forms-reports-rtl.css');
+            $settingsGlobalStyle = Enqueue::getStaticFilePath('css/settings_global_rtl.css');
+            $allFormsStyle = Enqueue::getStaticFilePath('css/fluent-all-forms-rtl.css');
+            $fluentFormAdminEditorStyles = Enqueue::getStaticFilePath('css/fluent-forms-admin-sass-rtl.css');
+            $fluentFormAdminCSS = Enqueue::getStaticFilePath('css/fluent-forms-admin-rtl.css');
+            $addOnsCss = Enqueue::getStaticFilePath('css/add-ons-rtl.css');
+            $adminDocCss = Enqueue::getStaticFilePath('css/admin_docs_rtl.css');
+            $reportsCss = Enqueue::getStaticFilePath('css/fluent-forms-reports-rtl.css');
         }
 
         wp_register_style(
@@ -79,7 +80,7 @@ class Menu
 
         wp_register_script(
             'clipboard',
-            fluentFormMix('libs/clipboard.min.js'),
+            Enqueue::getStaticFilePath('libs/clipboard.min.js'),
             [],
             FLUENTFORM_VERSION,
             true
@@ -87,7 +88,7 @@ class Menu
 
         wp_register_script(
             'copier',
-            fluentFormMix('js/copier.js'),
+            Enqueue::getStaticFilePath('js/copier.js'),
             [],
             FLUENTFORM_VERSION,
             true
@@ -95,7 +96,7 @@ class Menu
 
         wp_register_script(
             'fluentform_form_settings',
-            fluentFormMix('js/form_settings_app.js'),
+            Enqueue::getStaticFilePath('js/form_settings_app.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -103,7 +104,7 @@ class Menu
 
         wp_register_script(
             'fluent_all_forms',
-            fluentFormMix('js/fluent-all-forms-admin.js'),
+            Enqueue::getStaticFilePath('js/fluent-all-forms-admin.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -119,7 +120,7 @@ class Menu
 
         wp_register_script(
             'fluentform_editor_script',
-            fluentFormMix('js/fluent-forms-editor.js'),
+            Enqueue::getStaticFilePath('js/fluent-forms-editor.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -144,7 +145,7 @@ class Menu
 
         wp_register_script(
             'fluentform-transfer-js',
-            fluentFormMix('js/fluentform-transfer.js'),
+            Enqueue::getStaticFilePath('js/fluentform-transfer.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -152,7 +153,7 @@ class Menu
 
         wp_register_script(
             'fluentform-global-settings-js',
-            fluentFormMix('js/fluentform-global-settings.js'),
+            Enqueue::getStaticFilePath('js/fluentform-global-settings.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -160,7 +161,7 @@ class Menu
 
         wp_register_script(
             'fluentform-modules',
-            fluentFormMix('js/modules.js'),
+            Enqueue::getStaticFilePath('js/modules.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -168,7 +169,7 @@ class Menu
 
         wp_register_script(
             'fluentform-docs',
-            fluentFormMix('js/docs.js'),
+            Enqueue::getStaticFilePath('js/docs.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -176,7 +177,7 @@ class Menu
 
         wp_register_script(
             'fluentform_form_entries',
-            fluentFormMix('js/form_entries.js'),
+            Enqueue::getStaticFilePath('js/form_entries.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
@@ -184,7 +185,7 @@ class Menu
 
         wp_register_script(
             'fluentform_reports',
-            fluentFormMix('js/reports.js'),
+            Enqueue::getStaticFilePath('js/reports.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -200,7 +201,7 @@ class Menu
 
         wp_register_script(
             'fluentform_all_entries',
-            fluentFormMix('js/all_entries.js'),
+            Enqueue::getStaticFilePath('js/all_entries.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
@@ -208,7 +209,7 @@ class Menu
 
         wp_register_script(
             'fluentform_chart_js',
-            fluentFormMix('libs/chartjs/chart.min.js'),
+            Enqueue::getStaticFilePath('libs/chartjs/chart.min.js'),
             [],
             FLUENTFORM_VERSION,
             true
@@ -216,7 +217,7 @@ class Menu
 
         wp_register_script(
             'fluentform_vue_chart_js',
-            fluentFormMix('libs/chartjs/vue-chartjs.min.js'),
+            Enqueue::getStaticFilePath('libs/chartjs/vue-chartjs.min.js'),
             [],
             FLUENTFORM_VERSION,
             true
@@ -250,9 +251,9 @@ class Menu
             return $footerContent;
         });
 
-        $elementUIStyle = fluentFormMix('css/element-ui-css.css');
+        $elementUIStyle = Enqueue::getStaticFilePath('css/element-ui-css.css');
         if (is_rtl()) {
-            $elementUIStyle = fluentFormMix('css/element-ui-css-rtl.css');
+            $elementUIStyle = Enqueue::getStaticFilePath('css/element-ui-css-rtl.css');
         }
         wp_enqueue_style(
             'fluentform_global_elements',
@@ -296,16 +297,16 @@ class Menu
             'permissions'          => Acl::getCurrentUserPermissions(),
             'rest'                 => Helper::getRestInfo(),
             'card_brands'          => [
-                'visa'       => fluentformMix('img/card-brand/visa.jpg'),
-                'paypal'     => fluentformMix('img/card-brand/paypal.jpg'),
-                'mastercard' => fluentformMix('img/card-brand/mastercard.jpg'),
-                'amex'       => fluentformMix('img/card-brand/amex.jpg')
+                'visa'       => Enqueue::getStaticFilePath('img/card-brand/visa.jpg'),
+                'paypal'     => Enqueue::getStaticFilePath('img/card-brand/paypal.jpg'),
+                'mastercard' => Enqueue::getStaticFilePath('img/card-brand/mastercard.jpg'),
+                'amex'       => Enqueue::getStaticFilePath('img/card-brand/amex.jpg')
             ],
             'payment_icons'        => [
-                'offline' => fluentformMix('img/payment/offline.png'),
-                'mollie'  => fluentformMix('img/payment/mollie.png'),
-                'paypal'  => fluentformMix('img/payment/paypal.png'),
-                'stripe'  => fluentformMix('img/payment/stripe.png')
+                'offline' => Enqueue::getStaticFilePath('img/payment/offline.png'),
+                'mollie'  => Enqueue::getStaticFilePath('img/payment/mollie.png'),
+                'paypal'  => Enqueue::getStaticFilePath('img/payment/paypal.png'),
+                'stripe'  => Enqueue::getStaticFilePath('img/payment/stripe.png')
             ],
             'forms'                => $forms,
             'hasPro'               => defined('FLUENTFORMPRO'),
@@ -786,13 +787,13 @@ class Menu
             'hasPDF'               => defined('FLUENTFORM_PDF_VERSION'),
             'hasFluentCRM'         => defined('FLUENTCRM'),
             'upgrade_url'          => fluentform_upgrade_url(),
-            'ace_path_url'         => fluentformMix('libs/ace'),
+            'ace_path_url'         => Enqueue::getStaticFilePath('libs/ace'),
             'is_conversion_form'   => Helper::isConversionForm($form_id),
             'has_fluent_smtp'      => defined('FLUENTMAIL'),
             'fluent_smtp_url'      => admin_url('admin.php?page=fluent_forms_smtp'),
             'form_settings_str'    => TranslationString::getSettingsI18n(),
             'integrationsResource' => [
-                'asset_url'   => fluentformMix('img/integrations.png'),
+                'asset_url'   => Enqueue::getStaticFilePath('img/integrations.png'),
                 'list_url'    => fluentform_integrations_url(),
                 'instruction' => __("Fluent Forms Pro has tons of integrations to take your forms to the next level. From payment gateways to quiz building, SMS notifications to email marketing - you'll get integrations for various purposes. Even if you don't find your favorite tools, you can integrate them easily with Zapier.", 'fluentform'),
             ],
@@ -836,7 +837,7 @@ class Menu
             'adminUrl'                => admin_url('admin.php?page=fluent_forms'),
             'adminUrlWithoutPageHash' => admin_url('admin.php'),
             'isDisableAnalytics'      => $this->app->applyFilters('fluentform/disabled_analytics', $isDisabledAnalytics),
-            'plugin_public_url'       => fluentformMix(),
+            'plugin_public_url'       => Enqueue::getStaticFilePath(),
             'siteUrl'                 => site_url(),
         ];
 
@@ -1011,7 +1012,7 @@ class Menu
         $data = [
             'plugin'                         => $pluginSlug,
             'form_id'                        => $formId,
-            'plugin_public_url'              => fluentformMix(),
+            'plugin_public_url'              => Enqueue::getStaticFilePath(),
             'preview_url'                    => Helper::getPreviewUrl($formId),
             'form'                           => $form,
             'hasPro'                         => defined('FLUENTFORMPRO'),
@@ -1226,7 +1227,7 @@ class Menu
         );
 
         $this->app->view->render('admin.global_menu', [
-            'logo' => fluentformMix('img/fluentform-logo.svg'),
+            'logo' => Enqueue::getStaticFilePath('img/fluentform-logo.svg'),
             'show_payment'         => $showPayment,
             'show_payment_entries' => apply_filters('fluentform/show_payment_entries', $showPaymentEntry),
         ]);
@@ -1246,13 +1247,13 @@ class Menu
 
     public function renderSmtpPromo()
     {
-        wp_enqueue_script('fluentform_admin_notice', fluentformMix('js/admin_notices.js'), [
+        wp_enqueue_script('fluentform_admin_notice', Enqueue::getStaticFilePath('js/admin_notices.js'), [
             'jquery',
         ], FLUENTFORM_VERSION, true);
 
         $this->app->view->render('admin.smtp.index', [
-            'logo'         => fluentformMix('img/fluentsmtp.svg'),
-            'banner_image' => fluentformMix('img/fluentsmtp-banner.png'),
+            'logo'         => Enqueue::getStaticFilePath('img/fluentsmtp.svg'),
+            'banner_image' => Enqueue::getStaticFilePath('img/fluentsmtp-banner.png'),
             'is_installed' => defined('FLUENTMAIL'),
             'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
         ]);

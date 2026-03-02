@@ -16,4 +16,6 @@ return array(
     'FluentForm\\Database\\Migrations\\SubmissionDetails' => $baseDir . '/database/Migrations/SubmissionDetails.php',
     'FluentForm\\Database\\Migrations\\SubmissionMeta' => $baseDir . '/database/Migrations/SubmissionMeta.php',
     'FluentForm\\Database\\Migrations\\Submissions' => $baseDir . '/database/Migrations/Submissions.php',
+    'FluentForm\\Framework\\Helpers\\ArrayHelper' => $baseDir . '/app/Compat/ArrayHelper.php',
+    'FluentForm\\Framework\\Request\\File' => $baseDir . '/app/Compat/RequestFile.php',
 );

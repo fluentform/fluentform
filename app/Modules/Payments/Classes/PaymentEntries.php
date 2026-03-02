@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
 
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Payments\PaymentHelper;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class PaymentEntries
@@ -24,8 +25,8 @@ class PaymentEntries
 
     public function loadApp()
     {
-        wp_enqueue_style('ff-payment-entries', fluentFormMix('css/payment_entries.css'), [], FLUENTFORM_VERSION);
-        wp_enqueue_script('ff-payment-entries', fluentFormMix('js/payment_entries.js'), ['jquery'], FLUENTFORM_VERSION, true);
+        wp_enqueue_style('ff-payment-entries', Enqueue::getStaticFilePath('css/payment_entries.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_script('ff-payment-entries', Enqueue::getStaticFilePath('js/payment_entries.js'), ['jquery'], FLUENTFORM_VERSION, true);
         $settingsUrl = admin_url('admin.php?page=fluent_forms_settings#payments/general_settings');
         do_action_deprecated(
             'fluentform_global_menu',
@@ -164,7 +165,7 @@ class PaymentEntries
             }
 
             try {
-                if( !$submission_ids || !$transactionData ){
+                if( !$submission_ids || $transactionData->isEmpty() ){
                     throw new \Exception(__('Invalid transaction id', 'fluentform'));
                 }
                 do_action_deprecated(

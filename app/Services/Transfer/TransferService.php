@@ -12,7 +12,7 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Request\File;
+use FluentForm\Framework\Http\Request\File;
 use FluentForm\Framework\Support\Arr;
 
 class TransferService
@@ -226,7 +226,7 @@ class TransferService
             }
             if($withNotes){
                 $notes = $submissionService->getNotes($submission->id, ['form_id' => $form->id])->pluck('value');
-                if(!empty($notes)){
+                if($notes->isNotEmpty()){
                     $temp[] = implode(", ",$notes->toArray());
                 }
             }

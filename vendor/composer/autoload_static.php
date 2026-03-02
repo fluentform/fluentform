@@ -52,6 +52,8 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
         'FluentForm\\Database\\Migrations\\SubmissionDetails' => __DIR__ . '/../..' . '/database/Migrations/SubmissionDetails.php',
         'FluentForm\\Database\\Migrations\\SubmissionMeta' => __DIR__ . '/../..' . '/database/Migrations/SubmissionMeta.php',
         'FluentForm\\Database\\Migrations\\Submissions' => __DIR__ . '/../..' . '/database/Migrations/Submissions.php',
+        'FluentForm\\Framework\\Helpers\\ArrayHelper' => __DIR__ . '/../..' . '/app/Compat/ArrayHelper.php',
+        'FluentForm\\Framework\\Request\\File' => __DIR__ . '/../..' . '/app/Compat/RequestFile.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

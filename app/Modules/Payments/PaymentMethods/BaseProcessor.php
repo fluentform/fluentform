@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 }
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Services\Form\SubmissionHandlerService;
@@ -205,10 +206,8 @@ abstract class BaseProcessor
             ->get();
 
         $total = 0;
-        if ($refunds) {
-            foreach ($refunds as $refund) {
-                $total += $refund->payment_total;
-            }
+        foreach ($refunds as $refund) {
+            $total += $refund->payment_total;
         }
 
         return $total;
@@ -469,7 +468,7 @@ abstract class BaseProcessor
         });
 
         add_action('wp_enqueue_scripts', function () {
-            wp_enqueue_style('fluent-form-landing', fluentformMix('css/frameless.css'), [], FLUENTFORM_VERSION);
+            wp_enqueue_style('fluent-form-landing', Enqueue::getStaticFilePath('css/frameless.css'), [], FLUENTFORM_VERSION);
         });
 
         status_header(200);

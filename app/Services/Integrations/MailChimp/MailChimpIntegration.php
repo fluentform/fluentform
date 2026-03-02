@@ -4,6 +4,7 @@ namespace FluentForm\App\Services\Integrations\MailChimp;
 
 use FluentForm\App\Http\Controllers\IntegrationManagerController;
 use FluentForm\App\Services\Integrations\MailChimp\MailChimpSubscriber as Subscriber;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -27,7 +28,7 @@ class MailChimpIntegration extends IntegrationManagerController
 
         $this->description = __('Fluent Forms Mailchimp module allows you to create Mailchimp newsletter signup forms in WordPress', 'fluentform');
 
-        $this->logo = fluentFormMix('img/integrations/mailchimp.png');
+        $this->logo = Enqueue::getStaticFilePath('img/integrations/mailchimp.png');
         $this->registerAdminHooks();
 
         add_action('wp_ajax_fluentform_mailchimp_interest_groups', [$this, 'fetchInterestGroups']);

@@ -1,11 +1,16 @@
 {
+    "type": "module",
     "scripts": {
-        "dev": "mix",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "hots": "mix watch --hots",
-        "production": "mix --production"
+        "dev": "node resources/vite/vite.js && vite",
+        "build": "node resources/vite/vite.js --build && npm run admin && npm run public && npm run gutenberg && npm run elementor && npm run merge-manifests && npm run rtl",
+        "admin": "vite build --mode=admin",
+        "public": "vite build --mode=public",
+        "gutenberg": "vite build --mode=gutenberg",
+        "elementor": "vite build --mode=elementor",
+        "merge-manifests": "node merge-manifests.js",
+        "rtl": "node rtl-generate.js",
+        "production": "node resources/vite/vite.js --build --production && npm run admin && npm run public && npm run gutenberg && npm run elementor && npm run merge-manifests && npm run rtl",
+        "watch": "npm run dev"
     },
     "dependencies": {
         "chroma-js": "^2.4.2",
@@ -24,31 +29,24 @@
         "react-dom": "^18.2.0",
         "splitpanes": "^2.4.1",
         "vddl": "^0.7.1",
-        "vue": "^2.6.14",
+        "vue": "^2.7.16",
         "vue-echarts": "^6.7.3",
         "vue-html-to-paper": "^1.4.4",
         "vue-router": "^3.5.3",
         "vuex": "^3.6.2"
     },
     "devDependencies": {
-        "@babel/preset-react": "^7.22.5",
+        "@vitejs/plugin-react": "^4.4.1",
+        "@vitejs/plugin-vue2": "^2.3.1",
+        "@vue/compiler-sfc": "^2.7.16",
         "@wordpress/hooks": "^3.4.1",
-        "async": "^2.6.4",
-        "babel-plugin-component": "^1.1.1",
-        "babel-plugin-transform-object-rest-spread": "^6.26.0",
-        "babel-polyfill": "^6.26.0",
-        "babel-preset-env": "^1.7.0",
-        "cross-env": "^7.0.3",
-        "laravel-mix": "^6.0.49",
+        "glob": "^10.3.4",
         "less": "^4.1.2",
-        "less-loader": "^10.2.0",
-        "promise-polyfill": "^8.2.3",
         "resolve-url-loader": "^5.0.0",
         "rtlcss": "^3.5.0",
         "sass": "^1.63.5",
-        "sass-loader": "^13.3.2",
-        "vue-loader": "^15.9.8",
-        "vue-template-compiler": "^2.6.14",
-        "webpack-bundle-analyzer": "^4.10.2"
+        "vite": "^4.4.9",
+        "vite-plugin-live-reload": "^3.0.2",
+        "vite-plugin-static-copy": "^0.16.0"
     }
 }

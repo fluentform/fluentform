@@ -10,6 +10,15 @@
     }
 }
 
+.el-table .cell {
+    > .el-button + .el-button,
+    > .el-button + span,
+    > span + .el-button,
+    > span + span {
+        margin-left: 5px;
+    }
+}
+
 .el-box {
     &-card {
         box-shadow: none;

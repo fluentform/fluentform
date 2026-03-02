@@ -371,7 +371,7 @@ class GlobalSearchService
 
         $forms = Form::where('status', 'published')
             ->select(['id', 'title', 'type'])->get();
-        if ($forms) {
+        if ($forms->isNotEmpty()) {
             foreach ($forms as $form) {
                 $formSpecificLinks = [
                     [

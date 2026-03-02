@@ -257,7 +257,7 @@ class ReportHelper
             ->doesntHave('entryDetails')
             ->get();
 
-        if (!$unmigratedData) {
+        if ($unmigratedData->isEmpty()) {
             return Helper::setFormMeta($formId, 'report_data_migrated', 'yes');
         }
         $submissionService = new SubmissionService();

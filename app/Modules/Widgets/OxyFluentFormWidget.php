@@ -3,6 +3,7 @@
 namespace FluentForm\App\Modules\Widgets;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 
 class OxyFluentFormWidget extends OxygenEl
 {
@@ -490,14 +491,14 @@ class OxyFluentFormWidget extends OxygenEl
         if ($app->request->get('ct_builder')) {
             wp_enqueue_style(
                 'fluent-form-styles',
-                fluentFormMix('css/fluent-forms-public.css'),
+                Enqueue::getStaticFilePath('css/fluent-forms-public.css'),
                 [],
                 FLUENTFORM_VERSION
             );
 
             wp_enqueue_style(
                 'fluentform-public-default',
-                fluentFormMix('css/fluentform-public-default.css'),
+                Enqueue::getStaticFilePath('css/fluentform-public-default.css'),
                 [],
                 FLUENTFORM_VERSION
             );
@@ -505,7 +506,7 @@ class OxyFluentFormWidget extends OxygenEl
             if (!wp_script_is('flatpickr', 'registered')) {
                 wp_enqueue_style(
                     'flatpickr',
-                    fluentFormMix('libs/flatpickr/flatpickr.min.css'),
+                    Enqueue::getStaticFilePath('libs/flatpickr/flatpickr.min.css'),
                     [],
                     FLUENTFORM_VERSION
                 );
@@ -513,7 +514,7 @@ class OxyFluentFormWidget extends OxygenEl
 
             wp_enqueue_style(
                 'ff_choices',
-                fluentFormMix('css/choices.css'),
+                Enqueue::getStaticFilePath('css/choices.css'),
                 [],
                 FLUENTFORM_VERSION
             );

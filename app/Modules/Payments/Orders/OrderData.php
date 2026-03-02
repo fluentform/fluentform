@@ -35,7 +35,8 @@ class OrderData
         $items = wpFluent()->table('fluentform_order_items')
             ->where('submission_id', $submission->id)
 	        ->where('type', '!=', 'discount') // type = single, signup_fee
-            ->get();
+            ->get()
+            ->toArray();
 
         foreach ($items as $item) {
             $item->formatted_item_price = PaymentHelper::formatMoney($item->item_price, $submission->currency);
@@ -50,7 +51,8 @@ class OrderData
         $items = wpFluent()->table('fluentform_order_items')
             ->where('submission_id', $submission->id)
             ->where('type', 'discount')
-            ->get();
+            ->get()
+            ->toArray();
 
         foreach ($items as $item) {
             $item->formatted_item_price = PaymentHelper::formatMoney($item->item_price, $submission->currency);
@@ -145,7 +147,8 @@ class OrderData
 	{
 		$subscriptions = wpFluent()->table('fluentform_subscriptions')
 			->where('submission_id', $submission->id)
-			->get();
+			->get()
+			->toArray();
 
 		$subscriptionPaymentTotal = 0;
 

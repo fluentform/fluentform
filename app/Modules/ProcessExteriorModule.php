@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules;
 
 use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 
 class ProcessExteriorModule
 {
@@ -15,7 +16,7 @@ class ProcessExteriorModule
         }
         wp_register_script(
             'fluentform_editor_helper',
-            fluentFormMix('js/fluent_forms_editor_helper.js'),
+            Enqueue::getStaticFilePath('js/fluent_forms_editor_helper.js'),
             array('jquery'),
             FLUENTFORM_VERSION,
             true

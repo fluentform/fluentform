@@ -306,7 +306,7 @@ Vue.mixin({
 import Errors from '../common/Errors'
 import moment from "moment";
 
-global.Errors = Errors;
+window.Errors = Errors;
 
 const app = new Vue({
     router,
