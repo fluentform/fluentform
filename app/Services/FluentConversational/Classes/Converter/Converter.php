@@ -1262,7 +1262,7 @@ class Converter
 
             \FluentFormPro\classes\DraftSubmissionsManager::migrate();
 
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
+            $draftForm = \FluentFormPro\Models\DraftSubmission::byHash($hash)->first();
 
             if ($draftForm) {
                 $saveAndResume = true;
@@ -1317,13 +1317,11 @@ class Converter
         }
 
         if ($hash) {
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')
-                ->where('hash', $hash)
+            $draftForm = \FluentFormPro\Models\DraftSubmission::byHash($hash)
                 ->where('form_id', $formId)
                 ->first();
         } elseif (!$draftForm && $userId = get_current_user_id()) {
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')
-                ->where('user_id', $userId)
+            $draftForm = \FluentFormPro\Models\DraftSubmission::byUser($userId)
                 ->where('form_id', $formId)
                 ->first();
         } else {

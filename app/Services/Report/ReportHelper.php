@@ -1085,8 +1085,7 @@ class ReportHelper
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
         
         // Base query for transactions
-        $query = wpFluent()->table('fluentform_transactions')
-            ->whereBetween('created_at', [$startDate, $endDate]);
+        $query = \FluentForm\App\Models\Transaction::whereBetween('created_at', [$startDate, $endDate]);
         
         // Filter by transaction type if specified
         if ($type === 'subscription') {

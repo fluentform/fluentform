@@ -9,20 +9,23 @@ use FluentForm\App\Helpers\Helper;
 
 return function ($file) {
     add_action('plugins_loaded', function () {
-        $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '<');
+        $isNotCompatible = defined('FLUENTFORMPRO')
+            && version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '<');
         if ($isNotCompatible) {
             add_action('admin_init', function () {
-                $message = '<div style="padding: 15px 10px;" ><b>' . __('Heads UP: ',
-                        'fluentform') . '</b>' . __('Fluent Forms Pro Plugin needs to be updated to the latest version.',
-                        'fluentform') . '<a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">' . __(' Please update Fluent Forms Pro to latest version.',
-                        'fluentform') . '</a></div>';
+                $message = '<b>' . __('Action Required: ', 'fluentform') . '</b>'
+                    . __('Fluent Forms Pro is not compatible with this version of Fluent Forms. Please update Fluent Forms Pro to version ', 'fluentform')
+                    . FLUENTFORM_MINIMUM_PRO_VERSION . __(' or later.', 'fluentform')
+                    . ' <a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">'
+                    . __('Update Now', 'fluentform') . '</a>';
                 $actions = [
                     'fluentform/global_menu',
                     'fluentform/after_form_menu',
+                    'admin_notices',
                 ];
                 foreach ($actions as $action) {
                     add_action($action, function () use ($message) {
-                        printf('<div class="fluentform-admin-notice notice notice-success">%1$s</div>', esc_html($message));
+                        printf('<div class="fluentform-admin-notice notice notice-error"><div style="padding: 15px 10px;">%1$s</div></div>', $message);
                     });
                 }
             });

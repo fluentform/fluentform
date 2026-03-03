@@ -66,6 +66,36 @@ class Submission extends Model
         return $this->hasMany(EntryDetails::class, 'submission_id', 'id');
     }
 
+    /**
+     * A submission has many transactions.
+     *
+     * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'submission_id', 'id');
+    }
+
+    /**
+     * A submission has many subscriptions.
+     *
+     * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class, 'submission_id', 'id');
+    }
+
+    /**
+     * A submission has many order items.
+     *
+     * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
+     */
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'submission_id', 'id');
+    }
+
     public function customQuery($attributes = [])
     {
         $entryType = Arr::get($attributes, 'entry_type');
@@ -247,21 +277,11 @@ class Submission extends Model
 
         EntryDetails::whereIn('submission_id', $submissionIds)->delete();
 
-        //delete  models this way for now
-        // todo: update wpFluent to the framework model
         try {
             if (PaymentHelper::hasPaymentSettings()) {
-                wpFluent()->table('fluentform_order_items')
-                    ->whereIn('submission_id', $submissionIds)
-                    ->delete();
-
-                wpFluent()->table('fluentform_transactions')
-                    ->whereIn('submission_id', $submissionIds)
-                    ->delete();
-
-                wpFluent()->table('fluentform_subscriptions')
-                    ->whereIn('submission_id', $submissionIds)
-                    ->delete();
+                OrderItem::whereIn('submission_id', $submissionIds)->delete();
+                Transaction::whereIn('submission_id', $submissionIds)->delete();
+                Subscription::whereIn('submission_id', $submissionIds)->delete();
             }
 
             wpFluent()->table('ff_scheduled_actions')

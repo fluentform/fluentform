@@ -3,6 +3,8 @@
 namespace FluentForm\App\Modules\Payments   ;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Subscription;
+use FluentForm\App\Models\Transaction;
 use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\Classes\PaymentReceipt;
@@ -231,11 +233,8 @@ class TransactionShortcodes
 
             if (!$transaction->transaction_hash) {
                 $hash = md5(wp_generate_uuid4() . wp_rand(0, 1000));
-                wpFluent()->table('fluentform_transactions')
-                    ->where('id', $transaction->id)
-                    ->update([
-                        'transaction_hash' => $hash
-                    ]);
+                Transaction::where('id', $transaction->id)
+                    ->update(['transaction_hash' => $hash]);
                 $transaction->transaction_hash = $hash;
             }
 
@@ -270,8 +269,7 @@ class TransactionShortcodes
 
         $userId = get_current_user_id();
 
-        $subscription = wpFluent()->table('fluentform_subscriptions')
-            ->select(['fluentform_subscriptions.*', 'fluentform_submissions.user_id'])
+        $subscription = Subscription::select(['fluentform_subscriptions.*', 'fluentform_submissions.user_id'])
             ->where('fluentform_submissions.user_id', $userId)
             ->where('fluentform_subscriptions.id', $subscriptionId)
             ->join('fluentform_submissions', 'fluentform_submissions.id', '=', 'fluentform_subscriptions.submission_id')
@@ -296,11 +294,8 @@ class TransactionShortcodes
         foreach ($transactions as $transaction) {
             if (!$transaction->transaction_hash) {
                 $hash = md5(wp_generate_uuid4() . wp_rand(0, 1000));
-                wpFluent()->table('fluentform_transactions')
-                    ->where('id', $transaction->id)
-                    ->update([
-                        'transaction_hash' => $hash
-                    ]);
+                Transaction::where('id', $transaction->id)
+                    ->update(['transaction_hash' => $hash]);
                 $transaction->transaction_hash = $hash;
             }
 
