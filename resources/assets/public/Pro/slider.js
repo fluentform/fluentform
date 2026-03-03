@@ -1056,7 +1056,8 @@ class FluentFormSlider {
             active_step: activeStep,
             data: inputData,
             form_id: $theForm.data('form_id'),
-            action: 'fluentform_step_form_save_data'
+            action: 'fluentform_step_form_save_data',
+            nonce: this.fluentFormVars?.nonce
         };
 
         return $.post(this.fluentFormVars.ajaxUrl, formData);
