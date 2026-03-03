@@ -301,10 +301,40 @@ class Converter
                     $question['options'] = self::getAdvancedOptions($field, $form);
                     $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
                     $question['multiple'] = ArrayHelper::isTrue($field, 'attributes.multiple');
+                } elseif ($type === 'autocomplete') {
+                    $question['type'] = 'FlowFormAutocompleteType';
+                    $fieldName = ArrayHelper::get($field, 'attributes.name');
+                    $question['autocompleteConfig'] = [
+                        'formId'         => $form->id,
+                        'fieldName'      => $fieldName,
+                        'minChars'       => (int) ArrayHelper::get($field, 'settings.min_chars', 2),
+                        'maxSuggestions' => (int) ArrayHelper::get($field, 'settings.max_suggestions', 10),
+                        'nonce'          => wp_create_nonce('fluentform_dynamic_autocomplete_' . $form->id . '_' . $fieldName),
+                    ];
                 } else {
                     continue;
                 }
-                $question['nextStepOnAnswer'] = true;
+                if ($type !== 'autocomplete') {
+                    $question['nextStepOnAnswer'] = true;
+                }
+
+                // Populate config — pass to frontend if enabled and type supports it
+                if (!in_array($type, ['checkbox', 'multi_select'])) {
+                    $populateConfig = ArrayHelper::get($field, 'settings.populate_config');
+                    if ($populateConfig && 'yes' === ArrayHelper::get($populateConfig, 'enabled')) {
+                        $mappings = array_filter(ArrayHelper::get($populateConfig, 'mappings', []), function ($m) {
+                            return !empty($m['source_column']) && !empty($m['target_field']);
+                        });
+                        $fieldName = ArrayHelper::get($field, 'attributes.name');
+                        if (!empty($mappings) && $fieldName) {
+                            $question['dynamicPopulateConfig'] = [
+                                'formId'    => $form->id,
+                                'fieldName' => $fieldName,
+                                'nonce'     => wp_create_nonce('fluentform_dynamic_populate_' . $form->id . '_' . $fieldName),
+                            ];
+                        }
+                    }
+                }
             } elseif ('input_checkbox' === $field['element']) {
                 $question['options'] = self::getAdvancedOptions($field, $form);
                 $question['multiple'] = true;
