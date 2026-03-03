@@ -266,8 +266,8 @@ class StripeProcessor extends BaseProcessor
 
             if ($discountTotal && $orderTotal) {
                 if ($index === $itemCount - 1) {
-                    // Last item absorbs rounding remainder so total is exact
-                    $itemDiscount = intval(($discountTotal - $discountDistributed) / $quantity);
+                    // Last item absorbs rounding remainder
+                    $itemDiscount = (int) round(($discountTotal - $discountDistributed) / $quantity);
                 } else {
                     $itemDiscount = (int) round(($discountTotal / $orderTotal) * $price);
                     $discountDistributed += $itemDiscount * $quantity;
