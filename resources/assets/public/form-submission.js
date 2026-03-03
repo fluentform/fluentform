@@ -18,7 +18,7 @@ jQuery(document).ready(function () {
      * Custom Error/Exception
      */
     window.ffValidationError = (function () {
-        var ffValidationError = function () {};
+        var ffValidationError = function () { };
         ffValidationError.prototype = Object.create(Error.prototype);
         ffValidationError.prototype.constructor = ffValidationError;
         return ffValidationError;
@@ -131,7 +131,7 @@ jQuery(document).ready(function () {
                         processFunctions.ff_v3_recptcha = function ($theForm, formData) {
                             var dfd = jQuery.Deferred();
                             let siteKey = $theForm.data('recptcha_key');
-                            grecaptcha.execute(siteKey, {action: 'submit'}).then((token) => {
+                            grecaptcha.execute(siteKey, { action: 'submit' }).then((token) => {
                                 formData['data'] += '&' + jQuery.param({
                                     'g-recaptcha-response': token
                                 });
@@ -179,7 +179,7 @@ jQuery(document).ready(function () {
                         // Keep track of checkbox and radio groups that have been processed
                         var processedGroups = {};
                         // Add empty value for unchecked checkboxes and radio buttons
-                        $inputs.each(function() {
+                        $inputs.each(function () {
                             var name = $(this).attr('name');
                             if (!inputsDataNames.includes(name)) {
                                 if ($(this).is(':checkbox') || $(this).is(':radio')) {
@@ -191,7 +191,7 @@ jQuery(document).ready(function () {
                             }
                         });
                         // Convert inputsData array to serialized string
-                        var serializedData = $.param($.map(inputsData, function(input) {
+                        var serializedData = $.param($.map(inputsData, function (input) {
                             return { name: input.name, value: input.value };
                         }));
                         var formData = {
@@ -369,9 +369,14 @@ jQuery(document).ready(function () {
                                         .html(res.data.result.message)
                                         .insertAfter($theForm)
                                         .focus()
-                                    ;
+                                        ;
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
+
+                                // Hide progress after a short delay to handle file downloads
+                                setTimeout(() => {
+                                    hideFormSubmissionProgress($theForm);
+                                }, 500);
 
                                 location.href = res.data.result.redirectUrl;
                                 return;
@@ -390,7 +395,7 @@ jQuery(document).ready(function () {
                                     .html(res.data.result.message)
                                     .insertAfter($theForm)
                                     .focus()
-                                ;
+                                    ;
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
@@ -587,7 +592,7 @@ jQuery(document).ready(function () {
                         formResetHandler($(this))
                     });
 
-                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function(e) {
+                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function (e) {
                         if (e.key === 'Enter') {
                             e.preventDefault();
 
@@ -719,7 +724,7 @@ jQuery(document).ready(function () {
                     }
 
                     if (typeof errors == 'string') {
-                        showErrorInStack({'error': [errors]});
+                        showErrorInStack({ 'error': [errors] });
                         return;
                     }
 
@@ -777,7 +782,7 @@ jQuery(document).ready(function () {
                             });
                             errorHtml.attr('role', 'alert');
                             errorHtml.append(text, cross);
-                            $(document.body).trigger('fluentform_error_in_stack', {form: $theForm, element: getElement(elementName), message: text});
+                            $(document.body).trigger('fluentform_error_in_stack', { form: $theForm, element: getElement(elementName), message: text });
                             errorStack.append(errorHtml).show();
                         });
 
@@ -825,12 +830,12 @@ jQuery(document).ready(function () {
                         return;
                     }
                     el.attr('aria-invalid', 'true');
-                    div = $('<div/>', {class: 'error text-danger'});
+                    div = $('<div/>', { class: 'error text-danger' });
                     div.attr('role', 'alert');
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     if (el.closest('.ff-el-input--content').length) {
                         el.closest('.ff-el-input--content').find('div.error').remove();
-                        $(document.body).trigger('fluentform_error_below_element', {form: $theForm, element: el, message: message});
+                        $(document.body).trigger('fluentform_error_below_element', { form: $theForm, element: el, message: message });
                         el.closest('.ff-el-input--content').append(div.html(message));
                     } else {
                         el.find('div.error').remove();
@@ -873,7 +878,7 @@ jQuery(document).ready(function () {
                     // reCAPTCHA
                     if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
                         window.grecaptcha.ready(function () {
-                            $theForm.find('.ff-el-recaptcha.g-recaptcha').each(function() {
+                            $theForm.find('.ff-el-recaptcha.g-recaptcha').each(function () {
                                 var $el = $(this);
                                 if (!resetCaptcha('g-recaptcha', $el, grecaptcha.reset)) {
                                     renderCaptcha('g-recaptcha', $el, grecaptcha.render);
@@ -885,7 +890,7 @@ jQuery(document).ready(function () {
                     // Turnstile
                     if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
                         window.turnstile.ready(function () {
-                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function () {
                                 var $el = $(this);
                                 if (!resetCaptcha('cf-turnstile', $el, turnstile.reset)) {
                                     renderCaptcha('cf-turnstile', $el, turnstile.render);
@@ -896,7 +901,7 @@ jQuery(document).ready(function () {
 
                     // hCaptcha
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
-                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function() {
+                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function () {
                             var $el = $(this);
                             if (!resetCaptcha('h-captcha', $el, hcaptcha.reset)) {
                                 renderCaptcha('h-captcha', $el, hcaptcha.render);
@@ -967,11 +972,11 @@ jQuery(document).ready(function () {
                         $theForm.trigger('fluentform_first_interaction');
                     });
 
-                    $theForm.on('fluentform_first_interaction', function() {
+                    $theForm.on('fluentform_first_interaction', function () {
                         mayBeRenderCaptchas();
                     });
 
-                    $theForm.on('ff_to_next_page ff_to_prev_page', function(e) {
+                    $theForm.on('ff_to_next_page ff_to_prev_page', function (e) {
                         mayBeRenderCaptchas();
                     });
 
@@ -991,7 +996,7 @@ jQuery(document).ready(function () {
                     // Turnstile
                     if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
                         window.turnstile.ready(function () {
-                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function () {
                                 renderCaptcha('cf-turnstile', $(this), turnstile.render);
                             });
                         });
@@ -999,7 +1004,7 @@ jQuery(document).ready(function () {
 
                     // hCaptcha
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
-                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function() {
+                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function () {
                             renderCaptcha('h-captcha', $(this), hcaptcha.render);
                         });
                     }
@@ -1126,7 +1131,7 @@ jQuery(document).ready(function () {
                 this.initOtherOptionHandlers();
             },
 
-            maybeInitSpamTokenProtection: function() {
+            maybeInitSpamTokenProtection: function () {
                 const formContainers = jQuery('form.frm-fluent-form');
 
                 formContainers.each((index, formElement) => {
@@ -1149,18 +1154,18 @@ jQuery(document).ready(function () {
                     };
 
                     // Maybe generate token on step form step change
-                    formContainer.one('ff_to_next_page ff_to_prev_page', function(e) {
+                    formContainer.one('ff_to_next_page ff_to_prev_page', function (e) {
                         generateTokenIfNeeded();
                     });
 
                     // Generate token on first user interaction with form
-                    formContainer.on('fluentform_first_interaction', function() {
+                    formContainer.on('fluentform_first_interaction', function () {
                         generateTokenIfNeeded();
                     });
                 });
             },
 
-            generateAndSetToken: function(formContainer, spamProtectionField, retry = true) {
+            generateAndSetToken: function (formContainer, spamProtectionField, retry = true) {
                 const form_id = formContainer.data('form_id');
                 const ajaxRequestUrl = fluentFormVars.ajaxUrl + '?t=' + Date.now();
                 const _this = this;
@@ -1169,7 +1174,7 @@ jQuery(document).ready(function () {
                     form_id: form_id,
                     nonce: fluentFormVars?.token_nonce
                 })
-                    .done(function(response) {
+                    .done(function (response) {
                         if (response.success && response.data.token) {
                             spamProtectionField.val(response.data.token);
                             formContainer.addClass('ff_tokenized');
@@ -1178,7 +1183,7 @@ jQuery(document).ready(function () {
                             console.error('Token generation failed for form ID:', form_id);
                         }
                     })
-                    .fail(function(xhr, status, error) {
+                    .fail(function (xhr, status, error) {
                         console.error('Error generating token for form ID:', form_id, error);
                         // Retry
                         if (retry) {
@@ -1187,12 +1192,12 @@ jQuery(document).ready(function () {
                             }, 1000);
                         }
                     })
-                    .always(function() {
+                    .always(function () {
                         formContainer.removeClass('ff_tokenizing');
                     });
             },
 
-            maybeHandleCleanTalkSubmitTime: function() {
+            maybeHandleCleanTalkSubmitTime: function () {
                 if (!!window.fluentFormVars?.has_cleantalk) {
                     const formContainers = jQuery('form.frm-fluent-form');
 
@@ -1207,9 +1212,9 @@ jQuery(document).ready(function () {
             },
 
             // Handle "Other" option for checkboxes and radio fields
-            initOtherOptionHandlers: function() {
+            initOtherOptionHandlers: function () {
                 // Handle checkbox "Other" option - show/hide text input
-                jQuery(document).on("change", ".ff-other-option input[type=\"checkbox\"]", function() {
+                jQuery(document).on("change", ".ff-other-option input[type=\"checkbox\"]", function () {
                     let $checkbox = jQuery(this);
                     let $wrapper = $checkbox.closest(".ff-el-input--content").find(".ff-other-input-wrapper");
                     if (!$wrapper.length) {
@@ -1221,7 +1226,7 @@ jQuery(document).ready(function () {
                         // Only focus if input is empty to avoid blur conflicts
                         let $input = $wrapper.find(".ff-el-form-control");
                         if ($input.val().trim() === "") {
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 $input.focus();
                             }, 50);
                         }
@@ -1232,7 +1237,7 @@ jQuery(document).ready(function () {
                 });
 
                 // Handle radio "Other" option - show/hide text input
-                jQuery(document).on("change", ".ff-other-option input[type=\"radio\"]", function() {
+                jQuery(document).on("change", ".ff-other-option input[type=\"radio\"]", function () {
                     let $radio = jQuery(this);
                     let $fieldContainer = $radio.closest(".ff-el-input--content");
                     let $wrapper = $fieldContainer.find(".ff-other-input-wrapper");
@@ -1251,7 +1256,7 @@ jQuery(document).ready(function () {
                     }
                 });
                 // Hide "Other" text input when selecting non-Other radio option
-                jQuery(document).on("change", ".ff-el-input--content input[type=\"radio\"]", function() {
+                jQuery(document).on("change", ".ff-el-input--content input[type=\"radio\"]", function () {
                     let $radio = jQuery(this);
                     if ($radio.closest(".ff-other-option").length) {
                         return;
@@ -1297,7 +1302,7 @@ jQuery(document).ready(function () {
                     };
 
 
-                    const args = {...choiceArgs, ...window.fluentFormVars.choice_js_vars};
+                    const args = { ...choiceArgs, ...window.fluentFormVars.choice_js_vars };
 
                     const maxSelection = $(el).attr('data-max_selected_options');
                     if (parseInt(maxSelection)) {
@@ -1349,12 +1354,12 @@ jQuery(document).ready(function () {
                 const globalOptions = {
                     clearIfNotMatch: window.fluentFormVars.input_mask_vars.clearIfNotMatch,
                     translation: {
-                        '*': {pattern: /[0-9a-zA-Z]/},
-                        '0': {pattern: /\d/},
-                        '9': {pattern: /\d/, optional: true},
-                        '#': {pattern: /\d/, recursive: true},
-                        'A': {pattern: /[a-zA-Z0-9]/},
-                        'S': {pattern: /[a-zA-Z]/}
+                        '*': { pattern: /[0-9a-zA-Z]/ },
+                        '0': { pattern: /\d/ },
+                        '9': { pattern: /\d/, optional: true },
+                        '#': { pattern: /\d/, recursive: true },
+                        'A': { pattern: /[a-zA-Z0-9]/ },
+                        'S': { pattern: /[a-zA-Z]/ }
                     },
                 };
 
@@ -1756,12 +1761,12 @@ jQuery(document).ready(function () {
         // Choices.js dropdown handling
         function initChoicesDropdownHandling() {
             // Only target elements that actually have Choices.js
-            $('.ff_has_multi_select').each(function() {
+            $('.ff_has_multi_select').each(function () {
                 const choicesInstance = $(this).data('choicesjs');
                 if (!choicesInstance || !choicesInstance.passedElement) return;
 
                 // Use Choices.js built-in events instead of global listeners
-                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function () {
                     const choicesContainer = this.closest('.choices');
                     if (!choicesContainer) return;
 
@@ -1803,7 +1808,7 @@ jQuery(document).ready(function () {
 
         // Initialize with proper timing
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(initChoicesDropdownHandling, 100);
             });
         } else {
