@@ -257,19 +257,27 @@ class StripeProcessor extends BaseProcessor
         }
 
         $formattedItems = [];
+        $discountDistributed = 0;
+        $itemCount = count($orderItems);
 
-        foreach ($orderItems as $item) {
+        foreach ($orderItems as $index => $item) {
             $price = $item->item_price;
+            $quantity = $item->quantity ?: 1;
 
-            if($discountTotal) {
-                $price = intval($price - ($discountTotal / $orderTotal) * $price);
+            if ($discountTotal && $orderTotal) {
+                if ($index === $itemCount - 1) {
+                    // Last item absorbs rounding remainder
+                    $itemDiscount = (int) round(($discountTotal - $discountDistributed) / $quantity);
+                } else {
+                    $itemDiscount = (int) round(($discountTotal / $orderTotal) * $price);
+                    $discountDistributed += $itemDiscount * $quantity;
+                }
+                $price = $price - $itemDiscount;
             }
 
             if (PaymentHelper::isZeroDecimal($currency)) {
                 $price = intval($price / 100);
             }
-
-            $quantity = $item->quantity ?: 1;
 
             $stripeLine = [
                 'amount'   => $price,
