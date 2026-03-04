@@ -94,6 +94,7 @@
 
                                 <template v-else-if="field.component == 'map_fields'">
                                     <merge-field-mapper
+                                            ref="fieldMapper"
                                             :errors="errors"
                                             :inputs="inputs"
                                             :field="field"
@@ -301,7 +302,38 @@
                             >
                                 {{ $t('Save Feed') }}
                             </el-button>
+                            <el-button
+                                    v-if="integration_id"
+                                    type="warning"
+                                    plain
+                                    :loading="sendingTest"
+                                    @click="sendTestData"
+                                    icon="el-icon-s-promotion"
+                            >
+                                {{ $t('Send Test Data') }}
+                            </el-button>
                         </template>
+
+                        <!-- Test Data Result -->
+                        <div v-if="testDataResult" style="margin-top: 15px;">
+                            <el-alert
+                                :title="testDataResult.message"
+                                :type="testDataResult.status ? 'success' : 'error'"
+                                :closable="true"
+                                @close="testDataResult = null"
+                                show-icon>
+                            </el-alert>
+                            <div v-if="testDataResult.sent_data" style="margin-top: 10px;">
+                                <el-button size="mini" type="info" plain @click="showTestDataDetails = !showTestDataDetails">
+                                    <i :class="showTestDataDetails ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+                                    {{ $t('View Sent Data') }}
+                                </el-button>
+                                <pre v-if="showTestDataDetails" style="margin-top: 8px; padding: 12px; background: #f5f7fa; border-radius: 4px; font-size: 12px; max-height: 300px; overflow: auto;">{{ JSON.stringify(testDataResult.sent_data, null, 2) }}</pre>
+                            </div>
+                            <p v-if="!testDataResult.status" style="color: #909399; font-size: 12px; margin-top: 6px;">
+                                {{ $t('This sends real data to the integration service.') }}
+                            </p>
+                        </div>
                     </el-form>
                 </el-skeleton>
             </card-body>
@@ -375,7 +407,10 @@
                 settings_fields: {},
                 attachedForms: [],
                 fromChainedAjax: false,
-                refreshQuery: null
+                refreshQuery: null,
+                sendingTest: false,
+                testDataResult: null,
+                showTestDataDetails: false
             }
         },
         computed: {
@@ -486,6 +521,16 @@
                     });
             },
             saveNotification() {
+                // Validate field mappings before saving
+                let fieldMapper = this.$refs.fieldMapper;
+                if (fieldMapper) {
+                    // Handle both single ref and array of refs
+                    let mapper = Array.isArray(fieldMapper) ? fieldMapper[0] : fieldMapper;
+                    if (mapper && mapper.validate && !mapper.validate()) {
+                        this.$fail(this.$t('Please fix field mapping errors before saving'));
+                        return;
+                    }
+                }
                 this.errors.clear();
                 this.saving = true;
                 let data = {
@@ -520,6 +565,39 @@
             },
             setMergeModel(key) {
                 this.settings[key] = {};
+            },
+            sendTestData() {
+                this.sendingTest = true;
+                this.testDataResult = null;
+                let data = {
+                    form_id: this.form_id,
+                    integration_id: this.integration_id,
+                    integration_name: this.integration_name,
+                    integration: JSON.stringify(this.settings),
+                    data_type: 'stringify',
+                };
+                const url = FluentFormsGlobal.$rest.route('sendIntegrationTestData', this.form_id);
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        this.testDataResult = {
+                            status: true,
+                            message: response.message || this.$t('Test data sent successfully'),
+                            sent_data: response.sent_data || null
+                        };
+                        this.$success(response.message || this.$t('Test data sent successfully'));
+                    })
+                    .catch(error => {
+                        const message = error?.message || error?.data?.message || this.$t('Failed to send test data');
+                        this.testDataResult = {
+                            status: false,
+                            message: message,
+                            sent_data: error?.data?.sent_data || null
+                        };
+                        this.$fail(message);
+                    })
+                    .finally(() => {
+                        this.sendingTest = false;
+                    });
             }
         },
         mounted() {

@@ -95,7 +95,8 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
     $router->get('/', 'GlobalIntegrationController@index');
     $router->post('/', 'GlobalIntegrationController@updateIntegration');
     $router->post('update-status', 'GlobalIntegrationController@updateModuleStatus');
-    
+    $router->post('test-connection', 'GlobalIntegrationController@testConnection');
+
     /*
     * Form Integrations
     */
@@ -104,8 +105,9 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
         $router->get('/', 'FormIntegrationController@find');
         $router->post('/', 'FormIntegrationController@update');
         $router->delete('/', 'FormIntegrationController@delete');
-        
+
         $router->get('/integration-list-id', 'FormIntegrationController@integrationListComponent');
+        $router->post('/send-test-data', 'FormIntegrationController@sendTestData');
     });
 });
 /*

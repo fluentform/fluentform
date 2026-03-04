@@ -2,7 +2,11 @@
 
 namespace FluentForm\App\Services\Integrations;
 
+use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
+use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class FormIntegrationService
@@ -252,5 +256,191 @@ class FormIntegrationService
     {
         FormMeta::where('id',$id)->delete();
     }
-    
+
+    public function sendTestData($attr)
+    {
+        $formId = intval(Arr::get($attr, 'form_id'));
+        $integrationId = intval(Arr::get($attr, 'integration_id'));
+        $integrationName = sanitize_text_field(Arr::get($attr, 'integration_name'));
+        $dataType = sanitize_text_field(Arr::get($attr, 'data_type'));
+        $feedSettings = Arr::get($attr, 'integration');
+
+        if ('stringify' == $dataType) {
+            $feedSettings = \json_decode($feedSettings, true);
+        }
+
+        $form = Form::find($formId);
+        if (!$form) {
+            return [
+                'status'  => false,
+                'message' => __('Form not found', 'fluentform'),
+            ];
+        }
+
+        // Generate sample form data
+        $sampleData = $this->generateSampleFormData($form);
+        $sampleData = apply_filters('fluentform/integration_test_sample_data', $sampleData, $form, $integrationName);
+
+        $tempEntry = null;
+        try {
+            // Create temporary submission for ShortCodeParser
+            $tempEntry = Submission::create([
+                'form_id'     => $formId,
+                'response'    => \json_encode($sampleData),
+                'status'      => 'test',
+                'source_url'  => admin_url(),
+                'serial_number' => 0,
+                'created_at'  => current_time('mysql'),
+                'updated_at'  => current_time('mysql'),
+            ]);
+
+            // Get the feed meta key
+            $feed = FormMeta::where(['form_id' => $formId, 'id' => $integrationId])->first();
+            if (!$feed) {
+                return [
+                    'status'  => false,
+                    'message' => __('Integration feed not found. Please save the feed first.', 'fluentform'),
+                ];
+            }
+
+            $metaKey = $feed->meta_key;
+
+            // Process feed values through ShortCodeParser (same as real flow)
+            $parsedSettings = $feedSettings;
+            if (!empty($parsedSettings)) {
+                $parsedSettings = \json_decode(
+                    ShortCodeParser::parse(
+                        \json_encode($parsedSettings),
+                        $tempEntry->id,
+                        $sampleData,
+                        $form,
+                        false,
+                        true
+                    ),
+                    true
+                );
+            }
+
+            // Capture integration action result
+            $actionResult = [
+                'status'  => false,
+                'message' => __('No response from integration', 'fluentform'),
+            ];
+
+            add_action('fluentform/integration_action_result', function ($feed, $status, $message) use (&$actionResult) {
+                $actionResult = [
+                    'status'  => $status === 'success',
+                    'message' => $message,
+                ];
+            }, 10, 3);
+
+            // Build the feed object as the notify method expects
+            $feedData = [
+                'meta_key' => $metaKey,
+                'settings' => $feedSettings,
+            ];
+            $feedData = apply_filters('fluentform/global_notification_feed_' . $metaKey, $feedData, $formId);
+
+            // Fire the integration notification synchronously
+            do_action('fluentform/integration_notify_' . $metaKey, $feedData, $sampleData, $tempEntry, $form);
+
+            return [
+                'status'    => $actionResult['status'],
+                'message'   => $actionResult['message'],
+                'sent_data' => [
+                    'sample_form_data' => $sampleData,
+                    'parsed_settings'  => $parsedSettings,
+                ],
+            ];
+        } finally {
+            // Always delete temp submission
+            if ($tempEntry && $tempEntry->id) {
+                Submission::where('id', $tempEntry->id)->delete();
+            }
+        }
+    }
+
+    public function generateSampleFormData($form)
+    {
+        $fields = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
+        $sampleData = [];
+
+        foreach ($fields as $fieldName => $field) {
+            $type = Arr::get($field, 'raw.attributes.type', 'text');
+            $element = Arr::get($field, 'raw.element', '');
+
+            switch (true) {
+                case $type === 'email' || strpos($fieldName, 'email') !== false:
+                    $sampleData[$fieldName] = 'test@example.com';
+                    break;
+                case $element === 'input_name' || strpos($fieldName, 'name') !== false:
+                    if (strpos($fieldName, 'first') !== false) {
+                        $sampleData[$fieldName] = 'John';
+                    } elseif (strpos($fieldName, 'last') !== false) {
+                        $sampleData[$fieldName] = 'Doe';
+                    } else {
+                        $sampleData[$fieldName] = 'John Doe';
+                    }
+                    break;
+                case $type === 'number' || $element === 'input_number':
+                    $sampleData[$fieldName] = 42;
+                    break;
+                case $type === 'tel' || strpos($fieldName, 'phone') !== false:
+                    $sampleData[$fieldName] = '+1-555-0100';
+                    break;
+                case $type === 'url' || strpos($fieldName, 'website') !== false || strpos($fieldName, 'url') !== false:
+                    $sampleData[$fieldName] = 'https://example.com';
+                    break;
+                case $element === 'textarea':
+                    $sampleData[$fieldName] = 'This is sample test data from Fluent Forms integration test.';
+                    break;
+                case $element === 'select' || $element === 'input_radio':
+                    $options = Arr::get($field, 'raw.settings.advanced_options', []);
+                    if (!empty($options) && isset($options[0]['value'])) {
+                        $sampleData[$fieldName] = $options[0]['value'];
+                    } else {
+                        $sampleData[$fieldName] = 'Option 1';
+                    }
+                    break;
+                case $element === 'input_checkbox':
+                    $options = Arr::get($field, 'raw.settings.advanced_options', []);
+                    if (!empty($options) && isset($options[0]['value'])) {
+                        $sampleData[$fieldName] = [$options[0]['value']];
+                    } else {
+                        $sampleData[$fieldName] = ['Option 1'];
+                    }
+                    break;
+                case $element === 'input_date':
+                    $sampleData[$fieldName] = date('Y-m-d');
+                    break;
+                case $element === 'input_hidden':
+                    $sampleData[$fieldName] = 'hidden_test_value';
+                    break;
+                case strpos($fieldName, 'address') !== false || $element === 'address':
+                    $sampleData[$fieldName] = '123 Test Street';
+                    break;
+                case strpos($fieldName, 'city') !== false:
+                    $sampleData[$fieldName] = 'Test City';
+                    break;
+                case strpos($fieldName, 'state') !== false:
+                    $sampleData[$fieldName] = 'CA';
+                    break;
+                case strpos($fieldName, 'zip') !== false || strpos($fieldName, 'postal') !== false:
+                    $sampleData[$fieldName] = '90210';
+                    break;
+                case strpos($fieldName, 'country') !== false:
+                    $sampleData[$fieldName] = 'US';
+                    break;
+                case strpos($fieldName, 'company') !== false || strpos($fieldName, 'organization') !== false:
+                    $sampleData[$fieldName] = 'Test Company';
+                    break;
+                default:
+                    $sampleData[$fieldName] = 'Test Value';
+                    break;
+            }
+        }
+
+        return $sampleData;
+    }
+
 }

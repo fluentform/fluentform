@@ -61,6 +61,29 @@ class GlobalIntegrationController extends Controller
         }
     }
 
+    public function testConnection()
+    {
+        try {
+            $settingsKey = sanitize_text_field($this->request->get('settings_key'));
+            $integration = wp_unslash($this->request->get('integration'));
+
+            $result = apply_filters('fluentform/test_integration_connection_' . $settingsKey, [
+                'status'  => false,
+                'message' => __('Test connection is not supported for this integration', 'fluentform'),
+            ], $integration);
+
+            if (!empty($result['status'])) {
+                return $this->sendSuccess($result);
+            }
+
+            return $this->sendError($result, 422);
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
     public function updateModuleStatus(GlobalIntegrationService $globalIntegrationService)
     {
         try {

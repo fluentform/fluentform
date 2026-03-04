@@ -82,6 +82,8 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
                 $this->priority, 1);
             add_action('fluentform/save_global_integration_settings_' . $this->integrationKey,
                 [$this, 'saveGlobalSettings'], $this->priority, 1);
+            add_filter('fluentform/test_integration_connection_' . $this->integrationKey,
+                [$this, 'testConnectionHandler'], $this->priority, 2);
         }
         
         add_filter('fluentform/global_notification_types', [$this, 'addNotificationType'], $this->priority);
@@ -139,6 +141,14 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
         return $types;
     }
     
+    public function testConnectionHandler($result, $settings)
+    {
+        return [
+            'status'  => false,
+            'message' => __('Test connection is not supported for this integration', 'fluentform'),
+        ];
+    }
+
     public function getGlobalSettings($settings)
     {
         return $settings;

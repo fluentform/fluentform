@@ -59,6 +59,21 @@ class FormIntegrationController extends Controller
         }
     }
     
+    public function sendTestData(FormIntegrationService $integrationService)
+    {
+        try {
+            $result = $integrationService->sendTestData($this->request->all());
+            if (!empty($result['status'])) {
+                return $this->sendSuccess($result);
+            }
+            return $this->sendError($result, 422);
+        } catch (\Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
     public function integrationListComponent()
     {
         try {

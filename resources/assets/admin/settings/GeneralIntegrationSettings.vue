@@ -105,6 +105,23 @@
                                 <p><i class="ff-icon ff-icon-close-circle-filled"></i> {{ settings.invalid_message }}</p>
                             </div>
 
+                            <!-- Test Connection Result -->
+                            <div v-if="testResult" style="margin-top: 10px; margin-bottom: 10px;">
+                                <el-alert
+                                    :title="testResult.message"
+                                    :type="testResult.status ? 'success' : 'error'"
+                                    :closable="true"
+                                    @close="testResult = null"
+                                    show-icon>
+                                    <template v-if="testResult.account_info">
+                                        <p style="margin-top: 5px;">{{ $t('Connected as') }}: <strong>{{ testResult.account_info }}</strong></p>
+                                    </template>
+                                    <template v-if="testResult.remediation">
+                                        <p style="margin-top: 5px; color: #909399;">{{ testResult.remediation }}</p>
+                                    </template>
+                                </el-alert>
+                            </div>
+
                             <p v-if="error_message">{{ error_message }}</p>
                         </card-body>
                     </card>
@@ -112,6 +129,16 @@
                     <div class="mt-4">
                         <el-button v-loading="saving" type="primary" icon="el-icon-success" @click="save">
                             {{ settings.save_button_text }}
+                        </el-button>
+                        <el-button
+                            v-if="!integration.status"
+                            type="info"
+                            plain
+                            :loading="testing"
+                            icon="el-icon-connection"
+                            @click="testConnection"
+                        >
+                            {{ $t('Test Connection') }}
                         </el-button>
                     </div>
                 </el-form>
@@ -148,6 +175,8 @@ export default {
             integration: {},
             loading: false,
             saving: false,
+            testing: false,
+            testResult: null,
             settings: {},
             error_message: '',
             errors : new Errors()
@@ -157,6 +186,7 @@ export default {
         settings_key() {
             this.integration = {};
             this.settings = {};
+            this.testResult = null;
             this.getIntegrationSettings();
         }
     },
@@ -168,6 +198,37 @@ export default {
             }
             return false;
 
+        },
+        testConnection() {
+            this.testing = true;
+            this.testResult = null;
+            const url = FluentFormsGlobal.$rest.route('testGlobalIntegrationConnection');
+            FluentFormsGlobal.$rest.post(url, {
+                settings_key: this.settings_key,
+                integration: this.integration
+            })
+                .then(response => {
+                    this.testResult = {
+                        status: true,
+                        message: response.message || this.$t('Connection successful'),
+                        account_info: response.account_info || null,
+                        remediation: null
+                    };
+                    this.$success(response.message || this.$t('Connection successful'));
+                })
+                .catch(error => {
+                    const message = error?.message || error?.data?.message || this.$t('Connection failed');
+                    this.testResult = {
+                        status: false,
+                        message: message,
+                        account_info: null,
+                        remediation: error?.data?.remediation || null
+                    };
+                    this.$fail(message);
+                })
+                .finally(() => {
+                    this.testing = false;
+                });
         },
         save() {
             this.saving = true;
