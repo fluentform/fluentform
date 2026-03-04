@@ -741,7 +741,6 @@
             if (this.form_saving) {
                 FluentFormEditorEvents.$emit('editor-form-saving',this.form);
 
-                this.clearEditableObject(); // Empty {editItem} after form saved
                 saveBtn.html('<i class="el-icon-loading mr-1"></i> Save Form');
 
                 // Cancel any pending autosave when manual save starts
@@ -1180,7 +1179,7 @@
             });
             saveButton.on('click', function () {
                 const $this = jQuery(this);
-                if (!$this.data('text')) $this.data('text', $this.text());
+                if (self.form_saving) return; // Prevent rapid clicks
                 $this.html('<i class="el-icon-loading mr-1"></i> Save Form');
                 self.save_form();
             });

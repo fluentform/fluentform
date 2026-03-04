@@ -280,33 +280,47 @@ class Menu
                            ->get();
 
         wp_enqueue_script('fluent_forms_global');
-        wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
-            'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-            'ajaxurl'                  => Helper::getAjaxUrl(),
-            'admin_i18n'               => TranslationString::getAdminI18n(),
-            'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
-            'payments_str'             => TranslationString::getPaymentsI18n(),
-            'permissions'              => Acl::getCurrentUserPermissions(),
-            'rest'                     => Helper::getRestInfo(),
-            'card_brands'              => [
-                'visa'                 => fluentformMix('img/card-brand/visa.jpg'),
-                'paypal'               => fluentformMix('img/card-brand/paypal.jpg'),
-                'mastercard'           => fluentformMix('img/card-brand/mastercard.jpg'),
-                'amex'                 => fluentformMix('img/card-brand/amex.jpg')
+
+        // Check if default style is enabled
+        $defaultTemplate = get_option('_fluentform_default_style_template');
+        $hasDefaultStyle = false;
+        if ($defaultTemplate && is_array($defaultTemplate)) {
+            $hasDefaultStyle = \FluentForm\Framework\Helpers\ArrayHelper::get($defaultTemplate, 'enabled') === 'yes';
+        }
+
+        $globalVars = [
+            'ajaxurl'              => Helper::getAjaxUrl(),
+            'admin_i18n'           => TranslationString::getAdminI18n(),
+            'global_search_active' => apply_filters('fluentform/global_search_active', 'yes'),
+            'payments_str'         => TranslationString::getPaymentsI18n(),
+            'permissions'          => Acl::getCurrentUserPermissions(),
+            'rest'                 => Helper::getRestInfo(),
+            'card_brands'          => [
+                'visa'       => fluentformMix('img/card-brand/visa.jpg'),
+                'paypal'     => fluentformMix('img/card-brand/paypal.jpg'),
+                'mastercard' => fluentformMix('img/card-brand/mastercard.jpg'),
+                'amex'       => fluentformMix('img/card-brand/amex.jpg')
             ],
-            'payment_icons'            => [
-                'offline'              => fluentformMix('img/payment/offline.png'),
-                'mollie'               => fluentformMix('img/payment/mollie.png'),
-                'paypal'               => fluentformMix('img/payment/paypal.png'),
-                'stripe'               => fluentformMix('img/payment/stripe.png')
+            'payment_icons'        => [
+                'offline' => fluentformMix('img/payment/offline.png'),
+                'mollie'  => fluentformMix('img/payment/mollie.png'),
+                'paypal'  => fluentformMix('img/payment/paypal.png'),
+                'stripe'  => fluentformMix('img/payment/stripe.png')
             ],
-            'forms'                    => $forms,
-            'hasPro'                   => defined('FLUENTFORMPRO'),
-            'has_entries_import'       => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.7', '>='),
-            'disable_time_diff'        => Helper::isDefaultWPDateEnabled(),
-            'wp_date_time_format'      => Helper::getDefaultDateTimeFormatForMoment(),
-            'server_time'              => current_time('mysql'),
-        ]);
+            'forms'                => $forms,
+            'hasPro'               => defined('FLUENTFORMPRO'),
+            'has_entries_import'   => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.7', '>='),
+            'disable_time_diff'    => Helper::isDefaultWPDateEnabled(),
+            'wp_date_time_format'  => Helper::getDefaultDateTimeFormatForMoment(),
+            'server_time'          => current_time('mysql'),
+            'has_default_style'    => $hasDefaultStyle,
+        ];
+
+        if (Acl::hasAnyFormPermission()) {
+            $globalVars['fluent_forms_admin_nonce'] = wp_create_nonce('fluent_forms_admin_nonce');
+        }
+
+        wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', $globalVars);
 
         $page = sanitize_text_field($this->app->request->get('page'));
         $route = sanitize_text_field($this->app->request->get('route'));

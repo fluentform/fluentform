@@ -84,6 +84,9 @@ class Form
         if ($is_filter_by_conv_or_step_form) {
             $data = (array) $query->select('*')->get();
         } else {
+            if ($total < $skip) {
+                $skip = 0;
+            }
             $data = (array) $query->select('*')->limit($perPage)->offset($skip)->get();
         }
 
@@ -164,6 +167,9 @@ class Form
         }
         if ($is_filter_by_conv_or_step_form) {
             $total = count($conversationOrStepForms);
+            if ($total < $skip) {
+                $skip = 0;
+            }
             $conversationOrStepForms = array_slice($conversationOrStepForms, $skip, $perPage);
             $dataCount = count($conversationOrStepForms);
         } else {

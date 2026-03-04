@@ -39,9 +39,16 @@ class Hcaptcha extends BaseComponent
         }
 
         if (!wp_script_is('hcaptcha')) {
+            $apiUrl = 'https://js.hcaptcha.com/1/api.js?render=explicit';
+
+            $locale = apply_filters('fluentform/hcaptcha_lang', '');
+            if ($locale) {
+                $apiUrl .= '&hl=' . $locale;
+            }
+
             wp_enqueue_script(
                 'hcaptcha',
-                'https://js.hcaptcha.com/1/api.js?render=explicit',
+                $apiUrl,
                 [],
                 FLUENTFORM_VERSION,
                 true

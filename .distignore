@@ -5,7 +5,7 @@
 .gitattributes
 .gitignore
 pnpm-lock.yaml
-README.md
+*.md
 .idea
 node_modules
 package-lock.json
@@ -21,3 +21,4 @@ public/js/*.css
 jsconfig.json
 composer.lock
 assets/report.html
+.claude/

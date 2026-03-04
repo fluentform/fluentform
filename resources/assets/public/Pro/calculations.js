@@ -82,7 +82,14 @@ export function getName(item, replace) {
     return item.replace(regx, '');
 }
 
-export default function ($, $theForm) {
+export default function ($, $theForm, calculationMessages = {}) {
+    // Set default messages if not provided
+    const messages = {
+        calculation_error: 'Calculation error occurred',
+        invalid_formula: 'Invalid formula provided',
+        division_by_zero: 'Division by zero error',
+        ...calculationMessages
+    };
     var calculationFields = $theForm.find('.ff_has_formula');
 
     if (!calculationFields.length) {
@@ -140,11 +147,18 @@ export default function ($, $theForm) {
             try {
                 formula = formula.replace(/\n/g, "");
                 calculatedValue = mexp.eval(formula);
-                if (isNaN(calculatedValue)) {
+
+                // Check for division by zero
+                if (calculatedValue === Infinity || calculatedValue === -Infinity) {
+                    console.log(messages.division_by_zero, field);
+                    calculatedValue = '';
+                } else if (isNaN(calculatedValue)) {
+                    console.log(messages.invalid_formula, field);
                     calculatedValue = '';
                 }
             } catch (error) {
-                console.log(error, field);
+                console.log(messages.calculation_error + ':', error, field);
+                calculatedValue = ''; // Reset to empty on error
             }
 
             if ($field[0].type == 'text') {

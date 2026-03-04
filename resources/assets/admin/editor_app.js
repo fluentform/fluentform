@@ -289,9 +289,6 @@ window.fluentFormEditorApp = new Vue({
                     this.form_saving = false;
                     FluentFormApp.isDirty = false;
 
-                    const saveFormBtn = jQuery("#saveFormData");
-                    saveFormBtn.html('<i class="el-icon-success"></i>' + saveFormBtn.data("text"));
-
                     // Update the hash now.
                     this.saveHash();
                 })

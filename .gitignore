@@ -18,3 +18,8 @@ public_build
 !/assets/js
 /assets/js/*
 !/assets/js/fluent_gutenblock.js
+CLAUDE.md
+.claude/
+vendor/composer/autoload_static.php
+vendor/composer/autoload_real.php
+vendor/composer/autoload_classmap.php

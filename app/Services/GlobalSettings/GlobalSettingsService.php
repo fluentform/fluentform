@@ -54,6 +54,7 @@ class GlobalSettingsService
             'storeMailChimpSettings',
             'storeEmailSummarySettings',
             'storeAutosaveSettings',
+            'storeDefaultStyleTemplate',
         ];
 
         $method = '';

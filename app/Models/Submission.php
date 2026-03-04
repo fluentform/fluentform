@@ -170,23 +170,6 @@ class Submission extends Model
         return apply_filters('fluentform/get_raw_responses', $response, $formId);
     }
 
-    public function findPreviousSubmission($attributes = [])
-    {
-        $query = $this->customQuery($attributes);
-
-        $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
-
-        $operator = 'ASC' === $sortBy ? '<' : '>';
-
-        $entryId = Arr::get($attributes, 'entry_id');
-
-        $columns = Arr::get($attributes, 'columns', 'id');
-
-        $submission = $query->select($columns)->where('id', $operator, $entryId)->first();
-
-        return apply_filters('fluentform/next_submission', $submission, $entryId, $attributes);
-    }
-
     public function findAdjacentSubmission($attributes = [])
     {
         $sortBy = Arr::get($attributes, 'sort_by', 'DESC');

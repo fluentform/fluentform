@@ -1,7 +1,8 @@
 <template>
-	<div v-if="isCheckable || isSelectable" class="ff-dynamic-editor-wrap">
+	<div v-if="isCheckable || isSelectable || isAutocomplete" class="ff-dynamic-editor-wrap">
 		<input-checkable v-if="isCheckable" :item="item"></input-checkable>
 		<custom-select v-else-if="isSelectable" :item="item"></custom-select>
+		<input-text v-else-if="isAutocomplete" :item="item"></input-text>
 	</div>
 </template>
 
@@ -49,6 +50,9 @@ export default {
 		},
 		isSelectable() {
 			return ['select', 'multi_select'].includes(this.item.settings.field_type);
+		},
+		isAutocomplete() {
+			return 'autocomplete' === this.item.settings.field_type;
 		}
 	}
 }

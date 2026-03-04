@@ -437,7 +437,11 @@ function fluentform_sanitize_html($html)
 
 function fluentform_kses_js($content)
 {
-    return $content ? preg_replace('/<script.*?>[\s\S]*<\/script>/is', '', $content) : '';
+    if (!$content) {
+        return '';
+    }
+
+    return preg_replace('/<\/?script[^>]*>/is', '', $content);
 }
 
 /**
@@ -480,7 +484,7 @@ function fluentformSanitizeCSS($css)
     if (!is_string($css)) {
         $css = (string) $css;
     }
-
+    
     return preg_match('#</?\w+#', $css) ? '' : $css;
 }
 

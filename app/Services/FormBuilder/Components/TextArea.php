@@ -55,6 +55,8 @@ class TextArea extends BaseComponent
             esc_attr($textareaValue)
         ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
 
+        $elMarkup = $this->buildInputGroup($elMarkup, $data);
+
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
     
         $html = apply_filters_deprecated(
@@ -70,5 +72,36 @@ class TextArea extends BaseComponent
         );
 
         $this->printContent('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
+    }
+
+    /**
+     * Build input group with prefix/suffix
+     *
+     * @param string $textarea The textarea element HTML
+     * @param array  $data     The field data
+     *
+     * @return string
+     */
+    private function buildInputGroup($textarea, $data)
+    {
+        $prefix = ArrayHelper::get($data, 'settings.prefix_label');
+        $suffix = ArrayHelper::get($data, 'settings.suffix_label');
+
+        if ($prefix || $suffix) {
+            $wrapperClass = 'ff_input-group';
+           
+            $wrapper = '<div class="' . $wrapperClass . '">';
+            if ($prefix) {
+                $wrapper .= '<div class="ff_input-group-prepend"><span class="ff_input-group-text">' . fluentform_sanitize_html($prefix) . '</span></div>';
+            }
+            $wrapper .= $textarea;
+            if ($suffix) {
+                $wrapper .= '<div class="ff_input-group-append"><span class="ff_input-group-text">' . fluentform_sanitize_html($suffix) . '</span></div>';
+            }
+            $wrapper .= '</div>';
+            return $wrapper;
+        }
+
+        return $textarea;
     }
 }

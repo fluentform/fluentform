@@ -933,14 +933,12 @@ class FluentFormSlider {
             if (!self.isInitialLoad) {
                 if (!autoFocusEnabled) {
                     const focusOnStepChange = !!window.fluentFormVars?.step_change_focus;
-                    if (focusOnStepChange) {
+                    if (focusOnStepChange && !window.ff_disable_step_scroll) {
                         setTimeout(() => {
                             $(`${self.formSelector} .fluentform-step.active`).attr("tabindex", "-1").focus().removeAttr("tabindex");
                         }, animDuration);
                     }
-
-                    self.isInitialLoad = false;
-                } else {
+                } else if (!window.ff_disable_step_scroll) {
                     const focusableElements = step.find("input, .ff-custom_html, select, textarea, button, a").filter(":visible");
 
                     if (focusableElements.length && shouldFocus) {
@@ -948,9 +946,9 @@ class FluentFormSlider {
                             focusableElements.first().focus();
                         }, animDuration + 50);
                     }
-
-                    self.isInitialLoad = false;
                 }
+
+                self.isInitialLoad = false;
             }
         }
 
@@ -1056,7 +1054,8 @@ class FluentFormSlider {
             active_step: activeStep,
             data: inputData,
             form_id: $theForm.data('form_id'),
-            action: 'fluentform_step_form_save_data'
+            action: 'fluentform_step_form_save_data',
+            nonce: this.fluentFormVars?.nonce
         };
 
         return $.post(this.fluentFormVars.ajaxUrl, formData);

@@ -85,7 +85,7 @@ class Form extends Model
      */
     public function logs()
     {
-        return $this->hasMany(Log::class, 'form_id', 'id');
+        return $this->hasMany(Log::class, 'parent_source_id', 'id');
     }
 
     public static function prepare($attributes = [])

@@ -221,29 +221,62 @@ class HistoryService
     
     private function generateChangeTitle()
     {
-        $addedCount = count($this->addedFields);
-        $removedCount = count($this->removedFields);
-        $modifiedCount = count(array_filter($this->changes, function($change) {
+        $addedChanges = array_filter($this->changes, function($change) {
+            return $change['type'] === 'added';
+        });
+        $removedChanges = array_filter($this->changes, function($change) {
+            return $change['type'] === 'removed';
+        });
+        $modifiedChanges = array_filter($this->changes, function($change) {
             return $change['type'] === 'modified';
-        }));
-        $reorderedCount = count(array_filter($this->changes, function($change) {
+        });
+        $reorderedChanges = array_filter($this->changes, function($change) {
             return $change['type'] === 'reordered';
-        }));
-    
+        });
+
+        $addedCount = count($addedChanges);
+        $removedCount = count($removedChanges);
+        $reorderedCount = count($reorderedChanges);
+
+        // Get unique field labels that were modified
+        $modifiedFieldLabels = array_unique(array_map(function($change) {
+            return $change['label'];
+        }, $modifiedChanges));
+        $modifiedFieldCount = count($modifiedFieldLabels);
+
         $changeDescriptions = [];
+
         if ($addedCount > 0) {
-            $changeDescriptions[] = "Added " . ($addedCount > 1 ? "$addedCount fields" : "1 field");
+            if ($addedCount === 1) {
+                $fieldLabel = reset($addedChanges)['label'];
+                $changeDescriptions[] = "Added '$fieldLabel' field";
+            } else {
+                $changeDescriptions[] = "Added $addedCount fields";
+            }
         }
+
         if ($removedCount > 0) {
-            $changeDescriptions[] = "Removed " . ($removedCount > 1 ? "$removedCount fields" : "1 field");
+            if ($removedCount === 1) {
+                $fieldLabel = reset($removedChanges)['label'];
+                $changeDescriptions[] = "Removed '$fieldLabel' field";
+            } else {
+                $changeDescriptions[] = "Removed $removedCount fields";
+            }
         }
-        if ($modifiedCount > 0) {
-            $changeDescriptions[] = "Modified " . ($modifiedCount > 1 ? "$modifiedCount attributes/settings" : "1 attribute/setting");
+
+        if ($modifiedFieldCount > 0) {
+            if ($modifiedFieldCount === 1) {
+                $fieldLabel = reset($modifiedFieldLabels);
+                $changeDescriptions[] = "Modified '$fieldLabel'";
+            } else {
+                $changeDescriptions[] = "Modified $modifiedFieldCount fields";
+            }
         }
+
         if ($reorderedCount > 0) {
             $changeDescriptions[] = "Reordered fields";
         }
-        
+
         if (count($changeDescriptions) > 1) {
             return "Multiple changes";
         } elseif (count($changeDescriptions) == 1) {
@@ -254,11 +287,15 @@ class HistoryService
     
     private function storeFormHistory($formId, $oldData, $changeTitle)
     {
-        $revisions = FormMeta::where('form_id', $formId)
-            ->where('meta_key', 'revision')
-            ->count();
-        if ($revisions === 0) {
-            $changeTitle = __('Initial state','fluentform');
+        // If there are no existing revisions for this form, mark this entry as the initial state
+        $existingHistoryCount = FormMeta::where([
+            'form_id'  => $formId,
+            'meta_key' => 'revision',
+        ])->count();
+
+        if ($existingHistoryCount === 0) {
+            // Use a clear label for the first stored revision of the form
+            $changeTitle = __('Initial state', 'fluentform');
         }
         $historyEntry = [
             'change_title' => $changeTitle,
