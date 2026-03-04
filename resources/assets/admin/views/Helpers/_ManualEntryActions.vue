@@ -87,7 +87,7 @@
                     <h6 class="title">{{$t('This is a Pro Feature')}}</h6> 
                     <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
                 </div>
-                <a target="_blank" :href="upgrade_url" class="el-button el-button--danger el-button--small">
+                <a target="_blank" :href="upgrade_url" class="el-button el-button--primary el-button--small">
                     {{$t('Upgrade to Pro')}}
                 </a>
             </notice>
