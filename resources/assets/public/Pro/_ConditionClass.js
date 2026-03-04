@@ -123,7 +123,7 @@ class ConditionApp {
     }
 
     getItemEvaluateValue(item, val) {
-        val = val || null;
+        val = (val !== undefined && val !== null && val !== '') ? val : null;
 
         let $el = this.elementCache[item.field];
         if (!$el || !$el.length) {
@@ -158,13 +158,13 @@ class ConditionApp {
 
             return val != item.value;
         } else if (item.operator == '>') {
-            return val && this.parseFormattedNumericValue($el, val) > this.parseFormattedNumericValue($el, item.value);
+            return val !== null && this.parseFormattedNumericValue($el, val) > this.parseFormattedNumericValue($el, item.value);
         } else if (item.operator == '<') {
-            return val && this.parseFormattedNumericValue($el, val) < this.parseFormattedNumericValue($el, item.value);
+            return val !== null && this.parseFormattedNumericValue($el, val) < this.parseFormattedNumericValue($el, item.value);
         } else if (item.operator == '>=') {
-            return val && this.parseFormattedNumericValue($el, val) >= this.parseFormattedNumericValue($el, item.value);
+            return val !== null && this.parseFormattedNumericValue($el, val) >= this.parseFormattedNumericValue($el, item.value);
         } else if (item.operator == '<=') {
-            return val && this.parseFormattedNumericValue($el, val) <= this.parseFormattedNumericValue($el, item.value);
+            return val !== null && this.parseFormattedNumericValue($el, val) <= this.parseFormattedNumericValue($el, item.value);
         } else if (item.operator == 'startsWith') {
             return val && val.startsWith(item.value);
         } else if (item.operator == 'endsWith') {
