@@ -314,9 +314,8 @@ class Converter
                 } else {
                     continue;
                 }
-                if ($type !== 'autocomplete') {
-                    $question['nextStepOnAnswer'] = true;
-                }
+                // Always set nextStepOnAnswer so consumers can rely on a boolean flag
+                $question['nextStepOnAnswer'] = ($type !== 'autocomplete');
 
                 // Populate config — pass to frontend if enabled and type supports it
                 if (!in_array($type, ['checkbox', 'multi_select'])) {
