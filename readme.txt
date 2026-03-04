@@ -438,9 +438,12 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.1.19 (Date: March 04, 2026) =
+= 6.1.20 (Date: March 04, 2026) =
 - Fixes Stripe coupon discount rounding losing cents on multi-quantity line items
 - Fixes step form save and resume
+
+= 6.1.19 (Date: February 25, 2026) =
+- Adds backward-compatibility for deprecated classes
 
 = 6.1.18 (Date: February 25, 2026) =
 - Improves file delete endpoint security
