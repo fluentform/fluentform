@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.18
+Stable tag: 6.1.19
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -437,6 +437,10 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.1.19 (Date: March 04, 2026) =
+- Fixes Stripe coupon discount rounding losing cents on multi-quantity line items
+- Fixes step form save and resume
 
 = 6.1.18 (Date: February 25, 2026) =
 - Improves file delete endpoint security
