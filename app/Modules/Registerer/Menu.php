@@ -1181,7 +1181,7 @@ class Menu
         if (Helper::isConversionForm($formId)) {
             $shortcode = '[fluentform type="conversational" id="' . $formId . '"]';
         }
-        echo '<button title="Click to Copy" class="ff_shortcode_btn ff_shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
+        echo '<button title="' . esc_attr__('Click to Copy', 'fluentform') . '" class="ff_shortcode_btn ff_shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
         return;
     }
 
