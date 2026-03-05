@@ -13,13 +13,13 @@ const PlaceHolderStylesPanel = ({ styles, updateStyles }) => {
     return (
         <PanelBody title={__('Placeholder Styles')} initialOpen={false}>
             <FluentColorPicker
-                label="Text Color"
+                label={__("Text Color")}
                 value={styles.placeholderColor}
                 onChange={(value) => updateStyles({placeholderColor: value})}
                 defaultColor=""
             />
             <FluentTypography
-                label="Typography"
+                label={__("Typography")}
                 typography={styles.placeholderTypography || {}}
                 onChange={(typography) => updateStyles({ placeholderTypography: typography })}
             />

@@ -29,7 +29,7 @@ const InputStylesPanel = ({ styles, updateStyles }) => {
                             <>
                                 <FluentColorPicker
                                     key="input-text-color-normal"
-                                    label="Text Color"
+                                    label={__("Text Color")}
                                     value={styles?.inputTextColor || ''}
                                     onChange={(value) => {
                                         updateStyles({ inputTextColor: value });
@@ -39,7 +39,7 @@ const InputStylesPanel = ({ styles, updateStyles }) => {
 
                                 <FluentColorPicker
                                     key="input-bg-color-normal"
-                                    label="Background Color"
+                                    label={__("Background Color")}
                                     value={styles?.inputBackgroundColor || ''}
                                     onChange={(value) => {
                                         updateStyles({ inputBackgroundColor: value });
@@ -48,13 +48,13 @@ const InputStylesPanel = ({ styles, updateStyles }) => {
                                 />
 
                                 <FluentTypography
-                                    label="Typography"
+                                    label={__("Typography")}
                                     typography={styles.inputTypography || {}}
                                     onChange={(typography) => updateStyles({ inputTypography: typography })}
                                 />
 
                                 <FluentSpaceControl
-                                    label="Spacing"
+                                    label={__("Spacing")}
                                     values={styles.inputSpacing}
                                     onChange={(value) => updateStyles({ inputSpacing: value })}
                                 />
@@ -77,7 +77,7 @@ const InputStylesPanel = ({ styles, updateStyles }) => {
                             <>
                                 <FluentColorPicker
                                     key="input-text-color-focus"
-                                    label="Text Color"
+                                    label={__("Text Color")}
                                     value={styles.inputTextFocusColor || ''}
                                     onChange={(value) => {
                                         updateStyles({ inputTextFocusColor: value });
@@ -87,7 +87,7 @@ const InputStylesPanel = ({ styles, updateStyles }) => {
 
                                 <FluentColorPicker
                                     key="input-bg-color-focus"
-                                    label="Background Color"
+                                    label={__("Background Color")}
                                     value={styles?.inputBackgroundFocusColor || ''}
                                     onChange={(value) => {
                                         updateStyles({ inputBackgroundFocusColor: value });
@@ -96,7 +96,7 @@ const InputStylesPanel = ({ styles, updateStyles }) => {
                                 />
 
                                 <FluentSpaceControl
-                                    label="Spacing"
+                                    label={__("Spacing")}
                                     values={styles.inputFocusSpacing}
                                     onChange={(value) => updateStyles({ inputFocusSpacing: value })}
                                 />

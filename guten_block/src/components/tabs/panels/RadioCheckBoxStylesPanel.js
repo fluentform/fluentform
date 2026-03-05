@@ -22,13 +22,13 @@ const RadioCheckBoxStylesPanel = ({ styles, updateStyles }) => {
     return (
         <PanelBody title={__('Radio & Checkbox Styles')} initialOpen={false}>
             <FluentColorPicker
-                label="Items Color"
+                label={__("Items Color")}
                 value={styles.radioCheckboxItemsColor}
                 onChange={(value) => updateStyles({radioCheckboxItemsColor: value})}
                 defaultColor=""
             />
             <div className="ffblock-control-field">
-                <span className="ffblock-label">Size (px)</span>
+                <span className="ffblock-label">{__("Size (px)")}</span>
                 <RangeControl
                     value={localSize}
                     min={1}
