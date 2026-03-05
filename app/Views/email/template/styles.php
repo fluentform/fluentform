@@ -151,7 +151,6 @@ background-color: #f8f8f8;
 
 #body_content_inner tr.field-value td {
 padding: 6px 12px 12px 12px;
-white-space: pre-line;
 }
 
 .link {
