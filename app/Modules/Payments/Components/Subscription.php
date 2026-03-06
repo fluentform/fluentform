@@ -32,6 +32,18 @@ class Subscription extends BaseFieldManager
             if (!isset($element['settings']['layout_class'])) {
                 $element['settings']['layout_class'] = '';
             }
+            // Backward compatibility: ensure existing plans have end date fields
+            if (!empty($element['settings']['subscription_options'])) {
+                foreach ($element['settings']['subscription_options'] as &$option) {
+                    if (!isset($option['has_end_date'])) {
+                        $option['has_end_date'] = 'no';
+                    }
+                    if (!isset($option['subscription_end_date'])) {
+                        $option['subscription_end_date'] = '';
+                    }
+                }
+                unset($option);
+            }
             return $element;
         });
         add_filter('fluentform/response_render_' . $this->key, function ($response, $field, $form_id, $isHtml = false) {
@@ -64,16 +76,18 @@ class Subscription extends BaseFieldManager
                 'selection_type'       => 'radio',
                 'subscription_options' => [
                     [
-                        "bill_times"          => 0,
-                        "billing_interval"    => "month",
-                        "has_signup_fee"      => "no",
-                        "has_trial_days"      => "no",
-                        "is_default"          => "yes",
-                        "name"                => __("Monthly Plan", 'fluentform'),
-                        "plan_features"       => [],
-                        "signup_fee"          => 0,
-                        "subscription_amount" => 9.99,
-                        "trial_days"          => 0,
+                        "bill_times"            => 0,
+                        "billing_interval"      => "month",
+                        "has_signup_fee"        => "no",
+                        "has_trial_days"        => "no",
+                        "is_default"            => "yes",
+                        "name"                  => __("Monthly Plan", 'fluentform'),
+                        "plan_features"         => [],
+                        "signup_fee"            => 0,
+                        "subscription_amount"   => 9.99,
+                        "trial_days"            => 0,
+                        "has_end_date"          => "no",
+                        "subscription_end_date" => "",
                     ]
                 ],
                 'price_label'          => __('Price:', 'fluentform'),
