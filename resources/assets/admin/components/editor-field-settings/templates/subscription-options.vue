@@ -271,6 +271,7 @@
                                 @change="onEndDateChange(item)"
                             />
                         </el-form-item>
+
                     </el-col>
                     <el-col :span="12">
                         <el-form-item>
@@ -294,8 +295,29 @@
                                 {{ getDaysRemaining(item) }} {{ $t('days from today') }}
                             </p>
                         </el-form-item>
+
                     </el-col>
                 </el-row>
+
+                <el-form-item v-if="item.has_end_date === 'yes'">
+                    <elLabel
+                        slot="label"
+                        :label="$t('When Plan Expires')"
+                        :helpText="$t('Show Error: displays an error message when user tries to submit. Hide Plan: removes this plan from form and silently skip.')"
+                    />
+
+                    <el-radio-group
+                        size="small"
+                        v-model="item.expire_behavior"
+                    >
+                        <el-radio-button label="show_error">
+                            {{ $t('Show Error') }}
+                        </el-radio-button>
+                        <el-radio-button label="hide">
+                            {{ $t('Hide Plan') }}
+                        </el-radio-button>
+                    </el-radio-group>
+                </el-form-item>
             </div>
 
             <div class="plan_footer">
@@ -334,7 +356,9 @@
                 },
                 datePickerOptions: {
                     disabledDate(date) {
-                        return date < new Date();
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        return date < today;
                     }
                 }
             }
@@ -348,6 +372,9 @@
                     }
                     if (typeof item.subscription_end_date === 'undefined') {
                         this.$set(item, 'subscription_end_date', '');
+                    }
+                    if (typeof item.expire_behavior === 'undefined') {
+                        this.$set(item, 'expire_behavior', 'show_error');
                     }
                 });
             }
@@ -370,7 +397,8 @@
                     subscription_amount: '19.99',
                     plan_features: [],
                     has_end_date: 'no',
-                    subscription_end_date: ''
+                    subscription_end_date: '',
+                    expire_behavior: 'show_error'
                 });
             },
 
@@ -409,8 +437,7 @@
 
                 const now = new Date();
                 now.setHours(0, 0, 0, 0);
-                const endDate = new Date(item.subscription_end_date);
-                endDate.setHours(0, 0, 0, 0);
+                const endDate = new Date(item.subscription_end_date + 'T00:00:00');
 
                 const diffTime = endDate.getTime() - now.getTime();
                 const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
@@ -443,7 +470,7 @@
             },
 
             formatDate(dateStr) {
-                const date = new Date(dateStr);
+                const date = new Date(dateStr + 'T00:00:00');
                 const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
                 return date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
             },
@@ -451,8 +478,7 @@
             getDaysRemaining(item) {
                 const now = new Date();
                 now.setHours(0, 0, 0, 0);
-                const endDate = new Date(item.subscription_end_date);
-                endDate.setHours(0, 0, 0, 0);
+                const endDate = new Date(item.subscription_end_date + 'T00:00:00');
                 return Math.max(1, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
             },
 

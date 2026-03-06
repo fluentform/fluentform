@@ -568,14 +568,20 @@ class PaymentAction
                     ArrayHelper::get($plan, 'has_end_date') === 'yes'
                     && ($endDateStr = ArrayHelper::get($plan, 'subscription_end_date'))
                 ) {
-                    $endDate = strtotime($endDateStr);
+                    $endDate = strtotime($endDateStr . ' +1 day');
                     $now = current_time('timestamp');
-                    if ($endDate && $endDate > $now) {
-                        $diffDays = max(1, ceil(($endDate - $now) / 86400));
-                        $intervalMap = ['day' => 1, 'week' => 7, 'month' => 30, 'year' => 365];
-                        $interval = isset($intervalMap[$plan['billing_interval']]) ? $intervalMap[$plan['billing_interval']] : 30;
-                        $billTimes = max(1, ceil($diffDays / $interval));
+                    if (!$endDate || $endDate <= $now) {
+                        if (ArrayHelper::get($plan, 'expire_behavior') === 'hide') {
+                            continue;
+                        }
+                        wp_send_json([
+                            'errors' => [__('This subscription plan was expired', 'fluentform')]
+                        ], 423);
                     }
+                    $diffDays = max(1, ceil(($endDate - $now) / 86400));
+                    $intervalMap = ['day' => 1, 'week' => 7, 'month' => 30, 'year' => 365];
+                    $interval = isset($intervalMap[$plan['billing_interval']]) ? $intervalMap[$plan['billing_interval']] : 30;
+                    $billTimes = max(1, ceil($diffDays / $interval));
                 }
 
                 $subscription = array(
