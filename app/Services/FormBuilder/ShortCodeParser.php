@@ -372,7 +372,7 @@ class ShortCodeParser
             if ('total_paid' == $key || 'payment_total' == $key) {
                 return round($entry->{$key} / 100, 2);
             }
-            if ('payment_method' == $key && 'test' == $key) {
+            if ('payment_method' == $key && 'test' == $entry->{$key}) {
                 return __('Offline', 'fluentform');
             }
             return $entry->{$key};
