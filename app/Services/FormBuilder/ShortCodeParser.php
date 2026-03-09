@@ -450,14 +450,17 @@ class ShortCodeParser
                 }
             }
 
-            $html = '<table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"><tbody>';
+            $isRtl = is_rtl();
+            $textAlign = $isRtl ? 'right' : 'left';
+            $direction = $isRtl ? ' dir="rtl"' : '';
+            $html = '<table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"' . $direction . '><tbody>';
             foreach ($inputLabels as $inputKey => $label) {
                 if (array_key_exists($inputKey, $response->user_inputs) && '' !== ArrayHelper::get($response->user_inputs, $inputKey)) {
                     $data = ArrayHelper::get($response->user_inputs, $inputKey);
                     if (is_array($data) || is_object($data)) {
                         continue;
                     }
-                    $html .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $data . '</td></tr>';
+                    $html .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: ' . $textAlign . ';"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $data . '</td></tr>';
                 }
             }
 
