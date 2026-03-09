@@ -142,7 +142,7 @@ abstract class BaseMigrator
             'class'                 => '',
             'format'                => '',
             'validation_rules'      => [],
-            'conditional_logics'    => $args['conditional_logics'],
+            'conditional_logics'    => [],
             'enable_image_input'    => false,
             'calc_value_status'     => false,
             'dynamic_default_value' => '',

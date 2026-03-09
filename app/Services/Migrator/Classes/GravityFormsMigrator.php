@@ -733,8 +733,9 @@ class GravityFormsMigrator extends BaseMigrator
             '<='             => '>',
             'contains'       => 'doNotContains',
             'doNotContains'  => 'contains',
-            'startsWith'     => '!=',
-            'endsWith'       => '!=',
+            // FF has no 'doesNotStartWith'/'doesNotEndWith', using doNotContains as closest match
+            'startsWith'     => 'doNotContains',
+            'endsWith'       => 'doNotContains',
         ];
 
         return isset($invertMap[$operator]) ? $invertMap[$operator] : $operator;
