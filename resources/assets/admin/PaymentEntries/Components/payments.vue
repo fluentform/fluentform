@@ -64,7 +64,7 @@
                             <el-option
                                 v-for="item in available_statuses"
                                 :key="item.key"
-                                :label="$t(item.value)"
+                                :label="item.value"
                                 :value="item.key">
                             </el-option>
                         </el-select>
