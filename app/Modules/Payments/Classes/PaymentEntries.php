@@ -259,7 +259,10 @@ class PaymentEntries
         $statusTypes = PaymentHelper::getPaymentStatuses();
         $formattedStatuses = [];
         foreach ($statuses as $status) {
-            $formattedStatuses[] = ArrayHelper::get($statusTypes, $status->status, $status->status);
+            $formattedStatuses[] = [
+                'key'   => $status->status,
+                'value' => ArrayHelper::get($statusTypes, $status->status, $status->status),
+            ];
         }
         $allowFormIds = apply_filters('fluentform/current_user_allowed_forms', false);
         $forms = wpFluent()->table('fluentform_transactions')
