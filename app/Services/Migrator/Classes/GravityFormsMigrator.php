@@ -14,6 +14,16 @@ class GravityFormsMigrator extends BaseMigrator
      */
     protected $hasStep = false;
 
+    /**
+     * @var array Current form being migrated
+     */
+    protected $currentForm = [];
+
+    /**
+     * @var bool Flag to prevent recursive conditional logic resolution
+     */
+    private $resolvingFieldName = false;
+
     public function __construct()
     {
         $this->key = 'gravityform';
@@ -33,6 +43,7 @@ class GravityFormsMigrator extends BaseMigrator
      */
     public function getFields($form)
     {
+        $this->currentForm = $form;
         $fluentFields = [];
         $fields = $form['fields'];
 
@@ -80,6 +91,7 @@ class GravityFormsMigrator extends BaseMigrator
             'class'             => $field['cssClass'],
             'value'             => ArrayHelper::get($field, 'defaultValue'),
             'help_message'      => ArrayHelper::get($field, 'description'),
+            'conditional_logics' => $this->resolvingFieldName ? [] : $this->getFieldConditionals($field),
         ];
 
         $type = ArrayHelper::get($this->fieldTypes(), $field['type'], '');
@@ -641,6 +653,93 @@ class GravityFormsMigrator extends BaseMigrator
         ];
     }
 
+    /**
+     * Convert Gravity Forms field-level conditional logic to Fluent Forms format.
+     *
+     * GF stores field conditionals as: { actionType: 'show'|'hide', logicType: 'any'|'all', rules: [...] }
+     * FF expects: { status: bool, type: 'any'|'all', conditions: [...] }
+     *
+     * FF conditional logic means "show field when conditions match". For GF 'hide' actionType,
+     * we invert operators and swap logic type (De Morgan's law) to achieve the same effect.
+     */
+    private function getFieldConditionals(array $field)
+    {
+        $conditionalLogic = ArrayHelper::get($field, 'conditionalLogic');
+
+        if (!$conditionalLogic || !is_array($conditionalLogic)) {
+            return [];
+        }
+
+        $rules = ArrayHelper::get($conditionalLogic, 'rules', []);
+        if (empty($rules)) {
+            return [];
+        }
+
+        $actionType = ArrayHelper::get($conditionalLogic, 'actionType', 'show');
+        $logicType = ArrayHelper::get($conditionalLogic, 'logicType', 'any');
+        $isHide = $actionType === 'hide';
+
+        // For 'hide' actionType, invert logic type (De Morgan's law)
+        if ($isHide) {
+            $logicType = ($logicType === 'any') ? 'all' : 'any';
+        }
+
+        $conditions = [];
+        foreach ($rules as $rule) {
+            $fieldName = $this->getFormFieldName(ArrayHelper::get($rule, 'fieldId', ''), $this->currentForm);
+            if (!$fieldName) {
+                continue;
+            }
+
+            $operator = $this->getResolveOperator(ArrayHelper::get($rule, 'operator', ''));
+            if (!$operator) {
+                continue;
+            }
+
+            // For 'hide' actionType, invert operator
+            if ($isHide) {
+                $operator = $this->getInvertedOperator($operator);
+            }
+
+            $conditions[] = [
+                'field'    => $fieldName,
+                'operator' => $operator,
+                'value'    => ArrayHelper::get($rule, 'value', ''),
+            ];
+        }
+
+        if (empty($conditions)) {
+            return [];
+        }
+
+        return [
+            'type'       => $logicType,
+            'status'     => true,
+            'conditions' => $conditions,
+        ];
+    }
+
+    /**
+     * Invert a conditional operator for converting GF 'hide' actionType to FF 'show' logic.
+     */
+    private function getInvertedOperator($operator)
+    {
+        $invertMap = [
+            '='              => '!=',
+            '!='             => '=',
+            '>'              => '<=',
+            '<'              => '>=',
+            '>='             => '<',
+            '<='             => '>',
+            'contains'       => 'doNotContains',
+            'doNotContains'  => 'contains',
+            'startsWith'     => '!=',
+            'endsWith'       => '!=',
+        ];
+
+        return isset($invertMap[$operator]) ? $invertMap[$operator] : $operator;
+    }
+
     private function getConfirmations($form, $defaultValues)
     {
         $confirmationsFormatted = [];
@@ -685,6 +784,14 @@ class GravityFormsMigrator extends BaseMigrator
      * @return string
      */
     private function getFormFieldName($str, $form)
+    {
+        $this->resolvingFieldName = true;
+        $name = $this->resolveFormFieldName($str, $form);
+        $this->resolvingFieldName = false;
+        return $name;
+    }
+
+    private function resolveFormFieldName($str, $form)
     {
         preg_match('/[0-9]+[.]?[0-9]*/', $str, $fieldId);
         $fieldId = ArrayHelper::get($fieldId, 0, '0');

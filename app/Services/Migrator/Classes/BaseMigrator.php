@@ -142,7 +142,7 @@ abstract class BaseMigrator
             'class'                 => '',
             'format'                => '',
             'validation_rules'      => [],
-            'conditional_logics'    => [],
+            'conditional_logics'    => $args['conditional_logics'],
             'enable_image_input'    => false,
             'calc_value_status'     => false,
             'dynamic_default_value' => '',
@@ -193,7 +193,7 @@ abstract class BaseMigrator
                 'settings'       => [
                     'container_class'    => '',
                     'admin_field_label'  => 'Name',
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                     'label_placement'    => 'top'
                 ],
                 'fields'         => [
@@ -219,7 +219,7 @@ abstract class BaseMigrator
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'editor_options' => [
                             'template' => 'inputText'
@@ -249,7 +249,7 @@ abstract class BaseMigrator
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'editor_options' => [
                             'template' => 'inputText'
@@ -279,7 +279,7 @@ abstract class BaseMigrator
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'editor_options' => [
                             'template' => 'inputText'
@@ -311,7 +311,7 @@ abstract class BaseMigrator
                     'label_placement'           => $args['label_placement'],
                     'admin_field_label'         => $args['admin_field_label'],
                     'help_message'              => $args['help_message'],
-                    'conditional_logics'        => [],
+                    'conditional_logics'        => $args['conditional_logics'],
                     'validation_rules'          => [
                         'required' => [
                             'value'   => $args['required'],
@@ -364,7 +364,7 @@ abstract class BaseMigrator
                     'label_placement'    => $args['label_placement'],
                     'admin_field_label'  => $args['admin_field_label'],
                     'help_message'       => $args['help_message'],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                     'validation_rules'   => [
                         'required' => [
                             'value'   => $args['required'],
@@ -406,7 +406,7 @@ abstract class BaseMigrator
                             'message' => __('This field must contain a valid url', 'fluentform'),
                         ],
                     ],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
 
                 ],
                 'editor_options' => [
@@ -433,7 +433,7 @@ abstract class BaseMigrator
                     'label_placement'           => $args['label_placement'],
                     'admin_field_label'         => $args['admin_field_label'],
                     'help_message'              => $args['help_message'],
-                    'conditional_logics'        => [],
+                    'conditional_logics'        => $args['conditional_logics'],
                     'validation_rules'          => [
                         'required' => [
                             'value'   => $args['required'],
@@ -474,7 +474,7 @@ abstract class BaseMigrator
                     'label_placement'    => $args['label_placement'],
                     'admin_field_label'  => $args['admin_field_label'],
                     'help_message'       => $args['help_message'],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                     'validation_rules'   => [
                         'required' => [
                             'value'   => $args['required'],
@@ -516,7 +516,7 @@ abstract class BaseMigrator
                         ]
                     ],
                     'randomize_options'  => 'no',
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                 ],
                 'editor_options' => [
                     'title'      => 'Dropdown',
@@ -555,7 +555,7 @@ abstract class BaseMigrator
                             'message' => __('This field is required', 'fluentform'),
                         ],
                     ],
-                    'conditional_logics'    => [],
+                    'conditional_logics'    => $args['conditional_logics'],
                 ],
                 'editor_options' => [
                     'title'      => __('Multiple Choice', 'fluentform'),
@@ -589,7 +589,7 @@ abstract class BaseMigrator
                             'message' => __('This field is required', 'fluentform'),
                         ],
                     ],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                     'layout_class'       => $args['layout_class']
                 ],
                 'editor_options' => [
@@ -627,7 +627,7 @@ abstract class BaseMigrator
                             'message' => __('This field is required', 'fluentform'),
                         ],
                     ],
-                    'conditional_logics'    => [],
+                    'conditional_logics'    => $args['conditional_logics'],
                 ],
                 'editor_options' => [
                     'title'      => __('Radio Field', 'fluentform'),
@@ -699,7 +699,7 @@ abstract class BaseMigrator
                             'message' => __('This field is required', 'fluentform'),
                         ]
                     ],
-                    'conditional_logics'      => [],
+                    'conditional_logics'      => $args['conditional_logics'],
                 ],
                 'editor_options' => [
                     'title'      => __('Mask Input', 'fluentform'),
@@ -725,7 +725,7 @@ abstract class BaseMigrator
                     'label_placement'    => $args['label_placement'],
                     'admin_field_label'  => $args['admin_field_label'],
                     'help_message'       => $args['help_message'],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                     'validation_rules'   => [
                         'required' => [
                             'value'   => $args['required'],
@@ -779,7 +779,7 @@ abstract class BaseMigrator
                             'message' => 'Maximum value is ' . $args['max'],
                         ],
                     ],
-                    'conditional_logics'   => [],
+                    'conditional_logics'   => $args['conditional_logics'],
                     'calculation_settings' => [
                         'status'  => $args['enable_calculation'],
                         'formula' => $args['calculation_formula']
@@ -828,7 +828,7 @@ abstract class BaseMigrator
                             'message' => __('Phone number is not valid', 'fluentform')
                         ]
                     ],
-                    'conditional_logics'  => []
+                    'conditional_logics'  => $args['conditional_logics']
                 ],
                 'editor_options' => [
                     'title'      => 'Phone Field',
@@ -874,7 +874,7 @@ abstract class BaseMigrator
                             'message' => __('Invalid file type', 'fluentform')
                         ]
                     ],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                 ],
                 'editor_options' => [
                     'title'      => __('File Upload', 'fluentform'),
@@ -889,7 +889,7 @@ abstract class BaseMigrator
                 'attributes'     => [],
                 'settings'       => [
                     'html_codes'         => $args['html_codes'],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                     'container_class'    => ArrayHelper::get($args, 'container_class', '')
                 ],
                 'editor_options' => [
@@ -910,7 +910,7 @@ abstract class BaseMigrator
                     'label'              => $args['label'],
                     'description'        => $args['section_break_desc'],
                     'align'              => 'left',
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                 ],
                 'editor_options' => [
                     'title'      => __('Section Break', 'fluentform'),
@@ -938,7 +938,7 @@ abstract class BaseMigrator
                     'label_placement'    => $args['label_placement'],
                     'admin_field_label'  => $args['admin_field_label'],
                     'container_class'    => '',
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                     'validation_rules'   => [
                         'required' => [
                             'value'   => $args['required'],
@@ -968,7 +968,7 @@ abstract class BaseMigrator
                     'label_placement'    => $args['label_placement'],
                     'admin_field_label'  => $args['admin_field_label'],
                     'container_class'    => '',
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                     'validation_rules'   => [
                         'required' => [
                             'value'   => $args['required'],
@@ -1006,7 +1006,7 @@ abstract class BaseMigrator
                         ],
                     ],
                     'required_field_message' => '',
-                    'conditional_logics'     => [],
+                    'conditional_logics'     => $args['conditional_logics'],
                 ],
                 'editor_options' => [
                     'title'      => __('GDPR Agreement', 'fluentform'),
@@ -1069,7 +1069,7 @@ abstract class BaseMigrator
                         'visible_list' => [],
                         'hidden_list'  => [],
                     ],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                 ],
                 'options'        => [
                     'US' => 'United States of America',
@@ -1096,7 +1096,7 @@ abstract class BaseMigrator
                     'container_class'    => '',
                     'label_placement'    => '',
                     'validation_rules'   => array(),
-                    'conditional_logics' => array(),
+                    'conditional_logics' => $args['conditional_logics'],
                     'max_repeat_field'   => ''
                 ),
                 'editor_options' => array(
@@ -1143,7 +1143,7 @@ abstract class BaseMigrator
                             'message' => __('This field is required', 'fluentform'),
                         ],
                     ],
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                 ],
                 'editor_options' => [
                     'title'      => __('Terms & Conditions', 'fluentform'),
@@ -1163,7 +1163,7 @@ abstract class BaseMigrator
                 'settings'       => [
                     'label'              => $args['label'],
                     'admin_field_label'  => 'Address',
-                    'conditional_logics' => [],
+                    'conditional_logics' => $args['conditional_logics'],
                 ],
                 'fields'         => [
                     'address_line_1' => [
@@ -1188,7 +1188,7 @@ abstract class BaseMigrator
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'editor_options' => [
                             'template' => 'inputText'
@@ -1216,7 +1216,7 @@ abstract class BaseMigrator
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'editor_options' => [
                             'template' => 'inputText'
@@ -1245,7 +1245,7 @@ abstract class BaseMigrator
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'editor_options' => [
                             'template' => 'inputText'
@@ -1274,7 +1274,7 @@ abstract class BaseMigrator
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'editor_options' => [
                             'template' => 'inputText'
@@ -1304,7 +1304,7 @@ abstract class BaseMigrator
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'editor_options' => [
                             'template' => 'inputText'
@@ -1338,7 +1338,7 @@ abstract class BaseMigrator
                                 'visible_list' => [],
                                 'hidden_list'  => [],
                             ],
-                            'conditional_logics' => [],
+                            'conditional_logics' => $args['conditional_logics'],
                         ],
                         'options'        => [
                             'US' => 'US of America',
@@ -1385,7 +1385,7 @@ abstract class BaseMigrator
                             'message' => __('This field is required', 'fluentform'),
                         ]
                     ],
-                    'conditional_logics' => []
+                    'conditional_logics' => $args['conditional_logics']
                 ],
                 'editor_options' => [
                     'title'      => __('Rich Text Input', 'fluentform'),
