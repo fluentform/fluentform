@@ -115,7 +115,7 @@
                                 <el-radio 
                                     v-for="(sign, sign_key) in currency_sign_positions" 
                                     :key="sign_key"
-                                    :label="sign_key">{{sign}}
+                                    :label="sign_key">{{ $t(sign) }}
                                 </el-radio>
                             </el-radio-group>
                         </el-form-item>
