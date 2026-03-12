@@ -9,6 +9,7 @@ use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
+use FluentForm\App\Services\Form\Fields;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -1018,6 +1019,7 @@ class Menu
             'countries'                      => getFluentFormCountryList(),
             'element_customization_settings' => fluentformLoadFile('Services/FormBuilder/ElementCustomization.php'),
             'validation_rule_settings'       => fluentformLoadFile('Services/FormBuilder/ValidationRuleSettings.php'),
+            'supported_conditional_fields'   => (new Fields())->supportedConditionalFields(),
             'conversational_form_fields'     => array_keys(Converter::fieldTypes()),
             'form_editor_str'                => TranslationString::getEditorI18n(),
             'element_search_tags'            => $searchTags,
