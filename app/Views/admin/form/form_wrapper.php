@@ -22,7 +22,7 @@
         if ( is_array($menu_items) && count($menu_items) < 5){
             ?>
                 <div class="ff_menu_back">
-                    <a class="ff_menu_link" href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms')); ?>" onclick="if (window.history.length > 1) { window.history.back(); return false; }">
+                    <a class="ff_menu_link" href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms')); ?>" onclick="try { if (document.referrer && new URL(document.referrer).origin === window.location.origin) { window.history.back(); return false; } } catch(e) {}">
                         <span class="el-icon-arrow-left"></span>
                     </a>
                 </div>
