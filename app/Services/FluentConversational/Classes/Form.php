@@ -124,10 +124,18 @@ class Form
             'hide_media_on_mobile'  => 'no',
             'key_hint'              => 'yes',
             'enable_scroll_to_top'  => 'no',
-            'asteriskPlacement'     => $this->getAsteriskPlacement($formId)
         ];
 
-        return wp_parse_args($settings, $defaults);
+        $result = wp_parse_args($settings, $defaults);
+
+        // Always read from form layout settings — stale values in design meta must not override
+        $layoutSettings = $this->getFormLayoutSettings($formId, [
+            'asteriskPlacement'    => 'asterisk-right',
+            'helpMessagePlacement' => 'with_label',
+            'labelPlacement'       => 'top',
+        ]);
+
+        return array_merge($result, $layoutSettings);
     }
 
     public function getMetaSettings($formId)
@@ -900,27 +908,26 @@ class Form
         return $paymentConfig;
     }
 
-    protected function getAsteriskPlacement($formId)
+    protected function getFormLayoutSettings($formId, $keys)
     {
-        $asteriskPlacement = 'asterisk-right';
-
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
             ->where('form_id', $formId)
             ->where('meta_key', 'formSettings')
             ->first();
 
-        if (!$formSettings) {
-            return '';
+        $layout = [];
+        if ($formSettings) {
+            $decoded = json_decode($formSettings->value, true);
+            $layout = isset($decoded['layout']) ? $decoded['layout'] : [];
         }
 
-        $formSettings = json_decode($formSettings->value, true);
-
-        if (isset($formSettings['layout']['asteriskPlacement'])) {
-            $asteriskPlacement = $formSettings['layout']['asteriskPlacement'];
+        $result = [];
+        foreach ($keys as $key => $default) {
+            $result[$key] = isset($layout[$key]) ? $layout[$key] : $default;
         }
 
-        return $asteriskPlacement;
+        return $result;
     }
 
     private function getLocalizedForm($form)
