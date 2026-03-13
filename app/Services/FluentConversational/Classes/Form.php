@@ -908,7 +908,7 @@ class Form
         return $paymentConfig;
     }
 
-    protected function getFormLayoutSettings($formId, $keys)
+    protected function getFormLayoutSettings($formId, $keysWithDefaults)
     {
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
@@ -919,11 +919,13 @@ class Form
         $layout = [];
         if ($formSettings) {
             $decoded = json_decode($formSettings->value, true);
-            $layout = isset($decoded['layout']) ? $decoded['layout'] : [];
+            if (isset($decoded['layout']) && is_array($decoded['layout'])) {
+                $layout = $decoded['layout'];
+            }
         }
 
         $result = [];
-        foreach ($keys as $key => $default) {
+        foreach ($keysWithDefaults as $key => $default) {
             $result[$key] = isset($layout[$key]) ? $layout[$key] : $default;
         }
 
