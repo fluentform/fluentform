@@ -579,6 +579,39 @@ $app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use 
     ]);
 });
 
+// Bootstrap fluent-pdf / fluentforms-pdf integration (follows WPPayForm pattern).
+// Whichever PDF plugin is active defines FLUENT_PDF — this bridge
+// provides the backward-compat constants and loads the integration.
+add_action('plugins_loaded', function () use ($app) {
+    if (!defined('FLUENT_PDF')) {
+        return;
+    }
+
+    if (!defined('FLUENTFORM_PDF_VERSION')) {
+        define('FLUENTFORM_PDF_VERSION', FLUENT_PDF_VERSION);
+    }
+    if (!defined('FLUENTFORM_PDF_PATH')) {
+        define('FLUENTFORM_PDF_PATH', FLUENT_PDF_PATH);
+    }
+    if (!defined('FLUENTFORM_PDF_URL')) {
+        define('FLUENTFORM_PDF_URL', FLUENT_PDF_URL);
+    }
+
+    if (!class_exists('FluentPdf\Modules\FluentForms\FluentFormsIntegration')) {
+        $moduleFile = FLUENTFORM_DIR_PATH . 'app/Modules/FluentPdf/FluentForms/FluentFormsIntegration.php';
+        if (!file_exists($moduleFile)) {
+            return;
+        }
+        require_once FLUENTFORM_DIR_PATH . 'app/Modules/FluentPdf/FluentForms/Migration.php';
+        require_once FLUENTFORM_DIR_PATH . 'app/Modules/FluentPdf/FluentForms/Templates/TemplateManager.php';
+        require_once FLUENTFORM_DIR_PATH . 'app/Modules/FluentPdf/FluentForms/Templates/GeneralTemplate.php';
+        require_once FLUENTFORM_DIR_PATH . 'app/Modules/FluentPdf/FluentForms/Templates/InvoiceTemplate.php';
+        require_once $moduleFile;
+    }
+
+    (new FluentPdf\Modules\FluentForms\FluentFormsIntegration($app))->register();
+}, 20);
+
 $app->addAction('fluentform/installed_by', function ($by) {
     if (is_string($by) && !get_option('_ff_ins_by')) {
         update_option('_ff_ins_by', sanitize_text_field($by), 'no');
