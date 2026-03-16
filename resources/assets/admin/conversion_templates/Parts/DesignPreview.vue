@@ -229,7 +229,7 @@ export default {
 
             if (googleFont) {
                 const variations = googleFont.variants.join(',');
-                let fontSrc = "https://fonts.googleapis.com/css?family=" + encodeURI(fontFamily) + ":" + variations;
+                let fontSrc = "https://fonts.googleapis.com/css?family=" + fontFamily.replace(/ /g, '+') + ":" + variations;
                 let fontSheet = this.iframe.contents().find('#ffc_google_font');
 
                 if (fontSheet.length) {
