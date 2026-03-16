@@ -105,7 +105,7 @@ class HasManyThrough extends Relation
      * @param  \FluentForm\Framework\Database\Orm\Builder|null  $query
      * @return void
      */
-    protected function setJoin(Builder $query = null)
+    protected function setJoin(?Builder $query = null)
     {
         $query = $query ?: $this->query;
 
