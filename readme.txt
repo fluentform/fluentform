@@ -444,8 +444,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes spoofable form_id in SCA payment confirmation that could select wrong Stripe API key
 - Adds transaction status validation (intended state) to prevent unauthorized payment confirmations
 - Adds payment amount verification after Stripe confirms payment
-- Fixes missing capability check on MailChimp interest groups endpoint
-- Fixes unsanitized sort_by parameter in Logger and Submission queries
 
 = 6.1.20 (Date: March 04, 2026) =
 - Fixes Stripe coupon discount rounding losing cents on multi-quantity line items
