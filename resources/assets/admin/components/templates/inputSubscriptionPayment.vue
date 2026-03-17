@@ -192,7 +192,9 @@
                         cases[casesKey] = cases[casesKey].replace(regexExpression, replacer)
                     }
 
-                    if (hasSignup) {
+                    if (hasSignup && plan.bill_times === 1) {
+                        message = cases.onetime_only;
+                    } else if (hasSignup) {
                         message = cases.has_signup_fee;
                     } else if (hasTrial) {
                         message = cases.has_trial;
