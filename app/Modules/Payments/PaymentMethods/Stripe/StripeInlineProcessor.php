@@ -423,25 +423,27 @@ class StripeInlineProcessor extends StripeProcessor
             );
         }
 
-        // Transaction must be in 'intended' status (set by processScaBeforeVerification
+        // Transaction must exist and be in 'intended' status (set by processScaBeforeVerification
         // when the SCA flow starts). A 'pending' transaction means SCA was never initiated,
         // 'paid'/'failed' means it's already been processed.
-        if ($transaction) {
-            if ($transaction->status !== 'intended') {
-                return new \WP_Error(
-                    'invalid_transaction_status',
-                    __('This transaction is not awaiting payment confirmation.', 'fluentform')
-                );
-            }
+        if (!$transaction) {
+            return new \WP_Error('no_transaction', __('No transaction found for this submission.', 'fluentform'));
+        }
 
-            // Verify the payment intent ID matches what was stored during SCA initiation.
-            // processScaBeforeVerification() stores the intent as charge_id.
-            if ($transaction->charge_id && $transaction->charge_id !== $paymentIntentId) {
-                return new \WP_Error(
-                    'payment_intent_mismatch',
-                    __('Payment verification failed. Payment intent does not match.', 'fluentform')
-                );
-            }
+        if ($transaction->status !== 'intended') {
+            return new \WP_Error(
+                'invalid_transaction_status',
+                __('This transaction is not awaiting payment confirmation.', 'fluentform')
+            );
+        }
+
+        // Verify the payment intent ID matches what was stored during SCA initiation.
+        // processScaBeforeVerification() stores the intent as charge_id.
+        if ($transaction->charge_id && $transaction->charge_id !== $paymentIntentId) {
+            return new \WP_Error(
+                'payment_intent_mismatch',
+                __('Payment verification failed. Payment intent does not match.', 'fluentform')
+            );
         }
 
         // Log warnings for monitoring
@@ -466,7 +468,6 @@ class StripeInlineProcessor extends StripeProcessor
 
     public function confirmScaPayment()
     {
-        $formId = isset($_REQUEST['form_id']) ? (int)$_REQUEST['form_id'] : 0;
         $submissionId = isset($_REQUEST['submission_id']) ? (int)$_REQUEST['submission_id'] : 0;
         $paymentMethod = isset($_REQUEST['payment_method']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_method'])) : '';
         $paymentIntentId = isset($_REQUEST['payment_intent_id']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id'])) : '';
@@ -478,12 +479,15 @@ class StripeInlineProcessor extends StripeProcessor
         $transaction = $this->getLastTransaction($submissionId);
 
         $validation = $this->validateScaRequest($submissionId, $paymentIntentId, $submission, $transaction);
-        
+
         if (is_wp_error($validation)) {
             wp_send_json([
                 'errors' => $validation->get_error_message()
             ], 423);
         }
+
+        // Use submission's form_id rather than trusting $_REQUEST
+        $formId = $submission->form_id;
 
         $confirmation = SCA::confirmPayment($paymentIntentId, [
             'payment_method' => $paymentMethod
@@ -497,8 +501,14 @@ class StripeInlineProcessor extends StripeProcessor
         if ($confirmation->status == 'succeeded') {
             $charge = $confirmation->charges->data[0];
 
-            // Verify the confirmed amount matches the transaction amount
-            if ($transaction && $transaction->payment_total && $confirmation->amount != $transaction->payment_total) {
+            // Verify the confirmed amount matches the transaction amount.
+            // Normalize for zero-decimal currencies: FluentForm stores amounts x100 internally,
+            // but Stripe returns amounts in the currency's smallest unit (e.g. yen for JPY).
+            $confirmedAmount = (int) $confirmation->amount;
+            if (PaymentHelper::isZeroDecimal($transaction->currency)) {
+                $confirmedAmount = $confirmedAmount * 100;
+            }
+            if ($transaction->payment_total && $confirmedAmount != intval($transaction->payment_total)) {
                 $logData = [
                     'parent_source_id' => $submission->form_id,
                     'source_type'      => 'submission_item',
@@ -527,7 +537,6 @@ class StripeInlineProcessor extends StripeProcessor
 
     public function confirmScaSetupIntentsPayment()
     {
-        $formId = isset($_REQUEST['form_id']) ? intval($_REQUEST['form_id']) : 0;
         $submissionId = isset($_REQUEST['submission_id']) ? intval($_REQUEST['submission_id']) : 0;
         $intentId = isset($_REQUEST['payment_intent_id']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id'])) : '';
 
@@ -537,14 +546,17 @@ class StripeInlineProcessor extends StripeProcessor
         $submission = $this->getSubmission();
         $transaction = $this->getLastTransaction($submissionId);
 
-        // Validate the request with backward compatibility
+        // Validate the request
         $validation = $this->validateScaRequest($submissionId, $intentId, $submission, $transaction);
-        
+
         if (is_wp_error($validation)) {
             wp_send_json([
                 'errors' => $validation->get_error_message()
             ], 423);
         }
+
+        // Use submission's form_id rather than trusting $_REQUEST
+        $formId = $submission->form_id;
 
         // Let's retrieve the intent
         $intent = SCA::retrievePaymentIntent($intentId, [
