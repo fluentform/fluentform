@@ -423,10 +423,20 @@ class StripeInlineProcessor extends StripeProcessor
             );
         }
 
-        // stores it in transaction.charge_id, and frontend sends it back.
-        // Mismatch only occurs during attack attempts.
-        if ($transaction && $transaction->charge_id) {
-            if ($transaction->charge_id !== $paymentIntentId) {
+        // Transaction must be in 'intended' status (set by processScaBeforeVerification
+        // when the SCA flow starts). A 'pending' transaction means SCA was never initiated,
+        // 'paid'/'failed' means it's already been processed.
+        if ($transaction) {
+            if ($transaction->status !== 'intended') {
+                return new \WP_Error(
+                    'invalid_transaction_status',
+                    __('This transaction is not awaiting payment confirmation.', 'fluentform')
+                );
+            }
+
+            // Verify the payment intent ID matches what was stored during SCA initiation.
+            // processScaBeforeVerification() stores the intent as charge_id.
+            if ($transaction->charge_id && $transaction->charge_id !== $paymentIntentId) {
                 return new \WP_Error(
                     'payment_intent_mismatch',
                     __('Payment verification failed. Payment intent does not match.', 'fluentform')
@@ -485,7 +495,30 @@ class StripeInlineProcessor extends StripeProcessor
         }
 
         if ($confirmation->status == 'succeeded') {
-            $charge = $confirmation->charges->data[0];;
+            $charge = $confirmation->charges->data[0];
+
+            // Verify the confirmed amount matches the transaction amount
+            if ($transaction && $transaction->payment_total && $confirmation->amount != $transaction->payment_total) {
+                $logData = [
+                    'parent_source_id' => $submission->form_id,
+                    'source_type'      => 'submission_item',
+                    'source_id'        => $submission->id,
+                    'component'        => 'Payment',
+                    'status'           => 'error',
+                    'title'            => __('Stripe Amount Mismatch', 'fluentform'),
+                    'description'      => sprintf(
+                        __('Expected %d but Stripe confirmed %d. Payment rejected.', 'fluentform'),
+                        intval($transaction->payment_total),
+                        intval($confirmation->amount)
+                    )
+                ];
+                do_action('fluentform/log_data', $logData);
+
+                wp_send_json([
+                    'errors' => __('Payment amount verification failed.', 'fluentform')
+                ], 423);
+            }
+
             $this->handlePaymentSuccess($charge, $transaction, $submission);
         } else {
             $this->handlePaymentChargeError('We could not verify your payment. Please try again', $submission, $transaction, $confirmation, 'payment_error');
