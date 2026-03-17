@@ -287,7 +287,7 @@ abstract class BaseProcessor
         $submission = $this->getSubmission();
         try {
             $submissionService = new SubmissionHandlerService();
-            if ($this->getMetaData('is_form_action_fired') == 'yes') {
+            if ($this->getMetaData('is_form_action_fired') == 'yes' || $this->getMetaData('_double_optin_pending') == 'yes') {
                 $data = $submissionService->getReturnData($submission->id, $this->getForm(),
                     $submission->response);
                 
@@ -307,7 +307,9 @@ abstract class BaseProcessor
                 $returnData = $submissionService->processSubmissionData(
                     $this->submissionId, $submission->response, $this->getForm()
                 );
-                $this->setMetaData('is_form_action_fired', 'yes');
+                if ($this->getMetaData('_double_optin_pending') !== 'yes') {
+                    $this->setMetaData('is_form_action_fired', 'yes');
+                }
             }
             return $returnData;
         
