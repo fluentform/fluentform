@@ -283,8 +283,14 @@ class ReportHelper
     /**
      * Ensure submission_id index exists on entry_details table for efficient anti-join queries.
      */
+    private static $indexEnsured = false;
+
     private static function ensureEntryDetailsIndex()
     {
+        if (static::$indexEnsured) {
+            return;
+        }
+
         global $wpdb;
         $table = $wpdb->prefix . 'fluentform_entry_details';
 
@@ -297,6 +303,8 @@ class ReportHelper
         if (!$indexExists) {
             $wpdb->query("ALTER TABLE `{$table}` ADD INDEX `idx_submission_id` (`submission_id`)");
         }
+
+        static::$indexEnsured = true;
     }
 
     public static function runMigrationBatch($formId)
