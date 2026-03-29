@@ -311,10 +311,11 @@ class TransferService
         if ($tableName) {
             $allowedTables = apply_filters('fluentform/export_allowed_tables', [
                 'fluentform_submissions',
-                'fluentform_entry_details',
             ]);
             if (!in_array($tableName, $allowedTables, true)) {
-                throw new \Exception('Invalid table name for export');
+                wp_send_json([
+                    'message' => __('Invalid table name for export.', 'fluentform')
+                ], 422);
             }
             $query = wpFluent()->table($tableName)
                 ->where('form_id', (int) Arr::get($args, 'form_id'))
