@@ -390,24 +390,20 @@ class StripeInlineProcessor extends StripeProcessor
         $strictMode = apply_filters('fluentform/stripe_sca_strict_security', false);
         $warnings = [];
 
-        // Validate nonce (optional in non-strict mode for backward compatibility)
+        // Validate nonce: always reject invalid nonces, only allow missing nonces
+        // in non-strict mode for backward compatibility with older JS
         $nonce = isset($_REQUEST['_ff_stripe_nonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_ff_stripe_nonce'])) : '';
         
         if ($nonce) {
             $nonceAction = 'fluentform_sca_confirm_' . $submissionId;
             if (!wp_verify_nonce($nonce, $nonceAction)) {
-                $error = __('Security verification failed. Invalid nonce.', 'fluentform');
-                if ($strictMode) {
-                    return new \WP_Error('invalid_nonce', $error);
-                }
-                $warnings[] = 'Invalid nonce provided';
+                return new \WP_Error('invalid_nonce', __('Security verification failed. Invalid nonce.', 'fluentform'));
             }
         } else {
-            $warning = 'No nonce provided for SCA payment confirmation';
             if ($strictMode) {
                 return new \WP_Error('missing_nonce', __('Security verification failed. Nonce required.', 'fluentform'));
             }
-            $warnings[] = $warning;
+            $warnings[] = 'No nonce provided for SCA payment confirmation';
         }
 
         // Validate submission exists
