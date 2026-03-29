@@ -49,13 +49,8 @@ class SubmissionPolicy extends Policy
 
     public function updateSubmissionUser(Request $request)
     {
-        $entryId = $request->get('entry_id');
-        $submissionId = $request->get('submission_id');
-
-        if ($entryId && $submissionId && intval($entryId) !== intval($submissionId)) {
-            return false;
-        }
-
+        // Controller now uses entry_id from route as the mutation target,
+        // so authorization and mutation are always the same record.
         $formId = $this->resolveFormId($request);
         return Acl::hasPermission('fluentform_manage_entries', $formId);
     }
