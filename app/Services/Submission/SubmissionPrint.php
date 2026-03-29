@@ -51,14 +51,17 @@ class SubmissionPrint
     {
         $notes = (new SubmissionService())->getNotes($submission->id, ['form_id' => $form->id]);
         if ($notes && count($notes) > 0) {
-            $notesHtml = '<br\><h3>Submission Notes</h3><table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"><tbody>';
+            $isRtl = is_rtl();
+            $textAlign = $isRtl ? 'right' : 'left';
+            $direction = $isRtl ? ' dir="rtl"' : '';
+            $notesHtml = '<br\><h3>Submission Notes</h3><table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"' . $direction . '><tbody>';
             foreach ($notes as $note) {
                 if (isset($note->created_by)) {
                     $label = '' . $note->created_by . ' - ' . $note->created_at;
                 } else {
                     $label = '' . $note->name . ' - ' . $note->created_at;
                 }
-                $notesHtml .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $note->value . '</td></tr>';
+                $notesHtml .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: ' . $textAlign . ';"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $note->value . '</td></tr>';
             }
             $htmlBody = $htmlBody . $notesHtml . '</tbody></table>';
         }
