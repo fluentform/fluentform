@@ -3,123 +3,216 @@
         <card>
             <card-head>
                 <card-head-group class="justify-between">
-                    <h5 class="title">{{ $t('All Form Integrations') }}</h5>
-                    <div v-if="!isEmpty(available_integrations)" class="action-buttons">
+                    <div class="ff_integration_header_left">
+                        <h5 class="title">{{ $t('All Form Integrations') }}</h5>
+                        <span v-if="integrations.length" class="ff_integration_count">
+                            {{ integrations.length }} {{ integrations.length === 1 ? $t('integration') : $t('integrations') }}
+                        </span>
+                    </div>
+                    <div v-if="!isEmpty(available_integrations)" class="ff_integration_actions">
+
                         <el-dropdown @command="add" :hide-on-click="false" trigger="click">
-                            <el-button type="info" size="medium">
+                            <el-button type="primary" size="medium">
+                                <i class="el-icon-plus"></i>
                                 {{ $t('Add New Integration') }}
-                                <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
-                            <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown" style="max-height: 400px; overflow: auto">
-                                <el-dropdown-item>
-                                    <el-input @click.prevent autofocus v-model="search" :placeholder="$t('Search Integration')"></el-input>
-                                </el-dropdown-item>
-                                <el-dropdown-item v-for="(integration,integration_name) in filteredList" :key="integration_name" :command="integration_name">{{integration.title}}</el-dropdown-item>
+                            <el-dropdown-menu class="ff_integration_dropdown" slot="dropdown">
+
+                                <div class="ff_dropdown_list">
+                                    <template v-if="hasCategories">
+                                        <div v-for="(category, categoryName) in categorizedIntegrations" :key="categoryName" class="ff_integration_category">
+                                            <div class="ff_category_header">{{ categoryName }}</div>
+                                            <el-dropdown-item
+                                                v-for="(integration, integration_name) in category"
+                                                :key="integration_name"
+                                                :command="integration_name"
+                                                class="ff_integration_item"
+                                            >
+                                                <span class="ff_integration_item_title">{{ integration.title }}</span>
+                                                <span v-if="!integration.is_active" class="ff_integration_item_badge">
+                                                    {{ $t('Configure') }}
+                                                </span>
+                                            </el-dropdown-item>
+                                        </div>
+                                    </template>
+                                    <template v-else>
+                                        <el-dropdown-item
+                                            v-for="(integration, integration_name) in available_integrations"
+                                            :key="integration_name"
+                                            :command="integration_name"
+                                            class="ff_integration_item"
+                                        >
+                                            <span class="ff_integration_item_title">{{ integration.title }}</span>
+                                            <span v-if="!integration.is_active" class="ff_integration_item_badge">
+                                                {{ $t('Configure') }}
+                                            </span>
+                                        </el-dropdown-item>
+                                    </template>
+
+                                </div>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </div>
                 </card-head-group>
             </card-head>
             <card-body>
-                <div v-if="has_pro && isEmpty(available_integrations) && !loading" class="text-center">
-                    <p style="font-size: 16px; margin-bottom: 20px; max-width: 760px; margin-left: auto; margin-right: auto;">
-                        {{ $t(this.integrationsResource.instruction) }}
-                    </p>
-                     <a class="el-button el-button--primary el-dropdown-selfdefine" :href="all_module_config_url">
+                <div v-if="has_pro && isEmpty(available_integrations) && !loading" class="ff_integration_empty_state">
+                    <div class="ff_empty_icon">
+                        <i class="ff-icon-modules"></i>
+                    </div>
+                    <h6>{{ $t('No Modules Configured') }}</h6>
+                    <p>{{ $t(this.integrationsResource.instruction) }}</p>
+                    <a class="el-button el-button--primary" :href="all_module_config_url">
+                        <i class="el-icon-setting"></i>
                         {{ $t('Configure Modules') }}
                     </a>
                 </div>
 
-                <!-- GetResponse Feeds Table: 1 -->
+                <!-- Integrations Table -->
                 <div class="ff-table-container">
                     <el-skeleton :loading="loading" animated :rows="6">
-                        <el-table v-if="!isEmpty(available_integrations)" :data="integrations">
-                            <template slot="empty">
-                                <div class="getting_started_message" style="padding-top: 16px; padding-bottom: 10px;">
-                                    <p>{{ $t('You haven\'t added any integration feed yet. Add new integration to connect your favourite tools with your forms') }}</p>
+                        <template v-if="!isEmpty(available_integrations)">
+                            <!-- Empty State -->
+                            <div v-if="integrations.length === 0" class="ff_table_empty_state">
+                                <div class="ff_empty_icon ff_empty_icon--sm">
+                                    <i class="ff-icon-link"></i>
                                 </div>
-                            </template>
-                            <el-table-column width="180" :label="$t('Status')">
-                                <template slot-scope="scope">
-                                    <span class="mr-3" v-if="scope.row.enabled">{{$t('Enabled')}}</span>
-                                    <span class="mr-3" v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
-                                    <el-switch
-                                        active-color="#00b27f"
-                                        @change="handleActive(scope.row)"
-                                        v-model="scope.row.enabled">
-                                    </el-switch>
-                                </template>
-                            </el-table-column>
+                                <h6>{{ $t('No Integrations Yet') }}</h6>
+                                <p>{{ $t('Connect your favorite tools to supercharge your forms') }}</p>
+                            </div>
 
-                            <el-table-column width="180" :label="$t('Integration')">
-                                <template slot-scope="scope">
-                                    <img v-if="scope.row.provider_logo" class="general_integration_logo" :src="scope.row.provider_logo" :alt="scope.row.provider" />
-                                    <span class="general_integration_name" v-else>{{scope.row.provider}}</span>
-                                </template>
-                            </el-table-column>
+                            <!-- Integrations List with Drag & Drop -->
+                            <div v-else class="ff_integration_list">
+                                <!-- Table Header -->
+                                <div class="ff_integration_list_header">
+                                    <div class="ff_col ff_col_order">{{ $t('Order') }}</div>
+                                    <div class="ff_col ff_col_status">{{ $t('Status') }}</div>
+                                    <div class="ff_col ff_col_integration">{{ $t('Integration') }}</div>
+                                    <div class="ff_col ff_col_name">{{ $t('Feed Name') }}</div>
+                                    <div class="ff_col ff_col_actions">{{ $t('Actions') }}</div>
+                                </div>
 
+                                <!-- Draggable List -->
+                                <vddl-list
+                                    class="ff_integration_list_body"
+                                    :list="integrations"
+                                    :drop="handleDrop"
+                                    :horizontal="false"
+                                >
+                                    <vddl-draggable
+                                        v-for="(integration, index) in integrations"
+                                        :key="'feed-' + integration.id"
+                                        class="ff_integration_row"
+                                        :draggable="integration"
+                                        :index="index"
+                                        :wrapper="integrations"
+                                        effect-allowed="move"
+                                        :moved="handleMoved"
+                                    >
+                                        <!-- Order Number with Drag Handle -->
+                                        <div class="ff_col ff_col_order">
+                                            <vddl-handle class="ff_drag_handle" :handle-left="20" :handle-top="20">
+                                                <el-tooltip :content="$t('Drag to reorder')" placement="top">
+                                                    <span class="ff_order_badge">
+                                                        <i class="el-icon-rank"></i>
+                                                        {{ index + 1 }}
+                                                    </span>
+                                                </el-tooltip>
+                                            </vddl-handle>
+                                        </div>
 
-                            <el-table-column :label="$t('Title')">
-                                <template slot-scope="scope">
-                                    {{scope.row.name}}
-                                </template>
-                            </el-table-column>
+                                        <!-- Status -->
+                                        <div class="ff_col ff_col_status">
+                                            <el-switch
+                                                v-model="integration.enabled"
+                                                active-color="#00b27f"
+                                                @change="handleActive(integration)"
+                                            />
+                                        </div>
 
-                            <el-table-column width="130" :label="$t('Actions')" class-name="action-buttons">
-                                <template slot-scope="scope">
-                                    <btn-group size="sm">
-                                        <btn-group-item>
-                                            <el-button
-                                                class="el-button--soft el-button--icon"
-                                                @click="edit(scope.row)"
-                                                type="success"
-                                                icon="ff-icon-setting"
-                                                size="small">
-                                            </el-button>
-                                        </btn-group-item>
-                                        <btn-group-item>
-                                            <remove @on-confirm="remove(scope.row.id, scope)">
-                                                <el-button
-                                                    class="el-button--soft el-button--icon"
-                                                    size="small"
-                                                    type="danger"
-                                                    icon="ff-icon-trash"
-                                                />
-                                            </remove>
-                                        </btn-group-item>
-                                    </btn-group>
-                                </template>
-                            </el-table-column>
-                        </el-table>
+                                        <!-- Integration Info -->
+                                        <div class="ff_col ff_col_integration">
+                                            <div class="ff_integration_info">
+                                                <div class="ff_integration_logo">
+                                                    <img v-if="integration.provider_logo" :src="integration.provider_logo" :alt="integration.provider" />
+                                                    <span v-else class="ff_integration_logo_placeholder">
+                                                        {{ getInitials(integration.provider) }}
+                                                    </span>
+                                                </div>
+                                                <div class="ff_integration_details">
+                                                    <span class="ff_integration_provider">{{ formatProviderName(integration.provider) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Feed Name -->
+                                        <div class="ff_col ff_col_name">
+                                            <span class="ff_feed_name">{{ integration.name }}</span>
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="ff_col ff_col_actions">
+                                            <div class="ff_action_buttons">
+                                                <el-tooltip :content="$t('Edit Integration')" placement="top">
+                                                    <el-button
+                                                        class="el-button--soft el-button--icon"
+                                                        @click.stop="edit(integration)"
+                                                        type="primary"
+                                                        icon="ff-icon-setting"
+                                                        size="small"
+                                                    />
+                                                </el-tooltip>
+                                                <el-tooltip :content="$t('Duplicate')" placement="top">
+                                                    <el-button
+                                                        class="el-button--soft el-button--icon"
+                                                        @click.stop="duplicate(integration)"
+                                                        type="info"
+                                                        icon="el-icon-copy-document"
+                                                        size="small"
+                                                    />
+                                                </el-tooltip>
+                                                <remove @on-confirm="removeIntegration(integration.id, index)">
+                                                    <el-tooltip :content="$t('Delete')" placement="top">
+                                                        <el-button
+                                                            class="el-button--soft el-button--icon"
+                                                            size="small"
+                                                            type="danger"
+                                                            icon="ff-icon-trash"
+                                                        />
+                                                    </el-tooltip>
+                                                </remove>
+                                            </div>
+                                        </div>
+                                    </vddl-draggable>
+                                </vddl-list>
+                            </div>
+                        </template>
                     </el-skeleton>
-                </div><!-- .ff-table-container -->
+                </div>
 
-                <p v-if="has_pro && !integrations.length" class="text-center">
-                    <a :href="all_module_config_url">{{$t('Check Global Integration Settings')}}</a>
-                    <a style="margin-left: 20px" target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/">
-                        {{ $t('View Documentations') }}
-                    </a>
-                </p>
 
-                <div v-if="!has_pro" class="upgrade_to_pro text-center mt-4" style="max-width: 750px; margin: auto;">
-                    <p style="font-size: 16px;" class="mb-4">
-                        {{ $t(this.integrationsResource.instruction) }}
-                    </p>
 
-                    <btn-group>
-                        <btn-group-item>
-                            <a class="el-button el-button--primary el-dropdown-selfdefine" :href="upgrade_url">
+
+                <div v-if="!has_pro" class="ff_upgrade_section">
+                    <div class="ff_upgrade_content">
+                        <div class="ff_upgrade_icon">
+                            <i class="ff-icon-star"></i>
+                        </div>
+                        <h5>{{ $t('Unlock Powerful Integrations') }}</h5>
+                        <p>{{ $t(this.integrationsResource.instruction) }}</p>
+                        <div class="ff_btn_group">
+                            <a class="el-button el-button--primary" :href="upgrade_url">
+                                <i class="el-icon-unlock"></i>
                                 {{ $t('Upgrade to PRO') }}
                             </a>
-                        </btn-group-item>
-                        <btn-group-item>
                             <a class="el-button el-button--default" :href="integrationsResource.list_url">
                                 {{ $t('See All Integrations') }}
                             </a>
-                        </btn-group-item>
-                    </btn-group>
-
-                    <img class="mt-6" :src="integrationsResource.asset_url" alt="integrations asset" />
+                        </div>
+                    </div>
+                    <div class="ff_upgrade_image">
+                        <img :src="integrationsResource.asset_url" alt="integrations" />
+                    </div>
                 </div>
             </card-body>
         </card>
@@ -150,7 +243,8 @@
         },
         data() {
             return {
-                search: '',
+
+
                 loading: true,
                 integrations: [],
                 errors: new Errors,
@@ -161,6 +255,14 @@
                 upgrade_url: window.FluentFormApp.upgrade_url,
                 integrations_url: window.FluentFormApp.integrations_url,
                 integrationsResource: window.FluentFormApp.integrationsResource,
+                integrationCategories: {
+                    'Email Marketing': ['mailchimp', 'activecampaign', 'campaign_monitor', 'constantcontact', 'convertkit', 'drip', 'getresponse', 'mailerlite', 'mailjet', 'sendinblue', 'sendfox', 'moosend', 'emailoctopus', 'fluentcrm', 'automizy', 'ontraport', 'sendpulse', 'beehiiv'],
+                    'CRM': ['hubspot', 'salesforce', 'zohocrm', 'pipedrive', 'airtable', 'salesflare', 'insightly', 'agilecrm', 'close', 'capsule', 'freshsales', 'keap_infusionsoft', 'nutshell'],
+                    'Payment': ['stripe', 'paypal', 'mollie', 'razorpay', 'paystack', 'square'],
+                    'Automation': ['zapier', 'webhook', 'pabbly', 'integrately', 'integromat', 'n8n'],
+                    'SMS & Messaging': ['twilio', 'clicksend', 'messagebird', 'textmagic', 'telegram', 'slack', 'discord'],
+                    'Other': []
+                }
             }
         },
         methods: {
@@ -171,7 +273,6 @@
                 let integration = this.available_integrations[integration_name];
 
                 if(!integration.is_active) {
-                    // Handle Inactive state
                     this.$confirm(integration.configure_message, integration.configure_title, {
                         confirmButtonText: integration.configure_button_text,
                         cancelButtonText: 'Cancel',
@@ -179,9 +280,7 @@
                     }).then(() => {
                         window.location.href = integration.global_configure_url;
                         return;
-                    }).catch(() => {
-
-                    });
+                    }).catch(() => {});
                     return;
                 }
 
@@ -203,6 +302,18 @@
                     }
                 });
             },
+            duplicate(integration) {
+                this.$router.push({
+                    name: 'edit_integration',
+                    params: {
+                        integration_id: 0,
+                        integration_name: integration.provider
+                    },
+                    query: {
+                        duplicate_from: integration.id
+                    }
+                });
+            },
             handleActive(row) {
                 let data = {
                     form_id: this.form_id,
@@ -211,12 +322,11 @@
                 };
 
                 this.errors.clear();
-
                 this.saving = true;
 
-                const url = FluentFormsGlobal.$rest.route('updateFormIntegrationSettings',this.form_id);
+                const url = FluentFormsGlobal.$rest.route('updateFormIntegrationSettings', this.form_id);
 
-                FluentFormsGlobal.$rest.post(url,data)
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         if(response.created) {
                             this.$router.push({
@@ -226,30 +336,61 @@
                         this.$success(response.message);
                     })
                     .catch((error) => {
-                        const message = error?.message || error?.data?.message
+                        row.enabled = !row.enabled; // Revert on error
+                        const message = error?.message || error?.data?.message;
                         this.$fail(message);
                     })
                     .finally(() => this.saving = false);
             },
-            remove(feed_id, scope) {
+            removeIntegration(feed_id, index) {
                 const url = FluentFormsGlobal.$rest.route('deleteFormIntegration', this.form_id);
-                let $index  = scope.$index;
                 let data = {
                     integration_id: feed_id,
                     form_id: this.form_id
                 };
                 this.deleting = true;
-                FluentFormsGlobal.$rest.delete(url,data)
+                FluentFormsGlobal.$rest.delete(url, data)
                     .then(response => {
                         this.$success(response.message);
-                        this.integrations.splice($index, 1);
+                        this.integrations.splice(index, 1);
+                        this.originalOrder = this.integrations.map(i => i.id);
                     })
                     .catch((error) => {
-                        const message = error?.message || error?.data?.message
+                        const message = error?.message || error?.data?.message;
                         this.$fail(message);
                     })
-                    .finally(()=>{});
+                    .finally(() => {});
+            },
+            handleDrop(data) {
+                const { index, list, item } = data;
+                // Manually insert the item at the new position
+                list.splice(index, 0, item);
+                // Save the order after Vue updates
+                this.$nextTick(() => {
+                    this.saveOrder();
+                });
+            },
+            handleMoved(data) {
+                const { index, list } = data;
+                // Remove the item from its original position
+                list.splice(index, 1);
+            },
+            saveOrder() {
+                // Get unique IDs in current order
+                const order = [...new Set(this.integrations.map(item => item.id))];
+                const url = FluentFormsGlobal.$rest.route('updateIntegrationOrder', this.form_id);
 
+                FluentFormsGlobal.$rest.post(url, {
+                    form_id: this.form_id,
+                    order: order
+                })
+                    .then(response => {
+                        this.$success(this.$t('Order updated'));
+                    })
+                    .catch((error) => {
+                        const message = error?.message || error?.data?.message;
+                        this.$fail(message);
+                    });
             },
             getFeeds() {
                 this.loading = true;
@@ -260,30 +401,78 @@
                         this.integrations = response.feeds;
                         this.available_integrations = response.available_integrations;
                         this.all_module_config_url = response.all_module_config_url;
-                        // this.$success(response.message);
                     })
                     .catch(error => {
-                        console.log(error)
+                        console.log(error);
                         this.errors.record(error);
                     })
                     .finally(() => {
                         this.loading = false;
                     });
-
+            },
+            getInitials(name) {
+                if (!name) return '?';
+                return name.replace(/_feeds?$/i, '')
+                    .split(/[_\s-]/)
+                    .map(word => word.charAt(0).toUpperCase())
+                    .slice(0, 2)
+                    .join('');
+            },
+            formatProviderName(provider) {
+                if (!provider) return '';
+                return provider
+                    .replace(/_feeds?$/i, '')
+                    .split(/[_-]/)
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
             },
             isEmpty
         },
         computed: {
-            filteredList() {
-                let filteredList = {};
-                Object.keys(this.available_integrations).map(key => {
-                    if (key.toLowerCase().includes(this.search.toLowerCase())) {
-                        filteredList[key] = this.available_integrations[key];
+            activeCount() {
+                return this.integrations.filter(i => i.enabled).length;
+            },
+            inactiveCount() {
+                return this.integrations.filter(i => !i.enabled).length;
+            },
+
+
+            hasCategories() {
+                return Object.keys(this.available_integrations).length > 10;
+            },
+            categorizedIntegrations() {
+                const result = {};
+                const categorized = new Set();
+
+                Object.entries(this.integrationCategories).forEach(([category, keywords]) => {
+                    const categoryIntegrations = {};
+
+                    Object.keys(this.available_integrations).forEach(key => {
+                        const keyLower = key.toLowerCase();
+                        if (keywords.some(kw => keyLower.includes(kw))) {
+                            categoryIntegrations[key] = this.available_integrations[key];
+                            categorized.add(key);
+                        }
+                    });
+
+                    if (Object.keys(categoryIntegrations).length > 0) {
+                        result[category] = categoryIntegrations;
                     }
                 });
-                return filteredList;
-            }
 
+                const otherIntegrations = {};
+                Object.keys(this.available_integrations).forEach(key => {
+                    if (!categorized.has(key)) {
+                        otherIntegrations[key] = this.available_integrations[key];
+                    }
+                });
+
+                if (Object.keys(otherIntegrations).length > 0) {
+                    result['Other'] = otherIntegrations;
+                }
+
+                return result;
+            }
         },
         beforeMount() {
             this.getFeeds();

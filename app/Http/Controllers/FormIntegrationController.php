@@ -63,13 +63,13 @@ class FormIntegrationController extends Controller
     {
         try {
             $attributes = $this->request->all();
-            
+
             $sanitizeMap = [
                 'integration_name' => 'sanitize_text_field',
                 'list_id'          => 'sanitize_text_field',
             ];
             $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
-            
+
             $integrationName = $attributes['integration_name'];
             $formId = (int)$attributes['form_id'];
             $listId = $attributes['list_id'];
@@ -87,7 +87,7 @@ class FormIntegrationController extends Controller
             );
 
             $merge_fields = apply_filters('fluentform/get_integration_merge_fields_' . $integrationName, $merge_fields, $listId, $formId);
-            
+
             return $this->sendSuccess([
                 'merge_fields' => $merge_fields,
             ]);
@@ -97,5 +97,26 @@ class FormIntegrationController extends Controller
             ], 422);
         }
     }
-    
+
+    public function updateOrder(FormIntegrationService $integrationService)
+    {
+        try {
+            $formId = (int) $this->request->get('form_id');
+            $order = $this->request->get('order', []);
+
+            if (!is_array($order)) {
+                $order = [];
+            }
+            
+            $order = array_map('intval', $order);
+
+            $result = $integrationService->updateOrder($formId, $order);
+            return $this->sendSuccess($result);
+        } catch (\Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
 }
