@@ -130,6 +130,7 @@
                                 size="mini"
                                 :placeholder="$t('Select')"
                                 v-model="item.billing_interval"
+                                @change="onEndDateChange(item)"
                             >
                                 <el-option
                                     v-for="(label,value) in interval_options"
@@ -235,22 +236,87 @@
                     </el-col>
                 </el-row>
 
-                <el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item>
+                            <elLabel
+                                slot="label"
+                                :label="$t('Has End Date?')"
+                                :helpText="$t('Set a specific end date to auto-calculate billing times')"
+                            />
+
+                            <el-switch
+                                active-value="yes"
+                                inactive-value="no"
+                                v-model="item.has_end_date"
+                                @change="onEndDateToggle(item)"
+                            />
+                        </el-form-item>
+
+                        <el-form-item v-if="item.has_end_date === 'yes'">
+                            <elLabel
+                                slot="label"
+                                :label="$t('Subscription End Date')"
+                            />
+
+                            <el-date-picker
+                                size="mini"
+                                type="date"
+                                style="width: 100%;"
+                                format="dd MMM yyyy"
+                                value-format="yyyy-MM-dd"
+                                v-model="item.subscription_end_date"
+                                :placeholder="$t('Select end date')"
+                                :picker-options="datePickerOptions"
+                                @change="onEndDateChange(item)"
+                            />
+                        </el-form-item>
+
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item>
+                            <elLabel
+                                slot="label"
+                                :label="$t('Total Billing times')"
+                            />
+
+                            <el-input-number
+                                :min="0"
+                                size="mini"
+                                v-model="item.bill_times"
+                                :placeholder="$t('times')"
+                                :disabled="item.has_end_date === 'yes'"
+                            />
+
+                            <p class="text-note mt-1" v-if="item.has_end_date !== 'yes'">
+                                {{ $t('Keep blank or 0 for billing unlimited period of times') }}
+                            </p>
+                            <p class="text-note mt-1" v-else-if="item.subscription_end_date">
+                                {{ getDaysRemaining(item) }} {{ $t('days from today') }}
+                            </p>
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+
+                <el-form-item v-if="item.has_end_date === 'yes'">
                     <elLabel
-                            slot="label"
-                            :label="$t('Total Billing times')"
+                        slot="label"
+                        :label="$t('When Plan Expires')"
+                        :helpText="$t('Show Error: displays an error message when user tries to submit. Hide Plan: removes this plan from form and silently skip.')"
                     />
 
-                    <el-input-number
-                            :min="0"
-                            size="mini"
-                            v-model="item.bill_times"
-                            :placeholder="$t('times')"
-                    />
-
-                    <p class="text-note mt-1">
-                        {{ $t('Keep blank or 0 for billing unlimited period of times') }}
-                    </p>
+                    <el-radio-group
+                        size="small"
+                        v-model="item.expire_behavior"
+                    >
+                        <el-radio-button label="show_error">
+                            {{ $t('Show Error') }}
+                        </el-radio-button>
+                        <el-radio-button label="hide">
+                            {{ $t('Hide Plan') }}
+                        </el-radio-button>
+                    </el-radio-group>
                 </el-form-item>
             </div>
 
@@ -287,7 +353,30 @@
                     week: 'Weekly',
                     month: 'Monthly',
                     year: 'Yearly'
+                },
+                datePickerOptions: {
+                    disabledDate(date) {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        return date < today;
+                    }
                 }
+            }
+        },
+        created() {
+            // Ensure backward compatibility for existing plans missing new fields
+            if (this.editItem && this.editItem.settings && this.editItem.settings.subscription_options) {
+                this.editItem.settings.subscription_options.forEach(item => {
+                    if (typeof item.has_end_date === 'undefined') {
+                        this.$set(item, 'has_end_date', 'no');
+                    }
+                    if (typeof item.subscription_end_date === 'undefined') {
+                        this.$set(item, 'subscription_end_date', '');
+                    }
+                    if (typeof item.expire_behavior === 'undefined') {
+                        this.$set(item, 'expire_behavior', 'show_error');
+                    }
+                });
             }
         },
         methods: {
@@ -306,7 +395,10 @@
                     has_signup_fee: 'no',
                     signup_fee: 0,
                     subscription_amount: '19.99',
-                    plan_features: []
+                    plan_features: [],
+                    has_end_date: 'no',
+                    subscription_end_date: '',
+                    expire_behavior: 'show_error'
                 });
             },
 
@@ -327,13 +419,67 @@
                     text += `and Inital <b>Signup Fee ${item.signup_fee}</b> `;
                 }
 
-                if (parseInt(item.bill_times)) {
+                if (item.has_end_date === 'yes' && item.subscription_end_date) {
+                    text += `until <b>${this.formatDate(item.subscription_end_date)}</b> (${item.bill_times} times) `;
+                } else if (parseInt(item.bill_times)) {
                     text += `and Total <b>Billing times ${item.bill_times}</b> `;
                 } else {
                     text += `and will be billed until cancel`;
                 }
 
                 return this.$t(text);
+            },
+
+            calculateBillTimes(item) {
+                if (!item.subscription_end_date) {
+                    return 0;
+                }
+
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+                const endDate = new Date(item.subscription_end_date + 'T00:00:00');
+
+                const diffTime = endDate.getTime() - now.getTime();
+                const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+                const intervalDays = {
+                    day: 1,
+                    week: 7,
+                    month: 30,
+                    year: 365
+                };
+
+                return Math.max(1, Math.ceil(diffDays / (intervalDays[item.billing_interval] || 30)));
+            },
+
+            onEndDateToggle(item) {
+                if (item.has_end_date === 'yes') {
+                    if (item.subscription_end_date) {
+                        item.bill_times = this.calculateBillTimes(item);
+                    }
+                } else {
+                    item.subscription_end_date = '';
+                    item.bill_times = 0;
+                }
+            },
+
+            onEndDateChange(item) {
+                if (item.has_end_date === 'yes' && item.subscription_end_date) {
+                    item.bill_times = this.calculateBillTimes(item);
+                }
+            },
+
+            formatDate(dateStr) {
+                const date = new Date(dateStr + 'T00:00:00');
+                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                return date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+            },
+
+            getDaysRemaining(item) {
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+                const endDate = new Date(item.subscription_end_date + 'T00:00:00');
+                return Math.max(1, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
             },
 
             changeDefaultItem(index) {

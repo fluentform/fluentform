@@ -259,19 +259,62 @@ class StripeProcessor extends BaseProcessor
         }
 
         $formattedItems = [];
+        $discountDistributed = 0;
+        $itemCount = count($orderItems);
 
-        foreach ($orderItems as $item) {
+        foreach ($orderItems as $index => $item) {
             $price = $item->item_price;
+            $quantity = $item->quantity ?: 1;
 
-            if($discountTotal) {
-                $price = intval($price - ($discountTotal / $orderTotal) * $price);
+            if ($discountTotal && $orderTotal) {
+                if ($index === $itemCount - 1) {
+                    // Last item absorbs any remaining discount not yet distributed.
+                    // intval floors the per-unit price, so (unitPrice * quantity) may be
+                    // less than lineTotal. The difference (remainder) is 0..quantity-1 cents.
+                    // When remainder > 0 we split into two Stripe line items:
+                    //   (quantity - remainder) units at the floor price, and
+                    //   remainder units at floor + 1 cent,
+                    // so the total adds up exactly. e.g. $28.00 / 3 → 2×$9.33 + 1×$9.34 = $28.00
+                    $remainingDiscount = $discountTotal - $discountDistributed;
+                    $lineTotal = ($price * $quantity) - $remainingDiscount;
+                    $unitPrice = intval($lineTotal / $quantity);
+                    $remainder = $lineTotal - ($unitPrice * $quantity);
+
+                    if ($remainder > 0 && $quantity > 1) {
+                        $basePrice = $unitPrice;
+                        $extraPrice = $unitPrice + 1;
+
+                        if (PaymentHelper::isZeroDecimal($currency)) {
+                            $basePrice = intval($basePrice / 100);
+                            $extraPrice = intval($extraPrice / 100);
+                        }
+
+                        $formattedItems[] = [
+                            'amount'   => $basePrice,
+                            'currency' => $currency,
+                            'name'     => $item->item_name,
+                            'quantity' => $quantity - $remainder
+                        ];
+                        $formattedItems[] = [
+                            'amount'   => $extraPrice,
+                            'currency' => $currency,
+                            'name'     => $item->item_name,
+                            'quantity' => $remainder
+                        ];
+                        continue;
+                    }
+
+                    $price = $unitPrice;
+                } else {
+                    $itemDiscount = (int) round(($discountTotal / $orderTotal) * $price);
+                    $discountDistributed += $itemDiscount * $quantity;
+                    $price = $price - $itemDiscount;
+                }
             }
 
             if (PaymentHelper::isZeroDecimal($currency)) {
                 $price = intval($price / 100);
             }
-
-            $quantity = $item->quantity ?: 1;
 
             $stripeLine = [
                 'amount'   => $price,

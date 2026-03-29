@@ -116,7 +116,9 @@
                             $t(
                                 '%sPlease read the documentation%s to learn how to setup %sStripe IPN%s',
                                 `<a target='_blank' rel='noopener' href='https://wpmanageninja.com/docs/fluent-form/payment-settings/how-to-setup-stripe-ipn-with-wp-fluent-forms/'>`,
-                                '</a>'
+                                '</a>',
+                                '<b>',
+                                '</b>'
                             )
                         "
                     ></p>

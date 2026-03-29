@@ -309,6 +309,14 @@ class TransferService
         $tableName = Arr::get($args, 'table');
 
         if ($tableName) {
+            $allowedTables = apply_filters('fluentform/export_allowed_tables', [
+                'fluentform_submissions',
+            ]);
+            if (!in_array($tableName, $allowedTables, true)) {
+                wp_send_json([
+                    'message' => __('Invalid table name for export.', 'fluentform')
+                ], 422);
+            }
             $query = wpFluent()->table($tableName)
                 ->where('form_id', (int) Arr::get($args, 'form_id'))
                 ->orderBy('id', Helper::sanitizeOrderValue(Arr::get($args, 'sort_by', 'DESC')));
