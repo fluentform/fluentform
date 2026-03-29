@@ -340,7 +340,7 @@ class FluentFormStyleHandler {
             rules.push(`color: ${styles.radioCheckboxItemsColor}`);
         }
         if (styles.radioCheckboxItemsSize) {
-            rules.push(`font-size: ${styles.radioCheckboxItemsSize}px;`);
+            rules.push(`font-size: ${styles.radioCheckboxItemsSize}px`);
         }
         
         if (rules.length > 0) {
@@ -406,7 +406,8 @@ class FluentFormStyleHandler {
         let styles = [];
         
         if (typography.fontSize) {
-            styles.push(`font-size: ${typography.fontSize}px`);
+            const fs = String(typography.fontSize);
+            styles.push(`font-size: ${fs.match(/[a-z%]+$/i) ? fs : fs + 'px'}`);
         }
         
         if (typography.fontWeight) {
@@ -418,7 +419,8 @@ class FluentFormStyleHandler {
         }
         
         if (typography.letterSpacing) {
-            styles.push(`letter-spacing: ${typography.letterSpacing}px`);
+            const ls = String(typography.letterSpacing);
+            styles.push(`letter-spacing: ${ls.match(/[a-z%]+$/i) ? ls : ls + 'px'}`);
         }
         
         if (typography.textTransform) {

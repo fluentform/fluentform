@@ -13,13 +13,13 @@ const LabelStylesPanel = ({ styles, updateStyles }) => {
     return (
         <PanelBody title={__("Label Styles")} initialOpen={false}>
             <FluentColorPicker
-                label="Color"
+                label={__("Color")}
                 value={styles.labelColor}
                 onChange={(value) => updateStyles({labelColor: value})}
                 defaultColor=""
             />
             <FluentTypography
-                label="Typography"
+                label={__("Typography")}
                 typography={styles.labelTypography || {}}
                 onChange={(typography) => updateStyles({ labelTypography: typography })}
             />

@@ -1,5 +1,6 @@
 const { Button, Flex, Popover, FontSizePicker, SelectControl, RangeControl } = wp.components;
 const { useState, useEffect, useMemo, memo } = wp.element;
+const { __ } = wp.i18n;
 import { arePropsEqual } from '../utils/ComponentUtils';
 
 const FluentTypography = ({ label, typography = {}, onChange }) => {
@@ -111,13 +112,13 @@ const FluentTypography = ({ label, typography = {}, onChange }) => {
                         withSlider={true}
                     />
                     <SelectControl
-                        label="Font Weight"
+                        label={__("Font Weight")}
                         value={typoValues.fontWeight}
                         options={fontWeightOptions}
                         onChange={(value) => updateSetting({fontWeight: value})}
                     />
                     <RangeControl
-                        label="Line Height"
+                        label={__("Line Height")}
                         value={typoValues.lineHeight}
                         onChange={(value) => updateSetting({lineHeight: value})}
                         min={0.5}
@@ -125,7 +126,7 @@ const FluentTypography = ({ label, typography = {}, onChange }) => {
                         step={0.1}
                     />
                     <RangeControl
-                        label="Letter Spacing (px)"
+                        label={__("Letter Spacing (px)")}
                         value={typoValues.letterSpacing}
                         onChange={(value) => updateSetting({letterSpacing: value})}
                         min={-5}
@@ -133,7 +134,7 @@ const FluentTypography = ({ label, typography = {}, onChange }) => {
                         step={0.1}
                     />
                     <SelectControl
-                        label="Text Transform"
+                        label={__("Text Transform")}
                         value={typoValues.textTransform}
                         options={textTransformOptions}
                         onChange={(value) => updateSetting({textTransform: value})}

@@ -21,10 +21,14 @@ const getFormMeta = async (formId, metaKey) => {
         return;
     }
 
-    const path = `${window.fluentform_block_vars.rest.namespace}/${window.fluentform_block_vars.rest.version}/settings/${formId}?meta_key=${metaKey}`;
-    const response = await apiFetch({ path });
+    try {
+        const path = `${window.fluentform_block_vars.rest.namespace}/${window.fluentform_block_vars.rest.version}/settings/${formId}?meta_key=${metaKey}`;
+        const response = await apiFetch({ path });
 
-    return (response.length && response[0].value) || false;
+        return (response.length && response[0].value) || false;
+    } catch (e) {
+        return false;
+    }
 };
 
 function EditComponent({ attributes, setAttributes }) {
@@ -71,13 +75,17 @@ function EditComponent({ attributes, setAttributes }) {
 
         setIsPreviewLoading(true);
 
-        const isConversationalForm = await getFormMeta(formId, "is_conversion_form");
+        try {
+            const isConversationalForm = await getFormMeta(formId, "is_conversion_form");
 
-        setAttributes({
-            isConversationalForm: isConversationalForm === "yes",
-        });
-
-        setIsPreviewLoading(false);
+            setAttributes({
+                isConversationalForm: isConversationalForm === "yes",
+            });
+        } catch (e) {
+            // Silently handle - form will render as non-conversational
+        } finally {
+            setIsPreviewLoading(false);
+        }
     }, [setAttributes]);
 
     const handleFormChange = useCallback((formId) => {
@@ -152,7 +160,7 @@ function EditComponent({ attributes, setAttributes }) {
             const css = styleHandlerRef.current.updateStyles(attributes.styles);
             storeCss(css);
         }
-    }, [attributes.formId, attributes.styles]);
+    }, [attributes.formId, attributes.styles, storeCss]);
 
     const config = window.fluentform_block_vars || {};
 
@@ -187,7 +195,7 @@ function EditComponent({ attributes, setAttributes }) {
         loadingOverlay = (
             <div className="fluent-form-loading-overlay">
                 <Spinner />
-                <p>Loading form preview...</p>
+                <p>{__('Loading form preview...')}</p>
                 <FluentSeparator style="dotted" className="fluent-separator-sm" />
             </div>
         );

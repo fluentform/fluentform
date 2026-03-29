@@ -1,11 +1,11 @@
 const { Button, Flex, Popover, ColorPalette } = wp.components;
 const { useState, useRef, useEffect, memo } = wp.element;
+const { __ } = wp.i18n;
 import { arePropsEqual } from "../utils/ComponentUtils";
 
 const FluentColorPicker = ({ label, value, onChange, defaultColor = ''}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentColor, setCurrentColor] = useState(value || defaultColor);
-    const [isTransparent, setIsTransparent] = useState(false);
     const [isColorChanged, setIsColorChanged] = useState(false);
     const containerRef = useRef(null);
     const buttonRef = useRef(null);
@@ -75,7 +75,7 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = ''}) => {
                         ref={buttonRef}
                     >
                         <div
-                            className={`ffblock-color-swatch ${isTransparent ? 'ffblock-color-transparent-pattern' : ''}`}
+                            className="ffblock-color-swatch"
                             style={ { backgroundColor: currentColor || "transparent" }}
                             title={currentColor || 'transparent'}
                         />
@@ -85,7 +85,7 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = ''}) => {
 
             {isOpen && (
                 <Popover
-                    onClose={() => {}}
+                    onClose={() => setIsOpen(false)}
                     anchor={buttonRef.current}
                     focusOnMount={false}
                     noArrow={false}
@@ -100,7 +100,7 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = ''}) => {
                     <div className="ffblock-popover-content" ref={popoverRef}>
                         {/* Close button */}
                         <div className="ffblock-color-picker-header">
-                            <span>Select Color</span>
+                            <span>{__('Select Color')}</span>
                             <Button
                                 className="ffblock-color-picker-close"
                                 onClick={() => setIsOpen(false)}

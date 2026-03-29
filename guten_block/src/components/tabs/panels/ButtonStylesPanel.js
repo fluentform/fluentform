@@ -53,33 +53,33 @@ const ButtonStylesPanel = ({ styles, updateStyles }) => {
                         return (
                             <>
                                 <FluentColorPicker
-                                    label="Text Color"
+                                    label={__("Text Color")}
                                     value={styles.buttonColor}
                                     onChange={(value) => updateStyles({buttonColor: value})}
                                     defaultColor="#ffffff"
                                 />
 
                                 <FluentColorPicker
-                                    label="Background Color"
+                                    label={__("Background Color")}
                                     value={styles.buttonBGColor}
                                     onChange={(value) => updateStyles({buttonBGColor: value})}
                                     defaultColor="#409EFF"
                                 />
 
                                 <FluentTypography
-                                    label="Typography"
+                                    label={__("Typography")}
                                     typography={styles.buttonTypography || {}}
                                     onChange={(typography) => updateStyles({ buttonTypography: typography })}
                                 />
 
                                 <FluentSpaceControl
-                                    label="Padding"
+                                    label={__("Padding")}
                                     values={styles.buttonPadding}
                                     onChange={(value) => updateStyles({ buttonPadding: value })}
                                 />
 
                                 <FluentSpaceControl
-                                    label="Margin"
+                                    label={__("Margin")}
                                     values={styles.buttonMargin}
                                     onChange={(value) => updateStyles({ buttonMargin: value })}
                                 />
@@ -101,33 +101,33 @@ const ButtonStylesPanel = ({ styles, updateStyles }) => {
                         return (
                             <>
                                 <FluentColorPicker
-                                    label="Text Color"
+                                    label={__("Text Color")}
                                     value={styles.buttonHoverColor}
                                     onChange={(value) => updateStyles({buttonHoverColor: value})}
                                     defaultColor="#ffffff"
                                 />
 
                                 <FluentColorPicker
-                                    label="Background Color"
+                                    label={__("Background Color")}
                                     value={styles.buttonHoverBGColor}
                                     onChange={(value) => updateStyles({buttonHoverBGColor: value})}
                                     defaultColor="#66b1ff"
                                 />
 
                                 <FluentTypography
-                                    label="Typography"
+                                    label={__("Typography")}
                                     typography={styles.buttonHoverTypography || {}}
                                     onChange={(typography) => updateStyles({ buttonHoverTypography: typography })}
                                 />
 
                                 <FluentSpaceControl
-                                    label="Padding"
+                                    label={__("Padding")}
                                     values={styles.buttonHoverPadding}
                                     onChange={(value) => updateStyles({ buttonHoverPadding: value })}
                                 />
 
                                 <FluentSpaceControl
-                                    label="Margin"
+                                    label={__("Margin")}
                                     values={styles.buttonHoverMargin}
                                     onChange={(value) => updateStyles({ buttonHoverMargin: value })}
                                 />
