@@ -387,22 +387,27 @@ class StripeInlineProcessor extends StripeProcessor
      */
     protected function validateScaRequest($submissionId, $paymentIntentId, $submission = null, $transaction = null)
     {
-        $strictMode = apply_filters('fluentform/stripe_sca_strict_security', false);
         $warnings = [];
 
-        // Validate nonce: always reject invalid nonces, only allow missing nonces
-        // in non-strict mode for backward compatibility with older JS
+        // Validate nonce — always required by default.
+        // Filter allows opt-out only for backward compat; emits deprecation notice.
         $nonce = isset($_REQUEST['_ff_stripe_nonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_ff_stripe_nonce'])) : '';
-        
+
         if ($nonce) {
             $nonceAction = 'fluentform_sca_confirm_' . $submissionId;
             if (!wp_verify_nonce($nonce, $nonceAction)) {
                 return new \WP_Error('invalid_nonce', __('Security verification failed. Invalid nonce.', 'fluentform'));
             }
         } else {
+            $strictMode = apply_filters('fluentform/stripe_sca_strict_security', true);
             if ($strictMode) {
                 return new \WP_Error('missing_nonce', __('Security verification failed. Nonce required.', 'fluentform'));
             }
+            _deprecated_argument(
+                'fluentform/stripe_sca_strict_security',
+                '6.2.0',
+                __('Disabling strict SCA nonce verification is deprecated and will be removed in a future version.', 'fluentform')
+            );
             $warnings[] = 'No nonce provided for SCA payment confirmation';
         }
 
