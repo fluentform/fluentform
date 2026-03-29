@@ -698,7 +698,7 @@ export default {
 
         fetchFormsList() {
             const url = FluentFormsGlobal.$rest.route("selectFormsForReport");
-            FluentFormsGlobal.$rest.get(url)
+            return FluentFormsGlobal.$rest.get(url)
                 .then(response => {
                     if (response.forms) {
                         this.formsList = response.forms;
@@ -707,6 +707,25 @@ export default {
                 .catch(error => {
                     console.error("Error fetching forms list:", error);
                 });
+        },
+
+        applyUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const formId = params.get('form_id');
+            const range = params.get('range');
+            if (formId) {
+                const id = parseInt(formId, 10);
+                if (!isNaN(id)) {
+                    this.selectedGlobalFormId = id;
+                }
+            }
+            if (range) {
+                this.lastUsedSelector = 'range';
+                this.selectedRange = range;
+                this.updateGlobalDateParams();
+            } else {
+                this.fetchReports();
+            }
         },
 
         handleDateRangeChange(range) {
@@ -858,8 +877,9 @@ export default {
         }
     },
     mounted() {
-        this.fetchReports();
-        this.fetchFormsList();
+        this.fetchFormsList().then(() => {
+            this.applyUrlParams();
+        });
     }
 };
 </script>

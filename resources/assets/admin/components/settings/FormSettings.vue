@@ -513,6 +513,97 @@
                     </card-body>
                 </card>
 
+                <!-- Per-form Email Summaries -->
+                <card id="per-form-email-summaries">
+                    <card-head>
+                        <h5 class="title">{{ $t('Email Summaries') }}</h5>
+                        <p class="text">
+                            {{ $t('Receive a weekly report for this form\'s submissions and performance.') }}
+                        </p>
+                    </card-head>
+                    <card-body>
+                        <el-form label-position="top">
+                            <el-form-item class="ff-form-item">
+                                <template slot="label">
+                                    {{ $t('Status') }}
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>{{ $t('Enable this feature to get weekly reports on how this form is performing.') }}</p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </template>
+                                <el-checkbox true-label="yes" false-label="no" v-model="formSettings.per_form_email_summary.status">
+                                    {{ $t('Enable Email Summaries') }}
+                                </el-checkbox>
+                            </el-form-item>
+                            <template v-if="formSettings.per_form_email_summary.status == 'yes'">
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Send To') }}
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>{{ $t('Specify the recipient of the weekly report.') }}</p>
+                                            </div>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
+                                    <el-radio-group v-model="formSettings.per_form_email_summary.send_to_type">
+                                        <el-radio label="admin_email">{{ $t('Site Admin') }}</el-radio>
+                                        <el-radio label="custom_email">{{ $t('Custom Email') }}</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                                <el-row :gutter="24">
+                                    <el-col :span="24" v-if="formSettings.per_form_email_summary.send_to_type == 'custom_email'">
+                                        <el-form-item class="ff-form-item">
+                                            <label class="mb-3" style="display: block;">{{ $t('Enter Recipient Email Address') }}</label>
+                                            <el-input class="w-100" :placeholder="$t('Recipient Email Address')"
+                                                v-model="formSettings.per_form_email_summary.custom_recipients"></el-input>
+                                            <p class="fs-14 mt-1">{{ $t('For multiple email addresses, use comma to separate them.') }}</p>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :sm="24" :md="12">
+                                        <el-form-item class="ff-form-item">
+                                            <template slot="label">
+                                                {{ $t('Get Reports On') }}
+                                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                                    <div slot="content">
+                                                        <p>{{ $t('Select the day to receive weekly report.') }}</p>
+                                                    </div>
+                                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                                </el-tooltip>
+                                            </template>
+                                            <el-select class="w-100 ff-input-s1" :placeholder="$t('Select Day')" v-model="formSettings.per_form_email_summary.sending_day">
+                                                <el-option v-for="(sendDay, dayKey) in sending_days" :key="dayKey" :value="dayKey"
+                                                    :label="$t(sendDay)"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :sm="24" :md="12">
+                                        <el-form-item class="ff-form-item">
+                                            <template slot="label">
+                                                {{ $t('Subject Line') }}
+                                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                                    <div slot="content">
+                                                        <p>{{ $t('Enter the subject line of the email summaries') }}</p>
+                                                    </div>
+                                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                                </el-tooltip>
+                                            </template>
+                                            <el-input
+                                                class="w-100"
+                                                :placeholder="$t('Email Subject')"
+                                                v-model="formSettings.per_form_email_summary.subject"
+                                            />
+                                            <p class="fs-14 mt-1">{{ $t('You can use smart codes in the subject line: {form_title}, {form_id}', { form_title: '{form_title}', form_id: '{form_id}' }) }}</p>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </template>
+                        </el-form>
+                    </card-body>
+                </card>
+
                 <!-- Form Restrictions -->
                 <card id="scheduling-and-restrictions">
                     <card-head>
@@ -843,6 +934,15 @@
                     'asterisk-left': 'Left to Label',
                     'asterisk-right': 'Right to Label'
                 },
+                sending_days: {
+                    Mon: 'Monday',
+                    Tue: 'Tuesday',
+                    Wed: 'Wednesday',
+                    Thu: 'Thursday',
+                    Fri: 'Friday',
+                    Sat: 'Saturday',
+                    Sun: 'Sunday'
+                },
                 advancedValidationSettings: {
                     status: false,
                     type: 'all',
@@ -940,6 +1040,13 @@
                         helpMessagePlacement: 'with_label',
                         errorMessagePlacement: 'inline',
                         cssClassName: ''
+                    },
+                    per_form_email_summary: {
+                        status: 'no',
+                        send_to_type: 'admin_email',
+                        custom_recipients: '',
+                        sending_day: 'Mon',
+                        subject: ''
                     }
                 }
             },
@@ -976,6 +1083,15 @@
                                     showLabel: false,
                                     showCount: false
                                 }
+                            }
+                            if (!settings.per_form_email_summary) {
+                                settings.per_form_email_summary = {
+                                    status: 'no',
+                                    send_to_type: 'admin_email',
+                                    custom_recipients: '',
+                                    sending_day: 'Mon',
+                                    subject: ''
+                                };
                             }
                             this.formSettings = settings;
                         } else {

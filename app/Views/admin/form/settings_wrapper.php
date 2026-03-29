@@ -50,6 +50,12 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 						</li>
 						<li>
 							<a class="ff-page-scroll"
+								href="#per-form-email-summaries">
+								<?php echo esc_html(__('Email Summaries', 'fluentform')); ?>
+							</a>
+						</li>
+						<li>
+							<a class="ff-page-scroll"
 								href="#scheduling-and-restrictions">
 								<?php echo esc_html(__('Scheduling & Restrictions', 'fluentform')); ?>
 							</a>

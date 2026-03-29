@@ -181,7 +181,14 @@ class Form extends Model
             ],
             'delete_entry_on_submission'         => 'no',
             'conv_form_per_step_save'            => false,
-            'conv_form_resume_from_last_step'    => false
+            'conv_form_resume_from_last_step'    => false,
+            'per_form_email_summary'             => [
+                'status'            => 'no',
+                'send_to_type'      => 'admin_email',
+                'custom_recipients'  => '',
+                'sending_day'       => 'Mon',
+                'subject'            => '',
+            ],
         ];
 
         if ($formId) {

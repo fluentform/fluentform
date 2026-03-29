@@ -968,6 +968,7 @@ add_filter('cron_schedules', function ($schedules) {
 
 add_action('fluentform_do_scheduled_tasks', 'fluentFormHandleScheduledTasks');
 add_action('fluentform_do_email_report_scheduled_tasks', 'fluentFormHandleScheduledEmailReport');
+add_action('fluentform_do_email_report_scheduled_tasks', 'fluentFormHandlePerFormEmailReport');
 
 add_action('fluentform/integration_action_result', function ($feed, $status, $note = '') {
     if (!isset($feed['scheduled_action_id']) || !$status) {
