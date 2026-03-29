@@ -48,12 +48,10 @@ function wpFluentForm($key = null)
  * @param string $path
  *
  * @return string
- *
- * @deprecated 7.0.0 Use Enqueue::getStaticFilePath() instead.
  */
 function fluentFormMix($path = '')
 {
-    return \FluentForm\App\Utils\Enqueuer\Enqueue::getStaticFilePath($path);
+    return wpFluentForm('url.assets') . ltrim($path, '/');
 }
 
 if (! function_exists('wpFluent')) {
@@ -291,7 +289,7 @@ function fluentFormGetRandomPhoto()
 
     $photoName = $photos[$selected];
 
-    return \FluentForm\App\Utils\Enqueuer\Enqueue::getStaticFilePath('img/conversational/' . $photoName);
+    return fluentformMix('img/conversational/' . $photoName);
 }
 
 function fluentFormRender($atts)

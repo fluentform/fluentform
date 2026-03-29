@@ -3,7 +3,6 @@
 namespace FluentForm\App\Modules\Renderer\GlobalSettings;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\App\Modules\Form\AkismetHandler;
 use FluentForm\App\Modules\Form\CleanTalkHandler;
 use FluentForm\App\Modules\Registerer\TranslationString;
@@ -56,7 +55,7 @@ class Settings
             'has_pro'               => Helper::hasPro(),
             'is_payment_compatible' => Helper::isPaymentCompatible(),
             'form_settings_str'     => TranslationString::getGlobalSettingsI18n(),
-            'ace_path_url'          => Enqueue::getStaticFilePath('libs/ace'),
+            'ace_path_url'          => fluentFormMix('libs/ace'),
         ];
         if (Helper::isPaymentCompatible()) {
             $globalSettingAppData = apply_filters('fluentform/global_settings_component_settings_data', $globalSettingAppData);

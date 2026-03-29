@@ -143,30 +143,26 @@ class Logger
         $type = Arr::get($attributes, 'type', 'log');
 
         if ('log' === $type) {
-            $statusRows = Log::select('status')->distinct()->get();
-            $componentRows = Log::select('component')->distinct()->get();
-            $formIdRows = Log::select('parent_source_id as form_id')->distinct()->get();
+            $logs = Log::select('status', 'component', 'parent_source_id as form_id')->get();
         } else {
-            $statusRows = Scheduler::select('status')->distinct()->get();
-            $componentRows = Scheduler::select('action as component')->distinct()->get();
-            $formIdRows = Scheduler::select('form_id')->distinct()->get();
+            $logs = Scheduler::select('status', 'action as component', 'form_id')->get();
         }
 
-        $statuses = $statusRows->pluck('status')->filter()->map(function ($item) {
+        $statuses = $logs->groupBy('status')->keys()->map(function ($item) {
             return [
                 'label' => ucwords($item),
                 'value' => $item,
             ];
-        })->values();
+        });
 
-        $components = $componentRows->pluck('component')->filter()->map(function ($item) use ($type) {
+        $components = $logs->groupBy('component')->keys()->map(function ($item) use ($type) {
             return [
                 'label' => Helper::getLogInitiator($item, $type),
                 'value' => $item,
             ];
-        })->values();
+        });
 
-        $formIds = $formIdRows->pluck('form_id')->filter()->toArray();
+        $formIds = $logs->pluck('form_id')->unique()->filter()->toArray();
         if ($allowForms = FormManagerService::getUserAllowedForms()) {
             $formIds = array_filter($formIds, function($value) use ($allowForms) {
                 return in_array($value, $allowForms);

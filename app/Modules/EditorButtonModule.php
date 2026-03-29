@@ -2,7 +2,6 @@
 
 namespace FluentForm\App\Modules;
 
-use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class EditorButtonModule
@@ -15,7 +14,7 @@ class EditorButtonModule
 
         $this->addMceButtonAssets();
 
-        $url = Enqueue::getStaticFilePath('img/icon_black_small.png');
+        $url = fluentFormMix('img/icon_black_small.png');
 
         echo "<button id='fluent_form_insert_button' class='button'><span style='background-image: url(" . esc_url($url) . "); width: 16px;height: 16px;background-repeat: no-repeat;display: inline-block;background-size: contain;opacity: 0.4;margin-right: 5px;vertical-align: middle;'></span>" . esc_html__('Add Form', 'fluentform') . '</button>';
     }
@@ -24,7 +23,7 @@ class EditorButtonModule
     {
         wp_enqueue_script(
             'fluentform_editor_script',
-            Enqueue::getStaticFilePath('js/fluentform_editor_script.js'),
+            fluentFormMix('js/fluentform_editor_script.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             false

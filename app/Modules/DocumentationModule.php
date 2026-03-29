@@ -2,7 +2,6 @@
 
 namespace FluentForm\App\Modules;
 
-use FluentForm\App\Utils\Enqueuer\Enqueue;
 
 class DocumentationModule
 {
@@ -10,8 +9,8 @@ class DocumentationModule
     {
         wp_enqueue_script('fluentform-docs');
         wpFluentForm('view')->render('admin.docs.index', [
-            'public_url' => Enqueue::getStaticFilePath(),
-            'icon_path_url' => Enqueue::getStaticFilePath(''),
+            'public_url' => fluentFormMix(),
+            'icon_path_url' => fluentFormMix(''),
             'user_guides'   => $this->getUserGuides(),
         ]);
     }

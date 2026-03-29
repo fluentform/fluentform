@@ -3,7 +3,6 @@
 namespace FluentForm\App\Modules\Widgets;
 
 use FluentForm\App\Modules\Widgets\FluentFormWidget;
-use FluentForm\App\Utils\Enqueuer\Enqueue;
 
 class ElementorWidget
 {
@@ -27,8 +26,8 @@ class ElementorWidget
 
     public function enqueueAssets()
     {
-        wp_enqueue_style('fluentform-elementor-widget', Enqueue::getStaticFilePath('css/fluent-forms-elementor-widget.css'), [], FLUENTFORM_VERSION);
-        wp_enqueue_script('fluentform-elementor', Enqueue::getStaticFilePath('js/fluent-forms-elementor-widget.js'), [], FLUENTFORM_VERSION, true);
+        wp_enqueue_style('fluentform-elementor-widget', fluentFormMix('css/fluent-forms-elementor-widget.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_script('fluentform-elementor', fluentFormMix('js/fluent-forms-elementor-widget.js'), [], FLUENTFORM_VERSION, true);
 
         wp_localize_script('fluentform-elementor', 'fluentformElementor', [
             'adminUrl' => admin_url('admin.php'),

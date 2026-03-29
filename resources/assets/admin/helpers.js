@@ -1,14 +1,4 @@
 import moment from 'moment';
-import includes from 'lodash/includes';
-import startCase from 'lodash/startCase';
-import map from 'lodash/map';
-import each from 'lodash/each';
-import chunk from 'lodash/chunk';
-import has from 'lodash/has';
-import snakeCase from 'lodash/snakeCase';
-import cloneDeep from 'lodash/cloneDeep';
-import filter from 'lodash/filter';
-import isEmpty from 'lodash/isEmpty';
 
 /*
     Funciton Type: Array Function
@@ -35,18 +25,19 @@ if (typeof String.prototype.ucWords === "undefined") {
     }
 }
 
-// lodash methods as prefixed property on window object
+// import lodash methods
+// and assign it as prefixed property to window object
 window._ff = {
-    includes,
-    startCase,
-    map,
-    each,
-    chunk,
-    has,
-    snakeCase,
-    cloneDeep,
-    filter,
-    isEmpty,
+    includes: require('lodash/includes'),
+    startCase: require('lodash/startCase'),
+    map: require('lodash/map'),
+    each: require('lodash/each'),
+    chunk: require('lodash/chunk'),
+    has: require('lodash/has'),
+    snakeCase: require('lodash/snakeCase'),
+    cloneDeep: require('lodash/cloneDeep'),
+    filter: require('lodash/filter'),
+    isEmpty: require('lodash/isEmpty'),
     unique: (value, index, self) => self.indexOf(value) === index
 };
 

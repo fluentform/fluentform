@@ -146,13 +146,11 @@ class Submission extends Model
                     ->where('fluentform_submissions.created_at', '<=', $endDate);
             })
             ->when($search, function ($q) use ($search) {
-                global $wpdb;
-                $escaped = $wpdb->esc_like($search);
-                return $q->where(function ($q) use ($escaped) {
-                    return $q->where('fluentform_submissions.id', 'LIKE', "%{$escaped}%")
-                        ->orWhere('response', 'LIKE', "%{$escaped}%")
-                        ->orWhere('fluentform_submissions.status', 'LIKE', "%{$escaped}%")
-                        ->orWhere('fluentform_submissions.created_at', 'LIKE', "%{$escaped}%");
+                return $q->where(function ($q) use ($search) {
+                    return $q->where('fluentform_submissions.id', 'LIKE', "%{$search}%")
+                        ->orWhere('response', 'LIKE', "%{$search}%")
+                        ->orWhere('fluentform_submissions.status', 'LIKE', "%{$search}%")
+                        ->orWhere('fluentform_submissions.created_at', 'LIKE', "%{$search}%");
                 });
             })
             ->when($wheres, function ($q) use ($wheres) {
@@ -312,10 +310,8 @@ class Submission extends Model
                 return $q->whereIn('form_id', $allowFormIds);
             })
             ->when($search, function ($q) use ($search){
-                global $wpdb;
-                $escaped = $wpdb->esc_like($search);
-                return $q->orWhereHas('form', function ($q) use ($escaped) {
-                    return $q->orWhere('title', 'LIKE', "%{$escaped}%");
+                return $q->orWhereHas('form', function ($q) use ($search) {
+                    return $q->orWhere('title', 'LIKE', "%{$search}%");
                 });
             })
             ->paginate()

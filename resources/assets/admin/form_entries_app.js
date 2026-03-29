@@ -196,10 +196,6 @@ Vue.mixin({
             const config = window.fluent_form_entries_vars.currency_config;
             const currencyConfigs = window.fluent_form_entries_vars.currency_symbols;
 
-            if (!config) {
-                return formatMoneyFunc(cents / 100, 2, '.', ',');
-            }
-
             let $symbol = config.currency_sign;
             if(currency) {
                 $symbol = currencyConfigs[currency];
@@ -310,7 +306,7 @@ Vue.mixin({
 import Errors from '../common/Errors'
 import moment from "moment";
 
-window.Errors = Errors;
+global.Errors = Errors;
 
 const app = new Vue({
     router,

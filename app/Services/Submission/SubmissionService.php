@@ -80,9 +80,6 @@ class SubmissionService
                 $submission->_entry_uid_hash = Arr::get($meta, '0.value');
                 $this->setEntryUidLink($submission);
             }
-        
-            $submission = apply_filters('fluentform/submission_before_parse', $submission, $form);
-        
             $submission = FormDataParser::parseFormEntry($submission, $form, null, true);
             $this->enrichWithUser($submission);
 

@@ -49,8 +49,8 @@ import {
     SkeletonItem,
 } from 'element-ui';
 
-window.Errors = Errors;
-window.ffSettingsEvents = new Vue();
+global.Errors = Errors;
+global.ffSettingsEvents = new Vue();
 
 // Set locale
 locale.use(lang);

@@ -257,11 +257,13 @@ foreach ($fluentformRules as $fluentformRuleName) {
 
 
 $app->addFilter('fluentform/response_render_textarea', function ($value, $field, $formId, $isHtml) {
-    if (!$value || !is_string($value)) {
+    $value = $value ? nl2br($value) : $value;
+
+    if (!$isHtml || !$value) {
         return $value;
     }
 
-    return nl2br($value);
+    return '<span style="white-space: pre-line">' . $value . '</span>';
 }, 10, 4);
 
 $app->addFilter('fluentform/response_render_input_file', function ($response, $field, $form_id, $isHtml = false) {

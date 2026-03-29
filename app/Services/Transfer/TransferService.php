@@ -309,14 +309,6 @@ class TransferService
         $tableName = Arr::get($args, 'table');
 
         if ($tableName) {
-            $allowedTables = apply_filters('fluentform/export_allowed_tables', [
-                'fluentform_submissions',
-            ]);
-            if (!in_array($tableName, $allowedTables, true)) {
-                wp_send_json([
-                    'message' => __('Invalid table name for export.', 'fluentform')
-                ], 422);
-            }
             $query = wpFluent()->table($tableName)
                 ->where('form_id', (int) Arr::get($args, 'form_id'))
                 ->orderBy('id', Helper::sanitizeOrderValue(Arr::get($args, 'sort_by', 'DESC')));
@@ -358,25 +350,25 @@ class TransferService
         require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
 
-        // Create writer based on type (OpenSpout v4 API)
+        // Create writer based on type using WriterEntityFactory
         switch (strtolower($type)) {
             case 'csv':
-                $writer = new \OpenSpout\Writer\CSV\Writer();
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCSVWriter();
                 break;
             case 'xlsx':
-                $writer = new \OpenSpout\Writer\XLSX\Writer();
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createXLSXWriter();
                 break;
             case 'ods':
-                $writer = new \OpenSpout\Writer\ODS\Writer();
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createODSWriter();
                 break;
             default:
                 throw new \Exception(sprintf('Unsupported file type: %s', esc_html($type)));
         }
         $writer->openToBrowser($fileName);
 
-        // Convert data arrays to Row objects
+        // Convert data arrays to Row objects for OpenSpout v3
         $rows = array_map(function ($rowData) {
-            return \OpenSpout\Common\Entity\Row::fromValues($rowData);
+            return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($rowData);
         }, $data);
 
         $writer->addRows($rows);

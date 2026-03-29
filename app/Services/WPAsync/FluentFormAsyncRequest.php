@@ -81,11 +81,6 @@ class FluentFormAsyncRequest
 
     public function handleBackgroundCall()
     {
-        $nonce = sanitize_text_field(wpFluentForm('request')->get('nonce', ''));
-        if (!wp_verify_nonce($nonce, $this->action)) {
-            die('invalid');
-        }
-
         $originId = wpFluentForm('request')->get('origin_id', false);
 
         $this->processActions($originId);

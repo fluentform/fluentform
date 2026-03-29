@@ -303,13 +303,15 @@ jQuery(document).ready(function () {
 
                     const ajaxRequestUrl = addParameterToURL('t=' + Date.now());
 
-                    if (isSending) {
+                    if (this.isSending) {
                         return;
                     }
 
+                    var that = this;
                     let responseData;
 
-                    isSending = true;
+
+                    this.isSending = true;
 
                     $.post(ajaxRequestUrl, formData)
                         .then(function (res) {
@@ -464,7 +466,7 @@ jQuery(document).ready(function () {
                             hideFormSubmissionProgress($theForm);
                         })
                         .always(function (res) {
-                            isSending = false;
+                            that.isSending = false;
 
                             if (responseData?.data?.result?.hasOwnProperty('redirectUrl')) {
                                 return;

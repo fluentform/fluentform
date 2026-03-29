@@ -159,9 +159,7 @@ class SubmissionController extends Controller
     {
         try {
             $userId = intval($this->request->get('user_id'));
-            // Use entry_id from route parameter — not submission_id from body —
-            // to ensure authorization target matches the mutation target.
-            $submissionId = intval($this->request->get('entry_id'));
+            $submissionId = intval($this->request->get('submission_id'));
             $response = $submissionService->updateSubmissionUser($userId, $submissionId);
             return $this->sendSuccess($response);
         } catch (Exception $e) {

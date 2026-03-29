@@ -8,7 +8,6 @@ if (!defined('ABSPATH')) {
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Registerer\TranslationString;
-use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 
@@ -56,7 +55,7 @@ class ReportHandler
         ]);
 
         $this->app->view->render('admin.reports.index', [
-            'logo' => Enqueue::getStaticFilePath('img/fluentform-logo.svg'),
+            'logo' => fluentFormMix('img/fluentform-logo.svg'),
         ]);
     }
 }
