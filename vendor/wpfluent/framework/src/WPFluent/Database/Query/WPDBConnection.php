@@ -715,6 +715,10 @@ class WPDBConnection implements ConnectionInterface
      */
     public function getDatabaseName()
     {
+        if ($this->isSqlite()) {
+            return 'sqlite';
+        }
+
         return $this->wpdb->dbname;
     }
 
