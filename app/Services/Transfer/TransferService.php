@@ -12,7 +12,7 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Request\File;
+use FluentForm\Framework\Http\Request\File;
 use FluentForm\Framework\Support\Arr;
 
 class TransferService
@@ -226,7 +226,7 @@ class TransferService
             }
             if($withNotes){
                 $notes = $submissionService->getNotes($submission->id, ['form_id' => $form->id])->pluck('value');
-                if(!empty($notes)){
+                if($notes->isNotEmpty()){
                     $temp[] = implode(", ",$notes->toArray());
                 }
             }
@@ -358,7 +358,7 @@ class TransferService
         require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
 
-        // Create writer based on type using WriterEntityFactory
+        // Create writer based on type
         switch (strtolower($type)) {
             case 'csv':
                 $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCSVWriter();

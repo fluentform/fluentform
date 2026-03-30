@@ -103,7 +103,7 @@ class FluentFormAsyncRequest
 
         $actionFeeds = $actionFeedQuery->get();
 
-        if(!$actionFeeds) {
+        if($actionFeeds->isEmpty()) {
             return;
         }
 
@@ -223,7 +223,7 @@ class FluentFormAsyncRequest
             'origin_id' => $originId
         ])->get();
 
-        if (!$pendingFeeds) {
+        if ($pendingFeeds->isEmpty()) {
             do_action('fluentform/global_notify_completed', $originId, $form);
         }
     }

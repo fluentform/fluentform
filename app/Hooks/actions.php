@@ -1090,7 +1090,8 @@ add_action('enqueue_block_editor_assets', function () {
     $forms = wpFluent()->table('fluentform_forms')
         ->select(['id', 'title'])
         ->orderBy('id', 'DESC')
-        ->get();
+        ->get()
+        ->toArray();
 
     array_unshift($forms, (object) [
         'id'    => '',
@@ -1115,7 +1116,7 @@ add_action('enqueue_block_editor_assets', function () {
         'forms'                   => $forms,
         'style_presets'           => $presets,
         'theme_style'             => apply_filters('fluentform/load_theme_style', false) ? 'ffs_inherit_theme' : '',
-        'conversational_demo_img' => fluentformMix('img/conversational-form-demo.png'),
+        'conversational_demo_img' => fluentFormMix('img/conversational-form-demo.png'),
         'rest'                    => Helper::getRestInfo()
     ]);
 

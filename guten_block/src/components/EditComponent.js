@@ -235,7 +235,7 @@ function EditComponent({ attributes, setAttributes }) {
     } else {
         // Regular form selected - show preview only
         mainContent = (
-            <div className="fluent-form-preview-wrapper">
+            <div className="fluent-form-preview-wrapper" style={{ pointerEvents: 'none' }}>
                 <ServerSideRender
                     key={`ff-preview`}
                     block="fluentfom/guten-block"

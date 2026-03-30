@@ -597,9 +597,8 @@ class SubmissionService
             ]);
 
         if (defined('FLUENTFORMPRO')) {
-            // let's update the corresponding user IDs for transactions and
-            wpFluent()->table('fluentform_transactions')
-                ->where('submission_id', $submission->id)
+            // let's update the corresponding user IDs for transactions
+            \FluentForm\App\Models\Transaction::where('submission_id', $submission->id)
                 ->update([
                     'user_id'    => $userId,
                     'updated_at' => current_time('mysql'),

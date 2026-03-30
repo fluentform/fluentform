@@ -102,8 +102,7 @@ class Scheduler
 
         $paymentCounts = [];
         if(PaymentHelper::hasPaymentSettings()) {
-            $paymentCounts = wpFluent()->table('fluentform_transactions')
-                ->select([
+            $paymentCounts = \FluentForm\App\Models\Transaction::select([
                     wpFluent()->raw("SUM({$wpdb->prefix}fluentform_transactions.payment_total) as total_amount"),
                     'fluentform_transactions.form_id',
                     'fluentform_transactions.currency',
