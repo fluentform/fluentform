@@ -493,13 +493,21 @@ class SubmissionService
             ->orderBy('id', 'DESC')
             ->get();
 
+        // Batch-fetch users to avoid N+1 queries
+        $userIds = $notes->pluck('user_id')->filter()->unique()->values()->toArray();
+        $usersMap = [];
+        if (!empty($userIds)) {
+            $users = get_users(['include' => $userIds, 'fields' => ['ID', 'display_name']]);
+            foreach ($users as $user) {
+                $usersMap[$user->ID] = $user->display_name;
+            }
+        }
+
         foreach ($notes as $note) {
             if ($note->user_id) {
                 $note->pemalink = get_edit_user_link($note->user_id);
-                $user = get_user_by('ID', $note->user_id);
-
-                if ($user) {
-                    $note->created_by = $user->display_name;
+                if (isset($usersMap[$note->user_id])) {
+                    $note->created_by = $usersMap[$note->user_id];
                 } else {
                     $note->created_by = __('Fluent Forms Bot', 'fluentform');
                 }

@@ -95,6 +95,9 @@ class TransferService
                             if ("ffc_form_settings_generated_css" == $metaKey || "ffc_form_settings_meta" == $metaKey) {
                                 $metaValue = str_replace('ff_conv_app_' . Arr::get($formItem, 'id'), 'ff_conv_app_' . $formId, $metaValue);
                             }
+                            if (is_string($metaValue)) {
+                                $metaValue = wp_kses_post($metaValue);
+                            }
                             $settings = [
                                 'form_id'  => $formId,
                                 'meta_key' => $metaKey,
@@ -323,9 +326,11 @@ class TransferService
 
             $searchString = Arr::get($args, 'search');
             if ($searchString) {
-                $query->where(function ($q) use ($searchString) {
-                    $q->where('id', 'LIKE', "%{$searchString}%")
-                        ->orWhere('response', 'LIKE', "%{$searchString}%");
+                global $wpdb;
+                $escaped = $wpdb->esc_like($searchString);
+                $query->where(function ($q) use ($escaped) {
+                    $q->where('id', 'LIKE', "%{$escaped}%")
+                        ->orWhere('response', 'LIKE', "%{$escaped}%");
                 });
             }
         } else {
