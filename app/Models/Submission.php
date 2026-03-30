@@ -113,7 +113,7 @@ class Submission extends Model
         $startDate = Arr::get($dateRange, 0);
         $endDate = Arr::get($dateRange, 1);
         $search = Arr::get($attributes, 'search');
-        $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
+        $sortBy = \FluentForm\App\Helpers\Helper::sanitizeOrderValue(Arr::get($attributes, 'sort_by', 'DESC'));
 
         $wheres = [];
         $paymentStatuses = Arr::get($attributes, 'payment_statuses');
@@ -321,10 +321,12 @@ class Submission extends Model
             ->paginate()
             ->toArray();
 
+        $useHumanDate = apply_filters('fluentform/entries_human_date', false);
+
         foreach ($result['data'] as &$entry) {
             $entry['entry_url'] = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry['form_id'] . '#/entries/' . $entry['id']);
 
-            if (apply_filters('fluentform/entries_human_date', false)) {
+            if ($useHumanDate) {
                 $entry['human_date'] = human_time_diff(strtotime($entry['created_at']), strtotime(current_time('mysql')));
             }
         }

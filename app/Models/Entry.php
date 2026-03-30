@@ -65,7 +65,8 @@ class Entry extends Model
         $search = Arr::get($attributes, 'search');
         $wheres = Arr::get($attributes, 'wheres');
 
-        $query = $this->orderBy('id', $attributes['sort_by'])
+        $sortBy = \FluentForm\App\Helpers\Helper::sanitizeOrderValue(Arr::get($attributes, 'sort_by', 'DESC'));
+        $query = $this->orderBy('id', $sortBy)
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('form_id', $formId);
             })
@@ -89,11 +90,13 @@ class Entry extends Model
                     ->where('created_at', '<=', $endDate);
             })
             ->when($search, function ($q) use ($search) {
-                return $q->where(function ($q) use ($search) {
-                    return $q->where('id', 'LIKE', "%{$search}%")
-                        ->orWhere('response', 'LIKE', "%{$search}%")
-                        ->orWhere('status', 'LIKE', "%{$search}%")
-                        ->orWhere('created_at', 'LIKE', "%{$search}%");
+                global $wpdb;
+                $escaped = $wpdb->esc_like($search);
+                return $q->where(function ($q) use ($escaped) {
+                    return $q->where('id', 'LIKE', "%{$escaped}%")
+                        ->orWhere('response', 'LIKE', "%{$escaped}%")
+                        ->orWhere('status', 'LIKE', "%{$escaped}%")
+                        ->orWhere('created_at', 'LIKE', "%{$escaped}%");
                 });
             })
             ->when($wheres, function ($q) use ($wheres) {

@@ -18,7 +18,7 @@ class Logger
         $statuses = Arr::get($attributes, 'status');
         $formIds = Arr::get($attributes, 'form_id');
         $components = Arr::get($attributes, 'component');
-        $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
+        $sortBy = \FluentForm\App\Helpers\Helper::sanitizeOrderValue(Arr::get($attributes, 'sort_by', 'DESC'));
         $type = Arr::get($attributes, 'type', 'log');
         $dateRange = Arr::get($attributes, 'date_range', []);
         $startDate = Arr::get($dateRange, 0);
