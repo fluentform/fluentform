@@ -14,7 +14,7 @@ class EditorButtonModule
 
         $this->addMceButtonAssets();
 
-        $url = fluentformMix('img/icon_black_small.png');
+        $url = fluentFormMix('img/icon_black_small.png');
 
         echo "<button id='fluent_form_insert_button' class='button'><span style='background-image: url(" . esc_url($url) . "); width: 16px;height: 16px;background-repeat: no-repeat;display: inline-block;background-size: contain;opacity: 0.4;margin-right: 5px;vertical-align: middle;'></span>" . esc_html__('Add Form', 'fluentform') . '</button>';
     }
@@ -23,7 +23,7 @@ class EditorButtonModule
     {
         wp_enqueue_script(
             'fluentform_editor_script',
-            fluentformMix('js/fluentform_editor_script.js'),
+            fluentFormMix('js/fluentform_editor_script.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             false
@@ -35,7 +35,7 @@ class EditorButtonModule
 
         $forms = array_map(function ($item) {
             return ['value' => $item->id, 'text' => $item->title];
-        }, $forms);
+        }, $forms->toArray());
 
         wp_localize_script('fluentform_editor_script', 'fluentform_editor_vars', [
             'forms' => $forms,

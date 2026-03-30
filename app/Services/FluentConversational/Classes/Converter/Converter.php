@@ -560,21 +560,7 @@ class Converter
                 $question['subscriptionFieldType'] = $type;
                 $currency = PaymentHelper::getFormCurrency($form->id);
                 
-                // Filter out expired plans that are set to hide
-                $subscriptionOptions = $field['settings']['subscription_options'];
-                $visibleOptions = array_filter($subscriptionOptions, function ($opt) {
-                    return !PaymentHelper::isPlanExpiredAndHidden($opt);
-                });
-
-                if (empty($visibleOptions)) {
-                    continue;
-                }
-
-                foreach ($subscriptionOptions as $index => &$option) {
-                    if (PaymentHelper::isPlanExpiredAndHidden($option)) {
-                        continue;
-                    }
-
+                foreach ($field['settings']['subscription_options'] as $index => &$option) {
                     $hasCustomPayment = false;
                     
                     if (array_key_exists('user_input', $option) && 'yes' == $option['user_input']) {
@@ -616,19 +602,8 @@ class Converter
                     }
                 }
                 
-                $filteredPlans = array_values(array_filter($subscriptionOptions, function ($opt) {
-                    return !PaymentHelper::isPlanExpiredAndHidden($opt);
-                }));
-                $question['plans'] = $filteredPlans;
-
-                // Re-map default answer to the new re-indexed position
-                foreach ($filteredPlans as $newIndex => $plan) {
-                    if ('yes' == $plan['is_default'] && !$hasSaveAndResume) {
-                        $question['answer'] = $newIndex;
-                        break;
-                    }
-                }
-
+                $question['plans'] = $field['settings']['subscription_options'];
+                
                 if ('single' != $type) {
                     $question['options'] = $field['plans'];
                     $question['subscriptionFieldType'] = 'radio' == $field['settings']['selection_type'] ? 'FlowFormMultipleChoiceType' : 'FlowFormDropdownType';
@@ -1286,7 +1261,7 @@ class Converter
 
             \FluentFormPro\classes\DraftSubmissionsManager::migrate();
 
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
+            $draftForm = \FluentFormPro\Models\DraftSubmission::byHash($hash)->first();
 
             if ($draftForm) {
                 $saveAndResume = true;
@@ -1341,13 +1316,11 @@ class Converter
         }
 
         if ($hash) {
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')
-                ->where('hash', $hash)
+            $draftForm = \FluentFormPro\Models\DraftSubmission::byHash($hash)
                 ->where('form_id', $formId)
                 ->first();
         } elseif (!$draftForm && $userId = get_current_user_id()) {
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')
-                ->where('user_id', $userId)
+            $draftForm = \FluentFormPro\Models\DraftSubmission::byUser($userId)
                 ->where('form_id', $formId)
                 ->first();
         } else {

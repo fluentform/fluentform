@@ -296,16 +296,16 @@ class Menu
             'permissions'          => Acl::getCurrentUserPermissions(),
             'rest'                 => Helper::getRestInfo(),
             'card_brands'          => [
-                'visa'       => fluentformMix('img/card-brand/visa.jpg'),
-                'paypal'     => fluentformMix('img/card-brand/paypal.jpg'),
-                'mastercard' => fluentformMix('img/card-brand/mastercard.jpg'),
-                'amex'       => fluentformMix('img/card-brand/amex.jpg')
+                'visa'       => fluentFormMix('img/card-brand/visa.jpg'),
+                'paypal'     => fluentFormMix('img/card-brand/paypal.jpg'),
+                'mastercard' => fluentFormMix('img/card-brand/mastercard.jpg'),
+                'amex'       => fluentFormMix('img/card-brand/amex.jpg')
             ],
             'payment_icons'        => [
-                'offline' => fluentformMix('img/payment/offline.png'),
-                'mollie'  => fluentformMix('img/payment/mollie.png'),
-                'paypal'  => fluentformMix('img/payment/paypal.png'),
-                'stripe'  => fluentformMix('img/payment/stripe.png')
+                'offline' => fluentFormMix('img/payment/offline.png'),
+                'mollie'  => fluentFormMix('img/payment/mollie.png'),
+                'paypal'  => fluentFormMix('img/payment/paypal.png'),
+                'stripe'  => fluentFormMix('img/payment/stripe.png')
             ],
             'forms'                => $forms,
             'hasPro'               => defined('FLUENTFORMPRO'),
@@ -786,13 +786,13 @@ class Menu
             'hasPDF'               => defined('FLUENTFORM_PDF_VERSION'),
             'hasFluentCRM'         => defined('FLUENTCRM'),
             'upgrade_url'          => fluentform_upgrade_url(),
-            'ace_path_url'         => fluentformMix('libs/ace'),
+            'ace_path_url'         => fluentFormMix('libs/ace'),
             'is_conversion_form'   => Helper::isConversionForm($form_id),
             'has_fluent_smtp'      => defined('FLUENTMAIL'),
             'fluent_smtp_url'      => admin_url('admin.php?page=fluent_forms_smtp'),
             'form_settings_str'    => TranslationString::getSettingsI18n(),
             'integrationsResource' => [
-                'asset_url'   => fluentformMix('img/integrations.png'),
+                'asset_url'   => fluentFormMix('img/integrations.png'),
                 'list_url'    => fluentform_integrations_url(),
                 'instruction' => __("Fluent Forms Pro has tons of integrations to take your forms to the next level. From payment gateways to quiz building, SMS notifications to email marketing - you'll get integrations for various purposes. Even if you don't find your favorite tools, you can integrate them easily with Zapier.", 'fluentform'),
             ],
@@ -836,7 +836,7 @@ class Menu
             'adminUrl'                => admin_url('admin.php?page=fluent_forms'),
             'adminUrlWithoutPageHash' => admin_url('admin.php'),
             'isDisableAnalytics'      => $this->app->applyFilters('fluentform/disabled_analytics', $isDisabledAnalytics),
-            'plugin_public_url'       => fluentformMix(),
+            'plugin_public_url'       => fluentFormMix(),
             'siteUrl'                 => site_url(),
         ];
 
@@ -1011,7 +1011,7 @@ class Menu
         $data = [
             'plugin'                         => $pluginSlug,
             'form_id'                        => $formId,
-            'plugin_public_url'              => fluentformMix(),
+            'plugin_public_url'              => fluentFormMix(),
             'preview_url'                    => Helper::getPreviewUrl($formId),
             'form'                           => $form,
             'hasPro'                         => defined('FLUENTFORMPRO'),
@@ -1226,7 +1226,7 @@ class Menu
         );
 
         $this->app->view->render('admin.global_menu', [
-            'logo' => fluentformMix('img/fluentform-logo.svg'),
+            'logo' => fluentFormMix('img/fluentform-logo.svg'),
             'show_payment'         => $showPayment,
             'show_payment_entries' => apply_filters('fluentform/show_payment_entries', $showPaymentEntry),
         ]);
@@ -1246,13 +1246,13 @@ class Menu
 
     public function renderSmtpPromo()
     {
-        wp_enqueue_script('fluentform_admin_notice', fluentformMix('js/admin_notices.js'), [
+        wp_enqueue_script('fluentform_admin_notice', fluentFormMix('js/admin_notices.js'), [
             'jquery',
         ], FLUENTFORM_VERSION, true);
 
         $this->app->view->render('admin.smtp.index', [
-            'logo'         => fluentformMix('img/fluentsmtp.svg'),
-            'banner_image' => fluentformMix('img/fluentsmtp-banner.png'),
+            'logo'         => fluentFormMix('img/fluentsmtp.svg'),
+            'banner_image' => fluentFormMix('img/fluentsmtp-banner.png'),
             'is_installed' => defined('FLUENTMAIL'),
             'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
         ]);

@@ -39,7 +39,7 @@ class Protector
 
         $ciphertext_raw = openssl_encrypt($text, $cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
 
-        $hmac = hash_hmac('sha256', $iv . $ciphertext_raw, $key, $as_binary = true);
+        $hmac = hash_hmac('sha256', $ciphertext_raw, $key, $as_binary = true);
 
         return base64_encode($iv . $hmac . $ciphertext_raw);
     }
@@ -55,32 +55,24 @@ class Protector
     {
         $key = static::getSalt();
 
-        $c = base64_decode($text, true);
+        $c = base64_decode($text);
 
         $cipher = 'AES-128-CBC';
 
         $ivlen = openssl_cipher_iv_length($cipher);
 
-        $sha2len = 32;
-
-        if ($c === false || strlen($c) < $ivlen + $sha2len) {
-            return null;
-        }
-
         $iv = substr($c, 0, $ivlen);
 
-        $hmac = substr($c, $ivlen, $sha2len);
+        $hmac = substr($c, $ivlen, $sha2len = 32);
 
         $ciphertext_raw = substr($c, $ivlen + $sha2len);
 
-        $calcmac = hash_hmac('sha256', $iv . $ciphertext_raw, $key, $as_binary = true);
-
-        if (!hash_equals($hmac, $calcmac)) {
-            return null;
-        }
-
         $original_plaintext = openssl_decrypt($ciphertext_raw, $cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
 
-        return $original_plaintext !== false ? $original_plaintext : null;
+        $calcmac = hash_hmac('sha256', $ciphertext_raw, $key, $as_binary = true);
+
+        if (hash_equals($hmac, $calcmac)) { // timing attack safe comparison
+            return $original_plaintext;
+        }
     }
 }

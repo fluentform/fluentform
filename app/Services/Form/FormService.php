@@ -363,7 +363,7 @@ class FormService
                 'title'       => __('Action Hook', 'fluentform'),
                 'description' => __('Action Hook is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/action-hook.png'),
+                'image'       => fluentFormMix('img/pro-fields/action-hook.png'),
                 'video'       => '',
             ];
             $disabled['form_step']   = [
@@ -395,7 +395,7 @@ class FormService
                 'title'       => __('Chained Select Field', 'fluentform'),
                 'description' => __('Chained Select Field is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/chained-select-field.png'),
+                'image'       => fluentFormMix('img/pro-fields/chained-select-field.png'),
                 'video'       => '',
             ];
             $disabled['phone'] = [
@@ -403,7 +403,7 @@ class FormService
                 'title'       => 'Phone Field',
                 'description' => __('Phone Field is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/phone-field.png'),
+                'image'       => fluentFormMix('img/pro-fields/phone-field.png'),
                 'video'       => '',
             ];
             $disabled['rich_text_input'] = [
@@ -411,7 +411,7 @@ class FormService
                 'title'       => __('Rich Text Input', 'fluentform'),
                 'description' => __('Rich Text Input is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/rich-text-input.png'),
+                'image'       => fluentFormMix('img/pro-fields/rich-text-input.png'),
                 'video'       => '',
             ];
             $disabled['save_progress_button'] = [
@@ -419,7 +419,7 @@ class FormService
                 'title'       => __('Save & Resume', 'fluentform'),
                 'description' => __('Save & Resume is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/save-progress-button.png'),
+                'image'       => fluentFormMix('img/pro-fields/save-progress-button.png'),
                 'video'       => '',
             ];
             $disabled['cpt_selection'] = [
@@ -427,7 +427,7 @@ class FormService
                 'title'       => __('Post/CPT Selection', 'fluentform'),
                 'description' => __('Post/CPT Selection is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/post-cpt-selection.png'),
+                'image'       => fluentFormMix('img/pro-fields/post-cpt-selection.png'),
                 'video'       => '',
             ];
             $disabled['quiz_score'] = [
@@ -443,7 +443,7 @@ class FormService
                 'title'       => __('Net Promoter Score', 'fluentform'),
                 'description' => __('Net Promoter Score is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/net-promoter-score.png'),
+                'image'       => fluentFormMix('img/pro-fields/net-promoter-score.png'),
                 'video'       => '',
             ];
             $disabled['dynamic_field'] = [
@@ -474,7 +474,7 @@ class FormService
                 'title'       => __('Color Picker', 'fluentform'),
                 'description' => __('Color Picker is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/color-picker.png'),
+                'image'       => fluentFormMix('img/pro-fields/color-picker.png'),
                 'video'       => '',
             ];
             $disabled['payment_coupon'] = [
@@ -482,14 +482,14 @@ class FormService
                 'title'       => __('Coupon', 'fluentform'),
                 'description' => __('Coupon is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/coupon.png'),
+                'image'       => fluentFormMix('img/pro-fields/coupon.png'),
                 'video'       => '',
             ];
             $disabled['accordion'] = [
                 'disabled'    => true,
                 'title'       => __('Accordion/Tab', 'fluentform'),
                 'description' => __('Accordion/Tab is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/accordion-tab.png'),
+                'image'       => fluentFormMix('img/pro-fields/accordion-tab.png'),
                 'video'       => '',
             ];
         }

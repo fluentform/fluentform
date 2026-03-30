@@ -3,7 +3,7 @@
         'name' => 'wpfluent/wpfluent',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '50aa490103a8d7ae8e50ddc269d7567b34d44910',
+        'reference' => 'a42a35711f6d98b3f3dafb5e5153bde9532f5877',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(
@@ -13,18 +13,18 @@
     ),
     'versions' => array(
         'openspout/openspout' => array(
-            'pretty_version' => 'v3.7.4',
-            'version' => '3.7.4.0',
-            'reference' => 'dfbbd53b5edcd486b45a37f6a04fac33073c70f3',
+            'pretty_version' => 'v4.28.5',
+            'version' => '4.28.5.0',
+            'reference' => 'ab05a09fe6fce57c90338f83280648a9786ce36b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../openspout/openspout',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'wpfluent/framework' => array(
-            'pretty_version' => '1.0.19',
-            'version' => '1.0.19.0',
-            'reference' => 'e7c043b2a431b1bcd98ff658f47a137e8d21d673',
+            'pretty_version' => '2.11.15',
+            'version' => '2.11.15.0',
+            'reference' => 'efe9e25769376cde6da00d23842e3aa4cb30199d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../wpfluent/framework',
             'aliases' => array(),
@@ -33,7 +33,7 @@
         'wpfluent/wpfluent' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '50aa490103a8d7ae8e50ddc269d7567b34d44910',
+            'reference' => 'a42a35711f6d98b3f3dafb5e5153bde9532f5877',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(

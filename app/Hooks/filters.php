@@ -255,12 +255,11 @@ foreach ($fluentformRules as $fluentformRuleName) {
     );
 }
 
-
 $app->addFilter('fluentform/response_render_textarea', function ($value, $field, $formId, $isHtml) {
     if (!$value || !is_string($value)) {
         return $value;
     }
-
+    
     return nl2br($value);
 }, 10, 4);
 

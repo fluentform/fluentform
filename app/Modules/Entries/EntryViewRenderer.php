@@ -55,7 +55,7 @@ class EntryViewRenderer
             'no_found_text'       => __('Sorry! No entries found. All your entries will be shown here once you start getting form submissions',
                 'fluentform'),
             'has_pro'             => defined('FLUENTFORMPRO'),
-            'printStyles'         => [fluentformMix('css/settings_global.css')],
+            'printStyles'         => [fluentFormMix('css/settings_global.css')],
             'email_notifications' => $formattedNotification,
             'available_countries' => getFluentFormCountryList(),
             'upgrade_url'         => fluentform_upgrade_url(),

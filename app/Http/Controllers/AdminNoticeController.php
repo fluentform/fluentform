@@ -58,15 +58,15 @@ class AdminNoticeController extends Controller
                 return;
             }
         }
-        wp_enqueue_style('fluentform_admin_notice', fluentformMix('css/admin_notices.css'), [], FLUENTFORM_VERSION);
-        wp_enqueue_script('fluentform_admin_notice', fluentformMix('js/admin_notices.js'), array(
+        wp_enqueue_style('fluentform_admin_notice', fluentFormMix('css/admin_notices.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_script('fluentform_admin_notice', fluentFormMix('js/admin_notices.js'), array(
             'jquery'
         ), FLUENTFORM_VERSION, true);
         wpFluentForm('view')->render('admin.notices.info', array(
             'notice'        => $notice,
             'show_logo'     => false,
             'show_hide_nag' => false,
-            'logo_url'      => fluentformMix('img/fluent_icon.svg')
+            'logo_url'      => fluentFormMix('img/fluent_icon.svg')
         ));
     }
     

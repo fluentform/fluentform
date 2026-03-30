@@ -2,14 +2,15 @@
 
 namespace FluentForm\App\Modules;
 
+
 class DocumentationModule
 {
     public function render()
     {
         wp_enqueue_script('fluentform-docs');
         wpFluentForm('view')->render('admin.docs.index', [
-            'public_url' => fluentformMix(),
-            'icon_path_url' => fluentformMix(''),
+            'public_url' => fluentFormMix(),
+            'icon_path_url' => fluentFormMix(''),
             'user_guides'   => $this->getUserGuides(),
         ]);
     }

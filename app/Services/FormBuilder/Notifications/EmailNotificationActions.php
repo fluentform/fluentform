@@ -39,7 +39,7 @@ class EmailNotificationActions
             ->where('meta_key', 'notifications')
             ->get();
 
-        if (! $emailFeeds) {
+        if ($emailFeeds->isEmpty()) {
             return;
         }
 

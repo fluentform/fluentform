@@ -19,7 +19,7 @@ class SubmissionPrint
         $formId = intval(Arr::get($attr, 'form_id'));
         $form = Helper::getForm($formId);
         $submissions = Submission::whereIn('id', $submissionIds)->orderBy('id', $orderBy)->get();
-        if (!$submissions || !$form) {
+        if ($submissions->isEmpty() || !$form) {
             // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new \Exception(__('Invalid Submissions', 'fluentform'));
         }

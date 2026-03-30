@@ -80,9 +80,6 @@ class SubmissionService
                 $submission->_entry_uid_hash = Arr::get($meta, '0.value');
                 $this->setEntryUidLink($submission);
             }
-        
-            $submission = apply_filters('fluentform/submission_before_parse', $submission, $form);
-        
             $submission = FormDataParser::parseFormEntry($submission, $form, null, true);
             $this->enrichWithUser($submission);
 
@@ -597,9 +594,8 @@ class SubmissionService
             ]);
 
         if (defined('FLUENTFORMPRO')) {
-            // let's update the corresponding user IDs for transactions and
-            wpFluent()->table('fluentform_transactions')
-                ->where('submission_id', $submission->id)
+            // let's update the corresponding user IDs for transactions
+            \FluentForm\App\Models\Transaction::where('submission_id', $submission->id)
                 ->update([
                     'user_id'    => $userId,
                     'updated_at' => current_time('mysql'),

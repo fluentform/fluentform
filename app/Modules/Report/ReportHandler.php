@@ -55,7 +55,7 @@ class ReportHandler
         ]);
 
         $this->app->view->render('admin.reports.index', [
-            'logo' => fluentformMix('img/fluentform-logo.svg'),
+            'logo' => fluentFormMix('img/fluentform-logo.svg'),
         ]);
     }
 }

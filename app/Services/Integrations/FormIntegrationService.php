@@ -198,7 +198,7 @@ class FormIntegrationService
         }
         $formattedFeeds = [];
       
-        if (!empty($feeds)) {
+        if (count($feeds)) {
             foreach ($feeds as $feed) {
                 $data = json_decode($feed->value, true);
                 $enabled = $data['enabled'];
