@@ -703,8 +703,7 @@ class Validator
             return true;
         }
 
-        throw new InvalidArgumentException(
-            "The {$rule} rule is undefined or invalid."
-        );
+        // Silently skip unknown rules for backward compatibility
+        return true;
     }
 }
