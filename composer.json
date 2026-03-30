@@ -50,6 +50,9 @@
             "FluentForm\\App\\ComposerScript::postUpdate"
         ]
     },
+    "config": {
+        "platform-check": false
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

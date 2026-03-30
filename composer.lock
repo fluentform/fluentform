@@ -100,12 +100,12 @@
             "version": "2.11.15",
             "source": {
                 "type": "git",
-                "url": "git@github.com:wpfluent/framework2x.git",
+                "url": "git@github.com:wpfluent/framework.git",
                 "reference": "efe9e25769376cde6da00d23842e3aa4cb30199d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wpfluent/framework2x/zipball/efe9e25769376cde6da00d23842e3aa4cb30199d",
+                "url": "https://api.github.com/repos/wpfluent/framework/zipball/efe9e25769376cde6da00d23842e3aa4cb30199d",
                 "reference": "efe9e25769376cde6da00d23842e3aa4cb30199d",
                 "shasum": ""
             },
@@ -134,10 +134,6 @@
                 }
             ],
             "description": "A lightweight rest api based framework to build WordPress plugins.",
-            "support": {
-                "source": "https://github.com/wpfluent/framework2x/tree/2.11.15",
-                "issues": "https://github.com/wpfluent/framework2x/issues"
-            },
             "time": "2026-03-19T06:03:58+00:00"
         }
     ],
