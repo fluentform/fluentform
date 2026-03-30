@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\FormBuilder\Components;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Text extends BaseComponent
@@ -48,7 +49,7 @@ class Text extends BaseComponent
         if (isset($data['attributes']['data-mask'])) {
             wp_enqueue_script(
                 'jquery-mask',
-                fluentFormMix('libs/jquery.mask.min.js'),
+                Enqueue::getStaticFilePath('libs/jquery.mask.min.js'),
                 ['jquery'],
                 '1.14.15',
                 true
@@ -153,7 +154,7 @@ class Text extends BaseComponent
                     $data['attributes']['data-formatter'] = json_encode($formatters[$formatter]['settings']);
                     wp_enqueue_script(
                         'currency',
-                        fluentFormMix('libs/currency.min.js'),
+                        Enqueue::getStaticFilePath('libs/currency.min.js'),
                         [],
                         '2.0.3',
                         true

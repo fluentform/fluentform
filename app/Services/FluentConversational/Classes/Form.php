@@ -8,6 +8,7 @@ use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeSettings;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Form\Settings\FormCssJs;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\FluentConversational\Classes\Elements\WelcomeScreen;
 
@@ -69,7 +70,7 @@ class Form
 
         wp_enqueue_script(
             'fluent_forms_conversational_design',
-            fluentFormMix('js/conversational_design.js'),
+            Enqueue::getStaticFilePath('js/conversational_design.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -100,7 +101,7 @@ class Form
 
         wp_enqueue_style(
             'fluent_forms_conversion_style',
-            fluentFormMix('css/conversational_design.css'),
+            Enqueue::getStaticFilePath('css/conversational_design.css'),
             [],
             FLUENTFORM_VERSION
         );
@@ -956,9 +957,9 @@ class Form
             'source_url'                => Helper::getFrontendFacingUrl($_SERVER['REQUEST_URI']),
             'form_id'                   => $formId,
             'nonce'                     => wp_create_nonce(),
-            'copy_button'               => fluentFormMix('img/copy.svg'),
-            'copy_success_button'       => fluentFormMix('img/check.svg'),
-            'email_button'              => fluentFormMix('img/email.svg'),
+            'copy_button'               => Enqueue::getStaticFilePath('img/copy.svg'),
+            'copy_success_button'       => Enqueue::getStaticFilePath('img/check.svg'),
+            'email_button'              => Enqueue::getStaticFilePath('img/email.svg'),
             'email_placeholder_str'     => __('Your Email Here', 'fluentform'),
             'email_resume_link_enabled' => false,
             'save_progress_btn_name'    => ArrayHelper::get($field, 'attributes.name'),

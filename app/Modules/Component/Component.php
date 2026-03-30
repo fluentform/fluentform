@@ -7,6 +7,7 @@ use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Services\FormBuilder\EditorShortcodeParser;
 use FluentForm\App\Services\FormBuilder\Notifications\EmailNotificationActions;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
@@ -44,12 +45,12 @@ class Component
 
         // We will just register the scripts here. We will not load any scripts from here
 
-        $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
-        $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
+        $fluentFormPublicCss = Enqueue::getStaticFilePath('css/fluent-forms-public.css');
+        $fluentFormPublicDefaultCss = Enqueue::getStaticFilePath('css/fluentform-public-default.css');
 
         if (is_rtl()) {
-            $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public-rtl.css');
-            $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
+            $fluentFormPublicCss = Enqueue::getStaticFilePath('css/fluent-forms-public-rtl.css');
+            $fluentFormPublicDefaultCss = Enqueue::getStaticFilePath('css/fluentform-public-default-rtl.css');
         }
 
         wp_register_style(
@@ -68,7 +69,7 @@ class Component
 
         wp_register_script(
             'fluent-form-submission',
-            fluentFormMix('js/form-submission.js'),
+            Enqueue::getStaticFilePath('js/form-submission.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -76,7 +77,7 @@ class Component
 
         wp_register_script(
             'fluentform-advanced',
-            fluentFormMix('js/fluentform-advanced.js'),
+            Enqueue::getStaticFilePath('js/fluentform-advanced.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -87,7 +88,7 @@ class Component
         if (!wp_script_is('flatpickr', 'registered')) {
             wp_register_style(
                 'flatpickr',
-                fluentFormMix('libs/flatpickr/flatpickr.min.css'),
+                Enqueue::getStaticFilePath('libs/flatpickr/flatpickr.min.css'),
                 [],
                 '4.6.9'
             );
@@ -95,7 +96,7 @@ class Component
         // Date Pickckr Script
         wp_register_script(
             'flatpickr',
-            fluentFormMix('libs/flatpickr/flatpickr.min.js'),
+            Enqueue::getStaticFilePath('libs/flatpickr/flatpickr.min.js'),
             ['jquery'],
             '4.6.9',
             true
@@ -103,7 +104,7 @@ class Component
 
         wp_register_script(
             'choices',
-            fluentFormMix('libs/choices/choices.min.js'),
+            Enqueue::getStaticFilePath('libs/choices/choices.min.js'),
             [],
             '9.0.1',
             true
@@ -111,14 +112,14 @@ class Component
 
         wp_register_style(
             'ff_choices',
-            fluentFormMix('css/choices.css'),
+            Enqueue::getStaticFilePath('css/choices.css'),
             [],
             FLUENTFORM_VERSION
         );
 
         wp_register_script(
             'form-save-progress',
-            fluentFormMix('js/form-save-progress.js'),
+            Enqueue::getStaticFilePath('js/form-save-progress.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -300,7 +301,7 @@ class Component
                 'disabled'    => true,
                 'title'       => __('Action Hook', 'fluentform'),
                 'description' => __('Action Hook is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/action-hook.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/action-hook.png'),
                 'video'       => '',
             ],
             'form_step' => [
@@ -331,35 +332,35 @@ class Component
                 'disabled'    => true,
                 'title'       => __('Chained Select Field', 'fluentform'),
                 'description' => __('Chained Select Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/chained-select-field.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/chained-select-field.png'),
                 'video'       => '',
             ];
             $disabled['phone'] = [
                 'disabled'    => true,
                 'title'       => 'Phone Field',
                 'description' => __('Phone Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/phone-field.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/phone-field.png'),
                 'video'       => '',
             ];
             $disabled['rich_text_input'] = [
                 'disabled'    => true,
                 'title'       => __('Rich Text Input', 'fluentform'),
                 'description' => __('Rich Text Input is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/rich-text-input.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/rich-text-input.png'),
                 'video'       => '',
             ];
             $disabled['save_progress_button'] = [
                 'disabled'    => true,
                 'title'       => __('Save & Resume', 'fluentform'),
                 'description' => __('Save & Resume is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/save-progress-button.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/save-progress-button.png'),
                 'video'       => '',
             ];
             $disabled['cpt_selection'] = [
                 'disabled'    => true,
                 'title'       => __('Post/CPT Selection', 'fluentform'),
                 'description' => __('Post/CPT Selection is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/post-cpt-selection.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/post-cpt-selection.png'),
                 'video'       => '',
             ];
             $disabled['quiz_score'] = [
@@ -373,7 +374,7 @@ class Component
                 'disabled'    => true,
                 'title'       => __('Net Promoter Score', 'fluentform'),
                 'description' => __('Net Promoter Score is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/net-promoter-score.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/net-promoter-score.png'),
                 'video'       => '',
             ];
             $disabled['dynamic_field'] = [
@@ -401,14 +402,14 @@ class Component
                 'disabled'    => true,
                 'title'       => __('Color Picker', 'fluentform'),
                 'description' => __('Color Picker is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/color-picker.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/color-picker.png'),
                 'video'       => '',
             ];
             $disabled['payment_coupon'] = [
                 'disabled'    => true,
                 'title'       => __('Coupon', 'fluentform'),
                 'description' => __('Coupon is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentFormMix('img/pro-fields/coupon.png'),
+                'image'       => Enqueue::getStaticFilePath('img/pro-fields/coupon.png'),
                 'video'       => '',
             ];
         }

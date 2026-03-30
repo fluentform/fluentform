@@ -1,17 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace OpenSpout\Reader\Wrapper;
 
-use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Reader\Exception\XMLProcessingException;
-use ZipArchive;
-
 /**
- * @internal
+ * Wrapper around the built-in XMLReader.
+ *
+ * @see \XMLReader
  */
-final class XMLReader extends \XMLReader
+class XMLReader extends \XMLReader
 {
     use XMLInternalErrorsHelper;
 
@@ -25,13 +21,14 @@ final class XMLReader extends \XMLReader
      *
      * @return bool TRUE on success or FALSE on failure
      */
-    public function openFileInZip(string $zipFilePath, string $fileInsideZipPath): bool
+    public function openFileInZip($zipFilePath, $fileInsideZipPath)
     {
         $wasOpenSuccessful = false;
         $realPathURI = $this->getRealPathURIForFileInZip($zipFilePath, $fileInsideZipPath);
 
         // We need to check first that the file we are trying to read really exist because:
         //  - PHP emits a warning when trying to open a file that does not exist.
+        //  - HHVM does not check if file exists within zip file (@link https://github.com/facebook/hhvm/issues/5779)
         if ($this->fileExistsWithinZip($realPathURI)) {
             $wasOpenSuccessful = $this->open($realPathURI, null, LIBXML_NONET);
         }
@@ -48,17 +45,12 @@ final class XMLReader extends \XMLReader
      *
      * @return string The real path URI
      */
-    public function getRealPathURIForFileInZip(string $zipFilePath, string $fileInsideZipPath): string
+    public function getRealPathURIForFileInZip($zipFilePath, $fileInsideZipPath)
     {
         // The file path should not start with a '/', otherwise it won't be found
         $fileInsideZipPathWithoutLeadingSlash = ltrim($fileInsideZipPath, '/');
 
-        $realpath = realpath($zipFilePath);
-        if (false === $realpath) {
-            throw new IOException("Could not open {$zipFilePath} for reading! File does not exist.");
-        }
-
-        return self::ZIP_WRAPPER.$realpath.'#'.$fileInsideZipPathWithoutLeadingSlash;
+        return self::ZIP_WRAPPER.realpath($zipFilePath).'#'.$fileInsideZipPathWithoutLeadingSlash;
     }
 
     /**
@@ -66,9 +58,12 @@ final class XMLReader extends \XMLReader
      *
      * @see \XMLReader::read
      *
-     * @throws XMLProcessingException If an error/warning occurred
+     * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
+     *
+     * @return bool TRUE on success or FALSE on failure
      */
-    public function read(): bool
+    #[\ReturnTypeWillChange]
+    public function read()
     {
         $this->useXMLInternalErrors();
 
@@ -84,11 +79,11 @@ final class XMLReader extends \XMLReader
      *
      * @param string $nodeName Name of the node to find
      *
-     * @return bool TRUE on success or FALSE on failure
+     * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
      *
-     * @throws XMLProcessingException If an error/warning occurred
+     * @return bool TRUE on success or FALSE on failure
      */
-    public function readUntilNodeFound(string $nodeName): bool
+    public function readUntilNodeFound($nodeName)
     {
         do {
             $wasReadSuccessful = $this->read();
@@ -105,9 +100,12 @@ final class XMLReader extends \XMLReader
      *
      * @param null|string $localName The name of the next node to move to
      *
-     * @throws XMLProcessingException If an error/warning occurred
+     * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
+     *
+     * @return bool TRUE on success or FALSE on failure
      */
-    public function next($localName = null): bool
+    #[\ReturnTypeWillChange]
+    public function next($localName = null)
     {
         $this->useXMLInternalErrors();
 
@@ -119,17 +117,21 @@ final class XMLReader extends \XMLReader
     }
 
     /**
+     * @param string $nodeName
+     *
      * @return bool Whether the XML Reader is currently positioned on the starting node with given name
      */
-    public function isPositionedOnStartingNode(string $nodeName): bool
+    public function isPositionedOnStartingNode($nodeName)
     {
         return $this->isPositionedOnNode($nodeName, self::ELEMENT);
     }
 
     /**
+     * @param string $nodeName
+     *
      * @return bool Whether the XML Reader is currently positioned on the ending node with given name
      */
-    public function isPositionedOnEndingNode(string $nodeName): bool
+    public function isPositionedOnEndingNode($nodeName)
     {
         return $this->isPositionedOnNode($nodeName, self::END_ELEMENT);
     }
@@ -137,7 +139,7 @@ final class XMLReader extends \XMLReader
     /**
      * @return string The name of the current node, un-prefixed
      */
-    public function getCurrentNodeName(): string
+    public function getCurrentNodeName()
     {
         return $this->localName;
     }
@@ -149,16 +151,16 @@ final class XMLReader extends \XMLReader
      *
      * @return bool TRUE if the file exists, FALSE otherwise
      */
-    private function fileExistsWithinZip(string $zipStreamURI): bool
+    protected function fileExistsWithinZip($zipStreamURI)
     {
         $doesFileExists = false;
 
         $pattern = '/zip:\/\/([^#]+)#(.*)/';
-        if (1 === preg_match($pattern, $zipStreamURI, $matches)) {
+        if (preg_match($pattern, $zipStreamURI, $matches)) {
             $zipFilePath = $matches[1];
             $innerFilePath = $matches[2];
 
-            $zip = new ZipArchive();
+            $zip = new \ZipArchive();
             if (true === $zip->open($zipFilePath)) {
                 $doesFileExists = (false !== $zip->locateName($innerFilePath));
                 $zip->close();
@@ -169,9 +171,12 @@ final class XMLReader extends \XMLReader
     }
 
     /**
+     * @param string $nodeName
+     * @param int    $nodeType
+     *
      * @return bool Whether the XML Reader is currently positioned on the node with given name and type
      */
-    private function isPositionedOnNode(string $nodeName, int $nodeType): bool
+    private function isPositionedOnNode($nodeName, $nodeType)
     {
         /**
          * In some cases, the node has a prefix (for instance, "<sheet>" can also be "<x:sheet>").
@@ -179,7 +184,7 @@ final class XMLReader extends \XMLReader
          *
          * @see https://github.com/box/spout/issues/233
          */
-        $hasPrefix = str_contains($nodeName, ':');
+        $hasPrefix = (false !== strpos($nodeName, ':'));
         $currentNodeName = ($hasPrefix) ? $this->name : $this->localName;
 
         return $this->nodeType === $nodeType && $currentNodeName === $nodeName;

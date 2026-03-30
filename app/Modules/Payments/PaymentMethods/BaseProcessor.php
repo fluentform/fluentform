@@ -13,6 +13,7 @@ use FluentForm\App\Models\Submission;
 use FluentForm\App\Models\Subscription;
 use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\App\Models\Transaction;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Services\Form\SubmissionHandlerService;
@@ -452,7 +453,7 @@ abstract class BaseProcessor
         });
 
         add_action('wp_enqueue_scripts', function () {
-            wp_enqueue_style('fluent-form-landing', fluentFormMix('css/frameless.css'), [], FLUENTFORM_VERSION);
+            wp_enqueue_style('fluent-form-landing', Enqueue::getStaticFilePath('css/frameless.css'), [], FLUENTFORM_VERSION);
         });
 
         status_header(200);

@@ -1,25 +1,24 @@
 <?php
 
-declare(strict_types=1);
-
 namespace OpenSpout\Writer\Common\Helper;
 
-use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\FileSystemHelperInterface;
 
 /**
- * @internal
+ * This interface describes helper functions to help with the file system operations
+ * like files/folders creation & deletion.
  */
 interface FileSystemWithRootFolderHelperInterface extends FileSystemHelperInterface
 {
     /**
      * Creates all the folders needed to create a spreadsheet, as well as the files that won't change.
      *
-     * @throws IOException If unable to create at least one of the base folders
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create at least one of the base folders
      */
-    public function createBaseFilesAndFolders(): void;
+    public function createBaseFilesAndFolders();
 
-    public function getRootFolder(): string;
-
-    public function getSheetsContentTempFolder(): string;
+    /**
+     * @return string
+     */
+    public function getRootFolder();
 }

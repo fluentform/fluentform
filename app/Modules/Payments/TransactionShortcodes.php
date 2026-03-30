@@ -5,6 +5,7 @@ namespace FluentForm\App\Modules\Payments   ;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Subscription;
 use FluentForm\App\Models\Transaction;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\Classes\PaymentReceipt;
 use FluentForm\App\Modules\Payments\Orders\OrderData;
@@ -56,11 +57,11 @@ class TransactionShortcodes
         if ($atts['type'] == 'all' || $atts['type'] == 'subscriptions') {
             $subscriptionsHtml = $this->getSubscriptionsHtml($userId, $viewConfig, $atts);
             if ($subscriptionsHtml) {
-                wp_enqueue_script('fluentform_transactions', fluentFormMix('js/fluentform_transactions_ui.js'), ['jquery'], FLUENTFORM_VERSION, true);
+                wp_enqueue_script('fluentform_transactions', Enqueue::getStaticFilePath('js/fluentform_transactions_ui.js'), ['jquery'], FLUENTFORM_VERSION, true);
 
                 wp_enqueue_style(
                     'fluentform_transactions',
-                    fluentFormMix('css/fluentform_transactions.css'),
+                    Enqueue::getStaticFilePath('css/fluentform_transactions.css'),
                     [],
                     FLUENTFORM_VERSION
                 );
@@ -130,7 +131,7 @@ class TransactionShortcodes
         }
 
         add_action('wp_enqueue_scripts', function () {
-            wp_enqueue_style('fluent-form-landing', fluentFormMix('css/frameless.css'), [], FLUENTFORM_VERSION);
+            wp_enqueue_style('fluent-form-landing', Enqueue::getStaticFilePath('css/frameless.css'), [], FLUENTFORM_VERSION);
         });
 
         $form = fluentFormApi('forms')->find($transaction->form_id);

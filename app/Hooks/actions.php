@@ -3,6 +3,7 @@
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 /**
@@ -573,7 +574,7 @@ $app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use 
     }
 
     $app->view->render('admin.addons.pdf_promo', [
-        'public_url'   => fluentFormMix(),
+        'public_url'   => Enqueue::getStaticFilePath(),
         'install_url'  => $url,
         'is_installed' => defined('FLUENTFORM_PDF_VERSION'),
     ]);
@@ -687,7 +688,7 @@ add_action('wp', function () use ($app) {
             wp_enqueue_script('jquery');
             wp_enqueue_script(
                 'fluent_forms_global',
-                fluentFormMix('js/fluent_forms_global.js'),
+                Enqueue::getStaticFilePath('js/fluent_forms_global.js'),
                 ['jquery'],
                 FLUENTFORM_VERSION,
                 true
@@ -721,11 +722,11 @@ add_action('wp', function () use ($app) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
-            wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'), [], FLUENTFORM_VERSION);
+            wp_enqueue_style('fluent-form-preview', Enqueue::getStaticFilePath('css/preview.css'), [], FLUENTFORM_VERSION);
             if (!defined('FLUENTFORMPRO')) {
                 wp_enqueue_script(
                     'fluentform-preview_app',
-                    fluentFormMix('js/form_preview_app.js'),
+                    Enqueue::getStaticFilePath('js/form_preview_app.js'),
                     ['jquery'],
                     FLUENTFORM_VERSION,
                     true
@@ -1074,14 +1075,14 @@ add_action('enqueue_block_editor_assets', function () {
 
     wp_enqueue_script(
         'fluentform-gutenberg-block',
-        fluentFormMix('js/fluent_gutenblock.js'),
+        Enqueue::getStaticFilePath('js/fluent_gutenblock.js'),
         ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components','wp-server-side-render', 'wp-block-editor'],
         FLUENTFORM_VERSION,
         true
     );
     wp_enqueue_style(
         'fluentform-gutenberg-block',
-        fluentFormMix('css/fluent_gutenblock.css'),
+        Enqueue::getStaticFilePath('css/fluent_gutenblock.css'),
         ['wp-edit-blocks'],
         FLUENTFORM_VERSION
     );
@@ -1112,26 +1113,26 @@ add_action('enqueue_block_editor_assets', function () {
     $presets = apply_filters('fluentform/block_editor_style_presets', $presets);
 
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
-        'logo'                    => fluentFormMix('img/fluent_icon.svg'),
+        'logo'                    => Enqueue::getStaticFilePath('img/fluent_icon.svg'),
         'forms'                   => $forms,
         'style_presets'           => $presets,
         'theme_style'             => apply_filters('fluentform/load_theme_style', false) ? 'ffs_inherit_theme' : '',
-        'conversational_demo_img' => fluentFormMix('img/conversational-form-demo.png'),
+        'conversational_demo_img' => Enqueue::getStaticFilePath('img/conversational-form-demo.png'),
         'rest'                    => Helper::getRestInfo()
     ]);
 
     wp_enqueue_style(
         'fluentform-gutenberg-block',
-        fluentFormMix('css/fluent_gutenblock.css'),
+        Enqueue::getStaticFilePath('css/fluent_gutenblock.css'),
         ['wp-edit-blocks'],
         FLUENTFORM_VERSION
     );
-    $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
-    $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
+    $fluentFormPublicCss = Enqueue::getStaticFilePath('css/fluent-forms-public.css');
+    $fluentFormPublicDefaultCss = Enqueue::getStaticFilePath('css/fluentform-public-default.css');
 
     if (is_rtl()) {
-        $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public-rtl.css');
-        $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
+        $fluentFormPublicCss = Enqueue::getStaticFilePath('css/fluent-forms-public-rtl.css');
+        $fluentFormPublicDefaultCss = Enqueue::getStaticFilePath('css/fluentform-public-default-rtl.css');
     }
 
     wp_enqueue_style(
@@ -1199,8 +1200,8 @@ add_action('enqueue_block_assets', function() {
 
     // Enqueue Fluent Forms CSS for block editor iframe preview
     // These styles are necessary for the live form preview in the block editor
-    wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'), [], FLUENTFORM_VERSION);
-    wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'), [], FLUENTFORM_VERSION);
+    wp_enqueue_style('fluent-forms-public', Enqueue::getStaticFilePath('css/fluent-forms-public.css'), [], FLUENTFORM_VERSION);
+    wp_enqueue_style('fluentform-public-default', Enqueue::getStaticFilePath('css/fluentform-public-default.css'), [], FLUENTFORM_VERSION);
 
 });
 

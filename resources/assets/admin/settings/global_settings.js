@@ -19,7 +19,7 @@ import License from './License.vue';
 import globalSearch from '../global_search'
 
 import Errors from '@/common/Errors';
-global.Errors = Errors;
+window.Errors = Errors;
 
 import notifier from '@/admin/notifier';
 

@@ -1,13 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace OpenSpout\Writer;
 
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Exception\InvalidArgumentException;
-use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Entity\Style\Style;
 
+/**
+ * Interface WriterInterface.
+ */
 interface WriterInterface
 {
     /**
@@ -16,9 +16,11 @@ interface WriterInterface
      *
      * @param string $outputFilePath Path of the output file that will contain the data
      *
-     * @throws IOException If the writer cannot be opened or if the given path is not writable
+     * @throws \OpenSpout\Common\Exception\IOException If the writer cannot be opened or if the given path is not writable
+     *
+     * @return WriterInterface
      */
-    public function openToFile(string $outputFilePath): void;
+    public function openToFile($outputFilePath);
 
     /**
      * Initializes the writer and opens it to accept data.
@@ -26,46 +28,50 @@ interface WriterInterface
      *
      * @param string $outputFileName Name of the output file that will contain the data. If a path is passed in, only the file name will be kept
      *
-     * @throws IOException If the writer cannot be opened
+     * @throws \OpenSpout\Common\Exception\IOException If the writer cannot be opened
+     *
+     * @return WriterInterface
      */
-    public function openToBrowser(string $outputFileName): void;
+    public function openToBrowser($outputFileName);
+
+    /**
+     * Sets the default styles for all rows added with "addRow".
+     * Overriding the default style instead of using "addRowWithStyle" improves performance by 20%.
+     *
+     * @see https://github.com/box/spout/issues/272
+     *
+     * @return WriterInterface
+     */
+    public function setDefaultRowStyle(Style $defaultStyle);
 
     /**
      * Appends a row to the end of the stream.
      *
      * @param Row $row The row to be appended to the stream
      *
-     * @throws Exception\WriterNotOpenedException If the writer has not been opened yet
-     * @throws IOException                        If unable to write data
-     */
-    public function addRow(Row $row): void;
-
-    /**
-     * Set document creator.
+     * @throws \OpenSpout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws \OpenSpout\Common\Exception\IOException              If unable to write data
      *
-     * @param string $creator document creator
+     * @return WriterInterface
      */
-    public function setCreator(string $creator): void;
+    public function addRow(Row $row);
 
     /**
      * Appends the rows to the end of the stream.
      *
      * @param Row[] $rows The rows to be appended to the stream
      *
-     * @throws InvalidArgumentException           If the input param is not valid
-     * @throws Exception\WriterNotOpenedException If the writer has not been opened yet
-     * @throws IOException                        If unable to write data
+     * @throws \OpenSpout\Common\Exception\InvalidArgumentException If the input param is not valid
+     * @throws \OpenSpout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws \OpenSpout\Common\Exception\IOException              If unable to write data
+     *
+     * @return WriterInterface
      */
-    public function addRows(array $rows): void;
-
-    /**
-     * @return 0|positive-int
-     */
-    public function getWrittenRowCount(): int;
+    public function addRows(array $rows);
 
     /**
      * Closes the writer. This will close the streamer as well, preventing new data
      * to be written to the file.
      */
-    public function close(): void;
+    public function close();
 }

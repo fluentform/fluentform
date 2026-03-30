@@ -58,7 +58,7 @@ function initFFPreviewHelper($) {
     });
 
     $('.ff_form_preview_wrapper .fluentform').on('click', function (e) {
-        $elm = $(e.target);
+        let $elm = $(e.target);
         const islabel = $elm.parent().hasClass('ff-el-input--label');
         const isInput = $elm.hasClass('ff-el-form-control');
         const isCheckable = $elm.parent().hasClass('ff-el-form-check-label');
