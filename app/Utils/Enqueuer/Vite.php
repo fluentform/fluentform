@@ -252,6 +252,13 @@ class Vite extends Enqueuer
         }, 10, 3);
     }
 
+    // Scripts that must NOT get type="module" (they set globals that other non-module scripts depend on)
+    private static $nonModuleScripts = [
+        'fluent_forms_global',
+        'fluent-form-submission',
+        'fluentform-payment-handler',
+    ];
+
     private function addModuleToScript($tag, $handle, $src)
     {
         // Scripts explicitly registered through Vite::enqueueScript
@@ -264,7 +271,12 @@ class Vite extends Enqueuer
             );
         }
 
-        // All Vite-built scripts from the assets/js/ directory
+        // Skip scripts that set globals consumed by non-module scripts
+        if (in_array($handle, self::$nonModuleScripts)) {
+            return $tag;
+        }
+
+        // Vite-built scripts from assets/js/ need type="module" for import statements
         $jsPath = static::getStaticFilePath('js/');
         if ($src && strpos($src, $jsPath) !== false) {
             if (strpos($tag, 'type=') !== false) {
