@@ -23,3 +23,4 @@ CLAUDE.md
 vendor/composer/autoload_static.php
 vendor/composer/autoload_real.php
 vendor/composer/autoload_classmap.php
+builds/*

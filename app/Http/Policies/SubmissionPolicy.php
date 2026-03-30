@@ -27,6 +27,11 @@ class SubmissionPolicy extends Policy
         return Acl::hasPermission('fluentform_manage_entries', $formId);
     }
 
+    public function store(Request $request)
+    {
+        return $this->handleBulkActions($request);
+    }
+
     public function updateStatus(Request $request)
     {
         return $this->handleBulkActions($request);
