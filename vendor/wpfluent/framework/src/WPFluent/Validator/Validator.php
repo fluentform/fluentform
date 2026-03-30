@@ -212,7 +212,7 @@ class Validator
         foreach ($rules as $rule) {
             if ($rule instanceof Closure) continue;
 
-            if (str_starts_with($rule, 'required_if')) {
+            if (strpos($rule, 'required_if') === 0) {
                 $requiredIfRules[] = $rule;
             } else {
                 $otherRules[] = $rule;
@@ -251,7 +251,7 @@ class Validator
     protected function getValues(string $path)
     {
         // If there is no dot/wildcard, just fetch the value
-        if (!str_contains($path, '*') && strpos($path, '.') === false) {
+        if (strpos($path, '*') === false && strpos($path, '.') === false) {
             $value = $this->getValue($path);
             return $value !== null ? [$value] : [];
         }
@@ -433,7 +433,7 @@ class Validator
      */
     public function setError($attribute, $message)
     {
-        if (!str_contains($attribute, '.')) {
+        if (strpos($attribute, '.') === false) {
             $attribute .= '.invalid';
         }
 
