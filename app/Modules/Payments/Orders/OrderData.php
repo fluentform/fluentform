@@ -37,8 +37,7 @@ class OrderData
     {
         $items = OrderItem::bySubmission($submission->id)
             ->products()
-            ->get()
-            ->toArray();
+            ->get();
 
         foreach ($items as $item) {
             $item->formatted_item_price = PaymentHelper::formatMoney($item->item_price, $submission->currency);
@@ -52,8 +51,7 @@ class OrderData
     {
         $items = OrderItem::bySubmission($submission->id)
             ->discounts()
-            ->get()
-            ->toArray();
+            ->get();
 
         foreach ($items as $item) {
             $item->formatted_item_price = PaymentHelper::formatMoney($item->item_price, $submission->currency);
@@ -145,8 +143,7 @@ class OrderData
 	public static function getSubscriptionsAndPaymentTotal($submission)
 	{
 		$subscriptions = Subscription::bySubmission($submission->id)
-			->get()
-			->toArray();
+			->get();
 
 		$subscriptionPaymentTotal = 0;
 
