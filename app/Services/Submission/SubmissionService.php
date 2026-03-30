@@ -488,10 +488,19 @@ class SubmissionService
             $metaKeys[] = 'api_log';
         }
 
-        $notes = SubmissionMeta::where('response_id', $submissionId)
+        $perPage = (int) Arr::get($attributes, 'per_page', 0);
+        $page = (int) Arr::get($attributes, 'page', 1);
+
+        $query = SubmissionMeta::where('response_id', $submissionId)
             ->whereIn('meta_key', $metaKeys)
-            ->orderBy('id', 'DESC')
-            ->get();
+            ->orderBy('id', 'DESC');
+
+        if ($perPage > 0) {
+            $perPage = min($perPage, 100);
+            $notes = $query->forPage($page, $perPage)->get();
+        } else {
+            $notes = $query->get();
+        }
 
         // Batch-fetch users to avoid N+1 queries
         $userIds = $notes->pluck('user_id')->filter()->unique()->values()->toArray();

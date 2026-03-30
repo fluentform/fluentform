@@ -7,10 +7,10 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Http\Request\File;
 use FluentForm\Framework\Support\Arr;
@@ -181,7 +181,19 @@ class TransferService
         $submissions = FormDataParser::parseFormEntries($submissions, $form, $formInputs);
         $parsedShortCodes = [];
         $exportData = [];
-        $submissionService = new SubmissionService();
+
+        // Preload notes for all submissions in a single query to avoid N+1
+        $notesMap = [];
+        if ($withNotes && count($submissions)) {
+            $submissionIds = array_map(function ($s) { return $s->id; }, $submissions);
+            $allNotes = SubmissionMeta::whereIn('response_id', $submissionIds)
+                ->where('meta_key', '_notes')
+                ->get();
+            foreach ($allNotes as $note) {
+                $notesMap[$note->response_id][] = $note->value;
+            }
+        }
+
         foreach ($submissions as $submission) {
 
             $submission->response = json_decode($submission->response, true);
@@ -227,10 +239,10 @@ class TransferService
                     }
                 }
             }
-            if($withNotes){
-                $notes = $submissionService->getNotes($submission->id, ['form_id' => $form->id])->pluck('value');
-                if($notes->isNotEmpty()){
-                    $temp[] = implode(", ",$notes->toArray());
+            if ($withNotes) {
+                $noteValues = isset($notesMap[$submission->id]) ? $notesMap[$submission->id] : [];
+                if (!empty($noteValues)) {
+                    $temp[] = implode(", ", $noteValues);
                 }
             }
 
