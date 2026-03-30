@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.21
+Stable tag: 6.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -437,6 +437,14 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.2.0 (Date: March 30, 2026) =
+- Upgrades internal framework for better performance and PHP 8.4 support
+- Improves Stripe payment confirmation security
+- Improves data export security
+- Improves database query performance for reports
+- Fixes textarea line breaks not displaying correctly in entries
+- Improves overall plugin security and stability
 
 = 6.1.21 (Date: March 17, 2026) =
 - Adds subscription end date to auto-calculate bill_times for subscrition payments
