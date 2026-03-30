@@ -47,8 +47,9 @@ class FormIntegrationController extends Controller
     public function delete(FormIntegrationService $integrationService)
     {
         try {
+            $formId = intval($this->request->get('form_id'));
             $id = intval($this->request->get('integration_id'));
-            $integrationService->delete($id);
+            $integrationService->delete($id, $formId);
             return $this->sendSuccess([
                 'message' => __('Successfully deleted the Integration.', 'fluentform'),
             ], 200);
