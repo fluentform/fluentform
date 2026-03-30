@@ -5,7 +5,6 @@ namespace FluentForm\App\Modules\Entries;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Modules\Registerer\TranslationString;
-use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class EntryViewRenderer
@@ -56,7 +55,7 @@ class EntryViewRenderer
             'no_found_text'       => __('Sorry! No entries found. All your entries will be shown here once you start getting form submissions',
                 'fluentform'),
             'has_pro'             => defined('FLUENTFORMPRO'),
-            'printStyles'         => [Enqueue::getStaticFilePath('css/settings_global.css')],
+            'printStyles'         => [fluentformMix('css/settings_global.css')],
             'email_notifications' => $formattedNotification,
             'available_countries' => getFluentFormCountryList(),
             'upgrade_url'         => fluentform_upgrade_url(),

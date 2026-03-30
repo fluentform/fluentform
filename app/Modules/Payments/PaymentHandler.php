@@ -25,7 +25,6 @@ use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\Components\StripeInlin
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\ConnectConfig;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeHandler;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeSettings;
-use FluentForm\App\Utils\Enqueuer\Enqueue;
 
 class PaymentHandler
 {
@@ -106,7 +105,7 @@ class PaymentHandler
                 return;
             }
 
-            $src = Enqueue::getStaticFilePath('js/payment_handler.js');
+            $src = fluentFormMix('js/payment_handler.js');
             $version = FLUENTFORM_VERSION;
 
             // If pro is installed and script is compatible, load script from pro
@@ -124,7 +123,7 @@ class PaymentHandler
             
             wp_enqueue_style(
                 'fluentform-payment-skin',
-                Enqueue::getStaticFilePath('css/payment_skin.css'),
+                fluentFormMix('css/payment_skin.css'),
                 array(),
                 FLUENTFORM_VERSION
             );
@@ -387,7 +386,7 @@ class PaymentHandler
         ];
 
         // Enqueue payment global settings css
-        wp_enqueue_style('ff-payment-settings', Enqueue::getStaticFilePath('css/payment_settings.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_style('ff-payment-settings', fluentFormMix('css/payment_settings.css'), [], FLUENTFORM_VERSION);
 
         $globalSettingVars['payment_vars'] = apply_filters('fluentform/global_settings_component_payment_vars', $paymentVars);
         return $globalSettingVars;

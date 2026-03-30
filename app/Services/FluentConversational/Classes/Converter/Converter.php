@@ -6,7 +6,6 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
-use FluentForm\App\Utils\Enqueuer\Enqueue;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 
@@ -394,8 +393,8 @@ class Converter
                 $app = wpFluentForm();
                 $dateField = new DateTime();
 
-                wp_enqueue_style('flatpickr', Enqueue::getStaticFilePath('libs/flatpickr/flatpickr.min.css'), [], FLUENTFORM_VERSION);
-                wp_enqueue_script('flatpickr', Enqueue::getStaticFilePath('libs/flatpickr/flatpickr.min.js'), [], FLUENTFORM_VERSION, true);
+                wp_enqueue_style('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.css'), [], FLUENTFORM_VERSION);
+                wp_enqueue_script('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.js'), [], FLUENTFORM_VERSION, true);
 
                 $question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
                 $question['dateCustomConfig'] = $dateField->getCustomConfig($field['settings']);
