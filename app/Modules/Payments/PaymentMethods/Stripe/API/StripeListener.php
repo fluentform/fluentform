@@ -305,6 +305,11 @@ class StripeListener
 
         $expectedSignature = \hash_hmac('sha256', $payload, $secret);
 
+        // Reject events older than 5 minutes to prevent replay attacks
+        if (abs(time() - $timestamp) > 300) {
+            return false;
+        }
+
         foreach ($signatures as $signature) {
             if ($this->secureCompare($signature, $expectedSignature)) {
                 return true;
