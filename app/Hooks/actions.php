@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Helpers\Helper;

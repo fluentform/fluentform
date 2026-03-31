@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Hooks\Handlers;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Database\DBMigrator;
 use FluentForm\Database\Migrations\Logs;

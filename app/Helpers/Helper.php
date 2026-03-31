@@ -744,7 +744,7 @@ class Helper
         $ff_list = Form::select(['id', 'title'])->orderBy('id', 'DESC')->get();
         $forms = [];
 
-        if ($ff_list->isNotEmpty()) {
+        if (count($ff_list) > 0) {
             $forms[0] = esc_html__('Select a Fluent Forms', 'fluentform');
             foreach ($ff_list as $form) {
                 $forms[$form->id] = esc_html($form->title) . ' (' . $form->id . ')';

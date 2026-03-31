@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Payments\PaymentHelper;

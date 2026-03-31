@@ -301,6 +301,7 @@ class ReportHelper
         ));
 
         if (!$indexExists) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $table is hardcoded prefix + table name, not user input
             $wpdb->query("ALTER TABLE `{$table}` ADD INDEX `idx_submission_id` (`submission_id`)");
         }
 
@@ -341,7 +342,7 @@ class ReportHelper
                     ->limit($batchSize)
                     ->get();
 
-                if (!$unmigratedData || $unmigratedData->isEmpty()) {
+                if (!$unmigratedData || count($unmigratedData) === 0) {
                     break;
                 }
 

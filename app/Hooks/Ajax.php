@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 /**
  * Add all ajax hooks
  */
@@ -149,6 +151,7 @@ $app->addAction('wp_ajax_fluentform-change-entry-status', function () use ($app)
     ];
     $newStatus = (new \FluentForm\App\Services\Submission\SubmissionService())->updateStatus($attributes);
     wp_send_json_success([
+        // translators: %s is the submission status name
         'message' => sprintf(__('Item has been marked as %s', 'fluentform'), $newStatus),
         'status'  => $newStatus,
     ], 200);

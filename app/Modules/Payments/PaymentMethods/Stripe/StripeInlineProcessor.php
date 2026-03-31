@@ -406,7 +406,7 @@ class StripeInlineProcessor extends StripeProcessor
             _deprecated_argument(
                 'fluentform/stripe_sca_strict_security',
                 '6.2.0',
-                __('Disabling strict SCA nonce verification is deprecated and will be removed in a future version.', 'fluentform')
+                esc_html(__('Disabling strict SCA nonce verification is deprecated and will be removed in a future version.', 'fluentform'))
             );
             $warnings[] = 'No nonce provided for SCA payment confirmation';
         }
@@ -518,7 +518,8 @@ class StripeInlineProcessor extends StripeProcessor
                     'status'           => 'error',
                     'title'            => __('Stripe Amount Mismatch', 'fluentform'),
                     'description'      => sprintf(
-                        __('Expected %d but Stripe confirmed %d. Payment rejected.', 'fluentform'),
+                        // translators: %1$d is the expected amount, %2$d is the confirmed amount
+                        __('Expected %1$d but Stripe confirmed %2$d. Payment rejected.', 'fluentform'),
                         intval($transaction->payment_total),
                         intval($confirmation->amount)
                     )
