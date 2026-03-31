@@ -446,6 +446,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds filter hook for conversational form extra inputs
 - Fixes textarea line breaks not displaying correctly in entries
 - Improves overall plugin security and stability
+- Dev note: ->get() now returns Collection objects instead of arrays. Use ->toArray() if you need a plain array.
 
 = 6.1.21 (Date: March 17, 2026) =
 - Adds subscription end date to auto-calculate bill_times for subscrition payments
