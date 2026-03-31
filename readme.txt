@@ -438,11 +438,12 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.2.0 (Date: March 30, 2026) =
+= 6.2.0 (Date: March 31, 2026) =
 - Upgrades internal framework for better performance and PHP 8.4 support
 - Improves Stripe payment confirmation security
 - Improves data export security
 - Improves database query performance for reports
+- Adds filter hook for conversational form extra inputs
 - Fixes textarea line breaks not displaying correctly in entries
 - Improves overall plugin security and stability
 
