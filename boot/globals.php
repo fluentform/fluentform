@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\BaseComponent;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;

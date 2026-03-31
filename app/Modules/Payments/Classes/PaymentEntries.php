@@ -165,7 +165,7 @@ class PaymentEntries
             }
 
             try {
-                if( !$submission_ids || $transactionData->isEmpty() ){
+                if (!$submission_ids || count($transactionData) === 0 ) {
                     throw new \Exception(__('Invalid transaction id', 'fluentform'));
                 }
                 do_action_deprecated(

@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Hooks\Handlers\DeactivationHandler;
@@ -25,6 +27,7 @@ return function ($file) {
                 ];
                 foreach ($actions as $action) {
                     add_action($action, function () use ($message) {
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Admin notice with HTML links
                         printf('<div class="fluentform-admin-notice notice notice-error"><div style="padding: 15px 10px;">%1$s</div></div>', $message);
                     });
                 }

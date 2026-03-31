@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\Transfer;
 
+defined('ABSPATH') or die;
+
 use Exception;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;

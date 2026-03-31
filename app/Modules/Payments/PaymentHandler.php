@@ -551,7 +551,7 @@ class PaymentHandler
             })
             ->get();
         
-        if ($transactions->isEmpty()) {
+        if (count($transactions) === 0) {
             return false;
         }
         

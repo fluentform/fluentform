@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;

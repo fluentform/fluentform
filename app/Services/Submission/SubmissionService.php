@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\Submission;
 
+defined('ABSPATH') or die;
+
 use Exception;
 use FluentForm\App\Models\EntryDetails;
 use FluentForm\App\Models\Form;
@@ -313,6 +315,7 @@ class SubmissionService
 
         $allowedKeys = ['_visible_columns', '_columns_order'];
         if (!in_array($metaKey, $allowedKeys)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new \Exception(__('Invalid meta key for column settings.', 'fluentform'));
         }
 
