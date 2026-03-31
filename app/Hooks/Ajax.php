@@ -181,6 +181,7 @@ $app->addAction('wp_ajax_fluentform-import-forms', function () use ($app) {
  * Background Process Receiver
  */
 
+// $this refers to the Application instance (included via Application::requireCommonFiles → includes.php)
 $app->addAction('wp_ajax_fluentform_background_process', function () {
     $this->app['fluentFormAsyncRequest']->handleBackgroundCall();
 });
