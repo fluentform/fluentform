@@ -78,7 +78,7 @@ class SubmissionService
             }
 
             $meta = $submission->submissionMeta;
-            if ($meta) {
+            if (count($meta)) {
                 $submission->_entry_uid_hash = Arr::get($meta, '0.value');
                 $this->setEntryUidLink($submission);
             }

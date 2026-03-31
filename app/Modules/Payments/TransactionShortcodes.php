@@ -180,7 +180,7 @@ class TransactionShortcodes
             'statuses'   => ArrayHelper::get($atts, 'subscription_statuses', [])
         ]);
 
-        if (!$subscriptions) {
+        if (!count($subscriptions)) {
             return '';
         }
 
@@ -221,7 +221,7 @@ class TransactionShortcodes
             'statuses'          => ArrayHelper::get($atts, 'payment_statuses', [])
         ]);
 
-        if (!$transactions) {
+        if (!count($transactions)) {
             return '';
         }
 
@@ -282,7 +282,7 @@ class TransactionShortcodes
 
         $transactions = fluentFormApi('submissions')->transactionsBySubscriptionId($subscription->id);
 
-        if (!$transactions) {
+        if (!count($transactions)) {
             wp_send_json_error([
                 'message' => __('Sorry, no related payments found', 'fluentform'),
             ], 423);

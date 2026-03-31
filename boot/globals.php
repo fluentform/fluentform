@@ -237,7 +237,7 @@ function fluentFormHandleScheduledTasks()
 {
     $failedActions = wpFluent()->table('ff_scheduled_actions')->where('status', 'failed')->where('retry_count', '<', 4)->get();
 
-    if ($failedActions) {
+    if (count($failedActions)) {
         $scheduler = wpFluentForm('fluentFormAsyncRequest');
 
         foreach ($failedActions as $action) {
