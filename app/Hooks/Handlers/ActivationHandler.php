@@ -197,7 +197,7 @@ class ActivationHandler
         add_filter('cron_schedules', function ($schedules) {
             $schedules['ff_every_five_minutes'] = [
                 'interval' => 300,
-                'display'  => esc_html__('Every 5 Minutes (FluentForm)', 'fluentform'),
+                'display'  => 'Every 5 Minutes (FluentForm)',
             ];
 
             return $schedules;
