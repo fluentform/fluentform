@@ -58,7 +58,7 @@ class SubmissionPrint
                 } else {
                     $label = '' . $note->name . ' - ' . $note->created_at;
                 }
-                $notesHtml .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $note->value . '</td></tr>';
+                $notesHtml .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . wp_kses_post($note->value) . '</td></tr>';
             }
             $htmlBody = $htmlBody . $notesHtml . '</tbody></table>';
         }
