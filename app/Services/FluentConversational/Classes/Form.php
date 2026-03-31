@@ -656,11 +656,13 @@ class Form
 
     private function getExtraHiddenInputs($formId)
     {
-        return [
+        $inputs = [
             '__fluent_form_embded_post_id'                => get_the_ID(),
             '_fluentform_' . $formId . '_fluentformnonce' => wp_create_nonce('fluentform-submit-form'),
             '_wp_http_referer'                            => esc_attr(wp_unslash(wpFluentForm('request')->server('REQUEST_URI'))),
         ];
+
+        return apply_filters('fluentform/conversational_extra_inputs', $inputs, $formId);
     }
 
     public function getRandomPhoto()
