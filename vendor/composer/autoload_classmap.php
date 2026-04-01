@@ -7,6 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'FluentForm\\App\\Databases\\Migrations\\FormSubmissions' => $baseDir . '/app/Compat/FormSubmissions.php',
+    'FluentForm\\App\\Databases\\Migrations\\SubmissionDetails' => $baseDir . '/app/Compat/SubmissionDetails.php',
     'FluentForm\\Database\\DBMigrator' => $baseDir . '/database/DBMigrator.php',
     'FluentForm\\Database\\Migrations\\FormAnalytics' => $baseDir . '/database/Migrations/FormAnalytics.php',
     'FluentForm\\Database\\Migrations\\FormMeta' => $baseDir . '/database/Migrations/FormMeta.php',
