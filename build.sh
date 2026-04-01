@@ -30,7 +30,12 @@ copy_and_compress() {
 
     if [ -e "$source_path" ]; then
       if [ "$item" != "vendor" ]; then
-        rsync -av "$source_path" "$destination_dir/"
+        rsync -av \
+          --exclude="resources/assets" \
+          --exclude="resources/img" \
+          --exclude="*.map" \
+          --exclude="mix-manifest.json" \
+          "$source_path" "$destination_dir/"
         echo "Copied: $item"
       else
         # Copy only production vendor packages and autoloader
