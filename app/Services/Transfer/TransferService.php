@@ -187,7 +187,7 @@ class TransferService
         // Preload notes for all submissions in a single query to avoid N+1
         $notesMap = [];
         if ($withNotes && count($submissions)) {
-            $submissionIds = array_map(function ($s) { return $s->id; }, $submissions->toArray());
+            $submissionIds = array_map(function ($s) { return is_object($s) ? $s->id : $s['id']; }, $submissions->toArray());
             $allNotes = SubmissionMeta::whereIn('response_id', $submissionIds)
                 ->where('meta_key', '_notes')
                 ->get();
