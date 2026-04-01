@@ -438,7 +438,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.2.0 (Date: March 31, 2026) =
+= 6.2.0 (Date: April 01, 2026) =
 - Upgrades internal framework for better performance and PHP 8.4 support
 - Improves Stripe payment confirmation security
 - Improves data export security
