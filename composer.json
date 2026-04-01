@@ -46,6 +46,9 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "FluentForm\\App\\ComposerScript::postInstall"
+        ],
         "post-update-cmd": [
             "FluentForm\\App\\ComposerScript::postUpdate"
         ]

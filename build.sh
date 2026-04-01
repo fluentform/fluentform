@@ -4,9 +4,10 @@
 #
 # Builds the plugin for distribution by:
 # 1. Building frontend assets (Vue.js apps) with Laravel Mix
-# 2. Clean-installing composer production dependencies
-# 3. Selectively copying plugin files to builds directory
-# 4. Creating compressed ZIP file ready for deployment
+# 2. Selectively copying plugin files to builds directory
+#    (vendor is copied directly from local, including only
+#    production packages: openspout, wpfluent, and the autoloader)
+# 3. Creating compressed ZIP file ready for deployment
 #
 # Usage:
 #   sh build.sh                  # Build with existing assets
@@ -38,7 +39,7 @@ copy_and_compress() {
           "$source_path" "$destination_dir/"
         echo "Copied: $item"
       else
-        # Copy only production vendor packages and autoloader
+        # Copy only production vendor packages and autoloader from local
         mkdir -p "$destination_dir/vendor"
         rsync -av "$source_dir/vendor/autoload.php" "$destination_dir/vendor/"
         rsync -av "$source_dir/vendor/composer" "$destination_dir/vendor/"
@@ -102,18 +103,6 @@ if "$nodeBuild"; then
   echo -e "\nNode build completed.\n"
 fi
 
-# Clean install production composer dependencies
-echo -e "\nClean-installing production composer dependencies..."
-rm -rf vendor
-composer install --no-dev -o --classmap-authoritative
-
-if [ $? -ne 0 ]; then
-  echo "Error: composer install failed."
-  exit 1
-fi
-
-echo -e "\nComposer install completed.\n"
-
 # Build production ZIP with selective vendor copy
 echo -e "\nBuilding production version...\n"
 copy_and_compress "." "builds/fluentform" \
@@ -127,7 +116,3 @@ fi
 
 echo -e "\nBuild completed! builds/fluentform-${PLUGIN_VERSION}.zip is ready.\n"
 ls -lh "builds/fluentform-${PLUGIN_VERSION}.zip"
-
-# Restore dev dependencies for local development
-echo -e "\nRestoring dev dependencies for local development..."
-composer install
