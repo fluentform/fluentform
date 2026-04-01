@@ -51,7 +51,9 @@
         ]
     },
     "config": {
-        "platform-check": false
+        "platform": {
+            "php": "7.4"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
