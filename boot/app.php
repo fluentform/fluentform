@@ -20,17 +20,12 @@ return function ($file) {
                     . '6.2.0' . __(' or later.', 'fluentform')
                     . ' <a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">'
                     . __('Update Now', 'fluentform') . '</a>';
-                $actions = [
-                    'fluentform/global_menu',
-                    'fluentform/after_form_menu',
-                    'admin_notices',
-                ];
-                foreach ($actions as $action) {
-                    add_action($action, function () use ($message) {
-                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Admin notice with HTML links
-                        printf('<div class="fluentform-admin-notice notice notice-error"><div style="padding: 15px 10px;">%1$s</div></div>', $message);
-                    });
-                }
+                $renderNotice = function () use ($message) {
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Admin notice with HTML links
+                    printf('<div class="fluentform-admin-notice notice notice-error"><div style="padding: 15px 10px;">%1$s</div></div>', $message);
+                };
+                add_action('fluentform/global_menu', $renderNotice);
+                add_action('fluentform/after_form_menu', $renderNotice);
             });
         }
     });
