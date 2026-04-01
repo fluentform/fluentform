@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Databases\Migrations;
 
+defined('ABSPATH') or die;
+
 /**
  * @deprecated since 6.2.0. Use FluentForm\Database\Migrations\Submissions instead.
  * @todo Remove in 7.0

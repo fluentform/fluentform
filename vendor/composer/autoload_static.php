@@ -43,6 +43,8 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'FluentForm\\App\\Databases\\Migrations\\FormSubmissions' => __DIR__ . '/../..' . '/app/Compat/FormSubmissions.php',
+        'FluentForm\\App\\Databases\\Migrations\\SubmissionDetails' => __DIR__ . '/../..' . '/app/Compat/SubmissionDetails.php',
         'FluentForm\\Database\\DBMigrator' => __DIR__ . '/../..' . '/database/DBMigrator.php',
         'FluentForm\\Database\\Migrations\\FormAnalytics' => __DIR__ . '/../..' . '/database/Migrations/FormAnalytics.php',
         'FluentForm\\Database\\Migrations\\FormMeta' => __DIR__ . '/../..' . '/database/Migrations/FormMeta.php',
