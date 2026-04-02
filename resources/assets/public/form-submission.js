@@ -590,6 +590,21 @@ jQuery(document).ready(function () {
                         formResetHandler($(this))
                     });
 
+                    var nativeInvalidHandled = false;
+                    $theForm[0].addEventListener('invalid', function (e) {
+                        if (nativeInvalidHandled) return;
+                        nativeInvalidHandled = true;
+                        var invalidField = e.target;
+                        setTimeout(function () {
+                            nativeInvalidHandled = false;
+                            var rect = invalidField.getBoundingClientRect();
+                            var inViewport = rect.top >= 0 && rect.bottom <= window.innerHeight;
+                            if (!inViewport) {
+                                $theForm.trigger('submit');
+                            }
+                        }, 300);
+                    }, true);
+
                     $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function (e) {
                         if (e.key === 'Enter') {
                             e.preventDefault();
