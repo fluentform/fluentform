@@ -1,171 +1,156 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { plugins, pluginAbsPath } from "../config.js";
-import { run } from "../utils/run.js";
+import { gitStatus } from "../utils/git.js";
+
+function readPluginVersion(dir: string): string {
+  for (const f of readdirSync(dir).filter((f) => f.endsWith(".php"))) {
+    const content = readFileSync(join(dir, f), "utf-8");
+    if (content.includes("Plugin Name:")) {
+      const match = content.match(/Version:\s*(.+)/i);
+      if (match) return match[1].trim();
+    }
+  }
+  return "unknown";
+}
+
+function readFrameworkVersion(dir: string): { required: string; installed: string } {
+  let required = "none";
+  let installed = "unknown";
+
+  const composerJson = join(dir, "composer.json");
+  if (existsSync(composerJson)) {
+    const content = readFileSync(composerJson, "utf-8");
+    const match = content.match(/"wpfluent\/framework"\s*:\s*"([^"]+)"/);
+    if (match) required = match[1];
+  }
+
+  const composerLock = join(dir, "composer.lock");
+  if (existsSync(composerLock)) {
+    const content = readFileSync(composerLock, "utf-8");
+    const lockMatch = content.match(/"name"\s*:\s*"wpfluent\/framework"[\s\S]*?"version"\s*:\s*"([^"]+)"/);
+    if (lockMatch) installed = lockMatch[1];
+  }
+
+  return { required, installed };
+}
 
 export function registerRegistryTools(server: McpServer): void {
-  // registry_list — list all plugins in the ecosystem registry
-  server.tool(
+  server.registerTool(
     "registry_list",
-    "List all plugins in the FluentForm ecosystem registry with their paths, slugs, and branches.",
-    {},
-    async () => {
-      const rows = plugins.map((p) => {
-        const absPath = pluginAbsPath(p);
-        const exists = existsSync(absPath);
-        return {
-          key: p.key,
-          path: p.path,
-          absPath,
-          slug: p.slug ?? "(no wp.org slug)",
-          branch: p.branch,
-          present: exists,
-        };
-      });
-
-      const lines = rows.map(
-        (r) =>
-          `${r.key.padEnd(20)} branch=${r.branch.padEnd(10)} slug=${r.slug.padEnd(36)} present=${r.present ? "yes" : "NO "} path=${r.absPath}`
-      );
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: `FluentForm Ecosystem Registry (${rows.length} plugins)\n\n${lines.join("\n")}`,
-          },
-        ],
-      };
-    }
-  );
-
-  // registry_framework_versions — read wpfluent/framework version from each plugin's composer.json
-  server.tool(
-    "registry_framework_versions",
-    "Show the wpfluent/framework version constraint declared in each plugin's composer.json.",
     {
-      plugin: z
-        .string()
-        .optional()
-        .describe("Filter to a single plugin key (e.g. 'fluentform'). Omit for all."),
+      description: "Overview of all FluentForm ecosystem plugins: version, WPFluent framework version, current branch, last commit date, dirty/clean status",
+      annotations: { readOnlyHint: true },
     },
-    async ({ plugin }) => {
-      const targets = plugin
-        ? plugins.filter((p) => p.key === plugin)
-        : plugins;
+    async () => {
+      const rows: string[] = [
+        "Plugin | Version | WPFluent | Branch | Last Commit | Dirty",
+        "---|---|---|---|---|---",
+      ];
 
-      if (plugin && targets.length === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Unknown plugin key: "${plugin}". Valid keys: ${plugins.map((p) => p.key).join(", ")}`,
-            },
-          ],
-        };
-      }
-
-      const lines: string[] = [];
-
-      for (const p of targets) {
-        const composerPath = join(pluginAbsPath(p), "composer.json");
-        if (!existsSync(composerPath)) {
-          lines.push(`${p.key.padEnd(20)} (no composer.json)`);
+      for (const plugin of plugins) {
+        const dir = pluginAbsPath(plugin);
+        if (!existsSync(dir)) {
+          rows.push(`${plugin.key} | MISSING | - | - | - | -`);
           continue;
         }
 
-        try {
-          const json = JSON.parse(readFileSync(composerPath, "utf-8")) as {
-            require?: Record<string, string>;
-            name?: string;
-          };
-          const frameworkVersion =
-            json.require?.["wpfluent/framework"] ?? "(not declared)";
-          const pluginName = json.name ?? p.key;
-          lines.push(`${p.key.padEnd(20)} ${frameworkVersion.padEnd(20)} (${pluginName})`);
-        } catch {
-          lines.push(`${p.key.padEnd(20)} (error reading composer.json)`);
-        }
+        const version = readPluginVersion(dir);
+        const fw = readFrameworkVersion(dir);
+        const git = await gitStatus(dir);
+
+        rows.push([
+          plugin.key,
+          version,
+          fw.installed === "unknown" && fw.required === "none" ? "-" : fw.installed,
+          git?.branch || "no git",
+          git?.lastCommitDate.split(" ")[0] || "-",
+          git?.dirty ? "YES" : "clean",
+        ].join(" | "));
       }
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: `wpfluent/framework versions\n\n${"PLUGIN".padEnd(20)} ${"CONSTRAINT".padEnd(20)} PACKAGE\n${"-".repeat(70)}\n${lines.join("\n")}`,
-          },
-        ],
-      };
+      return { content: [{ type: "text" as const, text: rows.join("\n") }] };
     }
   );
 
-  // registry_branches — show the current git branch of each plugin directory
-  server.tool(
-    "registry_branches",
-    "Show the current git branch checked out in each plugin directory.",
+  server.registerTool(
+    "registry_framework_versions",
     {
-      plugin: z
-        .string()
-        .optional()
-        .describe("Filter to a single plugin key (e.g. 'fluentformpro'). Omit for all."),
+      description: "Check WPFluent framework version drift across all FluentForm plugins. Shows required vs installed versions and flags drift.",
+      inputSchema: {
+        plugin: z.string().optional().describe("Filter to a single plugin key. Omit for all."),
+      },
+      annotations: { readOnlyHint: true },
     },
     async ({ plugin }) => {
-      const targets = plugin
-        ? plugins.filter((p) => p.key === plugin)
-        : plugins;
+      const targets = plugin ? plugins.filter((p) => p.key === plugin) : plugins;
+      const rows: string[] = ["Plugin | Required | Installed | Drift?", "---|---|---|---"];
+      const installedVersions: string[] = [];
 
-      if (plugin && targets.length === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Unknown plugin key: "${plugin}". Valid keys: ${plugins.map((p) => p.key).join(", ")}`,
-            },
-          ],
-        };
+      for (const p of targets) {
+        const dir = pluginAbsPath(p);
+        if (!existsSync(dir)) continue;
+
+        const fw = readFrameworkVersion(dir);
+        if (fw.required === "none") continue;
+
+        if (fw.installed !== "unknown") installedVersions.push(fw.installed);
+        const drift = installedVersions.length > 1 && new Set(installedVersions).size > 1 ? "DRIFT" : "ok";
+
+        rows.push(`${p.key} | ${fw.required} | ${fw.installed} | ${drift}`);
       }
 
-      const results = await Promise.all(
-        targets.map(async (p) => {
-          const absPath = pluginAbsPath(p);
-          if (!existsSync(absPath)) {
-            return { key: p.key, expected: p.branch, current: "(directory missing)", match: false };
-          }
-          if (!existsSync(join(absPath, ".git"))) {
-            return { key: p.key, expected: p.branch, current: "(not a git repo)", match: false };
-          }
-          const res = await run("git", ["branch", "--show-current"], absPath);
-          const current = res.ok ? res.stdout : "(error)";
-          return {
-            key: p.key,
-            expected: p.branch,
-            current,
-            match: current === p.branch,
-          };
-        })
-      );
+      const unique = [...new Set(installedVersions)];
+      let summary = `\n\nInstalled versions: ${unique.join(", ")}`;
+      if (unique.length > 1) {
+        summary += `\nFramework version drift detected across ${unique.length} versions`;
+      } else if (unique.length === 1) {
+        summary += "\nAll plugins on the same framework version.";
+      }
 
-      const lines = results.map((r) => {
-        const status = r.match ? "OK " : "!  ";
-        return `${status} ${r.key.padEnd(20)} current=${r.current.padEnd(20)} expected=${r.expected}`;
-      });
+      return { content: [{ type: "text" as const, text: rows.join("\n") + summary }] };
+    }
+  );
 
-      const mismatches = results.filter((r) => !r.match).length;
-      const summary =
-        mismatches === 0
-          ? "All plugins are on their expected branch."
-          : `${mismatches} plugin(s) are NOT on the expected branch.`;
+  server.registerTool(
+    "registry_branches",
+    {
+      description: "Branch status across all FluentForm repos: current vs expected branch, ahead/behind upstream, uncommitted changes",
+      inputSchema: {
+        plugin: z.string().optional().describe("Filter to a single plugin key. Omit for all."),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ plugin }) => {
+      const targets = plugin ? plugins.filter((p) => p.key === plugin) : plugins;
+      const rows: string[] = ["Plugin | Branch | Expected | Ahead/Behind | Dirty", "---|---|---|---|---"];
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Git Branch Status\n\n${lines.join("\n")}\n\n${summary}`,
-          },
-        ],
-      };
+      for (const p of targets) {
+        const dir = pluginAbsPath(p);
+        if (!existsSync(dir)) {
+          rows.push(`${p.key} | MISSING | ${p.branch} | - | -`);
+          continue;
+        }
+
+        const git = await gitStatus(dir);
+        if (!git) {
+          rows.push(`${p.key} | no git | ${p.branch} | - | -`);
+          continue;
+        }
+
+        const branchOk = git.branch === p.branch;
+        rows.push([
+          p.key,
+          git.branch,
+          branchOk ? "ok" : `expected: ${p.branch}`,
+          git.aheadBehind,
+          git.dirty ? "YES" : "clean",
+        ].join(" | "));
+      }
+
+      return { content: [{ type: "text" as const, text: rows.join("\n") }] };
     }
   );
 }
