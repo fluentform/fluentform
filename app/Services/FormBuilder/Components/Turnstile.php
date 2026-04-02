@@ -53,7 +53,7 @@ class Turnstile extends BaseComponent
 
             wp_enqueue_script(
                 'turnstile',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit', // phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile requires loading from their CDN for CAPTCHA functionality
+                $apiUrl, // phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile requires loading from their CDN for CAPTCHA functionality
                 [],
                 FLUENTFORM_VERSION,
                 true
@@ -69,7 +69,10 @@ class Turnstile extends BaseComponent
             $appearance = 'interaction-only';
         }
 
+        $size = esc_attr(ArrayHelper::get($turnstile, 'size', 'normal'));
+
         $turnstileBlock = "<div
+		data-size='" . $size . "'
 		data-sitekey='" . esc_attr($siteKey) . "'
 		data-theme='" . esc_attr(ArrayHelper::get($turnstile, 'theme', 'auto')) . "'
 		id='fluentform-turnstile-{$form->id}-{$form->instance_index}'

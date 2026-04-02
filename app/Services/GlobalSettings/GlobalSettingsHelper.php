@@ -221,6 +221,7 @@ class GlobalSettingsHelper
             'secretKey'  => $secretKey,
             'invisible'  => 'no',
             'appearance' => Arr::get($data, 'appearance', 'always'),
+            'size'       => sanitize_text_field(Arr::get($data, 'size', 'normal')),
             'theme'      => Arr::get($data, 'theme', 'auto')
         ];
 
