@@ -63,9 +63,9 @@
                         <el-select class="ff-input-s1" @change="fetchPayments()" clearable v-model="selectedPaymentStatuses" :placeholder="$t('Select Status')">
                             <el-option
                                 v-for="item in available_statuses"
-                                :key="item"
-                                :label="item"
-                                :value="item">
+                                :key="item.key"
+                                :label="item.value"
+                                :value="item.key">
                             </el-option>
                         </el-select>
                     </div>
