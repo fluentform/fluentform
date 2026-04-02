@@ -1469,8 +1469,8 @@ class Route
      */
     protected function isPolicyHandlerParseable($policyHandler)
     {
-        return (strpos($policyHandler, '@') === true
-            || strpos($policyHandler, '::') === true);
+        return (strpos($policyHandler, '@') !== false
+            || strpos($policyHandler, '::') !== false);
     }
 
     /**
