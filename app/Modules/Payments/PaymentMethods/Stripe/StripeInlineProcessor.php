@@ -342,22 +342,13 @@ class StripeInlineProcessor extends StripeProcessor
 
         $this->changeTransactionStatus($transaction->id, 'paid');
 
-        $logData = [
-            'parent_source_id' => $submission->form_id,
-            'source_type'      => 'submission_item',
-            'source_id'        => $submission->id,
-            'component'        => 'Payment',
-            'status'           => 'info',
-            'title'            => __('Payment Status changed', 'fluentform'),
-            'description'      => __('Payment status changed to paid', 'fluentform')
-        ];
-
-        do_action('fluentform/log_data', $logData);
-
         $this->updateSubmission($submission->id, [
-            'payment_status' => 'paid',
             'payment_method' => 'stripe',
         ]);
+
+        // Trigger fluentform/after_payment_status_change (via BaseProcessor),
+        // consistent with hosted Stripe checkout and offline payment flows.
+        $this->changeSubmissionPaymentStatus('paid');
 
         $logData = [
             'parent_source_id' => $submission->form_id,
