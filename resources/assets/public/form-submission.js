@@ -1043,6 +1043,9 @@ jQuery(document).ready(function () {
                         // Special case for Turnstile
                         if (type === 'cf-turnstile') {
                             container = '#' + id;
+                            options['size'] = $el.data('size') || 'normal';
+                            options['theme'] = $el.data('theme') || 'auto';
+                            options['appearance'] = $el.data('appearance') || 'always';
                         }
 
                         // Render the captcha

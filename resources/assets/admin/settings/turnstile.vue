@@ -73,6 +73,25 @@
 
                     <el-form-item class="ff-form-item">
                         <template slot="label">
+                            {{ $t('Widget Size') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Select the size of the Turnstile widget') }}
+                                    </p>
+                                </div>
+
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
+
+                        <el-radio class="mr-3" v-model="turnstile.size" label="normal">{{$t('Normal')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.size" label="flexible">{{$t('Flexible')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.size" label="compact">{{$t('Compact')}}</el-radio>
+                    </el-form-item>
+
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
                             {{ $t('Theme') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                 <div slot="content">
@@ -93,7 +112,6 @@
                     <!--Validate Keys-->
                     <el-form-item :label="$t('Validate Keys')" v-if="siteKeyChanged">
                         <div
-                            class="cf-turnstile"
                             id="turnstile"
                             :data-sitekey="turnstile.siteKey"
                         ></div>
@@ -147,8 +165,8 @@ export default {
             turnstile: {
                 siteKey: "",
                 secretKey: "",
-                invisible: "no",
                 appearance: 'always',
+                size: 'normal',
                 theme: 'auto'
             },
             turnstile_status: false,
@@ -179,6 +197,7 @@ export default {
                 let widgetID = turnstile.render(id, {
                     sitekey: siteKey,
                     theme: this.turnstile.theme,
+                    size: this.turnstile.size || 'normal',
                     callback: (token) => {
                         this.turnstile.token = token;
                     }
@@ -261,9 +280,6 @@ export default {
                 .then(response => {
                     const turnstile = response._fluentform_turnstile_details;
                     this.turnstile = turnstile;
-                    if (this.turnstile?.invisible == 'yes') {
-                        this.turnstile.appearance = 'interaction-only';
-                    }
                     this.turnstile_status = response._fluentform_turnstile_keys_status;
                 });
         }
@@ -274,7 +290,7 @@ export default {
     created() {
         let turnstileScript = document.createElement('script');
 
-        turnstileScript.setAttribute('src', 'https://challenges.cloudflare.com/turnstile/v0/api.js');
+        turnstileScript.setAttribute('src', 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit');
 
         document.body.appendChild(turnstileScript);
     },

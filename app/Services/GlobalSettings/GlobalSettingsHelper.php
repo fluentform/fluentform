@@ -215,13 +215,15 @@ class GlobalSettingsHelper
         $token = Arr::get($data, 'token');
         $secretKey = sanitize_text_field(Arr::get($data, 'secretKey'));
 
+        $siteKey = sanitize_text_field(Arr::get($data, 'siteKey'));
+
         // Prepare captcha data.
         $captchaData = [
-            'siteKey'    => Arr::get($data, 'siteKey'),
+            'siteKey'    => $siteKey,
             'secretKey'  => $secretKey,
-            'invisible'  => 'no',
-            'appearance' => Arr::get($data, 'appearance', 'always'),
-            'theme'      => Arr::get($data, 'theme', 'auto')
+            'appearance' => sanitize_text_field(Arr::get($data, 'appearance', 'always')),
+            'size'       => sanitize_text_field(Arr::get($data, 'size', 'normal')),
+            'theme'      => sanitize_text_field(Arr::get($data, 'theme', 'auto'))
         ];
 
         // If token is not empty meaning user verified their captcha.
@@ -251,11 +253,28 @@ class GlobalSettingsHelper
             // The token is empty, so the user didn't verify their captcha.
             $message = __('Please validate your Turnstile first and then hit save.', 'fluentform');
 
-            // Get the already stored reCaptcha status.
+            // Get the already stored Turnstile status.
             $status = get_option('_fluentform_turnstile_keys_status');
 
             if ($status) {
-                update_option('_fluentform_turnstile_details', $captchaData, 'no');
+                $existing = get_option('_fluentform_turnstile_details');
+                if (is_array($existing)) {
+                    $keysChanged = $siteKey !== Arr::get($existing, 'siteKey')
+                        || $secretKey !== Arr::get($existing, 'secretKey');
+
+                    if ($keysChanged) {
+                        return([
+                            'message' => __('Please verify your Turnstile to save the new keys.', 'fluentform'),
+                            'status'  => false,
+                        ]);
+                    }
+
+                    // Keys unchanged — only update presentation fields
+                    $existing['appearance'] = sanitize_text_field(Arr::get($data, 'appearance', 'always'));
+                    $existing['size'] = sanitize_text_field(Arr::get($data, 'size', 'normal'));
+                    $existing['theme'] = sanitize_text_field(Arr::get($data, 'theme', 'auto'));
+                    update_option('_fluentform_turnstile_details', $existing, 'no');
+                }
                 $message = __('Your Turnstile settings is saved.', 'fluentform');
 
                 return([
