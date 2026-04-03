@@ -39,7 +39,7 @@ class Router
         return $this;
     }
 
-    public function group($attributes = [], \Closure $callback = null)
+    public function group($attributes = [], ?\Closure $callback = null)
     {
         if ($attributes instanceof \Closure) {
             $callback = $attributes;

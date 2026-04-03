@@ -358,7 +358,7 @@ abstract class Model implements ArrayAccess, ArrayableInterface, JsonableInterfa
      *
      * @throws \InvalidArgumentException
      */
-    public static function addGlobalScope($scope, Closure $implementation = null)
+    public static function addGlobalScope($scope, ?Closure $implementation = null)
     {
         if (is_string($scope) && $implementation !== null) {
             return static::$globalScopes[static::class][$scope] = $implementation;
@@ -3063,7 +3063,7 @@ abstract class Model implements ArrayAccess, ArrayableInterface, JsonableInterfa
      * @param  array|null  $except
      * @return \FluentForm\Framework\Database\Orm\Model
      */
-    public function replicate(array $except = null)
+    public function replicate(?array $except = null)
     {
         $defaults = [
             $this->getKeyName(),
