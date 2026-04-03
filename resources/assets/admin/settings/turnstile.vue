@@ -165,7 +165,6 @@ export default {
             turnstile: {
                 siteKey: "",
                 secretKey: "",
-                invisible: "no",
                 appearance: 'always',
                 size: 'normal',
                 theme: 'auto'
@@ -281,9 +280,6 @@ export default {
                 .then(response => {
                     const turnstile = response._fluentform_turnstile_details;
                     this.turnstile = turnstile;
-                    if (this.turnstile?.invisible == 'yes') {
-                        this.turnstile.appearance = 'interaction-only';
-                    }
                     this.turnstile_status = response._fluentform_turnstile_keys_status;
                 });
         }

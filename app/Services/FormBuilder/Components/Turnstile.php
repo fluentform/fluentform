@@ -32,6 +32,16 @@ class Turnstile extends BaseComponent
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $turnstile = get_option('_fluentform_turnstile_details');
+
+        // One-time migration: convert legacy invisible flag to appearance
+        if (is_array($turnstile) && isset($turnstile['invisible'])) {
+            if ('yes' === $turnstile['invisible']) {
+                $turnstile['appearance'] = 'interaction-only';
+            }
+            unset($turnstile['invisible']);
+            update_option('_fluentform_turnstile_details', $turnstile, 'no');
+        }
+
         $siteKey = ArrayHelper::get($turnstile, 'siteKey');
 
         if (! $siteKey) {
@@ -64,10 +74,6 @@ class Turnstile extends BaseComponent
         }
 
         $appearance = esc_attr(ArrayHelper::get($turnstile, 'appearance', 'always'));
-
-        if ('yes' == ArrayHelper::get($turnstile, 'invisible')) {
-            $appearance = 'interaction-only';
-        }
 
         $size = esc_attr(ArrayHelper::get($turnstile, 'size', 'normal'));
 

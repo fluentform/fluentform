@@ -161,7 +161,14 @@ class Turnstile
             $settings = [];
         }
 
-        $settings['invisible'] = ArrayHelper::get($settings, 'invisible', 'no');
+        // Migrate legacy invisible flag to appearance, persist once
+        if (isset($settings['invisible'])) {
+            if ('yes' === $settings['invisible']) {
+                $settings['appearance'] = 'interaction-only';
+            }
+            unset($settings['invisible']);
+            update_option('_fluentform_turnstile_details', $settings, 'no');
+        }
         $settings['theme'] = ArrayHelper::get($settings, 'theme', 'auto');
         $settings['appearance'] = ArrayHelper::get($settings, 'appearance', 'always');
         $settings['size'] = ArrayHelper::get($settings, 'size', 'normal');
