@@ -252,11 +252,18 @@ class GlobalSettingsHelper
             // The token is empty, so the user didn't verify their captcha.
             $message = __('Please validate your Turnstile first and then hit save.', 'fluentform');
 
-            // Get the already stored reCaptcha status.
+            // Get the already stored Turnstile status.
             $status = get_option('_fluentform_turnstile_keys_status');
 
             if ($status) {
-                update_option('_fluentform_turnstile_details', $captchaData, 'no');
+                // Only update presentation fields, preserve verified keys
+                $existing = get_option('_fluentform_turnstile_details');
+                if (is_array($existing)) {
+                    $existing['appearance'] = Arr::get($data, 'appearance', 'always');
+                    $existing['size'] = sanitize_text_field(Arr::get($data, 'size', 'normal'));
+                    $existing['theme'] = Arr::get($data, 'theme', 'auto');
+                    update_option('_fluentform_turnstile_details', $existing, 'no');
+                }
                 $message = __('Your Turnstile settings is saved.', 'fluentform');
 
                 return([
