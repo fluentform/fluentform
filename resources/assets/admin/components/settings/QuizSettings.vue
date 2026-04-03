@@ -59,11 +59,43 @@
                                         </tr>
                                     </table>
                                 </el-form-item>
+                                <el-form-item class="ff-form-item">
+                                    <QuizTimerSettings
+                                        :settings="settings"
+                                        :editorShortcodes="editorShortcodes"
+                                        :errors="errors"
+                                    ></QuizTimerSettings>
+                                </el-form-item>
+                                <el-form-item class="ff-form-item">
+                                    <QuizRetakeSettings
+                                        :settings="settings"
+                                        :editorShortcodes="editorShortcodes"
+                                        :errors="errors"
+                                    ></QuizRetakeSettings>
+                                </el-form-item>
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Review Settings') }}
+                                    </template>
+                                    <field-mapper
+                                        :field="{ component: 'checkbox-single', label: $t('Enable Review Before Submission'), checkbox_label: $t('Show review page before final submission') }"
+                                        :editorShortcodes="editorShortcodes"
+                                        :errors="errors"
+                                        v-model="settings.review_enabled"
+                                    >
+                                    </field-mapper>
+                                </el-form-item>
+                                <quiz-category-settings v-model="settings.categories"></quiz-category-settings>
+                                <quiz-social-sharing-settings
+                                    :settings.sync="settings"
+                                    :editorShortcodes="editorShortcodes"
+                                    :errors="errors"
+                                ></quiz-social-sharing-settings>
                                 <el-form-item :label="$t('Quiz Questions')" class="quiz-questions ff-form-item">
                                     <p v-if="resultType == 'personality'">{{ $t('Personality quiz has no right or wrong answer, just enable the questions. Make sure the answers value match with the personality options values. That is all.') }}</p>
                                     <template v-if="quizFields">
                                         <div v-for="(input, key) in quizFields" :key="key">
-                                            <quiz-input :input="getInput(key)" :original_input="quizFields[key]" :is_personality_quiz="resultType =='personality'"></quiz-input>
+                                            <quiz-input :input="getInput(key)" :original_input="quizFields[key]" :is_personality_quiz="resultType =='personality'" :quiz_settings="settings"></quiz-input>
                                         </div>
                                     </template>
                                 </el-form-item>
@@ -100,6 +132,10 @@
     import inputPopover from '../input-popover.vue';
     import FieldMapper from "./GeneralIntegration/FieldMapper";
     import QuizInput from "./QuizInput";
+    import QuizTimerSettings from "./QuizTimerSettings";
+    import QuizRetakeSettings from "./QuizRetakeSettings";
+    import QuizCategorySettings from "./QuizCategorySettings";
+    import QuizSocialSharingSettings from "./QuizSocialSharingSettings";
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
     import Card from '@/admin/components/Card/Card.vue';
@@ -119,6 +155,10 @@
             inputPopover,
             FieldMapper,
             QuizInput,
+            QuizTimerSettings,
+            QuizRetakeSettings,
+            QuizCategorySettings,
+            QuizSocialSharingSettings,
             Card,
             CardHead,
             CardBody,
