@@ -118,7 +118,7 @@ class AiFormBuilder extends FormService
         }
        
         $response = trim(Arr::get($result, 'response', ''), '"');
-        if (false !== preg_match('/```json(.*?)```/s', $response, $matches)) {
+        if (1 === preg_match('/```json(.*?)```/s', $response, $matches)) {
             $response = trim($matches[1]);
         }
 

@@ -949,7 +949,7 @@ class Component
             $checkables = ['limitNumberOfEntries', 'scheduleForm', 'requireLogin'];
 
             // Ensure settings is an array
-            if (!is_array($form->settings)) {
+            if (!isset($form->settings) || !is_array($form->settings)) {
                 $form->settings = [];
             }
 
