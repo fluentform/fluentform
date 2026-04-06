@@ -22,3 +22,4 @@ jsconfig.json
 composer.lock
 assets/report.html
 .claude/
+builds/*

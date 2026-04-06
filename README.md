@@ -159,6 +159,16 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
+### 6.2.0 (Date: April 01, 2026) =
+- Upgrades internal framework for better performance and PHP 8.4 support
+- Improves Stripe payment confirmation security
+- Improves data export security
+- Improves database query performance for reports
+- Adds filter hook for conversational form extra inputs
+- Fixes textarea line breaks not displaying correctly in entries
+- Improves overall plugin security and stability
+- Dev: [Upgrade Guide for developers](https://developers.fluentforms.com/upgrade-guide/6.2.0/)
+
 ### 6.1.15 (Date: January 30, 2026) =
 - Adds prefix and suffix support for textarea, url and password input
 - Adds suggested plugin page to show verified plugins

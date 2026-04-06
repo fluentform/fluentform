@@ -291,7 +291,7 @@
             return {
                 editingTransaction: false,
                 transactionModal: false,
-                payment_statuses: window.fluent_form_entries_vars.payment_statuses,
+                payment_statuses: window.fluent_form_entries_vars?.payment_statuses || {},
                 editing: false,
                 original_editing_status: ''
             }
