@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d6e2555646a40a6523769ea6214abc1f",
+    "content-hash": "c8f0e7e9a1d864c69c9201ffba635815",
     "packages": [
         {
             "name": "openspout/openspout",
@@ -97,25 +97,26 @@
         },
         {
             "name": "wpfluent/framework",
-            "version": "1.0.19",
+            "version": "2.11.15",
             "source": {
                 "type": "git",
                 "url": "git@github.com:wpfluent/framework2x.git",
-                "reference": "e7c043b2a431b1bcd98ff658f47a137e8d21d673"
+                "reference": "efe9e25769376cde6da00d23842e3aa4cb30199d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wpfluent/framework2x/zipball/e7c043b2a431b1bcd98ff658f47a137e8d21d673",
-                "reference": "e7c043b2a431b1bcd98ff658f47a137e8d21d673",
+                "url": "https://api.github.com/repos/wpfluent/framework2x/zipball/efe9e25769376cde6da00d23842e3aa4cb30199d",
+                "reference": "efe9e25769376cde6da00d23842e3aa4cb30199d",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "ext-json": "*",
+                "php": "^7.3|^8.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "2.10.x-dev"
                 }
             },
             "autoload": {
@@ -133,20 +134,19 @@
                 }
             ],
             "description": "A lightweight rest api based framework to build WordPress plugins.",
-            "support": {
-                "source": "https://github.com/wpfluent/framework2x/tree/1.0.19",
-                "issues": "https://github.com/wpfluent/framework2x/issues"
-            },
-            "time": "2022-09-16T11:41:03+00:00"
+            "time": "2026-03-19T06:03:58+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform": {},
+    "platform-dev": {},
+    "platform-overrides": {
+        "php": "7.4"
+    },
+    "plugin-api-version": "2.9.0"
 }

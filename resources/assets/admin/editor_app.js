@@ -107,7 +107,7 @@ window.FluentFormEditorEvents = new Vue();
 
 Vue.mixin(mixins);
 
-global.Errors = Errors;
+window.Errors = Errors;
 
 window.ffEditorOptionsCustomComponents = window.ffEditorOptionsCustomComponents || {};
 

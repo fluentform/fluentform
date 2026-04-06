@@ -40,3 +40,17 @@ Admin mounts multiple Vue apps: form editor, all forms, entries, settings, repor
 8. **API client:** Admin uses `FluentFormsGlobal.$rest.get/post/put/del()`. Stores use Vuex, not Pinia
 9. **No PHPCS config** — no PHP linter. Run ESLint manually if needed
 10. **Asset loading:** `fluentFormMix()` helper maps to `assets/` via `mix-manifest.json`
+
+## Deep Knowledge (read on demand)
+
+When working on a specific area, read the relevant skill file for detailed patterns, file maps, and gotchas:
+
+| Topic | File | When to read |
+|-------|------|-------------|
+| Architecture | `.claude/skills/architecture.md` | Understanding project structure, models, routes, stores, modules |
+| Coding patterns | `.claude/skills/coding-patterns.md` | Writing new code — controller, handler, Vue component, API patterns |
+| Bug fixes | `.claude/skills/workflow-bugfix.md` | Fixing bugs or security vulnerabilities |
+| Forms | `.claude/skills/workflow-forms.md` | Form builder, fields, rendering, submissions, entries |
+| Integrations | `.claude/skills/workflow-integrations.md` | Notifications, integrations, webhooks, conditional logic |
+| Payments | `.claude/skills/workflow-payments.md` | Payment processing, Stripe, transactions, subscriptions |
+| Conversational | `.claude/skills/workflow-conversational.md` | Conversational form mode, design editor, share pages |
