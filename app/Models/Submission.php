@@ -269,37 +269,41 @@ class Submission extends Model
 
     public static function remove($submissionIds)
     {
-        // Fire hook before deletion so plugins can clean up related data
-        $submissions = static::whereIn('id', $submissionIds)->get(['id', 'form_id']);
-        foreach ($submissions as $submission) {
-            do_action('fluentform/before_submission_deleted', $submission->id, $submission->form_id);
+        // Fire hook before deletion so plugins can clean up related data (chunked to bound memory)
+        foreach (array_chunk($submissionIds, 200) as $chunk) {
+            $submissions = static::whereIn('id', $chunk)->get(['id', 'form_id']);
+            foreach ($submissions as $submission) {
+                do_action('fluentform/before_submission_deleted', $submission->id, $submission->form_id);
+            }
         }
 
-        static::whereIn('id', $submissionIds)->delete();
+        wpFluent()->getConnection()->transaction(function () use ($submissionIds) {
+            static::whereIn('id', $submissionIds)->delete();
 
-        SubmissionMeta::whereIn('response_id', $submissionIds)->delete();
+            SubmissionMeta::whereIn('response_id', $submissionIds)->delete();
 
-        Log::whereIn('source_id', $submissionIds)
-            ->where('source_type', 'submission_item')
-            ->delete();
-
-        EntryDetails::whereIn('submission_id', $submissionIds)->delete();
-
-        try {
-            if (PaymentHelper::hasPaymentSettings()) {
-                OrderItem::whereIn('submission_id', $submissionIds)->delete();
-                Transaction::whereIn('submission_id', $submissionIds)->delete();
-                Subscription::whereIn('submission_id', $submissionIds)->delete();
-            }
-
-            wpFluent()->table('ff_scheduled_actions')
-                ->whereIn('origin_id', $submissionIds)
-                ->where('type', 'submission_action')
+            Log::whereIn('source_id', $submissionIds)
+                ->where('source_type', 'submission_item')
                 ->delete();
 
-        } catch (Exception $exception) {
-            // ...
-        }
+            EntryDetails::whereIn('submission_id', $submissionIds)->delete();
+
+            try {
+                if (PaymentHelper::hasPaymentSettings()) {
+                    OrderItem::whereIn('submission_id', $submissionIds)->delete();
+                    Transaction::whereIn('submission_id', $submissionIds)->delete();
+                    Subscription::whereIn('submission_id', $submissionIds)->delete();
+                }
+
+                wpFluent()->table('ff_scheduled_actions')
+                    ->whereIn('origin_id', $submissionIds)
+                    ->where('type', 'submission_action')
+                    ->delete();
+
+            } catch (Exception $exception) {
+                // ...
+            }
+        });
     }
 
     public function allSubmissions($attributes = []) {
