@@ -2,17 +2,20 @@
 
 namespace FluentForm\App\Services\Transfer;
 
+defined('ABSPATH') or die;
+
 use Exception;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Models\SubmissionMeta;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Request\File;
+use FluentForm\Framework\Http\Request\File;
 use FluentForm\Framework\Support\Arr;
 
 class TransferService
@@ -95,6 +98,9 @@ class TransferService
                             if ("ffc_form_settings_generated_css" == $metaKey || "ffc_form_settings_meta" == $metaKey) {
                                 $metaValue = str_replace('ff_conv_app_' . Arr::get($formItem, 'id'), 'ff_conv_app_' . $formId, $metaValue);
                             }
+                            if (is_string($metaValue)) {
+                                $metaValue = wp_kses_post($metaValue);
+                            }
                             $settings = [
                                 'form_id'  => $formId,
                                 'meta_key' => $metaKey,
@@ -138,7 +144,10 @@ class TransferService
         if (!defined('FLUENTFORM_EXPORTING_ENTRIES')) {
             define('FLUENTFORM_EXPORTING_ENTRIES', true);
         }
-        $formId = (int)Arr::get($args, 'form_id');
+
+        $formId = Acl::verifyFormId(Arr::get($args, 'form_id'));
+        Acl::verify('fluentform_entries_viewer', $formId);
+
         $tableName = Arr::get($args, 'table');
         try {
             $form = Form::findOrFail($formId);
@@ -178,7 +187,21 @@ class TransferService
         $submissions = FormDataParser::parseFormEntries($submissions, $form, $formInputs);
         $parsedShortCodes = [];
         $exportData = [];
-        $submissionService = new SubmissionService();
+        $selectedShortcodes = self::getSelectedExportShortcodes($args, $form);
+        $legacyShortcodeHeaders = self::getLegacyExportShortcodeHeaders();
+
+        // Preload notes for all submissions in a single query to avoid N+1
+        $notesMap = [];
+        if ($withNotes && count($submissions)) {
+            $submissionIds = array_map(function ($s) { return is_object($s) ? $s->id : $s['id']; }, $submissions->toArray());
+            $allNotes = SubmissionMeta::whereIn('response_id', $submissionIds)
+                ->where('meta_key', '_notes')
+                ->get();
+            foreach ($allNotes as $note) {
+                $notesMap[$note->response_id][] = $note->value;
+            }
+        }
+
         foreach ($submissions as $submission) {
 
             $submission->response = json_decode($submission->response, true);
@@ -208,38 +231,35 @@ class TransferService
                 $temp[] = Helper::sanitizeForCSV($content);
             }
     
-            if($selectedShortcodes = Arr::get($args,'shortcodes_to_export')){
-                $selectedShortcodes = fluentFormSanitizer($selectedShortcodes);
-                $parsedShortCodes = ShortCodeParser::parse(
-                    $selectedShortcodes,
-                    $submission->id,
-                    $submission->response,
-                    $form,
-                    false,
-                    true
-                );
-                if(!empty($parsedShortCodes)){
-                    foreach ($parsedShortCodes as $code){
-                        $temp[] = Arr::get($code,'value');
-                    }
-                }
-            }
-            if($withNotes){
-                $notes = $submissionService->getNotes($submission->id, ['form_id' => $form->id])->pluck('value');
-                if(!empty($notes)){
-                    $temp[] = implode(", ",$notes->toArray());
-                }
-            }
+            if (!empty($selectedShortcodes)) {
+                $regularShortcodes = self::getRegularExportShortcodes($selectedShortcodes, $legacyShortcodeHeaders);
 
-            if (!$tableName) {
-                if ($form->has_payment) {
-                    $temp[] = round(($submission->payment_total ?? 0) / 100, 1);
-                    $temp[] = $submission->payment_status ?? '';
-                    $temp[] = $submission->currency ?? '';
+                if (!empty($regularShortcodes)) {
+                    $parsedShortCodes = ShortCodeParser::parse(
+                        $regularShortcodes,
+                        $submission->id,
+                        $submission->response,
+                        $form,
+                        false,
+                        true
+                    );
                 }
-                $temp[] = $submission->id ?? '';
-                $temp[] = $submission->status ?? '';
-                $temp[] = $submission->created_at ?? '';
+
+                $temp = array_merge(
+                    $temp,
+                    self::getSelectedShortcodeExportValues(
+                        $selectedShortcodes,
+                        $parsedShortCodes,
+                        $legacyShortcodeHeaders,
+                        $submission
+                    )
+                );
+            }
+            if ($withNotes) {
+                $noteValues = isset($notesMap[$submission->id]) ? $notesMap[$submission->id] : [];
+                if (!empty($noteValues)) {
+                    $temp[] = implode(", ", $noteValues);
+                }
             }
 
             $temp = apply_filters('fluentform/export_entry_metadata', $temp, $submission, $form, $args);
@@ -249,26 +269,15 @@ class TransferService
 
         $extraLabels = [];
 
-        if(!empty($parsedShortCodes)){
-            foreach ($parsedShortCodes as $code){
-                $extraLabels[] = Arr::get($code,'label');
-            }
-        }
+        $extraLabels = self::getSelectedShortcodeExportLabels(
+            $selectedShortcodes,
+            $parsedShortCodes,
+            $legacyShortcodeHeaders
+        );
         
         $inputLabels = array_merge($inputLabels, $extraLabels);
         if($withNotes){
             $inputLabels[] = __('Notes','fluentform');
-        }
-
-        if (!$tableName) {
-            if ($form->has_payment) {
-                $inputLabels[] = 'payment_total';
-                $inputLabels[] = 'payment_status';
-                $inputLabels[] = 'currency';
-            }
-            $inputLabels[] = 'entry_id';
-            $inputLabels[] = 'entry_status';
-            $inputLabels[] = 'created_at';
         }
         $inputLabels = apply_filters('fluentform/export_entry_metadata_labels', $inputLabels, $form, $args);
 
@@ -290,6 +299,145 @@ class TransferService
         );
     }
 
+    private static function getSelectedExportShortcodes($args, $form)
+    {
+        $selectedShortcodes = fluentFormSanitizer(Arr::get($args, 'shortcodes_to_export', []));
+
+        if (!Arr::has($args, 'shortcodes_to_export_defined') && empty($selectedShortcodes)) {
+            return self::getDefaultExportShortcodes($form);
+        }
+
+        return $selectedShortcodes;
+    }
+
+    private static function getDefaultExportShortcodes($form)
+    {
+        $defaults = [
+            [
+                'label' => __('Submission ID', 'fluentform'),
+                'value' => '{submission.id}',
+            ],
+            [
+                'label' => __('Submission Create Date', 'fluentform'),
+                'value' => '{submission.created_at}',
+            ],
+            [
+                'label' => __('Submission Status', 'fluentform'),
+                'value' => '{submission.status}',
+            ],
+        ];
+
+        if ($form->has_payment) {
+            $defaults[] = [
+                'label' => __('Payment Status', 'fluentform'),
+                'value' => '{payment.payment_status}',
+            ];
+            $defaults[] = [
+                'label' => __('Payment Total', 'fluentform'),
+                'value' => '{payment.payment_total}',
+            ];
+            $defaults[] = [
+                'label' => __('Currency', 'fluentform'),
+                'value' => '{submission.currency}',
+            ];
+        }
+
+        return $defaults;
+    }
+
+    private static function getLegacyExportShortcodeHeaders()
+    {
+        return [
+            '{submission.id}'             => 'entry_id',
+            '{submission.status}'         => 'entry_status',
+            '{submission.created_at}'     => 'created_at',
+            '{payment.payment_status}'    => 'payment_status',
+            '{submission.payment_status}' => 'payment_status',
+            '{payment.payment_total}'     => 'payment_total',
+            '{submission.payment_total}'  => 'payment_total',
+            '{submission.currency}'       => 'currency',
+        ];
+    }
+
+    private static function getRegularExportShortcodes($selectedShortcodes, $legacyShortcodeHeaders)
+    {
+        $regularShortcodes = [];
+
+        foreach ($selectedShortcodes as $index => $shortcode) {
+            if (!isset($legacyShortcodeHeaders[Arr::get($shortcode, 'value')])) {
+                $regularShortcodes[$index] = $shortcode;
+            }
+        }
+
+        return $regularShortcodes;
+    }
+
+    private static function getSelectedShortcodeExportValues($selectedShortcodes, $parsedShortCodes, $legacyShortcodeHeaders, $submission)
+    {
+        $values = [];
+
+        foreach ($selectedShortcodes as $index => $shortcode) {
+            $shortcodeValue = Arr::get($shortcode, 'value');
+
+            if (!isset($legacyShortcodeHeaders[$shortcodeValue])) {
+                $values[] = Arr::get($parsedShortCodes, $index . '.value');
+                continue;
+            }
+
+            $values[] = self::getLegacyExportValue($legacyShortcodeHeaders[$shortcodeValue], $submission);
+        }
+
+        return $values;
+    }
+
+    private static function getSelectedShortcodeExportLabels($selectedShortcodes, $parsedShortCodes, $legacyShortcodeHeaders)
+    {
+        $labels = [];
+
+        foreach ($selectedShortcodes as $index => $shortcode) {
+            $shortcodeValue = Arr::get($shortcode, 'value');
+
+            if (isset($legacyShortcodeHeaders[$shortcodeValue])) {
+                $labels[] = $legacyShortcodeHeaders[$shortcodeValue];
+                continue;
+            }
+
+            $labels[] = Arr::get($parsedShortCodes, $index . '.label');
+        }
+
+        return $labels;
+    }
+
+    private static function getLegacyExportValue($header, $submission)
+    {
+        $legacyValueResolvers = [
+            'entry_id' => function ($submission) {
+                return $submission->id ?? '';
+            },
+            'entry_status' => function ($submission) {
+                return $submission->status ?? '';
+            },
+            'created_at' => function ($submission) {
+                return $submission->created_at ?? '';
+            },
+            'payment_status' => function ($submission) {
+                return $submission->payment_status ?? '';
+            },
+            'payment_total' => function ($submission) {
+                return round(($submission->payment_total ?? 0) / 100, 1);
+            },
+            'currency' => function ($submission) {
+                return $submission->currency ?? '';
+            },
+        ];
+
+        if (!isset($legacyValueResolvers[$header])) {
+            return '';
+        }
+
+        return $legacyValueResolvers[$header]($submission);
+    }
+
     private static function exportAsJSON($form, $args)
     {
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
@@ -309,15 +457,26 @@ class TransferService
         $tableName = Arr::get($args, 'table');
 
         if ($tableName) {
+            $allowedTables = [
+                'fluentform_submissions',
+                'fluentform_draft_submissions',
+            ];
+            if (!in_array($tableName, $allowedTables, true)) {
+                wp_send_json([
+                    'message' => __('Invalid table name for export.', 'fluentform')
+                ], 422);
+            }
             $query = wpFluent()->table($tableName)
                 ->where('form_id', (int) Arr::get($args, 'form_id'))
                 ->orderBy('id', Helper::sanitizeOrderValue(Arr::get($args, 'sort_by', 'DESC')));
 
             $searchString = Arr::get($args, 'search');
             if ($searchString) {
-                $query->where(function ($q) use ($searchString) {
-                    $q->where('id', 'LIKE', "%{$searchString}%")
-                        ->orWhere('response', 'LIKE', "%{$searchString}%");
+                global $wpdb;
+                $escaped = $wpdb->esc_like($searchString);
+                $query->where(function ($q) use ($escaped) {
+                    $q->where('id', 'LIKE', "%{$escaped}%")
+                        ->orWhere('response', 'LIKE', "%{$escaped}%");
                 });
             }
         } else {
@@ -350,7 +509,7 @@ class TransferService
         require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
 
-        // Create writer based on type using WriterEntityFactory
+        // Create writer based on type
         switch (strtolower($type)) {
             case 'csv':
                 $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCSVWriter();

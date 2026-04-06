@@ -105,7 +105,7 @@ class PaymentHandler
                 return;
             }
 
-            $src = fluentformMix('js/payment_handler.js');
+            $src = fluentFormMix('js/payment_handler.js');
             $version = FLUENTFORM_VERSION;
 
             // If pro is installed and script is compatible, load script from pro
@@ -395,16 +395,64 @@ class PaymentHandler
     public function handleAjaxEndpoints()
     {
         // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Nonce verified by Acl::verify()
-        if (isset($_REQUEST['form_id'])) {
-            Acl::verify('fluentform_forms_manager');
+        $route = isset($_REQUEST['route']) ? sanitize_text_field(wp_unslash($_REQUEST['route'])) : '';
+        $formScopedRoutes = [
+            'get_form_settings',
+            'save_form_settings',
+            'update_transaction',
+            'cancel_subscription'
+        ];
+
+        if (in_array($route, $formScopedRoutes, true)) {
+            Acl::verify('fluentform_forms_manager', $this->resolveRouteFormId($route));
         } else {
             Acl::verify('fluentform_settings_manager');
         }
-
-        $route = isset($_REQUEST['route']) ? sanitize_text_field(wp_unslash($_REQUEST['route'])) : '';
         // phpcs:enable WordPress.Security.NonceVerification.Recommended -- End of AJAX endpoint nonce verification by Acl::verify()
 
         (new AjaxEndpoints())->handleEndpoint($route);
+    }
+
+    private function resolveRouteFormId($route)
+    {
+        switch ($route) {
+            case 'get_form_settings':
+            case 'save_form_settings':
+                return Acl::verifyFormId(wpFluentForm()->request->get('form_id'));
+            case 'update_transaction':
+                return $this->resolveTransactionFormId();
+            case 'cancel_subscription':
+                return $this->resolveSubscriptionFormId();
+            default:
+                return null;
+        }
+    }
+
+    private function resolveTransactionFormId()
+    {
+        $transactionData = wpFluentForm()->request->get('transaction', []);
+        $transactionId = absint(ArrayHelper::get($transactionData, 'id'));
+
+        if (!$transactionId) {
+            return -1;
+        }
+
+        $transaction = \FluentForm\App\Models\Transaction::select('form_id')->find($transactionId);
+
+        return $transaction ? (int) $transaction->form_id : -1;
+    }
+
+    private function resolveSubscriptionFormId()
+    {
+        $subscriptionId = absint(wpFluentForm()->request->get('subscription_id'));
+
+        if (!$subscriptionId) {
+            return -1;
+        }
+
+        $subscription = \FluentForm\App\Models\Subscription::select('form_id')->find($subscriptionId);
+
+        return $subscription ? (int) $subscription->form_id : -1;
     }
     
     public function maybeHandlePayment($insertData, $data, $form)
@@ -474,7 +522,7 @@ class PaymentHandler
     
     public function maybeAddPaymentSettings($menus, $formId)
     {
-        $form = wpFluent()->table('fluentform_forms')->find($formId);
+        $form = \FluentForm\App\Models\Form::find($formId);
         if ($form->has_payment) {
             $menus = array_merge(array_slice($menus, 0, 1), array(
                 'payment_settings' => [
@@ -512,8 +560,7 @@ class PaymentHandler
         }
         
         if ($transactionHash) {
-            $transaction = wpFluent()->table('fluentform_transactions')
-                ->where('submission_id', $submissionId)
+            $transaction = \FluentForm\App\Models\Transaction::bySubmission($submissionId)
                 ->where('transaction_hash', $transactionHash)
                 ->first();
             if ($transaction) {
@@ -545,15 +592,14 @@ class PaymentHandler
         }
         $userEmail = $user->user_email;
         
-        $transactions = wpFluent()->table('fluentform_transactions')
-            ->where('payer_email', $userEmail)
+        $transactions = \FluentForm\App\Models\Transaction::where('payer_email', $userEmail)
             ->where(function ($query) {
                 $query->whereNull('user_id')
                     ->orWhere('user_id', '');
             })
             ->get();
         
-        if (!$transactions) {
+        if (count($transactions) === 0) {
             return false;
         }
         
@@ -567,15 +613,13 @@ class PaymentHandler
         $submissionIds = array_unique($submissionIds);
         $transactionIds = array_unique($transactionIds);
         
-        wpFluent()->table('fluentform_submissions')
-            ->whereIn('id', $submissionIds)
+        \FluentForm\App\Models\Submission::whereIn('id', $submissionIds)
             ->update([
                 'user_id'    => $userId,
                 'updated_at' => current_time('mysql')
             ]);
-        
-        wpFluent()->table('fluentform_transactions')
-            ->whereIn('id', $transactionIds)
+
+        \FluentForm\App\Models\Transaction::whereIn('id', $transactionIds)
             ->update([
                 'user_id'    => $userId,
                 'updated_at' => current_time('mysql')

@@ -2,14 +2,18 @@ export default function (method, route, data = {}) {
     const url = `${window.fluent_forms_global_var.rest.url}/${route}`;
     const originalMethod = method;
 
-    const headers = { "X-WP-Nonce": window.fluent_forms_global_var.rest.nonce };
+    const headers = {
+        "X-WP-Nonce": window.fluent_forms_global_var.rest.nonce,
+        "Accept": "application/json"
+    };
+
+    data._locale = 'user';
+    data.query_timestamp = Date.now();
 
     if (["PUT", "PATCH", "DELETE"].indexOf(method.toUpperCase()) !== -1) {
         headers["X-HTTP-Method-Override"] = method;
         method = "POST";
     }
-
-    data.query_timestamp = Date.now();
 
     return new Promise((resolve, reject) => {
         window.jQuery

@@ -332,13 +332,37 @@
                         <el-table-column
                                 v-for="(column, index) in formattedColumn"
                                 :label="column.label"
-                                :show-overflow-tooltip="isCompact"
                                 min-width="200"
                                 sortable="custom"
                                 :prop="'user_inputs_column_field-' + column.field"
                                 :key="index">
                             <template slot-scope="scope">
-                                <span v-html="scope.row.user_inputs[column.field]"></span>
+                                <el-popover
+                                    v-if="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                    popper-class="ff-entry-cell-popover"
+                                    placement="top-start"
+                                    trigger="hover"
+                                    :open-delay="150"
+                                    :popper-options="entryCellPopoverOptions"
+                                    :width="420"
+                                >
+                                    <div
+                                        class="ff_entry_table_popover_content"
+                                        v-html="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                    ></div>
+                                    <div
+                                        slot="reference"
+                                        class="ff_entry_table_cell"
+                                    >
+                                        <div
+                                            class="ff_entry_table_cell__content"
+                                            v-html="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                        ></div>
+                                    </div>
+                                </el-popover>
+                                <div v-else class="ff_entry_table_cell">
+                                    <div class="ff_entry_table_cell__content"></div>
+                                </div>
                             </template>
                         </el-table-column>
 
@@ -631,7 +655,7 @@
                 counts: {},
                 no_found_text: window.fluent_form_entries_vars.no_found_text,
                 entry_statuses: window.fluent_form_entries_vars.entry_statuses,
-                payment_statuses: window.fluent_form_entries_vars.payment_statuses,
+                payment_statuses: window.fluent_form_entries_vars?.payment_statuses || {},
                 has_payment: !!window.fluent_form_entries_vars.has_payment,
                 isCompact: true,
                 basicFilter: false,
@@ -791,9 +815,23 @@
 
 	        dateColWidth() {
 		        return window.fluent_forms_global_var.disable_time_diff ? '180' : '120';
-	        }
+	        },
+            entryCellPopoverOptions() {
+                const adminBar = typeof document !== 'undefined'
+                    ? document.getElementById('wpadminbar')
+                    : null;
+                const adminBarHeight = adminBar ? adminBar.offsetHeight : 0;
+
+                return {
+                    gpuAcceleration: false,
+                    boundariesPadding: adminBarHeight + 16
+                };
+            }
         },
         methods: {
+            getEntryCellValue(value) {
+                return value || '';
+            },
             getStatusName(status) {
                 if (this.entry_statuses[status]) {
                     return this.entry_statuses[status];
@@ -1133,6 +1171,7 @@
                     payment_statuses: this.selectedPaymentStatuses,
                     fields_to_export: JSON.stringify(this.fieldsToExport),
                     shortcodes_to_export: selectedShortcodes,
+                    shortcodes_to_export_defined: 'yes',
 	                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                 };
                 if (this.exportWithNotes){
@@ -1223,6 +1262,23 @@
             showImport() {
                 this.showImportEntriesModal = !this.showImportEntriesModal;
             },
+            getDefaultShortcodesToExport() {
+                const defaults = ['{submission.id}', '{submission.created_at}', '{submission.status}'];
+
+                if (this.editor_shortcodes['{payment.payment_status}']) {
+                    defaults.push('{payment.payment_status}');
+                }
+
+                if (this.editor_shortcodes['{payment.payment_total}']) {
+                    defaults.push('{payment.payment_total}');
+                }
+
+                if (this.editor_shortcodes['{submission.currency}']) {
+                    defaults.push('{submission.currency}');
+                }
+
+                return defaults;
+            },
             /**
              * Load last used export fields from localStorage
              */
@@ -1233,7 +1289,7 @@
                     try {
                         const lastFields = JSON.parse(saved);
                         this.fieldsToExport = lastFields.fieldsToExport || Object.keys(this.input_labels);
-                        this.shortcodesToExport = lastFields.shortcodesToExport || ['{submission.id}','{submission.created_at}','{submission.status}'];
+                        this.shortcodesToExport = lastFields.shortcodesToExport || this.getDefaultShortcodesToExport();
                         this.exportWithNotes = lastFields.exportWithNotes || false;
 
                         this.updateCheckAllState();
@@ -1273,7 +1329,7 @@
 	        });
             this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
             this.fieldsToExport = Object.keys(this.input_labels)
-            this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
+            this.shortcodesToExport = this.getDefaultShortcodesToExport()
             this.loadLastExportFields();
         },
         beforeCreate() {
@@ -1286,4 +1342,3 @@
 	    }
     };
 </script>
-

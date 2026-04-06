@@ -42,8 +42,8 @@ class Form
             $query->where('status', $status);
         }
 
-        if ($allowIds = FormManagerService::getUserAllowedForms()) {
-            $query->whereIn('id', $allowIds);
+        if (false !== ($allowIds = FormManagerService::getUserAllowedFormsScope())) {
+            $query->whereIn('id', $allowIds ?: [0]);
         }
 
         if ($filter_by && !$is_filter_by_conv_or_step_form) {
@@ -82,12 +82,12 @@ class Form
         $skip = $perPage * ($currentPage - 1);
 
         if ($is_filter_by_conv_or_step_form) {
-            $data = (array) $query->select('*')->get();
+            $data = $query->select('*')->get()->all();
         } else {
             if ($total < $skip) {
                 $skip = 0;
             }
-            $data = (array) $query->select('*')->limit($perPage)->offset($skip)->get();
+            $data = $query->select('*')->limit($perPage)->offset($skip)->get()->all();
         }
 
         // Fetch all counts in bulk before the loop

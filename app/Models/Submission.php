@@ -66,7 +66,37 @@ class Submission extends Model
         return $this->hasMany(EntryDetails::class, 'submission_id', 'id');
     }
 
-    public function customQuery($attributes = [])
+    /**
+     * A submission has many transactions.
+     *
+     * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'submission_id', 'id');
+    }
+
+    /**
+     * A submission has many subscriptions.
+     *
+     * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class, 'submission_id', 'id');
+    }
+
+    /**
+     * A submission has many order items.
+     *
+     * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
+     */
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'submission_id', 'id');
+    }
+
+    public function customQuery($attributes = [], $searchExtender = null)
     {
         $entryType = Arr::get($attributes, 'entry_type');
         $dateRange = Arr::get($attributes, 'date_range');
@@ -83,7 +113,7 @@ class Submission extends Model
         $startDate = Arr::get($dateRange, 0);
         $endDate = Arr::get($dateRange, 1);
         $search = Arr::get($attributes, 'search');
-        $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
+        $sortBy = \FluentForm\App\Helpers\Helper::sanitizeOrderValue(Arr::get($attributes, 'sort_by', 'DESC'));
 
         $wheres = [];
         $paymentStatuses = Arr::get($attributes, 'payment_statuses');
@@ -115,12 +145,17 @@ class Submission extends Model
                 return $q->where('fluentform_submissions.created_at', '>=', $startDate)
                     ->where('fluentform_submissions.created_at', '<=', $endDate);
             })
-            ->when($search, function ($q) use ($search) {
-                return $q->where(function ($q) use ($search) {
-                    return $q->where('fluentform_submissions.id', 'LIKE', "%{$search}%")
-                        ->orWhere('response', 'LIKE', "%{$search}%")
-                        ->orWhere('fluentform_submissions.status', 'LIKE', "%{$search}%")
-                        ->orWhere('fluentform_submissions.created_at', 'LIKE', "%{$search}%");
+            ->when($search, function ($q) use ($search, $searchExtender) {
+                global $wpdb;
+                $escaped = $wpdb->esc_like($search);
+                return $q->where(function ($q) use ($escaped, $searchExtender) {
+                    $q->where('fluentform_submissions.id', 'LIKE', "%{$escaped}%")
+                        ->orWhere('response', 'LIKE', "%{$escaped}%")
+                        ->orWhere('fluentform_submissions.status', 'LIKE', "%{$escaped}%")
+                        ->orWhere('fluentform_submissions.created_at', 'LIKE', "%{$escaped}%");
+                    if ($searchExtender) {
+                        $searchExtender($q, $escaped);
+                    }
                 });
             })
             ->when($wheres, function ($q) use ($wheres) {
@@ -151,7 +186,11 @@ class Submission extends Model
     public function paginateEntries($attributes = [])
     {
         $formId = Arr::get($attributes, 'form_id');
+        $allowFormIds = FormManagerService::getUserAllowedFormsScope();
         $query = $this->customQuery($attributes);
+        $query = $query->when(false !== $allowFormIds, function ($q) use ($allowFormIds) {
+            return $q->whereIn('fluentform_submissions.form_id', $allowFormIds ?: [0]);
+        });
         if (Arr::get($attributes, 'advanced_filter')) {
             $query = apply_filters('fluentform/apply_entries_advance_filter', $query, $attributes);
         }
@@ -247,21 +286,11 @@ class Submission extends Model
 
         EntryDetails::whereIn('submission_id', $submissionIds)->delete();
 
-        //delete  models this way for now
-        // todo: update wpFluent to the framework model
         try {
             if (PaymentHelper::hasPaymentSettings()) {
-                wpFluent()->table('fluentform_order_items')
-                    ->whereIn('submission_id', $submissionIds)
-                    ->delete();
-
-                wpFluent()->table('fluentform_transactions')
-                    ->whereIn('submission_id', $submissionIds)
-                    ->delete();
-
-                wpFluent()->table('fluentform_subscriptions')
-                    ->whereIn('submission_id', $submissionIds)
-                    ->delete();
+                OrderItem::whereIn('submission_id', $submissionIds)->delete();
+                Transaction::whereIn('submission_id', $submissionIds)->delete();
+                Subscription::whereIn('submission_id', $submissionIds)->delete();
             }
 
             wpFluent()->table('ff_scheduled_actions')
@@ -275,9 +304,13 @@ class Submission extends Model
     }
 
     public function allSubmissions($attributes = []) {
-        $customQuery = $this->customQuery($attributes);
-        $search = Arr::get($attributes, 'search');
-        $allowFormIds = FormManagerService::getUserAllowedForms();
+        $searchExtender = function ($q, $escaped) {
+            $q->orWhereHas('form', function ($q) use ($escaped) {
+                $q->where('title', 'LIKE', "%{$escaped}%");
+            });
+        };
+        $customQuery = $this->customQuery($attributes, $searchExtender);
+        $allowFormIds = FormManagerService::getUserAllowedFormsScope();
 
         $result = $customQuery
             ->with([
@@ -286,21 +319,18 @@ class Submission extends Model
                 }
             ])
             ->select(['id', 'form_id', 'status', 'created_at', 'browser', 'currency', 'total_paid'])
-            ->when($allowFormIds, function ($q) use ($allowFormIds){
-                return $q->whereIn('form_id', $allowFormIds);
-            })
-            ->when($search, function ($q) use ($search){
-                return $q->orWhereHas('form', function ($q) use ($search) {
-                    return $q->orWhere('title', 'LIKE', "%{$search}%");
-                });
+            ->when(false !== $allowFormIds, function ($q) use ($allowFormIds){
+                return $q->whereIn('form_id', $allowFormIds ?: [0]);
             })
             ->paginate()
             ->toArray();
 
+        $useHumanDate = apply_filters('fluentform/entries_human_date', false);
+
         foreach ($result['data'] as &$entry) {
             $entry['entry_url'] = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry['form_id'] . '#/entries/' . $entry['id']);
 
-            if (apply_filters('fluentform/entries_human_date', false)) {
+            if ($useHumanDate) {
                 $entry['human_date'] = human_time_diff(strtotime($entry['created_at']), strtotime(current_time('mysql')));
             }
         }
@@ -313,8 +343,8 @@ class Submission extends Model
     public function availableForms()
     {
         $form = new Form();
-        if ($allowForms = FormManagerService::getUserAllowedForms()) {
-            return $form->select('id', 'title')->whereIn('id', $allowForms)->get();
+        if (false !== ($allowForms = FormManagerService::getUserAllowedFormsScope())) {
+            return $form->select('id', 'title')->whereIn('id', $allowForms ?: [0])->get();
         }
         return $form->select('id', 'title')->get();
     }
@@ -324,6 +354,7 @@ class Submission extends Model
         $from = date('Y-m-d H:i:s', strtotime('-30 days'));
         $to = date('Y-m-d H:i:s', strtotime('+1 days'));
         $formId = Arr::get($attributes, 'form_id');
+        $allowFormIds = FormManagerService::getUserAllowedFormsScope();
         $status = Arr::get($attributes, 'entry_status');
         $start = Arr::get($attributes, 'date_range.0', '');
         $end = Arr::get($attributes, 'date_range.1', '');
@@ -331,6 +362,9 @@ class Submission extends Model
 
         if ('all' === $dateRange) {
             $firstItem = self::orderBy('created_at', 'ASC')
+                ->when(false !== $allowFormIds, function ($q) use ($allowFormIds) {
+                    return $q->whereIn('form_id', $allowFormIds ?: [0]);
+                })
                 ->when($formId, function ($q) use ($formId) {
                     return $q->where('form_id', $formId);
                 })
@@ -367,6 +401,9 @@ class Submission extends Model
             ->whereBetween('created_at', [$from, $to])
             ->groupBy('date')
             ->orderBy('date', 'ASC')
+            ->when(false !== $allowFormIds, function ($q) use ($allowFormIds) {
+                return $q->whereIn('form_id', $allowFormIds ?: [0]);
+            })
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('form_id', $formId);
             })

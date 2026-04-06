@@ -142,7 +142,7 @@ class ShortCodeParser
                 $value = static::getSubmissionData($submissionProperty);
             } elseif (false !== strpos($matches[1], 'cookie.')) {
                 $scookieProperty = substr($matches[1], strlen('cookie.'));
-                $value = wpFluentForm('request')->cookie($scookieProperty);
+                $value = array_key_exists($scookieProperty, $_COOKIE) ? wp_unslash($_COOKIE[$scookieProperty]) : '';
             } elseif (false !== strpos($matches[1], 'payment.')) {
                 $property = substr($matches[1], strlen('payment.'));
                 $deprecatedValue = apply_filters_deprecated(
@@ -372,7 +372,7 @@ class ShortCodeParser
             if ('total_paid' == $key || 'payment_total' == $key) {
                 return round($entry->{$key} / 100, 2);
             }
-            if ('payment_method' == $key && 'test' == $key) {
+            if ('payment_method' == $key && 'test' == $entry->{$key}) {
                 return __('Offline', 'fluentform');
             }
             return $entry->{$key};
@@ -457,6 +457,7 @@ class ShortCodeParser
                     if (is_array($data) || is_object($data)) {
                         continue;
                     }
+                    // $label is admin-set, $data is already sanitized via fluentFormSanitizer() on submission insert
                     $html .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $data . '</td></tr>';
                 }
             }

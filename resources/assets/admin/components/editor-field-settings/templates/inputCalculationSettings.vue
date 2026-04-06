@@ -84,6 +84,8 @@
                     return '{payment.'+item.attributes.name+'}';
                 } else if (item.element == 'custom_payment_component') {
                     return '{payment.'+item.attributes.name+'}';
+                } else if (item.element == 'subscription_payment_component') {
+                    return '{payment.'+item.attributes.name+'}';
                 } else if (item.attributes.type == 'number') {
                     return '{input.' + item.attributes.name + '}';
                 }

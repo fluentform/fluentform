@@ -66,6 +66,10 @@ jQuery(document).ready(function () {
                 return fluentFormAppStore[formInstanceSelector];
             }
 
+            if (!fluentFormVars.ajaxUrl) {
+                fluentFormVars.ajaxUrl = form.ajaxUrl || window.ajaxurl;
+            }
+
             var formId = form.form_id_selector;
             var formSelector = '.' + formInstanceSelector;
 
@@ -303,15 +307,13 @@ jQuery(document).ready(function () {
 
                     const ajaxRequestUrl = addParameterToURL('t=' + Date.now());
 
-                    if (this.isSending) {
+                    if (isSending) {
                         return;
                     }
 
-                    var that = this;
                     let responseData;
 
-
-                    this.isSending = true;
+                    isSending = true;
 
                     $.post(ajaxRequestUrl, formData)
                         .then(function (res) {
@@ -466,7 +468,7 @@ jQuery(document).ready(function () {
                             hideFormSubmissionProgress($theForm);
                         })
                         .always(function (res) {
-                            that.isSending = false;
+                            isSending = false;
 
                             if (responseData?.data?.result?.hasOwnProperty('redirectUrl')) {
                                 return;

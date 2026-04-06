@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 /**
  * All registered filter's handlers should be in app\Hooks\Handlers,
  * addFilter is similar to add_filter and addCustomFlter is just a
@@ -257,13 +259,11 @@ foreach ($fluentformRules as $fluentformRuleName) {
 
 
 $app->addFilter('fluentform/response_render_textarea', function ($value, $field, $formId, $isHtml) {
-    $value = $value ? nl2br($value) : $value;
-
-    if (!$isHtml || !$value) {
+    if (!$value || !is_string($value)) {
         return $value;
     }
 
-    return '<span style="white-space: pre-line">' . $value . '</span>';
+    return nl2br($value);
 }, 10, 4);
 
 $app->addFilter('fluentform/response_render_input_file', function ($response, $field, $form_id, $isHtml = false) {
@@ -323,7 +323,7 @@ $app->addFilter('fluentform/permission_callback', function ($status, $permission
 
 // Get current user allowed form ids, if current user has specific form permission
 $app->addFilter('fluentform/current_user_allowed_forms', function ($form){
-    return \FluentForm\App\Services\Manager\FormManagerService::getUserAllowedForms();
+    return \FluentForm\App\Services\Manager\FormManagerService::getUserAllowedFormsScope();
 });
 
 $app->addFilter('fluentform/validate_input_item_input_email', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);

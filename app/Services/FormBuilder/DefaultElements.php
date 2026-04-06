@@ -1,4 +1,7 @@
 <?php
+
+defined('ABSPATH') or die;
+
 $fluentformDefaultGlobalMessages = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
 $fluentformDefaultElements = [
     'general' => [
@@ -192,7 +195,7 @@ $fluentformDefaultElements = [
                 ],
             ],
             'editor_options' => [
-                'title'      => 'Name Fields',
+                'title'      => __('Name Fields', 'fluentform'),
                 'element'    => 'name-fields',
                 'icon_class' => 'ff-edit-name',
                 'template'   => 'nameFields',
@@ -733,7 +736,7 @@ $fluentformDefaultElements = [
                         'UK' => 'United Kingdom',
                     ],
                     'editor_options' => [
-                        'title'      => 'Country List',
+                        'title'      => __('Country List', 'fluentform'),
                         'element'    => 'country-list',
                         'icon_class' => 'icon-text-width',
                         'template'   => 'selectCountry',

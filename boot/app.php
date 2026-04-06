@@ -1,30 +1,32 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Hooks\Handlers\DeactivationHandler;
 use FluentForm\App\Services\Migrator\Bootstrap as FormsMigrator;
 use FluentForm\App\Services\FluentConversational\Classes\Form as FluentConversational;
+use FluentForm\Database\Migrations\LegacyManagerScopes;
 use FluentForm\App\Helpers\Helper;
 
 return function ($file) {
     add_action('plugins_loaded', function () {
-        $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '<');
+        $isNotCompatible = defined('FLUENTFORMPRO')
+            && version_compare(FLUENTFORMPRO_VERSION, '6.2.0', '<');
         if ($isNotCompatible) {
             add_action('admin_init', function () {
-                $message = '<div style="padding: 15px 10px;" ><b>' . __('Heads UP: ',
-                        'fluentform') . '</b>' . __('Fluent Forms Pro Plugin needs to be updated to the latest version.',
-                        'fluentform') . '<a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">' . __(' Please update Fluent Forms Pro to latest version.',
-                        'fluentform') . '</a></div>';
-                $actions = [
-                    'fluentform/global_menu',
-                    'fluentform/after_form_menu',
-                ];
-                foreach ($actions as $action) {
-                    add_action($action, function () use ($message) {
-                        printf('<div class="fluentform-admin-notice notice notice-success">%1$s</div>', esc_html($message));
-                    });
-                }
+                $message = '<b>' . __('Action Required: ', 'fluentform') . '</b>'
+                    . __('Fluent Forms Pro is not compatible with this version of Fluent Forms. Please update Fluent Forms Pro to version ', 'fluentform')
+                    . '6.2.0' . __(' or later.', 'fluentform')
+                    . ' <a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">'
+                    . __('Update Now', 'fluentform') . '</a>';
+                $renderNotice = function () use ($message) {
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Admin notice with HTML links
+                    printf('<div class="fluentform-admin-notice notice notice-error"><div style="padding: 15px 10px;">%1$s</div></div>', $message);
+                };
+                add_action('fluentform/global_menu', $renderNotice);
+                add_action('fluentform/after_form_menu', $renderNotice);
             });
         }
     });
@@ -35,16 +37,34 @@ return function ($file) {
         ($app->make(ActivationHandler::class))->handle($network_wide);
     });
 
-    add_action('wp_insert_site', function ($blog) use ($app) {
-        if (is_plugin_active_for_network('fluentform/fluentform.php')) {
-            switch_to_blog($blog->blog_id);
-            ($app->make(ActivationHandler::class))->handle(false);
-            restore_current_blog();
+    $initializeNewSite = function ($blogId) use ($app) {
+        if (!is_plugin_active_for_network('fluentform/fluentform.php')) {
+            return;
         }
-    });
+
+        switch_to_blog($blogId);
+        ($app->make(ActivationHandler::class))->handle(false);
+        restore_current_blog();
+    };
+
+    if (function_exists('wp_initialize_site')) {
+        add_action('wp_initialize_site', function ($newSite) use ($initializeNewSite) {
+            $initializeNewSite($newSite->id);
+        }, 20, 1);
+    } else {
+        add_action('wpmu_new_blog', function ($blogId) use ($initializeNewSite) {
+            $initializeNewSite($blogId);
+        }, 10, 1);
+    }
 
     register_deactivation_hook($file, function () use ($app) {
         ($app->make(DeactivationHandler::class))->handle();
+    });
+
+    add_action('admin_init', function () {
+        if (!wp_doing_ajax()) {
+            LegacyManagerScopes::migrate();
+        }
     });
 
     add_action('plugins_loaded', function () use ($app) {

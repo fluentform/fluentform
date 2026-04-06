@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\BaseComponent;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;
@@ -235,7 +237,7 @@ function fluentFormHandleScheduledTasks()
 {
     $failedActions = wpFluent()->table('ff_scheduled_actions')->where('status', 'failed')->where('retry_count', '<', 4)->get();
 
-    if ($failedActions) {
+    if (count($failedActions)) {
         $scheduler = wpFluentForm('fluentFormAsyncRequest');
 
         foreach ($failedActions as $action) {
@@ -385,9 +387,6 @@ function fluentform_sanitize_html($html)
         'style'           => [],
     ];
     
-    //button
-    $tags['button']['onclick'] = [];
-
     //svg
     if (empty($tags['svg'])) {
         $svg_args = [
@@ -431,6 +430,19 @@ function fluentform_sanitize_html($html)
     );
 
     $tags = apply_filters('fluentform/allowed_html_tags', $tags);
+
+    // Event-handler attributes are executable JavaScript and must not be re-enabled by filters.
+    foreach ($tags as $tagName => $attributes) {
+        if (!is_array($attributes)) {
+            continue;
+        }
+
+        foreach (array_keys($attributes) as $attribute) {
+            if (preg_match('/^on[a-z]+/i', $attribute)) {
+                unset($tags[$tagName][$attribute]);
+            }
+        }
+    }
 
     return wp_kses($html, $tags);
 }

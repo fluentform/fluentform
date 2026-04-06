@@ -744,7 +744,7 @@ class Helper
         $ff_list = Form::select(['id', 'title'])->orderBy('id', 'DESC')->get();
         $forms = [];
 
-        if ($ff_list) {
+        if (count($ff_list) > 0) {
             $forms[0] = esc_html__('Select a Fluent Forms', 'fluentform');
             foreach ($ff_list as $form) {
                 $forms[$form->id] = esc_html($form->title) . ' (' . $form->id . ')';
@@ -1027,10 +1027,19 @@ class Helper
                 if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
                 }
-                $options = array_column(
-                    ArrayHelper::get($rawField, 'settings.advanced_options', []),
-                    'value'
-                );
+                $formattedOptions = ArrayHelper::get($rawField, 'settings.advanced_options', []);
+                if (!$formattedOptions) {
+                    $formattedOptions = [];
+                    foreach (ArrayHelper::get($rawField, 'options', []) as $value => $label) {
+                        $formattedOptions[] = [
+                            'label' => $label,
+                            'value' => $value,
+                        ];
+                    }
+                    // @todo : Update all reference in form templates
+                }
+
+                $options = array_column($formattedOptions, 'value');
                 
                 // Add field-specific __ff_other__ to options if "Other" option is enabled
                 if (in_array($fieldType, ['input_checkbox', 'input_radio']) &&
@@ -1275,14 +1284,14 @@ class Helper
 
     /**
      * Determine pro payment script is compatible or not
-     * Script is compatible if pro version is greater than or equal to 6.0.4
+     * Script is compatible if pro version meets the minimum required version
      *
      * @return bool
      */
     public static function isProPaymentScriptCompatible()
     {
         if (self::hasPro()) {
-            return version_compare(FLUENTFORMPRO_VERSION, '6.0.4', '>=');
+            return version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '>=');
         }
         return false;
     }

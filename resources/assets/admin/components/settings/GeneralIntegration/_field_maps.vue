@@ -148,6 +148,11 @@
             if (Array.isArray(this.merge_model) || !this.merge_model) {
                 this.$emit('merge-model');
             }
+
+            if (Array.isArray(this.settings.default_fields) || !this.settings.default_fields) {
+                this.$set(this.settings, 'default_fields', {});
+            }
+
             this.appReady = true;
         }
 

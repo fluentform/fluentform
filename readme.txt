@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.21
+Stable tag: 6.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -438,12 +438,59 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 6.2.2 (Date: April 23, 2026) =
+- Adds subscription field support in payment calculations
+- Fix raw cookie values for smartcodes
+- Hardens email attachment path resolution to keep notification attachments inside allowed paths
+- Hardens predefined form payload handling and confirmation validation
+- Improves compatibility for legacy predefined field option validation
+- Improves form-scoped access for submission collection and print endpoints
+- Tightens allowed-forms scope handling for form managers
+- Ensures form settings are normalized before use
+- Fix integration activecampaign issue
+- Preserves post feed draft values on resume
+- Respects user locale in the form editor
+- Improves ACL permission checks and helper coverage for delegated and full-access flows
+- Hardens form HTML sanitization by blocking event handlers and escaping permission message shortcode output
+- Improve global integration settings access restriction and protects payment filters AJAX metadata endpoint
+- Sanitizes form step settings while preserving safe HTML in step button text
+- Improves entry export to honor submission info selection
+- Improves multisite site setup until initialization
+- Improves long entry content previews
+
+= 6.2.1 (Date: April 15, 2026) =
+- Hardens form-scoped permissions across legacy AJAX and REST actions
+- Adds opt-in legacy HMAC fallback for pre-6.2.0 encrypted tokens to ease upgrade compatibility
+- Adds filter hooks for honeypot, Akismet, and CAPTCHA spam/failed messages
+- Adds database indexes to the form_analytics table for faster reporting queries
+- Adds mbstring fallback for server without the extension
+- Improves frontend submission reliability by falling back to the form instance AJAX URL when global vars are missing
+- Fixes public PDF download support for legacy links
+- Fixes draft submissions table support in entry export
+- Fixes entries search ACL issue
+- Fixes All Entries page localStorage persistence
+- Fixes character-limit validation showing the configured message instead of a raw field name
+- Fixes numeric validation so numeric-looking text is no longer treated as a number
+- Fixes WPML addon activation failing with an Invalid plugin error
+
+= 6.2.0 (Date: April 01, 2026) =
+- Upgrades internal framework for better performance and PHP 8.4 support
+- Improves Stripe payment confirmation security
+- Improves data export security
+- Improves database query performance for reports
+- Adds filter hook for conversational form extra inputs
+- Fixes textarea line breaks not displaying correctly in entries
+- Improves overall plugin security and stability
+- Dev: [Upgrade Guide for developers](https://developers.fluentforms.com/upgrade-guide/6.2.0/)
+
 = 6.1.21 (Date: March 17, 2026) =
 - Adds subscription end date to auto-calculate bill_times for subscrition payments
 - Hardens Stripe SCA payment confirmation endpoints against fraud and DoS
 - Fixes spoofable form_id in SCA payment confirmation that could select wrong Stripe API key
 - Adds transaction status validation (intended state) to prevent unauthorized payment confirmations
 - Adds payment amount verification after Stripe confirms payment
+- Fixes missing capability check on MailChimp interest groups endpoint
+- Fixes unsanitized sort_by parameter in Logger and Submission queries
 
 = 6.1.20 (Date: March 04, 2026) =
 - Fixes Stripe coupon discount rounding losing cents on multi-quantity line items
