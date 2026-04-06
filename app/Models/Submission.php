@@ -270,11 +270,9 @@ class Submission extends Model
     public static function remove($submissionIds)
     {
         // Fire hook before deletion so plugins can clean up related data
-        foreach ($submissionIds as $submissionId) {
-            $submission = static::find($submissionId);
-            if ($submission) {
-                do_action('fluentform/before_submission_deleted', $submissionId, $submission->form_id);
-            }
+        $submissions = static::whereIn('id', $submissionIds)->get(['id', 'form_id']);
+        foreach ($submissions as $submission) {
+            do_action('fluentform/before_submission_deleted', $submission->id, $submission->form_id);
         }
 
         static::whereIn('id', $submissionIds)->delete();
