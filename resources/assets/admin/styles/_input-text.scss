@@ -1,0 +1,38 @@
+.ff-input-text-wrapper {
+    &.el-input-group--prepend .el-input-group__prepend,
+    &.el-input-group--append .el-input-group__append {
+        position: static;
+        width: 1px;
+        white-space: nowrap;
+        height: auto;
+        display: table-cell;
+        padding: 0 10px;
+        background-color: #F5F7FA;
+        border: 1px solid #DCDFE6;
+        vertical-align: middle;
+        color: #909399;
+        border-radius: 4px;
+    }
+
+    &.el-input-group--prepend .el-input-group__prepend {
+        border-right: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    &.el-input-group--append .el-input-group__append {
+        border-left: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    /* Ensure input corners are squared adjacent to addons */
+    &.el-input-group--prepend .el-input__inner {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+    &.el-input-group--append .el-input__inner {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+}

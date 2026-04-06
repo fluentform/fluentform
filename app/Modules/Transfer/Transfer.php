@@ -44,7 +44,8 @@ class Transfer
     {
         try {
             $file = $this->request->file('file');
-            wp_send_json(TransferService::importForms($file), 200);
+            $applyDefaultStyle = $this->request->get('apply_default_style') === '1';
+            wp_send_json(TransferService::importForms($file, $applyDefaultStyle), 200);
         } catch (Exception $exception) {
             wp_send_json([
                 'message' => $exception->getMessage()

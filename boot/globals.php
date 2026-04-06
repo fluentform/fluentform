@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\BaseComponent;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;
@@ -235,7 +237,7 @@ function fluentFormHandleScheduledTasks()
 {
     $failedActions = wpFluent()->table('ff_scheduled_actions')->where('status', 'failed')->where('retry_count', '<', 4)->get();
 
-    if ($failedActions) {
+    if (count($failedActions)) {
         $scheduler = wpFluentForm('fluentFormAsyncRequest');
 
         foreach ($failedActions as $action) {
@@ -437,7 +439,11 @@ function fluentform_sanitize_html($html)
 
 function fluentform_kses_js($content)
 {
-    return $content ? preg_replace('/<script.*?>[\s\S]*<\/script>/is', '', $content) : '';
+    if (!$content) {
+        return '';
+    }
+
+    return preg_replace('/<\/?script[^>]*>/is', '', $content);
 }
 
 /**
@@ -480,7 +486,7 @@ function fluentformSanitizeCSS($css)
     if (!is_string($css)) {
         $css = (string) $css;
     }
-
+    
     return preg_match('#</?\w+#', $css) ? '' : $css;
 }
 

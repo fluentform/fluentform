@@ -1,4 +1,7 @@
 <?php
+
+defined('ABSPATH') or die;
+
 $fluentformDefaultGlobalMessages = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
 $fluentformDefaultElements = [
     'general' => [
@@ -298,6 +301,7 @@ $fluentformDefaultElements = [
                 'temp_mask'               => '',
                 'prefix_label'            => '',
                 'suffix_label'            => '',
+                'mobile_keyboard_type'    => '',
                 'data-mask-reverse'       => 'no',
                 'data-clear-if-not-match' => 'no',
                 'validation_rules'        => [
@@ -335,6 +339,8 @@ $fluentformDefaultElements = [
                 'admin_field_label' => '',
                 'label_placement'   => '',
                 'help_message'      => '',
+                'prefix_label'      => '',
+                'suffix_label'      => '',
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
@@ -765,6 +771,7 @@ $fluentformDefaultElements = [
                 'prefix_label'      => '',
                 'suffix_label'      => '',
                 'numeric_formatter' => '',
+                'mobile_keyboard_type_number' => '',
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
@@ -1044,6 +1051,8 @@ $fluentformDefaultElements = [
                 'admin_field_label' => '',
                 'label_placement'   => '',
                 'help_message'      => '',
+                'prefix_label'      => '',
+                'suffix_label'      => '',
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,
@@ -1401,6 +1410,8 @@ $fluentformDefaultElements = [
                 'admin_field_label' => '',
                 'label_placement'   => '',
                 'help_message'      => '',
+                'prefix_label'      => '',
+                'suffix_label'      => '',
                 'validation_rules'  => [
                     'required' => [
                         'value'   => false,

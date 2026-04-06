@@ -482,12 +482,14 @@ class Helper
                 // if form has pending payment then the value doesn't exist in EntryDetails table
                 // further checking on Submission table if the value exists
                 if (!$exist && $form->has_payment) {
-                    $allSubmission = Submission::where('form_id', $form->id)->get()->toArray();
+                    $escapedKey = json_encode($fieldName);
+                    $escapedValue = json_encode($inputValue);
+                    $searchPattern = trim($escapedKey, '"') . '":' . $escapedValue;
+                    $searchPattern = addcslashes($searchPattern, '%_');
 
-                    foreach ($allSubmission as $submission) {
-                        $response = json_decode(ArrayHelper::get($submission, 'response'), true);
-                        $exist = $inputValue == ArrayHelper::get($response, $fieldName);
-                    }
+                    $exist = Submission::where('form_id', $form->id)
+                        ->where('response', 'LIKE', '%' . $searchPattern . '%')
+                        ->exists();
                 }
 
                 if ($exist) {
@@ -745,7 +747,7 @@ class Helper
         $ff_list = Form::select(['id', 'title'])->orderBy('id', 'DESC')->get();
         $forms = [];
 
-        if ($ff_list) {
+        if (count($ff_list) > 0) {
             $forms[0] = esc_html__('Select a Fluent Forms', 'fluentform');
             foreach ($ff_list as $form) {
                 $forms[$form->id] = esc_html($form->title) . ' (' . $form->id . ')';
@@ -1276,14 +1278,14 @@ class Helper
 
     /**
      * Determine pro payment script is compatible or not
-     * Script is compatible if pro version is greater than or equal to 6.0.4
+     * Script is compatible if pro version meets the minimum required version
      *
      * @return bool
      */
     public static function isProPaymentScriptCompatible()
     {
         if (self::hasPro()) {
-            return version_compare(FLUENTFORMPRO_VERSION, '6.0.4', '>=');
+            return version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '>=');
         }
         return false;
     }

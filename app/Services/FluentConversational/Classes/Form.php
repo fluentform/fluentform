@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Payments\PaymentHelper;
@@ -31,7 +33,6 @@ class Form
 
         // elements
         new WelcomeScreen();
-
     }
 
     public function pushDesignTab($menuItems, $formId)
@@ -49,7 +50,6 @@ class Form
                         'title' => __('Design', 'fluentform'),
                         'url'   => admin_url('admin.php?page=fluent_forms&form_id=' . $formId . '&route=conversational_design'),
                     ],
-                    // AI Chat tab removed - now available in Settings & Integrations for all forms
                 ] + array_slice($menuItems, 1, count($menuItems) - 1, true);
         }
 
@@ -71,7 +71,7 @@ class Form
 
         wp_enqueue_script(
             'fluent_forms_conversational_design',
-            fluentformMix('js/conversational_design.js'),
+            fluentFormMix('js/conversational_design.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -102,15 +102,13 @@ class Form
 
         wp_enqueue_style(
             'fluent_forms_conversion_style',
-            fluentformMix('css/conversational_design.css'),
+            fluentFormMix('css/conversational_design.css'),
             [],
             FLUENTFORM_VERSION
         );
 
         echo '<div id="ff_conversation_form_design_app"><design-skeleton><h1 style="text-align: center; margin: 60px 0px;">Loading App Please wait....</h1></design-skeleton><global-search></global-search></div>';
     }
-
-
 
     public function getDesignSettings($formId)
     {
@@ -176,7 +174,7 @@ class Form
         return wp_parse_args($settings, $defaults);
     }
 
-    public function getGeneratedCss($formId)
+    private function getGeneratedCss($formId)
     {
         $prefix = '.ff_conv_app_' . $formId;
         if (defined('FLUENTFORMPRO')) {
@@ -224,8 +222,6 @@ class Form
             $this->renderFormHtml($formId, $shareKey);
         }
     }
-
-
 
     public function isEnabled()
     {
@@ -573,8 +569,11 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId),
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
+            'unknown_error_txt'        => __('An unknown error occurred', 'fluentform'),
+            'request_error_txt'        => __('An error occurred while processing your request', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
         ]);
 
         $hasSaveProgressButton = false;
@@ -589,7 +588,7 @@ class Form
         if ($hasSaveProgressButton && $saveProgressButton) {
             $this->localizeSaveProgressButton($saveProgressButton, $formId);
         }
-    
+
         /* This filter is deprecated and will be removed soon */
         $disableAnalytics = apply_filters('fluentform-disabled_analytics', true);
 
@@ -655,13 +654,15 @@ class Form
         return $placements;
     }
 
-    public function getExtraHiddenInputs($formId)
+    private function getExtraHiddenInputs($formId)
     {
-        return [
+        $inputs = [
             '__fluent_form_embded_post_id'                => get_the_ID(),
             '_fluentform_' . $formId . '_fluentformnonce' => wp_create_nonce('fluentform-submit-form'),
             '_wp_http_referer'                            => esc_attr(wp_unslash(wpFluentForm('request')->server('REQUEST_URI'))),
         ];
+
+        return apply_filters('fluentform/conversational_extra_inputs', $inputs, $formId);
     }
 
     public function getRandomPhoto()
@@ -761,9 +762,12 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId),
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
+            'unknown_error_txt'        => __('An unknown error occurred', 'fluentform'),
+            'request_error_txt'        => __('An error occurred while processing your request', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
             'rest'                     => Helper::getRestInfo(),
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
         ]);
         
         $hasSaveProgressButton = false;
@@ -818,8 +822,6 @@ class Form
         exit(200);
     }
 
-
-
     /**
      * Enqueue proper stylesheet based on rtl & JS script.
      */
@@ -846,8 +848,6 @@ class Form
             true
         );
     }
-
-
 
     /**
      * Get the payment configuration of this form.
@@ -899,6 +899,7 @@ class Form
                     'discount:'       => __('Discount:', 'fluentform'),
                     'processing_text' => __('Processing payment. Please wait...', 'fluentform'),
                     'confirming_text' => __('Confirming payment. Please wait...', 'fluentform'),
+                    'signup_fee_for'  => __('Signup Fee for', 'fluentform'),
                 ],
             ];
 
@@ -931,21 +932,21 @@ class Form
         return $asteriskPlacement;
     }
 
-    public function getLocalizedForm($form)
+    private function getLocalizedForm($form)
     {
         return [
             'id'                        => $form->id,
-            'questions'                 => $form->questions ?? [],
-            'image_preloads'            => $form->image_preloads ?? [],
-            'submit_button'             => $form->submit_button ?? [],
-            'hasPayment'                => (bool)($form->has_payment ?? false),
-            'hasCalculation'            => (bool)($form->hasCalculation ?? false),
-            'reCaptcha'                 => $form->reCaptcha ?? null,
-            'hCaptcha'                  => $form->hCaptcha ?? null,
-            'turnstile'                 => $form->turnstile ?? null,
-            'has_per_step_save'         => ArrayHelper::get($form->settings ?? [], 'conv_form_per_step_save', false),
-            'has_resume_from_last_step' => ArrayHelper::get($form->settings ?? [], 'conv_form_resume_from_last_step', false),
-            'has_save_link'             => $form->save_state ?? false,
+            'questions'                 => $form->questions,
+            'image_preloads'            => $form->image_preloads,
+            'submit_button'             => $form->submit_button,
+            'hasPayment'                => (bool)$form->has_payment,
+            'hasCalculation'            => (bool)$form->hasCalculation,
+            'reCaptcha'                 => $form->reCaptcha,
+            'hCaptcha'                  => $form->hCaptcha,
+            'turnstile'                 => $form->turnstile,
+            'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
+            'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
+            'has_save_link'             => $form->save_state?? false,
             'has_save_and_resume_button'=> $form->hasSaveAndResumeButton ?? false,
             'step_completed'            => $form->stepCompleted ?? 0
         ];
@@ -973,5 +974,4 @@ class Form
 
         wp_localize_script('fluent_forms_conversational_form', 'form_state_save_vars', $vars);
     }
-
 }

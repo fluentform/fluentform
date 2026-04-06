@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import AddOnModules from './views/AddonModules';
+import SuggestedPlugins from './views/SuggestedPlugins';
 import notifier from './notifier';
 import globalSearch from './global_search';
 
@@ -14,9 +15,12 @@ import {
     RadioGroup,
     Row,
     Col,
-    Loading
+    Loading,
+    Tooltip
 } from 'element-ui';
-import {_$t} from "@/admin/helpers";
+import { _$t } from "@/admin/helpers";
+
+Vue.use(Tooltip);
 
 Vue.use(RadioButton);
 Vue.use(Radio);
@@ -34,7 +38,7 @@ Vue.prototype.$notify = Notification;
 Vue.mixin({
     methods: {
         $t(string) {
-            let transString = window.fluent_addon_modules.addOnModule_str[string] || string
+            let transString = window.fluent_addon_modules?.addOnModule_str?.[string] || window.fluent_suggested_plugins?.i18n?.[string] || string
             return _$t(transString, ...arguments);
         },
         $_n(singular, plural, count) {
@@ -48,10 +52,24 @@ Vue.mixin({
     }
 });
 
-var app = new Vue({
-    el: '#ff_add_ons_app',
-    components: {
-        globalSearch,
-        'fluent-add-ons': AddOnModules
-    }
-});
+// Addon Modules App
+if (document.getElementById('ff_add_ons_app')) {
+    new Vue({
+        el: '#ff_add_ons_app',
+        components: {
+            globalSearch,
+            'fluent-add-ons': AddOnModules
+        }
+    });
+}
+
+// Suggested Plugins App
+if (document.getElementById('ff_suggested_plugins_app')) {
+    new Vue({
+        el: '#ff_suggested_plugins_app',
+        components: {
+            globalSearch,
+            'fluent-suggested-plugins': SuggestedPlugins
+        }
+    });
+}

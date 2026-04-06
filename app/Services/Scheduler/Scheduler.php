@@ -96,14 +96,13 @@ class Scheduler
         foreach ($submissionCounts as $submissionCount) {
             $submissionCount->permalink = admin_url('admin.php?page=fluent_forms&route=entries&form_id='.$submissionCount->form_id);
         }
-        if(!$submissionCounts || $submissionCounts->isEmpty()) {
+        if(!$submissionCounts || count($submissionCounts) === 0) {
             return; // Nothing found
         }
 
         $paymentCounts = [];
         if(PaymentHelper::hasPaymentSettings()) {
-            $paymentCounts = wpFluent()->table('fluentform_transactions')
-                ->select([
+            $paymentCounts = \FluentForm\App\Models\Transaction::select([
                     wpFluent()->raw("SUM({$wpdb->prefix}fluentform_transactions.payment_total) as total_amount"),
                     'fluentform_transactions.form_id',
                     'fluentform_transactions.currency',
@@ -231,5 +230,20 @@ class Scheduler
         \FluentForm\App\Models\Scheduler::where('created_at', '<', $deleteTo)
             ->delete();
 
+        // Clean temp uploads older than 2 days
+        if (defined('FLUENTFORM_UPLOAD_DIR')) {
+            $tempDir = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/temp/';
+            if (is_dir($tempDir)) {
+                $files = glob($tempDir . '*');
+                if (!empty($files)) {
+                    $twoDaysAgo = time() - 172800;
+                    foreach ($files as $file) {
+                        if (is_file($file) && basename($file) !== 'index.php' && filemtime($file) < $twoDaysAgo) {
+                            wp_delete_file($file);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

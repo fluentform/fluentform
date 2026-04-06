@@ -1,4 +1,7 @@
 <?php
+
+defined('ABSPATH') or die;
+
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables in view files
 
 use FluentForm\App\Helpers\Helper;
@@ -85,6 +88,16 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                         <?php esc_html_e('Validation Messages', 'fluentform'); ?>
                                     </a>
                                 </li>
+                                <li>
+                                <a class="ff-page-scroll"
+                                   data-section-id="#default-style-template"
+                                   data-hash="settings"
+                                   href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                     'hash' => 'settings'
+                                   ])); ?>">
+                                  <?php esc_html_e('Default Style Template', 'fluentform'); ?>
+                                </a>
+                              </li>
                                 <li>
                                     <a class="ff-page-scroll"
                                        data-section-id="#miscellaneous"

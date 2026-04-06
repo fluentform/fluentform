@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 /**
  * All registered filter's handlers should be in app\Hooks\Handlers,
  * addFilter is similar to add_filter and addCustomFlter is just a
@@ -38,6 +40,18 @@ add_filter('fluentform/get_global_settings_values', function ($values, $key) {
             !\FluentForm\Framework\Helpers\ArrayHelper::isTrue($values, '_fluentform_global_form_settings.default_messages')
         ) {
             $values['_fluentform_global_form_settings']['default_messages'] = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
+        }
+
+        // Ensure _fluentform_default_style_template has default structure if not set
+        if (in_array('_fluentform_default_style_template', $key)) {
+            if (empty($values['_fluentform_default_style_template']) || $values['_fluentform_default_style_template'] === false) {
+                $values['_fluentform_default_style_template'] = [
+                    'enabled'        => 'no',
+                    'custom_css'     => '',
+                    'styler_enabled' => 'no',
+                    'styler_theme'   => '',
+                ];
+            }
         }
     }
 
@@ -245,13 +259,11 @@ foreach ($fluentformRules as $fluentformRuleName) {
 
 
 $app->addFilter('fluentform/response_render_textarea', function ($value, $field, $formId, $isHtml) {
-    $value = $value ? nl2br($value) : $value;
-
-    if (!$isHtml || !$value) {
+    if (!$value || !is_string($value)) {
         return $value;
     }
 
-    return '<span style="white-space: pre-line">' . $value . '</span>';
+    return nl2br($value);
 }, 10, 4);
 
 $app->addFilter('fluentform/response_render_input_file', function ($response, $field, $form_id, $isHtml = false) {

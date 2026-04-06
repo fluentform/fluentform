@@ -19,7 +19,7 @@ import License from './License.vue';
 import globalSearch from '../global_search'
 
 import Errors from '@/common/Errors';
-global.Errors = Errors;
+window.Errors = Errors;
 
 import notifier from '@/admin/notifier';
 
@@ -55,7 +55,8 @@ import {
     TabPane,
     DatePicker,
     RadioButton,
-    Popconfirm
+    Popconfirm,
+    MessageBox
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
 import {_$t, handleSidebarActiveLink} from '@/admin/helpers';
@@ -98,6 +99,7 @@ Vue.use(Popconfirm);
 
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
+Vue.prototype.$confirm = MessageBox.confirm;
 
 const is_payment_compatible = window.FluentFormApp.is_payment_compatible;
 

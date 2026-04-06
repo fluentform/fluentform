@@ -308,16 +308,24 @@ class SettingsService
         $formId = intval($formId);
         $selectedPreset = Helper::getFormMeta($formId, '_ff_selected_style', 'ffs_default');
         $selectedPreset = $selectedPreset ?: 'ffs_default';
-        $presets = [
-            'ffs_default' => [
-                'label' => __('Default', 'fluentform'),
-                'style' => '[]',
-            ],
-            'ffs_inherit_theme' => [
-                'label' => __('Inherit Theme Style', 'fluentform'),
-                'style' => '{}',
-            ],
-        ];
+
+        // Use Pro FormStyler presets if available
+        if (class_exists('\FluentFormPro\classes\FormStyler')) {
+            $formStyler = new \FluentFormPro\classes\FormStyler();
+            $presets = $formStyler->getPresets();
+        } else {
+            $presets = [
+                'ffs_default' => [
+                    'label' => __('Default', 'fluentform'),
+                    'style' => '[]',
+                ],
+                'ffs_inherit_theme' => [
+                    'label' => __('Inherit Theme Style', 'fluentform'),
+                    'style' => '{}',
+                ],
+            ];
+        }
+
         return [
             'selected_preset'=> $selectedPreset,
             'presets' => $presets,

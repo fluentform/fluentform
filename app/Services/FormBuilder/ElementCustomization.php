@@ -568,7 +568,7 @@ $fluentformElementCustomizationSettings = [
     'suffix_label' => [
         'template'  => 'inputText',
         'label'     => __('Suffix Label', 'fluentform'),
-        'help_text' => __('Provide Input Suffix Label. It will show in the input field as suffix label', 'fluentform'),
+        'help_text' => __('Provide Input Suffix Label or Icon or SVG. It will show in the input field as suffix label', 'fluentform'),
     ],
     'is_unique' => [
         'template'  => 'inputYesNoCheckBox',
@@ -595,6 +595,44 @@ $fluentformElementCustomizationSettings = [
         'label'     => __('Number Format', 'fluentform'),
         'help_text' => __('Select the format of numbers that are allowed in this field. You have the option to use a comma or a dot as the decimal separator.', 'fluentform'),
         'options'   => \FluentForm\App\Helpers\Helper::getNumericFormatters(),
+    ],
+    'mobile_keyboard_type' => [
+        'template'  => 'select',
+        'label'     => __('Mobile Keyboard Type', 'fluentform'),
+        'help_text' => __('Select the keyboard type to display on mobile devices. This only affects the keyboard shown, not validation or accepted characters.', 'fluentform'),
+        'options'   => [
+            [
+                'value' => '',
+                'label' => __('Standard Keyboard', 'fluentform'),
+            ],
+            [
+                'value' => 'numeric',
+                'label' => __('Numeric (0-9)', 'fluentform'),
+            ],
+            [
+                'value' => 'decimal',
+                'label' => __('Decimal (0-9 with .)', 'fluentform'),
+            ],
+            [
+                'value' => 'tel',
+                'label' => __('Telephone (0-9, *, #)', 'fluentform'),
+            ],
+        ],
+    ],
+    'mobile_keyboard_type_number' => [
+        'template'  => 'select',
+        'label'     => __('Mobile Keyboard Type', 'fluentform'),
+        'help_text' => __('Select the keyboard type to display on mobile devices.', 'fluentform'),
+        'options'   => [
+            [
+                'value' => '',
+                'label' => __('Numeric (0-9)', 'fluentform'),
+            ],
+            [
+                'value' => 'decimal',
+                'label' => __('Decimal (0-9 with .)', 'fluentform'),
+            ],
+        ],
     ],
     'unique_validation_message' => [
         'template'   => 'inputText',

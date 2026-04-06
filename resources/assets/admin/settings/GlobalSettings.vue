@@ -10,6 +10,7 @@
                     :default_message_setting_fields="default_message_setting_fields"
                     :file_upload_optoins="file_upload_optoins"
                     :captcha_status="captcha_status"
+                    :default_style_template.sync="default_style_template"
                 />
             </template>
 
@@ -58,6 +59,9 @@
                     'recaptcha': false,
                     'turnstile': false
                 },
+                default_style_template: {
+                    styler_styles: {}
+                }
             }
         },
         methods: {
@@ -72,8 +76,9 @@
                         '_fluentform_failed_integration_notification',
                         '_fluentform_reCaptcha_keys_status',
                         '_fluentform_hCaptcha_keys_status',
-	                    '_fluentform_global_default_message_setting_fields',
-                        '_fluentform_turnstile_keys_status'
+	                      '_fluentform_global_default_message_setting_fields',
+                        '_fluentform_turnstile_keys_status',
+                        '_fluentform_default_style_template'
                     ]
                 })
                     .then(response => {
@@ -112,7 +117,20 @@
                             hcaptcha: response._fluentform_hCaptcha_keys_status,
                             recaptcha: response._fluentform_reCaptcha_keys_status,
                             turnstile: response._fluentform_turnstile_keys_status
+                        };
+
+                        let defaultStyleTemplate = response._fluentform_default_style_template;
+                        if (!defaultStyleTemplate) {
+                            defaultStyleTemplate = {
+                                enabled: 'no',
+                                custom_css: '',
+                                styler_enabled: 'no',
+                                styler_theme: '',
+                                styler_styles: {},
+                                source_form_id: null
+                            };
                         }
+                        this.default_style_template = defaultStyleTemplate;
                     })
                     .catch(e => {
                         this.$fail(e.message);
@@ -154,6 +172,7 @@
                         this.saving = false;
                     });
                 this.saveFailedIntegrationNotification();
+                this.saveDefaultStyleTemplate();
             },
             saveFailedIntegrationNotification() {
                 const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
@@ -167,6 +186,22 @@
                     .then(response => {
                     })
                     .catch(e => {
+                    });
+            },
+            saveDefaultStyleTemplate() {
+                const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
+
+                let data = {
+                    key: 'defaultStyleTemplate',
+                    settings: JSON.stringify(this.default_style_template || {})
+                };
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        // Success handled by main save
+                    })
+                    .catch(e => {
+                        // Error handled by main save
                     });
             }
         },

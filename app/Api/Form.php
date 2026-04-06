@@ -82,9 +82,12 @@ class Form
         $skip = $perPage * ($currentPage - 1);
 
         if ($is_filter_by_conv_or_step_form) {
-            $data = (array) $query->select('*')->get();
+            $data = $query->select('*')->get()->all();
         } else {
-            $data = (array) $query->select('*')->limit($perPage)->offset($skip)->get();
+            if ($total < $skip) {
+                $skip = 0;
+            }
+            $data = $query->select('*')->limit($perPage)->offset($skip)->get()->all();
         }
 
         // Fetch all counts in bulk before the loop
@@ -164,6 +167,9 @@ class Form
         }
         if ($is_filter_by_conv_or_step_form) {
             $total = count($conversationOrStepForms);
+            if ($total < $skip) {
+                $skip = 0;
+            }
             $conversationOrStepForms = array_slice($conversationOrStepForms, $skip, $perPage);
             $dataCount = count($conversationOrStepForms);
         } else {

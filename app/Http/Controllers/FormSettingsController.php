@@ -61,7 +61,14 @@ class FormSettingsController extends Controller
 
     public function customizer(Customizer $customizer, $id)
     {
-        return $this->sendSuccess($customizer->get($id));
+        $metaKeys = [
+            '_custom_form_css',
+            '_custom_form_js',
+            '_ff_selected_style',
+            '_ff_form_styles'
+        ];
+        
+        return $this->sendSuccess($customizer->get($id, $metaKeys));
     }
 
     public function storeCustomizer(Customizer $customizer, $id)

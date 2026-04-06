@@ -631,7 +631,7 @@
                 counts: {},
                 no_found_text: window.fluent_form_entries_vars.no_found_text,
                 entry_statuses: window.fluent_form_entries_vars.entry_statuses,
-                payment_statuses: window.fluent_form_entries_vars.payment_statuses,
+                payment_statuses: window.fluent_form_entries_vars?.payment_statuses || {},
                 has_payment: !!window.fluent_form_entries_vars.has_payment,
                 isCompact: true,
                 basicFilter: false,
@@ -944,7 +944,9 @@
                         const statusToBeDecreased = this.entries[index].status;
                         this.counts[statusToBeDecreased] -= 1;
 
-                        this.counts.trashed += 1;
+                        if (this.entry_type !== 'trashed') {
+                            this.counts.trashed += 1;
+                        }
 
                         this.entries.splice(index, 1);
 

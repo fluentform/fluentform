@@ -1,6 +1,9 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Modules\Component\Component;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -67,6 +70,11 @@ $app->addAction(
     }
 );
 
+// Register DefaultStyleApplicator on init so it works for REST API requests too
+add_action('init', function () {
+    new \FluentForm\App\Modules\Form\DefaultStyleApplicator();
+}, 9);
+
 // From Backend.php
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
@@ -80,7 +88,7 @@ add_action('admin_enqueue_scripts', function () use ($app) {
 
 // Add Entries Menu
 $app->addAction('fluentform/form_application_view_entries', function ($form_id) {
-    (new \FluentForm\App\Modules\Entries\Entries())->renderEntries($form_id);
+    (new \FluentForm\App\Modules\Entries\EntryViewRenderer())->renderEntries($form_id);
 });
 
 
@@ -94,8 +102,15 @@ $app->addAction('media_buttons', function () {
     (new \FluentForm\App\Modules\EditorButtonModule())->addButton();
 });
 
+/*
+ * Addons Page
+ */
 $app->addAction('fluentform/addons_page_render_fluentform_add_ons', function () {
     (new \FluentForm\App\Modules\AddOnModule())->showFluentAddOns();
+});
+
+$app->addAction('fluentform/addons_page_render_suggested_plugins', function () {
+    (new \FluentForm\App\Modules\AddOnModule())->showSuggestedPlugins();
 });
 
 $app->addAction('fluentform/global_menu', function () use ($app) {
@@ -304,7 +319,25 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             return $element;
         });
     }
-
+    
+    $prefixSuffixInputs = [
+        'textarea',
+        'input_url',
+        'input_password',
+    ];
+    
+    foreach ($prefixSuffixInputs as $inputType) {
+        add_filter('fluentform/editor_init_element_' . $inputType, function ($item) {
+            if (!isset($item['settings']['prefix_label'])) {
+                $item['settings']['prefix_label'] = '';
+            }
+            if (!isset($item['settings']['suffix_label'])) {
+                $item['settings']['suffix_label'] = '';
+            }
+            return $item;
+        });
+    }
+    
     add_filter('fluentform/editor_init_element_gdpr_agreement', function ($element) {
         if (!isset($element['settings']['required_field_message'])) {
             $element['settings']['required_field_message'] = '';
@@ -376,6 +409,17 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         }
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
+        }
+        if (!isset($item['settings']['mobile_keyboard_type_number'])) {
+            $item['settings']['mobile_keyboard_type_number'] = '';
+        }
+
+        return $item;
+    });
+
+    add_filter('fluentform/editor_init_element_input_mask', function ($item) {
+        if (!isset($item['settings']['mobile_keyboard_type'])) {
+            $item['settings']['mobile_keyboard_type'] = '';
         }
         return $item;
     });
@@ -651,12 +695,15 @@ add_action('wp', function () use ($app) {
                 FLUENTFORM_VERSION,
                 true
             );
-            wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
-                'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-                'ajaxurl'                  => Helper::getAjaxUrl(),
-                'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
-                'rest'                     => Helper::getRestInfo()
-            ]);
+            $globalVars = [
+                'ajaxurl'              => Helper::getAjaxUrl(),
+                'global_search_active' => apply_filters('fluentform/global_search_active', 'yes'),
+                'rest'                 => Helper::getRestInfo()
+            ];
+            if (Acl::hasAnyFormPermission()) {
+                $globalVars['fluent_forms_admin_nonce'] = wp_create_nonce('fluent_forms_admin_nonce');
+            }
+            wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', $globalVars);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($app->request->get('preview_id')));
             $postId = get_the_ID() ?: 0;
@@ -916,7 +963,7 @@ add_action('wp', function () {
 add_filter('cron_schedules', function ($schedules) {
     $schedules['ff_every_five_minutes'] = [
         'interval' => 300,
-        'display'  => esc_html__('Every 5 minutes (FluentForm)', 'fluentform'),
+        'display'  => 'Every 5 minutes (FluentForm)',
     ];
 
     return $schedules;
@@ -1046,7 +1093,8 @@ add_action('enqueue_block_editor_assets', function () {
     $forms = wpFluent()->table('fluentform_forms')
         ->select(['id', 'title'])
         ->orderBy('id', 'DESC')
-        ->get();
+        ->get()
+        ->toArray();
 
     array_unshift($forms, (object) [
         'id'    => '',
@@ -1071,7 +1119,7 @@ add_action('enqueue_block_editor_assets', function () {
         'forms'                   => $forms,
         'style_presets'           => $presets,
         'theme_style'             => apply_filters('fluentform/load_theme_style', false) ? 'ffs_inherit_theme' : '',
-        'conversational_demo_img' => fluentformMix('img/conversational-form-demo.png'),
+        'conversational_demo_img' => fluentFormMix('img/conversational-form-demo.png'),
         'rest'                    => Helper::getRestInfo()
     ]);
 

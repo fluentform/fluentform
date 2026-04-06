@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -85,10 +87,15 @@ class Converter
                 } else {
                     $value = $questionId ? ArrayHelper::get($response, $questionId) : null;
                     if (!empty($value)) {
-                        if (ArrayHelper::get($field, 'element') == 'input_file') {
+                        if (in_array(ArrayHelper::get($field, 'element'), ['input_file', 'input_image'])) {
                             $files = ArrayHelper::get($response, $questionId);
                             foreach ($files as $file) {
-                                $question['answer'][] = ArrayHelper::get($file, 'data_src');
+                                if (is_array($file)) {
+                                    $question['answer'][] = ArrayHelper::get($file, 'data_src');
+                                } else {
+                                    // Already a plain URL string (legacy or non-encrypted)
+                                    $question['answer'][] = $file;
+                                }
                             }
                         } elseif (ArrayHelper::get($field, 'element') == 'signature') {
                             // Signature is stored as a URL string
@@ -555,7 +562,21 @@ class Converter
                 $question['subscriptionFieldType'] = $type;
                 $currency = PaymentHelper::getFormCurrency($form->id);
                 
-                foreach ($field['settings']['subscription_options'] as $index => &$option) {
+                // Filter out expired plans that are set to hide
+                $subscriptionOptions = $field['settings']['subscription_options'];
+                $visibleOptions = array_filter($subscriptionOptions, function ($opt) {
+                    return !PaymentHelper::isPlanExpiredAndHidden($opt);
+                });
+
+                if (empty($visibleOptions)) {
+                    continue;
+                }
+
+                foreach ($subscriptionOptions as $index => &$option) {
+                    if (PaymentHelper::isPlanExpiredAndHidden($option)) {
+                        continue;
+                    }
+
                     $hasCustomPayment = false;
                     
                     if (array_key_exists('user_input', $option) && 'yes' == $option['user_input']) {
@@ -597,8 +618,19 @@ class Converter
                     }
                 }
                 
-                $question['plans'] = $field['settings']['subscription_options'];
-                
+                $filteredPlans = array_values(array_filter($subscriptionOptions, function ($opt) {
+                    return !PaymentHelper::isPlanExpiredAndHidden($opt);
+                }));
+                $question['plans'] = $filteredPlans;
+
+                // Re-map default answer to the new re-indexed position
+                foreach ($filteredPlans as $newIndex => $plan) {
+                    if ('yes' == $plan['is_default'] && !$hasSaveAndResume) {
+                        $question['answer'] = $newIndex;
+                        break;
+                    }
+                }
+
                 if ('single' != $type) {
                     $question['options'] = $field['plans'];
                     $question['subscriptionFieldType'] = 'radio' == $field['settings']['selection_type'] ? 'FlowFormMultipleChoiceType' : 'FlowFormDropdownType';
@@ -1256,7 +1288,7 @@ class Converter
 
             \FluentFormPro\classes\DraftSubmissionsManager::migrate();
 
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
+            $draftForm = \FluentFormPro\classes\DraftSubmissionsManager::get($hash);
 
             if ($draftForm) {
                 $saveAndResume = true;
@@ -1311,10 +1343,7 @@ class Converter
         }
 
         if ($hash) {
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')
-                ->where('hash', $hash)
-                ->where('form_id', $formId)
-                ->first();
+            $draftForm = \FluentFormPro\classes\DraftSubmissionsManager::get($hash, $formId);
         } elseif (!$draftForm && $userId = get_current_user_id()) {
             $draftForm = wpFluent()->table('fluentform_draft_submissions')
                 ->where('user_id', $userId)
@@ -1335,12 +1364,27 @@ class Converter
             $fields = FormFieldsParser::getInputsByElementTypes($form, $fileFieldTypes);
             foreach ($fields as $name => $field) {
                 if ($urls = ArrayHelper::get($data['response'], $name)) {
+                    if (!is_array($urls)) {
+                        // Single value (e.g. signature stored as a string)
+                        $urls = [$urls];
+                    }
                     foreach ($urls as $index => $url) {
+                        if (is_array($url)) {
+                            // Already wrapped (e.g. from a previous load) — keep as-is
+                            continue;
+                        }
+                        if (!is_string($url) || $url === '[object Object]') {
+                            // Corrupted data — skip this entry
+                            unset($data['response'][$name][$index]);
+                            continue;
+                        }
                         $data['response'][$name][$index] = [
                             "data_src" => $url,
                             "url"      => \FluentForm\App\Helpers\Helper::maybeDecryptUrl($url)
                         ];
                     }
+                    // Re-index in case entries were removed
+                    $data['response'][$name] = array_values($data['response'][$name]);
                 }
             }
             unset(

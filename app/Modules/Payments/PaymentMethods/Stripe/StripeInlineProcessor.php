@@ -171,6 +171,9 @@ class StripeInlineProcessor extends StripeProcessor
             }
             $this->processScaBeforeVerification($submission->form_id, $submission->id, $transactionId, $invoice->payment_intent->id);
 
+            $nonceAction = 'fluentform_sca_confirm_' . $submission->id;
+            $nonce = wp_create_nonce($nonceAction);
+            
             wp_send_json_success([
                 'nextAction'             => 'payment',
                 'actionName'             => 'stripeSetupIntent',
@@ -181,6 +184,7 @@ class StripeInlineProcessor extends StripeProcessor
                 'customer_name'          => ($transaction) ? $transaction->payer_name : '',
                 'customer_email'         => ($transaction) ? $transaction->payer_email : '',
                 'client_secret'          => $invoice->payment_intent->client_secret,
+                '_ff_stripe_nonce'       => $nonce,
                 'message'                => __('Verifying your card details. Please wait...', 'fluentform'),
                 'result'                 => [
                     'insert_id' => $submission->id
@@ -286,12 +290,17 @@ class StripeInlineProcessor extends StripeProcessor
         ) {
             $this->processScaBeforeVerification($submission->form_id, $submission->id, $transaction->id, $intent->id);
 
+            // Generate nonce for secure SCA confirmation
+            $nonceAction = 'fluentform_sca_confirm_' . $submission->id;
+            $nonce = wp_create_nonce($nonceAction);
+            
             # Tell the client to handle the action
             wp_send_json_success([
                 'nextAction'    => 'payment',
                 'actionName'    => 'initStripeSCAModal',
                 'submission_id' => $submission->id,
                 'client_secret' => $intent->client_secret,
+                '_ff_stripe_nonce' => $nonce,
                 'message'       => apply_filters('fluentform/stripe_strong_customer_verify_waiting_message', __('Verifying strong customer authentication. Please wait...', 'fluentform')),
                 'result'        => [
                     'insert_id' => $submission->id
@@ -367,15 +376,101 @@ class StripeInlineProcessor extends StripeProcessor
         $this->sendSuccess($submission);
     }
 
+    /**
+     * Validate SCA payment confirmation request
+     *
+     * @param int $submissionId Submission ID
+     * @param string $paymentIntentId Payment Intent ID
+     * @param object|null $submission Submission object
+     * @param object|null $transaction Transaction object
+     * @return array|WP_Error Array with validation result or WP_Error on strict mode failure
+     */
+    protected function validateScaRequest($submissionId, $paymentIntentId, $submission = null, $transaction = null)
+    {
+        $warnings = [];
+
+        // Validate nonce — always required by default.
+        // Filter allows opt-out only for backward compat; emits deprecation notice.
+        $nonce = isset($_REQUEST['_ff_stripe_nonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_ff_stripe_nonce'])) : '';
+
+        if ($nonce) {
+            $nonceAction = 'fluentform_sca_confirm_' . $submissionId;
+            if (!wp_verify_nonce($nonce, $nonceAction)) {
+                return new \WP_Error('invalid_nonce', __('Security verification failed. Invalid nonce.', 'fluentform'));
+            }
+        } else {
+            $strictMode = apply_filters('fluentform/stripe_sca_strict_security', true);
+            if ($strictMode) {
+                return new \WP_Error('missing_nonce', __('Security verification failed. Nonce required.', 'fluentform'));
+            }
+            _deprecated_argument(
+                'fluentform/stripe_sca_strict_security',
+                '6.2.0',
+                esc_html(__('Disabling strict SCA nonce verification is deprecated and will be removed in a future version.', 'fluentform'))
+            );
+            $warnings[] = 'No nonce provided for SCA payment confirmation';
+        }
+
+        // Validate submission exists
+        if (!$submission || !$submission->id) {
+            return new \WP_Error('invalid_submission', __('Invalid submission.', 'fluentform'));
+        }
+
+
+        if ($submission->payment_status === 'paid') {
+            return new \WP_Error(
+                'already_paid',
+                __('This payment has already been completed and cannot be modified.', 'fluentform')
+            );
+        }
+
+        // Transaction must exist and be in 'intended' status (set by processScaBeforeVerification
+        // when the SCA flow starts). A 'pending' transaction means SCA was never initiated,
+        // 'paid'/'failed' means it's already been processed.
+        if (!$transaction) {
+            return new \WP_Error('no_transaction', __('No transaction found for this submission.', 'fluentform'));
+        }
+
+        if ($transaction->status !== 'intended') {
+            return new \WP_Error(
+                'invalid_transaction_status',
+                __('This transaction is not awaiting payment confirmation.', 'fluentform')
+            );
+        }
+
+        // Verify the payment intent ID matches what was stored during SCA initiation.
+        // processScaBeforeVerification() stores the intent as charge_id.
+        if ($transaction->charge_id && $transaction->charge_id !== $paymentIntentId) {
+            return new \WP_Error(
+                'payment_intent_mismatch',
+                __('Payment verification failed. Payment intent does not match.', 'fluentform')
+            );
+        }
+
+        // Log warnings for monitoring
+        if (!empty($warnings) && defined('WP_DEBUG') && WP_DEBUG) {
+            $logData = [
+                'parent_source_id' => $submission->form_id,
+                'source_type'      => 'submission_item',
+                'source_id'        => $submission->id,
+                'component'        => 'Payment',
+                'status'           => 'warning',
+                'title'            => __('Stripe SCA Security Warning', 'fluentform'),
+                'description'      => implode('; ', $warnings)
+            ];
+            do_action('fluentform/log_data', $logData);
+        }
+
+        return [
+            'valid'    => true,
+            'warnings' => $warnings
+        ];
+    }
+
     public function confirmScaPayment()
     {
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
-        $formId = isset($_REQUEST['form_id']) ? intval($_REQUEST['form_id']) : 0;
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
-        $submissionId = isset($_REQUEST['submission_id']) ? intval($_REQUEST['submission_id']) : 0;
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
+        $submissionId = isset($_REQUEST['submission_id']) ? (int)$_REQUEST['submission_id'] : 0;
         $paymentMethod = isset($_REQUEST['payment_method']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_method'])) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
         $paymentIntentId = isset($_REQUEST['payment_intent_id']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id'])) : '';
 
         $this->setSubmissionId($submissionId);
@@ -383,6 +478,17 @@ class StripeInlineProcessor extends StripeProcessor
         $this->form = $this->getForm();
 
         $transaction = $this->getLastTransaction($submissionId);
+
+        $validation = $this->validateScaRequest($submissionId, $paymentIntentId, $submission, $transaction);
+
+        if (is_wp_error($validation)) {
+            wp_send_json([
+                'errors' => $validation->get_error_message()
+            ], 423);
+        }
+
+        // Use submission's form_id rather than trusting $_REQUEST
+        $formId = $submission->form_id;
 
         $confirmation = SCA::confirmPayment($paymentIntentId, [
             'payment_method' => $paymentMethod
@@ -394,7 +500,37 @@ class StripeInlineProcessor extends StripeProcessor
         }
 
         if ($confirmation->status == 'succeeded') {
-            $charge = $confirmation->charges->data[0];;
+            $charge = $confirmation->charges->data[0];
+
+            // Verify the confirmed amount matches the transaction amount.
+            // Normalize for zero-decimal currencies: FluentForm stores amounts x100 internally,
+            // but Stripe returns amounts in the currency's smallest unit (e.g. yen for JPY).
+            $confirmedAmount = (int) $confirmation->amount;
+            if (PaymentHelper::isZeroDecimal($transaction->currency)) {
+                $confirmedAmount = $confirmedAmount * 100;
+            }
+            if ($transaction->payment_total && $confirmedAmount != intval($transaction->payment_total)) {
+                $logData = [
+                    'parent_source_id' => $submission->form_id,
+                    'source_type'      => 'submission_item',
+                    'source_id'        => $submission->id,
+                    'component'        => 'Payment',
+                    'status'           => 'error',
+                    'title'            => __('Stripe Amount Mismatch', 'fluentform'),
+                    'description'      => sprintf(
+                        // translators: %1$d is the expected amount, %2$d is the confirmed amount
+                        __('Expected %1$d but Stripe confirmed %2$d. Payment rejected.', 'fluentform'),
+                        intval($transaction->payment_total),
+                        intval($confirmation->amount)
+                    )
+                ];
+                do_action('fluentform/log_data', $logData);
+
+                wp_send_json([
+                    'errors' => __('Payment amount verification failed.', 'fluentform')
+                ], 423);
+            }
+
             $this->handlePaymentSuccess($charge, $transaction, $submission);
         } else {
             $this->handlePaymentChargeError('We could not verify your payment. Please try again', $submission, $transaction, $confirmation, 'payment_error');
@@ -403,17 +539,26 @@ class StripeInlineProcessor extends StripeProcessor
 
     public function confirmScaSetupIntentsPayment()
     {
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
-        $formId = isset($_REQUEST['form_id']) ? intval($_REQUEST['form_id']) : 0;
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
         $submissionId = isset($_REQUEST['submission_id']) ? intval($_REQUEST['submission_id']) : 0;
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Stripe webhook signature
         $intentId = isset($_REQUEST['payment_intent_id']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id'])) : '';
 
         $this->setSubmissionId($submissionId);
         $this->form = $this->getForm();
 
         $submission = $this->getSubmission();
+        $transaction = $this->getLastTransaction($submissionId);
+
+        // Validate the request
+        $validation = $this->validateScaRequest($submissionId, $intentId, $submission, $transaction);
+
+        if (is_wp_error($validation)) {
+            wp_send_json([
+                'errors' => $validation->get_error_message()
+            ], 423);
+        }
+
+        // Use submission's form_id rather than trusting $_REQUEST
+        $formId = $submission->form_id;
 
         // Let's retrieve the intent
         $intent = SCA::retrievePaymentIntent($intentId, [
