@@ -96,7 +96,7 @@ class Submission extends Model
         return $this->hasMany(OrderItem::class, 'submission_id', 'id');
     }
 
-    public function customQuery($attributes = [])
+    public function customQuery($attributes = [], $searchExtender = null)
     {
         $entryType = Arr::get($attributes, 'entry_type');
         $dateRange = Arr::get($attributes, 'date_range');
@@ -145,14 +145,17 @@ class Submission extends Model
                 return $q->where('fluentform_submissions.created_at', '>=', $startDate)
                     ->where('fluentform_submissions.created_at', '<=', $endDate);
             })
-            ->when($search, function ($q) use ($search) {
+            ->when($search, function ($q) use ($search, $searchExtender) {
                 global $wpdb;
                 $escaped = $wpdb->esc_like($search);
-                return $q->where(function ($q) use ($escaped) {
-                    return $q->where('fluentform_submissions.id', 'LIKE', "%{$escaped}%")
+                return $q->where(function ($q) use ($escaped, $searchExtender) {
+                    $q->where('fluentform_submissions.id', 'LIKE', "%{$escaped}%")
                         ->orWhere('response', 'LIKE', "%{$escaped}%")
                         ->orWhere('fluentform_submissions.status', 'LIKE', "%{$escaped}%")
                         ->orWhere('fluentform_submissions.created_at', 'LIKE', "%{$escaped}%");
+                    if ($searchExtender) {
+                        $searchExtender($q, $escaped);
+                    }
                 });
             })
             ->when($wheres, function ($q) use ($wheres) {
@@ -297,8 +300,12 @@ class Submission extends Model
     }
 
     public function allSubmissions($attributes = []) {
-        $customQuery = $this->customQuery($attributes);
-        $search = Arr::get($attributes, 'search');
+        $searchExtender = function ($q, $escaped) {
+            $q->orWhereHas('form', function ($q) use ($escaped) {
+                $q->where('title', 'LIKE', "%{$escaped}%");
+            });
+        };
+        $customQuery = $this->customQuery($attributes, $searchExtender);
         $allowFormIds = FormManagerService::getUserAllowedForms();
 
         $result = $customQuery
@@ -310,13 +317,6 @@ class Submission extends Model
             ->select(['id', 'form_id', 'status', 'created_at', 'browser', 'currency', 'total_paid'])
             ->when($allowFormIds, function ($q) use ($allowFormIds){
                 return $q->whereIn('form_id', $allowFormIds);
-            })
-            ->when($search, function ($q) use ($search){
-                global $wpdb;
-                $escaped = $wpdb->esc_like($search);
-                return $q->orWhereHas('form', function ($q) use ($escaped) {
-                    return $q->orWhere('title', 'LIKE', "%{$escaped}%");
-                });
             })
             ->paginate()
             ->toArray();
