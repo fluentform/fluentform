@@ -182,10 +182,13 @@ class Helper
             $formattedValues = [];
             foreach ($formMetas as $formMeta) {
                 $value = $formMeta->value;
-                
-                $decoded = json_decode($value ?? '', true);
-                if (is_array($decoded)) {
-                    $value = $decoded;
+
+                // Only decode if it's a string (not already an array)
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (is_array($decoded)) {
+                        $value = $decoded;
+                    }
                 }
 
                 $formattedValues[$formMeta->meta_key] = $value;

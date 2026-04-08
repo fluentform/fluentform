@@ -71,9 +71,12 @@ class FormMeta extends Model
             ->first();
 
         if ($meta && isset($meta->value)) {
-            $value = json_decode($meta->value, true);
-            if (JSON_ERROR_NONE == json_last_error()) {
-                return $value;
+            // Only decode if it's a string
+            if (is_string($meta->value)) {
+                $value = json_decode($meta->value, true);
+                if (JSON_ERROR_NONE == json_last_error()) {
+                    return $value;
+                }
             }
             return $meta->value;
         }

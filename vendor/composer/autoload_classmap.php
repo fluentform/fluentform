@@ -67,7 +67,6 @@ return array(
     'FluentForm\\App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'FluentForm\\App\\Modules\\Acl\\Acl' => $baseDir . '/app/Modules/Acl/Acl.php',
     'FluentForm\\App\\Modules\\AddOnModule' => $baseDir . '/app/Modules/AddOnModule.php',
-    'FluentForm\\App\\Modules\\Ai\\AiController' => $baseDir . '/app/Modules/Ai/AiController.php',
     'FluentForm\\App\\Modules\\Ai\\AiFormBuilder' => $baseDir . '/app/Modules/Ai/AiFormBuilder.php',
     'FluentForm\\App\\Modules\\Ai\\FluentFormAIAPI' => $baseDir . '/app/Modules/Ai/FluentFormAIAPI.php',
     'FluentForm\\App\\Modules\\CLI\\Commands' => $baseDir . '/app/Modules/CLI/Commands.php',

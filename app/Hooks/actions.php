@@ -79,7 +79,6 @@ add_action('init', function () {
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
-    (new \FluentForm\App\Modules\Ai\AiController())->boot();
     (new \FluentForm\App\Modules\Report\ReportHandler())->register($app);
 }, 9);
 
@@ -91,6 +90,8 @@ add_action('admin_enqueue_scripts', function () use ($app) {
 $app->addAction('fluentform/form_application_view_entries', function ($form_id) {
     (new \FluentForm\App\Modules\Entries\EntryViewRenderer())->renderEntries($form_id);
 });
+
+
 
 $app->addAction('fluentform/after_form_navigation', function ($form_id) use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->addCopyShortcodeButton($form_id);
@@ -297,7 +298,7 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
                 $element['settings']['values_visible'] = false;
             }
 
-      
+
 
             return $element;
         });
@@ -546,17 +547,17 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
 
     add_filter('fluentform/editor_init_element_gdpr_agreement', function ($item, $form) {
         $isConversationalForm = Helper::isConversionForm($form->id);
-        
+
         if ($isConversationalForm) {
             $item['settings']['tc_agree_text'] = __('I accept', 'fluentform');
         }
-        
+
         return $item;
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_terms_and_condition', function ($item, $form) {
         $isConversationalForm = Helper::isConversionForm($form->id);
-        
+
         if ($isConversationalForm) {
             $item['settings']['hide_disagree'] = false;
         }
