@@ -58,37 +58,39 @@ class ComplianceService
             // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date -- Plugin uses local timezone for scheduled retention
             $date = date('Y-m-d H:i:s', (time() - $delayDays * DAY_IN_SECONDS));
 
-            $oldEntries = wpFluent()->table('fluentform_submissions')
-                ->select(['id', 'form_id'])
-                ->whereIn('form_id', $formIds)
-                ->where('created_at', '<', $date)
-                ->limit(100)
-                ->get();
+            while (true) {
+                $oldEntries = wpFluent()->table('fluentform_submissions')
+                    ->select(['id', 'form_id'])
+                    ->whereIn('form_id', $formIds)
+                    ->where('created_at', '<', $date)
+                    ->limit(100)
+                    ->get();
 
-            if (!$oldEntries || !count($oldEntries)) {
-                continue;
-            }
-
-            $entriesByForm = [];
-
-            foreach ($oldEntries as $entry) {
-                $formId = absint($entry->form_id);
-                $entryId = absint($entry->id);
-
-                if (!$formId || !$entryId) {
-                    continue;
+                if (!$oldEntries || !count($oldEntries)) {
+                    break;
                 }
 
-                if (!isset($entriesByForm[$formId])) {
-                    $entriesByForm[$formId] = [];
+                $entriesByForm = [];
+
+                foreach ($oldEntries as $entry) {
+                    $formId = absint($entry->form_id);
+                    $entryId = absint($entry->id);
+
+                    if (!$formId || !$entryId) {
+                        continue;
+                    }
+
+                    if (!isset($entriesByForm[$formId])) {
+                        $entriesByForm[$formId] = [];
+                    }
+
+                    $entriesByForm[$formId][] = $entryId;
                 }
 
-                $entriesByForm[$formId][] = $entryId;
-            }
-
-            foreach ($entriesByForm as $formId => $submissionIds) {
-                $this->deleteAttachments($submissionService, $submissionIds, $formId);
-                $submissionService->deleteEntries($submissionIds, $formId);
+                foreach ($entriesByForm as $formId => $submissionIds) {
+                    $this->deleteAttachments($submissionService, $submissionIds, $formId);
+                    $submissionService->deleteEntries($submissionIds, $formId);
+                }
             }
         }
     }
