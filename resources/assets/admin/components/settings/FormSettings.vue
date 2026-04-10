@@ -531,6 +531,70 @@
                     </card-body>
                 </card>
 
+                <!-- Compliance Settings -->
+                <card id="compliance-settings">
+                    <card-head>
+                        <card-head-group>
+                            <h5 class="title">{{ $t('Compliance Settings') }}</h5>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('If you enable this settings then your entry data will be deleted from database. It\'s useful for HIPPA/GDPR Compliance for some forms.') }}
+                                    </p>
+                                </div>
+
+                                <i class="ff-icon ff-icon-info-filled text-primary ml-1"></i>
+                            </el-tooltip>
+                        </card-head-group>
+                    </card-head>
+                    <card-body>
+                        <el-checkbox true-label="yes" false-label="no"
+                                     v-model="formSettings.delete_entry_on_submission">
+                            {{$t('Delete entry data after form submission')}}
+                        </el-checkbox>
+
+                        <p class="mt-3" v-if="formSettings.delete_entry_on_submission == 'yes'">
+                            {{
+                                $t('Your data will be deleted on form submission so no entry data, analytics and visual reporting will be available for this form')
+                            }}
+                        </p>
+
+                        <div v-if="formSettings.delete_entry_on_submission != 'yes'" class="ff_auto_delete_section mt-3">
+                            <el-checkbox
+                                true-label="yes"
+                                false-label="no"
+                                v-model="formSettings.delete_after_x_days"
+                            >
+                                {{ $t('Enable auto delete old entries') }}
+                            </el-checkbox>
+
+                            <div v-if="formSettings.delete_after_x_days == 'yes'" class="el-form--label-top mt-3">
+                                <div class="el-form-item ff-form-item">
+                                    <label class="el-form-item__label">
+                                        {{ $t('Specify how many days old entries will be deleted for this form') }}
+                                    </label>
+                                    <div class="el-form-item__content">
+                                        <el-input-number :min="1" v-model="formSettings.auto_delete_days"/>
+                                    </div>
+                                    <p
+                                        class="mt-2 text-danger"
+                                        v-if="formSettings.auto_delete_days"
+                                        v-html="
+                                            $t(
+                                                'Entries older than %s%s days%s will be deleted automatically.',
+                                                '<b>',
+                                                formSettings.auto_delete_days,
+                                                '</b>'
+                                            )
+                                        "
+                                    >
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </card-body>
+                </card>
+
                 <!-- Advanced form validation -->
                 <card id="advanced-form-validation">
                     <card-head>
@@ -569,72 +633,6 @@
                     <card-body>
                         <survey-result v-if="hasPro" :data="formSettings.appendSurveyResult" :hasPro="hasPro"/>
                         <update-to-pro-content v-else :update-message="$t('Survey Result is available in the pro version')" />
-                    </card-body>
-                </card>
-
-                <!-- Compliance Settings -->
-                <card id="compliance-settings">
-                    <card-head>
-                        <card-head-group>
-                            <h5 class="title">{{ $t('Compliance Settings') }}</h5>
-                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
-                                    <p>
-                                        {{ $t('If you enable this settings then your entry data will be deleted from database. It\'s useful for HIPPA/GDPR Compliance for some forms.') }}
-                                    </p>
-                                </div>
-
-                                <i class="ff-icon ff-icon-info-filled text-primary ml-1"></i>
-                            </el-tooltip>
-                        </card-head-group>
-                    </card-head>
-                    <card-body>
-                        <el-checkbox v-if="hasPro" true-label="yes" false-label="no"
-                            v-model="formSettings.delete_entry_on_submission">
-                            {{$t('Delete entry data after form submission')}}
-                        </el-checkbox>
-
-                        <p class="mt-3" v-if="formSettings.delete_entry_on_submission == 'yes'">
-                            {{
-                                $t('Your data will be deleted on form submission so no entry data, analytics and visual reporting will be available for this form')
-                            }}
-                        </p>
-
-                        <div v-if="formSettings.delete_entry_on_submission != 'yes'" class="ff_auto_delete_section mt-3">
-                            <el-checkbox
-                                v-if="hasPro"
-                                true-label="yes"
-                                false-label="no"
-                                v-model="formSettings.delete_after_x_days"
-                            >
-                                {{ $t('Enable auto delete old entries') }}
-                            </el-checkbox>
-
-                            <div v-if="formSettings.delete_after_x_days == 'yes'" class="el-form--label-top mt-3">
-                                <div class="el-form-item ff-form-item">
-                                    <label class="el-form-item__label">
-                                        {{ $t('Specify how many days old entries will be deleted for this form') }}
-                                    </label>
-                                    <div class="el-form-item__content">
-                                        <el-input-number :min="1" v-model="formSettings.auto_delete_days"/>
-                                    </div>
-                                    <p
-                                        class="mt-2 text-danger"
-                                        v-if="formSettings.auto_delete_days"
-                                        v-html="
-                                            $t(
-                                                'Entries older than %s%s days%s will be deleted automatically.',
-                                                '<b>',
-                                                formSettings.auto_delete_days,
-                                                '</b>'
-                                            )
-                                        "
-                                    >
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <update-to-pro-content  v-if="!hasPro" :update-message="$t('Compliance Settings is available in the pro version')" />
                     </card-body>
                 </card>
 
@@ -940,7 +938,10 @@
                         helpMessagePlacement: 'with_label',
                         errorMessagePlacement: 'inline',
                         cssClassName: ''
-                    }
+                    },
+                    delete_entry_on_submission: 'no',
+                    delete_after_x_days: 'no',
+                    auto_delete_days: null
                 }
             },
             fetchSettings() {
@@ -949,7 +950,8 @@
                 FluentFormsGlobal.$rest.get(url)
                     .then(response => {
                         if (response.generalSettings) {
-                            let settings = response.generalSettings;
+                            this.setDefaultSettings();
+                            let settings = _ff.merge({}, this.formSettings, response.generalSettings);
                             if (!settings.confirmation)
                                 settings.confirmation = {};
                             if (!settings.restrictions)

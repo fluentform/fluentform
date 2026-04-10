@@ -140,6 +140,8 @@ class FormSettings
             'errorMessagePlacement'           => 'sanitize_text_field',
             'asteriskPlacement'               => 'sanitize_text_field',
             'delete_entry_on_submission'      => 'sanitize_text_field',
+            'delete_after_x_days'             => 'sanitize_text_field',
+            'auto_delete_days'                => 'intval',
             'id'                              => 'intval',
             'showLabel'                       => 'rest_sanitize_boolean',
             'showCount'                       => 'rest_sanitize_boolean',

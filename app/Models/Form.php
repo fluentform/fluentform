@@ -200,6 +200,8 @@ class Form extends Model
                 'asteriskPlacement'     => 'asterisk-right',
             ],
             'delete_entry_on_submission'         => 'no',
+            'delete_after_x_days'                => 'no',
+            'auto_delete_days'                   => null,
             'conv_form_per_step_save'            => false,
             'conv_form_resume_from_last_step'    => false
         ];

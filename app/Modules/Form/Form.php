@@ -228,6 +228,8 @@ class Form
                 'asteriskPlacement'     => 'asterisk-right'
             ],
             'delete_entry_on_submission' => 'no',
+            'delete_after_x_days'        => 'no',
+            'auto_delete_days'           => null,
         ];
 
         if ($formId) {
