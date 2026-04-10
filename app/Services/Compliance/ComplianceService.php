@@ -73,7 +73,7 @@ class ComplianceService
 
             while (true) {
                 $oldEntries = wpFluent()->table('fluentform_submissions')
-                    ->select(['id', 'form_id'])
+                    ->select(['id', 'form_id', 'response'])
                     ->whereIn('form_id', $formIds)
                     ->where('created_at', '<', $date)
                     ->limit(100)
@@ -97,12 +97,13 @@ class ComplianceService
                         $entriesByForm[$formId] = [];
                     }
 
-                    $entriesByForm[$formId][] = $entryId;
+                    $entriesByForm[$formId][] = $entry;
                 }
 
-                foreach ($entriesByForm as $formId => $submissionIds) {
+                foreach ($entriesByForm as $formId => $submissions) {
                     $attachmentFields = $this->getAttachmentFields($formId);
-                    $this->deleteAttachments($submissionIds, $attachmentFields, $formId);
+                    $submissionIds = Arr::pluck($submissions, 'id');
+                    $this->deleteAttachments($submissions, $attachmentFields, $formId);
                     $submissionService->deleteEntries($submissionIds, $formId);
                 }
             }
@@ -130,7 +131,7 @@ class ComplianceService
         return $attachmentFields[$formId];
     }
 
-    private function deleteAttachments($submissionIds, $attachmentFields, $formId)
+    private function deleteAttachments($submissions, $attachmentFields, $formId)
     {
         if (apply_filters('fluentform/disable_attachment_delete', false, $formId)) {
             return;
@@ -139,10 +140,6 @@ class ComplianceService
         $deletables = [];
 
         if ($attachmentFields) {
-            $submissions = wpFluent()->table('fluentform_submissions')
-                ->whereIn('id', (array) $submissionIds)
-                ->get();
-
             foreach ($submissions as $submission) {
                 $response = json_decode($submission->response, true);
                 $files = Arr::collapse(Arr::only($response, $attachmentFields));
