@@ -172,7 +172,7 @@ class FormSettings
         $deleteDaysCount = ArrayHelper::get($formSettings, 'auto_delete_days');
         $deleteOnSubmission = ArrayHelper::get($formSettings, 'delete_entry_on_submission');
 
-        if ('yes' != $deleteOnSubmission && $deleteDaysCount && 'yes' == $deleteAfterXDaysStatus) {
+        if ('yes' != $deleteOnSubmission && $deleteDaysCount && in_array($deleteAfterXDaysStatus, ['yes', '1', 1, true], true)) {
             // We have to set meta values
             $form->updateMeta($formId, 'auto_delete_days', intval($deleteDaysCount));
         } else {

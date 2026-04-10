@@ -97,7 +97,7 @@ class SettingsService
         $deleteDaysCount = Arr::get($formSettings, 'auto_delete_days');
         $deleteOnSubmission = Arr::get($formSettings, 'delete_entry_on_submission');
 
-        if ('yes' != $deleteOnSubmission && $deleteDaysCount && 'yes' == $deleteAfterXDaysStatus) {
+        if ('yes' != $deleteOnSubmission && $deleteDaysCount && in_array($deleteAfterXDaysStatus, ['yes', '1', 1, true], true)) {
             // We have to set meta values
             FormMeta::persist($formId, 'auto_delete_days', $deleteDaysCount);
         } else {

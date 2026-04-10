@@ -2,7 +2,10 @@
 
 namespace FluentForm\App\Services\Compliance;
 
+use FluentForm\App\Models\Form;
+use FluentForm\App\Services\FormBuilder\FormFieldsParser;
 use FluentForm\App\Services\Submission\SubmissionService;
+use FluentForm\Framework\Support\Arr;
 
 class ComplianceService
 {
@@ -19,7 +22,9 @@ class ComplianceService
     public function maybeDeleteOldEntries()
     {
         $autoDeleteFormMetas = wpFluent()->table('fluentform_form_meta')
+            ->select(['id', 'form_id', 'value'])
             ->where('meta_key', 'auto_delete_days')
+            ->orderBy('id', 'DESC')
             ->get();
 
         if (!$autoDeleteFormMetas || !count($autoDeleteFormMetas)) {
@@ -27,8 +32,16 @@ class ComplianceService
         }
 
         $formGroups = [];
+        $processedForms = [];
 
         foreach ($autoDeleteFormMetas as $meta) {
+            $formId = absint($meta->form_id);
+
+            if (!$formId || isset($processedForms[$formId])) {
+                continue;
+            }
+
+            $processedForms[$formId] = true;
             $delayDays = absint($meta->value);
 
             if (!$delayDays) {
@@ -39,7 +52,7 @@ class ComplianceService
                 $formGroups[$delayDays] = [];
             }
 
-            $formGroups[$delayDays][] = absint($meta->form_id);
+            $formGroups[$delayDays][] = $formId;
         }
 
         if (!$formGroups) {
@@ -88,20 +101,54 @@ class ComplianceService
                 }
 
                 foreach ($entriesByForm as $formId => $submissionIds) {
-                    $this->deleteAttachments($submissionService, $submissionIds, $formId);
+                    $attachmentFields = $this->getAttachmentFields($formId);
+                    $this->deleteAttachments($submissionIds, $attachmentFields, $formId);
                     $submissionService->deleteEntries($submissionIds, $formId);
                 }
             }
         }
     }
 
-    private function deleteAttachments(SubmissionService $submissionService, $submissionIds, $formId)
+    private function getAttachmentFields($formId)
+    {
+        static $attachmentFields = [];
+
+        if (isset($attachmentFields[$formId])) {
+            return $attachmentFields[$formId];
+        }
+
+        $form = Form::find($formId);
+
+        if (!$form) {
+            $attachmentFields[$formId] = [];
+            return $attachmentFields[$formId];
+        }
+
+        $fields = FormFieldsParser::getAttachmentInputFields($form, ['element', 'attributes']);
+        $attachmentFields[$formId] = $fields ? Arr::pluck($fields, 'attributes.name') : [];
+
+        return $attachmentFields[$formId];
+    }
+
+    private function deleteAttachments($submissionIds, $attachmentFields, $formId)
     {
         if (apply_filters('fluentform/disable_attachment_delete', false, $formId)) {
             return;
         }
 
-        $deletables = $submissionService->getAttachments($submissionIds, $formId);
+        $deletables = [];
+
+        if ($attachmentFields) {
+            $submissions = wpFluent()->table('fluentform_submissions')
+                ->whereIn('id', (array) $submissionIds)
+                ->get();
+
+            foreach ($submissions as $submission) {
+                $response = json_decode($submission->response, true);
+                $files = Arr::collapse(Arr::only($response, $attachmentFields));
+                $deletables = array_merge($deletables, $files);
+            }
+        }
 
         foreach ($deletables as $file) {
             $file = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/' . basename($file);
