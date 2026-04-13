@@ -93,7 +93,9 @@ $app->addAction('wp_ajax_fluentform-save-form-email-notification', function () u
 // Legacy AJAX handlers removed — these routes are handled by the REST API.
 // Kept: fluentform-form-find-shortcode-locations (still in active use)
 $app->addAdminAjaxAction('fluentform-form-find-shortcode-locations', function () use ($app) {
-    Acl::verify('fluentform_forms_manager');
+    $formId = absint($app->request->get('form_id'));
+
+    Acl::verify('fluentform_forms_manager', $formId);
     (new \FluentForm\App\Modules\Form\Form($app))->findFormLocations();
 });
 
