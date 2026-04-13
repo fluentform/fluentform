@@ -57,7 +57,7 @@ $app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
  * Mod-Security also block this request
  */
 $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', function () use ($app) {
-    Acl::verify('fluentform_forms_manager');
+    Acl::verify('fluentform_forms_manager', $app->request->get('form_id'));
     try {
         $settingsService = new \FluentForm\App\Services\Settings\SettingsService();
         $settingsService->saveGeneral($app->request->all());
@@ -74,7 +74,7 @@ $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', functio
  * Mod-Security also block this request
  */
 $app->addAction('wp_ajax_fluentform-save-form-email-notification', function () use ($app) {
-    Acl::verify('fluentform_forms_manager');
+    Acl::verify('fluentform_forms_manager', $app->request->get('form_id'));
     try {
         $settingsService = new \FluentForm\App\Services\Settings\SettingsService();
         [$settingsId, $settings] = $settingsService->store($app->request->all());
@@ -93,7 +93,7 @@ $app->addAction('wp_ajax_fluentform-save-form-email-notification', function () u
 // Legacy AJAX handlers removed — these routes are handled by the REST API.
 // Kept: fluentform-form-find-shortcode-locations (still in active use)
 $app->addAdminAjaxAction('fluentform-form-find-shortcode-locations', function () use ($app) {
-    Acl::verify('fluentform_forms_manager');
+    Acl::verify('fluentform_forms_manager', $app->request->get('form_id'));
     (new \FluentForm\App\Modules\Form\Form($app))->findFormLocations();
 });
 
@@ -102,7 +102,7 @@ $app->addAdminAjaxAction('fluentform-form-find-shortcode-locations', function ()
 
 
 $app->addAction('wp_ajax_fluentform-form-entries-export', function () use ($app) {
-    Acl::verify('fluentform_entries_viewer');
+    Acl::verify('fluentform_entries_viewer', $app->request->get('form_id'));
     (new \FluentForm\App\Modules\Transfer\Transfer())->exportEntries();
 });
 
@@ -144,9 +144,12 @@ $app->addAction('wp_ajax_fluentform-get-users', function () use ($app) {
 // Legacy log AJAX handlers removed — these routes are now handled by the REST API.
 
 $app->addAction('wp_ajax_fluentform-change-entry-status', function () use ($app) {
-    Acl::verify('fluentform_manage_entries');
+    $entryId = intval($app->request->get('entry_id'));
+    $submission = \FluentForm\App\Models\Submission::select('form_id')->find($entryId);
+    $formId = $submission ? $submission->form_id : null;
+    Acl::verify('fluentform_manage_entries', $formId);
     $attributes = [
-        'entry_id' => intval($app->request->get('entry_id')),
+        'entry_id' => $entryId,
         'status'   => sanitize_text_field($app->request->get('status')),
     ];
     $newStatus = (new \FluentForm\App\Services\Submission\SubmissionService())->updateStatus($attributes);

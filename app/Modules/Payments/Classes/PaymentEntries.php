@@ -159,15 +159,22 @@ class PaymentEntries
                 ->get();
 
             $submission_ids = [];
+            $formIds = [];
 
             foreach ($transactionData as $transactionDatum) {
                 $submission_ids[] = $transactionDatum->submission_id;
+                $formIds[] = intval($transactionDatum->form_id);
             }
 
             try {
                 if (!$submission_ids || count($transactionData) === 0 ) {
                     throw new \Exception(__('Invalid transaction id', 'fluentform'));
                 }
+
+                foreach (array_unique(array_filter($formIds)) as $formId) {
+                    Acl::verify('fluentform_forms_manager', $formId);
+                }
+
                 do_action_deprecated(
                     'fluentform_before_entry_payment_deleted',
                     [
