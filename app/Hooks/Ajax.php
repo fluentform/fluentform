@@ -101,20 +101,29 @@ $app->addAdminAjaxAction('fluentform-form-find-shortcode-locations', function ()
 
 
 
+$resolveSubmissionFormId = function ($submissionId) {
+    if (!$submissionId) {
+        return null;
+    }
+
+    $submission = \FluentForm\App\Models\Submission::select('form_id')->find($submissionId);
+
+    return $submission ? $submission->form_id : null;
+};
+
 $app->addAction('wp_ajax_fluentform-form-entries-export', function () use ($app) {
-    Acl::verify('fluentform_entries_viewer');
+    $formId = absint($app->request->get('form_id'));
+
+    Acl::verify('fluentform_entries_viewer', $formId);
     (new \FluentForm\App\Modules\Transfer\Transfer())->exportEntries();
 });
 
-$app->addAction('wp_ajax_fluentform-update-entry-user', function () use ($app) {
-    $submissionId = intval($app->request->get('submission_id'));
-    $formId = null;
-    if ($submissionId) {
-        $submission = \FluentForm\App\Models\Submission::select('form_id')->find($submissionId);
-        $formId = $submission ? $submission->form_id : null;
-    }
+$app->addAction('wp_ajax_fluentform-update-entry-user', function () use ($app, $resolveSubmissionFormId) {
+    $submissionId = absint($app->request->get('submission_id'));
+    $formId = $resolveSubmissionFormId($submissionId);
+
     Acl::verify('fluentform_manage_entries', $formId);
-    $userId = intval($app->request->get('user_id'));
+    $userId = absint($app->request->get('user_id'));
     try {
         $result = (new \FluentForm\App\Services\Submission\SubmissionService())->updateSubmissionUser($userId, $submissionId);
         wp_send_json_success($result);
@@ -143,10 +152,14 @@ $app->addAction('wp_ajax_fluentform-get-users', function () use ($app) {
 
 // Legacy log AJAX handlers removed — these routes are now handled by the REST API.
 
-$app->addAction('wp_ajax_fluentform-change-entry-status', function () use ($app) {
-    Acl::verify('fluentform_manage_entries');
+$app->addAction('wp_ajax_fluentform-change-entry-status', function () use ($app, $resolveSubmissionFormId) {
+    $entryId = absint($app->request->get('entry_id'));
+    $formId = $resolveSubmissionFormId($entryId);
+
+    Acl::verify('fluentform_manage_entries', $formId);
+
     $attributes = [
-        'entry_id' => intval($app->request->get('entry_id')),
+        'entry_id' => $entryId,
         'status'   => sanitize_text_field($app->request->get('status')),
     ];
     $newStatus = (new \FluentForm\App\Services\Submission\SubmissionService())->updateStatus($attributes);
