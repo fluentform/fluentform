@@ -20,8 +20,8 @@
                                :type="optionsType"
                                name="fluentform__default-option"
                                :value="option.value"
-                               :checked="isChecked(option.value)"
-                               @change="updateDefaultOption(option)">
+                               :checked="isChecked(index)"
+                               @change="updateDefaultOption(index)">
                     </div>
 
                     <vddl-handle
@@ -124,6 +124,9 @@
 
             is_rating_field() {
                 return this.editItem.element == 'ratings';
+            },
+            selectedOptionIndexSet() {
+                return new Set(this.getSelectedOptionIndexes());
             }
         },
         watch: {
@@ -177,13 +180,13 @@
                     }
                 });
                 this.optionsToRender = values;
+                this.ensureOptionIds();
+                this.syncSelectionMetadata();
                 this.bulkEditVisible = false
             },
 
-            isChecked(optVal) {
-                if (typeof this.editItem.attributes.value != 'number') {
-                    return this.editItem.attributes.value.includes(optVal);
-                }
+            isChecked(optionIndex) {
+                return this.selectedOptionIndexSet.has(optionIndex);
             },
             increase(index) {
                 let options = this.optionsToRender;
@@ -208,12 +211,15 @@
                 };
 
                 options.splice(index + 1, 0, newOpt);
+                this.ensureOptionIds();
+                this.syncSelectionMetadata();
             },
 
             decrease(index) {
                 let options = this.optionsToRender;
                 if (options.length > 1) {
                     options.splice(index, 1);
+                    this.syncSelectionMetadata();
                 } else {
                     this.$notify.error({
                         message: 'You have to have at least one option.',
@@ -223,42 +229,155 @@
             },
 
             clear() {
-                let attributes = this.editItem.attributes;
-
-                if (attributes.type == 'checkbox' || attributes.multiple) {
-                    attributes.value = [];
-                } else {
-                    attributes.value = '';
-                }
+                this.applySelectedOptionIds([]);
                 this.$refs.defaultOptions.map(el => el.checked = false);
             },
 
-            updateDefaultOption(option) {
-                let attributes = this.editItem.attributes;
+            updateDefaultOption(optionIndex) {
+                const selectedIds = this.getSelectedOptionIds().slice();
+                const optionId = this.getOptionId(this.optionsToRender[optionIndex]);
 
-                if (attributes.type == 'checkbox' || attributes.multiple) {
+                if (this.isMultipleSelection()) {
                     if (event.target.checked) {
-                        attributes.value.push(option.value);
+                        if (!selectedIds.includes(optionId)) {
+                            selectedIds.push(optionId);
+                        }
                     } else {
-                        attributes.value.splice(attributes.value.indexOf(option.value), 1);
+                        const removalIndex = selectedIds.indexOf(optionId);
+
+                        if (removalIndex !== -1) {
+                            selectedIds.splice(removalIndex, 1);
+                        }
                     }
                 } else {
+                    selectedIds.splice(0, selectedIds.length);
+
                     if (event.target.checked) {
-                        attributes.value = option.value;
-                    } else {
-                        attributes.value = '';
+                        selectedIds.push(optionId);
                     }
                 }
+
+                this.applySelectedOptionIds(selectedIds);
             },
 
             createOptionsToRender() {
                 _ff.each(this.editItem.options, (label, value) => {
                     this.optionsToRender.push({value, label, vkey: value});
                 });
+            },
+            generateOptionId() {
+                return 'ffo_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+            },
+            ensureOptionIds() {
+                this.optionsToRender.forEach((option, index) => {
+                    if (!option._ff_option_id) {
+                        this.$set(option, '_ff_option_id', this.generateOptionId() + '_' + index);
+                    }
+                });
+            },
+            getOptionId(option) {
+                if (!option._ff_option_id) {
+                    this.$set(option, '_ff_option_id', this.generateOptionId());
+                }
+
+                return String(option._ff_option_id);
+            },
+            getSelectedOptionIndexes() {
+                const optionIds = this.optionsToRender.map(option => this.getOptionId(option));
+
+                return this.getSelectedOptionIds()
+                    .map(optionId => optionIds.indexOf(optionId))
+                    .filter(index => index !== -1);
+            },
+            getSelectedOptionIds() {
+                const storedIds = this.getStoredSelectedOptionIds();
+
+                if (storedIds !== null) {
+                    return storedIds;
+                }
+
+                const storedIndexes = this.getStoredSelectedOptionIndexes();
+
+                if (storedIndexes !== null) {
+                    return storedIndexes.map(index => this.getOptionId(this.optionsToRender[index]));
+                }
+
+                const optionValues = this.optionsToRender.map(option => String(option.value));
+                const remainingValues = [].concat(this.editItem.attributes.value || []).map(String);
+                const selectedIndexes = [];
+
+                remainingValues.forEach(selectedValue => {
+                    const matchedIndex = optionValues.findIndex((value, index) => {
+                        return value === selectedValue && !selectedIndexes.includes(index);
+                    });
+
+                    if (matchedIndex !== -1) {
+                        selectedIndexes.push(matchedIndex);
+                    }
+                });
+
+                return selectedIndexes.map(index => this.getOptionId(this.optionsToRender[index]));
+            },
+            getStoredSelectedOptionIds() {
+                if (!Array.isArray(this.editItem.settings.default_value_option_ids)) {
+                    return null;
+                }
+
+                const validIds = this.editItem.settings.default_value_option_ids
+                    .map(String)
+                    .filter(optionId => this.optionsToRender.some(option => this.getOptionId(option) === optionId));
+
+                return validIds.length ? validIds : null;
+            },
+            getStoredSelectedOptionIndexes() {
+                if (!Array.isArray(this.editItem.settings.default_value_option_indexes)) {
+                    return null;
+                }
+
+                const optionCount = this.optionsToRender.length;
+                const validIndexes = this.editItem.settings.default_value_option_indexes
+                    .map(index => parseInt(index, 10))
+                    .filter(index => !isNaN(index) && index >= 0 && index < optionCount);
+
+                return validIndexes.length ? validIndexes : null;
+            },
+            applySelectedOptionIds(selectedIds) {
+                const normalizedIds = selectedIds
+                    .map(String)
+                    .filter((optionId, index, list) => {
+                        return list.indexOf(optionId) === index && this.optionsToRender.some(option => this.getOptionId(option) === optionId);
+                    });
+                const optionIds = this.optionsToRender.map(option => this.getOptionId(option));
+                const normalizedIndexes = normalizedIds
+                    .map(optionId => optionIds.indexOf(optionId))
+                    .filter(index => index !== -1);
+
+                this.$set(this.editItem.settings, 'default_value_option_ids', normalizedIds);
+                this.$set(this.editItem.settings, 'default_value_option_indexes', normalizedIndexes);
+
+                if (this.isMultipleSelection()) {
+                    this.editItem.attributes.value = normalizedIndexes.map(index => {
+                        return this.optionsToRender[index].value;
+                    });
+                } else {
+                    this.editItem.attributes.value = normalizedIndexes.length
+                        ? this.optionsToRender[normalizedIndexes[0]].value
+                        : '';
+                }
+            },
+            syncSelectionMetadata() {
+                this.applySelectedOptionIds(this.getSelectedOptionIds());
+            },
+            isMultipleSelection() {
+                const attributes = this.editItem.attributes;
+
+                return attributes.type == 'checkbox' || attributes.multiple;
             }
         },
         mounted() {
             this.createOptionsToRender();
+            this.ensureOptionIds();
+            this.syncSelectionMetadata();
         }
     }
 </script>

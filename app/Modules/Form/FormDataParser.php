@@ -328,12 +328,7 @@ class FormDataParser
                 $values && is_array($values) &&
                 $options = ArrayHelper::get($field, 'raw.settings.advanced_options', [])
             ) {
-                $options = array_column($options, 'label', 'value');
-                foreach ($values as &$value) {
-                    if ($label = ArrayHelper::get($options, $value)) {
-                        $value = $label;
-                    }
-                }
+                $values = static::mapOptionValuesToLabels($values, $options);
             }
             return self::formatValue($values);
         }
@@ -347,22 +342,63 @@ class FormDataParser
         }
 
         if (!isset($field['options'])) {
-            $field['options'] = [];
-            foreach (ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
-                $field['options'][$option['value']] = $option['label'];
-            }
+            $field['options'] = ArrayHelper::get($field, 'raw.settings.advanced_options', []);
         }
 
+        $optionValueCounts = [];
         $html = '<ul style="white-space: normal;">';
         foreach ($values as $value) {
             $item = $value;
-            if ($itemLabel = ArrayHelper::get($field, 'options.' . $item)) {
+            $optionValue = (string) $value;
+            $optionValueCounts[$optionValue] = ($optionValueCounts[$optionValue] ?? 0) + 1;
+
+            if ($itemLabel = static::getOptionLabelByValue($field['options'], $value, $optionValueCounts[$optionValue])) {
                 $item = $itemLabel;
             }
             $html .= '<li>' . $item . '</li>';
         }
 
         return $html . '</ul>';
+    }
+
+    public static function mapOptionValuesToLabels($values, $options)
+    {
+        $optionValueCounts = [];
+
+        foreach ($values as &$value) {
+            $optionValue = (string) $value;
+            $optionValueCounts[$optionValue] = ($optionValueCounts[$optionValue] ?? 0) + 1;
+
+            if ($label = static::getOptionLabelByValue($options, $value, $optionValueCounts[$optionValue])) {
+                $value = $label;
+            }
+        }
+
+        return $values;
+    }
+
+    public static function getOptionLabelByValue($options, $value, $occurrence = 1)
+    {
+        $value = (string) $value;
+        $matchedOccurrence = 0;
+
+        foreach ($options as $optionKey => $option) {
+            if (!is_array($option)) {
+                if ((string) $optionKey !== $value) {
+                    continue;
+                }
+            } elseif ((string) ArrayHelper::get($option, 'value') !== $value) {
+                continue;
+            }
+
+            $matchedOccurrence++;
+
+            if ($matchedOccurrence === max(1, (int) $occurrence)) {
+                return is_array($option) ? ArrayHelper::get($option, 'label') : $option;
+            }
+        }
+
+        return null;
     }
 
     public static function resetData()

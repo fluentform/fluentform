@@ -42,8 +42,10 @@ class Checkable extends BaseComponent
         }
 
         $defaultValues = (array) $this->extractValueFromAttributes($data);
+        $dynamicValues = $this->extractDynamicValues($data, $form);
+        $hasDynamicValues = !empty($dynamicValues);
 
-        if ($dynamicValues = $this->extractDynamicValues($data, $form)) {
+        if ($hasDynamicValues) {
             $defaultValues = $dynamicValues;
         }
 
@@ -63,6 +65,16 @@ class Checkable extends BaseComponent
                 ];
             }
         }
+
+        foreach ($formattedOptions as $index => &$option) {
+            $option['_ff_original_index'] = $index;
+        }
+        unset($option);
+
+        $storedDefaultOptionIds = $hasDynamicValues ? null : $this->getStoredDefaultOptionIds($data, $formattedOptions);
+        $storedDefaultOptionIndexes = $hasDynamicValues ? null : $this->getStoredDefaultOptionIndexes($data, count($formattedOptions));
+        $hasStoredDefaultOptionIds = is_array($storedDefaultOptionIds);
+        $hasStoredDefaultOptionIndexes = is_array($storedDefaultOptionIndexes);
 
         $hasImageOption = ArrayHelper::get($data, 'settings.enable_image_input');
 
@@ -99,11 +111,33 @@ class Checkable extends BaseComponent
 //        $elMarkup .= '<legend  style="  position: absolute;width: 1px;height: 1px;padding: 0;margin: 0;overflow: hidden;clip: rect(0, 0, 0, 0);border: 0;"  role="heading" id="legend_' . $legendId . '" class="ff-sreader-only">' . esc_attr($this->removeShortcode($data['settings']['label'])) . '</legend>';
 
         $otherInputHtml = '';
+        $remainingDefaultValues = array_count_values(array_map('strval', $defaultValues));
         foreach ($formattedOptions as $option) {
             $displayType = isset($data['settings']['display_type']) ? ' ff-el-form-check-' . $data['settings']['display_type'] : '';
             $parentClass = 'ff-el-form-check' . esc_attr($displayType) . '';
 
-            if (in_array($option['value'], $defaultValues)) {
+            list($isDefaultOption, $storedDefaultOptionIds) = $this->consumeStoredDefaultOptionId(
+                $storedDefaultOptionIds,
+                ArrayHelper::get($option, '_ff_option_id')
+            );
+
+            if (!$isDefaultOption && !$hasStoredDefaultOptionIds && $hasStoredDefaultOptionIndexes) {
+                list($isDefaultOption, $storedDefaultOptionIndexes) = $this->consumeStoredDefaultOptionIndex(
+                    $storedDefaultOptionIndexes,
+                    ArrayHelper::get($option, '_ff_original_index')
+                );
+            }
+
+            if (!$isDefaultOption && !$hasStoredDefaultOptionIds && !$hasStoredDefaultOptionIndexes) {
+                $optionValue = (string) $option['value'];
+                $isDefaultOption = !empty($remainingDefaultValues[$optionValue]);
+
+                if ($isDefaultOption) {
+                    $remainingDefaultValues[$optionValue]--;
+                }
+            }
+
+            if ($isDefaultOption) {
                 $data['attributes']['checked'] = true;
                 $parentClass .= ' ff_item_selected';
             } else {

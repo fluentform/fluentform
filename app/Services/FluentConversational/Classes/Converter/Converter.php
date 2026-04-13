@@ -250,6 +250,12 @@ class Converter
                 //				$question['css'] = (new \FluentConversational\Form)->getSubmitBttnStyle($field);
             } elseif ('select' === $field['element']) {
                 $question['options'] = self::getAdvancedOptions($field, $form);
+                $question['selectedOptionIds'] = self::resolveSelectedOptionIds(
+                    $field,
+                    $question['options'],
+                    $saveAndResumeData,
+                    ArrayHelper::get($question, 'name', ArrayHelper::get($question, 'id'))
+                );
                 $question['placeholder'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.placeholder', null), $form);
                 $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
                 $isMultiple = ArrayHelper::get($field, 'attributes.multiple', false);
@@ -295,12 +301,24 @@ class Converter
                 if (in_array($type, ['checkbox', 'radio'])) {
                     $question['type'] = 'FlowFormMultipleChoiceType';
                     $question['options'] = self::getAdvancedOptions($field, $form);
+                    $question['selectedOptionIds'] = self::resolveSelectedOptionIds(
+                        $field,
+                        $question['options'],
+                        $saveAndResumeData,
+                        ArrayHelper::get($question, 'name', ArrayHelper::get($question, 'id'))
+                    );
                     if ('checkbox' == $type) {
                         $question['multiple'] = true;
                     }
                 } elseif (in_array($type, ['select', 'multi_select'])) {
                     $question['type'] = 'FlowFormDropdownType';
                     $question['options'] = self::getAdvancedOptions($field, $form);
+                    $question['selectedOptionIds'] = self::resolveSelectedOptionIds(
+                        $field,
+                        $question['options'],
+                        $saveAndResumeData,
+                        ArrayHelper::get($question, 'name', ArrayHelper::get($question, 'id'))
+                    );
                     $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
                     $question['multiple'] = ArrayHelper::isTrue($field, 'attributes.multiple');
                 } else {
@@ -309,11 +327,23 @@ class Converter
                 $question['nextStepOnAnswer'] = true;
             } elseif ('input_checkbox' === $field['element']) {
                 $question['options'] = self::getAdvancedOptions($field, $form);
+                $question['selectedOptionIds'] = self::resolveSelectedOptionIds(
+                    $field,
+                    $question['options'],
+                    $saveAndResumeData,
+                    ArrayHelper::get($question, 'name', ArrayHelper::get($question, 'id'))
+                );
                 $question['multiple'] = true;
                 $question = static::hasPictureMode($field, $question);
                 $question = static::maybeAddOtherOption($field, $question);
             } elseif ('input_radio' === $field['element']) {
                 $question['options'] = self::getAdvancedOptions($field, $form);
+                $question['selectedOptionIds'] = self::resolveSelectedOptionIds(
+                    $field,
+                    $question['options'],
+                    $saveAndResumeData,
+                    ArrayHelper::get($question, 'name', ArrayHelper::get($question, 'id'))
+                );
                 $question['nextStepOnAnswer'] = true;
                 $question = static::hasPictureMode($field, $question);
                 $question = static::maybeAddOtherOption($field, $question);
@@ -542,10 +572,21 @@ class Converter
                     }
                     
                     $pricingOptions = ArrayHelper::get($field, 'settings.pricing_options');
-                    foreach ($pricingOptions as &$option) {
+                    $fieldName = ArrayHelper::get($field, 'attributes.name', 'payment_option');
+                    foreach ($pricingOptions as $index => &$option) {
+                        $option['_ff_original_index'] = $index;
+                        if (empty($option['_ff_option_id'])) {
+                            $option['_ff_option_id'] = $fieldName . '_' . $index;
+                        }
                         $option['label'] = self::getComponent()->replaceEditorSmartCodes($option['label'], $form);
                     }
                     $question['options'] = $pricingOptions;
+                    $question['selectedOptionIds'] = self::resolveSelectedOptionIds(
+                        $field,
+                        $question['options'],
+                        $saveAndResumeData,
+                        ArrayHelper::get($question, 'name', ArrayHelper::get($question, 'id'))
+                    );
                 }
                 
                 $question['is_payment_field'] = true;
@@ -1216,8 +1257,14 @@ class Converter
     private static function getAdvancedOptions($field, $form)
     {
         $options = ArrayHelper::get($field, 'settings.advanced_options', []);
-        
-        foreach ($options as &$option) {
+
+        $fieldName = ArrayHelper::get($field, 'attributes.name', 'option');
+
+        foreach ($options as $index => &$option) {
+            $option['_ff_original_index'] = $index;
+            if (empty($option['_ff_option_id'])) {
+                $option['_ff_option_id'] = $fieldName . '_' . $index;
+            }
             $option['label'] = self::getComponent()->replaceEditorSmartCodes($option['label'], $form);
         }
         
@@ -1226,6 +1273,72 @@ class Converter
         }
         
         return $options;
+    }
+
+    private static function resolveSelectedOptionIds($field, $options, $saveAndResumeData, $questionKey)
+    {
+        $savedOptionIds = ArrayHelper::get($saveAndResumeData, 'response.__ff_selected_option_ids');
+
+        if (is_string($savedOptionIds)) {
+            $decodedOptionIds = json_decode($savedOptionIds, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $savedOptionIds = $decodedOptionIds;
+            }
+        }
+
+        if (is_array($savedOptionIds) && isset($savedOptionIds[$questionKey]) && is_array($savedOptionIds[$questionKey])) {
+            $savedMatches = array_values(array_filter(array_map('strval', $savedOptionIds[$questionKey]), function ($optionId) use ($options) {
+                foreach ($options as $option) {
+                    if ((string) ArrayHelper::get($option, '_ff_option_id') === $optionId) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }));
+
+            if ($savedMatches) {
+                return $savedMatches;
+            }
+        }
+
+        $storedOptionIds = ArrayHelper::get($field, 'settings.default_value_option_ids');
+        if (is_array($storedOptionIds)) {
+            $storedMatches = array_values(array_filter(array_map('strval', $storedOptionIds), function ($optionId) use ($options) {
+                foreach ($options as $option) {
+                    if ((string) ArrayHelper::get($option, '_ff_option_id') === $optionId) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }));
+
+            if ($storedMatches) {
+                return $storedMatches;
+            }
+        }
+
+        $storedIndexes = ArrayHelper::get($field, 'settings.default_value_option_indexes');
+        if (is_array($storedIndexes)) {
+            $selectedOptionIds = [];
+
+            foreach ($storedIndexes as $storedIndex) {
+                $storedIndex = intval($storedIndex);
+
+                foreach ($options as $option) {
+                    if (intval(ArrayHelper::get($option, '_ff_original_index', -1)) === $storedIndex) {
+                        $selectedOptionIds[] = (string) ArrayHelper::get($option, '_ff_option_id');
+                        break;
+                    }
+                }
+            }
+
+            return $selectedOptionIds;
+        }
+
+        return null;
     }
 
     private static function maybeAddOtherOption($field, $question)
