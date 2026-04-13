@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\Report;
 use Exception;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\Framework\Support\Sanitizer;
 
@@ -53,8 +54,11 @@ class ReportService
     public function getFormsDropdown()
     {
         $forms = Form::select(['id', 'title', 'has_payment'])
-                     ->orderBy('id', 'DESC')
-                     ->get();
+            ->when(FormManagerService::getUserAllowedForms(), function ($query, $allowFormIds) {
+                return $query->whereIn('id', $allowFormIds);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
 
         return [
             'forms' => $forms

@@ -350,6 +350,7 @@ class Submission extends Model
         $from = date('Y-m-d H:i:s', strtotime('-30 days'));
         $to = date('Y-m-d H:i:s', strtotime('+1 days'));
         $formId = Arr::get($attributes, 'form_id');
+        $allowFormIds = FormManagerService::getUserAllowedForms();
         $status = Arr::get($attributes, 'entry_status');
         $start = Arr::get($attributes, 'date_range.0', '');
         $end = Arr::get($attributes, 'date_range.1', '');
@@ -357,6 +358,9 @@ class Submission extends Model
 
         if ('all' === $dateRange) {
             $firstItem = self::orderBy('created_at', 'ASC')
+                ->when($allowFormIds, function ($q) use ($allowFormIds) {
+                    return $q->whereIn('form_id', $allowFormIds);
+                })
                 ->when($formId, function ($q) use ($formId) {
                     return $q->where('form_id', $formId);
                 })
@@ -393,6 +397,9 @@ class Submission extends Model
             ->whereBetween('created_at', [$from, $to])
             ->groupBy('date')
             ->orderBy('date', 'ASC')
+            ->when($allowFormIds, function ($q) use ($allowFormIds) {
+                return $q->whereIn('form_id', $allowFormIds);
+            })
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('form_id', $formId);
             })
