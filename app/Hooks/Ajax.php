@@ -57,7 +57,7 @@ $app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
  * Mod-Security also block this request
  */
 $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', function () use ($app) {
-    Acl::verify('fluentform_forms_manager');
+    Acl::verify('fluentform_forms_manager', $app->request->get('form_id'));
     try {
         $settingsService = new \FluentForm\App\Services\Settings\SettingsService();
         $settingsService->saveGeneral($app->request->all());
@@ -74,7 +74,7 @@ $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', functio
  * Mod-Security also block this request
  */
 $app->addAction('wp_ajax_fluentform-save-form-email-notification', function () use ($app) {
-    Acl::verify('fluentform_forms_manager');
+    Acl::verify('fluentform_forms_manager', $app->request->get('form_id'));
     try {
         $settingsService = new \FluentForm\App\Services\Settings\SettingsService();
         [$settingsId, $settings] = $settingsService->store($app->request->all());
