@@ -451,11 +451,16 @@ class TransactionShortcodes
         // validate the subscription
         $userid = get_current_user_id();
         $submission = fluentFormApi('submissions')->find($subscription->submission_id);
+        $canManagePayments = current_user_can('fluentform_manage_payments') || current_user_can('fluentform_full_access');
 
-        if (!$submission || ($submission->user_id != $userid && !$this->canCancelSubscription($subscription))) {
+        if (!$submission || !$this->canCancelSubscription($subscription)) {
             $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
         }
-    
+
+        if (!$canManagePayments && (int) $submission->user_id !== (int) $userid) {
+            $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
+        }
+	    
         $handler = apply_filters_deprecated(
             'fluentform_payment_manager_class_' . $submission->payment_method,
             [
