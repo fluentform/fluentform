@@ -294,7 +294,7 @@ class Logger
 
     public function remove($attributes = [])
     {
-        $ids = Arr::get($attributes, 'log_ids');
+        $ids = $this->normalizeLogIds($attributes);
 
         if (!$ids) {
             throw new ValidationException(
@@ -303,14 +303,97 @@ class Logger
             );
         }
 
-        $logType = Arr::get($attributes, 'type', 'logs');
+        $logType = Arr::get($attributes, 'type', Arr::get($attributes, 'log_type', 'logs'));
+        $entryId = intval(Arr::get($attributes, 'entry_id'));
+        $targetLogs = $this->getLogsForDeletion($ids, $logType);
 
-        $model = 'logs' === $logType ? Log::query() : Scheduler::query();
+        if (!$targetLogs->count()) {
+            throw new ValidationException(
+               // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
+                __('No selections found', 'fluentform')
+            );
+        }
 
-        $model->whereIn('id', $ids)->delete();
+        $this->assertDeletePermission($targetLogs, $entryId);
+        $this->getDeleteQuery($logType)
+            ->whereIn('id', $targetLogs->pluck('id')->all())
+            ->delete();
 
         return [
             'message' => __('Selected log(s) successfully deleted', 'fluentform'),
         ];
+    }
+
+    protected function normalizeLogIds($attributes)
+    {
+        $ids = Arr::get($attributes, 'log_ids', []);
+
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+
+        $singleLogId = intval(Arr::get($attributes, 'log_id'));
+        if ($singleLogId) {
+            $ids[] = $singleLogId;
+        }
+
+        $ids = array_map('intval', $ids);
+        $ids = array_filter($ids);
+
+        return array_values(array_unique($ids));
+    }
+
+    protected function getLogsForDeletion($ids, $logType)
+    {
+        if ('logs' === $logType) {
+            return Log::select([
+                'id',
+                'parent_source_id as form_id',
+                'source_id as submission_id',
+            ])->whereIn('id', $ids)->get();
+        }
+
+        return Scheduler::select([
+            'id',
+            'form_id',
+            'origin_id as submission_id',
+        ])->whereIn('id', $ids)->get();
+    }
+
+    protected function getDeleteQuery($logType)
+    {
+        return 'logs' === $logType ? Log::query() : Scheduler::query();
+    }
+
+    protected function assertDeletePermission($targetLogs, $entryId = 0)
+    {
+        if ($entryId) {
+            foreach ($targetLogs as $targetLog) {
+                if (intval($targetLog->submission_id) !== $entryId) {
+                    $this->throwDeletePermissionError();
+                }
+            }
+        }
+
+        $allowedForms = FormManagerService::getUserAllowedForms();
+        if (!$allowedForms) {
+            return;
+        }
+
+        foreach ($targetLogs as $targetLog) {
+            $formId = intval($targetLog->form_id);
+
+            if (!$formId || !in_array($formId, $allowedForms, true)) {
+                $this->throwDeletePermissionError();
+            }
+        }
+    }
+
+    protected function throwDeletePermissionError()
+    {
+        throw new ValidationException(
+           // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
+            __('You do not have permission to delete the selected logs', 'fluentform')
+        );
     }
 }
