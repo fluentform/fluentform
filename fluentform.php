@@ -24,6 +24,8 @@ if (!defined('FLUENTFORM_HAS_NIA')) {
     define('FLUENTFORM_HAS_NIA', true);
 }
 
+require_once __DIR__ . '/boot/MbstringFallback.php';
+
 return (function($_) {
     return $_(__FILE__);
 })(
