@@ -34,7 +34,7 @@ class FormManagerService
 
     public static function maybeAddUserAllowedFormIds($formId)
     {
-        if ($allowFormIds = self::getUserAllowedForms()) {
+        if (false !== ($allowFormIds = self::getUserAllowedFormsScope())) {
             $allowFormIds[] = $formId;
             self::addUserAllowedForms($allowFormIds);
         }
@@ -48,6 +48,17 @@ class FormManagerService
         if ($userId) {
             $formIds = array_filter(array_map('intval', $formIds));
             update_user_meta($userId, '_fluent_forms_allowed_forms', $formIds);
+        }
+    }
+
+    public static function deleteUserAllowedForms($userId = false)
+    {
+        if (!$userId) {
+            $userId = get_current_user_id();
+        }
+
+        if ($userId) {
+            delete_user_meta($userId, '_fluent_forms_allowed_forms');
         }
     }
 

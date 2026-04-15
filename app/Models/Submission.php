@@ -397,8 +397,8 @@ class Submission extends Model
             ->whereBetween('created_at', [$from, $to])
             ->groupBy('date')
             ->orderBy('date', 'ASC')
-            ->when($allowFormIds, function ($q) use ($allowFormIds) {
-                return $q->whereIn('form_id', $allowFormIds);
+            ->when(false !== $allowFormIds, function ($q) use ($allowFormIds) {
+                return $q->whereIn('form_id', $allowFormIds ?: [0]);
             })
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('form_id', $formId);

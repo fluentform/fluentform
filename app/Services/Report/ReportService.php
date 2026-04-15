@@ -154,7 +154,13 @@ class ReportService
         $metric = Arr::get($data, 'metric', 'entries');
         $allowedFormIds = FormManagerService::getUserAllowedFormsScope();
         $requestedFormId = Arr::get($data, 'form_id');
-        $scopedFormIds = $requestedFormId ? [$requestedFormId] : $allowedFormIds;
+        $scopedFormIds = $allowedFormIds;
+
+        if (false === $allowedFormIds) {
+            $scopedFormIds = $requestedFormId ? [$requestedFormId] : false;
+        } elseif ($requestedFormId) {
+            $scopedFormIds = in_array($requestedFormId, $allowedFormIds, true) ? [$requestedFormId] : [];
+        }
 
         if (!in_array($metric, ['entries', 'payments', 'views'])) {
             $metric = 'entries';
