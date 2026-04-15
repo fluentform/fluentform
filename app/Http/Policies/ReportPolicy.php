@@ -10,26 +10,29 @@ use FluentForm\Framework\Support\Arr;
 
 class ReportPolicy extends Policy
 {
-    private function canAccessDashboardReport(Request $request)
+    private function canAccessReportData(Request $request)
     {
-        if (!Acl::hasPermission('fluentform_dashboard_access')) {
-            return false;
-        }
-
         $formId = $this->resolveFormId($request);
 
         if ($formId) {
             return Acl::hasPermission('fluentform_entries_viewer', $formId);
         }
 
-        return true;
+        return Acl::hasPermission('fluentform_entries_viewer');
+    }
+
+    private function canAccessDashboardReport(Request $request)
+    {
+        if (!Acl::hasPermission('fluentform_dashboard_access')) {
+            return false;
+        }
+
+        return $this->canAccessReportData($request);
     }
 
     private function canAccessRequestedForm(Request $request)
     {
-        $formId = $this->resolveFormId($request);
-
-        return $formId && Acl::hasPermission('fluentform_entries_viewer', $formId);
+        return $this->canAccessReportData($request);
     }
 
     private function canAccessOptionalFormScopedReport(Request $request)
@@ -42,6 +45,10 @@ class ReportPolicy extends Policy
 
         if ($formId) {
             return Acl::hasPermission('fluentform_entries_viewer', $formId);
+        }
+
+        if (!Acl::hasPermission('fluentform_entries_viewer')) {
+            return false;
         }
 
         $userId = get_current_user_id();
