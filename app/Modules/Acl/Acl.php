@@ -17,23 +17,17 @@ class Acl
             return null;
         }
 
-        if (is_int($formId)) {
-            return $formId > 0 ? $formId : null;
-        }
-
         if (is_string($formId)) {
             $formId = trim($formId);
-
-            if ($formId === '' || !ctype_digit($formId)) {
-                return null;
-            }
-
-            $formId = (int) $formId;
-
-            return $formId > 0 ? $formId : null;
         }
 
-        return null;
+        if (!is_int($formId) && (!is_string($formId) || !ctype_digit($formId))) {
+            return null;
+        }
+
+        $formId = (int) $formId;
+
+        return $formId > 0 ? $formId : null;
     }
 
     public static function verifyFormId(

@@ -738,13 +738,14 @@ class ReportHelper
     /**
      * Get top performing forms by entries, views, or payments
      */
-    public static function getTopPerformingForms($startDate, $endDate, $metric = 'entries')
+    public static function getTopPerformingForms($startDate, $endDate, $metric = 'entries', $formIds = [])
     {
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
         global $wpdb;
         $prefix = $wpdb->prefix;
         $formResults = [];
         $disableMessage = '';
+        $formIds = array_values(array_filter(array_map('intval', (array) $formIds)));
 
         switch ($metric) {
             case 'entries':
@@ -755,7 +756,13 @@ class ReportHelper
                             $q->whereBetween('created_at', [$startDate, $endDate]);
                             $q->whereNotIn('status', ['trashed', 'spam']);
                         }
-                    ])
+                    ]);
+
+                if ($formIds) {
+                    $results->whereIn('id', $formIds);
+                }
+
+                $results = $results
                     ->orderBy('submissions_count', 'DESC')
                     ->limit(5)
                     ->get();
@@ -783,7 +790,13 @@ class ReportHelper
                         ->leftJoin('fluentform_transactions', 'fluentform_forms.id', '=',
                             'fluentform_transactions.form_id')
                         ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
-                        ->where('fluentform_transactions.status', 'paid')
+                        ->where('fluentform_transactions.status', 'paid');
+
+                    if ($formIds) {
+                        $results->whereIn('fluentform_forms.id', $formIds);
+                    }
+
+                    $results = $results
                         ->groupBy('fluentform_forms.id')
                         ->orderBy('raw_value', 'DESC')
                         ->limit(5)
@@ -811,7 +824,13 @@ class ReportHelper
                         ])
                         ->leftJoin('fluentform_form_analytics', 'fluentform_forms.id', '=',
                             'fluentform_form_analytics.form_id')
-                        ->whereBetween('fluentform_form_analytics.created_at', [$startDate, $endDate])
+                        ->whereBetween('fluentform_form_analytics.created_at', [$startDate, $endDate]);
+
+                    if ($formIds) {
+                        $results->whereIn('fluentform_forms.id', $formIds);
+                    }
+
+                    $results = $results
                         ->groupBy('fluentform_forms.id')
                         ->orderBy('value', 'DESC')
                         ->limit(5)

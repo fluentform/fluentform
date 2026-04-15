@@ -3,17 +3,50 @@
 namespace FluentForm\App\Http\Policies;
 
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Http\Request\Request;
 use FluentForm\Framework\Foundation\Policy;
 use FluentForm\Framework\Support\Arr;
 
 class ReportPolicy extends Policy
 {
+    private function canAccessDashboardReport(Request $request)
+    {
+        if (!Acl::hasPermission('fluentform_dashboard_access')) {
+            return false;
+        }
+
+        $formId = $this->resolveFormId($request);
+
+        if ($formId) {
+            return Acl::hasPermission('fluentform_entries_viewer', $formId);
+        }
+
+        return true;
+    }
+
     private function canAccessRequestedForm(Request $request)
     {
         $formId = $this->resolveFormId($request);
 
         return $formId && Acl::hasPermission('fluentform_entries_viewer', $formId);
+    }
+
+    private function canAccessOptionalFormScopedReport(Request $request)
+    {
+        if (!Acl::hasPermission('fluentform_dashboard_access')) {
+            return false;
+        }
+
+        $formId = $this->resolveFormId($request);
+
+        if ($formId) {
+            return Acl::hasPermission('fluentform_entries_viewer', $formId);
+        }
+
+        $userId = get_current_user_id();
+
+        return !$userId || !FormManagerService::hasSpecificFormsPermission($userId);
     }
 
     /**
@@ -60,6 +93,46 @@ class ReportPolicy extends Policy
     public function getPaymentTypes(Request $request)
     {
         return $this->canAccessRequestedForm($request);
+    }
+
+    public function getCompletionRate(Request $request)
+    {
+        return $this->canAccessOptionalFormScopedReport($request);
+    }
+
+    public function getHeatmapData(Request $request)
+    {
+        return $this->canAccessOptionalFormScopedReport($request);
+    }
+
+    public function getCountryHeatmap(Request $request)
+    {
+        return $this->canAccessOptionalFormScopedReport($request);
+    }
+
+    public function getTopPerformingForms(Request $request)
+    {
+        return $this->canAccessDashboardReport($request);
+    }
+
+    public function getSubscriptions(Request $request)
+    {
+        return $this->canAccessOptionalFormScopedReport($request);
+    }
+
+    public function getFormsDropdown(Request $request)
+    {
+        return $this->canAccessDashboardReport($request);
+    }
+
+    public function netRevenue(Request $request)
+    {
+        return $this->canAccessOptionalFormScopedReport($request);
+    }
+
+    public function submissionsAnalysis(Request $request)
+    {
+        return $this->canAccessOptionalFormScopedReport($request);
     }
 
     private function resolveFormId(Request $request)

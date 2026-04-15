@@ -152,12 +152,15 @@ class ReportService
         $startDate = $data['start_date'];
         $endDate = $data['end_date'];
         $metric = Arr::get($data, 'metric', 'entries');
+        $allowedFormIds = FormManagerService::getUserAllowedForms();
+        $requestedFormId = Arr::get($data, 'form_id');
+        $scopedFormIds = $requestedFormId ? [$requestedFormId] : $allowedFormIds;
 
         if (!in_array($metric, ['entries', 'payments', 'views'])) {
             $metric = 'entries';
         }
 
-        $result = ReportHelper::getTopPerformingForms($startDate, $endDate, $metric);
+        $result = ReportHelper::getTopPerformingForms($startDate, $endDate, $metric, $scopedFormIds);
         return [
             'top_performing_forms' => Arr::get($result, 'data', []),
             'disable_message'      => Arr::get($result, 'disable_message', '')
