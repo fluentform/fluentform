@@ -25,14 +25,17 @@ class Logger
         $endDate = Arr::get($dateRange, 1);
         [$table, $model, $columns, $join, $componentColumn, $dateColumn] = $this->getBases($type);
 
-        if (!$formIds && $allowForms = FormManagerService::getUserAllowedForms()) {
+        if (!$formIds && false !== ($allowForms = FormManagerService::getUserAllowedFormsScope())) {
             $formIds = $allowForms;
         }
         $logsQuery = $model->select($columns)
             ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', $join)
             ->orderBy($table . '.id', $sortBy)
-            ->when($formIds, function ($q) use ($formIds) {
+            ->when(false !== $formIds && [] !== $formIds, function ($q) use ($formIds) {
                 return $q->whereIn('fluentform_forms.id', array_map('intval', $formIds));
+            })
+            ->when([] === $formIds, function ($q) {
+                return $q->whereIn('fluentform_forms.id', [0]);
             })
             ->when($statuses, function ($q) use ($statuses, $table) {
                 return $q->whereIn($table . '.status', array_map('sanitize_text_field', $statuses));
@@ -167,13 +170,13 @@ class Logger
         })->values();
 
         $formIds = $formIdRows->pluck('form_id')->filter()->toArray();
-        if ($allowForms = FormManagerService::getUserAllowedForms()) {
+        if (false !== ($allowForms = FormManagerService::getUserAllowedFormsScope())) {
             $formIds = array_filter($formIds, function($value) use ($allowForms) {
                 return in_array($value, $allowForms);
             });
         }
 
-        $forms = Form::select('id', 'title')->whereIn('id', $formIds)->get();
+        $forms = Form::select('id', 'title')->whereIn('id', $formIds ?: [0])->get();
 
         return apply_filters('fluentform/get_log_filters', [
             'statuses'   => $statuses,
@@ -375,8 +378,8 @@ class Logger
             }
         }
 
-        $allowedForms = FormManagerService::getUserAllowedForms();
-        if (!$allowedForms) {
+        $allowedForms = FormManagerService::getUserAllowedFormsScope();
+        if (false === $allowedForms) {
             return;
         }
 

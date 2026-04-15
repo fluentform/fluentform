@@ -55,8 +55,8 @@ class ReportService
     public function getFormsDropdown()
     {
         $forms = Form::select(['id', 'title', 'has_payment'])
-            ->when(FormManagerService::getUserAllowedForms(), function ($query, $allowFormIds) {
-                return $query->whereIn('id', $allowFormIds);
+            ->when(false !== ($allowFormIds = FormManagerService::getUserAllowedFormsScope()), function ($query) use ($allowFormIds) {
+                return $query->whereIn('id', $allowFormIds ?: [0]);
             })
             ->orderBy('id', 'DESC')
             ->get();
@@ -152,7 +152,7 @@ class ReportService
         $startDate = $data['start_date'];
         $endDate = $data['end_date'];
         $metric = Arr::get($data, 'metric', 'entries');
-        $allowedFormIds = FormManagerService::getUserAllowedForms();
+        $allowedFormIds = FormManagerService::getUserAllowedFormsScope();
         $requestedFormId = Arr::get($data, 'form_id');
         $scopedFormIds = $requestedFormId ? [$requestedFormId] : $allowedFormIds;
 
