@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.1.13
+**Stable tag:** 6.2.1
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -158,6 +158,22 @@ Yes, you can use 2 column or 3 column containers and you can build forms.
 Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also import in pro version.
 
 ## Changelog
+
+### 6.2.1 (Date: April 15, 2026) =
+- Hardens form-scoped permissions across legacy AJAX and REST actions for settings, entries, reports, logs, exports, and payment routes
+- Restores all-forms reporting while limiting aggregate analytics to authorized forms for scoped managers
+- Adds opt-in legacy HMAC fallback for pre-6.2.0 encrypted tokens to ease upgrade compatibility
+- Adds filter hooks for honeypot, Akismet, and CAPTCHA spam/failed messages
+- Adds database indexes to the `form_analytics` table for faster reporting queries
+- Adds a framework mbstring fallback for hosts without the extension
+- Improves frontend submission reliability by falling back to the form instance AJAX URL when global vars are missing
+- Fixes public PDF download support for legacy links
+- Fixes draft submissions table support in entry export
+- Fixes entries search ACL leakage caused by top-level `orWhereHas`
+- Fixes All Entries page localStorage persistence
+- Fixes character-limit validation showing the configured message instead of a raw field name
+- Fixes numeric validation so numeric-looking text is no longer treated as a number
+- Fixes WPML addon activation failing with an `Invalid plugin` error
 
 ### 6.2.0 (Date: April 01, 2026) =
 - Upgrades internal framework for better performance and PHP 8.4 support
