@@ -1145,7 +1145,44 @@
 				if (this.advanced_filter_active) {
 					data.advanced_filter = this.advanced_filter;
 				}
-	            location.href = ajaxurl + '?' + jQuery.param(data);
+                this.submitExportRequest(data);
+            },
+            submitExportRequest(data) {
+                const iframeName = `ff-export-${Date.now()}`;
+                const $iframe = jQuery('<iframe>', {
+                    name: iframeName,
+                    style: 'display:none;'
+                });
+                const $form = jQuery('<form>', {
+                    method: 'POST',
+                    action: ajaxurl,
+                    target: iframeName,
+                    style: 'display:none;'
+                });
+
+                jQuery.param(data)
+                    .split('&')
+                    .forEach(item => {
+                        const [rawName, rawValue = ''] = item.split('=');
+                        const name = decodeURIComponent(rawName.replace(/\+/g, ' '));
+                        const value = decodeURIComponent(rawValue.replace(/\+/g, ' '));
+
+                        $form.append(
+                            jQuery('<input>', {
+                                type: 'hidden',
+                                name,
+                                value
+                            })
+                        );
+                    });
+
+                jQuery('body').append($iframe, $form);
+                $form.trigger('submit');
+
+                window.setTimeout(() => {
+                    $form.remove();
+                    $iframe.remove();
+                }, 60000);
             },
             dateFormat(date, format) {
                 if (!format) {
@@ -1286,4 +1323,3 @@
 	    }
     };
 </script>
-
