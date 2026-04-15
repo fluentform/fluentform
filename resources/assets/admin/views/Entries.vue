@@ -1159,6 +1159,27 @@
                     target: iframeName,
                     style: 'display:none;'
                 });
+                let hasLoadedInitialFrame = false;
+                let cleanupTimer = null;
+
+                const cleanup = () => {
+                    if (cleanupTimer) {
+                        window.clearTimeout(cleanupTimer);
+                        cleanupTimer = null;
+                    }
+
+                    $form.remove();
+                    $iframe.remove();
+                };
+
+                $iframe.on('load', () => {
+                    if (!hasLoadedInitialFrame) {
+                        hasLoadedInitialFrame = true;
+                        return;
+                    }
+
+                    cleanup();
+                });
 
                 jQuery.param(data)
                     .split('&')
@@ -1179,10 +1200,7 @@
                 jQuery('body').append($iframe, $form);
                 $form.trigger('submit');
 
-                window.setTimeout(() => {
-                    $form.remove();
-                    $iframe.remove();
-                }, 60000);
+                cleanupTimer = window.setTimeout(cleanup, 300000);
             },
             dateFormat(date, format) {
                 if (!format) {
