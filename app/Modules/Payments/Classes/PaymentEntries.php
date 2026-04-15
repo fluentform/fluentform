@@ -50,7 +50,9 @@ class PaymentEntries
         
         // Sanitize request data
         $sanitizeMap = [
-            'form_id'          => 'intval',
+            'form_id'          => function ($value) {
+                return Acl::normalizeFormId($value);
+            },
             'per_page'         => 'intval',
             'payment_statuses' => 'sanitize_text_field',
             'payment_types'    => 'sanitize_text_field',

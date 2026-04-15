@@ -124,7 +124,7 @@ $resolveSubmissionFormId = function ($submissionId) {
 };
 
 $app->addAction('wp_ajax_fluentform-form-entries-export', function () use ($app) {
-    $formId = absint($app->request->get('form_id'));
+    $formId = Acl::verifyFormId($app->request->get('form_id'));
 
     Acl::verify('fluentform_entries_viewer', $formId);
     (new \FluentForm\App\Modules\Transfer\Transfer())->exportEntries();
@@ -225,7 +225,7 @@ $app->addAction('wp_ajax_fluentform_report_data_migrate', function () {
     if (!wp_verify_nonce(sanitize_text_field(wpFluentForm('request')->get('nonce')), 'fluentform_report_data_migrate')) {
         die('invalid');
     }
-    $formId = intval(wpFluentForm('request')->get('form_id'));
+    $formId = Acl::normalizeFormId(wpFluentForm('request')->get('form_id'));
     if ($formId && Acl::hasPermission('fluentform_entries_viewer', $formId)) {
         \FluentForm\App\Services\Report\ReportHelper::runMigrationBatch($formId);
     }

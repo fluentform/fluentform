@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\Report;
 use Exception;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\Framework\Support\Sanitizer;
@@ -194,7 +195,7 @@ class ReportService
 
         $startDate = Arr::get($data, 'start_date');
         $endDate = Arr::get($data, 'end_date');
-        $formId = intval(Arr::get($data, 'form_id'));
+        $formId = Acl::normalizeFormId(Arr::get($data, 'form_id'));
 
         // Set default date range if not provided
         if (!$startDate || !$endDate) {

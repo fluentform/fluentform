@@ -3,11 +3,12 @@
 namespace FluentForm\App\Http\Controllers;
 
 use Exception;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Services\Report\ReportService;
 
 class ReportController extends Controller
 {
-    private function sanitizeReportAttributes()
+    private function sanitizeReportAttributes($formId = null)
     {
         $sanitizeMap = [
             'form_id'  => 'intval',
@@ -22,14 +23,26 @@ class ReportController extends Controller
             $attributes['date_range'] = array_map('sanitize_text_field', $attributes['date_range']);
         }
 
+        $resolvedFormId = Acl::normalizeFormId($formId);
+
+        if (!$resolvedFormId) {
+            $resolvedFormId = Acl::normalizeFormId(isset($attributes['form_id']) ? $attributes['form_id'] : null);
+        }
+
+        if ($resolvedFormId) {
+            $attributes['form_id'] = $resolvedFormId;
+        } else {
+            unset($attributes['form_id']);
+        }
+
         return $attributes;
     }
 
-    public function form(ReportService $reportService)
+    public function form(ReportService $reportService, $formId)
     {
         try {
             return $this->sendSuccess(
-                $reportService->form($this->sanitizeReportAttributes())
+                $reportService->form($this->sanitizeReportAttributes($formId))
             );
         } catch (Exception $e) {
             return $this->sendError([

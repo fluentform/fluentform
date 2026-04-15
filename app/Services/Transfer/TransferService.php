@@ -145,11 +145,8 @@ class TransferService
             define('FLUENTFORM_EXPORTING_ENTRIES', true);
         }
 
-        $formId = (int)Arr::get($args, 'form_id');
-
-        if ($formId) {
-            Acl::verify('fluentform_entries_viewer', $formId);
-        }
+        $formId = Acl::verifyFormId(Arr::get($args, 'form_id'));
+        Acl::verify('fluentform_entries_viewer', $formId);
 
         $tableName = Arr::get($args, 'table');
         try {

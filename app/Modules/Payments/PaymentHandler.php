@@ -418,7 +418,7 @@ class PaymentHandler
         switch ($route) {
             case 'get_form_settings':
             case 'save_form_settings':
-                return absint(wpFluentForm()->request->get('form_id'));
+                return Acl::verifyFormId(wpFluentForm()->request->get('form_id'));
             case 'update_transaction':
                 return $this->resolveTransactionFormId();
             case 'cancel_subscription':
