@@ -91,8 +91,8 @@ class PaymentEntries
         }
 
         $allowFormIds = apply_filters('fluentform/current_user_allowed_forms', false);
-        if ($allowFormIds && is_array($allowFormIds)) {
-            $paymentsQuery = $paymentsQuery->whereIn('fluentform_transactions.form_id', $allowFormIds);
+        if (false !== $allowFormIds && is_array($allowFormIds)) {
+            $paymentsQuery = $paymentsQuery->whereIn('fluentform_transactions.form_id', $allowFormIds ?: [0]);
         }
         if ($paymentStatus = ArrayHelper::get($attributes, 'payment_statuses')) {
             $paymentsQuery = $paymentsQuery->where('fluentform_transactions.status', $paymentStatus);
@@ -278,8 +278,8 @@ class PaymentEntries
         }
         $allowFormIds = apply_filters('fluentform/current_user_allowed_forms', false);
         $forms = Transaction::select('fluentform_transactions.form_id', 'fluentform_forms.title')
-            ->when($allowFormIds && is_array($allowFormIds), function ($q) use ($allowFormIds){
-                return $q->whereIn('fluentform_transactions.form_id', $allowFormIds);
+            ->when(false !== $allowFormIds && is_array($allowFormIds), function ($q) use ($allowFormIds){
+                return $q->whereIn('fluentform_transactions.form_id', $allowFormIds ?: [0]);
             })
             ->groupBy('fluentform_transactions.form_id')
             ->orderBy('fluentform_transactions.form_id', 'DESC')

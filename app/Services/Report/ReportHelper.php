@@ -22,8 +22,8 @@ class ReportHelper
             return $query->where($column, $formId);
         }
 
-        if ($allowedFormIds = FormManagerService::getUserAllowedForms()) {
-            return $query->whereIn($column, $allowedFormIds);
+        if (false !== ($allowedFormIds = FormManagerService::getUserAllowedFormsScope())) {
+            return $query->whereIn($column, $allowedFormIds ?: [0]);
         }
 
         return $query;
@@ -748,14 +748,17 @@ class ReportHelper
     /**
      * Get top performing forms by entries, views, or payments
      */
-    public static function getTopPerformingForms($startDate, $endDate, $metric = 'entries', $formIds = [])
+    public static function getTopPerformingForms($startDate, $endDate, $metric = 'entries', $formIds = false)
     {
         list($startDate, $endDate) = self::processDateRange($startDate, $endDate);
         global $wpdb;
         $prefix = $wpdb->prefix;
         $formResults = [];
         $disableMessage = '';
-        $formIds = array_values(array_filter(array_map('intval', (array) $formIds)));
+        $hasFormScope = false !== $formIds;
+        $formIds = $hasFormScope
+            ? array_values(array_filter(array_map('intval', (array) $formIds)))
+            : [];
 
         switch ($metric) {
             case 'entries':
@@ -768,8 +771,8 @@ class ReportHelper
                         }
                     ]);
 
-                if ($formIds) {
-                    $results->whereIn('id', $formIds);
+                if ($hasFormScope) {
+                    $results->whereIn('id', $formIds ?: [0]);
                 }
 
                 $results = $results
@@ -802,8 +805,8 @@ class ReportHelper
                         ->whereBetween('fluentform_transactions.created_at', [$startDate, $endDate])
                         ->where('fluentform_transactions.status', 'paid');
 
-                    if ($formIds) {
-                        $results->whereIn('fluentform_forms.id', $formIds);
+                    if ($hasFormScope) {
+                        $results->whereIn('fluentform_forms.id', $formIds ?: [0]);
                     }
 
                     $results = $results
@@ -836,8 +839,8 @@ class ReportHelper
                             'fluentform_form_analytics.form_id')
                         ->whereBetween('fluentform_form_analytics.created_at', [$startDate, $endDate]);
 
-                    if ($formIds) {
-                        $results->whereIn('fluentform_forms.id', $formIds);
+                    if ($hasFormScope) {
+                        $results->whereIn('fluentform_forms.id', $formIds ?: [0]);
                     }
 
                     $results = $results

@@ -16,7 +16,8 @@ class Logger
     public function get($attributes = [])
     {
         $statuses = Arr::get($attributes, 'status');
-        $formIds = Arr::get($attributes, 'form_id');
+        $formIds = $this->normalizeFormScope(Arr::get($attributes, 'form_id'));
+        $formIds = $this->resolveVisibleFormScope($formIds);
         $components = Arr::get($attributes, 'component');
         $sortBy = \FluentForm\App\Helpers\Helper::sanitizeOrderValue(Arr::get($attributes, 'sort_by', 'DESC'));
         $type = Arr::get($attributes, 'type', 'log');
@@ -25,14 +26,14 @@ class Logger
         $endDate = Arr::get($dateRange, 1);
         [$table, $model, $columns, $join, $componentColumn, $dateColumn] = $this->getBases($type);
 
-        if (!$formIds && $allowForms = FormManagerService::getUserAllowedForms()) {
-            $formIds = $allowForms;
-        }
         $logsQuery = $model->select($columns)
             ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', $join)
             ->orderBy($table . '.id', $sortBy)
-            ->when($formIds, function ($q) use ($formIds) {
+            ->when(false !== $formIds && [] !== $formIds, function ($q) use ($formIds) {
                 return $q->whereIn('fluentform_forms.id', array_map('intval', $formIds));
+            })
+            ->when([] === $formIds, function ($q) {
+                return $q->whereIn('fluentform_forms.id', [0]);
             })
             ->when($statuses, function ($q) use ($statuses, $table) {
                 return $q->whereIn($table . '.status', array_map('sanitize_text_field', $statuses));
@@ -102,6 +103,32 @@ class Logger
         return apply_filters('fluentform/get_logs', $logs);
     }
 
+    protected function normalizeFormScope($formIds)
+    {
+        if (null === $formIds || false === $formIds || '' === $formIds || [] === $formIds) {
+            return false;
+        }
+
+        $normalized = array_values(array_filter(array_map('intval', (array) $formIds)));
+
+        return $normalized ?: [];
+    }
+
+    protected function resolveVisibleFormScope($requestedFormIds)
+    {
+        $allowedForms = FormManagerService::getUserAllowedFormsScope();
+
+        if (false === $allowedForms) {
+            return $requestedFormIds;
+        }
+
+        if (false === $requestedFormIds) {
+            return $allowedForms;
+        }
+
+        return array_values(array_intersect($requestedFormIds, $allowedForms));
+    }
+
     protected function getBases($type)
     {
         if ('log' === $type) {
@@ -167,13 +194,13 @@ class Logger
         })->values();
 
         $formIds = $formIdRows->pluck('form_id')->filter()->toArray();
-        if ($allowForms = FormManagerService::getUserAllowedForms()) {
+        if (false !== ($allowForms = FormManagerService::getUserAllowedFormsScope())) {
             $formIds = array_filter($formIds, function($value) use ($allowForms) {
                 return in_array($value, $allowForms);
             });
         }
 
-        $forms = Form::select('id', 'title')->whereIn('id', $formIds)->get();
+        $forms = Form::select('id', 'title')->whereIn('id', $formIds ?: [0])->get();
 
         return apply_filters('fluentform/get_log_filters', [
             'statuses'   => $statuses,
@@ -375,8 +402,8 @@ class Logger
             }
         }
 
-        $allowedForms = FormManagerService::getUserAllowedForms();
-        if (!$allowedForms) {
+        $allowedForms = FormManagerService::getUserAllowedFormsScope();
+        if (false === $allowedForms) {
             return;
         }
 

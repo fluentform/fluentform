@@ -7,6 +7,7 @@ use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Hooks\Handlers\DeactivationHandler;
 use FluentForm\App\Services\Migrator\Bootstrap as FormsMigrator;
 use FluentForm\App\Services\FluentConversational\Classes\Form as FluentConversational;
+use FluentForm\Database\Migrations\LegacyManagerScopes;
 use FluentForm\App\Helpers\Helper;
 
 return function ($file) {
@@ -46,6 +47,12 @@ return function ($file) {
 
     register_deactivation_hook($file, function () use ($app) {
         ($app->make(DeactivationHandler::class))->handle();
+    });
+
+    add_action('admin_init', function () {
+        if (!wp_doing_ajax()) {
+            LegacyManagerScopes::migrate();
+        }
     });
 
     add_action('plugins_loaded', function () use ($app) {
