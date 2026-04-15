@@ -18,10 +18,12 @@ defined('ABSPATH') or die;
 class LegacyManagerScopes
 {
     const BATCH_SIZE = 500;
+    const COMPLETED_OPTION = 'fluentform_empty_manager_scopes_normalized';
+    const CURSOR_OPTION = 'fluentform_empty_manager_scopes_normalization_cursor';
 
     public static function migrate()
     {
-        if (get_option('fluentform_empty_manager_scopes_normalized')) {
+        if (get_option(self::COMPLETED_OPTION)) {
             return;
         }
 
@@ -29,47 +31,46 @@ class LegacyManagerScopes
 
         $allowedFormsMetaKey = '_fluent_forms_allowed_forms';
         $specificFormsMetaKey = '_fluent_forms_has_specific_forms_permission';
-        $lastProcessedUserId = 0;
-        $didSucceed = true;
+        $lastProcessedUserId = max(0, intval(get_option(self::CURSOR_OPTION, 0)));
 
-        while (true) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-time upgrade cleanup for legacy manager scope data.
-            $scopedUserIds = $wpdb->get_col($wpdb->prepare(
-                "SELECT user_id
-                FROM {$wpdb->usermeta}
-                WHERE meta_key = %s
-                    AND meta_value = %s
-                    AND user_id > %d
-                ORDER BY user_id ASC
-                LIMIT %d",
-                $specificFormsMetaKey,
-                'yes',
-                $lastProcessedUserId,
-                self::BATCH_SIZE
-            ));
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-time upgrade cleanup for legacy manager scope data.
+        $scopedUserIds = $wpdb->get_col($wpdb->prepare(
+            "SELECT user_id
+            FROM {$wpdb->usermeta}
+            WHERE meta_key = %s
+                AND meta_value = %s
+                AND user_id > %d
+            ORDER BY user_id ASC
+            LIMIT %d",
+            $specificFormsMetaKey,
+            'yes',
+            $lastProcessedUserId,
+            self::BATCH_SIZE
+        ));
 
-            if (false === $scopedUserIds) {
-                $didSucceed = false;
-                break;
-            }
-
-            $scopedUserIds = array_values(array_filter(array_map('intval', (array) $scopedUserIds)));
-
-            if (!$scopedUserIds) {
-                break;
-            }
-
-            if (!self::normalizeLegacyBatch($scopedUserIds, $specificFormsMetaKey, $allowedFormsMetaKey)) {
-                $didSucceed = false;
-                break;
-            }
-
-            $lastProcessedUserId = (int) end($scopedUserIds);
+        if (false === $scopedUserIds) {
+            return;
         }
 
-        if ($didSucceed) {
-            update_option('fluentform_empty_manager_scopes_normalized', FLUENTFORM_VERSION, 'no');
+        $scopedUserIds = array_values(array_filter(array_map('intval', (array) $scopedUserIds)));
+
+        if (!$scopedUserIds) {
+            self::markComplete();
+            return;
         }
+
+        if (!self::normalizeLegacyBatch($scopedUserIds, $specificFormsMetaKey, $allowedFormsMetaKey)) {
+            return;
+        }
+
+        $lastProcessedUserId = (int) end($scopedUserIds);
+
+        if (count($scopedUserIds) < self::BATCH_SIZE) {
+            self::markComplete();
+            return;
+        }
+
+        update_option(self::CURSOR_OPTION, $lastProcessedUserId, 'no');
     }
 
     protected static function normalizeLegacyBatch($userIds, $specificFormsMetaKey, $allowedFormsMetaKey)
@@ -148,5 +149,11 @@ class LegacyManagerScopes
         ));
 
         return false !== $deleted;
+    }
+
+    protected static function markComplete()
+    {
+        delete_option(self::CURSOR_OPTION);
+        update_option(self::COMPLETED_OPTION, FLUENTFORM_VERSION, 'no');
     }
 }
