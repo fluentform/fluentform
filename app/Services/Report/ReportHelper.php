@@ -22,8 +22,8 @@ class ReportHelper
             return $query->where($column, $formId);
         }
 
-        if ($allowedFormIds = FormManagerService::getUserAllowedForms()) {
-            return $query->whereIn($column, $allowedFormIds);
+        if (false !== ($allowedFormIds = FormManagerService::getUserAllowedFormsScope())) {
+            return $query->whereIn($column, $allowedFormIds ?: [0]);
         }
 
         return $query;
