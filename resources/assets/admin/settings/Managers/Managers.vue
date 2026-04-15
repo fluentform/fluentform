@@ -179,17 +179,17 @@
 		            <template slot="label">
 			            <h6 style="display: inline-block;">{{$t('Access to Forms')}}</h6>
 			            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-				            <div slot="content">
-					            <p>
-						            {{ $t('Select specific forms to grant permission. Leave blank to give the manager access to all forms.')}}
-					            </p>
-				            </div>
+					            <div slot="content">
+						            <p>
+								            {{ $t("Select forms to limit this manager's access. Leave blank to keep access to all forms.")}}
+						            </p>
+					            </div>
 
 				            <i class="ff-icon ff-icon-info-filled text-primary"/>
 			            </el-tooltip>
 		            </template>
 
-		            <el-select v-model="manager.forms" :placeholder="$t('Select forms (leave blank for all)')" class="el-fluid" filterable multiple searchable>
+		            <el-select v-model="manager.forms" :placeholder="$t('Select forms to limit access')" class="el-fluid" filterable multiple searchable>
 			            <el-option
 				            v-for="(form, formId) in forms"
 				            :label="form"
