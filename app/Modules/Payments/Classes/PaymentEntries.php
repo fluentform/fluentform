@@ -50,7 +50,9 @@ class PaymentEntries
         
         // Sanitize request data
         $sanitizeMap = [
-            'form_id'          => 'intval',
+            'form_id'          => function ($value) {
+                return Acl::normalizeFormId($value);
+            },
             'per_page'         => 'intval',
             'payment_statuses' => 'sanitize_text_field',
             'payment_types'    => 'sanitize_text_field',
@@ -123,8 +125,6 @@ class PaymentEntries
     
     public function handleBulkAction()
     {
-        Acl::verify('fluentform_forms_manager');
-
         $request = wpFluentForm()->request;
         $attributes = $request->all();
         
@@ -151,12 +151,12 @@ class PaymentEntries
         $statusCode = 400;
         // permanently delete payment entries from transactions
         if ($actionType == 'delete_items') {
-    
-            
             // get submission ids to delete order items
-            $transactionData = Transaction::select(['form_id', 'submission_id'])
+            $transactionData = Transaction::select(['id', 'form_id', 'submission_id'])
                 ->whereIn('id', $entries)
                 ->get();
+
+            $this->authorizeTransactionForms($transactionData);
 
             $submission_ids = [];
 
@@ -225,6 +225,25 @@ class PaymentEntries
         wp_send_json_success([
             'message' => $message
         ], $statusCode);
+    }
+
+    private function authorizeTransactionForms($transactionData)
+    {
+        Acl::verify('fluentform_forms_manager');
+
+        $formIds = [];
+
+        foreach ($transactionData as $transaction) {
+            $formIds[(int) $transaction->form_id] = true;
+        }
+
+        foreach (array_keys($formIds) as $formId) {
+            if (!Acl::hasPermission('fluentform_forms_manager', $formId)) {
+                wp_send_json_error([
+                    'message' => __('You do not have permission to perform this action.', 'fluentform')
+                ], 422);
+            }
+        }
     }
 
     public function getFilters()

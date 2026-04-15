@@ -6,6 +6,31 @@ namespace FluentForm\App\Services\Manager;
 
 class FormManagerService
 {
+    private static function normalizeFormIds($formIds)
+    {
+        $formIds = is_array($formIds) ? $formIds : [$formIds];
+        $resolvedFormIds = [];
+
+        foreach ($formIds as $formId) {
+            if (is_string($formId)) {
+                $formId = trim($formId);
+            }
+
+            if (!is_int($formId) && (!is_string($formId) || !ctype_digit($formId))) {
+                return [];
+            }
+
+            $formId = (int) $formId;
+
+            if ($formId <= 0) {
+                return [];
+            }
+
+            $resolvedFormIds[] = $formId;
+        }
+
+        return array_values(array_unique($resolvedFormIds));
+    }
 
     public static function maybeAddUserAllowedFormIds($formId)
     {
@@ -62,9 +87,15 @@ class FormManagerService
     public static function hasFormPermission($formId)
     {
         if ($formId && $allowedForm = self::getUserAllowedForms()) {
-            $formId = is_array($formId) ? array_map('intval', $formId) : [intval($formId)];
-            return (bool)array_intersect($formId, $allowedForm);
+            $formIds = self::normalizeFormIds($formId);
+
+            if (!$formIds) {
+                return false;
+            }
+
+            return !array_diff($formIds, $allowedForm);
         }
+
         return true;
     }
 }

@@ -5,6 +5,8 @@ namespace FluentForm\App\Services\Report;
 use Exception;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\Framework\Support\Sanitizer;
 
@@ -53,8 +55,11 @@ class ReportService
     public function getFormsDropdown()
     {
         $forms = Form::select(['id', 'title', 'has_payment'])
-                     ->orderBy('id', 'DESC')
-                     ->get();
+            ->when(FormManagerService::getUserAllowedForms(), function ($query, $allowFormIds) {
+                return $query->whereIn('id', $allowFormIds);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
 
         return [
             'forms' => $forms
@@ -147,12 +152,15 @@ class ReportService
         $startDate = $data['start_date'];
         $endDate = $data['end_date'];
         $metric = Arr::get($data, 'metric', 'entries');
+        $allowedFormIds = FormManagerService::getUserAllowedForms();
+        $requestedFormId = Arr::get($data, 'form_id');
+        $scopedFormIds = $requestedFormId ? [$requestedFormId] : $allowedFormIds;
 
         if (!in_array($metric, ['entries', 'payments', 'views'])) {
             $metric = 'entries';
         }
 
-        $result = ReportHelper::getTopPerformingForms($startDate, $endDate, $metric);
+        $result = ReportHelper::getTopPerformingForms($startDate, $endDate, $metric, $scopedFormIds);
         return [
             'top_performing_forms' => Arr::get($result, 'data', []),
             'disable_message'      => Arr::get($result, 'disable_message', '')
@@ -190,7 +198,7 @@ class ReportService
 
         $startDate = Arr::get($data, 'start_date');
         $endDate = Arr::get($data, 'end_date');
-        $formId = intval(Arr::get($data, 'form_id'));
+        $formId = Acl::normalizeFormId(Arr::get($data, 'form_id'));
 
         // Set default date range if not provided
         if (!$startDate || !$endDate) {
