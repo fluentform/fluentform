@@ -28,9 +28,11 @@ $app->addAction('wp_ajax_fluentform_submit', function () use ($app) {
  * REST API seems not working for some servers with Mod Security Enabled
  */
 $app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
-    Acl::verify('fluentform_forms_manager', $app->request->get('form_id'));
+    $formId = Acl::verifyFormId($app->request->get('form_id'));
+    Acl::verify('fluentform_forms_manager', $formId);
     try {
         $data = $app->request->all();
+        $data['form_id'] = $formId;
         $isValidJson = (!empty($data['formFields'])) && json_decode($data['formFields'], true);
 
         if(!$isValidJson) {
@@ -57,10 +59,14 @@ $app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
  * Mod-Security also block this request
  */
 $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', function () use ($app) {
-    Acl::verify('fluentform_forms_manager', $app->request->get('form_id'));
+    $formId = Acl::verifyFormId($app->request->get('form_id'));
+    Acl::verify('fluentform_forms_manager', $formId);
     try {
         $settingsService = new \FluentForm\App\Services\Settings\SettingsService();
-        $settingsService->saveGeneral($app->request->all());
+        $attributes = $app->request->all();
+        $attributes['form_id'] = $formId;
+
+        $settingsService->saveGeneral($attributes);
         wp_send_json([
             'message' => __('Settings has been saved.', 'fluentform'),
         ]);
@@ -74,10 +80,14 @@ $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', functio
  * Mod-Security also block this request
  */
 $app->addAction('wp_ajax_fluentform-save-form-email-notification', function () use ($app) {
-    Acl::verify('fluentform_forms_manager', $app->request->get('form_id'));
+    $formId = Acl::verifyFormId($app->request->get('form_id'));
+    Acl::verify('fluentform_forms_manager', $formId);
     try {
         $settingsService = new \FluentForm\App\Services\Settings\SettingsService();
-        [$settingsId, $settings] = $settingsService->store($app->request->all());
+        $attributes = $app->request->all();
+        $attributes['form_id'] = $formId;
+
+        [$settingsId, $settings] = $settingsService->store($attributes);
 
         wp_send_json([
             'message'  => __('Settings has been saved.', 'fluentform'),
@@ -93,9 +103,9 @@ $app->addAction('wp_ajax_fluentform-save-form-email-notification', function () u
 // Legacy AJAX handlers removed — these routes are handled by the REST API.
 // Kept: fluentform-form-find-shortcode-locations (still in active use)
 $app->addAdminAjaxAction('fluentform-form-find-shortcode-locations', function () use ($app) {
-    $formId = absint($app->request->get('form_id'));
-
+    $formId = Acl::verifyFormId($app->request->get('form_id'));
     Acl::verify('fluentform_forms_manager', $formId);
+
     (new \FluentForm\App\Modules\Form\Form($app))->findFormLocations();
 });
 

@@ -11,6 +11,51 @@ class Acl
 
     public static $role = '';
 
+    public static function normalizeFormId($formId)
+    {
+        if ($formId === null || $formId === false || $formId === '') {
+            return null;
+        }
+
+        if (is_int($formId)) {
+            return $formId > 0 ? $formId : null;
+        }
+
+        if (is_string($formId)) {
+            $formId = trim($formId);
+
+            if ($formId === '' || !ctype_digit($formId)) {
+                return null;
+            }
+
+            $formId = (int) $formId;
+
+            return $formId > 0 ? $formId : null;
+        }
+
+        return null;
+    }
+
+    public static function verifyFormId(
+        $formId,
+        $message = 'Invalid form id.',
+        $json = true
+    ) {
+        $formId = static::normalizeFormId($formId);
+
+        if ($formId) {
+            return $formId;
+        }
+
+        if ($json) {
+            wp_send_json_error([
+                'message' => $message,
+            ], 422);
+        }
+
+        throw new \InvalidArgumentException(esc_html($message));
+    }
+
     public static function getPermissionSet()
     {
         $data = [
