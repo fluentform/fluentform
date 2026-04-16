@@ -736,6 +736,12 @@ class Component
             $form_vars['conditionals'] = $conditionals;
         }
 
+        $form_vars['file_upload_settings'] = apply_filters(
+            'fluentform/file_upload_settings_for_js',
+            [],
+            $form
+        );
+
         $form_vars = apply_filters('fluentform/form_vars_for_JS', $form_vars, $form);
 
         if ($form->has_payment) {
