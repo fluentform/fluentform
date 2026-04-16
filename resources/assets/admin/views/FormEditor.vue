@@ -530,7 +530,7 @@
             editorInserterInContainer: false,
             editorInserterInContainerRepeater: false,
 	        fieldNotSupportInContainerRepeater: false,
-            instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
+            instructionImage: FluentFormApp.plugin_public_url + 'img/help.png',
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false,
             isCommandKeyPressed : false,
@@ -550,8 +550,12 @@
                 { key: 'select_country', label: 'Country' },
                 { key: 'section_break', label: 'Section' },
                 { key: 'input_password', label: 'Password' },
-            ]
-
+            ],
+            autosaveTimer: null,
+            autosaveDelay: 20000, // 20 seconds delay
+            autosaveEnabled: false,
+            isComponentReady: false,
+            autosaveTimestampInterval: null
         }
     },
 
@@ -737,8 +741,10 @@
             if (this.form_saving) {
                 FluentFormEditorEvents.$emit('editor-form-saving',this.form);
 
-                this.clearEditableObject(); // Empty {editItem} after form saved
                 saveBtn.html('<i class="el-icon-loading mr-1"></i> Save Form');
+
+                // Cancel any pending autosave when manual save starts
+                this.cancelAutosave();
             } else {
                 saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>');
             }
@@ -766,7 +772,6 @@
                 this.$delete(this.form.stepsWrapper, 'stepEnd');
             }
         },
-
     },
     methods: {
         ...mapMutations({
@@ -797,10 +802,15 @@
                 this.handleUndoRedoStateChange(state);
             });
 
-            this.undoRedoManager.on('update', ({ canUndo, canRedo }) => {
+            this.undoRedoManager.on('update', ({ canUndo, canRedo, currentContent }) => {
                 this.canUndo = canUndo;
                 this.canRedo = canRedo;
                 jQuery(document).trigger('updateUndoState');
+
+                // Trigger autosave if enabled and not performing undo/redo
+                if (this.autosaveEnabled && !this.isPerformingUndoRedo && !this.form_saving && this.isComponentReady && currentContent) {
+                    this.scheduleAutosave();
+                }
             });
         },
 
@@ -1169,7 +1179,7 @@
             });
             saveButton.on('click', function () {
                 const $this = jQuery(this);
-                if (!$this.data('text')) $this.data('text', $this.text());
+                if (self.form_saving) return; // Prevent rapid clicks
                 $this.html('<i class="el-icon-loading mr-1"></i> Save Form');
                 self.save_form();
             });
@@ -1336,7 +1346,42 @@
                 e.preventDefault();
                 FluentFormEditorEvents.$emit('keyboard-delete-selected-item', this.editItem);
             }
-        }
+        },
+
+        /**
+         * Schedule autosave with debounce
+         */
+        scheduleAutosave() {
+            if (this.autosaveTimer) {
+                clearTimeout(this.autosaveTimer);
+            }
+
+            // Don't autosave if already saving
+            if (this.form_saving) {
+                return;
+            }
+
+            // Schedule autosave
+            this.autosaveTimer = setTimeout(() => {
+                if (this.form_saving) {
+                    return;
+                }
+
+                if (typeof this.save_form === 'function') {
+                    this.save_form();
+                }
+            }, this.autosaveDelay);
+        },
+
+        /**
+         * Cancel pending autosave
+         */
+        cancelAutosave() {
+            if (this.autosaveTimer) {
+                clearTimeout(this.autosaveTimer);
+                this.autosaveTimer = null;
+            }
+        },
     },
 
     created() {
@@ -1383,6 +1428,15 @@
         this.initUndoRedo();
         this.initUndoRedoBttn();
 
+        // Mark component as ready
+        // Use nextTick to ensure form is fully initialized
+        this.$nextTick(() => {
+            this.isComponentReady = true;
+
+            if (window.FluentFormApp?.autosave_enabled) {
+                this.autosaveEnabled = window.FluentFormApp.autosave_enabled;
+            }
+        });
 
         jQuery(document).on('updateUndoState', () => {
             jQuery('.ff-undo-button').toggleClass('active', this.canUndo);
@@ -1414,6 +1468,16 @@
         document.removeEventListener('keydown', this.initKeyboardSave);
         document.removeEventListener('keydown', this.initKeyboardUndoRedo);
         document.removeEventListener('keydown', this.initKeyboardDelete);
+
+        // Cancel any pending autosave
+        this.cancelAutosave();
+
+        // Clear timestamp updater interval
+        if (this.autosaveTimestampInterval) {
+            clearInterval(this.autosaveTimestampInterval);
+            this.autosaveTimestampInterval = null;
+        }
+
         if (this.undoRedoManager) {
             this.undoRedoManager.off('undo');
             this.undoRedoManager.off('redo');

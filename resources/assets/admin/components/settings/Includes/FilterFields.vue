@@ -116,33 +116,39 @@
                                 </el-col>
 
                                 <el-col :md="8" class="mb-0">
-                                    <div >
+                                    <div class="ff-condition-value-wrapper">
                                         <template v-if="logic.operator == 'length_equal' || logic.operator == 'length_less_than' || logic.operator == 'length_greater_than'">
                                             <el-input                                         size="small"
                                                                                               type="number" step="1" :placeholder="('Enter length in number')" v-model="logic.value" />
                                         </template>
                                         <template v-else>
-                                            <el-select
-                                                    size="small"
+                                            <div v-if="fields[logic.field] && Object.keys(fields[logic.field].options || {}).length" class="ff-select-with-shortcode" style="display: flex; align-items: center; gap: 5px;">
+                                                <el-select
+                                                        size="small"
+                                                        v-model="logic.value"
+                                                        clearable filterable allow-create
+                                                        style="flex: 1;">
+                                                    <el-option
+                                                            v-for="(label, value) in fields[logic.field].options"
+                                                            :key="value"
+                                                            :label="label" :value="value"
 
-                                                    v-if="fields[logic.field] && Object.keys(fields[logic.field].options || {}).length"
-                                                    v-model="logic.value"
-                                                    clearable filterable allow-create
-                                                    style="width: 100%">
-                                                <el-option
-                                                        v-for="(label, value) in fields[logic.field].options"
-                                                        :key="value"
-                                                        :label="label" :value="value"
-
-                                                ></el-option>
-                                            </el-select>
-                                            <el-input
-                                                    size="small"
-
+                                                    ></el-option>
+                                                </el-select>
+                                                <input-popover-dropdown
+                                                        :data="editorShortcodes"
+                                                        size="small"
+                                                        @command="(code) => insertShortcodeToValue(logic, code)"
+                                                        style="flex-shrink: 0;"
+                                                ></input-popover-dropdown>
+                                            </div>
+                                            <input-popover
                                                     v-else
                                                     :placeholder="$t('Enter a value')"
                                                     v-model="logic.value"
-                                            ></el-input>
+                                                    :data="editorShortcodes"
+                                                    :field-type="'text'"
+                                            ></input-popover>
                                         </template>
                                     </div>
                                 </el-col>
@@ -211,7 +217,7 @@
                             <el-option-group :label="$t('General Operators')">
                                 <el-option value="=" :label="$t('equal')"></el-option>
                                 <el-option value="!=" :label="$t('not equal')"></el-option>
-                                <template v-if="fields[logic.field] && !Object.keys(fields[logic.field].options || {}).length">
+                                <template v-if="isNotCheckableField(logic.field)">
                                     <el-option value=">" :label="$t('greater than')"></el-option>
                                     <el-option value="<" :label="$t('less than')"></el-option>
                                     <el-option value=">=" :label="$t('greater than or equal')"></el-option>
@@ -233,18 +239,34 @@
                 </el-col>
 
                 <el-col :md="8">
-                    <div class="mb-2">
+                    <div class="mb-2 ff-condition-value-wrapper">
                         <template v-if="items[key].operator == 'length_equal' || items[key].operator == 'length_less_than' || items[key].operator == 'length_greater_than'">
                             <el-input type="number" step="1" :placeholder="('Enter length in number')" v-model="items[key].value" />
                         </template>
                         <template v-else>
-                            <el-select v-if="fields[logic.field] && Object.keys(fields[logic.field].options || {}).length"
-                                    v-model="items[key].value" clearable filterable allow-create style="width: 100%">
+                            <div v-if="fields[logic.field] && Object.keys(fields[logic.field].options || {}).length" class="ff-select-with-shortcode" style="display: flex; align-items: center; gap: 5px;">
+                                <el-select
+                                        v-model="items[key].value"
+                                        clearable filterable allow-create
+                                        style="flex: 1;">
                                 <el-option v-for="(label, value) in fields[logic.field].options" :key="value"
                                         :label="label" :value="value"
                                 ></el-option>
                             </el-select>
-                            <el-input v-else :placeholder="$t('Enter a value')" v-model="items[key].value"></el-input>
+                                <input-popover-dropdown
+                                        :data="filteredEditorShortcodes"
+                                        size="medium"
+                                        @command="(code) => insertShortcodeToValue(items[key], code)"
+                                        style="flex-shrink: 0;"
+                                ></input-popover-dropdown>
+                            </div>
+                            <input-popover
+                                    v-else
+                                    :placeholder="$t('Enter a value')"
+                                    v-model="items[key].value"
+                                    :data="filteredEditorShortcodes"
+                                    :field-type="'text'"
+                            ></input-popover>
                         </template>
                     </div>
                 </el-col>
@@ -265,13 +287,17 @@
     import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
     import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
     import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
+    import inputPopover from '@/admin/components/input-popover.vue';
+    import inputPopoverDropdown from '@/admin/components/input-popover-dropdown.vue';
 
     export default {
         name: 'FilterFields',
         components: {
             ActionBtn,
             ActionBtnAdd,
-            ActionBtnRemove
+            ActionBtnRemove,
+            inputPopover,
+            inputPopoverDropdown
         },
         props: {
             conditionals: {
@@ -294,6 +320,14 @@
                     notification_if_start: 'Send this notification if',
                     notification_if_end: 'of the following match:'
                 })
+            },
+            editorShortcodes: {
+                type: Array,
+                default: () => []
+            },
+            supportedEditorShortcodes: {
+                type: Array,
+                default: () => ['input']
             }
         },
         data() {
@@ -317,7 +351,18 @@
 		        return this.conditionals.type === 'group'
 			        ? (this.conditionals.condition_groups || [])
 			        : (this.conditionals.conditions || []);
-	        }
+	        },
+            filteredEditorShortcodes() {
+		        return this.editorShortcodes.filter((item) => {
+                    const itemTitle = item.title.toLowerCase();
+                    for (const supportedItem of this.supportedEditorShortcodes) {
+                        if (itemTitle.includes(supportedItem)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            }
         },
 	    methods: {
 		    add(index) {
@@ -327,6 +372,13 @@
 				    this.items.splice(index + 1, 0, {...this.defaultRules});
 			    }
 		    },
+            isNotCheckableField(name) {
+                const field = this.fields[name] || {};
+                if (field) {
+                    return !(Object.keys(field?.options || {}).length || field.element === 'repeater_field');
+                }
+                return true;
+            },
 		    remove(index) {
 			    if (this.conditionals.type === 'group') {
 				    this.removeCondition(0, index);
@@ -406,6 +458,13 @@
 			    };
 			    return operators[operator] || operator;
 		    },
+		    insertShortcodeToValue(item, code) {
+			    if (!item.value || code.includes('{inputs.')) {
+				    item.value = code;
+			    } else {
+				    item.value = item.value + code;
+			    }
+		    },
 	    },
 	    mounted() {
 		    if (this.conditionals.type === 'group') {
@@ -416,6 +475,23 @@
 			    if (!this.conditionals.conditions || !this.conditionals.conditions.length) {
 				    this.$set(this.conditionals, 'conditions', [{...this.defaultRules}]);
 			    }
+		    }
+		    
+		    if (this.editorShortcodes && this.editorShortcodes.length > 0) {
+                let index = this.editorShortcodes.findIndex(item => item.title.toLowerCase().includes('general'));
+                if (index === -1) {
+                    index = 0;
+                }
+                if (index >= 0 && this.editorShortcodes[index]) {
+		            const shortcodes = Object.assign(
+                        {
+                            "{get.param_name}": this.$t("Populate by GET Param"),
+                            "{cookie.cookie_name}": this.$t("Cookie Value")
+                        },
+		                this.editorShortcodes[index].shortcodes
+		            );
+		            this.editorShortcodes[index].shortcodes = shortcodes;
+                }
 		    }
 	    }
     };

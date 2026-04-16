@@ -1,6 +1,9 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Modules\Component\Component;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -67,6 +70,11 @@ $app->addAction(
     }
 );
 
+// Register DefaultStyleApplicator on init so it works for REST API requests too
+add_action('init', function () {
+    new \FluentForm\App\Modules\Form\DefaultStyleApplicator();
+}, 9);
+
 // From Backend.php
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
@@ -81,7 +89,7 @@ add_action('admin_enqueue_scripts', function () use ($app) {
 
 // Add Entries Menu
 $app->addAction('fluentform/form_application_view_entries', function ($form_id) {
-    (new \FluentForm\App\Modules\Entries\Entries())->renderEntries($form_id);
+    (new \FluentForm\App\Modules\Entries\EntryViewRenderer())->renderEntries($form_id);
 });
 
 $app->addAction('fluentform/after_form_navigation', function ($form_id) use ($app) {
@@ -93,19 +101,16 @@ $app->addAction('media_buttons', function () {
     (new \FluentForm\App\Modules\EditorButtonModule())->addButton();
 });
 
+/*
+ * Addons Page
+ */
 $app->addAction('fluentform/addons_page_render_fluentform_add_ons', function () {
     (new \FluentForm\App\Modules\AddOnModule())->showFluentAddOns();
 });
 
-// This is temp, we will remove this after 2-3 versions.
-add_filter('pre_set_site_transient_update_plugins', function ($updates) {
-    if (!empty($updates->response['fluentformpro'])) {
-        $updates->response['fluentformpro/fluentformpro.php'] = $updates->response['fluentformpro'];
-        unset($updates->response['fluentformpro']);
-    }
-
-    return $updates;
-}, 999, 1);
+$app->addAction('fluentform/addons_page_render_suggested_plugins', function () {
+    (new \FluentForm\App\Modules\AddOnModule())->showSuggestedPlugins();
+});
 
 $app->addAction('fluentform/global_menu', function () use ($app) {
     $menu = new \FluentForm\App\Modules\Registerer\Menu($app);
@@ -153,7 +158,8 @@ add_action('admin_init', function () {
 
     if ($page && in_array($page, $disablePages)) {
         remove_all_actions('admin_notices');
-        (new \FluentForm\App\Modules\Registerer\ReviewQuery())->register();
+        \FluentForm\App\Modules\Registerer\ReviewQuery::register();
+        \FluentForm\App\Modules\Registerer\MigrationNotice::register();
     }
 });
 
@@ -291,6 +297,8 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
                 $element['settings']['values_visible'] = false;
             }
 
+      
+
             return $element;
         });
     }
@@ -310,7 +318,25 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             return $element;
         });
     }
-
+    
+    $prefixSuffixInputs = [
+        'textarea',
+        'input_url',
+        'input_password',
+    ];
+    
+    foreach ($prefixSuffixInputs as $inputType) {
+        add_filter('fluentform/editor_init_element_' . $inputType, function ($item) {
+            if (!isset($item['settings']['prefix_label'])) {
+                $item['settings']['prefix_label'] = '';
+            }
+            if (!isset($item['settings']['suffix_label'])) {
+                $item['settings']['suffix_label'] = '';
+            }
+            return $item;
+        });
+    }
+    
     add_filter('fluentform/editor_init_element_gdpr_agreement', function ($element) {
         if (!isset($element['settings']['required_field_message'])) {
             $element['settings']['required_field_message'] = '';
@@ -382,6 +408,17 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         }
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
+        }
+        if (!isset($item['settings']['mobile_keyboard_type_number'])) {
+            $item['settings']['mobile_keyboard_type_number'] = '';
+        }
+
+        return $item;
+    });
+
+    add_filter('fluentform/editor_init_element_input_mask', function ($item) {
+        if (!isset($item['settings']['mobile_keyboard_type'])) {
+            $item['settings']['mobile_keyboard_type'] = '';
         }
         return $item;
     });
@@ -568,9 +605,10 @@ add_action('save_post', function ($post_id) use ($app) {
         return;
     }
 
-    $post_content = isset($_REQUEST['post_content']) ? $_REQUEST['post_content'] : false;
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by WordPress save_post action
+    $post_content = isset($_REQUEST['post_content']) ? wp_kses_post(wp_unslash($_REQUEST['post_content'])) : false;
     if ($post_content && is_string($post_content)) {
-        $post_content = wp_kses_post(wp_unslash($post_content));
+        // Already sanitized above
     } else {
         $post = get_post($post_id);
         $post_content = $post->post_content;
@@ -634,14 +672,13 @@ add_action('save_post', function ($post_id) use ($app) {
     }
 });
 
-$component = new Component($app);
-$component->addRendererActions();
-$component->addFluentFormShortCode();
-$component->addFluentFormDefaultValueParser();
-
-$component->addFluentformSubmissionInsertedFilter();
-$component->addIsRenderableFilter();
-$component->registerInputSanitizers();
+$fluentformComponent = new Component($app);
+$fluentformComponent->addRendererActions();
+$fluentformComponent->addFluentFormShortCode();
+$fluentformComponent->addFluentFormDefaultValueParser();
+$fluentformComponent->addFluentformSubmissionInsertedFilter();
+$fluentformComponent->addIsRenderableFilter();
+$fluentformComponent->registerInputSanitizers();
 
 add_action('wp', function () use ($app) {
     // @todo: We will remove the fluentform_pages check from April 2021
@@ -657,12 +694,15 @@ add_action('wp', function () use ($app) {
                 FLUENTFORM_VERSION,
                 true
             );
-            wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
-                'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-                'ajaxurl'                  => Helper::getAjaxUrl(),
-                'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
-                'rest'                     => Helper::getRestInfo()
-            ]);
+            $globalVars = [
+                'ajaxurl'              => Helper::getAjaxUrl(),
+                'global_search_active' => apply_filters('fluentform/global_search_active', 'yes'),
+                'rest'                 => Helper::getRestInfo()
+            ];
+            if (Acl::hasAnyFormPermission()) {
+                $globalVars['fluent_forms_admin_nonce'] = wp_create_nonce('fluent_forms_admin_nonce');
+            }
+            wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', $globalVars);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($app->request->get('preview_id')));
             $postId = get_the_ID() ?: 0;
@@ -683,7 +723,7 @@ add_action('wp', function () use ($app) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
-            wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'));
+            wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'), [], FLUENTFORM_VERSION);
             if (!defined('FLUENTFORMPRO')) {
                 wp_enqueue_script(
                     'fluentform-preview_app',
@@ -754,7 +794,11 @@ function fluentform_after_submission_api_response_success($form, $entryId, $data
             'updated_at'  => current_time('mysql'),
         ]);
     } catch (Exception $e) {
-        error_log($e->getMessage());
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging only when WP_DEBUG is enabled, helps developers troubleshoot shortcode parsing issues
+            error_log($e->getMessage());
+        }
+        return '';
     }
 }
 
@@ -790,6 +834,7 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
             'updated_at'  => current_time('mysql'),
         ]);
     } catch (Exception $e) {
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional logging for debugging
         error_log($e->getMessage());
     }
 }
@@ -917,7 +962,7 @@ add_action('wp', function () {
 add_filter('cron_schedules', function ($schedules) {
     $schedules['ff_every_five_minutes'] = [
         'interval' => 300,
-        'display'  => esc_html__('Every 5 minutes (FluentForm)', 'fluentform'),
+        'display'  => 'Every 5 minutes (FluentForm)',
     ];
 
     return $schedules;
@@ -1033,7 +1078,8 @@ add_action('enqueue_block_editor_assets', function () {
         'fluentform-gutenberg-block',
         fluentFormMix('js/fluent_gutenblock.js'),
         ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components','wp-server-side-render', 'wp-block-editor'],
-        FLUENTFORM_VERSION
+        FLUENTFORM_VERSION,
+        true
     );
     wp_enqueue_style(
         'fluentform-gutenberg-block',
@@ -1046,7 +1092,8 @@ add_action('enqueue_block_editor_assets', function () {
     $forms = wpFluent()->table('fluentform_forms')
         ->select(['id', 'title'])
         ->orderBy('id', 'DESC')
-        ->get();
+        ->get()
+        ->toArray();
 
     array_unshift($forms, (object) [
         'id'    => '',
@@ -1071,7 +1118,7 @@ add_action('enqueue_block_editor_assets', function () {
         'forms'                   => $forms,
         'style_presets'           => $presets,
         'theme_style'             => apply_filters('fluentform/load_theme_style', false) ? 'ffs_inherit_theme' : '',
-        'conversational_demo_img' => fluentformMix('img/conversational-form-demo.png'),
+        'conversational_demo_img' => fluentFormMix('img/conversational-form-demo.png'),
         'rest'                    => Helper::getRestInfo()
     ]);
 
@@ -1096,7 +1143,8 @@ add_action('enqueue_block_editor_assets', function () {
         FLUENTFORM_VERSION
     );
 
-    $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking post ID in admin context
+    $post_id = isset($_GET['post']) ? (int)$_GET['post'] : 0;
     $loadPublicStyle = apply_filters_deprecated(
         'fluentform_load_default_public',
         [
@@ -1131,6 +1179,35 @@ if (function_exists('register_block_type')) {
 add_action('fluentform/before_updating_form',function ($form, $postData){
     (new FluentForm\App\Services\Form\HistoryService())->init($form, $postData);
 },10,2);
+
+
+// WordPress 6.3+ uses iframes for block editor preview
+// Official WordPress solution: Use enqueue_block_assets with proper context checking
+// See: https://make.wordpress.org/core/2023/07/18/miscellaneous-editor-changes-in-wordpress-6-3/
+add_action('enqueue_block_assets', function() {
+    // Check if we're in the block editor context (not frontend)
+    // This works for both the editor UI and the iframe preview in WordPress 6.3+
+    if (!is_admin() && !wp_is_block_theme()) {
+        return;
+    }
+
+    // Additional check: Only load if we're actually in a block editor screen
+    if (is_admin()) {
+        $current_screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        if ($current_screen && !$current_screen->is_block_editor()) {
+            return;
+        }
+    }
+
+    // Enqueue Fluent Forms CSS for block editor iframe preview
+    // These styles are necessary for the live form preview in the block editor
+    wp_enqueue_style('fluent-forms-public', fluentFormMix('css/fluent-forms-public.css'), [], FLUENTFORM_VERSION);
+    wp_enqueue_style('fluentform-public-default', fluentFormMix('css/fluentform-public-default.css'), [], FLUENTFORM_VERSION);
+
+});
+
+
+
 // require the CLI
 if (defined('WP_CLI') && WP_CLI) {
     \WP_CLI::add_command('fluentform', '\FluentForm\App\Modules\CLI\Commands');

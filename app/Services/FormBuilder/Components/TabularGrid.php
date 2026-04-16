@@ -126,7 +126,8 @@ class TabularGrid extends BaseComponent
     protected function getElementHelpMessage($data, $form)
     {
         $elementHelpMessage = '';
-        if ('under_input' == $form->settings['layout']['helpMessagePlacement']) {
+        $helpMessagePlacement = ArrayHelper::get($form->settings, 'layout.helpMessagePlacement', 'with_label');
+        if ('under_input' == $helpMessagePlacement) {
             $elementHelpMessage = $this->getInputHelpMessage($data);
         }
 

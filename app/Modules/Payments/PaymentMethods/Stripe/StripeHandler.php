@@ -154,11 +154,13 @@ class StripeHandler
         $mode = $settings['payment_mode'];
 
         if (empty($settings[$mode . '_publishable_key'])) {
-            $errors[$mode . '_publishable_key'] = __(ucfirst($mode) . ' Publishable Key is required', 'fluentform');
+            /* translators: %s is the mode (Live/Test) */
+            $errors[$mode . '_publishable_key'] = sprintf(__('%s Publishable Key is required', 'fluentform'), ucfirst($mode));
         }
 
         if (empty($settings[$mode . '_secret_key'])) {
-            $errors[$mode . '_secret_key'] = __(ucfirst($mode) . ' Secret Key is required', 'fluentform');
+            /* translators: %s is the mode (Live/Test) */
+            $errors[$mode . '_secret_key'] = sprintf(__('%s Secret Key is required', 'fluentform'), ucfirst($mode));
         }
 
         if (ArrayHelper::get($settings, 'provider') === 'connect' && count($errors)) {
@@ -181,7 +183,11 @@ class StripeHandler
         }
 
         if ($transaction->status == 'requires_capture') {
-            $transaction->additional_note = __('<b>Action Required: </b> The payment has been authorized but not captured yet. Please <a target="_blank" rel="noopener" href="' . $transaction->action_url . '">Click here</a> to capture this payment in stripe.com', 'fluentform');
+            $transaction->additional_note = sprintf(
+                /* translators: %s is the URL to capture payment in Stripe dashboard */
+                __('<b>Action Required: </b> The payment has been authorized but not captured yet. Please <a target="_blank" rel="noopener noreferrer" href="%s">Click here</a> to capture this payment in stripe.com', 'fluentform'),
+                esc_url($transaction->action_url)
+            );
         }
 
         return $transaction;

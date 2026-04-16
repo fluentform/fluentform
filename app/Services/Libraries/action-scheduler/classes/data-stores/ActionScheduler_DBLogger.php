@@ -12,13 +12,13 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 	/**
 	 * Add a record to an action log.
 	 *
-	 * @param int      $action_id Action ID.
-	 * @param string   $message Message to be saved in the log entry.
-	 * @param DateTime $date Timestamp of the log entry.
+	 * @param int           $action_id Action ID.
+	 * @param string        $message Message to be saved in the log entry.
+	 * @param DateTime|null $date Timestamp of the log entry.
 	 *
 	 * @return int     The log entry ID.
 	 */
-	public function log( $action_id, $message, DateTime $date = null ) {
+	public function log( $action_id, $message, ?DateTime $date = null ) {
 		if ( empty( $date ) ) {
 			$date = as_get_datetime_object();
 		} else {
@@ -82,7 +82,7 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 	}
 
 	/**
-	 * Retrieve the an action's log entries from the database.
+	 * Retrieve an action's log entries from the database.
 	 *
 	 * @param int $action_id Action ID.
 	 *
@@ -139,7 +139,7 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 		$date_gmt = $date->format( 'Y-m-d H:i:s' );
 		ActionScheduler_TimezoneHelper::set_local_timezone( $date );
 		$date_local = $date->format( 'Y-m-d H:i:s' );
-		$message    = __( 'action canceled', 'woocommerce' );
+		$message    = __( 'action canceled', 'action-scheduler' );
 		$format     = '(%d, ' . $wpdb->prepare( '%s, %s, %s', $message, $date_gmt, $date_local ) . ')';
 		$sql_query  = "INSERT {$wpdb->actionscheduler_logs} (action_id, message, log_date_gmt, log_date_local) VALUES ";
 		$value_rows = array();

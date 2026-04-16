@@ -30,18 +30,19 @@ class ShortCodeParser
         'submission'      => null,
     ];
 
-    public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false, $providerOrIsHTML = false)
+    public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false, $providerOrIsHTML = false, $htmlSanitized = false)
     {
         try {
             static::setDependencies($entryId, $data, $form, $providerOrIsHTML);
 
             if (is_array($parsable)) {
-                return static::parseShortCodeFromArray($parsable, $isUrl, $providerOrIsHTML);
+                return static::parseShortCodeFromArray($parsable, $isUrl, $providerOrIsHTML, $htmlSanitized);
             }
 
-            return static::parseShortCodeFromString($parsable, $isUrl, $providerOrIsHTML);
+            return static::parseShortCodeFromString($parsable, $isUrl, $providerOrIsHTML, $htmlSanitized);
         } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging only when WP_DEBUG is enabled, helps developers troubleshoot shortcode parsing issues
                 error_log($e->getTraceAsString());
             }
             return '';
@@ -63,7 +64,7 @@ class ShortCodeParser
 
     protected static function setdata($data)
     {
-        if (! is_null($data)) {
+        if (!is_null($data)) {
             static::$store['inputs'] = $data;
             static::$store['original_inputs'] = $data;
         } else {
@@ -75,18 +76,18 @@ class ShortCodeParser
 
     protected static function setForm($form)
     {
-        if (! is_null($form)) {
+        if (!is_null($form)) {
             static::$form = $form;
         } else {
             static::$form = static::getEntry()->form_id;
         }
     }
 
-    protected static function parseShortCodeFromArray($parsable, $isUrl = false, $provider = false)
+    protected static function parseShortCodeFromArray($parsable, $isUrl = false, $provider = false, $htmlSanitized = false)
     {
         foreach ($parsable as $key => $value) {
             if (is_array($value)) {
-                $parsable[$key] = static::parseShortCodeFromArray($value, $isUrl, $provider);
+                $parsable[$key] = static::parseShortCodeFromArray($value, $isUrl, $provider, $htmlSanitized);
             } else {
                 $isHtml = false;
                 if ($provider) {
@@ -103,28 +104,28 @@ class ShortCodeParser
                     );
                     $isHtml = apply_filters('fluentform/will_return_html', $isHtml, $provider, $key);
                 }
-                $parsable[$key] = static::parseShortCodeFromString($value, $isUrl, $isHtml);
+                $parsable[$key] = static::parseShortCodeFromString($value, $isUrl, $isHtml, $htmlSanitized);
             }
         }
-
+        
         return $parsable;
     }
 
-    protected static function parseShortCodeFromString($parsable, $isUrl = false, $isHtml = false)
+    protected static function parseShortCodeFromString($parsable, $isUrl = false, $isHtml = false, $htmlSanitized = false)
     {
         if ('0' === $parsable) {
             return $parsable;
         }
 
-        if (! $parsable) {
+        if (!$parsable) {
             return '';
         }
-        return preg_replace_callback('/{+(.*?)}/', function ($matches) use ($isUrl, $isHtml) {
+        return preg_replace_callback('/{+(.*?)}/', function ($matches) use ($isUrl, $isHtml, $htmlSanitized) {
             $value = '';
             if (false !== strpos($matches[1], 'inputs.')) {
                 $formProperty = substr($matches[1], strlen('inputs.'));
                 $value = static::getFormData($formProperty, $isHtml);
-            }else if (false !== strpos($matches[1], 'labels.')) {
+            } else if (false !== strpos($matches[1], 'labels.')) {
                 $formLabelProperty = substr($matches[1], strlen('labels.'));
                 $value = static::getFormLabelData($formLabelProperty);
             } elseif (false !== strpos($matches[1], 'user.')) {
@@ -146,10 +147,10 @@ class ShortCodeParser
                 $property = substr($matches[1], strlen('payment.'));
                 $deprecatedValue = apply_filters_deprecated(
                     'fluentform_payment_smartcode', [
-                        '',
-                        $property,
-                        self::getInstance()
-                    ],
+                    '',
+                    $property,
+                    self::getInstance()
+                ],
                     FLUENTFORM_FRAMEWORK_UPGRADE,
                     'fluentform/payment_smartcode',
                     'Use fluentform/payment_smartcode instead of fluentform_payment_smartcode.'
@@ -166,6 +167,8 @@ class ShortCodeParser
 
             if ($isUrl) {
                 $value = rawurlencode($value);
+            } else if ($htmlSanitized) {
+                $value = fluentform_sanitize_html($value);
             }
 
             return $value;
@@ -184,7 +187,7 @@ class ShortCodeParser
             return ArrayHelper::get(static::$store['original_inputs'], $key);
         }
 
-        if (strpos($key, '.') && ! isset(static::$store['inputs'][$key])) {
+        if (strpos($key, '.') && !isset(static::$store['inputs'][$key])) {
             return ArrayHelper::get(
                 static::$store['original_inputs'],
                 $key,
@@ -192,7 +195,7 @@ class ShortCodeParser
             );
         }
 
-        if (! isset(static::$store['inputs'][$key])) {
+        if (!isset(static::$store['inputs'][$key])) {
             static::$store['inputs'][$key] = ArrayHelper::get(
                 static::$store['inputs'],
                 $key,
@@ -209,7 +212,7 @@ class ShortCodeParser
 
         $field = ArrayHelper::get(static::$formFields, $key, '');
 
-        if (! $field) {
+        if (!$field) {
             return '';
         }
 
@@ -280,7 +283,7 @@ class ShortCodeParser
             $parentKey = array_shift($keys);
             $inputLabel = str_replace($parentKey, '', $inputLabel);
         }
-        if(empty($inputLabel)){
+        if (empty($inputLabel)) {
             $inputLabel = ArrayHelper::get(ArrayHelper::get(static::$formFields, $key, []), 'admin_label', '');
         }
         if (empty($inputLabel) && isset($parentKey) && $parentKey) {
@@ -315,7 +318,7 @@ class ShortCodeParser
             $authorId = static::$store['post']->post_author;
             if ($authorId) {
                 $data = get_the_author_meta($authorProperty, $authorId);
-                if (! is_array($data)) {
+                if (!is_array($data)) {
                     return $data;
                 }
             }
@@ -324,7 +327,7 @@ class ShortCodeParser
             $metaKey = substr($key, strlen('meta.'));
             $postId = static::$store['post']->ID;
             $data = get_post_meta($postId, $metaKey, true);
-            if (! is_array($data)) {
+            if (!is_array($data)) {
                 return $data;
             }
             return '';
@@ -333,7 +336,7 @@ class ShortCodeParser
             $postId = static::$store['post']->ID;
             if (function_exists('get_field')) {
                 $data = get_field($metaKey, $postId, true);
-                if (! is_array($data)) {
+                if (!is_array($data)) {
                     return $data;
                 }
                 return '';
@@ -362,14 +365,14 @@ class ShortCodeParser
         $entry = static::getEntry();
 
         if (empty($entry->id)) {
-            return  '';
+            return '';
         }
 
         if (property_exists($entry, $key)) {
             if ('total_paid' == $key || 'payment_total' == $key) {
                 return round($entry->{$key} / 100, 2);
             }
-            if ('payment_method' == $key && 'test' == $key) {
+            if ('payment_method' == $key && 'test' == $entry->{$key}) {
                 return __('Offline', 'fluentform');
             }
             return $entry->{$key};
@@ -381,7 +384,7 @@ class ShortCodeParser
         } elseif (false !== strpos($key, 'meta.')) {
             $metaKey = substr($key, strlen('meta.'));
             $data = Helper::getSubmissionMeta($entry->id, $metaKey);
-            if (! is_array($data)) {
+            if (!is_array($data)) {
                 return $data;
             }
             return '';
@@ -420,7 +423,7 @@ class ShortCodeParser
 
             if (apply_filters('fluentform/all_data_skip_password_field', $status)) {
                 $passwords = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_password']);
-                if (is_array($passwords) && ! empty($passwords)) {
+                if (is_array($passwords) && !empty($passwords)) {
                     $user_inputs = $response->user_inputs;
                     ArrayHelper::forget($user_inputs, array_keys($passwords));
                     $response->user_inputs = $user_inputs;
@@ -438,11 +441,11 @@ class ShortCodeParser
                 'Use fluentform/all_data_without_hidden_fields instead of fluentform_all_data_without_hidden_fields.'
             );
             $skipHiddenFields = ('all_data_without_hidden_fields' == $key) &&
-                                apply_filters('fluentform/all_data_without_hidden_fields', $hideHiddenField);
+                apply_filters('fluentform/all_data_without_hidden_fields', $hideHiddenField);
 
             if ($skipHiddenFields) {
                 $hiddenFields = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_hidden']);
-                if (is_array($hiddenFields) && ! empty($hiddenFields)) {
+                if (is_array($hiddenFields) && !empty($hiddenFields)) {
                     ArrayHelper::forget($response->user_inputs, array_keys($hiddenFields));
                 }
             }
@@ -454,6 +457,7 @@ class ShortCodeParser
                     if (is_array($data) || is_object($data)) {
                         continue;
                     }
+                    // $label is admin-set, $data is already sanitized via fluentFormSanitizer() on submission insert
                     $html .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $data . '</td></tr>';
                 }
             }
@@ -570,7 +574,7 @@ class ShortCodeParser
 
     public static function getForm()
     {
-        if (! is_object(static::$form)) {
+        if (!is_object(static::$form)) {
             static::$form = wpFluent()->table('fluentform_forms')->find(static::$form);
         }
 
@@ -584,7 +588,7 @@ class ShortCodeParser
 
     public static function getEntry()
     {
-        if (! is_object(static::$entry)) {
+        if (!is_object(static::$entry)) {
             static::$entry = wpFluent()->table('fluentform_submissions')->find(static::$entry);
         }
 

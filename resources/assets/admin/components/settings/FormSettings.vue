@@ -553,7 +553,7 @@
                     </card-head>
 
                     <card-body>
-                        <advanced-validation v-if="hasPro" :hasPro="hasPro" :inputs="inputs" :settings="advancedValidationSettings"></advanced-validation>
+                        <advanced-validation v-if="hasPro" :hasPro="hasPro" :inputs="inputs" :settings="advancedValidationSettings" :editorShortcodes="editorShortcodes"></advanced-validation>
                         <update-to-pro-content v-else :update-message="$t('Advanced Form Validation is available in the pro version')" />
                     </card-body>
                 </card>

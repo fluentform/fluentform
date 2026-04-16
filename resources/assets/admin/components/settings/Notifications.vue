@@ -250,7 +250,8 @@
                             <FilterFields
                                 :fields="inputs"
                                 :conditionals="selected.value.conditionals"
-                                :hasPro="has_pro">
+                                :hasPro="has_pro"
+                                :editorShortcodes="editorShortcodes">
                             </FilterFields>
 
                             <notice class="ff_alert_between" type="danger-soft" v-if="!has_pro">

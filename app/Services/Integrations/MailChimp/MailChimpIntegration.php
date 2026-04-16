@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\Integrations\MailChimp;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Http\Controllers\IntegrationManagerController;
 use FluentForm\App\Services\Integrations\MailChimp\MailChimpSubscriber as Subscriber;
 use FluentForm\Framework\Foundation\Application;
@@ -323,8 +325,10 @@ class MailChimpIntegration extends IntegrationManagerController
         }
 
         $formattedLists = [];
-        foreach ($lists['lists'] as $list) {
-            $formattedLists[$list['id']] = $list['name'];
+        if (is_array($lists) && isset($lists['lists'])) {
+            foreach ($lists['lists'] as $list) {
+                $formattedLists[$list['id']] = $list['name'];
+            }
         }
 
         return $formattedLists;

@@ -107,7 +107,7 @@ window.FluentFormEditorEvents = new Vue();
 
 Vue.mixin(mixins);
 
-global.Errors = Errors;
+window.Errors = Errors;
 
 window.ffEditorOptionsCustomComponents = window.ffEditorOptionsCustomComponents || {};
 
@@ -288,9 +288,6 @@ window.fluentFormEditorApp = new Vue({
                     this.$success(response.message);
                     this.form_saving = false;
                     FluentFormApp.isDirty = false;
-
-                    const saveFormBtn = jQuery("#saveFormData");
-                    saveFormBtn.html('<i class="el-icon-success"></i>' + saveFormBtn.data("text"));
 
                     // Update the hash now.
                     this.saveHash();

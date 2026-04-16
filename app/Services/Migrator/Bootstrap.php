@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\Migrator;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Services\Migrator\Classes\NinjaFormsMigrator;
 use FluentForm\App\Services\Migrator\Classes\CalderaMigrator;
 use FluentForm\App\Services\Migrator\Classes\GravityFormsMigrator;
@@ -80,7 +82,7 @@ class Bootstrap
                 break;
             default:
                 wp_send_json([
-                    'message' => __('Unsupported Form Type!'),
+                    'message' => __('Unsupported Form Type!','fluentform'),
                     'success' => false,
                 ]);
         }

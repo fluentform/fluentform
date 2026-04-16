@@ -1,5 +1,5 @@
 @import "../styles/var";
-@import "~normalize.css/normalize.css";
+@import "~normalize.css/normalize";
 @import "../styles/globals.scss";
 @import "../styles/nav.scss";
 @import "../styles/vddl-base.scss";
@@ -14,4 +14,5 @@
 @import "../styles/el_customize.scss";
 @import "../styles/components.scss";
 @import "../styles/entries.scss";
+@import "../styles/input-text";
 @import "../styles/responsive";

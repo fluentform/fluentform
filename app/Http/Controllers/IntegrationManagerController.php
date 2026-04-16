@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Http\Controllers;
 
+defined('ABSPATH') or die;
 
 use FluentForm\App\Helpers\IntegrationManagerHelper;
 use FluentForm\Framework\Foundation\App;
@@ -36,9 +37,12 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
         $this->settingsKey = $settingsKey;
         $this->priority = $priority;
 
-        if(isset($_REQUEST['form_id'])) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Constructor, nonce verified in route handlers
+        if (isset($_REQUEST['form_id'])) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Constructor, nonce verified in route handlers
+            $formId = (int)$_REQUEST['form_id'];
             parent::__construct(
-                $this->settingsKey, $_REQUEST['form_id'], true
+                $this->settingsKey, $formId, true
             );
         } else {
             parent::__construct(

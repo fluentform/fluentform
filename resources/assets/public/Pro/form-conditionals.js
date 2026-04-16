@@ -54,13 +54,31 @@ const formConditional = function ($, $theForm, form) {
 
             $.each(watchableFields, (name, el) => {
                 el.on('keyup change', () => {
+                    if ($theForm.hasClass('ff_force_hide') || $theForm.hasClass('ff_submitting')) {
+                        return;
+                    }
                     formData = getFormData();
                     conditionAppInstance.setFormData(formData);
-                    debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    setTimeout(() => {
+                        debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    }, 0);
                 });
             });
 
-            hideShowElements(conditionAppInstance.getCalculatedStatuses());
+            jQuery(document.body).on('fluentform_reset', function(event, resetForm) {
+                if (!resetForm || !resetForm.length || resetForm[0] !== $theForm[0] || $theForm.hasClass('ff_force_hide')) {
+                    return;
+                }
+                setTimeout(() => {
+                    formData = getFormData();
+                    conditionAppInstance.setFormData(formData);
+                    hideShowElements(conditionAppInstance.getCalculatedStatuses());
+                }, 0);
+            });
+
+            setTimeout(() => {
+                hideShowElements(conditionAppInstance.getCalculatedStatuses());
+            }, 0);
         };
 
         const debounce = (func, delay = 300) => {
@@ -76,6 +94,7 @@ const formConditional = function ($, $theForm, form) {
         }, form.debounce_time || 300);
 
         const hideShowElements = function (items) {
+            let timeoutId;
             $.each(items, (itemName, status) => {
                 const el = getElement(itemName);
                 let $parent = el.closest('.has-conditions');
@@ -88,7 +107,10 @@ const formConditional = function ($, $theForm, form) {
                         .slideDown(200, function() {
                             // Check if this container has range sliders that need reinitialization
                             if ($parent.find('input[type="range"]').length > 0) {
-                                setTimeout(function() {
+                                if (timeoutId) {
+                                    clearTimeout(timeoutId);
+                                }
+                                timeoutId = setTimeout(function() {
                                     $theForm.trigger('reInitRangeSliders');
                                 }, 50);
                             }

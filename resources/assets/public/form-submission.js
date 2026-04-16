@@ -18,7 +18,7 @@ jQuery(document).ready(function () {
      * Custom Error/Exception
      */
     window.ffValidationError = (function () {
-        var ffValidationError = function () {};
+        var ffValidationError = function () { };
         ffValidationError.prototype = Object.create(Error.prototype);
         ffValidationError.prototype.constructor = ffValidationError;
         return ffValidationError;
@@ -66,8 +66,21 @@ jQuery(document).ready(function () {
                 return fluentFormAppStore[formInstanceSelector];
             }
 
+            if (!fluentFormVars.ajaxUrl) {
+                fluentFormVars.ajaxUrl = form.ajaxUrl || window.ajaxurl;
+            }
+
             var formId = form.form_id_selector;
             var formSelector = '.' + formInstanceSelector;
+
+            // Helper function to get translated submission messages
+            function getSubmissionMessage(key, fallback) {
+                const messagesVar = 'fluentform_submission_messages_' + form.id;
+                if (window[messagesVar] && window[messagesVar][key]) {
+                    return window[messagesVar][key];
+                }
+                return fallback;
+            }
 
             /**
              * Form Handler module
@@ -122,7 +135,7 @@ jQuery(document).ready(function () {
                         processFunctions.ff_v3_recptcha = function ($theForm, formData) {
                             var dfd = jQuery.Deferred();
                             let siteKey = $theForm.data('recptcha_key');
-                            grecaptcha.execute(siteKey, {action: 'submit'}).then((token) => {
+                            grecaptcha.execute(siteKey, { action: 'submit' }).then((token) => {
                                 formData['data'] += '&' + jQuery.param({
                                     'g-recaptcha-response': token
                                 });
@@ -170,7 +183,7 @@ jQuery(document).ready(function () {
                         // Keep track of checkbox and radio groups that have been processed
                         var processedGroups = {};
                         // Add empty value for unchecked checkboxes and radio buttons
-                        $inputs.each(function() {
+                        $inputs.each(function () {
                             var name = $(this).attr('name');
                             if (!inputsDataNames.includes(name)) {
                                 if ($(this).is(':checkbox') || $(this).is(':radio')) {
@@ -182,7 +195,7 @@ jQuery(document).ready(function () {
                             }
                         });
                         // Convert inputsData array to serialized string
-                        var serializedData = $.param($.map(inputsData, function(input) {
+                        var serializedData = $.param($.map(inputsData, function (input) {
                             return { name: input.name, value: input.value };
                         }));
                         var formData = {
@@ -228,7 +241,7 @@ jQuery(document).ready(function () {
 
                             let text = $('<span/>', {
                                 class: 'error-text',
-                                text: 'File upload in progress. Please wait...'
+                                text: getSubmissionMessage('file_upload_in_progress', 'File upload in progress. Please wait...')
                             });
                             return $(formSelector + '_errors').html(errorHtml.append(text, cross)).show();
                         }
@@ -276,6 +289,10 @@ jQuery(document).ready(function () {
                         if (!(e instanceof ffValidationError)) {
                             throw e;
                         }
+                        $theForm.trigger('fluentform_validation_failed', {
+                            form: $theForm,
+                            response: e.messages
+                        });
                         showErrorMessages(e.messages);
                         scrollToFirstError(350);
                     }
@@ -290,15 +307,13 @@ jQuery(document).ready(function () {
 
                     const ajaxRequestUrl = addParameterToURL('t=' + Date.now());
 
-                    if (this.isSending) {
+                    if (isSending) {
                         return;
                     }
 
-                    var that = this;
                     let responseData;
 
-
-                    this.isSending = true;
+                    isSending = true;
 
                     $.post(ajaxRequestUrl, formData)
                         .then(function (res) {
@@ -356,9 +371,14 @@ jQuery(document).ready(function () {
                                         .html(res.data.result.message)
                                         .insertAfter($theForm)
                                         .focus()
-                                    ;
+                                        ;
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
+
+                                // Hide progress after a short delay to handle file downloads
+                                setTimeout(() => {
+                                    hideFormSubmissionProgress($theForm);
+                                }, 500);
 
                                 location.href = res.data.result.redirectUrl;
                                 return;
@@ -377,7 +397,7 @@ jQuery(document).ready(function () {
                                     .html(res.data.result.message)
                                     .insertAfter($theForm)
                                     .focus()
-                                ;
+                                    ;
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
@@ -448,7 +468,7 @@ jQuery(document).ready(function () {
                             hideFormSubmissionProgress($theForm);
                         })
                         .always(function (res) {
-                            that.isSending = false;
+                            isSending = false;
 
                             if (responseData?.data?.result?.hasOwnProperty('redirectUrl')) {
                                 return;
@@ -574,7 +594,7 @@ jQuery(document).ready(function () {
                         formResetHandler($(this))
                     });
 
-                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function(e) {
+                    $(document).on('keydown', formSelector + ' input[type="radio"], ' + formSelector + ' input[type="checkbox"]', function (e) {
                         if (e.key === 'Enter') {
                             e.preventDefault();
 
@@ -706,7 +726,7 @@ jQuery(document).ready(function () {
                     }
 
                     if (typeof errors == 'string') {
-                        showErrorInStack({'error': [errors]});
+                        showErrorInStack({ 'error': [errors] });
                         return;
                     }
 
@@ -764,7 +784,7 @@ jQuery(document).ready(function () {
                             });
                             errorHtml.attr('role', 'alert');
                             errorHtml.append(text, cross);
-                            $(document.body).trigger('fluentform_error_in_stack', {form: $theForm, element: getElement(elementName), message: text});
+                            $(document.body).trigger('fluentform_error_in_stack', { form: $theForm, element: getElement(elementName), message: text });
                             errorStack.append(errorHtml).show();
                         });
 
@@ -812,12 +832,12 @@ jQuery(document).ready(function () {
                         return;
                     }
                     el.attr('aria-invalid', 'true');
-                    div = $('<div/>', {class: 'error text-danger'});
+                    div = $('<div/>', { class: 'error text-danger' });
                     div.attr('role', 'alert');
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     if (el.closest('.ff-el-input--content').length) {
                         el.closest('.ff-el-input--content').find('div.error').remove();
-                        $(document.body).trigger('fluentform_error_below_element', {form: $theForm, element: el, message: message});
+                        $(document.body).trigger('fluentform_error_below_element', { form: $theForm, element: el, message: message });
                         el.closest('.ff-el-input--content').append(div.html(message));
                     } else {
                         el.find('div.error').remove();
@@ -860,7 +880,7 @@ jQuery(document).ready(function () {
                     // reCAPTCHA
                     if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
                         window.grecaptcha.ready(function () {
-                            $theForm.find('.ff-el-recaptcha.g-recaptcha').each(function() {
+                            $theForm.find('.ff-el-recaptcha.g-recaptcha').each(function () {
                                 var $el = $(this);
                                 if (!resetCaptcha('g-recaptcha', $el, grecaptcha.reset)) {
                                     renderCaptcha('g-recaptcha', $el, grecaptcha.render);
@@ -872,7 +892,7 @@ jQuery(document).ready(function () {
                     // Turnstile
                     if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
                         window.turnstile.ready(function () {
-                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function () {
                                 var $el = $(this);
                                 if (!resetCaptcha('cf-turnstile', $el, turnstile.reset)) {
                                     renderCaptcha('cf-turnstile', $el, turnstile.render);
@@ -883,7 +903,7 @@ jQuery(document).ready(function () {
 
                     // hCaptcha
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
-                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function() {
+                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function () {
                             var $el = $(this);
                             if (!resetCaptcha('h-captcha', $el, hcaptcha.reset)) {
                                 renderCaptcha('h-captcha', $el, hcaptcha.render);
@@ -954,11 +974,11 @@ jQuery(document).ready(function () {
                         $theForm.trigger('fluentform_first_interaction');
                     });
 
-                    $theForm.on('fluentform_first_interaction', function() {
+                    $theForm.on('fluentform_first_interaction', function () {
                         mayBeRenderCaptchas();
                     });
 
-                    $theForm.on('ff_to_next_page ff_to_prev_page', function(e) {
+                    $theForm.on('ff_to_next_page ff_to_prev_page', function (e) {
                         mayBeRenderCaptchas();
                     });
 
@@ -978,7 +998,7 @@ jQuery(document).ready(function () {
                     // Turnstile
                     if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
                         window.turnstile.ready(function () {
-                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function () {
                                 renderCaptcha('cf-turnstile', $(this), turnstile.render);
                             });
                         });
@@ -986,7 +1006,7 @@ jQuery(document).ready(function () {
 
                     // hCaptcha
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
-                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function() {
+                        $theForm.find('.ff-el-hcaptcha.h-captcha').each(function () {
                             renderCaptcha('h-captcha', $(this), hcaptcha.render);
                         });
                     }
@@ -999,7 +1019,7 @@ jQuery(document).ready(function () {
 
                     try {
                         let widgetId = $el.attr(widgetIdAttr);
-                        
+
                         if (type === 'g-recaptcha' || type === 'h-captcha') {
                             if (widgetId && $el.find('iframe').length > 0) {
                                 return; // Already rendered properly
@@ -1110,9 +1130,10 @@ jQuery(document).ready(function () {
                 this.initCheckableActive();
                 this.maybeInitSpamTokenProtection();
                 this.maybeHandleCleanTalkSubmitTime();
+                this.initOtherOptionHandlers();
             },
 
-            maybeInitSpamTokenProtection: function() {
+            maybeInitSpamTokenProtection: function () {
                 const formContainers = jQuery('form.frm-fluent-form');
 
                 formContainers.each((index, formElement) => {
@@ -1135,18 +1156,18 @@ jQuery(document).ready(function () {
                     };
 
                     // Maybe generate token on step form step change
-                    formContainer.one('ff_to_next_page ff_to_prev_page', function(e) {
+                    formContainer.one('ff_to_next_page ff_to_prev_page', function (e) {
                         generateTokenIfNeeded();
                     });
 
                     // Generate token on first user interaction with form
-                    formContainer.on('fluentform_first_interaction', function() {
+                    formContainer.on('fluentform_first_interaction', function () {
                         generateTokenIfNeeded();
                     });
                 });
             },
 
-            generateAndSetToken: function(formContainer, spamProtectionField, retry = true) {
+            generateAndSetToken: function (formContainer, spamProtectionField, retry = true) {
                 const form_id = formContainer.data('form_id');
                 const ajaxRequestUrl = fluentFormVars.ajaxUrl + '?t=' + Date.now();
                 const _this = this;
@@ -1155,7 +1176,7 @@ jQuery(document).ready(function () {
                     form_id: form_id,
                     nonce: fluentFormVars?.token_nonce
                 })
-                    .done(function(response) {
+                    .done(function (response) {
                         if (response.success && response.data.token) {
                             spamProtectionField.val(response.data.token);
                             formContainer.addClass('ff_tokenized');
@@ -1164,7 +1185,7 @@ jQuery(document).ready(function () {
                             console.error('Token generation failed for form ID:', form_id);
                         }
                     })
-                    .fail(function(xhr, status, error) {
+                    .fail(function (xhr, status, error) {
                         console.error('Error generating token for form ID:', form_id, error);
                         // Retry
                         if (retry) {
@@ -1173,12 +1194,12 @@ jQuery(document).ready(function () {
                             }, 1000);
                         }
                     })
-                    .always(function() {
+                    .always(function () {
                         formContainer.removeClass('ff_tokenizing');
                     });
             },
 
-            maybeHandleCleanTalkSubmitTime: function() {
+            maybeHandleCleanTalkSubmitTime: function () {
                 if (!!window.fluentFormVars?.has_cleantalk) {
                     const formContainers = jQuery('form.frm-fluent-form');
 
@@ -1190,6 +1211,62 @@ jQuery(document).ready(function () {
                         }
                     });
                 }
+            },
+
+            // Handle "Other" option for checkboxes and radio fields
+            initOtherOptionHandlers: function () {
+                // Handle checkbox "Other" option - show/hide text input
+                jQuery(document).on("change", ".ff-other-option input[type=\"checkbox\"]", function () {
+                    let $checkbox = jQuery(this);
+                    let $wrapper = $checkbox.closest(".ff-el-input--content").find(".ff-other-input-wrapper");
+                    if (!$wrapper.length) {
+                        return;
+                    }
+
+                    if ($checkbox.is(":checked")) {
+                        $wrapper.show();
+                        // Only focus if input is empty to avoid blur conflicts
+                        let $input = $wrapper.find(".ff-el-form-control");
+                        if ($input.val().trim() === "") {
+                            setTimeout(function () {
+                                $input.focus();
+                            }, 50);
+                        }
+                    } else {
+                        $wrapper.hide();
+                        $wrapper.find(".ff-el-form-control").val("");
+                    }
+                });
+
+                // Handle radio "Other" option - show/hide text input
+                jQuery(document).on("change", ".ff-other-option input[type=\"radio\"]", function () {
+                    let $radio = jQuery(this);
+                    let $fieldContainer = $radio.closest(".ff-el-input--content");
+                    let $wrapper = $fieldContainer.find(".ff-other-input-wrapper");
+                    if (!$wrapper.length) {
+                        $wrapper = $radio.closest("label").next(".ff-other-input-wrapper");
+                    }
+
+                    if ($radio.is(":checked")) {
+                        // Hide all other input wrappers in this field
+                        $fieldContainer.find(".ff-other-input-wrapper").hide();
+                        // Show this one
+                        if ($wrapper.length) {
+                            $wrapper.show();
+                            $wrapper.find(".ff-el-form-control").focus();
+                        }
+                    }
+                });
+                // Hide "Other" text input when selecting non-Other radio option
+                jQuery(document).on("change", ".ff-el-input--content input[type=\"radio\"]", function () {
+                    let $radio = jQuery(this);
+                    if ($radio.closest(".ff-other-option").length) {
+                        return;
+                    }
+                    let $fieldContainer = $radio.closest(".ff-el-input--content");
+                    $fieldContainer.find(".ff-other-input-wrapper").hide();
+                    $fieldContainer.find(".ff-other-input-wrapper .ff-el-form-control").val("");
+                });
             },
 
             /**
@@ -1227,7 +1304,7 @@ jQuery(document).ready(function () {
                     };
 
 
-                    const args = {...choiceArgs, ...window.fluentFormVars.choice_js_vars};
+                    const args = { ...choiceArgs, ...window.fluentFormVars.choice_js_vars };
 
                     const maxSelection = $(el).attr('data-max_selected_options');
                     if (parseInt(maxSelection)) {
@@ -1279,12 +1356,12 @@ jQuery(document).ready(function () {
                 const globalOptions = {
                     clearIfNotMatch: window.fluentFormVars.input_mask_vars.clearIfNotMatch,
                     translation: {
-                        '*': {pattern: /[0-9a-zA-Z]/},
-                        '0': {pattern: /\d/},
-                        '9': {pattern: /\d/, optional: true},
-                        '#': {pattern: /\d/, recursive: true},
-                        'A': {pattern: /[a-zA-Z0-9]/},
-                        'S': {pattern: /[a-zA-Z]/}
+                        '*': { pattern: /[0-9a-zA-Z]/ },
+                        '0': { pattern: /\d/ },
+                        '9': { pattern: /\d/, optional: true },
+                        '#': { pattern: /\d/, recursive: true },
+                        'A': { pattern: /[a-zA-Z0-9]/ },
+                        'S': { pattern: /[a-zA-Z]/ }
                     },
                 };
 
@@ -1423,7 +1500,13 @@ jQuery(document).ready(function () {
                                 return el.parents('.ff-el-group').find('input:checked').length;
                             }
                         }
-                        return $('[name="' + el.prop('name') + '"]:checked').length;
+                        const checked = $('[name="' + el.prop('name') + '"]:checked');
+                        const name = el.prop('name').replace('[]', '');
+                        if (checked.length && checked.val() === `__ff_other_${name}__`) {
+                            const otherInputField = $(`[name="${name}__ff_other_input__"]`);
+                            return otherInputField.val()
+                        }
+                        return checked.length;
                     } else if (type.startsWith('select')) {
                         var selected = el.find(':selected');
                         return !!(selected.length && selected.val().length);
@@ -1599,7 +1682,12 @@ jQuery(document).ready(function () {
                     }
 
                     if (el.hasClass('ff_el_with_extended_validation')) {
-                        var isValid = iti.isValidNumber();
+                        let isValid;
+                        if ('yes' === el.data('strict_validation') && typeof iti.isValidNumberPrecise === 'function') {
+                            isValid = iti.isValidNumberPrecise();
+                        } else {
+                            isValid = iti.isValidNumber();
+                        }
                         if (isValid) {
                             el.val(iti.getNumber());
                             return true;
@@ -1675,12 +1763,12 @@ jQuery(document).ready(function () {
         // Choices.js dropdown handling
         function initChoicesDropdownHandling() {
             // Only target elements that actually have Choices.js
-            $('.ff_has_multi_select').each(function() {
+            $('.ff_has_multi_select').each(function () {
                 const choicesInstance = $(this).data('choicesjs');
                 if (!choicesInstance || !choicesInstance.passedElement) return;
 
                 // Use Choices.js built-in events instead of global listeners
-                choicesInstance.passedElement.element.addEventListener('showDropdown', function() {
+                choicesInstance.passedElement.element.addEventListener('showDropdown', function () {
                     const choicesContainer = this.closest('.choices');
                     if (!choicesContainer) return;
 
@@ -1692,7 +1780,7 @@ jQuery(document).ready(function () {
                     dropdown.style.overflowY = 'auto';
 
                     // Find and style the scrollable list
-                    const scrollableList = 
+                    const scrollableList =
                         dropdown.querySelector('.choices__list[role="listbox"]') ||
                         dropdown.querySelector('.choices__list:not(.choices__list--dropdown)');
                     if (scrollableList) {
@@ -1702,12 +1790,27 @@ jQuery(document).ready(function () {
                         scrollableList.style.touchAction = 'pan-y';
                     }
                 }, { passive: true });
+
+                const choicesContainer = choicesInstance.passedElement.element.closest('.choices');
+                if (choicesContainer) {
+                    choicesContainer.addEventListener('focus', function(e) {
+                        if (!choicesContainer.classList.contains('is-open')) {
+                            choicesInstance.showDropdown();
+                        }
+                    }, true);
+
+                    choicesContainer.addEventListener('keydown', function(e) {
+                        if (e.key === 'Tab' && choicesContainer.classList.contains('is-open')) {
+                            choicesInstance.hideDropdown();
+                        }
+                    });
+                }
             });
         }
 
         // Initialize with proper timing
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(initChoicesDropdownHandling, 100);
             });
         } else {
@@ -1721,7 +1824,7 @@ jQuery(document).ready(function () {
         jQuery('<div/>', {
             'class': 'error text-danger ff_msg_temp'
         })
-            .html('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
+            .html(window.fluentform_submission_messages_global?.javascript_handler_failed || 'Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
             .insertAfter(jQuery(this));
     });
 });

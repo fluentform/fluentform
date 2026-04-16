@@ -7,10 +7,7 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Support\Arr;
-use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 
@@ -100,7 +97,7 @@ class FormService
             
             return $form;
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new Exception(esc_html($e->getMessage()));
         }
     }
     
@@ -123,7 +120,7 @@ class FormService
         
         if (!$existingForm) {
             throw new Exception(
-                __("The form couldn't be found.", 'fluentform')
+                esc_html__("The form couldn't be found.", 'fluentform')
             );
         }
         
@@ -158,7 +155,7 @@ class FormService
             return $this->model->with('formMeta')->findOrFail($id);
         } catch (Exception $e) {
             throw new Exception(
-                __("The form couldn't be found.", 'fluentform')
+                esc_html__("The form couldn't be found.", 'fluentform')
             );
         }
     }
@@ -193,7 +190,7 @@ class FormService
             $form = Form::with('conversationalMeta')->findOrFail($id);
         } catch (Exception $e) {
             throw new Exception(
-                __("The form couldn't be found.", 'fluentform')
+                esc_html__("The form couldn't be found.", 'fluentform')
             );
         }
         
@@ -242,13 +239,14 @@ class FormService
             $forms[$item['category']][$key] = [
                 'class'      => $itemClass,
                 'tags'       => Arr::get($item, 'tag', ''),
-                'title'      => $item['title'],
-                'brief'      => $item['brief'],
-                'category'   => $item['category'],
-                'screenshot' => $item['screenshot'],
-                'createable' => $item['createable'],
-                'is_pro'     => Arr::get($item, 'is_pro'),
-                'type'       => isset($item['type']) ? $item['type'] : 'form',
+                'title'      => Arr::get($item, 'title', ''),
+                'brief'      => Arr::get($item, 'brief', ''),
+                'category'   => Arr::get($item, 'category', ''),
+                'screenshot' => Arr::get($item, 'screenshot', ''),
+                'createable' => $item['createable'] ?? false,
+                'prev_link'  => $item['prev_link'] ?? false,
+                'is_pro'     => $item['is_pro'] ?? false,
+                'type'       => Arr::get($item, 'type', 'form'),
             ];
         }
         $dropDownForms = [
@@ -578,7 +576,7 @@ class FormService
             ];
         } catch (Exception $e) {
             throw new Exception(
-                __("The form couldn't be found.", 'fluentform')
+                esc_html__("The form couldn't be found.", 'fluentform')
             );
         }
     }
@@ -596,11 +594,28 @@ class FormService
             $postTypes[] = $postTypeName;
         }
         
+        global $wpdb;
+        $placeholders = implode(', ', array_fill(0, count($postTypes), '%s'));
+        $args = array_merge($postTypes, ['%fluentform%']);
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is safe: generated from array_fill with %s format strings
+        $matchingIds = $wpdb->get_col($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ({$placeholders}) AND post_status != 'trash' AND post_content LIKE %s",
+            $args
+        ));
+
+        if (empty($matchingIds)) {
+            return [
+                'locations' => [],
+                'status'    => false,
+            ];
+        }
+
         $params = array(
             'post_type'      => $postTypes,
-            'posts_per_page' => -1
+            'posts_per_page' => -1,
+            'post__in'       => $matchingIds,
         );
-        
+
         $params = apply_filters_deprecated(
             'fluentform_find_shortcode_params',
             [
@@ -611,7 +626,7 @@ class FormService
             'Use fluentform/find_shortcode_params instead of fluentform_find_shortcode_params.'
         );
         $params = apply_filters('fluentform/find_shortcode_params', $params);
-        
+
         $formLocations = [];
         $posts = get_posts($params);
         foreach ($posts as $post) {

@@ -289,6 +289,8 @@
             </card-body>
         </card>
 
+        <default-style-template-section :default_style_template.sync="default_style_template" />
+
         <card id="miscellaneous">
             <card-head>
                 <card-head-group>
@@ -701,6 +703,27 @@
                         </el-radio-group>
                     </el-form-item>
                 </div>
+
+                <!-- Form Editor Autosave -->
+                <div class="el-form-item-wrap">
+                    <el-form-item class="ff-form-item-flex ff-form-item mb-3 ff-form-setting-label-width">
+                        <template slot="label">
+                            <span>
+                                {{ $t('Form Editor Autosave') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{ $t('Enable this to automatically save form changes after 30 seconds of inactivity for all forms.') }}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </span>
+                        </template>
+                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg"
+                                v-model="misc.autosave_enabled"></el-switch>
+                    </el-form-item>
+                </div>
             </card-body>
         </card>
     </el-form>
@@ -714,6 +737,7 @@
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
     import { scrollTop } from '@/admin/helpers';
     import UpdateToProContent from '@/admin/components/_updateToProContent.vue';
+    import DefaultStyleTemplateSection from './DefaultStyleTemplateSection.vue';
 
     export default {
         name: 'FormLayout',
@@ -723,7 +747,8 @@
             CardBody,
             Notice,
             CardHeadGroup,
-            UpdateToProContent
+            UpdateToProContent,
+            DefaultStyleTemplateSection
         },
         props: {
             data: {
@@ -744,6 +769,9 @@
 	        default_message_setting_fields: {
 		        required: true
 	        },
+            default_style_template: {
+                required: true
+            },
         },
         data() {
             return {
@@ -852,6 +880,10 @@
             }
             if (!this.data.misc.default_admin_date_time) {
                 this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
+            }
+
+            if (!this.data.misc.autosave_enabled) {
+                this.$set(this.data.misc, 'autosave_enabled', 'no');
             }
 
             if (!this.data.misc.tokenBasedProtectionStatus) {

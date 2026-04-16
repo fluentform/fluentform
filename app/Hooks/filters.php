@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 /**
  * All registered filter's handlers should be in app\Hooks\Handlers,
  * addFilter is similar to add_filter and addCustomFlter is just a
@@ -38,6 +40,18 @@ add_filter('fluentform/get_global_settings_values', function ($values, $key) {
             !\FluentForm\Framework\Helpers\ArrayHelper::isTrue($values, '_fluentform_global_form_settings.default_messages')
         ) {
             $values['_fluentform_global_form_settings']['default_messages'] = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
+        }
+
+        // Ensure _fluentform_default_style_template has default structure if not set
+        if (in_array('_fluentform_default_style_template', $key)) {
+            if (empty($values['_fluentform_default_style_template']) || $values['_fluentform_default_style_template'] === false) {
+                $values['_fluentform_default_style_template'] = [
+                    'enabled'        => 'no',
+                    'custom_css'     => '',
+                    'styler_enabled' => 'no',
+                    'styler_theme'   => '',
+                ];
+            }
         }
     }
 
@@ -138,7 +152,7 @@ $app->addFilter('fluentform/rendering_form', function ($form) {
     return $form;
 }, 10, 1);
 
-$elements = [
+$fluentformElements = [
     'select',
     'input_checkbox',
     'input_radio',
@@ -150,9 +164,9 @@ $elements = [
     'multi_payment_component'
 ];
 
-foreach ($elements as $element) {
-    $event = 'fluentform/response_render_' . $element;
-    $app->addFilter($event, function ($response, $field, $form_id, $isHtml = false) {
+foreach ($fluentformElements as $fluentformElement) {
+    $fluentformEvent = 'fluentform/response_render_' . $fluentformElement;
+    $app->addFilter($fluentformEvent, function ($response, $field, $form_id, $isHtml = false) {
         $element = $field['element'];
         $isHtml = apply_filters("fluentform/format_{$element}_response_as_html", $isHtml, $response, $field);
 
@@ -221,7 +235,7 @@ foreach ($elements as $element) {
  * Validation rule wise resolve global validation message.
  *
  */
-$rules = [
+$fluentformRules = [
     "required",
     "email",
     "numeric",
@@ -235,23 +249,21 @@ $rules = [
     "max_file_count",
     "valid_phone_number",
 ];
-foreach ($rules as $ruleName) {
-    $app->addFilter('fluentform/get_global_message_' . $ruleName,
-        function ($message) use ($ruleName) {
-            return \FluentForm\App\Helpers\Helper::getGlobalDefaultMessage($ruleName);
+foreach ($fluentformRules as $fluentformRuleName) {
+    $app->addFilter('fluentform/get_global_message_' . $fluentformRuleName,
+        function ($message) use ($fluentformRuleName) {
+            return \FluentForm\App\Helpers\Helper::getGlobalDefaultMessage($fluentformRuleName);
         }
     );
 }
 
 
 $app->addFilter('fluentform/response_render_textarea', function ($value, $field, $formId, $isHtml) {
-    $value = $value ? nl2br($value) : $value;
-
-    if (!$isHtml || !$value) {
+    if (!$value || !is_string($value)) {
         return $value;
     }
 
-    return '<span style="white-space: pre-line">' . $value . '</span>';
+    return nl2br($value);
 }, 10, 4);
 
 $app->addFilter('fluentform/response_render_input_file', function ($response, $field, $form_id, $isHtml = false) {
@@ -311,7 +323,7 @@ $app->addFilter('fluentform/permission_callback', function ($status, $permission
 
 // Get current user allowed form ids, if current user has specific form permission
 $app->addFilter('fluentform/current_user_allowed_forms', function ($form){
-    return \FluentForm\App\Services\Manager\FormManagerService::getUserAllowedForms();
+    return \FluentForm\App\Services\Manager\FormManagerService::getUserAllowedFormsScope();
 });
 
 $app->addFilter('fluentform/validate_input_item_input_email', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);

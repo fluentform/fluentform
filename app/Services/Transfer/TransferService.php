@@ -2,17 +2,20 @@
 
 namespace FluentForm\App\Services\Transfer;
 
+defined('ABSPATH') or die;
+
 use Exception;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Models\SubmissionMeta;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Request\File;
+use FluentForm\Framework\Http\Request\File;
 use FluentForm\Framework\Support\Arr;
 
 class TransferService
@@ -45,9 +48,11 @@ class TransferService
     }
 
     /**
+     * @param File $file The uploaded JSON file
+     * @param bool $applyDefaultStyle Whether to apply default style settings to imported forms
      * @throws Exception
      */
-    public static function importForms($file)
+    public static function importForms($file, $applyDefaultStyle = false)
     {
         if ($file instanceof File) {
             $forms = \json_decode($file->getContents(), true);
@@ -60,7 +65,7 @@ class TransferService
                     } elseif ($fields = Arr::get($formItem, 'form_fields', '')) {
                         $formFields = json_encode($fields);
                     } else {
-                        throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
+                        throw new Exception(esc_html__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
                     }
                     $formTitle = sanitize_text_field(Arr::get($formItem, 'title'));
                     $form = [
@@ -93,6 +98,9 @@ class TransferService
                             if ("ffc_form_settings_generated_css" == $metaKey || "ffc_form_settings_meta" == $metaKey) {
                                 $metaValue = str_replace('ff_conv_app_' . Arr::get($formItem, 'id'), 'ff_conv_app_' . $formId, $metaValue);
                             }
+                            if (is_string($metaValue)) {
+                                $metaValue = wp_kses_post($metaValue);
+                            }
                             $settings = [
                                 'form_id'  => $formId,
                                 'meta_key' => $metaKey,
@@ -113,8 +121,13 @@ class TransferService
                             }
                         }
                     }
-               
+
                     do_action('fluentform/form_imported', $formId);
+
+                    // Apply default style if requested
+                    if ($applyDefaultStyle) {
+                        do_action('fluentform/inserted_new_form', $formId, $form);
+                    }
                 }
 
                 return ([
@@ -123,7 +136,7 @@ class TransferService
                 ]);
             }
         }
-        throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
+        throw new Exception(esc_html__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
     }
 
     public static function exportEntries($args)
@@ -131,7 +144,11 @@ class TransferService
         if (!defined('FLUENTFORM_EXPORTING_ENTRIES')) {
             define('FLUENTFORM_EXPORTING_ENTRIES', true);
         }
-        $formId = (int)Arr::get($args, 'form_id');
+
+        $formId = Acl::verifyFormId(Arr::get($args, 'form_id'));
+        Acl::verify('fluentform_entries_viewer', $formId);
+
+        $tableName = Arr::get($args, 'table');
         try {
             $form = Form::findOrFail($formId);
         } catch (Exception $e) {
@@ -158,9 +175,11 @@ class TransferService
         $withNotes = isset($args['with_notes']);
        
         //filter out unselected fields
-        foreach ($inputLabels as $key => $value) {
-            if (!in_array($key,$selectedLabels) && isset($inputLabels[$key])) {
-                unset($inputLabels[$key]); // Remove the element with the specified key
+        if (!empty($selectedLabels)) {
+            foreach ($inputLabels as $key => $value) {
+                if (!in_array($key, $selectedLabels) && isset($inputLabels[$key])) {
+                    unset($inputLabels[$key]);
+                }
             }
         }
         
@@ -168,7 +187,19 @@ class TransferService
         $submissions = FormDataParser::parseFormEntries($submissions, $form, $formInputs);
         $parsedShortCodes = [];
         $exportData = [];
-        $submissionService = new SubmissionService();
+
+        // Preload notes for all submissions in a single query to avoid N+1
+        $notesMap = [];
+        if ($withNotes && count($submissions)) {
+            $submissionIds = array_map(function ($s) { return is_object($s) ? $s->id : $s['id']; }, $submissions->toArray());
+            $allNotes = SubmissionMeta::whereIn('response_id', $submissionIds)
+                ->where('meta_key', '_notes')
+                ->get();
+            foreach ($allNotes as $note) {
+                $notesMap[$note->response_id][] = $note->value;
+            }
+        }
+
         foreach ($submissions as $submission) {
 
             $submission->response = json_decode($submission->response, true);
@@ -214,13 +245,26 @@ class TransferService
                     }
                 }
             }
-            if($withNotes){
-                $notes = $submissionService->getNotes($submission->id, ['form_id' => $form->id])->pluck('value');
-                if(!empty($notes)){
-                    $temp[] = implode(", ",$notes->toArray());
+            if ($withNotes) {
+                $noteValues = isset($notesMap[$submission->id]) ? $notesMap[$submission->id] : [];
+                if (!empty($noteValues)) {
+                    $temp[] = implode(", ", $noteValues);
                 }
             }
-            
+
+            if (!$tableName) {
+                if ($form->has_payment) {
+                    $temp[] = round(($submission->payment_total ?? 0) / 100, 1);
+                    $temp[] = $submission->payment_status ?? '';
+                    $temp[] = $submission->currency ?? '';
+                }
+                $temp[] = $submission->id ?? '';
+                $temp[] = $submission->status ?? '';
+                $temp[] = $submission->created_at ?? '';
+            }
+
+            $temp = apply_filters('fluentform/export_entry_metadata', $temp, $submission, $form, $args);
+
             $exportData[] = $temp;
         }
 
@@ -236,6 +280,19 @@ class TransferService
         if($withNotes){
             $inputLabels[] = __('Notes','fluentform');
         }
+
+        if (!$tableName) {
+            if ($form->has_payment) {
+                $inputLabels[] = 'payment_total';
+                $inputLabels[] = 'payment_status';
+                $inputLabels[] = 'currency';
+            }
+            $inputLabels[] = 'entry_id';
+            $inputLabels[] = 'entry_status';
+            $inputLabels[] = 'created_at';
+        }
+        $inputLabels = apply_filters('fluentform/export_entry_metadata_labels', $inputLabels, $form, $args);
+
         $data = array_merge([array_values($inputLabels)], $exportData);
         
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
@@ -270,7 +327,35 @@ class TransferService
 
     private static function getSubmissions($args)
     {
-        $query = (new Submission)->customQuery($args);
+        $tableName = Arr::get($args, 'table');
+
+        if ($tableName) {
+            $allowedTables = [
+                'fluentform_submissions',
+                'fluentform_draft_submissions',
+            ];
+            if (!in_array($tableName, $allowedTables, true)) {
+                wp_send_json([
+                    'message' => __('Invalid table name for export.', 'fluentform')
+                ], 422);
+            }
+            $query = wpFluent()->table($tableName)
+                ->where('form_id', (int) Arr::get($args, 'form_id'))
+                ->orderBy('id', Helper::sanitizeOrderValue(Arr::get($args, 'sort_by', 'DESC')));
+
+            $searchString = Arr::get($args, 'search');
+            if ($searchString) {
+                global $wpdb;
+                $escaped = $wpdb->esc_like($searchString);
+                $query->where(function ($q) use ($escaped) {
+                    $q->where('id', 'LIKE', "%{$escaped}%")
+                        ->orWhere('response', 'LIKE', "%{$escaped}%");
+                });
+            }
+        } else {
+            $query = (new Submission)->customQuery($args);
+        }
+
         $entries = fluentFormSanitizer(Arr::get($args, 'entries', []));
         $query->when(is_array($entries) && (count($entries) > 0), function ($q) use ($entries) {
             return $q->whereIn('id', $entries);
@@ -293,16 +378,32 @@ class TransferService
                 return $itemValue;
             }, $item);
         }, $data);
-        $autoloaderPath = App::getInstance()->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
-        // Check if the file is already included
-        if (!in_array(realpath($autoloaderPath), get_included_files())) {
-            // Include the autoloader file if it has not been included yet
-            require_once $autoloaderPath;
-        }
+        // Load Composer autoloader for OpenSpout
+        require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
-        $writer = \Box\Spout\Writer\WriterFactory::create($type);
+
+        // Create writer based on type
+        switch (strtolower($type)) {
+            case 'csv':
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCSVWriter();
+                break;
+            case 'xlsx':
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createXLSXWriter();
+                break;
+            case 'ods':
+                $writer = \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createODSWriter();
+                break;
+            default:
+                throw new \Exception(sprintf('Unsupported file type: %s', esc_html($type)));
+        }
         $writer->openToBrowser($fileName);
-        $writer->addRows($data);
+
+        // Convert data arrays to Row objects for OpenSpout v3
+        $rows = array_map(function ($rowData) {
+            return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($rowData);
+        }, $data);
+
+        $writer->addRows($rows);
         $writer->close();
         die();
     }

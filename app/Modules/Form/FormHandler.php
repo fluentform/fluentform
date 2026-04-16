@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Form;
 
-use FluentForm\App\Databases\Migrations\SubmissionDetails;
+use FluentForm\Database\Migrations\SubmissionDetails;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Activator;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
@@ -276,19 +276,11 @@ class FormHandler
         );
 
         if ('samePage' == $confirmation['redirectTo']) {
-    
-            $confirmation['messageToShow'] = apply_filters_deprecated(
-                'fluentform_submission_message_parse',
-                [
-                    $confirmation['messageToShow'],
-                    $insertId,
-                    $formData,
-                    $form
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/submission_message_parse',
-                'Use fluentform/submission_message_parse instead of fluentform_submission_message_parse.'
-            );
+            
+            $confirmation['messageToShow'] = fluentform_sanitize_html($confirmation['messageToShow']);
+            
+            $confirmation['messageToShow'] = do_shortcode($confirmation['messageToShow']);
+            
             $confirmation['messageToShow'] = apply_filters('fluentform/submission_message_parse',
                 $confirmation['messageToShow'], $insertId, $formData, $form);
 
@@ -304,7 +296,7 @@ class FormHandler
             $message = $message ? $message : 'The form has been successfully submitted.';
 
             $returnData = [
-                'message' => do_shortcode($message),
+                'message' => $message,
                 'action'  => $confirmation['samePageFormBehavior'],
             ];
         } else {
@@ -635,7 +627,11 @@ class FormHandler
         }
 
         $errors = [
-            '_fluentformakismet' => __('Submission marked as spammed. Please try again', 'fluentform'),
+            '_fluentformakismet' => apply_filters(
+                'fluentform/akismet_spam_message',
+                __('Submission marked as spammed. Please try again', 'fluentform'),
+                $this->form->id
+            ),
         ];
 
         wp_send_json(['errors' => $errors], 422);
@@ -707,13 +703,12 @@ class FormHandler
             $isValid = ReCaptcha::validate($token, $keys['secretKey'], $version);
 
             if (!$isValid) {
-                wp_send_json([
-                    'errors' => [
-                        'g-recaptcha-response' => [
-                            __('reCaptcha verification failed, please try again.', 'fluentform'),
-                        ],
-                    ],
-                ], 422);
+                $message = apply_filters(
+                    'fluentform/recaptcha_failed_message',
+                    __('reCaptcha verification failed, please try again.', 'fluentform'),
+                    $this->form
+                );
+                wp_send_json(['errors' => ['g-recaptcha-response' => [$message]]], 422);
             }
         }
     }
@@ -742,13 +737,12 @@ class FormHandler
             $isValid = HCaptcha::validate($token, $keys['secretKey']);
 
             if (!$isValid) {
-                wp_send_json([
-                    'errors' => [
-                        'h-captcha-response' => [
-                            __('hCaptcha verification failed, please try again.', 'fluentform'),
-                        ],
-                    ],
-                ], 422);
+                $message = apply_filters(
+                    'fluentform/hcaptcha_failed_message',
+                    __('hCaptcha verification failed, please try again.', 'fluentform'),
+                    $this->form
+                );
+                wp_send_json(['errors' => ['h-captcha-response' => [$message]]], 422);
             }
         }
     }
@@ -776,13 +770,12 @@ class FormHandler
             $isValid = Turnstile::validate($token, $keys['secretKey']);
 
             if (!$isValid) {
-                wp_send_json([
-                    'errors' => [
-                        'cf-turnstile-response' => [
-                            __('Turnstile verification failed, please try again.', 'fluentform'),
-                        ],
-                    ],
-                ], 422);
+                $message = apply_filters(
+                    'fluentform/turnstile_failed_message',
+                    __('Turnstile verification failed, please try again.', 'fluentform'),
+                    $this->form
+                );
+                wp_send_json(['errors' => ['cf-turnstile-response' => [$message]]], 422);
             }
         }
     }
@@ -862,15 +855,14 @@ class FormHandler
                 };
 
                 if (!count($arrayFilterRecursive($filteredFormData))) {
+                    $message = Arr::get($settings, 'message');
+                    if (!$message) {
+                        $message = __('Sorry! You can\'t submit an empty form.', 'fluentform');
+                    }
                     wp_send_json([
                         'errors' => [
                             'restricted' => [
-                                __(
-                                    !($m = Arr::get($settings, 'message'))
-                                        ? 'Sorry! You can\'t submit an empty form.'
-                                        : $m,
-                                    'fluentform'
-                                ),
+                                $message,
                             ],
                         ],
                     ], 422);
@@ -1018,8 +1010,11 @@ class FormHandler
                 wp_send_json([
                     'errors' => [
                         'restricted' => [
-                            __(apply_filters('fluentform/too_many_requests', 'Too Many Requests.', $this->form->id),
-                                'fluentform'),
+                            apply_filters(
+                                'fluentform/too_many_requests',
+                                __('Too Many Requests.', 'fluentform'),
+                                $this->form->id
+                            ),
                         ],
                     ],
                 ], 429);

@@ -72,7 +72,7 @@ export default {
                     this.users = response.users;
                 })
                 .catch(error => {
-                    this.$fail(errors.message);
+                    this.$fail(error.message);
                 })
                 .finally(() => {
                     this.searching = false;

@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -25,8 +27,13 @@ class Converter
 
     public static function convert($form)
     {
+        // Return early if form is null or invalid
+        if (!$form || !is_object($form)) {
+            return $form;
+        }
+
         $fields = $form->fields['fields'];
-        
+
         $form->submit_button = $form->fields['submitButton'];
         
         $form->reCaptcha = false;
@@ -80,11 +87,19 @@ class Converter
                 } else {
                     $value = $questionId ? ArrayHelper::get($response, $questionId) : null;
                     if (!empty($value)) {
-                        if (ArrayHelper::get($field, 'element') == 'input_file') {
+                        if (in_array(ArrayHelper::get($field, 'element'), ['input_file', 'input_image'])) {
                             $files = ArrayHelper::get($response, $questionId);
                             foreach ($files as $file) {
-                                $question['answer'][] = ArrayHelper::get($file, 'data_src');
+                                if (is_array($file)) {
+                                    $question['answer'][] = ArrayHelper::get($file, 'data_src');
+                                } else {
+                                    // Already a plain URL string (legacy or non-encrypted)
+                                    $question['answer'][] = $file;
+                                }
                             }
+                        } elseif (ArrayHelper::get($field, 'element') == 'signature') {
+                            // Signature is stored as a URL string
+                            $question['answer'] = $value;
                         } elseif (
                             ArrayHelper::get($field, 'element') == 'rangeslider' ||
                             ArrayHelper::get($field, 'element') == 'subscription_payment_component' ||
@@ -296,10 +311,12 @@ class Converter
                 $question['options'] = self::getAdvancedOptions($field, $form);
                 $question['multiple'] = true;
                 $question = static::hasPictureMode($field, $question);
+                $question = static::maybeAddOtherOption($field, $question);
             } elseif ('input_radio' === $field['element']) {
                 $question['options'] = self::getAdvancedOptions($field, $form);
                 $question['nextStepOnAnswer'] = true;
                 $question = static::hasPictureMode($field, $question);
+                $question = static::maybeAddOtherOption($field, $question);
             } elseif ('custom_html' === $field['element']) {
                 $question['content'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.html_codes', ''), $form);
             } elseif ('section_break' === $field['element']) {
@@ -377,10 +394,10 @@ class Converter
             } elseif ('input_date' === $field['element']) {
                 $app = wpFluentForm();
                 $dateField = new DateTime();
-                
-                wp_enqueue_style('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.css'));
-                wp_enqueue_script('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.js'), [], false, true);
-                
+
+                wp_enqueue_style('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.css'), [], FLUENTFORM_VERSION);
+                wp_enqueue_script('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.js'), [], FLUENTFORM_VERSION, true);
+
                 $question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
                 $question['dateCustomConfig'] = $dateField->getCustomConfig($field['settings']);
             } elseif (in_array($field['element'], ['input_image', 'input_file'])) {
@@ -407,6 +424,43 @@ class Converter
                 
                 if ($allowedFieldTypes) {
                     $question['accept'] = implode('|', $allowedFieldTypes);
+                }
+            } elseif ('signature' === $field['element']) {
+                // Signature field settings
+                $question['signature_settings'] = [
+                    'background_color' => ArrayHelper::get($field, 'settings.sign_background_color', '#ffffff'),
+                    'border_color'     => ArrayHelper::get($field, 'settings.sign_border_color', '#FFEB3B'),
+                    'pen_color'        => ArrayHelper::get($field, 'settings.sign_pen_color', '#333'),
+                    'pen_size'         => ArrayHelper::get($field, 'settings.sign_pen_size', 2),
+                    'pad_height'       => ArrayHelper::get($field, 'settings.sign_pad_height', 200),
+                    'instruction'      => self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.sign_instruction', __('Sign Here', 'fluentform')), $form),
+                ];
+                $question['multiple'] = false;
+                
+                // Enqueue signature scripts and styles
+                if (defined('FLUENTFORM_SIGNATURE')) {
+                    wp_enqueue_style(
+                        'fluentform-signature',
+                        FLUENTFORM_SIGNATURE_URL . 'public/css/fluentform-signature.css',
+                        [],
+                        FLUENTFORM_SIGNATURE_VERSION
+                    );
+                    
+                    wp_enqueue_script(
+                        'signature_pad',
+                        FLUENTFORM_SIGNATURE_URL . 'public/js/signature_pad.js',
+                        ['jquery'],
+                        '2.3.2',
+                        true
+                    );
+                    
+                    wp_enqueue_script(
+                        'fluentform-signature',
+                        FLUENTFORM_SIGNATURE_URL . 'public/js/fluentform-signature.js',
+                        ['jquery', 'signature_pad'],
+                        FLUENTFORM_SIGNATURE_VERSION,
+                        true
+                    );
                 }
             } elseif ('tabular_grid' === $field['element']) {
                 $question['grid_columns'] = $field['settings']['grid_columns'];
@@ -508,7 +562,21 @@ class Converter
                 $question['subscriptionFieldType'] = $type;
                 $currency = PaymentHelper::getFormCurrency($form->id);
                 
-                foreach ($field['settings']['subscription_options'] as $index => &$option) {
+                // Filter out expired plans that are set to hide
+                $subscriptionOptions = $field['settings']['subscription_options'];
+                $visibleOptions = array_filter($subscriptionOptions, function ($opt) {
+                    return !PaymentHelper::isPlanExpiredAndHidden($opt);
+                });
+
+                if (empty($visibleOptions)) {
+                    continue;
+                }
+
+                foreach ($subscriptionOptions as $index => &$option) {
+                    if (PaymentHelper::isPlanExpiredAndHidden($option)) {
+                        continue;
+                    }
+
                     $hasCustomPayment = false;
                     
                     if (array_key_exists('user_input', $option) && 'yes' == $option['user_input']) {
@@ -527,11 +595,11 @@ class Converter
                     $field['plans'][] = [
                         'label'               => self::getComponent()->replaceEditorSmartCodes($option['name'], $form),
                         'value'               => $planValue,
-                        'sub'                 => strip_tags($paymentSummaryText),
+                        'sub'                 => wp_strip_all_tags($paymentSummaryText),
                         'subscription_amount' => $planValue,
                     ];
-                    
-                    $option['sub'] = strip_tags($paymentSummaryText);
+
+                    $option['sub'] = wp_strip_all_tags($paymentSummaryText);
                     
                     if ('yes' == $option['is_default'] && !$hasSaveAndResume) {
                         $question['answer'] = $index;
@@ -550,8 +618,19 @@ class Converter
                     }
                 }
                 
-                $question['plans'] = $field['settings']['subscription_options'];
-                
+                $filteredPlans = array_values(array_filter($subscriptionOptions, function ($opt) {
+                    return !PaymentHelper::isPlanExpiredAndHidden($opt);
+                }));
+                $question['plans'] = $filteredPlans;
+
+                // Re-map default answer to the new re-indexed position
+                foreach ($filteredPlans as $newIndex => $plan) {
+                    if ('yes' == $plan['is_default'] && !$hasSaveAndResume) {
+                        $question['answer'] = $newIndex;
+                        break;
+                    }
+                }
+
                 if ('single' != $type) {
                     $question['options'] = $field['plans'];
                     $question['subscriptionFieldType'] = 'radio' == $field['settings']['selection_type'] ? 'FlowFormMultipleChoiceType' : 'FlowFormDropdownType';
@@ -730,10 +809,10 @@ class Converter
                     'siteKey' => $siteKey,
                     'appearance' => $appearance,
                 ];
-                
+
                 wp_enqueue_script(
                     'turnstile_conv',
-                    'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                    'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit', // phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile requires loading from their CDN for CAPTCHA functionality
                     [],
                     FLUENTFORM_VERSION,
                     false
@@ -868,6 +947,10 @@ class Converter
             'subscription_payment_component' => 'FlowFormSubscriptionType',
         ];
         
+        if (defined('FLUENTFORM_SIGNATURE')) {
+            $fieldTypes['signature'] = 'FlowFormSignatureType';
+        }
+        
         if (Helper::hasPro()) {
             $fieldTypes['phone'] = 'FlowFormPhoneType';
             $fieldTypes['input_image'] = 'FlowFormFileType';
@@ -928,6 +1011,12 @@ class Converter
             'nationalMode'     => true,
             'autoPlaceholder'  => 'aggressive',
             'formatOnDisplay'  => true,
+            'validationNumberTypes' => [
+                'MOBILE',
+                'FIXED_LINE_OR_MOBILE',
+                'FIXED_LINE',
+                'TOLL_FREE',
+            ]
         ];
         
         if ($geoLocate) {
@@ -1138,6 +1227,27 @@ class Converter
         
         return $options;
     }
+
+    private static function maybeAddOtherOption($field, $question)
+    {
+        // Add "Other" option if enabled
+        $enableOtherOption = ArrayHelper::get($field, 'settings.enable_other_option') === 'yes';
+        $attributeType = ArrayHelper::get($field, 'attributes.type');
+        if ($enableOtherOption && in_array($attributeType, ['checkbox', 'radio']) && Helper::hasPro()) {
+            $otherLabel = ArrayHelper::get($field, 'settings.other_option_label', __('Other', 'fluentform'));
+            $placeholder = ArrayHelper::get($field, 'settings.other_option_placeholder', __('Please specify', 'fluentform'));
+            $fieldName = sanitize_text_field(str_replace(['[', ']'], '', ArrayHelper::get($field, 'attributes.name', '')));
+            $otherValue = '__ff_other_' . $fieldName . '__';
+            $otherInputName = $fieldName . '__ff_other_input__';
+            $question['allowOther'] = true;
+            $question['otherValue'] = $otherValue;
+            $question['otherInputLabel'] = $otherLabel;
+            $question['otherInputPlaceholder'] = $placeholder;
+            $question['otherInputName'] = $otherInputName;
+            $question['otherInputValue'] = '';
+        }
+        return $question;
+    }
     
     private static function hasFormula($question)
     {
@@ -1165,7 +1275,8 @@ class Converter
             $hash = '';
             $form->save_state = false;
 
-            $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public form state parameter for save & resume functionality, verified by hash comparison in database
+            $key = isset($_GET['fluent_state']) ? sanitize_text_field(wp_unslash($_GET['fluent_state'])) : false;
 
             if ($key) {
                 $hash = base64_decode($key);
@@ -1177,7 +1288,7 @@ class Converter
 
             \FluentFormPro\classes\DraftSubmissionsManager::migrate();
 
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
+            $draftForm = \FluentFormPro\classes\DraftSubmissionsManager::get($hash);
 
             if ($draftForm) {
                 $saveAndResume = true;
@@ -1222,7 +1333,8 @@ class Converter
         $draftForm = null;
         $data = [];
         $formId = $form->id;
-        $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public form state parameter for save & resume functionality, verified by hash comparison in database
+        $key = isset($_GET['fluent_state']) ? sanitize_text_field(wp_unslash($_GET['fluent_state'])) : false;
         if ($key) {
             $hash = base64_decode($key);
         } else {
@@ -1231,10 +1343,7 @@ class Converter
         }
 
         if ($hash) {
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')
-                ->where('hash', $hash)
-                ->where('form_id', $formId)
-                ->first();
+            $draftForm = \FluentFormPro\classes\DraftSubmissionsManager::get($hash, $formId);
         } elseif (!$draftForm && $userId = get_current_user_id()) {
             $draftForm = wpFluent()->table('fluentform_draft_submissions')
                 ->where('user_id', $userId)
@@ -1248,15 +1357,34 @@ class Converter
             $data['step_completed'] = (int)$draftForm->step_completed;
             $data['response'] = json_decode($draftForm->response, true);
             
-            $fields = FormFieldsParser::getInputsByElementTypes($form, ['input_file', 'input_image']);
+            $fileFieldTypes = ['input_file', 'input_image'];
+            if (defined('FLUENTFORM_SIGNATURE')) {
+                $fileFieldTypes[] = 'signature';
+            }
+            $fields = FormFieldsParser::getInputsByElementTypes($form, $fileFieldTypes);
             foreach ($fields as $name => $field) {
                 if ($urls = ArrayHelper::get($data['response'], $name)) {
+                    if (!is_array($urls)) {
+                        // Single value (e.g. signature stored as a string)
+                        $urls = [$urls];
+                    }
                     foreach ($urls as $index => $url) {
+                        if (is_array($url)) {
+                            // Already wrapped (e.g. from a previous load) — keep as-is
+                            continue;
+                        }
+                        if (!is_string($url) || $url === '[object Object]') {
+                            // Corrupted data — skip this entry
+                            unset($data['response'][$name][$index]);
+                            continue;
+                        }
                         $data['response'][$name][$index] = [
                             "data_src" => $url,
                             "url"      => \FluentForm\App\Helpers\Helper::maybeDecryptUrl($url)
                         ];
                     }
+                    // Re-index in case entries were removed
+                    $data['response'][$name] = array_values($data['response'][$name]);
                 }
             }
             unset(

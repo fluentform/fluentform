@@ -27,7 +27,7 @@ abstract class Validate
 
         // Validate and process response.
         if ($validator->validate()->fails()) {
-            throw new ValidationException('Unprocessable Entity!', 422, null, $validator->errors());
+            throw new ValidationException('Unprocessable Entity!', 422, null, $validator->errors()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         }
 
         return true;

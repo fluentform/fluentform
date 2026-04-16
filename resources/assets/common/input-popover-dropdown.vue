@@ -39,7 +39,7 @@
             </div>
         </el-popover>
         <el-button class="editor-add-shortcode el-button--soft"
-            size="small"
+            :size="size"
             v-popover:input-popover1
             :type="btnType"
             v-html="buttonText"
@@ -76,6 +76,10 @@
                 default() {
                     return false
                 }
+            },
+            size: {
+                type: String,
+                default: 'small'
             }
         },
         data() {

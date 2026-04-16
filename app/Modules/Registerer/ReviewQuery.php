@@ -2,20 +2,22 @@
 
 namespace FluentForm\App\Modules\Registerer;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Models\Form;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Http\Controllers\AdminNoticeController;
 
 class ReviewQuery
 {
-    public function register()
+    public static function register()
     {
-        if ($this->shouldRegister()) {
-            add_action('fluentform/global_menu', [$this, 'show'], 99);
+        if (static::shouldRegister()) {
+            add_action('fluentform/global_menu', [static::class, 'show'], 99);
         }
     }
 
-    protected function shouldRegister()
+    protected static function shouldRegister()
     {
         if (Helper::isFluentAdminPage() && !wp_doing_ajax()) {
             return Form::count() > 3;
@@ -24,15 +26,15 @@ class ReviewQuery
         return false;
     }
 
-    public function show()
+    public static function show()
     {
         $notice = new AdminNoticeController();
-        $msg = $this->getMessage();
+        $msg = static::getMessage();
         $notice->addNotice($msg);
         $notice->showNotice();
     }
 
-    private function getMessage()
+    private static function getMessage()
     {
         return [
             'name'    => 'review_query',

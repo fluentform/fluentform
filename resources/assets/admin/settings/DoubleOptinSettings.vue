@@ -6,7 +6,7 @@
                     <h5 class="title">{{$t('Global Double Optin Settings')}}</h5>
                 </card-head>
                 <card-body>
-                    <update-to-pro-content :update-message="$t('Upgrade to get access to import entries.')" v-if="!has_pro"/>
+                    <update-to-pro-content :update-message="$t('Upgrade to get access to Double Optin for form submission.')" v-if="!has_pro"/>
                 </card-body>
             </card>
 

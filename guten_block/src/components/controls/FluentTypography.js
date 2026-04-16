@@ -1,53 +1,29 @@
-/**
- * Fluent Forms Custom Typography Control Component
- */
-const {
-    Button,
-    Flex,
-    Popover,
-    SelectControl,
-    RangeControl
-} = wp.components;
-const { useState, useEffect } = wp.element;
+const { Button, Flex, Popover, FontSizePicker, SelectControl, RangeControl } = wp.components;
+const { useState, useEffect, useMemo, memo } = wp.element;
+import { arePropsEqual } from '../utils/ComponentUtils';
 
-/**
- * Typography control component for Fluent Forms
- *
- * @param {Object} props Component properties
- * @param {string} props.label Label for the control
- * @param {Object} props.settings Typography settings object
- * @param {Function} props.onChange Callback when settings change
- * @returns {JSX.Element} Typography control component
- */
-const FluentTypography = ({ label, settings, onChange }) => {
+const FluentTypography = ({ label, typography = {}, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
-
-    // Local state for typography properties
-    const [localFontSize, setLocalFontSize] = useState(settings.fontSize || '');
-    const [localFontWeight, setLocalFontWeight] = useState(settings.fontWeight || '400');
-    const [localLineHeight, setLocalLineHeight] = useState(settings.lineHeight || '');
-    const [localLetterSpacing, setLocalLetterSpacing] = useState(settings.letterSpacing || '');
-    const [localTextTransform, setLocalTextTransform] = useState(settings.textTransform || 'none');
-
-    // Update local state when settings change
-    useEffect(() => {
-        setLocalFontSize(settings.fontSize || '');
-        setLocalFontWeight(settings.fontWeight || '400');
-        setLocalLineHeight(settings.lineHeight || '');
-        setLocalLetterSpacing(settings.letterSpacing || '');
-        setLocalTextTransform(settings.textTransform || 'none');
-    }, [settings]);
-
-    // Default values and options
-    const defaultValues = {
+    const [typoValues, setTypoValues] = useState({
         fontSize: '',
-        fontWeight: '400',
+        fontWeight: '',
         lineHeight: '',
         letterSpacing: '',
-        textTransform: 'none',
-    };
+        textTransform: ''
+    });
+
+    useEffect(() => {
+        setTypoValues({
+            fontSize: typography?.fontSize || '',
+            fontWeight: typography?.fontWeight || '',
+            lineHeight: typography?.lineHeight || '',
+            letterSpacing: typography?.letterSpacing || '',
+            textTransform: typography?.textTransform || ''
+        });
+    }, [typography]);
 
     const fontWeightOptions = [
+        { value: '', label: 'Select' },
         { value: '300', label: 'Light (300)' },
         { value: '400', label: 'Regular (400)' },
         { value: '500', label: 'Medium (500)' },
@@ -57,79 +33,39 @@ const FluentTypography = ({ label, settings, onChange }) => {
     ];
 
     const textTransformOptions = [
+        { value: '', label: 'Select' },
         { value: 'none', label: 'None' },
         { value: 'capitalize', label: 'Capitalize' },
         { value: 'uppercase', label: 'UPPERCASE' },
         { value: 'lowercase', label: 'lowercase' }
     ];
 
-    // Toggle popover
     const togglePopover = () => setIsOpen(!isOpen);
 
-    /**
-     * Update a typography setting
-     *
-     * @param {string} property Property to update
-     * @param {any} value New value
-     */
-    const updateSetting = (property, value) => {
-        // Update local state based on property
-        switch (property) {
-            case 'fontSize': setLocalFontSize(value); break;
-            case 'fontWeight': setLocalFontWeight(value); break;
-            case 'lineHeight': setLocalLineHeight(value); break;
-            case 'letterSpacing': setLocalLetterSpacing(value); break;
-            case 'textTransform': setLocalTextTransform(value); break;
-        }
-
-        // Call onChange with only the changed property
-        onChange({
-            [property]: value
-        });
-    };
-
-
-
-    /**
-     * Check if any typography settings have changed from defaults
-     *
-     * @returns {boolean} True if any setting has changed
-     */
-    const isFontChanged = () => {
-        // Check if any property has a non-default value
-        return (
-            (localFontSize !== '' && localFontSize != null) ||
-            localFontWeight !== defaultValues.fontWeight ||
-            (localLineHeight !== '' && localLineHeight != null) ||
-            (localLetterSpacing !== '' && localLetterSpacing != null) ||
-            localTextTransform !== defaultValues.textTransform
-        );
-    };
-
-    /**
-     * Reset all typography settings to defaults
-     */
-    const resetToDefault = () => {
-        // Create reset values object with a special reset flag
-        const resetValues = {
-            reset: true,
-            ...defaultValues
+    const updateSetting = (updatedProperties) => {
+        const updatedTypography = { 
+            ...typography,
+            ...updatedProperties
         };
 
-        // Update local state
-        setLocalFontSize(defaultValues.fontSize);
-        setLocalFontWeight(defaultValues.fontWeight);
-        setLocalLineHeight(defaultValues.lineHeight);
-        setLocalLetterSpacing(defaultValues.letterSpacing);
-        setLocalTextTransform(defaultValues.textTransform);
+        onChange(updatedTypography);
+    };
 
-        // Close the popover if it's open
+    const isFontChanged = useMemo(() => {
+        return (
+            (typoValues.fontSize !== '' && typoValues.fontSize != null) ||
+            (typoValues.fontWeight !== '' && typoValues.fontWeight != null) ||
+            (typoValues.lineHeight !== '' && typoValues.lineHeight != null) ||
+            (typoValues.letterSpacing !== '' && typoValues.letterSpacing != null) ||
+            (typoValues.textTransform !== '' && typoValues.textTransform != null)
+        );
+    }, [typoValues]);
+
+    const resetToDefault = () => {
+        onChange({});
         if (isOpen) {
             setIsOpen(false);
         }
-
-        // Call onChange with reset values
-        onChange(resetValues);
     };
 
     return (
@@ -137,7 +73,7 @@ const FluentTypography = ({ label, settings, onChange }) => {
           <Flex align="center" justify="space-between">
               <span className="ffblock-label">{label}</span>
               <div className="ffblock-flex-gap">
-                  {isFontChanged() && (
+                  {isFontChanged && (
                     <Button
                       icon="image-rotate"
                       isSmall
@@ -163,56 +99,45 @@ const FluentTypography = ({ label, settings, onChange }) => {
               key="typo-popover"
             >
                 <div className="ffblock-popover-content">
-
-                    <div className="fluent-typography-control-section">
-                        <label>Font Size (px)</label>
-                        <RangeControl
-                          value={localFontSize ? parseInt(localFontSize) : undefined}
-                          min={8}
-                          max={72}
-                          onChange={(value) => updateSetting('fontSize', value)}
-                        />
-                    </div>
-
-                    <div className="fluent-typography-control-section">
-                        <label>Font Weight</label>
-                        <SelectControl
-                          value={localFontWeight}
-                          options={fontWeightOptions}
-                          onChange={(value) => updateSetting('fontWeight', value)}
-                        />
-                    </div>
-
-                    <div className="fluent-typography-control-section">
-                        <label>Line Height</label>
-                        <RangeControl
-                          value={localLineHeight ? parseFloat(localLineHeight) : undefined}
-                          min={0.1}
-                          max={3}
-                          step={0.1}
-                          onChange={(value) => updateSetting('lineHeight', value)}
-                        />
-                    </div>
-
-                    <div className="fluent-typography-control-section">
-                        <label>Letter Spacing (px)</label>
-                        <RangeControl
-                          value={localLetterSpacing ? parseFloat(localLetterSpacing) : undefined}
-                          min={-5}
-                          max={10}
-                          step={0.1}
-                          onChange={(value) => updateSetting('letterSpacing', value)}
-                        />
-                    </div>
-
-                    <div className="fluent-typography-control-section">
-                        <label>Text Transform</label>
-                        <SelectControl
-                          value={localTextTransform}
-                          options={textTransformOptions}
-                          onChange={(value) => updateSetting('textTransform', value)}
-                        />
-                    </div>
+                    <FontSizePicker
+                        fontSizes={[
+                            { name: 'Small', slug: 'small', size: 12 },
+                            { name: 'Medium', slug: 'medium', size: 16 },
+                            { name: 'Large', slug: 'large', size: 24 },
+                            { name: 'Extra Large', slug: 'x-large', size: 32 }
+                        ]}
+                        value={typoValues.fontSize}
+                        onChange={(value) =>   updateSetting({fontSize: value})}
+                        withSlider={true}
+                    />
+                    <SelectControl
+                        label="Font Weight"
+                        value={typoValues.fontWeight}
+                        options={fontWeightOptions}
+                        onChange={(value) => updateSetting({fontWeight: value})}
+                    />
+                    <RangeControl
+                        label="Line Height"
+                        value={typoValues.lineHeight}
+                        onChange={(value) => updateSetting({lineHeight: value})}
+                        min={0.5}
+                        max={3}
+                        step={0.1}
+                    />
+                    <RangeControl
+                        label="Letter Spacing (px)"
+                        value={typoValues.letterSpacing}
+                        onChange={(value) => updateSetting({letterSpacing: value})}
+                        min={-5}
+                        max={10}
+                        step={0.1}
+                    />
+                    <SelectControl
+                        label="Text Transform"
+                        value={typoValues.textTransform}
+                        options={textTransformOptions}
+                        onChange={(value) => updateSetting({textTransform: value})}
+                    />
                 </div>
             </Popover>
           )}
@@ -220,4 +145,6 @@ const FluentTypography = ({ label, settings, onChange }) => {
     );
 };
 
-export default FluentTypography;
+export default memo(FluentTypography, (prevProps, nextProps) => {
+    return arePropsEqual(prevProps, nextProps, ['label', 'typography']);
+});

@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'WPFluent\\' => array($vendorDir . '/wpfluent/framework/src/WPFluent'),
+    'OpenSpout\\' => array($vendorDir . '/openspout/openspout/src'),
     'FluentForm\\Framework\\' => array($vendorDir . '/wpfluent/framework/src/WPFluent'),
     'FluentForm\\App\\' => array($baseDir . '/app'),
 );

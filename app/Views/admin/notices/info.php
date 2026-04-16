@@ -1,3 +1,8 @@
+<?php
+
+defined('ABSPATH') or die;
+
+?>
 <div id="ff_notice_<?php echo esc_attr($notice['name']); ?>" class="update-nag fluentform-admin-notice fluent_info_notice">
     <?php if($show_logo): ?>
         <div class="ff_logo_holder">
@@ -6,7 +11,7 @@
     <?php endif; ?>
     <div class="ff_notice_container">
         <?php if($show_hide_nag): ?>
-        <div class="ff_temp_hide_nag"><span data-notice_type="temp" data-notice_name="<?php echo esc_attr($notice['name']); ?>" title="<?php _e('Hide this Notification', 'fluentform') ?>" class="dashicons dashicons-dismiss ff_nag_cross nag_cross_btn"></span></div>
+        <div class="ff_temp_hide_nag"><span data-notice_type="temp" data-notice_name="<?php echo esc_attr($notice['name']); ?>" title="<?php esc_attr_e('Hide this Notification', 'fluentform') ?>" class="dashicons dashicons-dismiss ff_nag_cross nag_cross_btn"></span></div>
         <?php endif; ?>
         
         <h3><?php echo esc_html($notice['title']); ?></h3>

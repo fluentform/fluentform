@@ -81,6 +81,11 @@ class FluentFormAsyncRequest
 
     public function handleBackgroundCall()
     {
+        $nonce = sanitize_text_field(wpFluentForm('request')->get('nonce', ''));
+        if (!wp_verify_nonce($nonce, $this->action)) {
+            die('invalid');
+        }
+
         $originId = wpFluentForm('request')->get('origin_id', false);
 
         $this->processActions($originId);
@@ -98,7 +103,7 @@ class FluentFormAsyncRequest
 
         $actionFeeds = $actionFeedQuery->get();
 
-        if(!$actionFeeds) {
+        if(count($actionFeeds) === 0) {
             return;
         }
 
@@ -139,6 +144,7 @@ class FluentFormAsyncRequest
                     'updated_at' => current_time('mysql')
                 ]);
 
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name for async request
             do_action($action, $feed, $formData, $entry, $form);
         }
 
@@ -204,6 +210,7 @@ class FluentFormAsyncRequest
                 'updated_at' => current_time('mysql')
             ]);
 
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name for async request
         do_action($action, $feed, $formData, $entry, $form);
 
         $this->maybeFinished($submission->id, $form);
@@ -216,7 +223,7 @@ class FluentFormAsyncRequest
             'origin_id' => $originId
         ])->get();
 
-        if (!$pendingFeeds) {
+        if (count($pendingFeeds) === 0) {
             do_action('fluentform/global_notify_completed', $originId, $form);
         }
     }

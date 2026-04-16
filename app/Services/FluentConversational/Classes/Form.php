@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Payments\PaymentHelper;
@@ -69,7 +71,7 @@ class Form
 
         wp_enqueue_script(
             'fluent_forms_conversational_design',
-            fluentformMix('js/conversational_design.js'),
+            fluentFormMix('js/conversational_design.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -100,7 +102,7 @@ class Form
 
         wp_enqueue_style(
             'fluent_forms_conversion_style',
-            fluentformMix('css/conversational_design.css'),
+            fluentFormMix('css/conversational_design.css'),
             [],
             FLUENTFORM_VERSION
         );
@@ -204,6 +206,7 @@ class Form
             $paramKey = $slug;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public form display, no nonce needed
         if(!isset($_REQUEST[$paramKey])) {
             return;
         }
@@ -333,6 +336,10 @@ class Form
             'net_promoter_score'
         ];
 
+        if (defined('FLUENTFORM_SIGNATURE')) {
+            $acceptedFieldElements[] = 'signature';
+        }
+
         $acceptedFieldElements = apply_filters(
             'fluentform/conversational_accepted_field_elements',
             $acceptedFieldElements,
@@ -432,7 +439,7 @@ class Form
                         continue;
                     }
                     $src = add_query_arg('ver', $cssStyle->ver, $cssStyle->src);
-
+                    // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Completely a custom rendering page.
                     echo "<link rel='stylesheet' id='" . esc_attr($styleName) . "' href='" . esc_url($src) . "' type='text/css' media='all' />\n";
                 }
             });
@@ -562,8 +569,11 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId),
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
+            'unknown_error_txt'        => __('An unknown error occurred', 'fluentform'),
+            'request_error_txt'        => __('An error occurred while processing your request', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
-            'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n()
+            'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
         ]);
 
         $hasSaveProgressButton = false;
@@ -578,7 +588,7 @@ class Form
         if ($hasSaveProgressButton && $saveProgressButton) {
             $this->localizeSaveProgressButton($saveProgressButton, $formId);
         }
-    
+
         /* This filter is deprecated and will be removed soon */
         $disableAnalytics = apply_filters('fluentform-disabled_analytics', true);
 
@@ -646,11 +656,13 @@ class Form
 
     private function getExtraHiddenInputs($formId)
     {
-        return [
+        $inputs = [
             '__fluent_form_embded_post_id'                => get_the_ID(),
             '_fluentform_' . $formId . '_fluentformnonce' => wp_create_nonce('fluentform-submit-form'),
             '_wp_http_referer'                            => esc_attr(wp_unslash(wpFluentForm('request')->server('REQUEST_URI'))),
         ];
+
+        return apply_filters('fluentform/conversational_extra_inputs', $inputs, $formId);
     }
 
     public function getRandomPhoto()
@@ -708,8 +720,8 @@ class Form
         ], $form);
 
         if (is_array($isRenderable) && !$isRenderable['status'] && !Acl::hasAnyFormPermission($formId)) {
-     
-            echo "<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>".wp_kses_post($isRenderable['message'])."</div>";
+
+            echo wp_kses_post("<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>" . $isRenderable['message'] . "</div>");
             exit(200);
         }
 
@@ -750,9 +762,12 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId),
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
+            'unknown_error_txt'        => __('An unknown error occurred', 'fluentform'),
+            'request_error_txt'        => __('An error occurred while processing your request', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
-            'rest'                     => Helper::getRestInfo()
+            'rest'                     => Helper::getRestInfo(),
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
         ]);
         
         $hasSaveProgressButton = false;
@@ -783,7 +798,7 @@ class Form
 
         if (is_array($isRenderable) && !$isRenderable['status']) {
             if (!Acl::hasAnyFormPermission($form->id)) {
-                echo "<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>" . wp_kses_post($isRenderable['message']) . '</h1>';
+                echo wp_kses_post("<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>" . $isRenderable['message'] . '</h1>');
                 exit();
             }
         }
@@ -884,6 +899,7 @@ class Form
                     'discount:'       => __('Discount:', 'fluentform'),
                     'processing_text' => __('Processing payment. Please wait...', 'fluentform'),
                     'confirming_text' => __('Confirming payment. Please wait...', 'fluentform'),
+                    'signup_fee_for'  => __('Signup Fee for', 'fluentform'),
                 ],
             ];
 
@@ -940,6 +956,7 @@ class Form
     {
         $vars = apply_filters('fluentform/save_progress_vars', [
             'ajaxurl'                   => admin_url('admin-ajax.php'),
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized in getFrontendFacingUrl()
             'source_url'                => Helper::getFrontendFacingUrl($_SERVER['REQUEST_URI']),
             'form_id'                   => $formId,
             'nonce'                     => wp_create_nonce(),

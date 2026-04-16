@@ -7,6 +7,8 @@ if (!defined('ABSPATH')) {
 }
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Submission;
+use FluentForm\App\Models\Transaction;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
@@ -116,7 +118,8 @@ class StripeProcessor extends BaseProcessor
                 $checkoutArgs['line_items'][] = [
                     'amount'   => $price,
                     'currency' => $transaction->currency,
-                    'name'     => __(sprintf('Signup fee for %s', $subscription->plan_name), 'fluentform'),
+                    /* translators: %s is the plan name */
+                    'name'     => sprintf(__('Signup fee for %s', 'fluentform'), $subscription->plan_name),
                     'quantity' => 1
                 ];
             }
@@ -194,8 +197,9 @@ class StripeProcessor extends BaseProcessor
             } else if (!empty($session->error->message)) {
                 $error = $session->error->message;
             }
+            $errorMessage = __('Stripe Error: ', 'fluentform') . $error;
             wp_send_json([
-                'errors' => __('Stripe Error: ', 'fluentform') . $error
+                'errors' => apply_filters('fluentform/payment_error_message', $errorMessage, $submission, $this->form)
             ], 423);
         }
 
@@ -255,19 +259,62 @@ class StripeProcessor extends BaseProcessor
         }
 
         $formattedItems = [];
+        $discountDistributed = 0;
+        $itemCount = count($orderItems);
 
-        foreach ($orderItems as $item) {
+        foreach ($orderItems as $index => $item) {
             $price = $item->item_price;
+            $quantity = $item->quantity ?: 1;
 
-            if($discountTotal) {
-                $price = intval($price - ($discountTotal / $orderTotal) * $price);
+            if ($discountTotal && $orderTotal) {
+                if ($index === $itemCount - 1) {
+                    // Last item absorbs any remaining discount not yet distributed.
+                    // intval floors the per-unit price, so (unitPrice * quantity) may be
+                    // less than lineTotal. The difference (remainder) is 0..quantity-1 cents.
+                    // When remainder > 0 we split into two Stripe line items:
+                    //   (quantity - remainder) units at the floor price, and
+                    //   remainder units at floor + 1 cent,
+                    // so the total adds up exactly. e.g. $28.00 / 3 → 2×$9.33 + 1×$9.34 = $28.00
+                    $remainingDiscount = $discountTotal - $discountDistributed;
+                    $lineTotal = ($price * $quantity) - $remainingDiscount;
+                    $unitPrice = intval($lineTotal / $quantity);
+                    $remainder = $lineTotal - ($unitPrice * $quantity);
+
+                    if ($remainder > 0 && $quantity > 1) {
+                        $basePrice = $unitPrice;
+                        $extraPrice = $unitPrice + 1;
+
+                        if (PaymentHelper::isZeroDecimal($currency)) {
+                            $basePrice = intval($basePrice / 100);
+                            $extraPrice = intval($extraPrice / 100);
+                        }
+
+                        $formattedItems[] = [
+                            'amount'   => $basePrice,
+                            'currency' => $currency,
+                            'name'     => $item->item_name,
+                            'quantity' => $quantity - $remainder
+                        ];
+                        $formattedItems[] = [
+                            'amount'   => $extraPrice,
+                            'currency' => $currency,
+                            'name'     => $item->item_name,
+                            'quantity' => $remainder
+                        ];
+                        continue;
+                    }
+
+                    $price = $unitPrice;
+                } else {
+                    $itemDiscount = (int) round(($discountTotal / $orderTotal) * $price);
+                    $discountDistributed += $itemDiscount * $quantity;
+                    $price = $price - $itemDiscount;
+                }
             }
 
             if (PaymentHelper::isZeroDecimal($currency)) {
                 $price = intval($price / 100);
             }
-
-            $quantity = $item->quantity ?: 1;
 
             $stripeLine = [
                 'amount'   => $price,
@@ -311,7 +358,7 @@ class StripeProcessor extends BaseProcessor
                     $transaction = $this->getTransaction($transactionHash, 'transaction_hash');
                     $returnData = $this->processStripeSession($session, $submission, $transaction);
                 } else {
-                    $error = __('Sorry! No Valid payment session found. Please try again');
+                    $error = __('Sorry! No Valid payment session found. Please try again','fluentform');
                     if (is_wp_error($session)) {
                         $error = $session->get_error_message();
                     }
@@ -327,7 +374,7 @@ class StripeProcessor extends BaseProcessor
             $returnData = [
                 'insert_id' => $submission->id,
                 'result'    => false,
-                'error'     => __('Looks like you have cancelled the payment. Please try again!', 'fluentform')
+                'error'     => apply_filters('fluentform/stripe_payment_cancelled_message', __('Looks like you have cancelled the payment. Please try again!', 'fluentform'), $submission, $this->form)
             ];
         }
 
@@ -424,8 +471,7 @@ class StripeProcessor extends BaseProcessor
 
         $chargeId = $data->payment_intent;
         // Get the Transaction from database
-        $transaction = wpFluent()->table('fluentform_transactions')
-            ->where('charge_id', $chargeId)
+        $transaction = Transaction::where('charge_id', $chargeId)
             ->where('payment_method', 'stripe')
             ->first();
 
@@ -434,8 +480,7 @@ class StripeProcessor extends BaseProcessor
             return;
         }
 
-        $submission = wpFluent()->table('fluentform_submissions')
-            ->find($transaction->submission_id);
+        $submission = Submission::find($transaction->submission_id);
 
         if (!$submission) {
             return;
@@ -448,10 +493,7 @@ class StripeProcessor extends BaseProcessor
         }
 
         // Remove All Existing Refunds
-        wpFluent()->table('fluentform_transactions')
-            ->where('submission_id', $submission->id)
-            ->where('transaction_type', 'refund')
-            ->delete();
+        Transaction::bySubmission($submission->id)->refunds()->delete();
 
         $this->refund($amountRefunded, $transaction, $submission, 'stripe', $chargeId, 'Refund from Stripe');
 
@@ -599,7 +641,7 @@ class StripeProcessor extends BaseProcessor
 
             foreach ($metaData as $itemKey => $value) {
                 if (is_string($value) || is_numeric($value)) {
-                    $metaData[$itemKey] = strip_tags($value);
+                    $metaData[$itemKey] = wp_strip_all_tags($value);
                 }
             }
 
@@ -703,7 +745,7 @@ class StripeProcessor extends BaseProcessor
                 'component'        => 'Payment',
                 'status'           => 'error',
                 'title'            => __('Stripe Payment Error', 'fluentform'),
-                'description'      => __($message, 'fluentform')
+                'description'      => $message
             ];
 
             do_action('fluentform/log_data', $logData);

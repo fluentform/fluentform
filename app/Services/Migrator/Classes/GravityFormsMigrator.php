@@ -408,7 +408,7 @@ class GravityFormsMigrator extends BaseMigrator
                         'icon_class' => 'ff-edit-column-' . $colsCount
                     ],
                     'columns'        => $fields,
-                    'uniqElKey'      => 'col' . '_' . md5(uniqid(mt_rand(), true))
+                    'uniqElKey'      => 'col' . '_' . md5(uniqid(wp_rand(), true))
                 ];
             } else {
                 //without container

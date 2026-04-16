@@ -1,30 +1,32 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Hooks\Handlers\DeactivationHandler;
 use FluentForm\App\Services\Migrator\Bootstrap as FormsMigrator;
 use FluentForm\App\Services\FluentConversational\Classes\Form as FluentConversational;
+use FluentForm\Database\Migrations\LegacyManagerScopes;
 use FluentForm\App\Helpers\Helper;
 
 return function ($file) {
     add_action('plugins_loaded', function () {
-        $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '<');
+        $isNotCompatible = defined('FLUENTFORMPRO')
+            && version_compare(FLUENTFORMPRO_VERSION, '6.2.0', '<');
         if ($isNotCompatible) {
             add_action('admin_init', function () {
-                $message = '<div style="padding: 15px 10px;" ><b>' . __('Heads UP: ',
-                        'fluentform') . '</b>' . __('Fluent Forms Pro Plugin needs to be updated to the latest version.',
-                        'fluentform') . '<a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">' . __(' Please update Fluent Forms Pro to latest version.',
-                        'fluentform') . '</a></div>';
-                $actions = [
-                    'fluentform/global_menu',
-                    'fluentform/after_form_menu',
-                ];
-                foreach ($actions as $action) {
-                    add_action($action, function () use ($message) {
-                        printf('<div class="fluentform-admin-notice notice notice-success">%1$s</div>', $message);
-                    });
-                }
+                $message = '<b>' . __('Action Required: ', 'fluentform') . '</b>'
+                    . __('Fluent Forms Pro is not compatible with this version of Fluent Forms. Please update Fluent Forms Pro to version ', 'fluentform')
+                    . '6.2.0' . __(' or later.', 'fluentform')
+                    . ' <a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">'
+                    . __('Update Now', 'fluentform') . '</a>';
+                $renderNotice = function () use ($message) {
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Admin notice with HTML links
+                    printf('<div class="fluentform-admin-notice notice notice-error"><div style="padding: 15px 10px;">%1$s</div></div>', $message);
+                };
+                add_action('fluentform/global_menu', $renderNotice);
+                add_action('fluentform/after_form_menu', $renderNotice);
             });
         }
     });
@@ -45,6 +47,12 @@ return function ($file) {
 
     register_deactivation_hook($file, function () use ($app) {
         ($app->make(DeactivationHandler::class))->handle();
+    });
+
+    add_action('admin_init', function () {
+        if (!wp_doing_ajax()) {
+            LegacyManagerScopes::migrate();
+        }
     });
 
     add_action('plugins_loaded', function () use ($app) {
@@ -85,12 +93,12 @@ return function ($file) {
     {
         if ('fluentform/fluentform.php' == $file) {
             $row_meta = [
-                'docs'    => '<a rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('View FluentForms Documentation', 'fluentform')) . '" target="_blank">' . esc_html__('Docs', 'fluentform') . '</a>',
-                'support' => '<a rel="noopener" href="https://wpmanageninja.com/support-tickets/#/" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('Get Support', 'fluentform')) . '" target="_blank">' . esc_html__('Support', 'fluentform') . '</a>',
-                'developer_docs' => '<a rel="noopener" href="https://developers.fluentforms.com" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('Developer Docs', 'fluentform')) . '" target="_blank">' . esc_html__('Developer Docs', 'fluentform') . '</a>',
+                'docs'    => '<a rel="noopener" href="https://fluentforms.com/docs" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr__('View FluentForms Documentation', 'fluentform') . '" target="_blank">' . esc_html__('Docs', 'fluentform') . '</a>',
+                'support' => '<a rel="noopener" href="https://wpmanageninja.com/support-tickets/#/" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr__('Get Support', 'fluentform') . '" target="_blank">' . esc_html__('Support', 'fluentform') . '</a>',
+                'developer_docs' => '<a rel="noopener" href="https://developers.fluentforms.com" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr__('Developer Docs', 'fluentform') . '" target="_blank">' . esc_html__('Developer Docs', 'fluentform') . '</a>',
             ];
             if (!defined('FLUENTFORMPRO')) {
-                $row_meta['pro'] = '<a rel="noopener" href="https://fluentforms.com" style="color: #7742e6;font-weight: bold;" aria-label="' . esc_attr(esc_html__('Upgrade to Pro', 'fluentform')) . '" target="_blank">' . esc_html__('Upgrade to Pro', 'fluentform') . '</a>';
+                $row_meta['pro'] = '<a rel="noopener" href="https://fluentforms.com" style="color: #7742e6;font-weight: bold;" aria-label="' . esc_attr__('Upgrade to Pro', 'fluentform') . '" target="_blank">' . esc_html__('Upgrade to Pro', 'fluentform') . '</a>';
             }
             return array_merge($links, $row_meta);
         }

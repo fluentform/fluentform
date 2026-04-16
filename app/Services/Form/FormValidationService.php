@@ -209,6 +209,7 @@ class FormValidationService
         }
 
         if ($errors) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new ValidationException('', 423, null,  ['errors' => $errors]);
         }
 
@@ -246,7 +247,12 @@ class FormValidationService
                 throw new ValidationException('', 429, null,  [
                     'errors' => [
                         'restricted' => [
-                            __(apply_filters('fluentform/too_many_requests', 'Too Many Requests.', $this->form->id), 'fluentform'),
+                            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Sanitized by fluentform_sanitize_html
+                            fluentform_sanitize_html(apply_filters(
+                                'fluentform/too_many_requests',
+                                __('Too Many Requests.', 'fluentform'),
+                                $this->form->id
+                            )),
                         ],
                     ]
                 ]);
@@ -286,7 +292,8 @@ class FormValidationService
             throw new ValidationException('', 422, null,  [
                 'errors' => [
                     'restricted' => [
-                        $isAllowed['message'],
+                        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Sanitized by fluentform_sanitize_html
+                        fluentform_sanitize_html($isAllowed['message']),
                     ],
                 ],
             ]);
@@ -321,14 +328,15 @@ class FormValidationService
                     array_intersect_key($this->formData, $fields)
                 );
                 if (!count(Helper::arrayFilterRecursive($filteredFormData))) {
-                    $defaultMessage = __('Sorry! You can\'t submit an empty form.','fluentform');
+                    $defaultMessage = esc_html(__('Sorry! You can\'t submit an empty form.','fluentform'));
                     $customMessage = Arr::get($settings, 'message');
-                    $customMessage = apply_filters('fluentform/deny_empty_submission_message', $customMessage, $this->form);
+                    $customMessage = fluentform_sanitize_html(apply_filters('fluentform/deny_empty_submission_message', $customMessage, $this->form));
 
                     throw new ValidationException('', 422, null,  [
                         'errors' => [
                             'restricted' => [
-                                !empty($customMessage) ? $customMessage : $defaultMessage,
+                                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Sanitized by fluentform_sanitize_html
+                                !empty($customMessage) ? fluentform_sanitize_html($customMessage) : fluentform_sanitize_html($defaultMessage),
                             ],
                         ],
                     ]);
@@ -403,6 +411,7 @@ class FormValidationService
                 );
 
                 $errors = $this->app->applyFilters('fluentForm/nonce_error', $errors);
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 throw new ValidationException('', 422, null, ['errors' => $errors]);
             }
         }
@@ -421,6 +430,7 @@ class FormValidationService
         $errors = [
             '_fluentformakismet' => __('Submission marked as spammed. Please try again', 'fluentform'),
         ];
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
         throw new ValidationException('', 422, null, ['errors' => $errors]);
     }
 
@@ -437,6 +447,7 @@ class FormValidationService
         $errors = [
             '_fluentformcleantalk' => __('Submission marked as spammed. Please try again', 'fluentform'),
         ];
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
         throw new ValidationException('', 422, null, ['errors' => $errors]);
     }
 
@@ -457,6 +468,7 @@ class FormValidationService
         $errors = [
             '_fluentformcleantalk' => __('Submission marked as spammed. Please try again', 'fluentform'),
         ];
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
         throw new ValidationException('', 422, null, ['errors' => $errors]);
     }
 
@@ -565,10 +577,11 @@ class FormValidationService
             $isValid = ReCaptcha::validate($token, $keys['secretKey'], $version);
             
             if (!$isValid) {
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 throw new ValidationException('', 422, null, [
                     'errors' => [
                         'g-recaptcha-response' => [
-                            __('reCaptcha verification failed, please try again.', 'fluentform'),
+                            esc_html(__('reCaptcha verification failed, please try again.', 'fluentform')),
                         ],
                     ],
                 ]);
@@ -609,7 +622,7 @@ class FormValidationService
                 throw new ValidationException('', 422, null, [
                     'errors' => [
                         'h-captcha-response' => [
-                            __('hCaptcha verification failed, please try again.', 'fluentform'),
+                            esc_html(__('hCaptcha verification failed, please try again.', 'fluentform')),
                         ],
                     ],
                 ]);
@@ -651,7 +664,7 @@ class FormValidationService
                 throw new ValidationException('', 422, null, [
                     'errors' => [
                         'cf-turnstile-response' => [
-                            __('Turnstile verification failed, please try again.', 'fluentform'),
+                            esc_html(__('Turnstile verification failed, please try again.', 'fluentform')),
                         ],
                     ],
                 ]);
@@ -810,11 +823,6 @@ class FormValidationService
                 self::throwValidationException($message);
             }
         }
-//        else {
-//            $defaultMessage = __('Sorry! There is an error occurred in getting Country. Please check form settings and try again.', 'fluentform');
-//            $message = apply_filters('fluentform/country_restriction_message', $defaultMessage, $this->form);
-//            self::throwValidationException($message);
-//        }
     }
 
     private function checkKeyWordRestriction($settings)
@@ -868,7 +876,8 @@ class FormValidationService
         throw new ValidationException('', 422, null,  [
             'errors' => [
                 'restricted' => [
-                    $message
+                    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Sanitized by fluentform_sanitize_html
+                    fluentform_sanitize_html($message)
                 ],
             ],
         ]);

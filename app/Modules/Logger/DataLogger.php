@@ -329,7 +329,7 @@ class DataLogger
             ], 423);
         }
 
-        if (!$actionFeed->status == 'success') {
+        if ($actionFeed->status == 'success') {
             wp_send_json_error([
                 'message' => 'API log already in success mode'
             ], 423);
@@ -344,7 +344,7 @@ class DataLogger
         $entry = $this->getEntry($submission, $form);
         $formData = json_decode($submission->response, true);
 
-        wpFluent()->table($this->table)
+        wpFluent()->table('ff_scheduled_actions')
             ->where('id', $actionFeed->id)
             ->update([
                 'status'      => 'manual_retry',
@@ -352,6 +352,7 @@ class DataLogger
                 'updated_at'  => current_time('mysql')
             ]);
 
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name from action feed
         do_action($actionFeed->action, $feed, $formData, $entry, $form);
 
         /*

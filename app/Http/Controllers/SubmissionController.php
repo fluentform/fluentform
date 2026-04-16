@@ -5,14 +5,17 @@ namespace FluentForm\App\Http\Controllers;
 use Exception;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Services\Submission\SubmissionService;
+use FluentForm\Framework\Support\Arr;
 
 class SubmissionController extends Controller
 {
     public function index(SubmissionService $submissionService)
     {
         try {
+            $attributes = $this->sanitizeSubmissionAttributes($this->request->all());
+
             return $this->sendSuccess(
-                $submissionService->get($this->request->all())
+                $submissionService->get($attributes)
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -37,8 +40,15 @@ class SubmissionController extends Controller
     public function resources(SubmissionService $submissionService)
     {
         try {
+            $attributes = $this->request->all();
+            
+            $sanitizeMap = [
+                'form_id' => 'intval',
+            ];
+            $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+            
             return $this->sendSuccess(
-                $submissionService->resources($this->request->all())
+                $submissionService->resources($attributes)
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -52,8 +62,11 @@ class SubmissionController extends Controller
         try {
             $status = $submissionService->updateStatus($this->request->all());
 
+            /* translators: %s is the submission status */
+            $message = sprintf(__('The submission has been marked as %s', 'fluentform'), $status);
+
             return $this->sendSuccess([
-                'message' => __('The submission has been marked as ' . $status, 'fluentform'),
+                'message' => $message,
                 'status'  => $status,
             ]);
         } catch (Exception $e) {
@@ -94,17 +107,18 @@ class SubmissionController extends Controller
         }
     }
     
-    public function remove(Submission $submission, $submissionId)
+    public function remove(SubmissionService $submissionService, $submissionId)
     {
         try {
-            $submission::remove([$submissionId]);
-	        do_action( 'fluentform/submission_deleted', $submissionId );;
+            $submission = Submission::findOrFail($submissionId);
+            $submissionService->deleteEntries([$submissionId], $submission->form_id);
+            do_action('fluentform/submission_deleted', $submissionId);
 
             return $this->sendSuccess([
                 'message' => __('Selected submission successfully deleted Permanently', 'fluentform'),
             ]);
-    
-        } catch (Exception $e){
+
+        } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);
@@ -145,7 +159,9 @@ class SubmissionController extends Controller
     {
         try {
             $userId = intval($this->request->get('user_id'));
-            $submissionId = intval($this->request->get('submission_id'));
+            // Use entry_id from route parameter — not submission_id from body —
+            // to ensure authorization target matches the mutation target.
+            $submissionId = intval($this->request->get('entry_id'));
             $response = $submissionService->updateSubmissionUser($userId, $submissionId);
             return $this->sendSuccess($response);
         } catch (Exception $e) {
@@ -163,12 +179,14 @@ class SubmissionController extends Controller
     public function all(Submission $submission)
     {
         try {
+            $attributes = $this->sanitizeSubmissionAttributes($this->request->all());
+
             return $this->sendSuccess(
-                $submission->allSubmissions($this->request->all())
+                $submission->allSubmissions($attributes)
             );
         } catch (Exception $e) {
             return $this->sendError([
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -180,13 +198,64 @@ class SubmissionController extends Controller
     public function print(SubmissionService $submissionService)
     {
         try {
+            $attributes = $this->request->all();
+            
+            $sanitizeMap = [
+                'submission_ids' => function($value) {
+                    if (is_array($value)) {
+                        return array_map('intval', $value);
+                    }
+                    return [];
+                },
+                'form_id' => 'intval',
+            ];
+            $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+
+            // Preserve backward compatibility with any legacy callers that still
+            // send entry_ids, while normalizing to the current submission_ids key.
+            if (empty($attributes['submission_ids']) && isset($attributes['entry_ids'])) {
+                $entryIds = $attributes['entry_ids'];
+                $attributes['submission_ids'] = is_array($entryIds)
+                    ? array_map('intval', $entryIds)
+                    : [];
+            }
+            
             return $this->sendSuccess(
-                $submissionService->getPrintContent($this->request->all())
+                $submissionService->getPrintContent($attributes)
             );
         } catch (Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    private function sanitizeSubmissionAttributes($attributes)
+    {
+        $sanitizeMap = [
+            'search'       => 'sanitize_text_field',
+            'status'       => 'sanitize_text_field',
+            'entry_type'   => 'sanitize_text_field',
+            'form_id'      => 'intval',
+            'per_page'     => 'intval',
+            'page'         => 'intval',
+            'is_favourite' => 'rest_sanitize_boolean',
+        ];
+
+        $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+
+        if (isset($attributes['entry_type']) && !isset($attributes['status'])) {
+            $attributes['status'] = $attributes['entry_type'];
+        }
+
+        if (isset($attributes['date_range']) && is_array($attributes['date_range'])) {
+            $attributes['date_range'] = array_map('sanitize_text_field', $attributes['date_range']);
+        }
+
+        if (isset($attributes['payment_statuses']) && is_array($attributes['payment_statuses'])) {
+            $attributes['payment_statuses'] = array_map('sanitize_text_field', $attributes['payment_statuses']);
+        }
+
+        return $attributes;
     }
 }

@@ -18,8 +18,13 @@ class SubmissionPrint
         $orderBy = Helper::sanitizeOrderValue(Arr::get($attr, 'sort_by', 'DESC'));
         $formId = intval(Arr::get($attr, 'form_id'));
         $form = Helper::getForm($formId);
-        $submissions = Submission::whereIn('id', $submissionIds)->orderBy('id', $orderBy)->get();
-        if (!$submissions || !$form) {
+        $submissions = Submission::where('form_id', $formId)
+            ->whereIn('id', $submissionIds)
+            ->orderBy('id', $orderBy)
+            ->get();
+
+        if (!$form || count($submissionIds) === 0 || count($submissions) !== count($submissionIds)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new \Exception(__('Invalid Submissions', 'fluentform'));
         }
         $pdfBody = $this->getBody($submissions, $form);
@@ -57,7 +62,7 @@ class SubmissionPrint
                 } else {
                     $label = '' . $note->name . ' - ' . $note->created_at;
                 }
-                $notesHtml .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $note->value . '</td></tr>';
+                $notesHtml .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . wp_kses_post($note->value) . '</td></tr>';
             }
             $htmlBody = $htmlBody . $notesHtml . '</tbody></table>';
         }
@@ -74,31 +79,31 @@ class SubmissionPrint
         ?>
         .ff_pdf_wrapper, p, li, td, th {
         color: <?php
-        echo $mainColor; ?>;
+        echo esc_attr($mainColor); ?>;
         font-size: <?php
-        echo $fontSize; ?>px;
+        echo esc_attr($fontSize); ?>px;
         }
 
         .ff_all_data, table {
         empty-cells: show;
         border-collapse: collapse;
         border: 1px solid <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         width: 100%;
         color: <?php
-        echo $mainColor; ?>;
+        echo esc_attr($mainColor); ?>;
         }
         hr {
         color: <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         background-color: <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         }
         .ff_all_data th {
         border-bottom: 1px solid <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         border-top: 1px solid <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         padding-bottom: 10px !important;
         }
         .ff_all_data tr td {
@@ -109,7 +114,7 @@ class SubmissionPrint
 
         .ff_all_data tr td, .ff_all_data tr th {
         border: 1px solid <?php
-        echo $secondaryColor; ?>;
+        echo esc_attr($secondaryColor); ?>;
         text-align: left;
         }
 

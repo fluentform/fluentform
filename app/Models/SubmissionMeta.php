@@ -4,6 +4,7 @@ namespace FluentForm\App\Models;
 
 use FluentForm\App\Helpers\Helper;
 
+// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- This class uses custom meta table (fluentform_submission_meta), not WordPress postmeta
 class SubmissionMeta extends Model
 {
     /**

@@ -1,6 +1,8 @@
 <?php
 namespace FluentForm\App\Modules\Form;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Helpers\Protector;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
@@ -35,10 +37,12 @@ class TokenBasedSpamProtection
         <input type="hidden" id="<?php echo esc_attr($fieldName); ?>" class="fluent-form-token-field" name="<?php echo esc_attr($fieldName); ?>">
         <?php
     }
-    
+
     public function ajaxGenerateToken()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified on next line
         $nonce = sanitize_text_field(Arr::get($_POST, 'nonce'));
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified on next line
         $formId = (int)Arr::get($_POST,'form_id');
        
         $nonceVerified = wp_verify_nonce($nonce, 'fluentform_generate_token_nonce');

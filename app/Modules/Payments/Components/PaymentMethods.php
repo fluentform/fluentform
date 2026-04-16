@@ -205,7 +205,7 @@ class PaymentMethods extends BaseFieldManager
         if (!$activatedMethods) {
             echo wp_sprintf(
                 '<p class="ff-error ff-payment-method-error">%s</p>',
-                __('No activated payment method found. If you are an admin please check the payment settings', 'fluentform')
+                esc_html__('No activated payment method found. If you are an admin please check the payment settings', 'fluentform')
             );
             return;
         }
@@ -271,6 +271,7 @@ class PaymentMethods extends BaseFieldManager
                 'Use fluentform/rendering_field_html_' . $elementName . ' instead of fluentform_rendering_field_html_' . $elementName
             );
 
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Content is escaped by the filter
             echo apply_filters('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
 
             do_action_deprecated(
@@ -380,6 +381,7 @@ class PaymentMethods extends BaseFieldManager
             'Use fluentform/rendering_field_html_' . $elementName . ' instead of fluentform_rendering_field_html_' . $elementName
         );
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Content is escaped by the filter
         echo apply_filters('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
     }
 }

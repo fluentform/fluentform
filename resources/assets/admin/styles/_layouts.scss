@@ -1,3 +1,4 @@
+
 $ff:              'ff_predefined';
 
 .#{$ff}{
@@ -25,6 +26,23 @@ $ff:              'ff_predefined';
         .ff_predefined_form_wrap{
             height: 500px;
             overflow-y: scroll;
+            .ff_card_buttons{
+                > button {
+                    min-width: 100%;
+                    margin: 0;
+                    justify-content: center;
+                    &:hover {
+                        background: $--color-primary;
+                        color: $--color-white;
+                    }
+                }
+                .ff_preview_btn {
+                    background: $--color-primary-light-9;
+                    color: $--color-primary;
+                    margin-bottom: 10px;
+
+                }
+            }
         }
     }
     &_form_wrap{

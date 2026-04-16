@@ -252,7 +252,11 @@ export default {
             chart_status: 'yes',
             entry_status: '',
             search: '',
-            radioOption: localStorage.getItem('ff_entries_date_filter') || 'all',
+            radioOption: (() => {
+                const stored = localStorage.getItem('ff_entries_date_filter');
+                const validOptions = ['all', 'today', 'yesterday', 'last-week', 'last-month'];
+                return validOptions.includes(stored) ? stored : 'last-month';
+            })(),
             showImportEntriesModal: false,
             app: window.fluent_forms_global_var
         }
@@ -373,10 +377,9 @@ export default {
 				        number = 30;
 				        break;
 			        case 'all':
+			        default:
 				        this.filter_date_range = 'all';
 				        this.fetchEntries();
-				        return;
-			        default:
 				        return;
 		        }
 		        start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
@@ -401,7 +404,6 @@ export default {
             this.chart_status = status;
         }
         localStorage.removeItem('entriesCurrentPage');
-        this.fetchEntries();
     }
 };
 </script>

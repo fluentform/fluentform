@@ -61,7 +61,7 @@ class GlobalNotificationHandler
         $feedMetaKeys = array_keys($feedKeys);
         $feeds = $this->globalNotificationService->getNotificationFeeds($form, $feedMetaKeys);
         
-        if (! $feeds) {
+        if (count($feeds) === 0) {
             do_action_deprecated(
                 'fluentform_global_notify_completed',
                 [
@@ -173,6 +173,7 @@ class GlobalNotificationHandler
                     'Use ' . $newAction . ' instead of ' . $oldAction
                 );
 
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name constructed from deprecated hook
                 do_action($newAction, $feed, $formData, $entry, $form);
             }
         }

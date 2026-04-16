@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Modules\Component;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\FormDataParser;
@@ -514,6 +516,7 @@ class Component
 
         if (is_feed()) {
             global $post;
+            /* translators: %s is the website URL */
             $feedText = sprintf(__('The form can be filled in the actual <a href="%s">website url</a>.', 'fluentform'), get_permalink($post));
     
             $feedText = apply_filters_deprecated(
@@ -538,7 +541,7 @@ class Component
         }
 
         $form->fields = json_decode($form->form_fields, true);
-        if (!$form->fields['fields']) {
+        if (!is_array($form->fields) || empty($form->fields['fields'])) {
             return '';
         }
 
@@ -614,6 +617,7 @@ class Component
             wp_enqueue_script('fluent-form-submission');
         }
 
+        /* translators: %activeStep% is the current step number, %totalStep% is the total number of steps, %stepTitle% is the step title */
         $stepText = __('Step %activeStep% of %totalStep% - %stepTitle%', 'fluentform');
     
         $stepText = apply_filters_deprecated(
@@ -653,6 +657,7 @@ class Component
                 'clearIfNotMatch' => false,
             ],
             'nonce'                         => wp_create_nonce(),
+            'file_delete_nonce'             => wp_create_nonce('fluentform_file_delete'),
             'form_id'                       => $form_id,
             'step_change_focus'             => true,
             'has_cleantalk'                 => \FluentForm\App\Modules\Form\CleanTalkHandler::isCleantalkActivated(),
@@ -675,9 +680,37 @@ class Component
             wp_localize_script('fluent-form-submission', 'fluentFormVars', $vars);
         }
 
+        // Localize JavaScript messages for translation
+        $this->localizeJavaScriptMessages($form);
+
+        // Add global messages (only once)
+        if (!wp_script_is('fluent-form-submission', 'done')) {
+            $globalMessages = [
+                'javascript_handler_failed' => __('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again', 'fluentform')
+            ];
+            $globalMessages = apply_filters('fluentform/form_submission_messages', $globalMessages, $form);
+            wp_localize_script('fluent-form-submission', 'fluentform_submission_messages_global', $globalMessages);
+
+            // Add global address messages
+            $globalAddressMessages = [
+                'please_wait' => __('Please wait ...', 'fluentform'),
+                'location_not_determined' => __('Could not determine address from location.', 'fluentform'),
+                'address_fetch_failed' => __('Failed to fetch address from coordinates.', 'fluentform'),
+                'geolocation_failed' => __('Geolocation failed or was denied.', 'fluentform'),
+                'geolocation_not_supported' => __('Geolocation is not supported by this browser.', 'fluentform')
+            ];
+            $globalAddressMessages = apply_filters('fluentform/address_autocomplete_messages', $globalAddressMessages, $form);
+            wp_localize_script('fluent-form-submission', 'fluentform_address_messages_global', $globalAddressMessages);
+        }
+
         $formSettings = $form->settings;
 
         $formSettings = ArrayHelper::only($formSettings, ['layout', 'id']);
+
+        // Ensure restrictions array exists before setting denyEmptySubmission
+        if (!isset($formSettings['restrictions']) || !is_array($formSettings['restrictions'])) {
+            $formSettings['restrictions'] = [];
+        }
 
         $formSettings['restrictions']['denyEmptySubmission'] = [
             'enabled' => false,
@@ -691,6 +724,7 @@ class Component
 
         $form_vars = [
             'id'               => $form->id,
+            'ajaxUrl'          => admin_url('admin-ajax.php'),
             'settings'         => $formSettings,
             'form_instance'    => $instanceCssClass,
             'form_id_selector' => 'fluentform_' . $form->id,
@@ -781,6 +815,16 @@ class Component
      */
     public function replaceEditorSmartCodes($output, $form)
     {
+        // Return early if output is null or empty
+        if ($output === null || $output === '') {
+            return $output;
+        }
+
+        // Return early if form is null to prevent errors
+        if ($form === null) {
+            return $output;
+        }
+
         // Get the patterns for default values from the output HTML string.
         // The example of a pattern would be for user ID: {user.ID}
         preg_match_all('/{(.*?)}/', $output, $matches);
@@ -905,9 +949,19 @@ class Component
         $this->app->addFilter('fluentform/is_form_renderable', function ($isRenderable, $form) {
             $checkables = ['limitNumberOfEntries', 'scheduleForm', 'requireLogin'];
 
-            foreach ($form->settings['restrictions'] as $key => $restrictions) {
+            // Ensure settings is an array
+            if (!is_array($form->settings)) {
+                $form->settings = [];
+            }
+
+            // Ensure restrictions exists and is an array before iterating
+            $restrictions = isset($form->settings['restrictions']) && is_array($form->settings['restrictions'])
+                ? $form->settings['restrictions']
+                : [];
+
+            foreach ($restrictions as $key => $restrictionSettings) {
                 if (in_array($key, $checkables)) {
-                    $isRenderable['status'] = $this->{$key}($restrictions, $form, $isRenderable);
+                    $isRenderable['status'] = $this->{$key}($restrictionSettings, $form, $isRenderable);
                     if (!$isRenderable['status']) {
                         $isRenderable['status'] = false;
                         return $isRenderable;
@@ -916,7 +970,7 @@ class Component
             }
            if($form->status == 'unpublished'){
                $isRenderable['status'] = false;
-               $isRenderable['message'] = apply_filters('fluentform/unpublished_form_submission_message',__('Invalid Form!'));
+               $isRenderable['message'] = apply_filters('fluentform/unpublished_form_submission_message',__('Invalid Form!', 'fluentform'));
            }
 
             return $isRenderable;
@@ -979,7 +1033,7 @@ class Component
         $count = $query->count();
 
         if ($count >= $maxAllowedEntries) {
-            $isRenderable['message'] = $restrictions['limitReachedMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/entry_limit_reached_message', $restrictions['limitReachedMsg'], $form);
             return false;
         }
 
@@ -1004,12 +1058,12 @@ class Component
         $end = strtotime($restrictions['end']);
 
         if ($time < $start) {
-            $isRenderable['message'] = $restrictions['pendingMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/schedule_form_pending_message', $restrictions['pendingMsg'], $form->id);
             return false;
         }
 
         if ($time >= $end) {
-            $isRenderable['message'] = $restrictions['expiredMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/schedule_form_expired_message', $restrictions['expiredMsg'], $form->id);
 
             return false;
         }
@@ -1039,7 +1093,7 @@ class Component
         }
 
         if (!($isLoggedIn = is_user_logged_in())) {
-            $isRenderable['message'] = $restrictions['requireLoginMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/form_requires_login_message', $restrictions['requireLoginMsg'], $form);
         }
 
         return $isLoggedIn;
@@ -1414,5 +1468,65 @@ class Component
             return ob_get_clean();
         });
 
+    }
+
+    private function localizeJavaScriptMessages($form)
+    {
+        // Form submission messages
+        $submissionMessages = [
+            'file_upload_in_progress' => __('File upload in progress. Please wait...', 'fluentform'),
+            'javascript_handler_failed' => __('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again', 'fluentform')
+        ];
+        $submissionMessages = apply_filters('fluentform/form_submission_messages', $submissionMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_submission_messages_' . $form->id, $submissionMessages);
+
+        // Payment handler messages
+        $paymentMessages = [
+            'stock_out_message' => __('This Item is Stock Out', 'fluentform'),
+            'item_label' => __('Item', 'fluentform'),
+            'price_label' => __('Price', 'fluentform'),
+            'qty_label' => __('Qty', 'fluentform'),
+            'line_total_label' => __('Line Total', 'fluentform'),
+            'sub_total_label' => __('Sub Total', 'fluentform'),
+            'discount_label' => __('Discount', 'fluentform'),
+            'total_label' => __('Total', 'fluentform'),
+            'signup_fee_label' => __('Signup Fee', 'fluentform'),
+            'trial_label' => __('Trial', 'fluentform'),
+            'processing_text' => __('Processing...', 'fluentform'),
+            'confirming_text' => __('Confirming...', 'fluentform')
+        ];
+        $paymentMessages = apply_filters('fluentform/payment_handler_messages', $paymentMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_payment_messages_' . $form->id, $paymentMessages);
+
+        // Form save progress messages
+        $saveProgressMessages = [
+            'copy_button' => __('Copy', 'fluentform'),
+            'email_button' => __('Email', 'fluentform'),
+            'email_placeholder' => __('Your Email Here', 'fluentform'),
+            'copy_success' => __('Copied', 'fluentform')
+        ];
+        $saveProgressMessages = apply_filters('fluentform/form_save_progress_messages', $saveProgressMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_save_progress_messages_' . $form->id, $saveProgressMessages);
+
+        // Address autocomplete messages
+        $addressMessages = [
+            'please_wait' => __('Please wait ...', 'fluentform'),
+            'location_not_determined' => __('Could not determine address from location.', 'fluentform'),
+            'address_fetch_failed' => __('Failed to fetch address from coordinates.', 'fluentform'),
+            'geolocation_failed' => __('Geolocation failed or was denied.', 'fluentform'),
+            'geolocation_not_supported' => __('Geolocation is not supported by this browser.', 'fluentform')
+        ];
+        $addressMessages = apply_filters('fluentform/address_autocomplete_messages', $addressMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_address_messages_' . $form->id, $addressMessages);
+
+        // Payment gateway messages
+        $gatewayMessages = [
+            'request_failed' => __('Request failed. Please try again', 'fluentform'),
+            'payment_failed' => __('Payment process failed!', 'fluentform'),
+            'no_method_found' => __('No method found', 'fluentform'),
+            'processing_text' => __('Processing...', 'fluentform')
+        ];
+        $gatewayMessages = apply_filters('fluentform/payment_gateway_messages', $gatewayMessages, $form);
+        wp_localize_script('fluent-form-submission', 'fluentform_gateway_messages_' . $form->id, $gatewayMessages);
     }
 }

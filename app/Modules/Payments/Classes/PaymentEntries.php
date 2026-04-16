@@ -6,6 +6,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+use FluentForm\App\Models\OrderItem;
+use FluentForm\App\Models\Subscription;
+use FluentForm\App\Models\Transaction;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -36,18 +39,35 @@ class PaymentEntries
             'Use fluentform/global_menu instead of fluentform_global_menu.'
         );
         do_action('fluentform/global_menu');
-        echo '<div id="ff_payment_entries"><ff-payment-entries settings_url="'.$settingsUrl.'"></ff-payment-entries><global-search></global-search></div>';
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $settingsUrl is escaped via esc_url
+        echo '<div id="ff_payment_entries"><ff-payment-entries settings_url="'.esc_url($settingsUrl).'"></ff-payment-entries><global-search></global-search></div>';
     }
 
     public function getPayments()
     {
-        Acl::verify('fluentform_view_payments', ArrayHelper::get($_REQUEST, 'form_id'));
-        $perPage = intval($_REQUEST['per_page']);
+        $request = wpFluentForm()->request;
+        $attributes = $request->all();
+        
+        // Sanitize request data
+        $sanitizeMap = [
+            'form_id'          => function ($value) {
+                return Acl::normalizeFormId($value);
+            },
+            'per_page'         => 'intval',
+            'payment_statuses' => 'sanitize_text_field',
+            'payment_types'    => 'sanitize_text_field',
+            'payment_methods'  => 'sanitize_text_field',
+        ];
+        $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+        
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Acl::verify() below
+        Acl::verify('fluentform_view_payments', ArrayHelper::get($attributes, 'form_id'));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Acl::verify() above
+        $perPage = ArrayHelper::get($attributes, 'per_page', 10);
         if(!$perPage) {
             $perPage = 10;
         }
-        $paymentsQuery = wpFluent()->table('fluentform_transactions')
-            ->select([
+        $paymentsQuery = Transaction::select([
                 'fluentform_transactions.id',
                 'fluentform_transactions.form_id',
                 'fluentform_transactions.submission_id',
@@ -66,22 +86,22 @@ class PaymentEntries
             ->join('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_transactions.form_id')
             ->orderBy('fluentform_transactions.id', 'DESC');
 
-        if ($selectedFormId = ArrayHelper::get($_REQUEST, 'form_id')) {
-            $paymentsQuery = $paymentsQuery->where('fluentform_transactions.form_id', intval($selectedFormId));
+        if ($selectedFormId = ArrayHelper::get($attributes, 'form_id')) {
+            $paymentsQuery = $paymentsQuery->where('fluentform_transactions.form_id', $selectedFormId);
         }
 
         $allowFormIds = apply_filters('fluentform/current_user_allowed_forms', false);
-        if ($allowFormIds && is_array($allowFormIds)) {
-            $paymentsQuery = $paymentsQuery->whereIn('fluentform_transactions.form_id', $allowFormIds);
+        if (false !== $allowFormIds && is_array($allowFormIds)) {
+            $paymentsQuery = $paymentsQuery->whereIn('fluentform_transactions.form_id', $allowFormIds ?: [0]);
         }
-        if ($paymentStatus = ArrayHelper::get($_REQUEST, 'payment_statuses')) {
-            $paymentsQuery = $paymentsQuery->where('fluentform_transactions.status', sanitize_text_field($paymentStatus));
+        if ($paymentStatus = ArrayHelper::get($attributes, 'payment_statuses')) {
+            $paymentsQuery = $paymentsQuery->where('fluentform_transactions.status', $paymentStatus);
         }
-        if ($paymentTypes = ArrayHelper::get($_REQUEST, 'payment_types')) {
-            $paymentsQuery = $paymentsQuery->where('fluentform_transactions.transaction_type', sanitize_text_field($paymentTypes));
+        if ($paymentTypes = ArrayHelper::get($attributes, 'payment_types')) {
+            $paymentsQuery = $paymentsQuery->where('fluentform_transactions.transaction_type', $paymentTypes);
         }
-        if ($paymentMethods = ArrayHelper::get($_REQUEST, 'payment_methods')) {
-            $paymentsQuery = $paymentsQuery->where('fluentform_transactions.payment_method', sanitize_text_field($paymentMethods));
+        if ($paymentMethods = ArrayHelper::get($attributes, 'payment_methods')) {
+            $paymentsQuery = $paymentsQuery->where('fluentform_transactions.payment_method', $paymentMethods);
         }
         $paymentsPaginate = $paymentsQuery->paginate($perPage);
 
@@ -105,10 +125,22 @@ class PaymentEntries
     
     public function handleBulkAction()
     {
-        Acl::verify('fluentform_forms_manager');
+        $request = wpFluentForm()->request;
+        $attributes = $request->all();
         
-        $entries    = wp_unslash($_REQUEST['entries']);
-        $actionType = sanitize_text_field($_REQUEST['action_type']);
+        $sanitizeMap = [
+            'entries' => function($value) {
+                if (is_array($value)) {
+                    return array_map('intval', $value);
+                }
+                return [];
+            },
+            'action_type' => 'sanitize_text_field',
+        ];
+        $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+        
+        $entries = ArrayHelper::get($attributes, 'entries', []);
+        $actionType = ArrayHelper::get($attributes, 'action_type');
         if (!$actionType || !count($entries)) {
             wp_send_json_error([
                 'message' => __('Please select entries & action first', 'fluentform')
@@ -119,13 +151,12 @@ class PaymentEntries
         $statusCode = 400;
         // permanently delete payment entries from transactions
         if ($actionType == 'delete_items') {
-    
-            
             // get submission ids to delete order items
-            $transactionData =  wpFluent()->table('fluentform_transactions')
-                                          ->select(['form_id','submission_id'])
-                                          ->whereIn ('fluentform_transactions.id',$entries)
-                                          ->get();
+            $transactionData = Transaction::select(['id', 'form_id', 'submission_id'])
+                ->whereIn('id', $entries)
+                ->get();
+
+            $this->authorizeTransactionForms($transactionData);
 
             $submission_ids = [];
 
@@ -134,7 +165,7 @@ class PaymentEntries
             }
 
             try {
-                if( !$submission_ids || !$transactionData ){
+                if (!$submission_ids || count($transactionData) === 0 ) {
                     throw new \Exception(__('Invalid transaction id', 'fluentform'));
                 }
                 do_action_deprecated(
@@ -150,16 +181,13 @@ class PaymentEntries
                 do_action('fluentform/before_entry_payment_deleted', $entries, $transactionData);
     
                 //delete data from transaction table
-                wpFluent()->table('fluentform_transactions')
-                          ->whereIn('id', $entries)->delete();
-                
+                Transaction::whereIn('id', $entries)->delete();
+
                 //delete data from order table
-                wpFluent()->table('fluentform_order_items')
-                          ->whereIn('submission_id', $submission_ids)->delete();
+                OrderItem::whereIn('submission_id', $submission_ids)->delete();
 
                 // delete data from subscriptions table
-	            wpFluent()->table('fluentform_subscriptions')
-		            ->whereIn('submission_id', $submission_ids)->delete();
+                Subscription::whereIn('submission_id', $submission_ids)->delete();
                 
                 //add log in each form that payment record has been deleted
                 foreach ($transactionData as $data){
@@ -199,10 +227,28 @@ class PaymentEntries
         ], $statusCode);
     }
 
+    private function authorizeTransactionForms($transactionData)
+    {
+        Acl::verify('fluentform_forms_manager');
+
+        $formIds = [];
+
+        foreach ($transactionData as $transaction) {
+            $formIds[(int) $transaction->form_id] = true;
+        }
+
+        foreach (array_keys($formIds) as $formId) {
+            if (!Acl::hasPermission('fluentform_forms_manager', $formId)) {
+                wp_send_json_error([
+                    'message' => __('You do not have permission to perform this action.', 'fluentform')
+                ], 422);
+            }
+        }
+    }
+
     public function getFilters()
     {
-        $transactionTypes = wpFluent()->table('fluentform_transactions')
-            ->select('transaction_type')
+        $transactionTypes = Transaction::select('transaction_type')
             ->groupBy('transaction_type')
             ->get();
         // Define transaction type labels
@@ -222,8 +268,7 @@ class PaymentEntries
             ];
         }
         
-        $statuses = wpFluent()->table('fluentform_transactions')
-            ->select('status')
+        $statuses = Transaction::select('status')
             ->groupBy('status')
             ->get();
         $statusTypes = PaymentHelper::getPaymentStatuses();
@@ -232,10 +277,9 @@ class PaymentEntries
             $formattedStatuses[] = ArrayHelper::get($statusTypes, $status->status, $status->status);
         }
         $allowFormIds = apply_filters('fluentform/current_user_allowed_forms', false);
-        $forms = wpFluent()->table('fluentform_transactions')
-            ->select('fluentform_transactions.form_id', 'fluentform_forms.title')
-            ->when($allowFormIds && is_array($allowFormIds), function ($q) use ($allowFormIds){
-                return $q->whereIn('fluentform_transactions.form_id', $allowFormIds);
+        $forms = Transaction::select('fluentform_transactions.form_id', 'fluentform_forms.title')
+            ->when(false !== $allowFormIds && is_array($allowFormIds), function ($q) use ($allowFormIds){
+                return $q->whereIn('fluentform_transactions.form_id', $allowFormIds ?: [0]);
             })
             ->groupBy('fluentform_transactions.form_id')
             ->orderBy('fluentform_transactions.form_id', 'DESC')
@@ -250,8 +294,7 @@ class PaymentEntries
             ];
         }
 
-        $paymentMethods = wpFluent()->table('fluentform_transactions')
-            ->select('payment_method')
+        $paymentMethods = Transaction::select('payment_method')
             ->groupBy('payment_method')
             ->get();
 

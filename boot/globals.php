@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\BaseComponent;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;
@@ -36,6 +38,7 @@ if (!function_exists('dd')) {
  *
  * @return mixed
  */
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
 function wpFluentForm($key = null)
 {
     return \FluentForm\App\App::make($key);
@@ -57,6 +60,7 @@ if (! function_exists('wpFluent')) {
     /**
      * @return \FluentForm\Framework\Database\Query\Builder|\FluentForm\Framework\Database\Query\WPDBConnection
      */
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
     function wpFluent()
     {
         return wpFluentForm('db');
@@ -64,6 +68,7 @@ if (! function_exists('wpFluent')) {
 }
 
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
 function wpFluentFormAddComponent(BaseComponent $component)
 {
     return $component->_init();
@@ -178,6 +183,7 @@ function fluentform_get_active_theme_slug()
     return get_option('template');
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
 function getFluentFormCountryList()
 {
     static $countries = null;
@@ -195,6 +201,7 @@ function fluentFormWasSubmitted($action = 'fluentform_submit')
 }
 
 if (!function_exists('isWpAsyncRequest')) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Global helper function, part of plugin API
     function isWpAsyncRequest($action)
     {
         return false !== strpos(wpFluentForm('request')->get('action'), $action);
@@ -230,7 +237,7 @@ function fluentFormHandleScheduledTasks()
 {
     $failedActions = wpFluent()->table('ff_scheduled_actions')->where('status', 'failed')->where('retry_count', '<', 4)->get();
 
-    if ($failedActions) {
+    if (count($failedActions)) {
         $scheduler = wpFluentForm('fluentFormAsyncRequest');
 
         foreach ($failedActions as $action) {
@@ -238,7 +245,7 @@ function fluentFormHandleScheduledTasks()
         }
     }
 
-    $rand = mt_rand(1, 10);
+    $rand = wp_rand(1, 10);
     if ($rand >= 5) {
         do_action('fluentform/maybe_scheduled_jobs');
     }
@@ -267,7 +274,7 @@ function fluentFormApi($module = 'forms')
         return new \FluentForm\App\Api\Submission();
     }
 
-    throw new \Exception('No Module found with name ' . $module);
+    throw new \Exception(esc_html('No Module found with name ' . $module));
 }
 
 function fluentFormGetRandomPhoto()
@@ -432,7 +439,11 @@ function fluentform_sanitize_html($html)
 
 function fluentform_kses_js($content)
 {
-    return $content ? preg_replace('/<script.*?>[\s\S]*<\/script>/is', '', $content) : '';
+    if (!$content) {
+        return '';
+    }
+
+    return preg_replace('/<\/?script[^>]*>/is', '', $content);
 }
 
 /**
@@ -467,6 +478,15 @@ function fluentform_backend_sanitizer($inputs, $sanitizeMap = [])
  */
 function fluentformSanitizeCSS($css)
 {
+    if ($css === null || $css === '') {
+        return '';
+    }
+
+    // Convert to string if not already
+    if (!is_string($css)) {
+        $css = (string) $css;
+    }
+    
     return preg_match('#</?\w+#', $css) ? '' : $css;
 }
 

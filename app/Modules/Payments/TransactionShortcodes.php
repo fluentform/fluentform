@@ -3,6 +3,9 @@
 namespace FluentForm\App\Modules\Payments   ;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Subscription;
+use FluentForm\App\Models\Transaction;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\Classes\PaymentReceipt;
 use FluentForm\App\Modules\Payments\Orders\OrderData;
@@ -54,11 +57,11 @@ class TransactionShortcodes
         if ($atts['type'] == 'all' || $atts['type'] == 'subscriptions') {
             $subscriptionsHtml = $this->getSubscriptionsHtml($userId, $viewConfig, $atts);
             if ($subscriptionsHtml) {
-                wp_enqueue_script('fluentform_transactions', fluentformMix('js/fluentform_transactions_ui.js'), ['jquery'], FLUENTFORM_VERSION, true);
+                wp_enqueue_script('fluentform_transactions', fluentFormMix('js/fluentform_transactions_ui.js'), ['jquery'], FLUENTFORM_VERSION, true);
 
                 wp_enqueue_style(
                     'fluentform_transactions',
-                    fluentformMix('css/fluentform_transactions.css'),
+                    fluentFormMix('css/fluentform_transactions.css'),
                     [],
                     FLUENTFORM_VERSION
                 );
@@ -90,7 +93,10 @@ class TransactionShortcodes
 
     public function registerReceiptShortcode($atts, $content = '')
     {
-       $data = $_REQUEST;
+       // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a public shortcode for displaying receipt
+       $data = [
+           'transaction' => isset($_REQUEST['transaction']) ? sanitize_text_field(wp_unslash($_REQUEST['transaction'])) : '',
+       ];
        return $this->renderPaymentReceiptPage($data, false);
     }
 
@@ -103,7 +109,7 @@ class TransactionShortcodes
         if(!$transaction) {
             if($echo) {
                 status_header(200);
-                echo __('Sorry no transaction found', 'fluentform');
+                echo esc_html__('Sorry no transaction found', 'fluentform');
                 exit(200);
             }
             return '';
@@ -125,7 +131,7 @@ class TransactionShortcodes
         }
 
         add_action('wp_enqueue_scripts', function () {
-            wp_enqueue_style('fluent-form-landing', fluentformMix('css/frameless.css'), [], FLUENTFORM_VERSION);
+            wp_enqueue_style('fluent-form-landing', fluentFormMix('css/frameless.css'), [], FLUENTFORM_VERSION);
         });
 
         $form = fluentFormApi('forms')->find($transaction->form_id);
@@ -138,6 +144,7 @@ class TransactionShortcodes
         ];
 
         add_filter('pre_get_document_title', function ($title) use ($data) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- document_title_separator is a WordPress core hook
             return $data['title'] . ' ' . apply_filters('document_title_separator', '-') . ' ' . $data['form']->title;
         });
 
@@ -146,17 +153,19 @@ class TransactionShortcodes
         extract($data);
         ob_start();
         include($file);
-        echo  ob_get_clean();
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Complete HTML template output with pre-sanitized content from view file
+        echo ob_get_clean();
         exit(200);
     }
 
     public function routeAjaxEndpoints()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by verifyNonce() method below
         $route = sanitize_text_field(ArrayHelper::get($_REQUEST, 'route'));
         $this->verifyNonce();
         if ($route == 'get_subscription_transactions') {
             $this->sendSubscriptionPayments();
-        } else if ('cancel_transaction') {
+        } else if ($route == 'cancel_transaction') {
             $this->cancelSubscriptionAjax();
         }
     }
@@ -172,7 +181,7 @@ class TransactionShortcodes
             'statuses'   => ArrayHelper::get($atts, 'subscription_statuses', [])
         ]);
 
-        if (!$subscriptions) {
+        if (!count($subscriptions)) {
             return '';
         }
 
@@ -182,6 +191,7 @@ class TransactionShortcodes
 
             if ($subscription->status == 'active') {
                 if ($subscription->bill_times) {
+                    /* translators: 1: number of payments */
                     $billingText = sprintf(esc_html__('Will be cancelled after %d payments', 'fluentform'), $subscription->bill_times);
                 } else {
                     $billingText = __('will be billed until cancelled', 'fluentform');
@@ -212,7 +222,7 @@ class TransactionShortcodes
             'statuses'          => ArrayHelper::get($atts, 'payment_statuses', [])
         ]);
 
-        if (!$transactions) {
+        if (!count($transactions)) {
             return '';
         }
 
@@ -222,12 +232,9 @@ class TransactionShortcodes
             $transaction->formatted_date = date_i18n($viewConfig['date_time_format'], strtotime($transaction->created_at));
 
             if (!$transaction->transaction_hash) {
-                $hash = md5(wp_generate_uuid4() . mt_rand(0, 1000));
-                wpFluent()->table('fluentform_transactions')
-                    ->where('id', $transaction->id)
-                    ->update([
-                        'transaction_hash' => $hash
-                    ]);
+                $hash = md5(wp_generate_uuid4() . wp_rand(0, 1000));
+                Transaction::where('id', $transaction->id)
+                    ->update(['transaction_hash' => $hash]);
                 $transaction->transaction_hash = $hash;
             }
 
@@ -251,6 +258,7 @@ class TransactionShortcodes
 
     public function sendSubscriptionPayments()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by verifyNonce() in routeAjaxEndpoints()
         $subscriptionId = intval(ArrayHelper::get($_REQUEST, 'subscription_id'));
 
         if (!$subscriptionId) {
@@ -261,8 +269,7 @@ class TransactionShortcodes
 
         $userId = get_current_user_id();
 
-        $subscription = wpFluent()->table('fluentform_subscriptions')
-            ->select(['fluentform_subscriptions.*', 'fluentform_submissions.user_id'])
+        $subscription = Subscription::select(['fluentform_subscriptions.*', 'fluentform_submissions.user_id'])
             ->where('fluentform_submissions.user_id', $userId)
             ->where('fluentform_subscriptions.id', $subscriptionId)
             ->join('fluentform_submissions', 'fluentform_submissions.id', '=', 'fluentform_subscriptions.submission_id')
@@ -276,7 +283,7 @@ class TransactionShortcodes
 
         $transactions = fluentFormApi('submissions')->transactionsBySubscriptionId($subscription->id);
 
-        if (!$transactions) {
+        if (!count($transactions)) {
             wp_send_json_error([
                 'message' => __('Sorry, no related payments found', 'fluentform'),
             ], 423);
@@ -286,12 +293,9 @@ class TransactionShortcodes
 
         foreach ($transactions as $transaction) {
             if (!$transaction->transaction_hash) {
-                $hash = md5(wp_generate_uuid4() . mt_rand(0, 1000));
-                wpFluent()->table('fluentform_transactions')
-                    ->where('id', $transaction->id)
-                    ->update([
-                        'transaction_hash' => $hash
-                    ]);
+                $hash = md5(wp_generate_uuid4() . wp_rand(0, 1000));
+                Transaction::where('id', $transaction->id)
+                    ->update(['transaction_hash' => $hash]);
                 $transaction->transaction_hash = $hash;
             }
 
@@ -383,7 +387,8 @@ class TransactionShortcodes
 
     private function verifyNonce()
     {
-        $nonce = sanitize_text_field($_REQUEST['_nonce']);
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce verification happens immediately below
+        $nonce = isset($_REQUEST['_nonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_nonce'])) : '';
         if (!wp_verify_nonce($nonce, 'fluentform_transactions')) {
             wp_send_json_error([
                 'message' => __('Security validation failed. Please try again', 'fluentform')
@@ -431,6 +436,7 @@ class TransactionShortcodes
 
     public function cancelSubscriptionAjax()
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by verifyNonce() in routeAjaxEndpoints()
         $subscriptionId = ArrayHelper::get($_REQUEST, 'subscription_id');
 
         if (!$subscriptionId) {
@@ -447,10 +453,16 @@ class TransactionShortcodes
         $userid = get_current_user_id();
         $submission = fluentFormApi('submissions')->find($subscription->submission_id);
 
-        if (!$submission && $submission->user_id != $userid || $this->canCancelSubscription($submission)) {
+        if (!$submission || !$this->canCancelSubscription($subscription)) {
             $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
         }
-    
+
+        $canManagePayments = Acl::hasPermission('fluentform_manage_payments', $submission->form_id);
+
+        if (!$canManagePayments && (int) $submission->user_id !== (int) $userid) {
+            $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
+        }
+
         $handler = apply_filters_deprecated(
             'fluentform_payment_manager_class_' . $submission->payment_method,
             [

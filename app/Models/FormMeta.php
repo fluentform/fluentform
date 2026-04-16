@@ -4,6 +4,7 @@ namespace FluentForm\App\Models;
 
 use FluentForm\Framework\Support\Arr;
 
+// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- This class uses custom meta table (fluentform_form_meta), not WordPress postmeta
 class FormMeta extends Model
 {
     /**

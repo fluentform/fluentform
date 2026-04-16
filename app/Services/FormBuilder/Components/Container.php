@@ -49,7 +49,7 @@ class Container extends BaseComponent
 
         $container_css_class = $this->wrapperClass . ' ff_columns_total_' . count($data['columns']);
         if ($containerClass) {
-            $container_css_class = $container_css_class . ' ' . strip_tags($containerClass);
+            $container_css_class = $container_css_class . ' ' . wp_strip_all_tags($containerClass);
         }
 
         $atts = $this->buildAttributes(
@@ -59,7 +59,7 @@ class Container extends BaseComponent
         $columnClass = $this->columnClass;
         echo '<div ' . $atts . " class='" . esc_attr($container_css_class) . "'>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
         if (isset($data['settings']['label'])) {
-            echo '<strong>' . fluentform_sanitize_html($data['settings']['label']) . '</strong>';
+            echo '<strong>' . fluentform_sanitize_html($data['settings']['label']) . '</strong>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped using fluentform_sanitize_html
         }
         foreach ($data['columns'] as $columnIndex => $column) {
             if (! isset($column['width'])) {

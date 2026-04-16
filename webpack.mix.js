@@ -15,7 +15,8 @@ if (!mix.inProduction()) {
     // During production build we'll remove the existing public
     // directory so that the source-maps are deleted as well.
     let fs = require('fs-extra');
-    fs.remove('assets');
+    fs.removeSync('assets');
+    mix.sourceMaps(false);
 }
 
 mix.webpackConfig({
@@ -60,6 +61,7 @@ mix
     .js('resources/assets/admin/AllEntries/all-entries.js', `assets/js/all_entries.js`)
     .js('resources/assets/admin/Reports/reports.js', `assets/js/reports.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `assets/js/conversational_design.js`)
+    .js('resources/assets/elementor/fluent-forms-elementor-widget.js', `assets/js/fluent-forms-elementor-widget.js`)
     .vue({
         version: 2,
         extractStyles: true

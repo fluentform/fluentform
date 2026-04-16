@@ -1,3 +1,8 @@
+<?php
+
+defined('ABSPATH') or die;
+
+?>
 <style>
     #no_permission_page {
         background: #fff;
@@ -24,7 +29,7 @@ do_action_deprecated(
 
 <div id="no_permission_page">
     <div class="wp-die-message">
-        <?php echo __('Sorry, you are not allowed to access this page.', 'fluentform'); ?>
+        <?php esc_html_e('Sorry, you are not allowed to access this page.', 'fluentform'); ?>
     </div>
 </div>
 

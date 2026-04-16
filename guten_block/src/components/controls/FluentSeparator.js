@@ -1,17 +1,6 @@
-/**
- * Fluent Forms Separator Component
- */
-
 const { __ } = wp.i18n;
-
-/**
- * Fluent Forms Separator Component
- *
- * @param {Object} props Component props
- * @param {string} props.label Optional label to display in the separator
- * @param {string} props.className Additional CSS class
- * @param {string} props.style Style of separator (default, dashed, dotted)
- */
+const { memo } = wp.element;
+import { arePropsEqual } from "../utils/ComponentUtils";
 const FluentSeparator = ({
     label = '',
     className = '',
@@ -30,4 +19,6 @@ const FluentSeparator = ({
     return <hr className={separatorClass} />;
 };
 
-export default FluentSeparator;
+export default memo(FluentSeparator, (prevProps, nextProps) => {
+    return arePropsEqual(prevProps, nextProps, ['label', 'className', 'style']);
+});
