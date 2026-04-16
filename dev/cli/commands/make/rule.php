@@ -4,14 +4,15 @@
  * Creates a custom validation rule class inside the app/Http/Rules folder.
  */
 (function($pluginDir, $args) {
+    $target = wpf_generator_target($args[1]);
     $composerFile = $pluginDir . '/composer.json';
-    $file = $pluginDir . '/app/Http/Rules/' . $args[1] . '.php';
+    $file = $pluginDir . '/app/Http/Rules/' . $target . '.php';
     $composer = json_decode(file_get_contents($composerFile), true);
     $namespace = $composer['extra']['wpfluent']['namespace']['current'];
-    $pieces = explode('/', $args[1]);
+    $pieces = explode('/', $target);
     $name = array_pop($pieces);
     $sub = implode('\\', $pieces);
-    $fqn = $namespace.'\App\Http\Rules\\'.ltrim($sub, '\\');
+    $fqn = wpf_namespace_join($namespace . '\App\Http\Rules', $sub);
 
     $content = <<<TEXT
     <?php

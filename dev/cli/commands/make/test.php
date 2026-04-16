@@ -4,8 +4,9 @@
  * Creates a test class for writing unit tests.
  */
 (function($pluginDir, $args) {
-    $file = $pluginDir . '/dev/test/tests/' . $args[1] . '.php';
-    $pieces = explode('/', $args[1]);
+    $target = wpf_generator_target($args[1]);
+    $file = $pluginDir . '/dev/test/tests/' . $target . '.php';
+    $pieces = explode('/', $target);
     $name = array_pop($pieces);
     $sub = implode('\\', $pieces);
     $fqn = 'Dev\Test\Tests\\'.ltrim($sub, '\\');

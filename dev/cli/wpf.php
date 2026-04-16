@@ -2,8 +2,9 @@
 
 $args = array_slice($argvals, 1);
 $command = isset($args[0]) ? $args[0] : null;
+$isMakeCommand = is_string($command) && strpos($command, 'make:') === 0;
 
-if (!defined('ABSPATH') && $command && !in_array($command, ['init', 'test'], true)) {
+if (!defined('ABSPATH') && $command && !$isMakeCommand && !in_array($command, ['init', 'test'], true)) {
 	require_once $cwd."/../../../wp-load.php";
 }
 

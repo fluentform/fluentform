@@ -4,8 +4,9 @@
  * Creates a factory class for generating data.
  */
 (function($pluginDir, $args) {
-    $file = $pluginDir . '/dev/factories/' . $args[1] . '.php';
-    $pieces = explode('/', $args[1]);
+    $target = wpf_generator_target($args[1]);
+    $file = $pluginDir . '/dev/factories/' . $target . '.php';
+    $pieces = explode('/', $target);
     $name = array_pop($pieces);
     $sub = implode('\\', $pieces);
     $fqn = rtrim('Dev\Factories\\'.ltrim($sub, '\\'), '\\');

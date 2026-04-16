@@ -4,14 +4,15 @@
  * Creates a request class inside the app/Http/Requests folder.
  */
 (function($pluginDir, $args) {
+    $target = wpf_generator_target($args[1]);
     $composerFile = $pluginDir . '/composer.json';
-    $file = $pluginDir . '/app/Http/Requests/' . $args[1] . '.php';
+    $file = $pluginDir . '/app/Http/Requests/' . $target . '.php';
     $composer = json_decode(file_get_contents($composerFile), true);
     $namespace = $composer['extra']['wpfluent']['namespace']['current'];
-    $pieces = explode('/', $args[1]);
+    $pieces = explode('/', $target);
     $name = array_pop($pieces);
     $sub = implode('\\', $pieces);
-    $fqn = $namespace.'\App\Http\Requests\\'.ltrim($sub, '\\');
+    $fqn = wpf_namespace_join($namespace . '\App\Http\Requests', $sub);
 
     $content = <<<TEXT
     <?php

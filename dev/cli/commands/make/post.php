@@ -4,14 +4,15 @@
  * Creates a custom post class to register CPT inside the app/CPT folder.
  */
 (function($pluginDir, $args) {
+    $target = wpf_generator_target($args[1]);
     $composerFile = $pluginDir . '/composer.json';
-    $file = $pluginDir . '/app/CPT/' . $args[1] . '.php';
+    $file = $pluginDir . '/app/CPT/' . $target . '.php';
     $composer = json_decode(file_get_contents($composerFile), true);
     $namespace = $composer['extra']['wpfluent']['namespace']['current'];
-    $pieces = explode('/', $args[1]);
+    $pieces = explode('/', $target);
     $name = array_pop($pieces);
     $sub = implode('\\', $pieces);
-    $fqn = $namespace.'\App\CPT\\'.ltrim($sub, '\\');
+    $fqn = wpf_namespace_join($namespace . '\App\CPT', $sub);
 
     $postTypeName = strtolower($name);
     $appConfig = require $pluginDir . '/config/app.php';

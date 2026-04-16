@@ -187,3 +187,18 @@ if (!function_exists('deleteDirectory')) {
 	    }
 	}
 }
+
+if (!function_exists('wpf_generator_target')) {
+	function wpf_generator_target($target) {
+		return preg_replace('/\.php$/i', '', trim($target));
+	}
+}
+
+if (!function_exists('wpf_namespace_join')) {
+	function wpf_namespace_join($base, $suffix = '') {
+		$base = trim($base, '\\');
+		$suffix = trim($suffix, '\\');
+
+		return $suffix === '' ? $base : $base . '\\' . $suffix;
+	}
+}
