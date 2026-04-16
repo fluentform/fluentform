@@ -186,7 +186,11 @@ class Submission extends Model
     public function paginateEntries($attributes = [])
     {
         $formId = Arr::get($attributes, 'form_id');
+        $allowFormIds = FormManagerService::getUserAllowedFormsScope();
         $query = $this->customQuery($attributes);
+        $query = $query->when(false !== $allowFormIds, function ($q) use ($allowFormIds) {
+            return $q->whereIn('fluentform_submissions.form_id', $allowFormIds ?: [0]);
+        });
         if (Arr::get($attributes, 'advanced_filter')) {
             $query = apply_filters('fluentform/apply_entries_advance_filter', $query, $attributes);
         }
