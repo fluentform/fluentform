@@ -150,6 +150,12 @@ class Updater
             'description'               => 'fluentform_sanitize_html',
             'grid_columns'              => [Helper::class, 'sanitizeArrayKeysAndValues'],
             'grid_rows'                 => [Helper::class, 'sanitizeArrayKeysAndValues'],
+            'enable_crop'               => 'sanitize_text_field',
+            'crop_mode'                 => 'sanitize_text_field',
+            'crop_ratio'                => 'sanitize_text_field',
+            'crop_width'                => 'absint',
+            'crop_height'               => 'absint',
+            'enforce_image_dimensions'  => 'sanitize_text_field',
         ];
       
 

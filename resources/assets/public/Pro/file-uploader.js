@@ -136,7 +136,38 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     return null;
                 }
 
-                return form.file_upload_settings[fieldName];
+                return normalizeCropSettings(form.file_upload_settings[fieldName]);
+            }
+
+            function normalizeCropSettings(settings) {
+                if (!settings) {
+                    return null;
+                }
+
+                const mode = settings.mode || settings.crop_mode || (
+                    settings.enforce_image_dimensions === 'yes' ? 'dimensions' : 'ratio'
+                );
+
+                const width = Number(
+                    typeof settings.width !== 'undefined' ? settings.width : settings.crop_width
+                ) || 0;
+                const height = Number(
+                    typeof settings.height !== 'undefined' ? settings.height : settings.crop_height
+                ) || 0;
+
+                return {
+                    enabled: typeof settings.enabled !== 'undefined'
+                        ? settings.enabled
+                        : settings.enable_crop === 'yes',
+                    mode: mode,
+                    crop_ratio: settings.crop_ratio || 'free',
+                    enforce_size: typeof settings.enforce_size !== 'undefined'
+                        ? settings.enforce_size
+                        : mode === 'dimensions',
+                    width: width,
+                    height: height,
+                    button_ui: settings.button_ui || settings.upload_bttn_ui || ''
+                };
             }
 
             function getCropAspectRatio(settings) {
@@ -244,7 +275,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                             </div>
                             <div class="ff-cropper-lightbox__body">
                                 <div class="ff-cropper-lightbox__canvas">
-                                    <img alt="${file.name}">
+                                    <img alt="">
                                 </div>
                                 <div class="ff-cropper-lightbox__hint"></div>
                                 <div class="ff-cropper-lightbox__error" aria-live="polite"></div>
@@ -260,6 +291,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     document.body.appendChild(modal);
 
                     const image = modal.querySelector('img');
+                    image.alt = file.name;
                     const errorEl = modal.querySelector('.ff-cropper-lightbox__error');
                     const hintEl = modal.querySelector('.ff-cropper-lightbox__hint');
                     const requiredWidth = Number(cropSettings.width) || 0;

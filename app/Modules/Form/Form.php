@@ -446,6 +446,12 @@ class Form
             'unique_validation_message' => 'sanitize_text_field',
             'advanced_options'          => 'fluentform_options_sanitize',
             'html_codes'                => 'fluentform_sanitize_html',
+            'enable_crop'               => 'sanitize_text_field',
+            'crop_mode'                 => 'sanitize_text_field',
+            'crop_ratio'                => 'sanitize_text_field',
+            'crop_width'                => 'absint',
+            'crop_height'               => 'absint',
+            'enforce_image_dimensions'  => 'sanitize_text_field',
         ];
         $settingsKeys = array_keys($settingsMap);
         $stylePrefMap = [
