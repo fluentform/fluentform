@@ -1,0 +1,32 @@
+openapi: 3.1.0
+info:
+  title: Fluent Forms Contract Seed
+  version: 0.1.0
+  description: >
+    Optional OpenAPI contract for REST-facing work in this plugin. Extend this file
+    only when a change introduces or modifies REST endpoints and you want a contract
+    source of truth for generation or validation.
+servers:
+  - url: /wp-json/fluentform/v1
+tags:
+  - name: forms
+    description: Form management endpoints to be defined through OpenSpec changes.
+  - name: submissions
+    description: Submission endpoints to be defined through OpenSpec changes.
+paths: {}
+components:
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+      required:
+        - code
+        - message

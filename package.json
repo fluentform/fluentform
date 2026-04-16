@@ -1,6 +1,11 @@
 {
     "scripts": {
+        "ai:review": "node scripts/ai-review/orchestrator.mjs",
+        "ai:review:push": "node scripts/ai-review/orchestrator.mjs --mode=pre-push",
+        "ai:change": "node scripts/ai-review/new-change.mjs",
+        "ai:dashboard": "node scripts/ai-review/dashboard.mjs",
         "dev": "mix",
+        "hooks:install": "sh scripts/install-git-hooks.sh",
         "watch": "mix watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",

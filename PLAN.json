@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "project": {
+    "name": "Fluent Forms",
+    "type": "wordpress-plugin"
+  },
+  "review": {
+    "minimumConsensus": 1,
+    "blockOnSeverity": [
+      "high",
+      "critical"
+    ],
+    "writeTasksOnManualRun": true,
+    "writeTasksOnPrePush": false,
+    "maxDiffBytes": 120000
+  },
+  "models": [
+    {
+      "id": "qwen-local",
+      "provider": "openai-compatible",
+      "model": "qwen2.5-coder-7b-instruct",
+      "role": "reviewer",
+      "enabled": true,
+      "baseUrl": "http://127.0.0.1:1234/v1",
+      "apiKeyEnv": "LM_STUDIO_API_KEY"
+    },
+    {
+      "id": "gemini-remote",
+      "provider": "gemini",
+      "model": "gemini-model-here",
+      "role": "reviewer",
+      "enabled": false,
+      "apiKeyEnv": "GEMINI_API_KEY"
+    }
+  ],
+  "qualityGates": [
+    {
+      "name": "php-syntax",
+      "type": "php-lint-changed",
+      "enabled": true
+    },
+    {
+      "name": "node-production-build",
+      "type": "command",
+      "command": "npm run production",
+      "enabled": false
+    },
+    {
+      "name": "phpunit",
+      "type": "command",
+      "command": "vendor/bin/phpunit",
+      "enabled": false
+    },
+    {
+      "name": "wp-cli-smoke",
+      "type": "command",
+      "command": "wp plugin list --path=/Volumes/Projects/work/forms",
+      "enabled": false
+    }
+  ],
+  "openspec": {
+    "defaultSpec": "plugin-platform",
+    "changesDir": "openspec/changes",
+    "specsDir": "openspec/specs"
+  },
+  "openapi": {
+    "path": "openapi.yaml",
+    "phpTargetNamespace": "FluentForm\\\\App\\\\Http\\\\Controllers",
+    "frontendTarget": "resources"
+  }
+}
