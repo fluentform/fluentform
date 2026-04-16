@@ -13,11 +13,14 @@ use FluentForm\App\Services\FormBuilder\EditorShortCode;
  * so the $app is not available here, only declare functions here.
  */
 
-//if ('dev' == $app->config->get('app.env')) {
-//    $globalsDevFile = __DIR__ . '/globals_dev.php';
-//
-//    is_readable($globalsDevFile) && include $globalsDevFile;
-//}
+if (isset($app) && 'dev' === $app->config->get('app.env')) {
+    foreach ([__DIR__ . '/../dev/globals.php', __DIR__ . '/globals_dev.php'] as $globalsDevFile) {
+        if (is_readable($globalsDevFile)) {
+            include_once $globalsDevFile;
+            break;
+        }
+    }
+}
 
 if (!function_exists('dd')) {
     // function dd()
