@@ -249,10 +249,33 @@ class SettingsService
     {
         $conversationalForm = new FluentConversational();
 
+        $form = Form::find($formId);
+        $defaultSlug = $form ? sanitize_title($form->title) : '';
+
+        $prettyUrlData = [
+            'slug'       => $defaultSlug,
+            'enabled'    => false,
+            'pretty_url' => '',
+            'base_slug'  => 'form',
+        ];
+
+        // Get pretty URL data from Pro's service if available
+        if (defined('FLUENTFORMPRO') && class_exists('FluentFormPro\classes\SharePage\FormPrettyUrlService')) {
+            $savedSlug = \FluentFormPro\classes\SharePage\FormPrettyUrlService::getSlug($formId);
+
+            $prettyUrlData = [
+                'slug'       => $savedSlug ?: \FluentFormPro\classes\SharePage\FormPrettyUrlService::generateSlug($form->title ?? '', $formId),
+                'enabled'    => \FluentFormPro\classes\SharePage\FormPrettyUrlService::isEnabled($formId),
+                'pretty_url' => \FluentFormPro\classes\SharePage\FormPrettyUrlService::getFormPrettyUrl($formId) ?: '',
+                'base_slug'  => \FluentFormPro\classes\SharePage\FormPrettyUrlService::getBaseSlug(),
+            ];
+        }
+
         return [
             'design_settings' => $conversationalForm->getDesignSettings($formId),
             'meta_settings'   => $conversationalForm->getMetaSettings($formId),
             'has_pro'         => defined('FLUENTFORMPRO'),
+            'pretty_url'      => $prettyUrlData,
         ];
     }
 
@@ -297,9 +320,36 @@ class SettingsService
         }
 
         $shareUrl = add_query_arg($params, Helper::getFrontendFacingUrl());
+
+        // Handle pretty URL settings (Pro only)
+        $savedSlug = '';
+        $prettyUrlFull = '';
+        if (defined('FLUENTFORMPRO') && class_exists('FluentFormPro\classes\SharePage\FormPrettyUrlService')) {
+            $prettyUrlData = Arr::get($attributes, 'pretty_url', []);
+            if (!empty($prettyUrlData)) {
+                $slug = sanitize_text_field(Arr::get($prettyUrlData, 'slug', ''));
+                $slugEnabled = (bool) Arr::get($prettyUrlData, 'enabled', false);
+                try {
+                    $savedSlug = \FluentFormPro\classes\SharePage\FormPrettyUrlService::saveSlug($formId, $slug, $slugEnabled);
+                    $prettyUrlFull = \FluentFormPro\classes\SharePage\FormPrettyUrlService::getFormPrettyUrl($formId);
+                } catch (\Exception $e) {
+                    // Slug conflict - return error
+                    return [
+                        'message'    => $e->getMessage(),
+                        'share_url'  => $shareUrl,
+                        'pretty_url' => '',
+                        'slug'       => '',
+                        'error'      => true,
+                    ];
+                }
+            }
+        }
+
         return [
-            'message'   => __('Settings successfully updated','fluentform'),
-            'share_url' => $shareUrl,
+            'message'    => __('Settings successfully updated', 'fluentform'),
+            'share_url'  => $shareUrl,
+            'pretty_url' => $prettyUrlFull,
+            'slug'       => $savedSlug,
         ];
     }
 

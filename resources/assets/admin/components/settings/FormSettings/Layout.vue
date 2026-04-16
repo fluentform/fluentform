@@ -607,6 +607,35 @@
 
                 </el-form-item>
 
+                <!-- Pretty URL Base Slug -->
+                <el-form-item class="ff-form-item">
+                    <template slot="label">
+                        {{ $t('Pretty URL Base Slug') }}
+                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                            <div slot="content">
+                                <p>
+                                    {{ $t('Set the base slug for pretty URLs used in Landing Pages and Conversational Forms. For example, if set to "form", pretty URLs will look like: yoursite.com/form/my-form/') }}
+                                </p>
+                            </div>
+                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                        </el-tooltip>
+                    </template>
+                    <p class="text-note mb-2">{{ $t('This slug is used as the base path for Landing Page and Conversational Form pretty URLs.') }}</p>
+                    <el-row :gutter="24">
+                        <el-col :sm="24" :md="12">
+                            <el-input
+                                v-model="misc.pretty_url_base_slug"
+                                :placeholder="$t('form')"
+                                :disabled="!hasPro"
+                            />
+                            <p class="text-note mt-1" v-if="misc.pretty_url_base_slug">
+                                {{ $t('Preview:') }} {{ siteUrl }}/{{ misc.pretty_url_base_slug }}/my-form/
+                            </p>
+                        </el-col>
+                    </el-row>
+                    <update-to-pro-content v-if="!hasPro" :update-message="$t('Pretty URL Base Slug is available in the pro version')" />
+                </el-form-item>
+
                 <!-- Enable captcha in All form -->
                 <div class="el-form-item-wrap">
                     <el-form-item class="ff-form-item-flex ff-form-item mb-3 ff-form-setting-label-width">
@@ -815,6 +844,9 @@
         computed:{
             hasCaptcha(){
                 return !!this.captcha_status.hcaptcha || !!this.captcha_status.recaptcha || !!this.captcha_status.turnstile;
+            },
+            siteUrl() {
+                return window.location.origin;
             }
         },
         methods:{
@@ -888,6 +920,10 @@
 
             if (!this.data.misc.tokenBasedProtectionStatus) {
                 this.$set(this.data.misc, 'tokenBasedProtectionStatus', 'no');
+            }
+
+            if (!this.data.misc.pretty_url_base_slug) {
+                this.$set(this.data.misc, 'pretty_url_base_slug', 'form');
             }
 
             if (!("isAnalyticsDisabled" in this.data.misc)) {
