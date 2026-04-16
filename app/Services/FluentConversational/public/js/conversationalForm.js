@@ -25821,6 +25821,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
 
           isCleanedUp = true;
+          image.onload = null;
           document.body.classList.remove('ff-cropper-modal-open');
 
           if (cropper) {
@@ -25995,6 +25996,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         });
 
         image.onload = function () {
+          if (isCleanedUp || !modal.isConnected) {
+            return;
+          }
+
           cropper = new CropperLib(image, {
             aspectRatio: aspectRatio,
             autoCropArea: 1,
@@ -26012,6 +26017,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             cropBoxResizable: !isFixedSizeCrop,
             cropBoxMovable: !isFixedSizeCrop,
             ready: function ready() {
+              if (isCleanedUp) {
+                return;
+              }
+
               applyFixedCropSelection();
             }
           });
