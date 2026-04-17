@@ -1133,6 +1133,7 @@
                     payment_statuses: this.selectedPaymentStatuses,
                     fields_to_export: JSON.stringify(this.fieldsToExport),
                     shortcodes_to_export: selectedShortcodes,
+                    shortcodes_to_export_defined: 'yes',
 	                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                 };
                 if (this.exportWithNotes){
@@ -1223,6 +1224,23 @@
             showImport() {
                 this.showImportEntriesModal = !this.showImportEntriesModal;
             },
+            getDefaultShortcodesToExport() {
+                const defaults = ['{submission.id}', '{submission.created_at}', '{submission.status}'];
+
+                if (this.editor_shortcodes['{payment.payment_status}']) {
+                    defaults.push('{payment.payment_status}');
+                }
+
+                if (this.editor_shortcodes['{payment.payment_total}']) {
+                    defaults.push('{payment.payment_total}');
+                }
+
+                if (this.editor_shortcodes['{submission.currency}']) {
+                    defaults.push('{submission.currency}');
+                }
+
+                return defaults;
+            },
             /**
              * Load last used export fields from localStorage
              */
@@ -1233,7 +1251,7 @@
                     try {
                         const lastFields = JSON.parse(saved);
                         this.fieldsToExport = lastFields.fieldsToExport || Object.keys(this.input_labels);
-                        this.shortcodesToExport = lastFields.shortcodesToExport || ['{submission.id}','{submission.created_at}','{submission.status}'];
+                        this.shortcodesToExport = lastFields.shortcodesToExport || this.getDefaultShortcodesToExport();
                         this.exportWithNotes = lastFields.exportWithNotes || false;
 
                         this.updateCheckAllState();
@@ -1273,7 +1291,7 @@
 	        });
             this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
             this.fieldsToExport = Object.keys(this.input_labels)
-            this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
+            this.shortcodesToExport = this.getDefaultShortcodesToExport()
             this.loadLastExportFields();
         },
         beforeCreate() {
@@ -1286,4 +1304,3 @@
 	    }
     };
 </script>
-
