@@ -1,7 +1,7 @@
 <template>
     <div class="section-break" :class="'text-' + item.settings.align">
         <h4 class="section-break__title">{{ item.settings.label }}</h4>
-        <div v-html="html"></div>
+        <div class="ff_editor_html" v-html="html"></div>
         <hr>
     </div>
 </template>
@@ -18,4 +18,3 @@ export default {
 	}
 }
 </script>
-

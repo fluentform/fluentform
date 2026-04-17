@@ -881,13 +881,29 @@ label.el-radio, label.el-checkbox {
   }
 }
 .ff_editor_html {
+  p,
+  ul,
+  ol {
+    margin-bottom: 1em;
+  }
+
+  p:last-child,
+  ul:last-child,
+  ol:last-child {
+    margin-bottom: 0;
+  }
+
   ul {
     list-style-type: disc;
     padding-left: 3em;
   }
   ol {
     list-style-type: decimal;
-    margin-left: 3em;
+    padding-left: 3em;
+  }
+
+  li + li {
+    margin-top: 0.35em;
   }
 }
 
@@ -2240,5 +2256,4 @@ label.el-radio, label.el-checkbox {
         }
     }
 }
-
 
