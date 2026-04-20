@@ -110,8 +110,13 @@ class EditorShortcodeParser
             
             if (false !== strpos($handler, 'cookie.')) {
                 $scookieProperty = substr($handler, strlen('cookie.'));
-                
-                return wpFluentForm('request')->cookie($scookieProperty);
+                $cookieValue = wpFluentForm('request')->cookie($scookieProperty);
+
+                if (is_array($cookieValue) || is_object($cookieValue)) {
+                    return esc_html(wp_json_encode($cookieValue));
+                }
+
+                return esc_html((string) $cookieValue);
             }
             
             if (false !== strpos($handler, 'dynamic.')) {
@@ -167,9 +172,9 @@ class EditorShortcodeParser
     {
         $exploded = explode('.', $value);
         $param = array_pop($exploded);
-        $value = wpFluentForm('request')->get($param);
-        
-        if (!$value) {
+        $value = wpFluentForm('request')->query($param);
+
+        if ($value === null || $value === '') {
             return '';
         }
         

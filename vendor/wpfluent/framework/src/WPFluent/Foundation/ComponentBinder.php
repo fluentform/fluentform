@@ -418,7 +418,7 @@ class ComponentBinder
      */
     protected function resolveRequest($app)
     {
-        return new Request($app, $_GET, $_POST);
+        return new \FluentForm\Framework\Request\Request($app, $_GET, $_POST);
     }
 
     /**

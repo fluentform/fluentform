@@ -163,6 +163,8 @@ class ShortCodeParser
 
             if (is_array($value)) {
                 $value = fluentImplodeRecursive(', ', $value);
+            } elseif (is_object($value)) {
+                $value = wp_json_encode($value);
             }
 
             if ($isUrl) {
