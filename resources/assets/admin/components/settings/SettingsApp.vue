@@ -2,6 +2,7 @@
     <div class="settings_app">
         <el-skeleton :loading="!app_ready" animated :rows="10">
             <router-view
+                ref="settingsContent"
                 v-if="app_ready"
                 :form_id="form_id"
                 :form="form"
@@ -17,7 +18,7 @@
 </template>
 
 <script type="text/babel">
-    import { scrollTop, handleSidebarActiveLink } from '@/admin/helpers';
+    import { scrollToSettingsSection, handleSidebarActiveLink } from '@/admin/helpers';
 	import globalSearch from '../../global_search'
     export default {
         name: 'settings_app',
@@ -66,30 +67,25 @@
                     .catch(e => {
                     });
             },
+            // Scroll to section; expand the card if it's collapsed (for collapsible cards like default-style-template).
             scrollTo() {
+                const self = this;
                 let pageScrollLink = jQuery('.ff-page-scroll');
                 pageScrollLink.each(function(){
                     jQuery(this).on("click", function(e){
-                        let targetHash = e.target.hash;
                         e.preventDefault();
-
-                        jQuery(targetHash).addClass('highlight-border');
-
-                        const $settingsForm = jQuery('.ff_settings_form');
-                        if ($settingsForm.length) {
-	                        const ffMenuHeight = jQuery('.ff_form_wrap .form_internal_menu').first()?.outerHeight() || 0;
-	                        const wpAdminBarHeight = jQuery('#wpadminbar').outerHeight() || 0;
-                            const top = jQuery(targetHash).offset().top + $settingsForm.scrollTop() - (wpAdminBarHeight + ffMenuHeight + $settingsForm.position().top);
-                            scrollTop(top, 'fast', '.ff_settings_form').then((_) => {
-                                jQuery('head title').text( e.target.textContent.trim() + ' - Fluent Forms');
-                                if(targetHash.length) {
-                                    setTimeout(() => {
-                                        jQuery(targetHash).not(this).removeClass('highlight-border');
-                                    }, 500);
+                        const $link = jQuery(this);
+                        scrollToSettingsSection($link, '.ff_settings_form', {
+                            getTargetId: ($l) => $l[0].hash || '',
+                            menuHeightSelector: '.ff_form_wrap .form_internal_menu',
+                            titleText: $link.text().trim(),
+                            afterScroll: (targetId) => {
+                                const child = self.$refs.settingsContent;
+                                if (child && typeof child.expandSection === 'function') {
+                                    child.expandSection(targetId);
                                 }
-                            })
-                        }
-
+                            }
+                        });
                     });
                 });
             },
