@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.2.1
+Stable tag: 6.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -437,6 +437,14 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.2.2 (Date: April 21, 2026) =
+- Hardens email attachment path resolution to keep notification attachments inside allowed paths
+- Hardens predefined form payload handling and confirmation validation
+- Enforces form-scoped access for submission collection and print endpoints
+- Tightens allowed-forms scope handling for form managers
+- Ensures form settings are normalized before use
+- Fix cookie values for smartcodes
 
 = 6.2.1 (Date: April 15, 2026) =
 - Hardens form-scoped permissions across legacy AJAX and REST actions
