@@ -294,7 +294,7 @@ Boost website efficiency by using query strings to pre-fill visitor details and 
 * Stripe
 * Telegram
 * Trello
-* Twilo
+* Twillo
 * User Registration
 * WebHook
 * Zapier
