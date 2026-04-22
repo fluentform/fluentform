@@ -338,7 +338,7 @@ class Component
             ];
             $disabled['phone'] = [
                 'disabled'    => true,
-                'title'       => 'Phone Field',
+                'title'       => __('Phone Field', 'fluentform'),
                 'description' => __('Phone Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
                 'image'       => fluentformMix('img/pro-fields/phone-field.png'),
                 'video'       => '',
