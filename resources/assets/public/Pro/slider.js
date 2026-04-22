@@ -104,6 +104,9 @@ class FluentFormSlider {
         let choiceJsInputs = [];
         const self = this;
 
+        this.$theForm.data('ff_restoring_draft_state', true);
+        this.$theForm.data('ff_restored_draft_state', true);
+
         $.each(response, (key, value) => {
             if (!value) return;
             let type = Object.prototype.toString.call(value);
@@ -311,6 +314,8 @@ class FluentFormSlider {
                 }
             }
         }
+
+        this.$theForm.data('ff_restoring_draft_state', false);
 
         this.isPopulatingStepData = true;
         const animDuration = this.fluentFormVars.stepAnimationDuration;
