@@ -14,7 +14,7 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <el-dropdown @command="selectFieldsToExport" trigger="click">
-                            <el-button>
+                            <el-button :disabled="exportingEntries">
                                 {{ $t('Export') }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
@@ -1101,6 +1101,10 @@
                 this.input_selection_visibility  = false;
             },
             selectFieldsToExport(format = 'csv'){
+                if (this.exportingEntries) {
+                    return;
+                }
+
                 this.selectExportFormat = format;
 
                 if (format == 'json'){
@@ -1111,6 +1115,9 @@
                 }
             },
             exportEntries() {
+                if (this.exportingEntries) {
+                    return;
+                }
 
                 this.input_selection_visibility  = false;
 
