@@ -332,13 +332,36 @@
                         <el-table-column
                                 v-for="(column, index) in formattedColumn"
                                 :label="column.label"
-                                :show-overflow-tooltip="isCompact"
                                 min-width="200"
                                 sortable="custom"
                                 :prop="'user_inputs_column_field-' + column.field"
                                 :key="index">
                             <template slot-scope="scope">
-                                <span v-html="scope.row.user_inputs[column.field]"></span>
+                                <el-popover
+                                    v-if="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                    popper-class="ff-entry-cell-popover"
+                                    placement="top-start"
+                                    trigger="hover"
+                                    :open-delay="150"
+                                    :width="420"
+                                >
+                                    <div
+                                        class="ff_entry_table_popover_content"
+                                        v-html="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                    ></div>
+                                    <div
+                                        slot="reference"
+                                        class="ff_entry_table_cell"
+                                    >
+                                        <div
+                                            class="ff_entry_table_cell__content"
+                                            v-html="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                        ></div>
+                                    </div>
+                                </el-popover>
+                                <div v-else class="ff_entry_table_cell">
+                                    <div class="ff_entry_table_cell__content"></div>
+                                </div>
                             </template>
                         </el-table-column>
 
@@ -794,6 +817,9 @@
 	        }
         },
         methods: {
+            getEntryCellValue(value) {
+                return value || '';
+            },
             getStatusName(status) {
                 if (this.entry_statuses[status]) {
                     return this.entry_statuses[status];
@@ -1286,4 +1312,3 @@
 	    }
     };
 </script>
-
