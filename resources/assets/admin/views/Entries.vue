@@ -531,7 +531,12 @@
                         <el-button @click="closeInputSelection" type="info" class="el-button--soft">
                             {{ $t('Cancel') }}
                         </el-button>
-                        <el-button type="primary" icon="el-icon-download" @click="exportEntries()">
+                        <el-button
+                            type="primary"
+                            icon="el-icon-download"
+                            :loading="exportingEntries"
+                            @click="exportEntries()"
+                        >
                             {{ $t('Export') }}
                         </el-button>
                     </span>
@@ -1148,6 +1153,8 @@
                 this.submitExportRequest(data);
             },
             submitExportRequest(data) {
+                this.exportingEntries = true;
+
                 const iframeName = `ff-export-${Date.now()}`;
                 const $iframe = jQuery('<iframe>', {
                     name: iframeName,
@@ -1168,6 +1175,7 @@
                         cleanupTimer = null;
                     }
 
+                    this.exportingEntries = false;
                     $form.remove();
                     $iframe.remove();
                 };
@@ -1176,6 +1184,17 @@
                     if (!hasLoadedInitialFrame) {
                         hasLoadedInitialFrame = true;
                         return;
+                    }
+
+                    try {
+                        const iframeDocument = $iframe[0].contentDocument || $iframe[0].contentWindow.document;
+                        const responseText = jQuery(iframeDocument.body).text().trim();
+
+                        if (responseText) {
+                            this.$fail(this.$t('Export failed. Please try again.'));
+                        }
+                    } catch (e) {
+                        // Ignore iframe document access errors and fall back to cleanup.
                     }
 
                     cleanup();
@@ -1200,7 +1219,10 @@
                 jQuery('body').append($iframe, $form);
                 $form.trigger('submit');
 
-                cleanupTimer = window.setTimeout(cleanup, 300000);
+                cleanupTimer = window.setTimeout(() => {
+                    this.$fail(this.$t('Export timed out. Please try again.'));
+                    cleanup();
+                }, 30000);
             },
             dateFormat(date, format) {
                 if (!format) {
