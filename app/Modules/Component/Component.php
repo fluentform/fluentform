@@ -510,7 +510,7 @@ class Component
 
         if (!empty($atts['permission'])) {
             if (!current_user_can($atts['permission'])) {
-                return "<div id='ff_form_" . intval($form->id) . "' class='ff_form_not_render'>" . wp_kses_post($atts['permission_message']) . "</div>";
+                return $this->getNotRenderableHtml($form->id, $atts['permission_message']);
             }
         }
 
@@ -565,7 +565,7 @@ class Component
         $isRenderable = $this->app->applyFilters('fluentform/is_form_renderable', $isRenderable, $form);
 
         if (is_array($isRenderable) && !$isRenderable['status']) {
-            return "<div id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
+            return $this->getNotRenderableHtml($form->id, $isRenderable['message']);
         }
 
         $instanceCssClass = Helper::getFormInstaceClass($form->id);
@@ -803,6 +803,13 @@ class Component
         }
 
         return $output . $otherScripts;
+    }
+
+    protected function getNotRenderableHtml($formId, $message)
+    {
+        return "<div id='ff_form_" . esc_attr($formId) . "' class='ff_form_not_render'>"
+            . wp_kses_post($message)
+            . "</div>";
     }
 
     /**
