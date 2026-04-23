@@ -248,7 +248,31 @@ class PaymentEntries
 
     public function getFilters()
     {
-        $transactionTypes = Transaction::select('transaction_type')
+        $request = wpFluentForm()->request;
+        $attributes = $request->all();
+
+        $sanitizeMap = [
+            'form_id' => function ($value) {
+                return Acl::normalizeFormId($value);
+            },
+        ];
+        $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Acl::verify() below
+        Acl::verify('fluentform_view_payments', ArrayHelper::get($attributes, 'form_id'));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified by Acl::verify() above
+        $selectedFormId = ArrayHelper::get($attributes, 'form_id');
+        $allowFormIds = apply_filters('fluentform/current_user_allowed_forms', false);
+
+        $transactionTypesQuery = Transaction::select('transaction_type');
+        if ($selectedFormId) {
+            $transactionTypesQuery = $transactionTypesQuery->where('form_id', $selectedFormId);
+        }
+        if (false !== $allowFormIds && is_array($allowFormIds)) {
+            $transactionTypesQuery = $transactionTypesQuery->whereIn('form_id', $allowFormIds ?: [0]);
+        }
+
+        $transactionTypes = $transactionTypesQuery
             ->groupBy('transaction_type')
             ->get();
         // Define transaction type labels
@@ -268,7 +292,15 @@ class PaymentEntries
             ];
         }
         
-        $statuses = Transaction::select('status')
+        $statusesQuery = Transaction::select('status');
+        if ($selectedFormId) {
+            $statusesQuery = $statusesQuery->where('form_id', $selectedFormId);
+        }
+        if (false !== $allowFormIds && is_array($allowFormIds)) {
+            $statusesQuery = $statusesQuery->whereIn('form_id', $allowFormIds ?: [0]);
+        }
+
+        $statuses = $statusesQuery
             ->groupBy('status')
             ->get();
         $statusTypes = PaymentHelper::getPaymentStatuses();
@@ -276,11 +308,15 @@ class PaymentEntries
         foreach ($statuses as $status) {
             $formattedStatuses[] = ArrayHelper::get($statusTypes, $status->status, $status->status);
         }
-        $allowFormIds = apply_filters('fluentform/current_user_allowed_forms', false);
-        $forms = Transaction::select('fluentform_transactions.form_id', 'fluentform_forms.title')
-            ->when(false !== $allowFormIds && is_array($allowFormIds), function ($q) use ($allowFormIds){
-                return $q->whereIn('fluentform_transactions.form_id', $allowFormIds ?: [0]);
-            })
+        $formsQuery = Transaction::select('fluentform_transactions.form_id', 'fluentform_forms.title');
+        if ($selectedFormId) {
+            $formsQuery = $formsQuery->where('fluentform_transactions.form_id', $selectedFormId);
+        }
+        if (false !== $allowFormIds && is_array($allowFormIds)) {
+            $formsQuery = $formsQuery->whereIn('fluentform_transactions.form_id', $allowFormIds ?: [0]);
+        }
+
+        $forms = $formsQuery
             ->groupBy('fluentform_transactions.form_id')
             ->orderBy('fluentform_transactions.form_id', 'DESC')
             ->join('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_transactions.form_id')
@@ -294,7 +330,15 @@ class PaymentEntries
             ];
         }
 
-        $paymentMethods = Transaction::select('payment_method')
+        $paymentMethodsQuery = Transaction::select('payment_method');
+        if ($selectedFormId) {
+            $paymentMethodsQuery = $paymentMethodsQuery->where('form_id', $selectedFormId);
+        }
+        if (false !== $allowFormIds && is_array($allowFormIds)) {
+            $paymentMethodsQuery = $paymentMethodsQuery->whereIn('form_id', $allowFormIds ?: [0]);
+        }
+
+        $paymentMethods = $paymentMethodsQuery
             ->groupBy('payment_method')
             ->get();
 
