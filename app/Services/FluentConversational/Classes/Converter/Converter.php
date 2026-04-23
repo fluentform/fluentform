@@ -56,6 +56,10 @@ class Converter
         }
         
         foreach ($fields as $field) {
+            if (!isset($allowedFields[$field['element']])) {
+                continue;
+            }
+
             $field = apply_filters_deprecated('fluentform_rendering_field_data_' . $field['element'],
                 [
                     $field,
@@ -303,6 +307,22 @@ class Converter
                     $question['options'] = self::getAdvancedOptions($field, $form);
                     $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
                     $question['multiple'] = ArrayHelper::isTrue($field, 'attributes.multiple');
+                } elseif ('autocomplete' === $type) {
+                    $question['type'] = 'FlowFormDynamicFieldType';
+                    $question['placeholder'] = self::getComponent()->replaceEditorSmartCodes(
+                        ArrayHelper::get($field, 'settings.placeholder', ArrayHelper::get($field, 'attributes.placeholder', null)),
+                        $form
+                    );
+                    $question['autocomplete_config'] = [
+                        'formId'         => $form->id,
+                        'fieldName'      => ArrayHelper::get($field, 'attributes.name'),
+                        'minChars'       => (int) ArrayHelper::get($field, 'settings.min_chars', 2),
+                        'maxSuggestions' => (int) ArrayHelper::get($field, 'settings.max_suggestions', 10),
+                        'nonce'          => wp_create_nonce(
+                            'fluentform_dynamic_autocomplete_' . $form->id . '_' . ArrayHelper::get($field, 'attributes.name')
+                        ),
+                        'ajaxUrl'        => admin_url('admin-ajax.php'),
+                    ];
                 } else {
                     continue;
                 }
