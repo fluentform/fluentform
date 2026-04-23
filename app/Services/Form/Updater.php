@@ -175,7 +175,7 @@ class Updater
 
             if ('welcome_screen' == $element) {
                 if ($value = Arr::get($field, 'settings.button_ui.text')) {
-                    $field['settings']['button_ui']['text'] = sanitize_text_field($value);
+                    $field['settings']['button_ui']['text'] = fluentform_sanitize_html($value);
                 }
             }
 
@@ -191,7 +191,7 @@ class Updater
                     }
 
                     if (isset($buttonSettings['text'])) {
-                        $field['settings'][$buttonKey]['text'] = sanitize_text_field($buttonSettings['text']);
+                        $field['settings'][$buttonKey]['text'] = fluentform_sanitize_html($buttonSettings['text']);
                     }
 
                     if (isset($buttonSettings['img_url'])) {
@@ -212,7 +212,7 @@ class Updater
                     }
 
                     if (isset($buttonUi['text'])) {
-                        $field['settings']['button_ui']['text'] = sanitize_text_field($buttonUi['text']);
+                        $field['settings']['button_ui']['text'] = fluentform_sanitize_html($buttonUi['text']);
                     }
 
                     if (isset($buttonUi['img_url'])) {
@@ -300,7 +300,7 @@ class Updater
             ],
             'button_ui'     => [
                 'type'    => 'sanitize_text_field',
-                'text'    => 'sanitize_text_field',
+                'text'    => 'fluentform_sanitize_html',
                 'img_url' => 'esc_url_raw',
             ],
         ];
@@ -336,7 +336,7 @@ class Updater
         $stepsSanitizationMap = [
             'prev_btn' => [
                 'type'    => 'sanitize_text_field',
-                'text'    => 'sanitize_text_field',
+                'text'    => 'fluentform_sanitize_html',
                 'img_url' => 'esc_url_raw',
             ],
         ];
