@@ -187,6 +187,8 @@ class TransferService
         $submissions = FormDataParser::parseFormEntries($submissions, $form, $formInputs);
         $parsedShortCodes = [];
         $exportData = [];
+        $selectedShortcodes = self::getSelectedExportShortcodes($args, $form);
+        $legacyShortcodeHeaders = self::getLegacyExportShortcodeHeaders();
 
         // Preload notes for all submissions in a single query to avoid N+1
         $notesMap = [];
@@ -229,38 +231,35 @@ class TransferService
                 $temp[] = Helper::sanitizeForCSV($content);
             }
     
-            if($selectedShortcodes = Arr::get($args,'shortcodes_to_export')){
-                $selectedShortcodes = fluentFormSanitizer($selectedShortcodes);
-                $parsedShortCodes = ShortCodeParser::parse(
-                    $selectedShortcodes,
-                    $submission->id,
-                    $submission->response,
-                    $form,
-                    false,
-                    true
-                );
-                if(!empty($parsedShortCodes)){
-                    foreach ($parsedShortCodes as $code){
-                        $temp[] = Arr::get($code,'value');
-                    }
+            if (!empty($selectedShortcodes)) {
+                $regularShortcodes = self::getRegularExportShortcodes($selectedShortcodes, $legacyShortcodeHeaders);
+
+                if (!empty($regularShortcodes)) {
+                    $parsedShortCodes = ShortCodeParser::parse(
+                        $regularShortcodes,
+                        $submission->id,
+                        $submission->response,
+                        $form,
+                        false,
+                        true
+                    );
                 }
+
+                $temp = array_merge(
+                    $temp,
+                    self::getSelectedShortcodeExportValues(
+                        $selectedShortcodes,
+                        $parsedShortCodes,
+                        $legacyShortcodeHeaders,
+                        $submission
+                    )
+                );
             }
             if ($withNotes) {
                 $noteValues = isset($notesMap[$submission->id]) ? $notesMap[$submission->id] : [];
                 if (!empty($noteValues)) {
                     $temp[] = implode(", ", $noteValues);
                 }
-            }
-
-            if (!$tableName) {
-                if ($form->has_payment) {
-                    $temp[] = round(($submission->payment_total ?? 0) / 100, 1);
-                    $temp[] = $submission->payment_status ?? '';
-                    $temp[] = $submission->currency ?? '';
-                }
-                $temp[] = $submission->id ?? '';
-                $temp[] = $submission->status ?? '';
-                $temp[] = $submission->created_at ?? '';
             }
 
             $temp = apply_filters('fluentform/export_entry_metadata', $temp, $submission, $form, $args);
@@ -270,26 +269,15 @@ class TransferService
 
         $extraLabels = [];
 
-        if(!empty($parsedShortCodes)){
-            foreach ($parsedShortCodes as $code){
-                $extraLabels[] = Arr::get($code,'label');
-            }
-        }
+        $extraLabels = self::getSelectedShortcodeExportLabels(
+            $selectedShortcodes,
+            $parsedShortCodes,
+            $legacyShortcodeHeaders
+        );
         
         $inputLabels = array_merge($inputLabels, $extraLabels);
         if($withNotes){
             $inputLabels[] = __('Notes','fluentform');
-        }
-
-        if (!$tableName) {
-            if ($form->has_payment) {
-                $inputLabels[] = 'payment_total';
-                $inputLabels[] = 'payment_status';
-                $inputLabels[] = 'currency';
-            }
-            $inputLabels[] = 'entry_id';
-            $inputLabels[] = 'entry_status';
-            $inputLabels[] = 'created_at';
         }
         $inputLabels = apply_filters('fluentform/export_entry_metadata_labels', $inputLabels, $form, $args);
 
@@ -309,6 +297,145 @@ class TransferService
                 )
             )
         );
+    }
+
+    private static function getSelectedExportShortcodes($args, $form)
+    {
+        $selectedShortcodes = fluentFormSanitizer(Arr::get($args, 'shortcodes_to_export', []));
+
+        if (!Arr::has($args, 'shortcodes_to_export_defined') && empty($selectedShortcodes)) {
+            return self::getDefaultExportShortcodes($form);
+        }
+
+        return $selectedShortcodes;
+    }
+
+    private static function getDefaultExportShortcodes($form)
+    {
+        $defaults = [
+            [
+                'label' => __('Submission ID', 'fluentform'),
+                'value' => '{submission.id}',
+            ],
+            [
+                'label' => __('Submission Create Date', 'fluentform'),
+                'value' => '{submission.created_at}',
+            ],
+            [
+                'label' => __('Submission Status', 'fluentform'),
+                'value' => '{submission.status}',
+            ],
+        ];
+
+        if ($form->has_payment) {
+            $defaults[] = [
+                'label' => __('Payment Status', 'fluentform'),
+                'value' => '{payment.payment_status}',
+            ];
+            $defaults[] = [
+                'label' => __('Payment Total', 'fluentform'),
+                'value' => '{payment.payment_total}',
+            ];
+            $defaults[] = [
+                'label' => __('Currency', 'fluentform'),
+                'value' => '{submission.currency}',
+            ];
+        }
+
+        return $defaults;
+    }
+
+    private static function getLegacyExportShortcodeHeaders()
+    {
+        return [
+            '{submission.id}'             => 'entry_id',
+            '{submission.status}'         => 'entry_status',
+            '{submission.created_at}'     => 'created_at',
+            '{payment.payment_status}'    => 'payment_status',
+            '{submission.payment_status}' => 'payment_status',
+            '{payment.payment_total}'     => 'payment_total',
+            '{submission.payment_total}'  => 'payment_total',
+            '{submission.currency}'       => 'currency',
+        ];
+    }
+
+    private static function getRegularExportShortcodes($selectedShortcodes, $legacyShortcodeHeaders)
+    {
+        $regularShortcodes = [];
+
+        foreach ($selectedShortcodes as $index => $shortcode) {
+            if (!isset($legacyShortcodeHeaders[Arr::get($shortcode, 'value')])) {
+                $regularShortcodes[$index] = $shortcode;
+            }
+        }
+
+        return $regularShortcodes;
+    }
+
+    private static function getSelectedShortcodeExportValues($selectedShortcodes, $parsedShortCodes, $legacyShortcodeHeaders, $submission)
+    {
+        $values = [];
+
+        foreach ($selectedShortcodes as $index => $shortcode) {
+            $shortcodeValue = Arr::get($shortcode, 'value');
+
+            if (!isset($legacyShortcodeHeaders[$shortcodeValue])) {
+                $values[] = Arr::get($parsedShortCodes, $index . '.value');
+                continue;
+            }
+
+            $values[] = self::getLegacyExportValue($legacyShortcodeHeaders[$shortcodeValue], $submission);
+        }
+
+        return $values;
+    }
+
+    private static function getSelectedShortcodeExportLabels($selectedShortcodes, $parsedShortCodes, $legacyShortcodeHeaders)
+    {
+        $labels = [];
+
+        foreach ($selectedShortcodes as $index => $shortcode) {
+            $shortcodeValue = Arr::get($shortcode, 'value');
+
+            if (isset($legacyShortcodeHeaders[$shortcodeValue])) {
+                $labels[] = $legacyShortcodeHeaders[$shortcodeValue];
+                continue;
+            }
+
+            $labels[] = Arr::get($parsedShortCodes, $index . '.label');
+        }
+
+        return $labels;
+    }
+
+    private static function getLegacyExportValue($header, $submission)
+    {
+        $legacyValueResolvers = [
+            'entry_id' => function ($submission) {
+                return $submission->id ?? '';
+            },
+            'entry_status' => function ($submission) {
+                return $submission->status ?? '';
+            },
+            'created_at' => function ($submission) {
+                return $submission->created_at ?? '';
+            },
+            'payment_status' => function ($submission) {
+                return $submission->payment_status ?? '';
+            },
+            'payment_total' => function ($submission) {
+                return round(($submission->payment_total ?? 0) / 100, 1);
+            },
+            'currency' => function ($submission) {
+                return $submission->currency ?? '';
+            },
+        ];
+
+        if (!isset($legacyValueResolvers[$header])) {
+            return '';
+        }
+
+        return $legacyValueResolvers[$header]($submission);
     }
 
     private static function exportAsJSON($form, $args)
