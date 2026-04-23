@@ -1,7 +1,29 @@
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
-require __DIR__.'/../../vendor/autoload.php';
+$devAutoload = __DIR__.'/../vendor/autoload.php';
+$rootAutoload = __DIR__.'/../../vendor/autoload.php';
+$rootAutoloadReal = __DIR__.'/../../vendor/composer/autoload_real.php';
+$rootPlatformCheck = __DIR__.'/../../vendor/composer/platform_check.php';
+
+if (!is_readable($devAutoload)) {
+	fwrite(STDERR, 'Dev Composer autoload is missing. Run ./wpf init first.'.PHP_EOL);
+	exit(1);
+}
+
+if (
+	!is_readable($rootAutoload) ||
+	(
+		is_readable($rootAutoloadReal) &&
+		strpos(file_get_contents($rootAutoloadReal), 'platform_check.php') !== false &&
+		!is_readable($rootPlatformCheck)
+	)
+) {
+	fwrite(STDERR, 'Root Composer autoload is missing or incomplete. Run composer install in the plugin root first.'.PHP_EOL);
+	exit(1);
+}
+
+require $devAutoload;
+require $rootAutoload;
 
 if (!function_exists('get_methods')) {
 	function get_methods($class) {

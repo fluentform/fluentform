@@ -18,6 +18,11 @@ you did everything correctly then you should be able to write and run tests.
 
 - To check, run `./wpf test` from the root of your plugin directory.
 
+# QA Tooling:
+
+- Run `cd dev && composer run phpcs` to scan plugin PHP compatibility.
+- Run `cd dev && composer run phpstan` to run the WordPress-aware static analysis baseline.
+
 **Note** You may run the `./setup.sh` multiple times if you need to.
 
 # If anything goes wrong:

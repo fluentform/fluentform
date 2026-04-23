@@ -10,7 +10,6 @@ if (!defined('ABSPATH') && $command && !$isMakeCommand && !in_array($command, ['
 
 (require $cwd."/dev/cli/commands/init.php")($args, $loader);
 
-chdir($cwd.'/dev/');exec('composer dump');chdir($cwd);
 $require([$loader, $devGlobals, $functions]);
 
 if ($args) {
