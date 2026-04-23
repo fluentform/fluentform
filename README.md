@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.2.1
+**Stable tag:** 6.2.2
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -158,6 +158,15 @@ Yes, you can use 2 column or 3 column containers and you can build forms.
 Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also import in pro version.
 
 ## Changelog
+
+### 6.2.2 (Date: April 21, 2026) =
+- Hardens email attachment path resolution to keep notification attachments inside allowed paths
+- Hardens predefined form payload handling and confirmation validation
+- Enforces form-scoped access for submission collection and print endpoints
+- Tightens allowed-forms scope handling for form managers
+- Ensures form settings are normalized before use
+- Restores raw cookie values for smartcodes
+- Updates `picomatch` from 2.3.1 to 2.3.2
 
 ### 6.2.1 (Date: April 15, 2026) =
 - Hardens form-scoped permissions across legacy AJAX and REST actions for settings, entries, reports, logs, exports, and payment routes
