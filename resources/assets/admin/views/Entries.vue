@@ -343,6 +343,7 @@
                                     placement="top-start"
                                     trigger="hover"
                                     :open-delay="150"
+                                    :popper-options="entryCellPopoverOptions"
                                     :width="420"
                                 >
                                     <div
@@ -814,7 +815,18 @@
 
 	        dateColWidth() {
 		        return window.fluent_forms_global_var.disable_time_diff ? '180' : '120';
-	        }
+	        },
+            entryCellPopoverOptions() {
+                const adminBar = typeof document !== 'undefined'
+                    ? document.getElementById('wpadminbar')
+                    : null;
+                const adminBarHeight = adminBar ? adminBar.offsetHeight : 0;
+
+                return {
+                    gpuAcceleration: false,
+                    boundariesPadding: adminBarHeight + 16
+                };
+            }
         },
         methods: {
             getEntryCellValue(value) {
