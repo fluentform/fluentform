@@ -1036,6 +1036,7 @@ class Helper
                             'value' => $value,
                         ];
                     }
+                    // @todo : Update all reference in form templates
                 }
 
                 $options = array_column($formattedOptions, 'value');
