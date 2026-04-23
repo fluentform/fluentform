@@ -510,7 +510,7 @@ class Component
 
         if (!empty($atts['permission'])) {
             if (!current_user_can($atts['permission'])) {
-                return "<div id='ff_form_{$form->id}' class='ff_form_not_render'>{$atts['permission_message']}</div>";
+                return "<div id='ff_form_" . intval($form->id) . "' class='ff_form_not_render'>" . wp_kses_post($atts['permission_message']) . "</div>";
             }
         }
 
