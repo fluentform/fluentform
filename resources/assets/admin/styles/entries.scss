@@ -694,7 +694,7 @@ tr.el-table__row td {
 }
 
 .ff_entry_table_popover_content {
-  max-height: min(60vh, 560px);
+  max-height: #{"min(480px, calc(100vh - 180px))"};
   overflow: auto;
   white-space: normal;
   word-break: break-word;

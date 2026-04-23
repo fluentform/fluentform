@@ -438,13 +438,25 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.2.2 (Date: April 21, 2026) =
+= 6.2.2 (Date: April 23, 2026) =
+- Adds subscription field support in payment calculations
+- Fix raw cookie values for smartcodes
 - Hardens email attachment path resolution to keep notification attachments inside allowed paths
 - Hardens predefined form payload handling and confirmation validation
-- Enforces form-scoped access for submission collection and print endpoints
+- Improves compatibility for legacy predefined field option validation
+- Improves form-scoped access for submission collection and print endpoints
 - Tightens allowed-forms scope handling for form managers
 - Ensures form settings are normalized before use
-- Fix cookie values for smartcodes
+- Fix integration activecampaign issue
+- Preserves post feed draft values on resume
+- Respects user locale in the form editor
+- Improves ACL permission checks and helper coverage for delegated and full-access flows
+- Hardens form HTML sanitization by blocking event handlers and escaping permission message shortcode output
+- Improve global integration settings access restriction and protects payment filters AJAX metadata endpoint
+- Sanitizes form step settings while preserving safe HTML in step button text
+- Improves entry export to honor submission info selection
+- Improves multisite site setup until initialization
+- Improves long entry content previews
 
 = 6.2.1 (Date: April 15, 2026) =
 - Hardens form-scoped permissions across legacy AJAX and REST actions

@@ -159,14 +159,26 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.2.2 (Date: April 21, 2026) =
+### 6.2.2 (Date: April 23, 2026) =
 - Hardens email attachment path resolution to keep notification attachments inside allowed paths
 - Hardens predefined form payload handling and confirmation validation
+- Improves compatibility for legacy predefined field option validation
 - Enforces form-scoped access for submission collection and print endpoints
 - Tightens allowed-forms scope handling for form managers
 - Ensures form settings are normalized before use
+- Preserves integration default field mappings
+- Preserves post feed draft values on resume
+- Respects user locale in the form editor
 - Restores raw cookie values for smartcodes
 - Updates `picomatch` from 2.3.1 to 2.3.2
+- Improves ACL permission checks and helper coverage for delegated and full-access flows
+- Hardens form HTML sanitization by blocking event handlers and escaping permission message shortcode output
+- Restricts global integration settings access and protects payment filters AJAX metadata endpoint
+- Sanitizes form step settings while preserving safe HTML in step button text
+- Adds subscription field support in payment calculations
+- Improves entry export to honor submission info selection
+- Defers multisite site setup until initialization
+- Stabilizes long entry content previews
 
 ### 6.2.1 (Date: April 15, 2026) =
 - Hardens form-scoped permissions across legacy AJAX and REST actions for settings, entries, reports, logs, exports, and payment routes
