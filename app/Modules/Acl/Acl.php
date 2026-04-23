@@ -160,37 +160,50 @@ class Acl
             return false;
         }
 
-        if (current_user_can('fluentform_full_access') || current_user_can('manage_options')) {
+        // Only explicit full-access users should bypass individual permission checks.
+        if (static::hasExplicitFullAccess()) {
             return true;
         }
 
-        $userCapability = static::getCurrentUserCapability();
-        $permissions = (array) $permissions;
+        $grantedRole = static::getCurrentUserCapability();
 
-        foreach ($permissions as $permission) {
+        foreach ((array) $permissions as $permission) {
             $allowed = current_user_can($permission);
 
-            if (!$allowed && $userCapability && 'fluentform_full_access' !== $permission) {
+            // A granted role can satisfy scoped permissions, but never full access.
+            if (!$allowed && $grantedRole && 'fluentform_full_access' !== $permission) {
                 $allowed = true;
             }
 
-            if ($allowed) {
-                $allowed = apply_filters_deprecated(
-                    'fluentform_verify_user_permission_' . $permission,
-                    [
-                        $allowed,
-                        $formId
-                    ],
-                    FLUENTFORM_FRAMEWORK_UPGRADE,
-                    'fluentform/verify_user_permission_' . $permission,
-                    'Use fluentform/verify_user_permission_' . $permission . ' instead of fluentform_verify_user_permission_' . $permission
-                );
-
-                return apply_filters('fluentform/verify_user_permission_' . $permission, $allowed, $formId);
+            if (!$allowed) {
+                continue;
             }
+
+            return static::filterPermissionCheck($permission, $allowed, $formId);
         }
 
         return false;
+    }
+
+    private static function hasExplicitFullAccess()
+    {
+        return current_user_can('fluentform_full_access') || current_user_can('manage_options');
+    }
+
+    private static function filterPermissionCheck($permission, $allowed, $formId)
+    {
+        $allowed = apply_filters_deprecated(
+            'fluentform_verify_user_permission_' . $permission,
+            [
+                $allowed,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/verify_user_permission_' . $permission,
+            'Use fluentform/verify_user_permission_' . $permission . ' instead of fluentform_verify_user_permission_' . $permission
+        );
+
+        return apply_filters('fluentform/verify_user_permission_' . $permission, $allowed, $formId);
     }
 
     public static function hasAnyFormPermission($form_id = false)
