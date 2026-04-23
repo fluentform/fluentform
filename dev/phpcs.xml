@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ruleset name="Fluent Forms PHP Compatibility">
+    <description>PHP compatibility checks for Fluent Forms plugin code.</description>
+
+    <arg name="extensions" value="php"/>
+
+    <file>../app</file>
+
+    <rule ref="PHPCompatibility">
+        <properties>
+            <property name="testVersion" value="7.4-8.4"/>
+        </properties>
+    </rule>
+
+    <rule ref="PHPCompatibilityWP"/>
+
+    <rule ref="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue">
+        <severity>0</severity>
+    </rule>
+</ruleset>

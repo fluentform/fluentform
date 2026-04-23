@@ -1,0 +1,17 @@
+parameters:
+    level: 2
+    scanDirectories:
+        - ../vendor
+
+    bootstrapFiles:
+        - ../vendor/autoload.php
+
+    ignoreErrors:
+        - '#Unsafe usage of new static\(\)#'
+        - '#Call to an undefined static method .*#'
+        - '#Call to an undefined method .*#'
+        - '#Method .* should return .* but return statement is missing#'
+        - '#@param .* contains generic type .* but class .* is not generic#'
+
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
