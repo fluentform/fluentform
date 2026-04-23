@@ -159,38 +159,38 @@ class Acl
         if ($formId && !FormManagerService::hasFormPermission($formId)) {
             return false;
         }
-        $userCapability = static::getCurrentUserCapability();
 
-        if ($userCapability) {
+        if (current_user_can('fluentform_full_access') || current_user_can('manage_options')) {
             return true;
-        } else {
-            if (current_user_can('fluentform_full_access')) {
-                return true;
-            }
-
-            $permissions = (array) $permissions;
-
-            foreach ($permissions as $permission) {
-                $allowed = current_user_can($permission);
-
-                if ($allowed) {
-                    $allowed = apply_filters_deprecated(
-                        'fluentform_verify_user_permission_' . $permission,
-                        [
-                            $allowed,
-                            $formId
-                        ],
-                        FLUENTFORM_FRAMEWORK_UPGRADE,
-                        'fluentform/verify_user_permission_' . $permission,
-                        'Use fluentform/verify_user_permission_' . $permission . ' instead of fluentform_verify_user_permission_' . $permission
-                    );
-
-                    return apply_filters('fluentform/verify_user_permission_' . $permission, $allowed, $formId);
-                }
-            }
-
-            return false;
         }
+
+        $userCapability = static::getCurrentUserCapability();
+        $permissions = (array) $permissions;
+
+        foreach ($permissions as $permission) {
+            $allowed = current_user_can($permission);
+
+            if (!$allowed && $userCapability && 'fluentform_full_access' !== $permission) {
+                $allowed = true;
+            }
+
+            if ($allowed) {
+                $allowed = apply_filters_deprecated(
+                    'fluentform_verify_user_permission_' . $permission,
+                    [
+                        $allowed,
+                        $formId
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/verify_user_permission_' . $permission,
+                    'Use fluentform/verify_user_permission_' . $permission . ' instead of fluentform_verify_user_permission_' . $permission
+                );
+
+                return apply_filters('fluentform/verify_user_permission_' . $permission, $allowed, $formId);
+            }
+        }
+
+        return false;
     }
 
     public static function hasAnyFormPermission($form_id = false)
