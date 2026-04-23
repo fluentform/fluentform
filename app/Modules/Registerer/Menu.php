@@ -1044,7 +1044,8 @@ class Menu
 				    'net_promoter_score',
 				    'rangeslider',
 				    'custom_payment_component',
-                    'item_quantity_component'
+                    'item_quantity_component',
+                    'subscription_payment_component'
 			    ]
 		    ];
 	    }
