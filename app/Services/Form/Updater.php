@@ -351,6 +351,15 @@ class Updater
                     }
                 }
 
+                if (isset($field['settings']['tabs_show_progress_bar'])) {
+                    $field['settings']['tabs_show_progress_bar'] = sanitize_text_field($field['settings']['tabs_show_progress_bar']) === 'yes' ? 'yes' : 'no';
+                }
+
+                if (isset($field['settings']['progress_layout'])) {
+                    $progressLayout = sanitize_text_field($field['settings']['progress_layout']);
+                    $field['settings']['progress_layout'] = in_array($progressLayout, ['top', 'left'], true) ? $progressLayout : 'top';
+                }
+
                 if (!empty($field['settings']['prev_btn']) && is_array($field['settings']['prev_btn'])) {
                     foreach ($field['settings']['prev_btn'] as $key => $value) {
                         if (isset($stepsSanitizationMap['prev_btn'][$key])) {

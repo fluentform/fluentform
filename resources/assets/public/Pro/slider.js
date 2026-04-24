@@ -73,6 +73,72 @@ class FluentFormSlider {
     }
 
     /**
+     * Apply visual and accessibility state to clickable step titles.
+     * @param {object} stepTitles
+     * @param {number} activeStep
+     */
+    syncStepTitleState(stepTitles, activeStep) {
+        const $ = this.$;
+
+        if (!stepTitles || !stepTitles.length) {
+            return;
+        }
+
+        stepTitles.removeClass('ff_active ff_completed').removeAttr('aria-current');
+
+        $.each(stepTitles, (index, stepTitle) => {
+            const $stepTitle = $(stepTitle);
+
+            if (index < activeStep) {
+                $stepTitle.addClass('ff_completed');
+            } else if (index === activeStep) {
+                $stepTitle.addClass('ff_active').attr('aria-current', 'step');
+            }
+        });
+    }
+
+    /**
+     * Add button semantics to step titles.
+     * @param {object} stepTitlesNavs
+     */
+    enhanceClickableStepTitles(stepTitlesNavs) {
+        const $ = this.$;
+
+        $.each(stepTitlesNavs, function (i, elm) {
+            $(elm).attr('data-step-number', i);
+            $(elm).attr({
+                'role': 'button',
+                'tabindex': '0',
+                'aria-label': 'Go to step ' + (i + 1)
+            });
+        });
+    }
+
+    /**
+     * Keep top tabs centered only when they fit within the available width.
+     */
+    syncTopTabOverflowState() {
+        const $ = this.$;
+
+        this.$theForm.find('.ff-step-header--tabs-top .ff-step-titles').each(function () {
+            const $titles = $(this);
+            const isOverflowing = this.scrollWidth > this.clientWidth + 1;
+
+            $titles.toggleClass('ff-step-titles--overflowing', isOverflowing);
+        });
+    }
+
+    /**
+     * Determine if the current indicator should use tabs behavior.
+     * Supports legacy `steps_with_nav` for mixed free/pro version compatibility.
+     * @param {string} progressIndicator
+     * @return {boolean}
+     */
+    isTabsIndicator(progressIndicator) {
+        return progressIndicator === 'tabs' || progressIndicator === 'steps_with_nav';
+    }
+
+    /**
      * Initialize form with saved state if step persistence is enabled
      */
     initFormWithSavedState() {
@@ -340,6 +406,8 @@ class FluentFormSlider {
         const formSteps = this.$theForm.find('.fluentform-step');
         const totalSteps = formSteps.length;
         const stepTitles = this.$theForm.find('.ff-step-titles li');
+        const progressIndicator = this.$theForm.find('.ff-step-container').first().data('progress_indicator');
+        const shouldUseClickableTabs = this.isTabsIndicator(progressIndicator);
 
         // Pre-skip steps that are fully hidden by conditions on initial load to avoid flicker
         if (!window.ff_disable_auto_step) {
@@ -366,7 +434,7 @@ class FluentFormSlider {
         $(formSteps[this.activeStep]).attr('aria-hidden', 'false');
 
         $(formSteps[this.activeStep]).addClass('active');
-        $(stepTitles[this.activeStep]).addClass('active');
+        this.syncStepTitleState(stepTitles, this.activeStep);
 
         const firstStep = formSteps.first();
         if (firstStep.hasClass('active')) {
@@ -382,7 +450,16 @@ class FluentFormSlider {
 
         this.registerStepNavigators(this.fluentFormVars.stepAnimationDuration);
 
-        this.registerClickableStepNav(stepTitles, formSteps);
+        if (shouldUseClickableTabs) {
+            this.registerClickableStepNav(stepTitles, formSteps);
+            this.syncTopTabOverflowState();
+
+            $(window)
+                .off('resize.ff_step_tabs_' + this.$theForm.data('form_id'))
+                .on('resize.ff_step_tabs_' + this.$theForm.data('form_id'), this.syncTopTabOverflowState.bind(this));
+        } else {
+            $(window).off('resize.ff_step_tabs_' + this.$theForm.data('form_id'));
+        }
     }
 
     /**
@@ -398,18 +475,7 @@ class FluentFormSlider {
             return;
         }
 
-        // Add this line to assign step numbers to each title
-        $.each(stepTitlesNavs, function (i, elm) {
-            $(elm).attr('data-step-number', i);
-
-            // Also add these for accessibility and visual indication
-            $(elm).attr({
-                'role': 'button',
-                'tabindex': '0',
-                'aria-label': 'Go to step ' + (i + 1),
-                'style': 'cursor: pointer;'
-            });
-        });
+        this.enhanceClickableStepTitles(stepTitlesNavs);
 
         stepTitlesNavs.on('click keydown', function (e) {
             // Handle keyboard events
@@ -423,24 +489,30 @@ class FluentFormSlider {
 
             let formInstance = self.getFormInstance();
             let $this = $(this);
-            let currentStep = 0;
             const animDuration = self.fluentFormVars.stepAnimationDuration;
+            const currentActiveStep = formSteps.index(self.$theForm.find('.fluentform-step.active'));
 
             try {
-                let targetStep = $this.data('step-number');
+                let targetStep = parseInt($this.data('step-number'), 10);
                 if (isNaN(targetStep)) {
                     return;
                 }
-                //validate other steps before target step before next step
-                $.each(formSteps, (index, steps) => {
-                    currentStep = index
-                    if (index < targetStep) {
-                        const elements = $(steps).find(':input').not(':button').filter(function (i, el) {
-                            return !$(el).closest('.has-conditions').hasClass('ff_excluded');
-                        });
-                        elements.length && formInstance.validate(elements)
-                    }
-                });
+
+                if (targetStep === currentActiveStep) {
+                    return;
+                }
+
+                if (targetStep > currentActiveStep) {
+                    // Validate only the intermediate steps when navigating forward.
+                    $.each(formSteps, (index, steps) => {
+                        if (index < targetStep) {
+                            const elements = $(steps).find(':input').not(':button').filter(function (i, el) {
+                                return !$(el).closest('.has-conditions').hasClass('ff_excluded');
+                            });
+                            elements.length && formInstance.validate(elements)
+                        }
+                    });
+                }
 
                 self.updateSlider(targetStep, animDuration, true)
                     .then(() => {
@@ -453,7 +525,7 @@ class FluentFormSlider {
                 if (!(e instanceof window.ffValidationError)) {
                     throw e;
                 }
-                self.updateSlider(currentStep, animDuration, true)
+                self.updateSlider(currentActiveStep, animDuration, true)
                     .then(() => {
                         self.handleFocus(animDuration);
                     })
@@ -479,6 +551,8 @@ class FluentFormSlider {
             const stepTitles = this.$theForm.find('.ff-el-progress-title li');
             const progressBar = this.$theForm.find('.ff-step-header .ff-el-progress-bar');
             const span = progressBar.find('span');
+            const $stepContainer = this.$theForm.find('.ff-step-container').first();
+            const isTabsProgress = this.isTabsIndicator($stepContainer.data('progress_indicator'));
 
             // Add smooth animation to progress bar
             progressBar.css({
@@ -495,10 +569,14 @@ class FluentFormSlider {
             let stepText = this.fluentFormVars.step_text;
 
             let stepTitle = $(stepTitles[activeStep]).text();
-            stepText = stepText
-                .replace('%activeStep%', activeStep + 1)
-                .replace('%totalStep%', totalSteps)
-                .replace('%stepTitle%', stepTitle);
+            if (isTabsProgress) {
+                stepText = parseInt(completeness) + '% ' + this.fluentFormVars.step_completed_text;
+            } else {
+                stepText = stepText
+                    .replace('%activeStep%', activeStep + 1)
+                    .replace('%totalStep%', totalSteps)
+                    .replace('%stepTitle%', stepTitle);
+            }
 
             // Add ARIA live region for step announcements
             this.$theForm.find('.ff-el-progress-status')
@@ -688,11 +766,7 @@ class FluentFormSlider {
             $(formSteps[this.activeStep]).css('display', 'block').addClass('active').attr('aria-hidden', 'false');
 
             // Change step title
-            stepTitles.removeClass('ff_active ff_completed');
-            $.each([...Array(this.activeStep).keys()], (step) => {
-                $($(stepTitles[step])).addClass('ff_completed');
-            });
-            $(stepTitles[this.activeStep]).addClass('ff_active');
+            this.syncStepTitleState(stepTitles, this.activeStep);
 
             const scrollTop = function () {
                 if (window.ff_disable_step_scroll) {
@@ -729,6 +803,13 @@ class FluentFormSlider {
             };
 
             const animationType = $(formSteps[this.activeStep]).closest('.ff-step-container').data('animation_type');
+            const $stepContainer = $(formSteps[this.activeStep]).closest('.ff-step-container');
+            const $stepBody = $(formSteps[this.activeStep]).closest('.ff-step-body');
+            const isTabsNavigation = this.isTabsIndicator($stepContainer.data('progress_indicator'));
+
+            if (isTabsNavigation) {
+                $stepBody.css('overflow', 'hidden');
+            }
 
             // Get the current and next step elements
             const $currentStep = $(formSteps[this.activeStep]);
@@ -757,6 +838,10 @@ class FluentFormSlider {
             const progressPromise = this.animateProgressToStep(this.activeStep, completenessTotalSteps, progressDuration);
 
             const completeStepChange = function () {
+                if (isTabsNavigation) {
+                    $stepBody.css('overflow', '');
+                }
+
                 let isFormReset = goBackToStep === 0 && !isScrollTop;
                 let isFormSubmitting = self.$theForm.hasClass('ff_submitting');
 

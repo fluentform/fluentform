@@ -636,6 +636,7 @@ class Component
             'ajaxUrl'                       => admin_url('admin-ajax.php'),
             'forms'                         => [],
             'step_text'                     => $stepText,
+            'step_completed_text'          => __('Completed', 'fluentform'),
             'is_rtl'                        => is_rtl(),
             'date_i18n'                     => self::getDatei18n(),
             'pro_version'                   => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,

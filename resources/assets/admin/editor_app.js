@@ -133,6 +133,8 @@ window.fluentFormEditorApp = new Vue({
                 },
                 settings: {
                     progress_indicator: "progress-bar",
+                    progress_layout: 'top',
+                    tabs_show_progress_bar: 'no',
                     step_titles: [],
                     disable_auto_focus: 'no',
                     enable_auto_slider: 'no',
@@ -238,6 +240,14 @@ window.fluentFormEditorApp = new Vue({
 
                 if(!formData.stepsWrapper.stepStart.settings.enable_auto_slider) {
                     formData.stepsWrapper.stepStart.settings.enable_auto_slider = 'no';
+                }
+
+                if(!formData.stepsWrapper.stepStart.settings.progress_layout) {
+                    formData.stepsWrapper.stepStart.settings.progress_layout = 'top';
+                }
+
+                if(!formData.stepsWrapper.stepStart.settings.tabs_show_progress_bar) {
+                    formData.stepsWrapper.stepStart.settings.tabs_show_progress_bar = 'no';
                 }
 
                 if(!formData.stepsWrapper.stepStart.settings.enable_step_data_persistency) {
