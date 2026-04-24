@@ -17,6 +17,8 @@
 - [ ] 3.1 Add a centralized event bridge that dispatches both native events and legacy jQuery events with compatible payloads.
 - [ ] 3.2 Verify event order and payload parity for `init`, `success`, `failed`, `reset`, `ff_reinit`, and step events.
 - [ ] 3.3 Validate bridge behavior against Free modules (`fluentform-advanced`, `form-save-progress`, payment handler) and Pro modules (payment/chat/gateway scripts).
+- [ ] 3.4 Validate compatibility for all frontend scripts enqueued during form render (Free + Pro), including jQuery-bound listeners and script-specific next-action handlers.
+- [ ] 3.5 Validate direct runtime API calls from dependent scripts (`window.fluentFormApp(...)`, `window.ff_helper.*`, `formInstance.sendData/showFormSubmissionProgress/hideFormSubmissionProgress/addGlobalValidator`) remain behaviorally compatible.
 
 ## 4. jQuery Loading Option and Interface
 
@@ -32,3 +34,4 @@
 - [ ] 5.2 Run regression checklist for Pro flows: payment gateways, chat, save-progress, post update, file uploader paths.
 - [ ] 5.3 Run build and asset verification for Free and Pro bundles and confirm no unintended package/dependency removals.
 - [ ] 5.4 Produce final risk log and rollback instructions (switch to `Enabled` mode / restore jQuery dependency path).
+- [ ] 5.5 Produce a final compatibility matrix mapping each enqueued frontend script (Free + Pro) to: lifecycle events consumed, direct runtime API calls used, validation evidence, and pass/fail status.

@@ -90,6 +90,26 @@
 | `../fluentformpro/src/assets/public/paystack_handler.js` | `fluentform_init_single` | `$form.on(...)` |
 | `../fluentformpro/src/assets/public/authorizenet_accept_handler.js` | `fluentform_init_single` | `$form.on(...)` |
 
+### 1.3b Direct Runtime API dependency matrix (Pro)
+
+These are non-event compatibility dependencies that must remain stable after migration.
+
+| File | Direct API dependency | Usage details |
+|---|---|---|
+| `../fluentformpro/src/assets/public/payment_handler.js` | `window.ff_helper.numericVal` | Reads numeric value for payment items |
+| `../fluentformpro/src/assets/public/payment_handler.js` | `window.fluentFormApp($form).sendData(...)` | Sends follow-up payment actions |
+| `../fluentformpro/src/assets/public/payment_handler.js` | `formInstance.addGlobalValidator(...)` | Injects payment validators |
+| `../fluentformpro/src/assets/public/payment_handler.js` | `formInstance.showFormSubmissionProgress(...)` / `hideFormSubmissionProgress(...)` | Controls submission progress UI |
+| `../fluentformpro/src/assets/public/payment_handler_pro.js` | `formInstance.addGlobalValidator(...)` | Injects payment validators |
+| `../fluentformpro/src/assets/public/payment_handler_pro.js` | `formInstance.showFormSubmissionProgress(...)` / `hideFormSubmissionProgress(...)` | Controls submission progress UI |
+| `../fluentformpro/src/assets/public/razorpay_handler.js` | `formInstance.sendData(...)` | Confirms Razorpay payment |
+| `../fluentformpro/src/assets/public/razorpay_handler.js` | `formInstance.showFormSubmissionProgress(...)` / `hideFormSubmissionProgress(...)` | Controls submission progress UI |
+| `../fluentformpro/src/assets/public/paystack_handler.js` | `formInstance.sendData(...)` | Confirms Paystack payment |
+| `../fluentformpro/src/assets/public/paystack_handler.js` | `formInstance.showFormSubmissionProgress(...)` / `hideFormSubmissionProgress(...)` | Controls submission progress UI |
+| `../fluentformpro/src/assets/public/authorizenet_accept_handler.js` | `formInstance.sendData(...)` | Confirms Authorize.Net payment |
+| `../fluentformpro/src/assets/public/authorizenet_accept_handler.js` | `formInstance.showFormSubmissionProgress(...)` | Controls submission progress UI |
+| `../fluentformpro/src/assets/js/fluentformproPostUpdate.js` | `window.fluentFormApp($form)` | Re-initializes runtime instance for post-update flow |
+
 ### 1.4 Public script dependency graph (`app/Modules/Component/Component.php`)
 
 | Handle | Source | Deps | Has `jquery` dep? |
