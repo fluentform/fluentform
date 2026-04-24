@@ -535,17 +535,39 @@
             }
         });
 
-        document.addEventListener('submit', function (e) {
-            const formEl = e.target.closest('form.frm-fluent-form');
+        const handleFluentFormSubmit = function (submitEvent) {
+            const formEl = submitEvent.target.closest('form.frm-fluent-form');
             if (!formEl) {
-                return;
+                return false;
             }
-            e.preventDefault();
+            submitEvent.preventDefault();
             const app = window.fluentFormApp(formEl);
             if (!app) {
-                return;
+                return true;
             }
             app.submissionAjaxHandler();
+            return true;
+        };
+
+        const handleLoadingFormSubmit = function (submitEvent) {
+            const loadingFormElement = submitEvent.target.closest('.fluentform .ff-form-loading');
+            if (!loadingFormElement) {
+                return false;
+            }
+            submitEvent.preventDefault();
+            loadingFormElement.parentElement?.querySelectorAll('.ff_msg_temp').forEach((el) => el.remove());
+            const msg = document.createElement('div');
+            msg.className = 'error text-danger ff_msg_temp';
+            msg.innerHTML = window.fluentform_submission_messages_global?.javascript_handler_failed || 'Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again';
+            loadingFormElement.insertAdjacentElement('afterend', msg);
+            return true;
+        };
+
+        document.addEventListener('submit', function (submitEvent) {
+            if (handleFluentFormSubmit(submitEvent)) {
+                return;
+            }
+            handleLoadingFormSubmit(submitEvent);
         });
 
         document.addEventListener('reset', function (e) {
@@ -575,18 +597,6 @@
             jqueryEventBridge.emitEvent('ff_reinit', { formItem: formEl, form: formEl, config: getFormConfig(formEl) }, document, [formEl]);
         });
 
-        document.addEventListener('submit', function (e) {
-            const formEl = e.target.closest('.fluentform .ff-form-loading');
-            if (!formEl) {
-                return;
-            }
-            e.preventDefault();
-            formEl.parentElement?.querySelectorAll('.ff_msg_temp').forEach((el) => el.remove());
-            const msg = document.createElement('div');
-            msg.className = 'error text-danger ff_msg_temp';
-            msg.innerHTML = window.fluentform_submission_messages_global?.javascript_handler_failed || 'Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again';
-            formEl.insertAdjacentElement('afterend', msg);
-        });
     }
 
     const hasJquery = typeof window.jQuery === 'function';
