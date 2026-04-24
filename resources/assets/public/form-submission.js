@@ -1,36 +1,36 @@
-(function () {
-    function ensureFluentFormJqueryBridge() {
-        if (window.fluentFormBridge) {
-            return window.fluentFormBridge;
-        }
-        window.fluentFormBridge = {
-            emitEvent: function (eventName, detail, targetElement, jqArgs, options) {
-                const opts = options || {};
-                const target = targetElement || document;
-                const event = new CustomEvent(eventName, {
-                    detail: detail,
-                    bubbles: typeof opts.bubbles === 'boolean' ? opts.bubbles : true
-                });
-                target.dispatchEvent(event);
+    (function () {
+        function ensureFluentFormJqueryBridge() {
+            if (window.fluentFormBridge) {
+                return window.fluentFormBridge;
+            }
+            window.fluentFormBridge = {
+                emitEvent: function (eventName, detail, targetElement, jqueryEventArguments, options) {
+                    const eventOptions = options || {};
+                    const eventTarget = targetElement || document;
+                    const browserEvent = new CustomEvent(eventName, {
+                        detail: detail,
+                        bubbles: typeof eventOptions.bubbles === 'boolean' ? eventOptions.bubbles : true
+                    });
+                    eventTarget.dispatchEvent(browserEvent);
 
-                if (typeof window.jQuery === 'function') {
-                    const $target = window.jQuery(target);
-                    if (typeof jqArgs !== 'undefined') {
-                        $target.trigger(eventName, jqArgs);
-                    } else if (typeof detail !== 'undefined') {
-                        $target.trigger(eventName, [detail]);
-                    } else {
-                        $target.trigger(eventName);
+                    if (typeof window.jQuery === 'function') {
+                        const $jqueryEventTarget = window.jQuery(eventTarget);
+                        if (typeof jqueryEventArguments !== 'undefined') {
+                            $jqueryEventTarget.trigger(eventName, jqueryEventArguments);
+                        } else if (typeof detail !== 'undefined') {
+                            $jqueryEventTarget.trigger(eventName, [detail]);
+                        } else {
+                            $jqueryEventTarget.trigger(eventName);
+                        }
                     }
                 }
-            }
-        };
-        return window.fluentFormBridge;
-    }
+            };
+            return window.fluentFormBridge;
+        }
 
-    function initVanillaSubmissionRuntime() {
-        const bridge = ensureFluentFormJqueryBridge();
-        const formStore = {};
+        function initVanillaSubmissionRuntime() {
+        const jqueryEventBridge = ensureFluentFormJqueryBridge();
+        const formInstanceStore = {};
 
         window.ffValidationError = (function () {
             var ffValidationError = function () { };
@@ -89,23 +89,23 @@
             const params = new URLSearchParams(serializedData);
             const recaptchaEl = formEl.querySelector('.ff-el-recaptcha.g-recaptcha');
             if (recaptchaEl && window.grecaptcha) {
-                const wid = recaptchaEl.dataset.gRecaptcha_widget_id;
-                if (typeof wid !== 'undefined') {
-                    params.append('g-recaptcha-response', grecaptcha.getResponse(wid));
+                const widgetId = recaptchaEl.dataset.gRecaptcha_widget_id;
+                if (typeof widgetId !== 'undefined') {
+                    params.append('g-recaptcha-response', grecaptcha.getResponse(widgetId));
                 }
             }
             const hcaptchaEl = formEl.querySelector('.ff-el-hcaptcha.h-captcha');
             if (hcaptchaEl && window.hcaptcha) {
-                const wid = hcaptchaEl.dataset.hCaptcha_widget_id;
-                if (typeof wid !== 'undefined') {
-                    params.append('h-captcha-response', hcaptcha.getResponse(wid));
+                const widgetId = hcaptchaEl.dataset.hCaptcha_widget_id;
+                if (typeof widgetId !== 'undefined') {
+                    params.append('h-captcha-response', hcaptcha.getResponse(widgetId));
                 }
             }
             const turnstileEl = formEl.querySelector('.ff-el-turnstile.cf-turnstile');
             if (turnstileEl && window.turnstile) {
-                const wid = turnstileEl.dataset.cfTurnstile_widget_id;
-                if (typeof wid !== 'undefined') {
-                    params.append('cf-turnstile-response', turnstile.getResponse(wid));
+                const widgetId = turnstileEl.dataset.cfTurnstile_widget_id;
+                if (typeof widgetId !== 'undefined') {
+                    params.append('cf-turnstile-response', turnstile.getResponse(widgetId));
                 }
             }
             return params.toString();
@@ -262,8 +262,8 @@
 
         const getFormConfig = function (formEl) {
             const formInstanceSelector = getFormInstanceClass(formEl).replace(/[^a-zA-Z0-9_-]/g, '');
-            const formObj = window['fluent_form_' + formInstanceSelector];
-            return (formObj && typeof formObj === 'object') ? formObj : null;
+            const formConfiguration = window['fluent_form_' + formInstanceSelector];
+            return (formConfiguration && typeof formConfiguration === 'object') ? formConfiguration : null;
         };
 
         const getAjaxUrl = function (formConfig) {
@@ -271,9 +271,9 @@
         };
 
         const emitInitEvents = function (app, formEl, formConfig) {
-            bridge.emitEvent('fluentform_init', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
-            bridge.emitEvent('fluentform_init_' + formConfig.id, { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
-            bridge.emitEvent('fluentform_init_single', { form: formEl, app: app, config: formConfig }, formEl, [app, formConfig]);
+            jqueryEventBridge.emitEvent('fluentform_init', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
+            jqueryEventBridge.emitEvent('fluentform_init_' + formConfig.id, { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
+            jqueryEventBridge.emitEvent('fluentform_init_single', { form: formEl, app: app, config: formConfig }, formEl, [app, formConfig]);
         };
 
         const createAppInstance = function (formEl, formConfig) {
@@ -441,7 +441,7 @@
                         if (!res || !res.data || !res.data.result) {
                             const failedBridgePayload = createBridgePayload(res);
                             const failedJqueryPayload = createJqueryFormResponse(res);
-                            bridge.emitEvent('fluentform_submission_failed', failedBridgePayload, formEl, [failedJqueryPayload]);
+                            jqueryEventBridge.emitEvent('fluentform_submission_failed', failedBridgePayload, formEl, [failedJqueryPayload]);
                             app.showErrorMessages(res);
                             return;
                         }
@@ -452,14 +452,14 @@
                         if (res.data.nextAction) {
                             const nextActionBridgePayload = createBridgePayload(res);
                             const nextActionJqueryPayload = createJqueryFormResponse(res);
-                            bridge.emitEvent('fluentform_next_action_' + res.data.nextAction, nextActionBridgePayload, formEl, [nextActionJqueryPayload]);
+                            jqueryEventBridge.emitEvent('fluentform_next_action_' + res.data.nextAction, nextActionBridgePayload, formEl, [nextActionJqueryPayload]);
                             return;
                         }
 
                         const successBridgePayload = createBridgePayload(res);
                         const successJqueryPayload = createJquerySuccessPayload(res);
-                        bridge.emitEvent('fluentform_submission_success', successBridgePayload, formEl, [successJqueryPayload], { bubbles: false });
-                        bridge.emitEvent('fluentform_submission_success', successBridgePayload, document.body, [successJqueryPayload]);
+                        jqueryEventBridge.emitEvent('fluentform_submission_success', successBridgePayload, formEl, [successJqueryPayload], { bubbles: false });
+                        jqueryEventBridge.emitEvent('fluentform_submission_success', successBridgePayload, document.body, [successJqueryPayload]);
 
                         const successId = formConfig.form_id_selector + '_success';
                         let successNode = document.getElementById(successId);
@@ -488,13 +488,13 @@
                             formEl.classList.add('ff_force_hide');
                             formEl.reset();
                         } else {
-                            bridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
+                            jqueryEventBridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
                             formEl.reset();
                         }
                     } catch (error) {
                         const errorBridgePayload = createBridgePayload(error);
                         const errorJqueryPayload = createJqueryFormResponse(error);
-                        bridge.emitEvent('fluentform_submission_failed', errorBridgePayload, formEl, [errorJqueryPayload]);
+                        jqueryEventBridge.emitEvent('fluentform_submission_failed', errorBridgePayload, formEl, [errorJqueryPayload]);
                         app.showErrorMessages(error?.message || 'Request failed');
                     } finally {
                         isSending = false;
@@ -515,15 +515,15 @@
             if (!instanceClass) {
                 return false;
             }
-            if (formStore[instanceClass]) {
-                return formStore[instanceClass];
+            if (formInstanceStore[instanceClass]) {
+                return formInstanceStore[instanceClass];
             }
             const formConfig = getFormConfig(formEl);
             if (!formConfig) {
                 return false;
             }
             const app = createAppInstance(formEl, formConfig);
-            formStore[instanceClass] = app;
+            formInstanceStore[instanceClass] = app;
             return app;
         };
 
@@ -554,7 +554,7 @@
                 return;
             }
             const formConfig = getFormConfig(formEl);
-            bridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
+            jqueryEventBridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
         });
 
         document.addEventListener('ff_reinit', function (e) {
@@ -572,7 +572,7 @@
             app.initFormHandlers();
             app.initTriggers();
             formEl.setAttribute('data-ff_reinit', 'yes');
-            bridge.emitEvent('ff_reinit', { formItem: formEl, form: formEl, config: getFormConfig(formEl) }, document, [formEl]);
+            jqueryEventBridge.emitEvent('ff_reinit', { formItem: formEl, form: formEl, config: getFormConfig(formEl) }, document, [formEl]);
         });
 
         document.addEventListener('submit', function (e) {
@@ -653,8 +653,8 @@ jQuery(document).ready(function () {
             var formInstanceSelector = $theForm.attr('data-form_instance');
             // Sanitize the selector - only allow alphanumeric, underscore and hyphen
             formInstanceSelector = formInstanceSelector ? formInstanceSelector.replace(/[^a-zA-Z0-9_-]/g, '') : '';
-            var formObj = window['fluent_form_' + formInstanceSelector];
-            var form = (formObj && typeof formObj === 'object') ? formObj : null;
+            var formConfiguration = window['fluent_form_' + formInstanceSelector];
+            var form = (formConfiguration && typeof formConfiguration === 'object') ? formConfiguration : null;
             if (!form) {
                 console.log('No Fluent form JS vars found!');
                 return false;
