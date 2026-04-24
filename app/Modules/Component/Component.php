@@ -38,6 +38,7 @@ class Component
     public function __construct(Application $app)
     {
         $this->app = $app;
+        add_action('admin_notices', [$this, 'maybeRenderDisabledJqueryNotice']);
     }
 
     public function registerScripts()
@@ -68,10 +69,36 @@ class Component
             FLUENTFORM_VERSION
         );
 
+        /**
+         * jQuery Loading Mode for public Fluent Forms runtime.
+         *
+         * Filter:  fluentform/jquery_loading_mode
+         * Option:  ff_jquery_loading_mode
+         * Values:  'auto' (default) | 'enabled' | 'disabled'
+         *
+         * Auto mode heuristic: jQuery is required when either:
+         *   (a) a registered FF Free/Pro public script declares ['jquery'] as a dependency, OR
+         *   (b) filter fluentform/jquery_loading_mode_required returns true.
+         *
+         * Bridge behavior in Disabled mode: bridge silently skips jQuery emit
+         * when window.jQuery is undefined — no JS error is thrown.
+         */
+        $jqueryLoadingMode = $this->resolveJqueryLoadingMode();
+        if ($jqueryLoadingMode === 'auto') {
+            $jqueryLoadingMode = $this->shouldAutoEnableJquery() ? 'enabled' : 'disabled';
+        }
+
+        $submissionScriptDeps = [];
+        if ($jqueryLoadingMode === 'enabled') {
+            $submissionScriptDeps[] = 'jquery';
+        } else {
+            $this->maybeWarnDisabledJqueryConsumers();
+        }
+
         wp_register_script(
             'fluent-form-submission',
             fluentFormMix('js/form-submission.js'),
-            ['jquery'],
+            $submissionScriptDeps,
             FLUENTFORM_VERSION,
             true
         );
@@ -139,6 +166,108 @@ class Component
         $this->app->doAction('fluentform/scripts_registered');
 
         $this->maybeLoadFluentFormStyles();
+    }
+
+    private function resolveJqueryLoadingMode()
+    {
+        $mode = apply_filters(
+            'fluentform/jquery_loading_mode',
+            get_option('ff_jquery_loading_mode', 'auto')
+        );
+        $mode = strtolower(trim((string) $mode));
+        if (!in_array($mode, ['auto', 'enabled', 'disabled'], true)) {
+            $mode = 'auto';
+        }
+        return $mode;
+    }
+
+    private function shouldAutoEnableJquery()
+    {
+        $required = (bool) apply_filters('fluentform/jquery_loading_mode_required', false);
+        if ($required) {
+            return true;
+        }
+
+        global $wp_scripts;
+        if (!($wp_scripts instanceof \WP_Scripts)) {
+            return false;
+        }
+
+        foreach ($wp_scripts->registered as $handle => $script) {
+            $isFluentHandle = (strpos($handle, 'fluentform') !== false) || (strpos($handle, 'ff_') === 0) || (strpos($handle, 'fluent-form') === 0);
+            $isFluentSrc = !empty($script->src) && strpos($script->src, 'fluentform') !== false;
+            if (!$isFluentHandle && !$isFluentSrc) {
+                continue;
+            }
+
+            $deps = is_array($script->deps) ? $script->deps : [];
+            if (in_array('jquery', $deps, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function maybeWarnDisabledJqueryConsumers()
+    {
+        global $wp_scripts;
+        if (!($wp_scripts instanceof \WP_Scripts)) {
+            return;
+        }
+
+        $handles = [];
+        foreach ($wp_scripts->registered as $handle => $script) {
+            $deps = is_array($script->deps) ? $script->deps : [];
+            if (!in_array('jquery', $deps, true)) {
+                continue;
+            }
+
+            $isFluentHandle = (strpos($handle, 'fluentform') !== false) || (strpos($handle, 'ff_') === 0) || (strpos($handle, 'fluent-form') === 0);
+            $isFluentSrc = !empty($script->src) && strpos($script->src, 'fluentform') !== false;
+            if ($isFluentHandle || $isFluentSrc) {
+                $handles[] = $handle;
+            }
+        }
+
+        if (empty($handles)) {
+            return;
+        }
+
+        $handles = array_values(array_unique($handles));
+        $transientKey = 'fluentform_jquery_disabled_notice_' . md5(implode('|', $handles));
+        if (get_transient($transientKey)) {
+            return;
+        }
+        set_transient($transientKey, 1, HOUR_IN_SECONDS);
+
+        foreach ($handles as $handle) {
+            error_log(sprintf('Fluent Forms: jQuery loading is Disabled but %s may require jQuery.', $handle));
+        }
+
+        set_transient('fluentform_jquery_disabled_notice_handles', $handles, HOUR_IN_SECONDS);
+    }
+
+    public function maybeRenderDisabledJqueryNotice()
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $handles = get_transient('fluentform_jquery_disabled_notice_handles');
+        if (empty($handles) || !is_array($handles)) {
+            return;
+        }
+
+        delete_transient('fluentform_jquery_disabled_notice_handles');
+
+        printf(
+            '<div class="notice notice-warning"><p>%s</p></div>',
+            esc_html(sprintf(
+                'Fluent Forms: jQuery loading is Disabled but %s may require jQuery.',
+                implode(', ', $handles)
+            ))
+        );
     }
 
     protected function maybeLoadFluentFormStyles()

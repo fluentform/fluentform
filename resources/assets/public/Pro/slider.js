@@ -613,23 +613,70 @@ class FluentFormSlider {
                     formInstance.scrollToFirstError(350);
                     return;
                 }
-                self.$theForm.trigger('ff_to_next_page', self.activeStep);
-
-                $(document).trigger('ff_to_next_page', {
-                    step: self.activeStep,
-                    form: self.$theForm
-                });
+                if (window.fluentFormBridge && typeof window.fluentFormBridge.emitEvent === 'function') {
+                    window.fluentFormBridge.emitEvent(
+                        'ff_to_next_page',
+                        {
+                            form: self.$theForm[0],
+                            step: self.activeStep
+                        },
+                        self.$theForm[0],
+                        [self.activeStep]
+                    );
+                    window.fluentFormBridge.emitEvent(
+                        'ff_to_next_page',
+                        {
+                            form: self.$theForm[0],
+                            step: self.activeStep
+                        },
+                        document,
+                        [{
+                            step: self.activeStep,
+                            form: self.$theForm
+                        }]
+                    );
+                } else {
+                    self.$theForm.trigger('ff_to_next_page', self.activeStep);
+                    $(document).trigger('ff_to_next_page', {
+                        step: self.activeStep,
+                        form: self.$theForm
+                    });
+                }
 
                 const formSteps = self.$theForm.find('.fluentform-step');
                 self.$theForm.trigger('ff_render_dynamic_smartcodes', $(formSteps[self.activeStep]));
             } else {
                 self.activeStep--;
                 actionType = 'prev';
-                self.$theForm.trigger('ff_to_prev_page', self.activeStep);
-                $(document).trigger('ff_to_prev_page', {
-                    step: self.activeStep,
-                    form: self.$theForm
-                });
+                if (window.fluentFormBridge && typeof window.fluentFormBridge.emitEvent === 'function') {
+                    window.fluentFormBridge.emitEvent(
+                        'ff_to_prev_page',
+                        {
+                            form: self.$theForm[0],
+                            step: self.activeStep
+                        },
+                        self.$theForm[0],
+                        [self.activeStep]
+                    );
+                    window.fluentFormBridge.emitEvent(
+                        'ff_to_prev_page',
+                        {
+                            form: self.$theForm[0],
+                            step: self.activeStep
+                        },
+                        document,
+                        [{
+                            step: self.activeStep,
+                            form: self.$theForm
+                        }]
+                    );
+                } else {
+                    self.$theForm.trigger('ff_to_prev_page', self.activeStep);
+                    $(document).trigger('ff_to_prev_page', {
+                        step: self.activeStep,
+                        form: self.$theForm
+                    });
+                }
             }
 
             const autoScroll = self.$theForm.find('.ff-step-container').attr('data-disable_auto_focus') != 'yes';
