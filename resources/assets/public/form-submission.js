@@ -439,7 +439,9 @@
                         await runBeforeSubmitCallbacks(payload);
                         const res = await app.sendData(formEl, payload);
                         if (!res || !res.data || !res.data.result) {
-                            bridge.emitEvent('fluentform_submission_failed', createBridgePayload(res), formEl, [createJqueryFormResponse(res)]);
+                            const failedBridgePayload = createBridgePayload(res);
+                            const failedJqueryPayload = createJqueryFormResponse(res);
+                            bridge.emitEvent('fluentform_submission_failed', failedBridgePayload, formEl, [failedJqueryPayload]);
                             app.showErrorMessages(res);
                             return;
                         }
@@ -448,12 +450,16 @@
                             addHiddenData(formEl, res.data.append_data);
                         }
                         if (res.data.nextAction) {
-                            bridge.emitEvent('fluentform_next_action_' + res.data.nextAction, createBridgePayload(res), formEl, [createJqueryFormResponse(res)]);
+                            const nextActionBridgePayload = createBridgePayload(res);
+                            const nextActionJqueryPayload = createJqueryFormResponse(res);
+                            bridge.emitEvent('fluentform_next_action_' + res.data.nextAction, nextActionBridgePayload, formEl, [nextActionJqueryPayload]);
                             return;
                         }
 
-                        bridge.emitEvent('fluentform_submission_success', createBridgePayload(res), formEl, [createJquerySuccessPayload(res)], { bubbles: false });
-                        bridge.emitEvent('fluentform_submission_success', createBridgePayload(res), document.body, [createJquerySuccessPayload(res)]);
+                        const successBridgePayload = createBridgePayload(res);
+                        const successJqueryPayload = createJquerySuccessPayload(res);
+                        bridge.emitEvent('fluentform_submission_success', successBridgePayload, formEl, [successJqueryPayload], { bubbles: false });
+                        bridge.emitEvent('fluentform_submission_success', successBridgePayload, document.body, [successJqueryPayload]);
 
                         const successId = formConfig.form_id_selector + '_success';
                         let successNode = document.getElementById(successId);
@@ -486,7 +492,9 @@
                             formEl.reset();
                         }
                     } catch (error) {
-                        bridge.emitEvent('fluentform_submission_failed', createBridgePayload(error), formEl, [createJqueryFormResponse(error)]);
+                        const errorBridgePayload = createBridgePayload(error);
+                        const errorJqueryPayload = createJqueryFormResponse(error);
+                        bridge.emitEvent('fluentform_submission_failed', errorBridgePayload, formEl, [errorJqueryPayload]);
                         app.showErrorMessages(error?.message || 'Request failed');
                     } finally {
                         isSending = false;
