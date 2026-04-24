@@ -1432,12 +1432,10 @@ class Component
     {
         $legacyJqueryFields = [
             'featured_image',
-            'form_step',
             'input_file',
             'input_image',
             'repeater_container',
             'repeater_field',
-            'step_start',
         ];
 
         return (bool) array_intersect($formBuilder->fieldLists, $legacyJqueryFields);

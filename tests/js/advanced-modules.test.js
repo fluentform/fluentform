@@ -107,6 +107,19 @@ function loadFluentformAdvancedModule(window, dependencies) {
     );
 }
 
+function loadSliderModule(window) {
+    const source = fs.readFileSync(
+        path.resolve(__dirname, '../../resources/assets/public/Pro/slider.js'),
+        'utf8'
+    ).replace('export default function (', 'function defaultExport (') + '\nmodule.exports = defaultExport;';
+
+    const module = { exports: {} };
+    const factory = new Function('window', 'document', 'module', 'exports', source);
+    factory(window, window.document, module, module.exports);
+
+    return module.exports;
+}
+
 test('dom-rating keeps active state and rating text in sync without jQuery', async () => {
     const ratingModule = loadDefaultExport('resources/assets/public/Pro/dom-rating.js');
     const dom = createDom(`
@@ -439,4 +452,193 @@ test('fluentform-advanced bootstraps migrated modules without requiring jQuery',
     assert.equal(moduleCalls.some(([name]) => name === 'repeater'), false);
     assert.equal(moduleCalls.some(([name]) => name === 'slider'), false);
     assert.equal(dynamicValue.innerHTML, 'Ada Lovelace');
+});
+
+test('fluentform-advanced bootstraps already loaded forms in no-jquery mode', () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <form
+                    class="frm-fluent-form ff-form-loaded ff-form-has-steps ff_form_instance_test"
+                    data-form_instance="ff_form_instance_test"
+                >
+                    <div class="ff-step-container" data-animation_type="none" data-disable_auto_focus="yes">
+                        <div class="ff-step-header">
+                            <div class="ff-el-progress">
+                                <div class="ff-el-progress-bar"><span></span></div>
+                            </div>
+                        </div>
+                        <div class="fluentform-step">
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-prev" data-action="prev">Prev</button>
+                                <button type="button" class="ff-btn-next" data-action="next">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    const formElement = window.document.querySelector('form');
+    const sliderCalls = [];
+
+    window.fluentFormVars = {
+        stepAnimationDuration: 0,
+        is_rtl: false
+    };
+    window.fluent_form_ff_form_instance_test = {
+        id: 99,
+        form_instance: 'ff_form_instance_test'
+    };
+    window.fluentFormBridge = {
+        emitEvent(eventName, detail, targetElement) {
+            (targetElement || window.document).dispatchEvent(new window.CustomEvent(eventName, {
+                detail,
+                bubbles: true
+            }));
+        },
+        onEvent(targetElement, eventNames, handler) {
+            const names = Array.isArray(eventNames) ? eventNames : String(eventNames).split(/\s+/).filter(Boolean);
+            const removers = names.map((eventName) => {
+                const listener = (event) => handler(event, event.detail, [event.detail], 'native');
+                targetElement.addEventListener(eventName, listener);
+                return () => targetElement.removeEventListener(eventName, listener);
+            });
+
+            return () => removers.forEach((removeListener) => removeListener());
+        }
+    };
+
+    loadFluentformAdvancedModule(window, {
+        initNetPromoter() {},
+        initRepeatButtons() {},
+        initRepeater() {},
+        ratingDom() {},
+        formConditional() {},
+        fileUploader() {},
+        formSlider(formReference) {
+            sliderCalls.push(formReference);
+            return {
+                init() {
+                    formElement.querySelector('.ff-btn-prev')?.remove();
+                    formElement.querySelector('.ff-el-progress-bar').style.width = '100%';
+                },
+                updateSlider() {}
+            };
+        },
+        calculation() {}
+    });
+
+    assert.equal(sliderCalls.length, 1);
+    assert.equal(sliderCalls[0], formElement);
+    assert.equal(formElement.querySelector('.ff-btn-prev'), null);
+    assert.equal(formElement.querySelector('.ff-el-progress-bar').style.width, '100%');
+});
+
+test('slider navigates step forms without requiring jQuery', async () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <form class="frm-fluent-form ff-form-has-steps ff_form_instance_test" data-form_id="221">
+                    <div class="ff-step-container" data-animation_type="none" data-disable_auto_focus="yes">
+                        <ul class="ff-step-titles">
+                            <li>Step 1</li>
+                            <li>Step 2</li>
+                        </ul>
+                        <div class="ff-step-header">
+                            <div class="ff-el-progress">
+                                <div class="ff-el-progress-bar"><span></span></div>
+                            </div>
+                            <div class="ff-el-progress-status"></div>
+                            <ul class="ff-el-progress-title">
+                                <li>Intro</li>
+                                <li>Details</li>
+                            </ul>
+                        </div>
+                        <div class="fluentform-step">
+                            <div class="ff-el-group">
+                                <input type="text" name="first_name" value="Ada">
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-next" data-action="next">Next</button>
+                            </div>
+                        </div>
+                        <div class="fluentform-step">
+                            <div class="ff-el-group">
+                                <input type="text" name="last_name" value="Lovelace">
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-prev" data-action="prev">Prev</button>
+                            </div>
+                        </div>
+                        <button type="submit">Submit</button>
+                    </div>
+                </form>
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    const formElement = window.document.querySelector('form');
+    const events = [];
+
+    window.fluentFormVars = {
+        is_rtl: false,
+        stepAnimationDuration: 0,
+        step_text: 'Step %activeStep% of %totalStep% - %stepTitle%'
+    };
+    window.ffTransitionTimeOut = 0;
+    window.fluentFormBridge = {
+        emitEvent(eventName, detail, targetElement) {
+            events.push({ eventName, detail, target: targetElement === window.document ? 'document' : 'form' });
+            (targetElement || window.document).dispatchEvent(new window.CustomEvent(eventName, {
+                detail,
+                bubbles: true
+            }));
+        },
+        onEvent(targetElement, eventNames, handler) {
+            const names = Array.isArray(eventNames) ? eventNames : String(eventNames).split(/\s+/).filter(Boolean);
+            const removers = names.map((eventName) => {
+                const listener = (event) => handler(event, event.detail, [event.detail], 'native');
+                targetElement.addEventListener(eventName, listener);
+                return () => targetElement.removeEventListener(eventName, listener);
+            });
+
+            return () => removers.forEach((removeListener) => removeListener());
+        }
+    };
+    window.fluentFormApp = () => ({
+        validate() {},
+        showErrorMessages() {},
+        scrollToFirstError() {}
+    });
+
+    const sliderFactory = loadSliderModule(window);
+    const sliderInstance = sliderFactory(formElement, window.fluentFormVars, '.ff_form_instance_test');
+
+    sliderInstance.init();
+
+    let steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[0].classList.contains('active'), true);
+    assert.equal(steps[1].classList.contains('active'), false);
+    assert.equal(window.document.querySelector('.ff-el-progress-bar').style.width, '50%');
+
+    steps[0].querySelector('.ff-btn-next').click();
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+
+    steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[0].classList.contains('active'), false);
+    assert.equal(steps[1].classList.contains('active'), true);
+    assert.equal(events.some((item) => item.eventName === 'ff_to_next_page'), true);
+    assert.equal(window.document.querySelector('.ff-el-progress-bar').style.width, '100%');
+
+    steps[1].querySelector('.ff-btn-prev').click();
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+
+    steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[0].classList.contains('active'), true);
+    assert.equal(steps[1].classList.contains('active'), false);
+    assert.equal(events.some((item) => item.eventName === 'ff_to_prev_page'), true);
 });

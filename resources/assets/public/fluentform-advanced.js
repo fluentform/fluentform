@@ -61,6 +61,20 @@ function resolveFormElement(formReference) {
     return null;
 }
 
+function getLoadedFormConfig(formElement) {
+    if (!formElement) {
+        return null;
+    }
+
+    const formInstance = formElement.getAttribute("data-form_instance");
+    if (!formInstance) {
+        return null;
+    }
+
+    const sanitizedInstance = formInstance.replace(/[^a-zA-Z0-9_-]/g, "");
+    return window["fluent_form_" + sanitizedInstance] || null;
+}
+
 function getCalculationMessages(formId) {
     const messagesVar = "fluentform_calculation_messages_" + formId;
 
@@ -258,15 +272,13 @@ function setupDynamicSmartcodes(formElement) {
 }
 
 function setupStepSlider(formElement, formConfig) {
-    if (!formElement.classList.contains("ff-form-has-steps") || typeof window.jQuery !== "function") {
+    if (!formElement.classList.contains("ff-form-has-steps")) {
         return function noop() {};
     }
 
     const eventBridge = getEventBridge();
-    const jquery = window.jQuery;
-    const jqueryForm = jquery(formElement);
     const formSelector = "." + formConfig.form_instance;
-    const sliderInstance = formSlider(jquery, jqueryForm, window.fluentFormVars, formSelector);
+    const sliderInstance = formSlider(formElement, window.fluentFormVars, formSelector);
 
     sliderInstance.init();
 
@@ -334,6 +346,16 @@ function handleFluentFormInit(event, detail, args, source) {
 }
 
 getEventBridge().onEvent(document.body, "fluentform_init", handleFluentFormInit);
+
+Array.from(document.querySelectorAll("form.frm-fluent-form.ff-form-loaded")).forEach((formElement) => {
+    const formConfig = getLoadedFormConfig(formElement);
+
+    if (!formConfig) {
+        return;
+    }
+
+    setupAdvancedForm(formElement, formConfig);
+});
 
 // Polyfill for startsWith and endsWith
 (function (sp) {
