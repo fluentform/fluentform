@@ -1,27 +1,41 @@
-const initNetPromoter = function ($, $form) {
-    /**
-     * Rating element
-     */
-    let netPromoterDoms = $form.find(".jss-ff-el-net-promoter");
+function getFormElement(formReference) {
+    if (!formReference) {
+        return null;
+    }
 
-    if(!netPromoterDoms.length) {
+    if (formReference.nodeType === 1) {
+        return formReference;
+    }
+
+    if (formReference[0] && formReference[0].nodeType === 1) {
+        return formReference[0];
+    }
+
+    return null;
+}
+
+const initNetPromoter = function (formReference) {
+    const formElement = getFormElement(formReference);
+    if (!formElement) {
         return;
     }
 
-    $.each(netPromoterDoms, (index, netPromoterDom) => {
-        let $netPromoterDoms = $(netPromoterDom);
-        // Default selected icons
-        // $netPromoterDoms.find("label.active").prevAll().addClass("active");
-        $netPromoterDoms.on('click', 'label', function(e) {
-            var $this = $(this);
-            /**
-             * Mark active to all previous and currently hovered elements
-             * And mark inactive to the next ones!
-             */
-            $this.addClass("active");
-            $this.prevAll().removeClass("active");
-            $this.nextAll().removeClass("active");
-        })
+    const netPromoterElements = formElement.querySelectorAll('.jss-ff-el-net-promoter');
+    if (!netPromoterElements.length) {
+        return;
+    }
+
+    netPromoterElements.forEach((netPromoterElement) => {
+        netPromoterElement.addEventListener('click', function (event) {
+            const labelElement = event.target.closest('label');
+            if (!labelElement || !netPromoterElement.contains(labelElement)) {
+                return;
+            }
+
+            netPromoterElement.querySelectorAll('label').forEach((label) => {
+                label.classList.toggle('active', label === labelElement);
+            });
+        });
     });
 };
 

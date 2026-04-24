@@ -153,8 +153,8 @@ import calculation from './Pro/calculations';
         // Pass translated calculation messages to calculation module
         const calculationMessages = getCalculationMessages(form.id);
         calculation($, $theForm, calculationMessages);
-        ratingDom($, $theForm);
-        initNetPromoter($, $theForm);
+        ratingDom($theForm[0]);
+        initNetPromoter($theForm[0]);
 
         if($theForm.hasClass('ff-form-has-steps')) {
             const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
