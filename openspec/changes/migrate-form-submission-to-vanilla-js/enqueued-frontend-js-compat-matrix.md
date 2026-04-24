@@ -109,3 +109,27 @@ External script handles also loaded in form render context:
 - Direct runtime API call parity (`window.fluentFormApp`, `window.ff_helper`, `formInstance` methods).
 - Next-action and gateway callback parity (`fluentform_next_action_*` paths).
 - Disabled-mode safety for jQuery-bound scripts: no fatal JS errors in bridge/no-jQuery path.
+
+## Direct Runtime API Static Verification (Task 3.5 precheck)
+
+Status legend for this section:
+- `PASS (static)` = call site exists and target API exists in current runtime source
+- `PENDING (runtime)` = requires browser/runtime scenario verification
+
+| Consumer file | API call(s) used | Static status | Runtime status |
+|---|---|---|---|
+| `resources/assets/public/payment_handler.js` | `window.ff_helper.numericVal`, `window.fluentFormApp(...).sendData`, `formInstance.addGlobalValidator`, `addFieldValidationRule`, `removeFieldValidationRule`, `show/hideFormSubmissionProgress` | PASS (static) | PENDING (runtime) |
+| `resources/assets/public/Pro/calculations.js` | `window.ff_helper.numericVal`, `window.ff_helper.formatCurrency` | PASS (static) | PENDING (runtime) |
+| `resources/assets/public/Pro/slider.js` | `window.fluentFormApp(this.$theForm)` | PASS (static) | PENDING (runtime) |
+| `../fluentformpro/src/assets/public/payment_handler.js` | same payment runtime API set as Free handler | PASS (static) | PENDING (runtime) |
+| `../fluentformpro/src/assets/public/payment_handler_pro.js` | `formInstance.addGlobalValidator`, `show/hideFormSubmissionProgress`, `fluentFormApp($form)` | PASS (static) | PENDING (runtime) |
+| `../fluentformpro/src/assets/public/razorpay_handler.js` | `formInstance.sendData`, `show/hideFormSubmissionProgress` | PASS (static) | PENDING (runtime) |
+| `../fluentformpro/src/assets/public/paystack_handler.js` | `formInstance.sendData`, `show/hideFormSubmissionProgress` | PASS (static) | PENDING (runtime) |
+| `../fluentformpro/src/assets/public/authorizenet_accept_handler.js` | `formInstance.sendData`, `showFormSubmissionProgress` | PASS (static) | PENDING (runtime) |
+| `../fluentformpro/src/assets/js/fluentformproPostUpdate.js` | `window.fluentFormApp($form)`, `addFieldValidationRule`, `removeFieldValidationRule` | PASS (static) | PENDING (runtime) |
+
+Verification evidence source:
+- `resources/assets/public/form-submission.js` defines `window.ff_helper` and app methods:
+  `sendData`, `addGlobalValidator`, `addFieldValidationRule`, `removeFieldValidationRule`,
+  `showFormSubmissionProgress`, `hideFormSubmissionProgress`.
+- grep cross-checks confirm consumer call sites in Free and Pro source trees.
