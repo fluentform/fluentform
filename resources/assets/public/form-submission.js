@@ -1,5 +1,5 @@
 (function () {
-    function ensureFluentFormBridge() {
+    function ensureFluentFormJqueryBridge() {
         if (window.fluentFormBridge) {
             return window.fluentFormBridge;
         }
@@ -29,7 +29,7 @@
     }
 
     function initVanillaSubmissionRuntime() {
-        const bridge = ensureFluentFormBridge();
+        const bridge = ensureFluentFormJqueryBridge();
         const formStore = {};
 
         window.ffValidationError = (function () {
@@ -590,7 +590,7 @@
     }
 
     const hasJquery = typeof window.jQuery === 'function';
-    ensureFluentFormBridge();
+    ensureFluentFormJqueryBridge();
     if (!hasJquery) {
         initVanillaSubmissionRuntime();
         return;
