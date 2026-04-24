@@ -1,3 +1,572 @@
+(function () {
+    function ensureFluentFormBridge() {
+        if (window.fluentFormBridge) {
+            return window.fluentFormBridge;
+        }
+        window.fluentFormBridge = {
+            emitEvent: function (eventName, detail, targetElement, jqArgs, options) {
+                const opts = options || {};
+                const target = targetElement || document;
+                const event = new CustomEvent(eventName, {
+                    detail: detail,
+                    bubbles: typeof opts.bubbles === 'boolean' ? opts.bubbles : true
+                });
+                target.dispatchEvent(event);
+
+                if (typeof window.jQuery === 'function') {
+                    const $target = window.jQuery(target);
+                    if (typeof jqArgs !== 'undefined') {
+                        $target.trigger(eventName, jqArgs);
+                    } else if (typeof detail !== 'undefined') {
+                        $target.trigger(eventName, [detail]);
+                    } else {
+                        $target.trigger(eventName);
+                    }
+                }
+            }
+        };
+        return window.fluentFormBridge;
+    }
+
+    function initVanillaSubmissionRuntime() {
+        const bridge = ensureFluentFormBridge();
+        const formStore = {};
+
+        window.ffValidationError = (function () {
+            var ffValidationError = function () { };
+            ffValidationError.prototype = Object.create(Error.prototype);
+            ffValidationError.prototype.constructor = ffValidationError;
+            return ffValidationError;
+        })();
+
+        const resolveElement = function (el) {
+            if (!el) {
+                return null;
+            }
+            if (el.nodeType === 1) {
+                return el;
+            }
+            if (el[0] && el[0].nodeType === 1) {
+                return el[0];
+            }
+            return null;
+        };
+
+        window.ff_helper = {
+            numericVal: function (el) {
+                const target = resolveElement(el);
+                if (!target) {
+                    return 0;
+                }
+                if (target.classList.contains('ff_numeric')) {
+                    try {
+                        const formatConfig = JSON.parse(target.getAttribute('data-formatter') || '{}');
+                        return currency(target.value, formatConfig).value;
+                    } catch (e) {
+                        return Number(target.value || 0);
+                    }
+                }
+                return target.value || 0;
+            },
+            formatCurrency: function (el, value) {
+                const target = resolveElement(el);
+                if (!target) {
+                    return value;
+                }
+                if (target.classList.contains('ff_numeric')) {
+                    try {
+                        const formatConfig = JSON.parse(target.getAttribute('data-formatter') || '{}');
+                        return currency(value, formatConfig).format();
+                    } catch (e) {
+                        return value;
+                    }
+                }
+                return value;
+            }
+        };
+
+        const appendCaptchaData = function (formEl, serializedData) {
+            const params = new URLSearchParams(serializedData);
+            const recaptchaEl = formEl.querySelector('.ff-el-recaptcha.g-recaptcha');
+            if (recaptchaEl && window.grecaptcha) {
+                const wid = recaptchaEl.dataset.gRecaptcha_widget_id;
+                if (typeof wid !== 'undefined') {
+                    params.append('g-recaptcha-response', grecaptcha.getResponse(wid));
+                }
+            }
+            const hcaptchaEl = formEl.querySelector('.ff-el-hcaptcha.h-captcha');
+            if (hcaptchaEl && window.hcaptcha) {
+                const wid = hcaptchaEl.dataset.hCaptcha_widget_id;
+                if (typeof wid !== 'undefined') {
+                    params.append('h-captcha-response', hcaptcha.getResponse(wid));
+                }
+            }
+            const turnstileEl = formEl.querySelector('.ff-el-turnstile.cf-turnstile');
+            if (turnstileEl && window.turnstile) {
+                const wid = turnstileEl.dataset.cfTurnstile_widget_id;
+                if (typeof wid !== 'undefined') {
+                    params.append('cf-turnstile-response', turnstile.getResponse(wid));
+                }
+            }
+            return params.toString();
+        };
+
+        const serializeFormData = function (formEl) {
+            const dataItems = [];
+            const presentNames = new Set();
+            const allInputs = Array.from(formEl.querySelectorAll('input, select, textarea'));
+            const processedGroups = new Set();
+
+            allInputs.forEach((input) => {
+                if (!input.name || input.disabled || input.type === 'file') {
+                    return;
+                }
+                const repeaterContainer = input.getAttribute('data-type') === 'repeater_container';
+                if (repeaterContainer) {
+                    const repeaterParent = input.closest('.ff-repeater-container');
+                    if (repeaterParent && repeaterParent.classList.contains('ff_excluded')) {
+                        return;
+                    }
+                    const conditionalParent = input.closest('.has-conditions');
+                    if (conditionalParent && conditionalParent.classList.contains('ff_excluded')) {
+                        input.value = '';
+                    }
+                } else {
+                    const conditionalParent = input.closest('.has-conditions');
+                    if (conditionalParent && conditionalParent.classList.contains('ff_excluded')) {
+                        return;
+                    }
+                }
+
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    if (input.checked) {
+                        dataItems.push([input.name, input.value || 'on']);
+                        presentNames.add(input.name);
+                    }
+                    return;
+                }
+
+                if (input.tagName === 'SELECT' && input.multiple) {
+                    Array.from(input.selectedOptions).forEach((opt) => {
+                        dataItems.push([input.name, opt.value]);
+                        presentNames.add(input.name);
+                    });
+                    return;
+                }
+
+                dataItems.push([input.name, input.value]);
+                presentNames.add(input.name);
+            });
+
+            allInputs.forEach((input) => {
+                if (!input.name || (input.type !== 'checkbox' && input.type !== 'radio')) {
+                    return;
+                }
+                if (!presentNames.has(input.name) && !processedGroups.has(input.name)) {
+                    const checked = formEl.querySelectorAll(`input[name="${CSS.escape(input.name)}"]:checked`);
+                    if (!checked.length) {
+                        dataItems.push([input.name, '']);
+                    }
+                    processedGroups.add(input.name);
+                }
+            });
+
+            const params = new URLSearchParams();
+            dataItems.forEach(([name, value]) => params.append(name, value));
+
+            Array.from(formEl.querySelectorAll('input[type=file]')).forEach((fileInput) => {
+                const fileInputName = fileInput.name + '[]';
+                const previews = Array.from(fileInput.closest('div')?.querySelectorAll('.ff-uploaded-list .ff-upload-preview[data-src]') || []);
+                previews.forEach((preview) => {
+                    params.append(fileInputName, preview.dataset.src || '');
+                });
+            });
+
+            return params.toString();
+        };
+
+        const showErrorMessage = function (formEl, message) {
+            const stack = formEl.parentElement?.querySelector('.ff-errors-in-stack');
+            if (stack) {
+                stack.innerHTML = '';
+                const errorHtml = document.createElement('div');
+                errorHtml.className = 'error text-danger';
+                errorHtml.textContent = message;
+                stack.appendChild(errorHtml);
+                stack.style.display = '';
+            }
+        };
+
+        const addHiddenData = function (formEl, items) {
+            Object.keys(items || {}).forEach((itemName) => {
+                const itemValue = items[itemName];
+                if (!itemValue) {
+                    return;
+                }
+                const existing = formEl.querySelector(`input[name="${CSS.escape(itemName)}"]`);
+                if (existing) {
+                    existing.value = itemValue;
+                } else {
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = itemName;
+                    hidden.value = itemValue;
+                    formEl.appendChild(hidden);
+                }
+            });
+        };
+
+        const showFormSubmissionProgress = function (formEl) {
+            formEl.classList.add('ff_submitting');
+            const submitBtn = formEl.querySelector('.ff-btn-submit');
+            if (submitBtn) {
+                submitBtn.classList.add('disabled', 'ff-working');
+                submitBtn.disabled = true;
+            }
+        };
+
+        const hideFormSubmissionProgress = function (formEl) {
+            formEl.classList.remove('ff_submitting');
+            const submitBtn = formEl.querySelector('.ff-btn-submit');
+            if (submitBtn) {
+                submitBtn.classList.remove('disabled', 'ff-working');
+                submitBtn.disabled = false;
+            }
+            formEl.parentElement?.querySelectorAll('.ff_msg_temp').forEach((el) => el.remove());
+        };
+
+        const resetCaptchas = function (formEl) {
+            if (window.grecaptcha) {
+                const el = formEl.querySelector('.ff-el-recaptcha.g-recaptcha');
+                if (el && typeof el.dataset.gRecaptcha_widget_id !== 'undefined') {
+                    grecaptcha.reset(el.dataset.gRecaptcha_widget_id);
+                }
+            }
+            if (window.hcaptcha) {
+                const el = formEl.querySelector('.ff-el-hcaptcha.h-captcha');
+                if (el && typeof el.dataset.hCaptcha_widget_id !== 'undefined') {
+                    hcaptcha.reset(el.dataset.hCaptcha_widget_id);
+                }
+            }
+            if (window.turnstile) {
+                const el = formEl.querySelector('.ff-el-turnstile.cf-turnstile');
+                if (el && typeof el.dataset.cfTurnstile_widget_id !== 'undefined') {
+                    turnstile.reset(el.dataset.cfTurnstile_widget_id);
+                }
+            }
+        };
+
+        const getFormInstanceClass = function (formEl) {
+            return formEl.getAttribute('data-form_instance') || '';
+        };
+
+        const getFormConfig = function (formEl) {
+            const formInstanceSelector = getFormInstanceClass(formEl).replace(/[^a-zA-Z0-9_-]/g, '');
+            const formObj = window['fluent_form_' + formInstanceSelector];
+            return (formObj && typeof formObj === 'object') ? formObj : null;
+        };
+
+        const getAjaxUrl = function (formConfig) {
+            return window.fluentFormVars?.ajaxUrl || formConfig?.ajaxUrl || window.ajaxurl;
+        };
+
+        const emitInitEvents = function (app, formEl, formConfig) {
+            bridge.emitEvent('fluentform_init', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
+            bridge.emitEvent('fluentform_init_' + formConfig.id, { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
+            bridge.emitEvent('fluentform_init_single', { form: formEl, app: app, config: formConfig }, formEl, [app, formConfig]);
+        };
+
+        const createAppInstance = function (formEl, formConfig) {
+            let isSending = false;
+            const globalValidators = {};
+
+            const addFieldValidationRule = function (elName, ruleName, rule) {
+                if (!formConfig.rules || typeof formConfig.rules !== 'object') {
+                    formConfig.rules = {};
+                }
+                if (!formConfig.rules[elName] || typeof formConfig.rules[elName] !== 'object') {
+                    formConfig.rules[elName] = {};
+                }
+                formConfig.rules[elName][ruleName] = rule;
+            };
+
+            const removeFieldValidationRule = function (elName, ruleName) {
+                if (!formConfig.rules || !formConfig.rules[elName]) {
+                    return;
+                }
+                if (Object.prototype.hasOwnProperty.call(formConfig.rules[elName], ruleName)) {
+                    delete formConfig.rules[elName][ruleName];
+                }
+            };
+
+            const runBeforeSubmitCallbacks = async function (payload) {
+                const callbacks = Object.assign({}, globalValidators);
+
+                if (formEl.classList.contains('ff_has_v3_recptcha') && window.grecaptcha && typeof window.grecaptcha.execute === 'function') {
+                    callbacks.ff_v3_recptcha = function (targetFormEl, formData) {
+                        const siteKey = targetFormEl.getAttribute('data-recptcha_key');
+                        if (!siteKey) {
+                            return Promise.resolve();
+                        }
+                        return window.grecaptcha.execute(siteKey, { action: 'submit' }).then(function (token) {
+                            const extra = new URLSearchParams({ 'g-recaptcha-response': token }).toString();
+                            formData.data = formData.data ? (formData.data + '&' + extra) : extra;
+                        });
+                    };
+                }
+
+                const runners = Object.keys(callbacks).map(function (key) {
+                    return callbacks[key];
+                });
+
+                for (const runner of runners) {
+                    if (typeof runner !== 'function') {
+                        continue;
+                    }
+                    const result = runner(formEl, payload);
+                    if (result && typeof result.then === 'function') {
+                        await result;
+                        continue;
+                    }
+                    if (result === false) {
+                        throw new Error('Submission blocked by a pre-submit validator.');
+                    }
+                }
+            };
+
+            const app = {
+                settings: formConfig,
+                config: formConfig,
+                formSelector: '.' + getFormInstanceClass(formEl),
+                initFormHandlers: function () {
+                    formEl.classList.remove('ff-form-loading');
+                    formEl.classList.add('ff-form-loaded');
+                },
+                initTriggers: function () {
+                    emitInitEvents(app, formEl, formConfig);
+                },
+                reinitExtras: function () {
+                    resetCaptchas(formEl);
+                },
+                showFormSubmissionProgress: function () {
+                    showFormSubmissionProgress(formEl);
+                },
+                hideFormSubmissionProgress: function () {
+                    hideFormSubmissionProgress(formEl);
+                },
+                addGlobalValidator: function (key, callback) {
+                    globalValidators[key] = callback;
+                },
+                addFieldValidationRule: addFieldValidationRule,
+                removeFieldValidationRule: removeFieldValidationRule,
+                validate: function () { },
+                scrollToFirstError: function () {
+                    const firstError = formEl.querySelector('.ff-el-is-error, .error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                },
+                showErrorMessages: function (errors) {
+                    if (!errors) {
+                        return;
+                    }
+                    let message = '';
+                    if (typeof errors === 'string') {
+                        message = errors;
+                    } else if (Array.isArray(errors) && errors.length) {
+                        message = errors[0];
+                    } else if (typeof errors === 'object') {
+                        const first = Object.values(errors)[0];
+                        message = Array.isArray(first) ? first[0] : first;
+                    }
+                    showErrorMessage(formEl, message || 'Submission failed');
+                },
+                sendData: async function (targetFormEl, payload) {
+                    const ajaxUrl = getAjaxUrl(formConfig);
+                    const requestUrl = ajaxUrl + (ajaxUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+                    const encoded = new URLSearchParams(payload).toString();
+                    const response = await fetch(requestUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                        },
+                        credentials: 'same-origin',
+                        body: encoded
+                    });
+                    const data = await response.json();
+                    return data;
+                },
+                submissionAjaxHandler: async function () {
+                    if (isSending) {
+                        return;
+                    }
+                    if (formEl.querySelector('.ff_uploading')) {
+                        showErrorMessage(formEl, window.fluentform_submission_messages_global?.file_upload_in_progress || 'File upload in progress. Please wait...');
+                        return;
+                    }
+
+                    const serializedData = appendCaptchaData(formEl, serializeFormData(formEl));
+                    const payload = {
+                        data: serializedData,
+                        action: 'fluentform_submit',
+                        form_id: formEl.getAttribute('data-form_id')
+                    };
+
+                    showFormSubmissionProgress(formEl);
+                    isSending = true;
+
+                    try {
+                        await runBeforeSubmitCallbacks(payload);
+                        const res = await app.sendData(formEl, payload);
+                        if (!res || !res.data || !res.data.result) {
+                            bridge.emitEvent('fluentform_submission_failed', { form: formEl, response: res, config: formConfig }, formEl, [{ form: formEl, response: res }]);
+                            app.showErrorMessages(res);
+                            return;
+                        }
+
+                        if (res.data.append_data) {
+                            addHiddenData(formEl, res.data.append_data);
+                        }
+                        if (res.data.nextAction) {
+                            bridge.emitEvent('fluentform_next_action_' + res.data.nextAction, { form: formEl, response: res, config: formConfig }, formEl, [{ form: formEl, response: res }]);
+                            return;
+                        }
+
+                        bridge.emitEvent('fluentform_submission_success', { form: formEl, response: res, config: formConfig }, formEl, [{ form: formEl, config: formConfig, response: res }], { bubbles: false });
+                        bridge.emitEvent('fluentform_submission_success', { form: formEl, response: res, config: formConfig }, document.body, [{ form: formEl, config: formConfig, response: res }]);
+
+                        const successId = formConfig.form_id_selector + '_success';
+                        let successNode = document.getElementById(successId);
+                        if (successNode) {
+                            successNode.remove();
+                        }
+                        if (res.data.result.message) {
+                            successNode = document.createElement('div');
+                            successNode.id = successId;
+                            successNode.className = 'ff-message-success';
+                            successNode.setAttribute('role', 'status');
+                            successNode.setAttribute('aria-live', 'polite');
+                            successNode.innerHTML = res.data.result.message;
+                            formEl.insertAdjacentElement('afterend', successNode);
+                            successNode.focus();
+                        }
+
+                        if ('redirectUrl' in res.data.result) {
+                            setTimeout(() => hideFormSubmissionProgress(formEl), 500);
+                            window.location.href = res.data.result.redirectUrl;
+                            return;
+                        }
+
+                        if (res.data.result.action === 'hide_form') {
+                            formEl.style.display = 'none';
+                            formEl.classList.add('ff_force_hide');
+                            formEl.reset();
+                        } else {
+                            bridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
+                            formEl.reset();
+                        }
+                    } catch (error) {
+                        bridge.emitEvent('fluentform_submission_failed', { form: formEl, response: error, config: formConfig }, formEl, [{ form: formEl, response: error }]);
+                        app.showErrorMessages(error?.message || 'Request failed');
+                    } finally {
+                        isSending = false;
+                        hideFormSubmissionProgress(formEl);
+                        resetCaptchas(formEl);
+                    }
+                }
+            };
+            return app;
+        };
+
+        window.fluentFormApp = function (formInput) {
+            const formEl = resolveElement(formInput) || document.querySelector(formInput);
+            if (!formEl) {
+                return false;
+            }
+            const instanceClass = getFormInstanceClass(formEl).replace(/[^a-zA-Z0-9_-]/g, '');
+            if (!instanceClass) {
+                return false;
+            }
+            if (formStore[instanceClass]) {
+                return formStore[instanceClass];
+            }
+            const formConfig = getFormConfig(formEl);
+            if (!formConfig) {
+                return false;
+            }
+            const app = createAppInstance(formEl, formConfig);
+            formStore[instanceClass] = app;
+            return app;
+        };
+
+        Array.from(document.querySelectorAll('form.frm-fluent-form')).forEach((formEl) => {
+            const app = window.fluentFormApp(formEl);
+            if (app) {
+                app.initFormHandlers();
+                app.initTriggers();
+            }
+        });
+
+        document.addEventListener('submit', function (e) {
+            const formEl = e.target.closest('form.frm-fluent-form');
+            if (!formEl) {
+                return;
+            }
+            e.preventDefault();
+            const app = window.fluentFormApp(formEl);
+            if (!app) {
+                return;
+            }
+            app.submissionAjaxHandler();
+        });
+
+        document.addEventListener('reset', function (e) {
+            const formEl = e.target.closest('form.frm-fluent-form');
+            if (!formEl) {
+                return;
+            }
+            bridge.emitEvent('fluentform_reset', { form: formEl, config: getFormConfig(formEl) }, document.body, [formEl, getFormConfig(formEl)]);
+        });
+
+        document.addEventListener('ff_reinit', function (e) {
+            const detail = e.detail || {};
+            const formItem = detail.formItem || detail.form || null;
+            const formEl = resolveElement(formItem);
+            if (!formEl) {
+                return;
+            }
+            const app = window.fluentFormApp(formEl);
+            if (!app) {
+                return;
+            }
+            app.reinitExtras();
+            app.initFormHandlers();
+            app.initTriggers();
+            formEl.setAttribute('data-ff_reinit', 'yes');
+            bridge.emitEvent('ff_reinit', { formItem: formEl, form: formEl, config: getFormConfig(formEl) }, document, [formEl]);
+        });
+
+        document.addEventListener('submit', function (e) {
+            const formEl = e.target.closest('.fluentform .ff-form-loading');
+            if (!formEl) {
+                return;
+            }
+            e.preventDefault();
+            formEl.parentElement?.querySelectorAll('.ff_msg_temp').forEach((el) => el.remove());
+            const msg = document.createElement('div');
+            msg.className = 'error text-danger ff_msg_temp';
+            msg.innerHTML = window.fluentform_submission_messages_global?.javascript_handler_failed || 'Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again';
+            formEl.insertAdjacentElement('afterend', msg);
+        });
+    }
+
+    const hasJquery = typeof window.jQuery === 'function';
+    ensureFluentFormBridge();
+    if (!hasJquery) {
+        initVanillaSubmissionRuntime();
+        return;
+    }
+
 jQuery(document).ready(function () {
 
     // ios hack to keep the recaptcha on viewport on success
@@ -119,12 +688,13 @@ jQuery(document).ready(function () {
                 };
 
                 var fireUpdateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
-                    $theForm.trigger('update_slider', {
+                    const sliderPayload = {
                         goBackToStep: goBackToStep,
                         animDuration: animDuration,
                         isScrollTop: isScrollTop,
                         actionType: actionType
-                    });
+                    };
+                    window.fluentFormBridge.emitEvent('update_slider', sliderPayload, $theForm[0], [sliderPayload]);
                 };
 
                 var fireGlobalBeforeSendCallbacks = function ($theForm, formData) {
@@ -319,10 +889,15 @@ jQuery(document).ready(function () {
                         .then(function (res) {
                             if (!res || !res.data || !res.data.result) {
                                 // This is an error
-                                $theForm.trigger('fluentform_submission_failed', {
+                                const failedPayload = {
                                     form: $theForm,
                                     response: res
-                                });
+                                };
+                                window.fluentFormBridge.emitEvent('fluentform_submission_failed', {
+                                    form: $theForm[0],
+                                    response: res,
+                                    config: form
+                                }, $theForm[0], [failedPayload]);
                                 showErrorMessages(res);
                                 return;
                             }
@@ -345,20 +920,15 @@ jQuery(document).ready(function () {
                                 response: res
                             });
 
-                            jQuery(document.body).trigger('fluentform_submission_success', {
+                            window.fluentFormBridge.emitEvent('fluentform_submission_success', {
+                                form: $theForm[0],
+                                config: form,
+                                response: res
+                            }, document.body, [{
                                 form: $theForm,
                                 config: form,
                                 response: res
-                            });
-
-                            const customSuccessEvent = new CustomEvent('fluentform_submission_success', {
-                                detail: {
-                                    form: $theForm[0],
-                                    config: form,
-                                    response: res
-                                }
-                            });
-                            document.dispatchEvent(customSuccessEvent);
+                            }]);
 
                             if ('redirectUrl' in res.data.result) {
                                 if (res.data.result.message) {
@@ -405,7 +975,10 @@ jQuery(document).ready(function () {
                                     $theForm.hide().addClass('ff_force_hide');
                                     $theForm[0].reset();
                                 } else {
-                                    jQuery(document.body).trigger('fluentform_reset', [$theForm, form]);
+                                    window.fluentFormBridge.emitEvent('fluentform_reset', {
+                                        form: $theForm[0],
+                                        config: form
+                                    }, document.body, [$theForm, form]);
                                     $theForm[0].reset();
                                 }
 
@@ -420,20 +993,15 @@ jQuery(document).ready(function () {
                         })
                         .fail(function (res) {
 
-                            $theForm.trigger('fluentform_submission_failed', {
+                            const failedPayload = {
                                 form: $theForm,
                                 response: res
-                            });
-
-
-                            const customFailedEvent = new CustomEvent('fluentform_submission_failed', {
-                                detail: {
-                                    form: $theForm[0],
-                                    response: res,
-                                    config: form
-                                }
-                            });
-                            document.dispatchEvent(customFailedEvent);
+                            };
+                            window.fluentFormBridge.emitEvent('fluentform_submission_failed', {
+                                form: $theForm[0],
+                                response: res,
+                                config: form
+                            }, $theForm[0], [failedPayload]);
 
 
                             if (!res || !res.responseJSON || !(res.responseJSON.data || res.responseJSON.errors)) {
@@ -914,9 +1482,19 @@ jQuery(document).ready(function () {
 
                 var initTriggers = function () {
                     $theForm = getTheForm();
-                    jQuery(document.body).trigger('fluentform_init', [$theForm, form]);
-                    jQuery(document.body).trigger('fluentform_init_' + form.id, [$theForm, form]);
-                    $theForm.trigger('fluentform_init_single', [this, form]);
+                    window.fluentFormBridge.emitEvent('fluentform_init', {
+                        form: $theForm[0],
+                        config: form
+                    }, document.body, [$theForm, form]);
+                    window.fluentFormBridge.emitEvent('fluentform_init_' + form.id, {
+                        form: $theForm[0],
+                        config: form
+                    }, document.body, [$theForm, form]);
+                    window.fluentFormBridge.emitEvent('fluentform_init_single', {
+                        form: $theForm[0],
+                        app: this,
+                        config: form
+                    }, $theForm[0], [this, form]);
                     $theForm.find('input.ff-el-form-control').on('keypress', function (e) {
                         return e.which !== 13;
                     });
@@ -1756,6 +2334,10 @@ jQuery(document).ready(function () {
             initSingleForm($theForm);
             fluentFormCommonActions.init();
             $theForm.attr('data-ff_reinit', 'yes');
+            window.fluentFormBridge.emitEvent('ff_reinit', {
+                form: $theForm[0],
+                config: formInstance.config || null
+            }, document, [$theForm]);
         });
 
         fluentFormCommonActions.init();
@@ -1818,7 +2400,7 @@ jQuery(document).ready(function () {
         }
     })(window.fluentFormVars, jQuery);
 
-    jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
+jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
         e.preventDefault();
         jQuery(this).parent().find('.ff_msg_temp').remove();
         jQuery('<div/>', {
@@ -1828,3 +2410,4 @@ jQuery(document).ready(function () {
             .insertAfter(jQuery(this));
     });
 });
+})();

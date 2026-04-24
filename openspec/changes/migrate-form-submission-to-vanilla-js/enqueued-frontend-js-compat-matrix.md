@@ -50,3 +50,12 @@ Status legend:
 - Event parity: all legacy jQuery events consumed by these scripts must still fire with equivalent payloads.
 - Direct-call parity: global and instance APIs used by these scripts must remain callable and behaviorally equivalent.
 - Disabled-mode safety: scripts must not throw fatal errors if jQuery is intentionally not loaded; degradation must be controlled and documented.
+
+## Verification notes (incremental)
+
+- 2026-04-24: Added vanilla runtime API parity support in `resources/assets/public/form-submission.js`:
+  - `addGlobalValidator(key, callback)` now stores/executes pre-submit validators.
+  - `addFieldValidationRule()` / `removeFieldValidationRule()` now mutate form rule map.
+  - pre-submit validator pipeline now runs before AJAX submission and supports async/Promise callbacks.
+  - v3 reCAPTCHA pre-submit token path added for forms using `ff_has_v3_recptcha`.
+  - This reduces direct-call compatibility risk for payment/chat/post-update dependent scripts; runtime browser validation still pending.
