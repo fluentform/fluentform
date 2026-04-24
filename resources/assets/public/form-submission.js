@@ -24,6 +24,45 @@
                         bubbles: typeof eventOptions.bubbles === 'boolean' ? eventOptions.bubbles : true
                     });
                     eventTarget.dispatchEvent(browserEvent);
+                },
+                onEvent: function (targetElement, eventNames, handler, options) {
+                    const eventTarget = targetElement || document;
+                    const targetNode = eventTarget[0] && eventTarget[0].nodeType === 1 ? eventTarget[0] : eventTarget;
+                    const names = Array.isArray(eventNames)
+                        ? eventNames
+                        : String(eventNames || '').split(/\s+/).filter(Boolean);
+                    const removers = [];
+
+                    names.forEach(function (eventName) {
+                        if (targetNode && typeof targetNode.addEventListener === 'function') {
+                            const nativeHandler = function (event) {
+                                handler(event, event.detail, [event.detail], 'native');
+                            };
+                            targetNode.addEventListener(eventName, nativeHandler, options || false);
+                            removers.push(function () {
+                                targetNode.removeEventListener(eventName, nativeHandler, options || false);
+                            });
+                        }
+
+                        if (typeof window.jQuery === 'function') {
+                            const jqueryTarget = window.jQuery(targetNode || eventTarget);
+                            const jqueryHandler = function (event) {
+                                const jqueryArguments = Array.prototype.slice.call(arguments, 1);
+                                handler(event, jqueryArguments[0], jqueryArguments, 'jquery');
+                            };
+
+                            jqueryTarget.on(eventName, jqueryHandler);
+                            removers.push(function () {
+                                jqueryTarget.off(eventName, jqueryHandler);
+                            });
+                        }
+                    });
+
+                    return function () {
+                        removers.forEach(function (removeListener) {
+                            removeListener();
+                        });
+                    };
                 }
             };
             return window.fluentFormBridge;

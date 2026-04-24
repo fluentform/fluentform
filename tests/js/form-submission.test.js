@@ -8,6 +8,10 @@ const runtimeSource = fs.readFileSync(
     path.resolve(__dirname, '../../resources/assets/public/form-submission.js'),
     'utf8'
 );
+const calculationsSource = fs.readFileSync(
+    path.resolve(__dirname, '../../resources/assets/public/Pro/calculations.js'),
+    'utf8'
+);
 
 function createRuntimeHtml(formInnerHtml) {
     return `
@@ -42,13 +46,45 @@ function createFormMarkup(extraInnerHtml = '') {
 }
 
 function createJqueryStub(callLog) {
+    const listeners = new Map();
+
+    function getEventStore(target) {
+        if (!listeners.has(target)) {
+            listeners.set(target, new Map());
+        }
+
+        return listeners.get(target);
+    }
+
     function jquery(target) {
         return {
             ready() {
                 return this;
             },
+            on(eventName, handler) {
+                const eventStore = getEventStore(target);
+                const handlers = eventStore.get(eventName) || [];
+                handlers.push(handler);
+                eventStore.set(eventName, handlers);
+                return this;
+            },
+            off(eventName, handler) {
+                const eventStore = getEventStore(target);
+                const handlers = eventStore.get(eventName) || [];
+                eventStore.set(
+                    eventName,
+                    handlers.filter((registeredHandler) => registeredHandler !== handler)
+                );
+                return this;
+            },
             trigger(eventName, args) {
                 callLog.push({ target, eventName, args });
+                const eventStore = listeners.get(target);
+                const handlers = eventStore ? (eventStore.get(eventName) || []) : [];
+                handlers.forEach((handler) => {
+                    const handlerArguments = [{ type: eventName, target }].concat(args || []);
+                    handler.apply(target, handlerArguments);
+                });
                 return this;
             }
         };
@@ -125,6 +161,22 @@ async function flushAsync(window, cycles = 4) {
     }
 }
 
+function loadCalculationsModule(window) {
+    const module = { exports: {} };
+    const source = calculationsSource
+        .replace('export const mexpToken =', 'const mexpToken =')
+        .replace('export function findAll', 'function findAll')
+        .replace('export function isContain', 'function isContain')
+        .replace('export function getName', 'function getName')
+        .replace('export default function', 'function defaultExport')
+        + '\nmodule.exports = { default: defaultExport, mexpToken, findAll, isContain, getName };';
+
+    const factory = new Function('window', 'document', 'module', 'exports', 'Event', 'mexp', source);
+    factory(window, window.document, module, module.exports, window.Event, window.mexp);
+
+    return module.exports;
+}
+
 test('boots the vanilla runtime and exposes public globals', () => {
     const { window } = createRuntimeWindow();
 
@@ -155,6 +207,52 @@ test('bridge emits legacy jQuery events without dispatching duplicate native DOM
     assert.equal(jqueryCalls.length, 1);
     assert.equal(jqueryCalls[0].eventName, 'fluentform_demo');
     assert.deepEqual(jqueryCalls[0].args, [{ legacy: true }]);
+});
+
+test('bridge onEvent listens to custom events in both native and jQuery modes', () => {
+    const nativeRuntime = createRuntimeWindow();
+    const nativeCalls = [];
+
+    nativeRuntime.window.fluentFormBridge.onEvent(
+        nativeRuntime.window.document.body,
+        'fluentform_demo',
+        (event, detail, args, source) => {
+            nativeCalls.push({ event, detail, args, source });
+        }
+    );
+    nativeRuntime.window.fluentFormBridge.emitEvent(
+        'fluentform_demo',
+        { ok: true },
+        nativeRuntime.window.document.body,
+        [{ legacy: true }]
+    );
+
+    assert.equal(nativeCalls.length, 1);
+    assert.equal(nativeCalls[0].source, 'native');
+    assert.equal(JSON.stringify(nativeCalls[0].detail), JSON.stringify({ ok: true }));
+    assert.equal(JSON.stringify(nativeCalls[0].args), JSON.stringify([{ ok: true }]));
+
+    const jqueryRuntime = createRuntimeWindow({ withJquery: true });
+    const jqueryModeCalls = [];
+
+    jqueryRuntime.window.fluentFormBridge.onEvent(
+        jqueryRuntime.window.document.body,
+        'fluentform_demo',
+        (event, detail, args, source) => {
+            jqueryModeCalls.push({ event, detail, args, source });
+        }
+    );
+    jqueryRuntime.window.fluentFormBridge.emitEvent(
+        'fluentform_demo',
+        { ok: true },
+        jqueryRuntime.window.document.body,
+        [{ legacy: true }]
+    );
+
+    assert.equal(jqueryModeCalls.length, 1);
+    assert.equal(jqueryModeCalls[0].source, 'jquery');
+    assert.equal(JSON.stringify(jqueryModeCalls[0].detail), JSON.stringify({ legacy: true }));
+    assert.equal(JSON.stringify(jqueryModeCalls[0].args), JSON.stringify([{ legacy: true }]));
 });
 
 test('fluentFormApp reuses live instances and replaces stale detached ones', () => {
@@ -341,4 +439,44 @@ test('shows the loading-form fallback error when the runtime handler is missing'
         window.document.querySelector('.ff_msg_temp').textContent,
         /Javascript handler could not be loaded/
     );
+});
+
+test('plain-js calculations module recalculates from native field changes', () => {
+    const { window } = createRuntimeWindow({
+        html: createRuntimeHtml(`
+            <form class="frm-fluent-form form1" data-form_instance="form1" data-form_id="1">
+                <input type="number" name="quantity" value="2">
+                <input type="text" class="ff_has_formula" data-calculation_formula="{input.quantity} * 3" value="">
+            </form>
+        `),
+        withJquery: true
+    });
+    window.mexp = {
+        addToken() {},
+        eval(expression) {
+            return Function('return (' + expression + ')')();
+        }
+    };
+    window.ff_helper = {
+        numericVal(element) {
+            return Number(element.value || 0);
+        },
+        formatCurrency(element, value) {
+            return String(value);
+        }
+    };
+    const calculationsModule = loadCalculationsModule(window);
+    const form = window.document.querySelector('form');
+    const quantityField = form.querySelector('input[name="quantity"]');
+    const resultField = form.querySelector('.ff_has_formula');
+
+    calculationsModule.default(window.jQuery, form, {});
+
+    assert.equal(resultField.value, '6');
+
+    quantityField.value = '4';
+    quantityField.dispatchEvent(new window.Event('change', { bubbles: true }));
+
+    assert.equal(resultField.value, '12');
+
 });
