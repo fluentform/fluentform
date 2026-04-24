@@ -31,6 +31,7 @@
         function initVanillaSubmissionRuntime() {
         const jqueryEventBridge = ensureFluentFormJqueryBridge();
         const formInstanceStore = {};
+        const reinitializingForms = new WeakSet();
 
         window.ffValidationError = (function () {
             var ffValidationError = function () { };
@@ -536,16 +537,26 @@
         };
 
         const reinitializeFormInstance = function (formEl) {
-            const app = window.fluentFormApp(formEl);
-            if (!app) {
+            if (reinitializingForms.has(formEl)) {
                 return false;
             }
 
-            app.reinitExtras();
-            app.initFormHandlers();
-            app.initTriggers();
-            formEl.setAttribute('data-ff_reinit', 'yes');
-            jqueryEventBridge.emitEvent('ff_reinit', { formItem: formEl, form: formEl, config: getFormConfig(formEl) }, document, [formEl]);
+            reinitializingForms.add(formEl);
+            const app = window.fluentFormApp(formEl);
+            if (!app) {
+                reinitializingForms.delete(formEl);
+                return false;
+            }
+
+            try {
+                app.reinitExtras();
+                app.initFormHandlers();
+                app.initTriggers();
+                formEl.setAttribute('data-ff_reinit', 'yes');
+                jqueryEventBridge.emitEvent('ff_reinit', { formItem: formEl, form: formEl, config: getFormConfig(formEl) }, document, [formEl]);
+            } finally {
+                reinitializingForms.delete(formEl);
+            }
 
             return true;
         };
@@ -628,7 +639,7 @@
             const detail = e.detail || {};
             const formItem = detail.formItem || detail.form || null;
             const formEl = resolveElement(formItem);
-            if (!formEl) {
+            if (!formEl || reinitializingForms.has(formEl)) {
                 return;
             }
             reinitializeFormInstance(formEl);
