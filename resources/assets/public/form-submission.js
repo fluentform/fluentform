@@ -299,6 +299,41 @@
                     response: response
                 };
             };
+            const createSubmissionRequestPayload = function () {
+                return {
+                    data: appendCaptchaData(formEl, serializeFormData(formEl)),
+                    action: 'fluentform_submit',
+                    form_id: formEl.getAttribute('data-form_id')
+                };
+            };
+            const emitSubmissionFailure = function (responseOrError) {
+                const submissionFailureEventPayload = createBridgePayload(responseOrError);
+                const jqueryFailureEventPayload = createJqueryFormResponse(responseOrError);
+                jqueryEventBridge.emitEvent('fluentform_submission_failed', submissionFailureEventPayload, formEl, [jqueryFailureEventPayload]);
+            };
+            const emitSubmissionNextAction = function (response) {
+                const nextActionEventPayload = createBridgePayload(response);
+                const jqueryNextActionPayload = createJqueryFormResponse(response);
+                jqueryEventBridge.emitEvent('fluentform_next_action_' + response.data.nextAction, nextActionEventPayload, formEl, [jqueryNextActionPayload]);
+            };
+            const emitSubmissionSuccess = function (response) {
+                const submissionSuccessEventPayload = createBridgePayload(response);
+                const jquerySuccessEventPayload = createJquerySuccessPayload(response);
+
+                jqueryEventBridge.emitEvent('fluentform_submission_success', submissionSuccessEventPayload, formEl, [jquerySuccessEventPayload], { bubbles: false });
+                jqueryEventBridge.emitEvent('fluentform_submission_success', submissionSuccessEventPayload, document.body, [jquerySuccessEventPayload]);
+            };
+            const resetFormAfterSuccessfulSubmission = function (response) {
+                if (response.data.result.action === 'hide_form') {
+                    formEl.style.display = 'none';
+                    formEl.classList.add('ff_force_hide');
+                    formEl.reset();
+                    return;
+                }
+
+                jqueryEventBridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
+                formEl.reset();
+            };
 
             const addFieldValidationRule = function (elName, ruleName, rule) {
                 if (!formConfig.rules || typeof formConfig.rules !== 'object') {
@@ -426,12 +461,7 @@
                         return;
                     }
 
-                    const serializedData = appendCaptchaData(formEl, serializeFormData(formEl));
-                    const payload = {
-                        data: serializedData,
-                        action: 'fluentform_submit',
-                        form_id: formEl.getAttribute('data-form_id')
-                    };
+                    const payload = createSubmissionRequestPayload();
 
                     showFormSubmissionProgress(formEl);
                     isSending = true;
@@ -440,9 +470,7 @@
                         await runBeforeSubmitCallbacks(payload);
                         const res = await app.sendData(formEl, payload);
                         if (!res || !res.data || !res.data.result) {
-                            const failedBridgePayload = createBridgePayload(res);
-                            const failedJqueryPayload = createJqueryFormResponse(res);
-                            jqueryEventBridge.emitEvent('fluentform_submission_failed', failedBridgePayload, formEl, [failedJqueryPayload]);
+                            emitSubmissionFailure(res);
                             app.showErrorMessages(res);
                             return;
                         }
@@ -451,16 +479,11 @@
                             addHiddenData(formEl, res.data.append_data);
                         }
                         if (res.data.nextAction) {
-                            const nextActionBridgePayload = createBridgePayload(res);
-                            const nextActionJqueryPayload = createJqueryFormResponse(res);
-                            jqueryEventBridge.emitEvent('fluentform_next_action_' + res.data.nextAction, nextActionBridgePayload, formEl, [nextActionJqueryPayload]);
+                            emitSubmissionNextAction(res);
                             return;
                         }
 
-                        const successBridgePayload = createBridgePayload(res);
-                        const successJqueryPayload = createJquerySuccessPayload(res);
-                        jqueryEventBridge.emitEvent('fluentform_submission_success', successBridgePayload, formEl, [successJqueryPayload], { bubbles: false });
-                        jqueryEventBridge.emitEvent('fluentform_submission_success', successBridgePayload, document.body, [successJqueryPayload]);
+                        emitSubmissionSuccess(res);
 
                         const successId = formConfig.form_id_selector + '_success';
                         let successNode = document.getElementById(successId);
@@ -484,18 +507,9 @@
                             return;
                         }
 
-                        if (res.data.result.action === 'hide_form') {
-                            formEl.style.display = 'none';
-                            formEl.classList.add('ff_force_hide');
-                            formEl.reset();
-                        } else {
-                            jqueryEventBridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
-                            formEl.reset();
-                        }
+                        resetFormAfterSuccessfulSubmission(res);
                     } catch (error) {
-                        const errorBridgePayload = createBridgePayload(error);
-                        const errorJqueryPayload = createJqueryFormResponse(error);
-                        jqueryEventBridge.emitEvent('fluentform_submission_failed', errorBridgePayload, formEl, [errorJqueryPayload]);
+                        emitSubmissionFailure(error);
                         app.showErrorMessages(error?.message || 'Request failed');
                     } finally {
                         isSending = false;
