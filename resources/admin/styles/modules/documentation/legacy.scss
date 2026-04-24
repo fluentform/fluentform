@@ -1,0 +1,110 @@
+@import "@legacy-admin/styles/variables";
+@import "@legacy-admin/styles/element_ui_var";
+@import "@legacy-admin/styles/navbar";
+@import "@legacy-admin/styles/card";
+@import "@legacy-admin/styles/globals";
+@import "@legacy-admin/styles/el_customize";
+@import "@legacy-admin/styles/responsive";
+
+.ff_documentaion_wrapper {
+    .el-col {
+        margin-bottom: 24px;
+    }
+}
+
+.ff_upgrade_btn_large {
+    color: $--color-primary;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 18px 24px;
+    border-color: #fff;
+    text-transform: uppercase;
+}
+
+.has-mask {
+    position: relative;
+    z-index: 1;
+}
+
+.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+
+    &-1 {
+        background-image: url("@images/grid-shape.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100%;
+        top: 0;
+        position: absolute;
+        width: 100%;
+        left: 0;
+    }
+
+    &-2 {
+        background-image: url("@images/shape.png");
+        background-repeat: no-repeat;
+        width: 63px;
+        height: 52px;
+        top: 20px;
+        position: absolute;
+        left: 50%;
+    }
+
+    &-3 {
+        background-image: url("@images/shape-2.png");
+        background-repeat: no-repeat;
+        width: 63px;
+        height: 52px;
+        top: 14px;
+        position: absolute;
+        left: 26px;
+    }
+}
+
+.ff_addon_wrapper {
+    margin: 45px auto;
+    max-width: 950px;
+
+    .ff_addon_header {
+        p {
+            font-size: 16px;
+        }
+    }
+
+    .ff_addon_banner {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+
+    .ff_addon_btn {
+        text-decoration: none;
+        border: 2px solid #c716c1;
+        background: white;
+        color: #c716c1;
+        padding: 14px 30px;
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 8px;
+        display: inline-block;
+
+        &.ff_invert {
+            background: #c716c1;
+            color: white;
+
+            &:hover {
+                color: #c716c1;
+                background: white;
+            }
+        }
+
+        &:hover {
+            background: #c716c1;
+            color: white;
+        }
+    }
+}
