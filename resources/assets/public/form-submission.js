@@ -279,6 +279,26 @@
         const createAppInstance = function (formEl, formConfig) {
             let isSending = false;
             const globalValidators = {};
+            const createBridgePayload = function (response) {
+                return {
+                    form: formEl,
+                    response: response,
+                    config: formConfig
+                };
+            };
+            const createJqueryFormResponse = function (response) {
+                return {
+                    form: formEl,
+                    response: response
+                };
+            };
+            const createJquerySuccessPayload = function (response) {
+                return {
+                    form: formEl,
+                    config: formConfig,
+                    response: response
+                };
+            };
 
             const addFieldValidationRule = function (elName, ruleName, rule) {
                 if (!formConfig.rules || typeof formConfig.rules !== 'object') {
@@ -419,7 +439,7 @@
                         await runBeforeSubmitCallbacks(payload);
                         const res = await app.sendData(formEl, payload);
                         if (!res || !res.data || !res.data.result) {
-                            bridge.emitEvent('fluentform_submission_failed', { form: formEl, response: res, config: formConfig }, formEl, [{ form: formEl, response: res }]);
+                            bridge.emitEvent('fluentform_submission_failed', createBridgePayload(res), formEl, [createJqueryFormResponse(res)]);
                             app.showErrorMessages(res);
                             return;
                         }
@@ -428,12 +448,12 @@
                             addHiddenData(formEl, res.data.append_data);
                         }
                         if (res.data.nextAction) {
-                            bridge.emitEvent('fluentform_next_action_' + res.data.nextAction, { form: formEl, response: res, config: formConfig }, formEl, [{ form: formEl, response: res }]);
+                            bridge.emitEvent('fluentform_next_action_' + res.data.nextAction, createBridgePayload(res), formEl, [createJqueryFormResponse(res)]);
                             return;
                         }
 
-                        bridge.emitEvent('fluentform_submission_success', { form: formEl, response: res, config: formConfig }, formEl, [{ form: formEl, config: formConfig, response: res }], { bubbles: false });
-                        bridge.emitEvent('fluentform_submission_success', { form: formEl, response: res, config: formConfig }, document.body, [{ form: formEl, config: formConfig, response: res }]);
+                        bridge.emitEvent('fluentform_submission_success', createBridgePayload(res), formEl, [createJquerySuccessPayload(res)], { bubbles: false });
+                        bridge.emitEvent('fluentform_submission_success', createBridgePayload(res), document.body, [createJquerySuccessPayload(res)]);
 
                         const successId = formConfig.form_id_selector + '_success';
                         let successNode = document.getElementById(successId);
@@ -466,7 +486,7 @@
                             formEl.reset();
                         }
                     } catch (error) {
-                        bridge.emitEvent('fluentform_submission_failed', { form: formEl, response: error, config: formConfig }, formEl, [{ form: formEl, response: error }]);
+                        bridge.emitEvent('fluentform_submission_failed', createBridgePayload(error), formEl, [createJqueryFormResponse(error)]);
                         app.showErrorMessages(error?.message || 'Request failed');
                     } finally {
                         isSending = false;
@@ -525,7 +545,8 @@
             if (!formEl) {
                 return;
             }
-            bridge.emitEvent('fluentform_reset', { form: formEl, config: getFormConfig(formEl) }, document.body, [formEl, getFormConfig(formEl)]);
+            const formConfig = getFormConfig(formEl);
+            bridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
         });
 
         document.addEventListener('ff_reinit', function (e) {
