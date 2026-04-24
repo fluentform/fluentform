@@ -43,6 +43,11 @@ Script registration currently declares `fluent-form-submission` with `['jquery']
 - Why: regression risk mostly lives in side effects, not only in `form-submission.js` internals.
 - Alternative considered: ad-hoc manual checks. Rejected for incomplete coverage.
 
+5. **Step runtime becomes the next explicit migration slice**
+- Decision: migrate `resources/assets/public/Pro/slider.js` as the next core runtime target after submission-runtime and advanced-bootstrap stabilization.
+- Why: step forms are the largest remaining reason Fluent Forms still needs jQuery on otherwise clean public pages, and step events (`ff_to_next_page`, `ff_to_prev_page`, `update_slider`) are central to Free/Pro compatibility.
+- Alternative considered: defer `slider.js` until after payment handlers. Rejected because it prolongs the biggest jQuery blocker for ordinary public forms.
+
 ## Risks / Trade-offs
 
 - [Event timing drift] Native event dispatch order may differ from jQuery `.triggerHandler()` semantics.
@@ -67,19 +72,28 @@ Script registration currently declares `fluent-form-submission` with `['jquery']
 - Replace jQuery-specific internals with native equivalents while preserving payloads and observable behavior.
 - Keep existing public API entry points (e.g., `window.fluentFormApp`, `window.ff_helper`) stable.
 
-3. Add jQuery compatibility bridge
+3. Migrate step runtime
+- Convert `resources/assets/public/Pro/slider.js` to native DOM/event/network APIs while preserving:
+  - step navigation order
+  - progress indicator updates
+  - focus/scroll behavior
+  - draft restore behavior
+  - legacy step event payloads
+- Keep legacy jQuery emission behind the central bridge while step internals move to plain JS.
+
+4. Add jQuery compatibility bridge
 - Centralize runtime event emission and ensure equivalent jQuery events are fired with same names/data when bridge active.
 - Preserve current hooks used by Pro/payment/chat integrations.
 
-4. Add jQuery loading control interface
+5. Add jQuery loading control interface
 - Add setting/filter-backed mode and wire enqueue dependency behavior.
 - Default to Auto; keep Enabled path for strict backward compatibility.
 
-5. Verification and rollout
+6. Verification and rollout
 - Validate scenarios in Free and Pro, including file uploads, step forms, payment next actions, reset flows, captcha cycles, and `ff_reinit`.
 - Include explicit package/dependency impact review before release.
 
-6. Rollback strategy
+7. Rollback strategy
 - If severe regression occurs, switch mode to Enabled globally and/or restore jQuery dependency declaration while retaining migration artifacts.
 
 ## Open Questions

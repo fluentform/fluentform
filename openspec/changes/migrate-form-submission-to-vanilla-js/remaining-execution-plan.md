@@ -23,7 +23,7 @@ Still open at task level:
 
 Goal: prove the current runtime is behaviorally safe before migrating more dependent files.
 
-### 1.1 Step-form parity
+### 1.1 Step-form parity and landing-page proof
 
 Target concerns:
 - `ff_to_next_page`
@@ -31,6 +31,7 @@ Target concerns:
 - `update_slider`
 - progress indicator timing
 - keyboard and button navigation order
+- landing-page/preview-page script isolation for step fixtures
 
 Files to verify:
 - `resources/assets/public/form-submission.js`
@@ -40,6 +41,7 @@ Files to verify:
 
 Required output:
 - deterministic browser fixture for a non-conversational multi-step form
+- clean Fluent Forms-owned fixture surface (landing page or preview page) that minimizes theme/plugin script noise
 - event-order notes added to `enqueued-frontend-js-compat-matrix.md`
 - `tasks.md` updates for `2.3` and `3.2` once proven
 
@@ -100,7 +102,21 @@ Required output:
 
 Only start after Phase 1 produces enough confidence for step/event/runtime behavior.
 
-### 2.1 Migrate `fluentform-advanced.js`
+### 2.1 Migrate `resources/assets/public/Pro/slider.js`
+
+Why next:
+- largest remaining Fluent Forms-owned jQuery blocker for ordinary step forms
+- directly controls the event sequence other modules depend on
+- unlocks real no-jQuery proof for step-form landing pages after core submission runtime
+
+Acceptance:
+- no direct jQuery dependency in migrated slider internals
+- preserves `ff_to_next_page`, `ff_to_prev_page`, and `update_slider` payload shape and order
+- preserves progress indicator timing, keyboard flow, focus/scroll behavior, and step restore behavior
+- works in `enabled` and `disabled` modes through the central bridge/runtime APIs
+- JS coverage added where practical
+
+### 2.2 Migrate `fluentform-advanced.js`
 
 Why next:
 - central internal consumer
@@ -113,7 +129,7 @@ Acceptance:
 - dynamic smartcode and `update_slider` behavior still work
 - JS coverage added where practical
 
-### 2.2 Migrate `form-save-progress.js`
+### 2.3 Migrate `form-save-progress.js`
 
 Why next:
 - clear event-driven module
@@ -124,7 +140,7 @@ Acceptance:
 - save-progress still works through step transitions
 - draft restore timing verified
 
-### 2.3 Migrate small Pro gateway handlers
+### 2.4 Migrate small Pro gateway handlers
 
 Targets:
 - `../fluentformpro/src/assets/public/razorpay_handler.js`
@@ -135,13 +151,12 @@ Acceptance:
 - works with bridge/runtime APIs only
 - next-action flow verified
 
-### 2.4 Reassess larger migrations
+### 2.5 Reassess larger migrations
 
 Do not start until earlier phases are closed:
 - `resources/assets/public/payment_handler.js`
 - `../fluentformpro/src/assets/public/payment_handler_pro.js`
 - `../fluentformpro/src/assets/public/payment_handler.js`
-- `resources/assets/public/Pro/slider.js`
 - `../fluentformpro/src/assets/js/fluentformproPostUpdate.js`
 
 ## Phase 3: Replacement projects instead of direct migration
@@ -172,6 +187,6 @@ add_filter('fluentform/jquery_loading_mode', fn() => 'enabled');
 ## Immediate next action
 
 Start with Phase 1.1:
-- build or reuse a deterministic non-conversational step-form fixture
+- use a Fluent Forms-owned landing page or preview surface for a deterministic step fixture
 - prove `ff_to_next_page`, `ff_to_prev_page`, and `update_slider`
-- then migrate `fluentform-advanced.js`
+- then migrate `resources/assets/public/Pro/slider.js`

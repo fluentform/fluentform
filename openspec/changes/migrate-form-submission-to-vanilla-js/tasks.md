@@ -11,6 +11,7 @@
 - [x] 2.2 Replace jQuery ajax/serialize/deferred operations with native equivalents that preserve payload and execution order.
 - [ ] 2.3 Preserve existing error rendering, scrolling, captcha lifecycle, reset/reinit, and step interaction behavior.
 - [x] 2.4 Keep existing integration entry points (`window.fluentFormApp`, `window.ff_helper`) backwards compatible.
+- [ ] 2.5 Migrate `resources/assets/public/Pro/slider.js` to plain JS while preserving step navigation order, progress updates, focus/scroll handling, draft-step restore, and legacy step event payloads.
 
 ## 3. jQuery Compatibility Bridge
 
