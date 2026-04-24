@@ -106,7 +106,7 @@ class Component
         wp_register_script(
             'fluentform-advanced',
             fluentFormMix('js/fluentform-advanced.js'),
-            ['jquery'],
+            ['fluent-form-submission'],
             FLUENTFORM_VERSION,
             true
         );
@@ -1402,8 +1402,45 @@ class Component
         
         // Only enqueue advanced script if NOT in Elementor editor mode
         if (!Helper::isElementorEditor() && ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields))) {
+            $this->setAdvancedScriptDependencies($formBuilder);
             wp_enqueue_script('fluentform-advanced');
         }
+    }
+
+    protected function setAdvancedScriptDependencies($formBuilder)
+    {
+        global $wp_scripts;
+
+        if (!$wp_scripts || empty($wp_scripts->registered['fluentform-advanced'])) {
+            return;
+        }
+
+        $registeredScript = $wp_scripts->registered['fluentform-advanced'];
+        $advancedScriptDeps = array_values(array_unique(array_merge(
+            ['fluent-form-submission'],
+            $registeredScript->deps ?: []
+        )));
+
+        if ($this->requiresLegacyAdvancedJquery($formBuilder)) {
+            $advancedScriptDeps[] = 'jquery';
+        }
+
+        $registeredScript->deps = array_values(array_unique($advancedScriptDeps));
+    }
+
+    protected function requiresLegacyAdvancedJquery($formBuilder)
+    {
+        $legacyJqueryFields = [
+            'featured_image',
+            'form_step',
+            'input_file',
+            'input_image',
+            'repeater_container',
+            'repeater_field',
+            'step_start',
+        ];
+
+        return (bool) array_intersect($formBuilder->fieldLists, $legacyJqueryFields);
     }
 
     public function registerInputSanitizers()

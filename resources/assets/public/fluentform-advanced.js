@@ -1,192 +1,342 @@
 import initNetPromoter from "./Pro/dom-net-promoter";
-import {initRepeatButtons, initRepeater} from './Pro/dom-repeat';
-import ratingDom from './Pro/dom-rating';
+import { initRepeatButtons, initRepeater } from "./Pro/dom-repeat";
+import ratingDom from "./Pro/dom-rating";
 import formConditional from "./Pro/form-conditionals";
-import fileUploader from './Pro/file-uploader';
-import formSlider from './Pro/slider';
-import calculation from './Pro/calculations';
+import fileUploader from "./Pro/file-uploader";
+import formSlider from "./Pro/slider";
+import calculation from "./Pro/calculations";
 
-(function ($) {
-    $(document.body).on('fluentform_init', function (e, $theForm, form) {
-        const formInstanceSelector = $theForm.attr('data-form_instance');
+const advancedFormCleanupStore = new WeakMap();
 
-        if (!form) {
-            console.log('No Fluent form JS vars found!');
+function getEventBridge() {
+    if (window.fluentFormBridge) {
+        return window.fluentFormBridge;
+    }
+
+    return {
+        emitEvent(eventName, detail, targetElement) {
+            const browserEvent = new CustomEvent(eventName, {
+                detail,
+                bubbles: true
+            });
+
+            (targetElement || document).dispatchEvent(browserEvent);
+        },
+        onEvent(targetElement, eventNames, handler) {
+            const eventTarget = targetElement || document;
+            const names = Array.isArray(eventNames)
+                ? eventNames
+                : String(eventNames || "").split(/\s+/).filter(Boolean);
+            const removers = [];
+
+            names.forEach((eventName) => {
+                const nativeHandler = function (event) {
+                    handler(event, event.detail, [event.detail], "native");
+                };
+
+                eventTarget.addEventListener(eventName, nativeHandler);
+                removers.push(() => eventTarget.removeEventListener(eventName, nativeHandler));
+            });
+
+            return function removeListeners() {
+                removers.forEach((removeListener) => removeListener());
+            };
+        }
+    };
+}
+
+function resolveFormElement(formReference) {
+    if (!formReference) {
+        return null;
+    }
+
+    if (formReference.nodeType === 1) {
+        return formReference;
+    }
+
+    if (formReference[0] && formReference[0].nodeType === 1) {
+        return formReference[0];
+    }
+
+    return null;
+}
+
+function getCalculationMessages(formId) {
+    const messagesVar = "fluentform_calculation_messages_" + formId;
+
+    if (window[messagesVar]) {
+        return window[messagesVar];
+    }
+
+    return {
+        calculation_error: "Calculation error occurred",
+        invalid_formula: "Invalid formula provided",
+        division_by_zero: "Division by zero error"
+    };
+}
+
+function sanitizeDynamicValue(input) {
+    let safeInput = input;
+
+    if (safeInput === null || typeof safeInput === "undefined") {
+        return "";
+    }
+
+    if (typeof safeInput !== "string") {
+        safeInput = String(safeInput);
+    }
+
+    safeInput = safeInput
+        .replace(/<script.*?>.*?<\/script>/gis, "")
+        .replace(/<iframe.*?>.*?<\/iframe>/gis, "")
+        .replace(/<.*?\bon\w+=["'][^"']*["']/gi, "")
+        .replace(/javascript:/gi, "");
+
+    safeInput = safeInput.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    return safeInput
+        .replace(/&lt;br\s*\/?&gt;/gi, "<br/>")
+        .replace(/\n/g, "<br/>");
+}
+
+function getFieldValues(formElement, fieldName) {
+    const directFieldSelector = `.ff-el-form-control[name="${fieldName}"]`;
+    let referenceElements = Array.from(formElement.querySelectorAll(directFieldSelector));
+    let separator = " ";
+
+    if (!referenceElements.length) {
+        const dataNameContainer = formElement.querySelector(`.ff-field_container[data-name="${fieldName}"]`);
+        if (dataNameContainer) {
+            referenceElements = Array.from(dataNameContainer.querySelectorAll("input"));
+        }
+    }
+
+    if (!referenceElements.length) {
+        referenceElements = Array.from(formElement.querySelectorAll(`[name="${fieldName}"]:checked`));
+    }
+
+    if (!referenceElements.length) {
+        referenceElements = Array.from(formElement.querySelectorAll(`[name="${fieldName}[]"]:checked`));
+        if (referenceElements.length) {
+            separator = ", ";
+        }
+    }
+
+    if (!referenceElements.length) {
+        referenceElements = Array.from(formElement.querySelectorAll(`[name="${fieldName}[]"] option:checked`));
+        if (referenceElements.length) {
+            separator = ", ";
+        }
+    }
+
+    return {
+        separator,
+        referenceElements
+    };
+}
+
+function getRepeaterValues(formElement, fieldName) {
+    const repeaterRows = Array.from(
+        formElement.querySelectorAll(`.ff-el-repeater[data-name="${fieldName}"] tbody tr`)
+    );
+    const repeaterValues = [];
+
+    repeaterRows.forEach((rowElement, rowIndex) => {
+        const rowValues = [];
+        const fieldInputs = Array.from(rowElement.querySelectorAll("input, select"));
+
+        fieldInputs.forEach((inputElement, columnIndex) => {
+            const inputValue = inputElement.value;
+
+            if (!inputValue) {
+                return;
+            }
+
+            const cellElement = inputElement.closest("td");
+            const label = cellElement && cellElement.dataset.label
+                ? cellElement.dataset.label
+                : "Column-" + (columnIndex + 1);
+
+            rowValues.push(label + ": " + inputValue);
+        });
+
+        if (rowValues.length) {
+            repeaterValues.push("#" + (rowIndex + 1) + "- " + rowValues.join(" | "));
+        }
+    });
+
+    return repeaterValues;
+}
+
+function maybeUpdateDynamicLabels(formElement, scopeElement) {
+    const eventBridge = getEventBridge();
+    const dynamicRoot = scopeElement || formElement;
+    const dynamicElements = Array.from(dynamicRoot.querySelectorAll(".ff_dynamic_value"));
+
+    dynamicElements.forEach((dynamicElement) => {
+        const referenceName = dynamicElement.dataset.ref;
+
+        if (referenceName === "payment_summary") {
+            const paymentSummaryTarget = typeof window.jQuery === "function"
+                ? window.jQuery(dynamicElement)
+                : dynamicElement;
+
+            eventBridge.emitEvent(
+                "calculate_payment_summary",
+                {
+                    element: dynamicElement,
+                    form: formElement
+                },
+                formElement,
+                [{ element: paymentSummaryTarget }]
+            );
             return;
         }
 
-        const formId = form.form_id_selector;
-        const formSelector = '.' + form.form_instance;
+        const { separator, referenceElements } = getFieldValues(formElement, referenceName);
+        const resolvedValues = [];
 
-        // Helper function to get translated calculation messages
-        function getCalculationMessages(formId) {
-            const messagesVar = 'fluentform_calculation_messages_' + formId;
-            if (window[messagesVar]) {
-                return window[messagesVar];
+        if (!referenceElements.length) {
+            const repeaterValues = getRepeaterValues(formElement, referenceName);
+            if (repeaterValues.length) {
+                dynamicElement.innerHTML = sanitizeDynamicValue(repeaterValues.join("<br/>"));
+                return;
             }
-            // Fallback messages
-            return {
-                calculation_error: 'Calculation error occurred',
-                invalid_formula: 'Invalid formula provided',
-                division_by_zero: 'Division by zero error'
-            };
         }
 
-        function sanitizeDynamicValue(input) {
-            // Convert input to string if it's not already a string
-            if (input === null || input === undefined) {
-                return '';
+        referenceElements.forEach((referenceElement) => {
+            const conditionallyHidden = referenceElement.closest(".ff-el-group.has-conditions.ff_excluded");
+            if (conditionallyHidden || !referenceElement.value) {
+                return;
             }
 
-            // Convert to string if it's not already
-            if (typeof input !== 'string') {
-                input = String(input);
-            }
+            resolvedValues.push(referenceElement.value);
+        });
 
-            // Remove dangerous tags and event handlers
-            input = input.replace(/<script.*?>.*?<\/script>/gis, '')
-                .replace(/<iframe.*?>.*?<\/iframe>/gis, '')
-                .replace(/<.*?\bon\w+=["'][^"']*["']/gi, '')
-                .replace(/javascript:/gi, '');
+        const fallbackValue = dynamicElement.dataset.fallback || "";
+        const replacementValue = resolvedValues.length
+            ? resolvedValues.join(separator)
+            : fallbackValue;
 
-            // Escape all HTML tags
-            input = input.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-            // Allow <br> and convert \n to <br>
-            return input.replace(/&lt;br\s*\/?&gt;/gi, '<br/>').replace(/\n/g, '<br/>');
-        }
-
-       function maybeUpdateDynamicLabels(workStep) {
-            jQuery.each(workStep.find('.ff_dynamic_value'), function (index, item) {
-                var ref = $(item).data('ref');
-
-                if (ref == 'payment_summary') {
-                    $theForm.trigger('calculate_payment_summary', {
-                        element: $(item)
-                    });
-                    return;
-                }
-
-                var refElement = $theForm.find('.ff-el-form-control[name="' + ref + '"]');
-
-                var separator = ' ';
-
-                if (!refElement.length) {
-                    refElement = $theForm.find('.ff-field_container[data-name="' + ref + '"]').find('input');
-                }
-
-                if (!refElement.length) {
-                    // This may radio element / Checkbox element
-                    refElement = $theForm.find('*[name="' + ref + '"]:checked');
-                    if (!refElement.length) {
-                        refElement = $theForm.find('*[name="' + ref + '[]"]:checked');
-                        separator = ', ';
-                    }
-
-                    // maybe it's a multi-select item
-                    if (!refElement.length) {
-                        refElement = $theForm.find('*[name="' + ref + '[]"]').find('option:selected');
-                        separator = ', ';
-                    }
-                }
-
-                var refValues = [];
-                if (!refElement.length) {
-                    // This may repeater field
-                    let $rows = $theForm.find('.ff-el-repeater[data-name="' + ref + '"] tbody tr');
-                    $rows.each(function(index) {
-                        let $inputsInRow = $(this).find('input, select');
-                        let inputGroup = [];
-                        $inputsInRow.each(function(colIndex) {
-                            let value = $(this).val();
-                            if (value) {
-                                let label = $(this).closest('td').data('label') || 'Column-' + (colIndex + 1);
-                                inputGroup.push(label + ': ' + value);
-                            }
-                        });
-                        if (inputGroup.length) {
-                            refValues.push('#' + (index + 1) + '- ' + inputGroup.join(' | '));
-                        }
-                    });
-                    if ($rows.length) {
-                        separator = '<br/>';
-                    }
-                }
-
-                $.each(refElement, function () {
-                    let inputValue = $(this).val();
-                    let conditionallyHidden = $(this).closest('.ff-el-group.has-conditions').hasClass('ff_excluded');
-                    // if(inputValue) {
-                    //     let tagName = $(this).prop("tagName");
-                    //     if (tagName == 'OPTION') {
-                    //         inputValue = $(this).text();
-                    //     } else if (tagName == 'SELECT') {
-                    //         inputValue = $(this).find('option:selected').text();
-                    //     } else if (tagName == 'INPUT' && $(this).attr('type') == 'checkbox') {
-                    //         inputValue = $(this).parent().find('span').html();
-                    //     }
-                    // }
-                    if (inputValue && !conditionallyHidden) {
-                        refValues.push(inputValue);
-                    }
-                });
-
-                let replaceValue = '';
-                if (refValues.length) {
-                    replaceValue = refValues.join(separator);
-                } else {
-                    replaceValue = $(item).data('fallback');
-                }
-
-                // Sanitize the replacement value before inserting it
-                $(this).html(sanitizeDynamicValue(replaceValue));
-            });
-        }
-
-        /*
-        * Normals
-         */
-        fileUploader($, $theForm, form, window.fluentFormVars, formSelector);
-        initRepeater($theForm);
-        initRepeatButtons($, $theForm);
-        formConditional($theForm[0], form, window.fluentFormVars);
-        // Pass translated calculation messages to calculation module
-        const calculationMessages = getCalculationMessages(form.id);
-        calculation($, $theForm, calculationMessages);
-        ratingDom($theForm[0]);
-        initNetPromoter($theForm[0]);
-
-        if($theForm.hasClass('ff-form-has-steps')) {
-            const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
-            sliderInstance.init();
-            $theForm.on('update_slider', function (e, data) {
-                sliderInstance.updateSlider(
-                    data.goBackToStep,
-                    data.animDuration,
-                    data.isScrollTop,
-                    data.actionType
-                );
-            });
-        }
-
-        if($theForm.hasClass('ff_has_dynamic_smartcode')) {
-            $theForm.on('ff_render_dynamic_smartcodes', function (e, selector) {
-                maybeUpdateDynamicLabels($(selector));
-            });
-
-            $theForm.on('keyup change', ':input', function () {
-                maybeUpdateDynamicLabels($theForm);
-            });
-
-            maybeUpdateDynamicLabels($theForm);
-        }
-
+        dynamicElement.innerHTML = sanitizeDynamicValue(replacementValue);
     });
-})(jQuery);
+}
+
+function setupDynamicSmartcodes(formElement) {
+    const eventBridge = getEventBridge();
+    const cleanupCallbacks = [];
+    const renderDynamicLabels = function (scopeReference) {
+        const scopeElement = resolveFormElement(scopeReference) || formElement;
+        maybeUpdateDynamicLabels(formElement, scopeElement);
+    };
+
+    cleanupCallbacks.push(
+        eventBridge.onEvent(formElement, "ff_render_dynamic_smartcodes", function (event, detail, args, source) {
+            const scopeReference = source === "jquery" ? args[0] : detail;
+            renderDynamicLabels(scopeReference);
+        })
+    );
+
+    const handleFormChange = function (event) {
+        if (!event.target || !event.target.matches("input, select, textarea")) {
+            return;
+        }
+
+        renderDynamicLabels(formElement);
+    };
+
+    formElement.addEventListener("keyup", handleFormChange);
+    formElement.addEventListener("change", handleFormChange);
+    cleanupCallbacks.push(() => formElement.removeEventListener("keyup", handleFormChange));
+    cleanupCallbacks.push(() => formElement.removeEventListener("change", handleFormChange));
+
+    renderDynamicLabels(formElement);
+
+    return function removeDynamicSmartcodeHandlers() {
+        cleanupCallbacks.forEach((cleanup) => cleanup());
+    };
+}
+
+function setupStepSlider(formElement, formConfig) {
+    if (!formElement.classList.contains("ff-form-has-steps") || typeof window.jQuery !== "function") {
+        return function noop() {};
+    }
+
+    const eventBridge = getEventBridge();
+    const jquery = window.jQuery;
+    const jqueryForm = jquery(formElement);
+    const formSelector = "." + formConfig.form_instance;
+    const sliderInstance = formSlider(jquery, jqueryForm, window.fluentFormVars, formSelector);
+
+    sliderInstance.init();
+
+    return eventBridge.onEvent(formElement, "update_slider", function (event, detail, args, source) {
+        const sliderData = source === "jquery" ? (args[0] || {}) : (detail || {});
+
+        sliderInstance.updateSlider(
+            sliderData.goBackToStep,
+            sliderData.animDuration,
+            sliderData.isScrollTop,
+            sliderData.actionType
+        );
+    });
+}
+
+function setupAdvancedForm(formElement, formConfig) {
+    if (!formElement || !formConfig) {
+        return;
+    }
+
+    const existingCleanup = advancedFormCleanupStore.get(formElement);
+    if (existingCleanup) {
+        existingCleanup();
+    }
+
+    const cleanupCallbacks = [];
+    const jquery = window.jQuery;
+
+    if (typeof jquery === "function") {
+        const jqueryForm = jquery(formElement);
+        const formSelector = "." + formConfig.form_instance;
+
+        fileUploader(jquery, jqueryForm, formConfig, window.fluentFormVars, formSelector);
+        initRepeater(jqueryForm);
+        initRepeatButtons(jquery, jqueryForm);
+    }
+
+    formConditional(formElement, formConfig, window.fluentFormVars);
+    calculation(formElement, getCalculationMessages(formConfig.id));
+    ratingDom(formElement);
+    initNetPromoter(formElement);
+
+    cleanupCallbacks.push(setupStepSlider(formElement, formConfig));
+
+    if (formElement.classList.contains("ff_has_dynamic_smartcode")) {
+        cleanupCallbacks.push(setupDynamicSmartcodes(formElement));
+    }
+
+    advancedFormCleanupStore.set(formElement, function cleanupFormHandlers() {
+        cleanupCallbacks.forEach((cleanup) => cleanup());
+    });
+}
+
+function handleFluentFormInit(event, detail, args, source) {
+    const formReference = source === "jquery" ? args[0] : detail && detail.form;
+    const formConfig = source === "jquery" ? args[1] : detail && detail.config;
+    const formElement = resolveFormElement(formReference);
+
+    if (!formConfig) {
+        console.log("No Fluent form JS vars found!");
+        return;
+    }
+
+    setupAdvancedForm(formElement, formConfig);
+}
+
+getEventBridge().onEvent(document.body, "fluentform_init", handleFluentFormInit);
 
 // Polyfill for startsWith and endsWith
 (function (sp) {
-    // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith#Polyfill
     if (!sp.startsWith) {
         sp.startsWith = function (search, pos) {
             pos = !pos || pos < 0 ? 0 : +pos;
@@ -194,21 +344,19 @@ import calculation from './Pro/calculations';
         };
     }
 
-    // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith#Polyfill
     if (!sp.endsWith) {
-        sp.endsWith = function (search, this_len) {
-            if (this_len === undefined || this_len > this.length) {
-                this_len = this.length;
+        sp.endsWith = function (search, thisLen) {
+            if (thisLen === undefined || thisLen > this.length) {
+                thisLen = this.length;
             }
-            return this.substring(this_len - search.length, this_len) === search;
+            return this.substring(thisLen - search.length, thisLen) === search;
         };
     }
 
-    // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
     if (!sp.includes) {
         sp.includes = function (search, start) {
             if (search instanceof RegExp) {
-                throw TypeError('first argument must not be a RegExp');
+                throw TypeError("first argument must not be a RegExp");
             }
             if (start === undefined) {
                 start = 0;
@@ -216,5 +364,4 @@ import calculation from './Pro/calculations';
             return this.indexOf(search, start) !== -1;
         };
     }
-
 })(String.prototype);

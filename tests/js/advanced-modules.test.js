@@ -66,6 +66,47 @@ function loadFormConditionalsModule(window, ConditionApp) {
     return module.exports;
 }
 
+function loadFluentformAdvancedModule(window, dependencies) {
+    const source = fs.readFileSync(
+        path.resolve(__dirname, '../../resources/assets/public/fluentform-advanced.js'),
+        'utf8'
+    )
+        .replace('import initNetPromoter from "./Pro/dom-net-promoter";\n', '')
+        .replace('import { initRepeatButtons, initRepeater } from "./Pro/dom-repeat";\n', '')
+        .replace('import ratingDom from "./Pro/dom-rating";\n', '')
+        .replace('import formConditional from "./Pro/form-conditionals";\n', '')
+        .replace('import fileUploader from "./Pro/file-uploader";\n', '')
+        .replace('import formSlider from "./Pro/slider";\n', '')
+        .replace('import calculation from "./Pro/calculations";\n', '');
+
+    const factory = new Function(
+        'window',
+        'document',
+        'initNetPromoter',
+        'initRepeatButtons',
+        'initRepeater',
+        'ratingDom',
+        'formConditional',
+        'fileUploader',
+        'formSlider',
+        'calculation',
+        source
+    );
+
+    factory(
+        window,
+        window.document,
+        dependencies.initNetPromoter,
+        dependencies.initRepeatButtons,
+        dependencies.initRepeater,
+        dependencies.ratingDom,
+        dependencies.formConditional,
+        dependencies.fileUploader,
+        dependencies.formSlider,
+        dependencies.calculation
+    );
+}
+
 test('dom-rating keeps active state and rating text in sync without jQuery', async () => {
     const ratingModule = loadDefaultExport('resources/assets/public/Pro/dom-rating.js');
     const dom = createDom(`
@@ -309,4 +350,93 @@ test('form-conditionals toggles visibility and emits bridge events without jQuer
     await new Promise((resolve) => window.setTimeout(resolve, 20));
     assert.equal(conditionalGroup.classList.contains('ff_excluded'), true);
     assert.equal(conditionalGroup.style.display, 'none');
+});
+
+test('fluentform-advanced bootstraps migrated modules without requiring jQuery', () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <form class="frm-fluent-form ff_form_instance_test ff_has_dynamic_smartcode">
+                    <input class="ff-el-form-control" name="full_name" value="Ada Lovelace">
+                    <div class="ff_dynamic_value" data-ref="full_name" data-fallback="Unknown"></div>
+                </form>
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    const formElement = window.document.querySelector('form');
+    const dynamicValue = window.document.querySelector('.ff_dynamic_value');
+    const moduleCalls = [];
+
+    window.fluentFormVars = {};
+    window.fluentFormBridge = {
+        emitEvent(eventName, detail, targetElement) {
+            (targetElement || window.document).dispatchEvent(new window.CustomEvent(eventName, {
+                detail,
+                bubbles: true
+            }));
+        },
+        onEvent(targetElement, eventNames, handler) {
+            const names = String(eventNames).split(/\s+/).filter(Boolean);
+            const removers = names.map((eventName) => {
+                const listener = (event) => handler(event, event.detail, [event.detail], 'native');
+                targetElement.addEventListener(eventName, listener);
+                return () => targetElement.removeEventListener(eventName, listener);
+            });
+
+            return () => removers.forEach((removeListener) => removeListener());
+        }
+    };
+
+    loadFluentformAdvancedModule(window, {
+        initNetPromoter(formReference) {
+            moduleCalls.push(['net-promoter', formReference]);
+        },
+        initRepeatButtons() {
+            moduleCalls.push(['repeat-buttons']);
+        },
+        initRepeater() {
+            moduleCalls.push(['repeater']);
+        },
+        ratingDom(formReference) {
+            moduleCalls.push(['rating', formReference]);
+        },
+        formConditional(formReference, formConfig, fluentFormVars) {
+            moduleCalls.push(['conditional', formReference, formConfig, fluentFormVars]);
+        },
+        fileUploader() {
+            moduleCalls.push(['file-uploader']);
+        },
+        formSlider() {
+            moduleCalls.push(['slider']);
+            return {
+                init() {},
+                updateSlider() {}
+            };
+        },
+        calculation(formReference, messages) {
+            moduleCalls.push(['calculation', formReference, messages]);
+        }
+    });
+
+    window.document.body.dispatchEvent(new window.CustomEvent('fluentform_init', {
+        detail: {
+            form: formElement,
+            config: {
+                id: 99,
+                form_instance: 'ff_form_instance_test'
+            }
+        },
+        bubbles: true
+    }));
+
+    assert.equal(moduleCalls.some(([name]) => name === 'rating'), true);
+    assert.equal(moduleCalls.some(([name]) => name === 'net-promoter'), true);
+    assert.equal(moduleCalls.some(([name]) => name === 'conditional'), true);
+    assert.equal(moduleCalls.some(([name]) => name === 'calculation'), true);
+    assert.equal(moduleCalls.some(([name]) => name === 'file-uploader'), false);
+    assert.equal(moduleCalls.some(([name]) => name === 'repeater'), false);
+    assert.equal(moduleCalls.some(([name]) => name === 'slider'), false);
+    assert.equal(dynamicValue.innerHTML, 'Ada Lovelace');
 });
