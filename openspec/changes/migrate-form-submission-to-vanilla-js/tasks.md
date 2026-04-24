@@ -1,0 +1,34 @@
+## 1. Discovery and Baseline Mapping
+
+- [ ] 1.1 Build a jQuery usage inventory from `resources/assets/public/form-submission.js` (network, event bus, DOM helpers, animation, deferred).
+- [ ] 1.2 Build Free consumer matrix for lifecycle events (`fluentform_init*`, `fluentform_submission_*`, `fluentform_reset`, `ff_reinit`, step events).
+- [ ] 1.3 Build Pro consumer matrix in `/Volumes/Projects/work/forms/wp-content/plugins/fluentformpro/src/assets/public` and `src/assets/js` for the same lifecycle events.
+- [ ] 1.4 Document current script dependency graph (`wp_register_script` / `wp_enqueue_script`) and identify jQuery hard dependencies.
+
+## 2. Vanilla Core Migration (No Behavior Change)
+
+- [ ] 2.1 Extract submission runtime internals into native DOM/event/network helpers while keeping public API shape stable.
+- [ ] 2.2 Replace jQuery ajax/serialize/deferred operations with native equivalents that preserve payload and execution order.
+- [ ] 2.3 Preserve existing error rendering, scrolling, captcha lifecycle, reset/reinit, and step interaction behavior.
+- [ ] 2.4 Keep existing integration entry points (`window.fluentFormApp`, `window.ff_helper`) backwards compatible.
+
+## 3. jQuery Compatibility Bridge
+
+- [ ] 3.1 Add a centralized event bridge that dispatches both native events and legacy jQuery events with compatible payloads.
+- [ ] 3.2 Verify event order and payload parity for `init`, `success`, `failed`, `reset`, `ff_reinit`, and step events.
+- [ ] 3.3 Validate bridge behavior against Free modules (`fluentform-advanced`, `form-save-progress`, payment handler) and Pro modules (payment/chat/gateway scripts).
+
+## 4. jQuery Loading Option and Interface
+
+- [ ] 4.1 Define and implement loading modes: `Auto` (default), `Enabled`, `Disabled`.
+- [ ] 4.2 Add interface surface (settings/filter contract) to control runtime mode without code edits.
+- [ ] 4.3 Update script registration/enqueue logic to respect mode while preserving safe defaults.
+- [ ] 4.4 Add documentation notes for third-party developers about event bridge and mode behavior.
+- [ ] 4.5 Document the `fluentform/jquery_loading_mode` filter, the `fluentform/jquery_loading_mode_required` filter, the `ff_jquery_loading_mode` settings key, accepted enum values (`auto`/`enabled`/`disabled`), Auto mode heuristic, and bridge no-op behavior in Disabled mode. Place in inline PHPDoc on the enqueue method in `app/Modules/Component/Component.php` and a developer note in `/docs` or the spec readme.
+
+## 5. Side-Effect Validation and Release Readiness
+
+- [ ] 5.1 Run regression checklist for Free forms: simple, conditional, multi-step, captcha, upload, payment initiation, reset.
+- [ ] 5.2 Run regression checklist for Pro flows: payment gateways, chat, save-progress, post update, file uploader paths.
+- [ ] 5.3 Run build and asset verification for Free and Pro bundles and confirm no unintended package/dependency removals.
+- [ ] 5.4 Produce final risk log and rollback instructions (switch to `Enabled` mode / restore jQuery dependency path).
