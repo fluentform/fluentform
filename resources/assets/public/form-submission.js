@@ -355,6 +355,7 @@
             };
 
             const app = {
+                formElement: formEl,
                 settings: formConfig,
                 config: formConfig,
                 formSelector: '.' + getFormInstanceClass(formEl),
@@ -506,6 +507,35 @@
             return app;
         };
 
+        const getLiveFormInstance = function (instanceClass) {
+            const cachedFormInstance = formInstanceStore[instanceClass];
+            if (!cachedFormInstance) {
+                return null;
+            }
+
+            if (!cachedFormInstance.formElement || !cachedFormInstance.formElement.isConnected) {
+                delete formInstanceStore[instanceClass];
+                return null;
+            }
+
+            return cachedFormInstance;
+        };
+
+        const reinitializeFormInstance = function (formEl) {
+            const app = window.fluentFormApp(formEl);
+            if (!app) {
+                return false;
+            }
+
+            app.reinitExtras();
+            app.initFormHandlers();
+            app.initTriggers();
+            formEl.setAttribute('data-ff_reinit', 'yes');
+            jqueryEventBridge.emitEvent('ff_reinit', { formItem: formEl, form: formEl, config: getFormConfig(formEl) }, document, [formEl]);
+
+            return true;
+        };
+
         window.fluentFormApp = function (formInput) {
             const formEl = resolveElement(formInput) || document.querySelector(formInput);
             if (!formEl) {
@@ -515,8 +545,9 @@
             if (!instanceClass) {
                 return false;
             }
-            if (formInstanceStore[instanceClass]) {
-                return formInstanceStore[instanceClass];
+            const liveFormInstance = getLiveFormInstance(instanceClass);
+            if (liveFormInstance) {
+                return liveFormInstance;
             }
             const formConfig = getFormConfig(formEl);
             if (!formConfig) {
@@ -586,15 +617,7 @@
             if (!formEl) {
                 return;
             }
-            const app = window.fluentFormApp(formEl);
-            if (!app) {
-                return;
-            }
-            app.reinitExtras();
-            app.initFormHandlers();
-            app.initTriggers();
-            formEl.setAttribute('data-ff_reinit', 'yes');
-            jqueryEventBridge.emitEvent('ff_reinit', { formItem: formEl, form: formEl, config: getFormConfig(formEl) }, document, [formEl]);
+            reinitializeFormInstance(formEl);
         });
 
     }
