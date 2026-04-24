@@ -59,3 +59,7 @@ Status legend:
   - pre-submit validator pipeline now runs before AJAX submission and supports async/Promise callbacks.
   - v3 reCAPTCHA pre-submit token path added for forms using `ff_has_v3_recptcha`.
   - This reduces direct-call compatibility risk for payment/chat/post-update dependent scripts; runtime browser validation still pending.
+- 2026-04-24: Build/spec verification:
+  - OpenSpec strict validation passed for change `migrate-form-submission-to-vanilla-js`.
+  - `npm run dev` compiled successfully.
+  - Build regenerates `assets/js/fluent_gutenblock.js`; this artifact is explicitly excluded from migration-scope commits.
