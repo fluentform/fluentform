@@ -1,194 +1,312 @@
 import ConditionApp from "./_ConditionClass";
 
-const formConditional = function ($, $theForm, form) {
-    /**
-     * Container to store all conditional
-     *  logics recieved from the server
-     *
-     * @type {Object}
-     */
-    let formSelector = '.' + form.form_instance;
+function getFormElement(formReference) {
+    if (!formReference) {
+        return null;
+    }
 
-    const formCondition = function () {
+    if (formReference.nodeType === 1) {
+        return formReference;
+    }
 
-        const watchableFields = {};
+    if (formReference[0] && formReference[0].nodeType === 1) {
+        return formReference[0];
+    }
 
-        let formData = {};
+    return null;
+}
 
-        const getTheForm = function () {
-            return $(formSelector);
-        };
+function getFormEventBridge() {
+    if (window.fluentFormBridge) {
+        return window.fluentFormBridge;
+    }
 
-        /**
-         * Register all the required handlers
-         * for elements those, who have conditions
-         *
-         * @return void
-         */
-        const init = function () {
-            if (!form.conditionals) {
+    return {
+        emitEvent(eventName, detail, targetElement, jqueryEventArguments) {
+            const eventTarget = targetElement || document;
+            const eventDetail = typeof jqueryEventArguments !== 'undefined' && jqueryEventArguments.length
+                ? jqueryEventArguments[0]
+                : detail;
+            eventTarget.dispatchEvent(new CustomEvent(eventName, {
+                detail: eventDetail,
+                bubbles: true
+            }));
+        },
+        onEvent(targetElement, eventNames, handler) {
+            const eventTarget = targetElement || document;
+            const names = Array.isArray(eventNames)
+                ? eventNames
+                : String(eventNames || '').split(/\s+/).filter(Boolean);
+            const removers = names.map((eventName) => {
+                const nativeHandler = function (event) {
+                    handler(event, event.detail, [event.detail], 'native');
+                };
+                eventTarget.addEventListener(eventName, nativeHandler);
+                return function () {
+                    eventTarget.removeEventListener(eventName, nativeHandler);
+                };
+            });
+
+            return function () {
+                removers.forEach((removeListener) => removeListener());
+            };
+        }
+    };
+}
+
+function escapeSelectorValue(value) {
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+        return window.CSS.escape(value);
+    }
+
+    return String(value).replace(/"/g, '\\"');
+}
+
+function getFieldElements(formElement, fieldName) {
+    const escapedName = escapeSelectorValue(fieldName);
+    const selectors = [
+        `[data-name="${escapedName}"]`,
+        `[name="${escapedName}"]`,
+        `[data-condition_field_name="${escapedName}"]`,
+        `[name="${escapedName}[]"]`
+    ];
+
+    for (const selector of selectors) {
+        const fieldElements = Array.from(formElement.querySelectorAll(selector));
+        if (fieldElements.length) {
+            return fieldElements;
+        }
+    }
+
+    return [];
+}
+
+function getPrimaryFieldElement(formElement, fieldName) {
+    return getFieldElements(formElement, fieldName)[0] || null;
+}
+
+function isElementChecked(fieldElement) {
+    return !!(fieldElement && fieldElement.checked);
+}
+
+function isElementVisibleForConditionalCheck(fieldElement) {
+    const conditionalParent = fieldElement.closest('.has-conditions');
+    return !conditionalParent || !conditionalParent.classList.contains('ff_excluded');
+}
+
+function getConditionalDisplayMode(containerElement) {
+    return containerElement.classList.contains('ff-t-container') ? 'flex' : 'block';
+}
+
+function showConditionalElement(containerElement) {
+    if (containerElement.style.height === '0px') {
+        containerElement.removeAttribute('style');
+    }
+
+    containerElement.classList.remove('ff_excluded');
+    containerElement.classList.add('ff_cond_v');
+    containerElement.style.display = getConditionalDisplayMode(containerElement);
+}
+
+function hideConditionalElement(containerElement) {
+    containerElement.classList.remove('ff_cond_v');
+    containerElement.classList.add('ff_excluded');
+    containerElement.style.display = 'none';
+}
+
+function createDebounce(callback, delay) {
+    let timeoutId;
+
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => callback.apply(this, args), delay);
+    };
+}
+
+const formConditional = function (formReference, form) {
+    const formElement = getFormElement(formReference);
+    if (!formElement || !form || !form.conditionals) {
+        return;
+    }
+
+    const fluentFormEventBridge = getFormEventBridge();
+    const watchableFields = new Map();
+
+    const registerWatchableField = function (fieldName) {
+        const fieldElements = getFieldElements(formElement, fieldName);
+        if (!fieldElements.length) {
+            return;
+        }
+
+        const normalizedName = fieldElements[0].name || fieldName;
+        watchableFields.set(normalizedName, fieldElements);
+    };
+
+    const getFormData = function () {
+        const data = {};
+
+        watchableFields.forEach((fieldElements, originalName) => {
+            const firstField = fieldElements[0];
+            if (!firstField) {
                 return;
             }
-            $.each(form.conditionals, function (fieldName, field) {
-                if (!fieldName) {
-                    return;
-                }
-                if (field.type == 'group' && field.condition_groups) {
-                    $.each(field.condition_groups, function (index, conditionGroup) {
 
-                        $.each(conditionGroup.rules, function (index, condition) {
-                            let el = getElement(condition.field);
-                            watchableFields[el.prop('name')] = el;
-                        });
-                    });
-                }else{
-                    $.each(field.conditions, function (index, condition) {
-                        let el = getElement(condition.field);
-                        watchableFields[el.prop('name')] = el;
-                    });
-                }
+            let normalizedName = originalName.replace(/\[\]$/, '');
+            const fieldType = firstField.type || firstField.getAttribute('data-type');
 
-            });
-            formData = getFormData();
-            const conditionAppInstance = new ConditionApp(form.conditionals, formData);
-
-            $.each(watchableFields, (name, el) => {
-                el.on('keyup change', () => {
-                    if ($theForm.hasClass('ff_force_hide') || $theForm.hasClass('ff_submitting')) {
-                        return;
+            if (fieldType === 'radio') {
+                data[normalizedName] = '';
+                fieldElements.forEach((fieldElement) => {
+                    if (isElementChecked(fieldElement)) {
+                        data[normalizedName] = fieldElement.value;
                     }
-                    formData = getFormData();
-                    conditionAppInstance.setFormData(formData);
-                    setTimeout(() => {
-                        debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
-                    }, 0);
+                });
+                return;
+            }
+
+            if (fieldType === 'checkbox') {
+                data[normalizedName] = [];
+                fieldElements.forEach((fieldElement) => {
+                    if (isElementChecked(fieldElement)) {
+                        data[normalizedName].push(fieldElement.value);
+                    }
+                });
+                return;
+            }
+
+            if (fieldType === 'select-multiple') {
+                data[normalizedName] = Array.from(firstField.selectedOptions).map((optionElement) => optionElement.value);
+                return;
+            }
+
+            if (fieldType === 'file') {
+                let uploadedFileUrls = '';
+                const uploadInput = formElement.querySelector(`input[name="${escapeSelectorValue(originalName)}"]`);
+                if (uploadInput) {
+                    const uploadedPreviews = uploadInput
+                        .closest('.ff-el-input--content')
+                        ?.querySelectorAll('.ff-uploaded-list .ff-upload-preview[data-src]') || [];
+
+                    uploadedPreviews.forEach((previewElement) => {
+                        uploadedFileUrls += previewElement.dataset.src || '';
+                    });
+                }
+                data[normalizedName] = uploadedFileUrls;
+                return;
+            }
+
+            data[normalizedName] = firstField.value;
+        });
+
+        return data;
+    };
+
+    Object.keys(form.conditionals).forEach((fieldName) => {
+        const fieldConfig = form.conditionals[fieldName];
+        if (!fieldName || !fieldConfig) {
+            return;
+        }
+
+        if (fieldConfig.type === 'group' && fieldConfig.condition_groups) {
+            fieldConfig.condition_groups.forEach((conditionGroup) => {
+                (conditionGroup.rules || []).forEach((condition) => {
+                    registerWatchableField(condition.field);
                 });
             });
+            return;
+        }
 
-            jQuery(document.body).on('fluentform_reset', function(event, resetForm) {
-                if (!resetForm || !resetForm.length || resetForm[0] !== $theForm[0] || $theForm.hasClass('ff_force_hide')) {
-                    return;
+        (fieldConfig.conditions || []).forEach((condition) => {
+            registerWatchableField(condition.field);
+        });
+    });
+
+    let formData = getFormData();
+    const conditionAppInstance = new ConditionApp(
+        form.conditionals,
+        formData,
+        (fieldName) => getPrimaryFieldElement(formElement, fieldName)
+    );
+
+    const hideShowElements = function (items) {
+        let rangeSliderTimeoutId;
+
+        Object.keys(items).forEach((itemName) => {
+            const fieldElement = getPrimaryFieldElement(formElement, itemName);
+            if (!fieldElement) {
+                return;
+            }
+
+            const conditionalContainer = fieldElement.closest('.has-conditions');
+            if (!conditionalContainer) {
+                return;
+            }
+
+            if (items[itemName]) {
+                showConditionalElement(conditionalContainer);
+
+                if (conditionalContainer.querySelector('input[type="range"]')) {
+                    clearTimeout(rangeSliderTimeoutId);
+                    rangeSliderTimeoutId = setTimeout(() => {
+                        fluentFormEventBridge.emitEvent('reInitRangeSliders', { form: formElement }, formElement, [formElement]);
+                    }, 50);
                 }
-                setTimeout(() => {
-                    formData = getFormData();
-                    conditionAppInstance.setFormData(formData);
-                    hideShowElements(conditionAppInstance.getCalculatedStatuses());
-                }, 0);
-            });
+                return;
+            }
 
-            setTimeout(() => {
-                hideShowElements(conditionAppInstance.getCalculatedStatuses());
-            }, 0);
-        };
+            hideConditionalElement(conditionalContainer);
+        });
 
-        const debounce = (func, delay = 300) => {
-            let timeoutId;
-            return (...args) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => func.apply(this, args), delay);
-            };
-        };
-
-        const debouncedHideShowElements = debounce((statuses) => {
-            hideShowElements(statuses);
-        }, form.debounce_time || 300);
-
-        const hideShowElements = function (items) {
-            let timeoutId;
-            $.each(items, (itemName, status) => {
-                const el = getElement(itemName);
-                let $parent = el.closest('.has-conditions');
-                if (status) {
-                    if ($parent.css('height') == '0px') {
-                        $parent.attr("style", "");
-                    }
-                    $parent.removeClass('ff_excluded')
-                        .addClass('ff_cond_v')
-                        .slideDown(200, function() {
-                            // Check if this container has range sliders that need reinitialization
-                            if ($parent.find('input[type="range"]').length > 0) {
-                                if (timeoutId) {
-                                    clearTimeout(timeoutId);
-                                }
-                                timeoutId = setTimeout(function() {
-                                    $theForm.trigger('reInitRangeSliders');
-                                }, 50);
-                            }
-                        });
-                } else {
-                    $parent.removeClass('ff_cond_v')
-                        .addClass('ff_excluded')
-                        .slideUp(200);
-                }
-            });
-            $theForm.trigger('do_calculation');
-            $theForm.trigger('ff_render_dynamic_smartcodes', $theForm);
-        };
-
-        const getFormData = function () {
-            const data = {};
-            $.each(watchableFields, (name, el) => {
-                let type = el.prop('type') || el.attr('data-type');
-                if (type == 'radio') {
-                    data[name] = '';
-                    el.each((index, item) => {
-                        if ($(item).is(':checked')) {
-                            data[name] = $(item).val();
-                        }
-                    });
-                } else if (type == 'checkbox') {
-                    name = name.replace('[]', '');
-                    data[name] = [];
-                    el.each((index, item) => {
-                        if ($(item).is(':checked')) {
-                            data[name].push($(item).val());
-                        }
-                    });
-                } else if (type == 'select-multiple') {
-                    name = name.replace('[]', '');
-                    let val = el.val();
-                    if (val) {
-                        data[name] = val;
-                    } else {
-                        data[name] = [];
-                    }
-                } else if(type == 'file') {
-                    let file_urls = '';
-                    let $el = $theForm.find('input[name='+name+']')
-                    $el
-                        .closest('.ff-el-input--content')
-                        .find('.ff-uploaded-list')
-                        .find('.ff-upload-preview[data-src]')
-                        .each(function (i, div) {
-                            file_urls += $(this).data('src');
-                        });
-                    data[name] = file_urls;
-                } else {
-                    data[name] = el.val();
-                }
-            });
-
-
-            return data;
-        };
-
-        /**
-         * Resolve a dom element as jQuery object
-         *
-         * @param  string name
-         * @return jQuery instance
-         */
-        const getElement = function (name) {
-            let $theform = getTheForm();
-            var el = $("[data-name='" + name + "']", $theform);
-            el = el.length ? el : $("[name='" + name + "']", $theform);
-            el = el.length ? el : $("[data-condition_field_name='" + name + "']", $theform);
-            return el.length ? el : $("[name='" + name + "[]']", $theform);
-        };
-
-        return {init};
+        fluentFormEventBridge.emitEvent('do_calculation', { form: formElement }, formElement);
+        fluentFormEventBridge.emitEvent(
+            'ff_render_dynamic_smartcodes',
+            { form: formElement, selector: formElement },
+            formElement,
+            [formElement]
+        );
     };
-    formCondition().init();
+
+    const debouncedHideShowElements = createDebounce((statuses) => {
+        hideShowElements(statuses);
+    }, form.debounce_time || 300);
+
+    const handleFieldChange = function () {
+        if (formElement.classList.contains('ff_force_hide') || formElement.classList.contains('ff_submitting')) {
+            return;
+        }
+
+        formData = getFormData();
+        conditionAppInstance.setFormData(formData);
+        setTimeout(() => {
+            debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
+        }, 0);
+    };
+
+    watchableFields.forEach((fieldElements) => {
+        fieldElements.forEach((fieldElement) => {
+            fieldElement.addEventListener('keyup', handleFieldChange);
+            fieldElement.addEventListener('change', handleFieldChange);
+        });
+    });
+
+    fluentFormEventBridge.onEvent(document.body, 'fluentform_reset', function (event, detail, args, source) {
+        const resetFormReference = source === 'jquery' ? args[0] : (detail && detail.form ? detail.form : args[0]);
+        const resetFormElement = getFormElement(resetFormReference);
+
+        if (!resetFormElement || resetFormElement !== formElement || formElement.classList.contains('ff_force_hide')) {
+            return;
+        }
+
+        setTimeout(() => {
+            formData = getFormData();
+            conditionAppInstance.setFormData(formData);
+            hideShowElements(conditionAppInstance.getCalculatedStatuses());
+        }, 0);
+    });
+
+    setTimeout(() => {
+        hideShowElements(conditionAppInstance.getCalculatedStatuses());
+    }, 0);
 };
 
 export default formConditional;

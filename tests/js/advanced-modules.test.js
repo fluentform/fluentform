@@ -38,6 +38,34 @@ function createDom(html) {
     });
 }
 
+function loadConditionClassModule(window) {
+    const source = fs.readFileSync(
+        path.resolve(__dirname, '../../resources/assets/public/Pro/_ConditionClass.js'),
+        'utf8'
+    ).replace('export default ConditionApp;', 'module.exports = ConditionApp;');
+
+    const module = { exports: {} };
+    const factory = new Function('window', 'document', 'module', 'exports', 'currency', source);
+    factory(window, window.document, module, module.exports, window.currency);
+
+    return module.exports;
+}
+
+function loadFormConditionalsModule(window, ConditionApp) {
+    const source = fs.readFileSync(
+        path.resolve(__dirname, '../../resources/assets/public/Pro/form-conditionals.js'),
+        'utf8'
+    )
+        .replace('import ConditionApp from "./_ConditionClass";', '')
+        .replace('export default formConditional;', 'module.exports = formConditional;');
+
+    const module = { exports: {} };
+    const factory = new Function('window', 'document', 'module', 'exports', 'ConditionApp', source);
+    factory(window, window.document, module, module.exports, ConditionApp);
+
+    return module.exports;
+}
+
 test('dom-rating keeps active state and rating text in sync without jQuery', async () => {
     const ratingModule = loadDefaultExport('resources/assets/public/Pro/dom-rating.js');
     const dom = createDom(`
@@ -130,4 +158,155 @@ test('dom-net-promoter toggles a single active label without jQuery', () => {
     assert.equal(labels[0].classList.contains('active'), false);
     assert.equal(labels[1].classList.contains('active'), true);
     assert.equal(labels[2].classList.contains('active'), false);
+});
+
+test('ConditionApp evaluates numeric conditional rules without jQuery lookups', () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <input
+                    class="ff_numeric"
+                    data-formatter='{"symbol":"$","separator":",","decimal":"."}'
+                    name="amount"
+                    value="$1,250.00"
+                >
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    window.currency = (value) => ({
+        value: Number(String(value).replace(/[^0-9.-]/g, '')) || 0
+    });
+
+    const ConditionApp = loadConditionClassModule(window);
+    const inputElement = window.document.querySelector('[name="amount"]');
+    const app = new ConditionApp(
+        {
+            total: {
+                status: true,
+                type: 'all',
+                conditions: [
+                    {
+                        field: 'amount',
+                        operator: '>=',
+                        value: '$1000'
+                    }
+                ]
+            }
+        },
+        {
+            amount: '$1,250.00'
+        },
+        () => inputElement
+    );
+
+    const statuses = app.getCalculatedStatuses();
+
+    assert.equal(statuses.total, true);
+});
+
+test('form-conditionals toggles visibility and emits bridge events without jQuery', async () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <form class="frm-fluent-form ff_form_instance_test">
+                    <label>
+                        <input type="checkbox" name="toggle[]" value="show">
+                        Show extra field
+                    </label>
+                    <div class="ff-el-group has-conditions ff_excluded" id="conditional-group">
+                        <input type="text" data-name="target" value="">
+                    </div>
+                </form>
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    const formElement = window.document.querySelector('form');
+    const emittedEvents = [];
+
+    if (!window.CSS) {
+        window.CSS = {};
+    }
+    if (!window.CSS.escape) {
+        window.CSS.escape = (value) => String(value).replace(/"/g, '\\"');
+    }
+
+    window.currency = (value) => ({
+        value: Number(String(value).replace(/[^0-9.-]/g, '')) || 0
+    });
+    window.fluentFormBridge = {
+        emitEvent(eventName, detail, targetElement, jqueryArguments) {
+            emittedEvents.push({
+                eventName,
+                detail,
+                jqueryArguments
+            });
+            (targetElement || window.document).dispatchEvent(new window.CustomEvent(eventName, {
+                detail,
+                bubbles: true
+            }));
+        },
+        onEvent(targetElement, eventNames, handler) {
+            const names = String(eventNames).split(/\s+/).filter(Boolean);
+            const removers = names.map((eventName) => {
+                const listener = (event) => handler(event, event.detail, [event.detail], 'native');
+                targetElement.addEventListener(eventName, listener);
+                return () => targetElement.removeEventListener(eventName, listener);
+            });
+
+            return () => removers.forEach((removeListener) => removeListener());
+        }
+    };
+
+    const ConditionApp = loadConditionClassModule(window);
+    const formConditionals = loadFormConditionalsModule(window, ConditionApp);
+
+    formConditionals(formElement, {
+        form_instance: 'ff_form_instance_test',
+        debounce_time: 1,
+        conditionals: {
+            target: {
+                status: true,
+                type: 'all',
+                conditions: [
+                    {
+                        field: 'toggle',
+                        operator: '=',
+                        value: 'show'
+                    }
+                ]
+            }
+        }
+    });
+
+    const conditionalGroup = window.document.querySelector('#conditional-group');
+    const toggleInput = window.document.querySelector('input[name="toggle[]"]');
+
+    await new Promise((resolve) => window.setTimeout(resolve, 10));
+    assert.equal(conditionalGroup.classList.contains('ff_excluded'), true);
+
+    toggleInput.checked = true;
+    toggleInput.dispatchEvent(new window.Event('change', { bubbles: true }));
+
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+    assert.equal(conditionalGroup.classList.contains('ff_excluded'), false);
+    assert.equal(conditionalGroup.classList.contains('ff_cond_v'), true);
+    assert.equal(conditionalGroup.style.display, 'block');
+    assert.equal(emittedEvents.some((eventItem) => eventItem.eventName === 'do_calculation'), true);
+    assert.equal(emittedEvents.some((eventItem) => eventItem.eventName === 'ff_render_dynamic_smartcodes'), true);
+
+    toggleInput.checked = false;
+    window.document.body.dispatchEvent(new window.CustomEvent('fluentform_reset', {
+        detail: {
+            form: formElement
+        },
+        bubbles: true
+    }));
+
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+    assert.equal(conditionalGroup.classList.contains('ff_excluded'), true);
+    assert.equal(conditionalGroup.style.display, 'none');
 });

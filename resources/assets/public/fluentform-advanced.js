@@ -149,7 +149,7 @@ import calculation from './Pro/calculations';
         fileUploader($, $theForm, form, window.fluentFormVars, formSelector);
         initRepeater($theForm);
         initRepeatButtons($, $theForm);
-        formConditional($, $theForm, form, window.fluentFormVars);
+        formConditional($theForm[0], form, window.fluentFormVars);
         // Pass translated calculation messages to calculation module
         const calculationMessages = getCalculationMessages(form.id);
         calculation($, $theForm, calculationMessages);
