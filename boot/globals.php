@@ -56,6 +56,20 @@ function fluentFormMix($path = '')
     return wpFluentForm('url.assets') . ltrim($path, '/');
 }
 
+if (!function_exists('fluentformIsViteAppEnabled')) {
+    function fluentformIsViteAppEnabled($app)
+    {
+        if (defined('FLUENTFORM_DISABLE_VITE') && FLUENTFORM_DISABLE_VITE) {
+            return false;
+        }
+
+        $flags = get_option('fluentform_vite_apps', []);
+        $enabled = !empty($flags[$app]);
+
+        return apply_filters('fluentform/vite_app_enabled', $enabled, $app, $flags);
+    }
+}
+
 if (! function_exists('wpFluent')) {
     /**
      * @return \FluentForm\Framework\Database\Query\Builder|\FluentForm\Framework\Database\Query\WPDBConnection

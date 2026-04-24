@@ -10,6 +10,7 @@ use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
 use FluentForm\App\Modules\Payments\PaymentHelper;
+use FluentForm\App\Vite;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Foundation\Application;
@@ -365,7 +366,11 @@ class Menu
             wp_enqueue_style('fluentform_settings_global');
         } elseif ('fluent_forms_add_ons' == $page) {
             wp_enqueue_style('fluentform-add-ons');
-        } elseif ('fluent_forms_docs' == $page || 'fluent_forms_smtp' == $page) {
+        } elseif ('fluent_forms_docs' == $page) {
+            if (!fluentformIsViteAppEnabled('documentation')) {
+                wp_enqueue_style('fluentform_doc_style');
+            }
+        } elseif ('fluent_forms_smtp' == $page) {
             wp_enqueue_style('fluentform_doc_style');
         }
     }

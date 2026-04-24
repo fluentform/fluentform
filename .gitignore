@@ -4,6 +4,7 @@
 /storage/logs/error.log
 /vendor
 /.phpintel
+/vite/node_modules
 fluentform
 fluentform.zip
 svn
@@ -18,6 +19,8 @@ public_build
 !/assets/js
 /assets/js/*
 !/assets/js/fluent_gutenblock.js
+/config/vite_config.php
+!vite/package-lock.json
 vendor/composer/autoload_static.php
 vendor/composer/autoload_real.php
 vendor/composer/autoload_classmap.php

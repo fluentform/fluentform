@@ -30,9 +30,27 @@ copy_and_compress() {
     source_path="$source_dir/$item"
 
     if [ -e "$source_path" ]; then
-      if [ "$item" != "vendor" ]; then
+      if [ "$item" = "resources" ]; then
+        mkdir -p "$destination_dir/resources"
+
+        if [ -f "$source_path/index.php" ]; then
+          rsync -av "$source_path/index.php" "$destination_dir/resources/"
+        fi
+
+        if [ -d "$source_path/languages" ]; then
+          rsync -av "$source_path/languages" "$destination_dir/resources/"
+        fi
+
+        echo "Copied: resources (index.php, languages)"
+      elif [ "$item" = "config" ]; then
+        rsync -av \
+          --exclude="vite.json" \
+          "$source_path" "$destination_dir/"
+        echo "Copied: config"
+      elif [ "$item" != "vendor" ]; then
         rsync -av \
           --exclude="resources/assets" \
+          --exclude="resources/admin" \
           --exclude="resources/img" \
           --exclude="*.map" \
           --exclude="mix-manifest.json" \
@@ -70,6 +88,36 @@ copy_and_compress() {
   echo -e "\nCompressing Completed. builds/$(basename "$destination_dir").zip is ready.\n"
 }
 
+generate_stage1_rtl_css() {
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "Warning: npx is not available, skipping Stage 1 RTL CSS generation."
+    return 0
+  fi
+
+  if [ ! -d "assets/admin" ]; then
+    return 0
+  fi
+
+  echo -e "\nGenerating Stage 1 RTL CSS...\n"
+
+  find assets/admin \( -path "assets/admin/css/*.css" -o -path "assets/admin/assets/*.css" \) ! -name "*.rtl.css" | while read -r file
+  do
+      [ -f "$file" ] || continue
+
+      local dir
+      dir=$(dirname "$file")
+      local filename
+      filename=$(basename "$file")
+      local newfile
+      newfile="${filename%.*}.rtl.css"
+
+      npx rtlcss "$file" > "$dir/$newfile"
+      echo "Generated $dir/$newfile"
+  done
+
+  echo -e "\nStage 1 RTL CSS generation completed.\n"
+}
+
 # Extract version from main plugin file
 PLUGIN_VERSION=$(grep -m1 "Version:" fluentform.php | sed 's/.*Version:\s*//' | tr -d '[:space:]')
 if [ -z "$PLUGIN_VERSION" ]; then
@@ -101,6 +149,8 @@ if "$nodeBuild"; then
   fi
 
   echo -e "\nNode build completed.\n"
+else
+  generate_stage1_rtl_css
 fi
 
 # Build production ZIP with selective vendor copy

@@ -2,11 +2,18 @@
 
 namespace FluentForm\App\Modules;
 
+use FluentForm\App\Vite;
+
 class DocumentationModule
 {
     public function render()
     {
-        wp_enqueue_script('fluentform-docs');
+        if (fluentformIsViteAppEnabled('documentation')) {
+            Vite::enqueueScript('fluentform_documentation', 'admin/boot/documentation.js');
+        } else {
+            wp_enqueue_script('fluentform-docs');
+        }
+
         wpFluentForm('view')->render('admin.docs.index', [
             'public_url' => fluentformMix(),
             'icon_path_url' => fluentformMix(''),

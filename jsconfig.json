@@ -2,9 +2,17 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./resources/assets/*"]
+      "@/*": ["./resources/assets/*"],
+      "@admin/*": ["./resources/admin/*"],
+      "@bootstrap/*": ["./resources/admin/bootstrap/*"],
+      "@services/*": ["./resources/admin/services/*"],
+      "@compat/*": ["./resources/admin/compat/*"],
+      "@modules/*": ["./resources/admin/modules/*"],
+      "@shared/*": ["./resources/admin/shared/*"],
+      "@utils/*": ["./resources/admin/shared/utils/*"],
+      "@boot/*": ["./resources/admin/boot/*"]
     }
   },
-  "include": ["resources/assets/**/*", "guten_block/src/edit.js", "guten_block/src/save.js"],
+  "include": ["resources/assets/**/*", "resources/admin/**/*", "guten_block/src/edit.js", "guten_block/src/save.js"],
   "exclude": ["node_modules", "resources/assets/libs/**/*"]
 }

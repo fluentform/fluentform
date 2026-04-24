@@ -1,11 +1,19 @@
 {
     "scripts": {
         "dev": "mix",
-        "watch": "mix watch",
+        "postinstall": "npm --prefix vite install",
+        "watch": "npm run watch:mix & npm run watch:vite & wait",
+        "watch:mix": "mix watch",
+        "watch:vite": "npm --prefix vite run watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "hots": "mix watch --hots",
-        "production": "mix --production"
+        "production": "npm run production:mix && npm run production:vite && npm run production:rtl",
+        "production:mix": "mix --production",
+        "production:vite": "npm --prefix vite run build",
+        "production:rtl": "find assets/admin \\( -path 'assets/admin/css/*.css' -o -path 'assets/admin/assets/*.css' \\) ! -name '*.rtl.css' -print0 | while IFS= read -r -d '' file; do npx rtlcss \"$file\" > \"${file%.css}.rtl.css\"; done",
+        "vite:build": "npm --prefix vite run build",
+        "vite:watch": "npm --prefix vite run watch"
     },
     "dependencies": {
         "chroma-js": "^2.4.2",
