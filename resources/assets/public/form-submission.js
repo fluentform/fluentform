@@ -773,9 +773,9 @@ jQuery(document).ready(function () {
                     window.fluentFormBridge.emitEvent('update_slider', sliderPayload, $theForm[0], [sliderPayload]);
                 };
 
-	                var fireGlobalBeforeSendCallbacks = function ($theForm, formData) {
-	                    const processItemsDeferred = [];
-	                    const processFunctions = globalValidators;
+                var fireGlobalBeforeSendCallbacks = function ($theForm, formData) {
+                    const processItemsDeferred = [];
+                    const processFunctions = globalValidators;
 
                     if ($theForm.hasClass('ff_has_v3_recptcha')) {
                         processFunctions.ff_v3_recptcha = function ($theForm, formData) {
@@ -795,62 +795,62 @@ jQuery(document).ready(function () {
                         processItemsDeferred.push(item($theForm, formData));
                     });
 
-	                    return jQuery.when.apply(jQuery, processItemsDeferred);
-	                }
+                    return jQuery.when.apply(jQuery, processItemsDeferred);
+                }
 
-	                var emitLegacySubmissionFailure = function ($theForm, response) {
-	                    const failedPayload = {
-	                        form: $theForm,
-	                        response: response
-	                    };
+                var emitLegacySubmissionFailure = function ($theForm, response) {
+                    const failedPayload = {
+                        form: $theForm,
+                        response: response
+                    };
 
-	                    window.fluentFormBridge.emitEvent('fluentform_submission_failed', {
-	                        form: $theForm[0],
-	                        response: response,
-	                        config: form
-	                    }, $theForm[0], [failedPayload]);
-	                };
+                    window.fluentFormBridge.emitEvent('fluentform_submission_failed', {
+                        form: $theForm[0],
+                        response: response,
+                        config: form
+                    }, $theForm[0], [failedPayload]);
+                };
 
-	                var emitLegacySubmissionNextAction = function ($theForm, response) {
-	                    $theForm.trigger('fluentform_next_action_' + response.data.nextAction, {
-	                        form: $theForm,
-	                        response: response
-	                    });
-	                };
+                var emitLegacySubmissionNextAction = function ($theForm, response) {
+                    $theForm.trigger('fluentform_next_action_' + response.data.nextAction, {
+                        form: $theForm,
+                        response: response
+                    });
+                };
 
-	                var emitLegacySubmissionSuccess = function ($theForm, response) {
-	                    $theForm.triggerHandler('fluentform_submission_success', {
-	                        form: $theForm,
-	                        config: form,
-	                        response: response
-	                    });
+                var emitLegacySubmissionSuccess = function ($theForm, response) {
+                    $theForm.triggerHandler('fluentform_submission_success', {
+                        form: $theForm,
+                        config: form,
+                        response: response
+                    });
 
-	                    window.fluentFormBridge.emitEvent('fluentform_submission_success', {
-	                        form: $theForm[0],
-	                        config: form,
-	                        response: response
-	                    }, document.body, [{
-	                        form: $theForm,
-	                        config: form,
-	                        response: response
-	                    }]);
-	                };
+                    window.fluentFormBridge.emitEvent('fluentform_submission_success', {
+                        form: $theForm[0],
+                        config: form,
+                        response: response
+                    }, document.body, [{
+                        form: $theForm,
+                        config: form,
+                        response: response
+                    }]);
+                };
 
-	                var resetLegacyFormAfterSuccessfulSubmission = function ($theForm, response) {
-	                    if (response.data.result.action == 'hide_form') {
-	                        $theForm.hide().addClass('ff_force_hide');
-	                        $theForm[0].reset();
-	                        return;
-	                    }
+                var resetLegacyFormAfterSuccessfulSubmission = function ($theForm, response) {
+                    if (response.data.result.action == 'hide_form') {
+                        $theForm.hide().addClass('ff_force_hide');
+                        $theForm[0].reset();
+                        return;
+                    }
 
-	                    window.fluentFormBridge.emitEvent('fluentform_reset', {
-	                        form: $theForm[0],
-	                        config: form
-	                    }, document.body, [$theForm, form]);
-	                    $theForm[0].reset();
-	                };
+                    window.fluentFormBridge.emitEvent('fluentform_reset', {
+                        form: $theForm[0],
+                        config: form
+                    }, document.body, [$theForm, form]);
+                    $theForm[0].reset();
+                };
 
-	                var submissionAjaxHandler = function ($theForm) {
+                var submissionAjaxHandler = function ($theForm) {
                     try {
                         var $inputs = $theForm
                             .find(':input').filter(function (i, el) {
@@ -1014,24 +1014,24 @@ jQuery(document).ready(function () {
                     isSending = true;
 
                     $.post(ajaxRequestUrl, formData)
-	                        .then(function (res) {
-	                            if (!res || !res.data || !res.data.result) {
-	                                // This is an error
-	                                emitLegacySubmissionFailure($theForm, res);
-	                                showErrorMessages(res);
-	                                return;
-	                            }
+                        .then(function (res) {
+                            if (!res || !res.data || !res.data.result) {
+                                // This is an error
+                                emitLegacySubmissionFailure($theForm, res);
+                                showErrorMessages(res);
+                                return;
+                            }
                             responseData = res;
                             if (res.data.append_data) {
                                 addHiddenData(res.data.append_data);
                             }
 
-	                            if (res.data.nextAction) {
-	                                emitLegacySubmissionNextAction($theForm, res);
-	                                return;
-	                            }
+                            if (res.data.nextAction) {
+                                emitLegacySubmissionNextAction($theForm, res);
+                                return;
+                            }
 
-	                            emitLegacySubmissionSuccess($theForm, res);
+                            emitLegacySubmissionSuccess($theForm, res);
 
                             if ('redirectUrl' in res.data.result) {
                                 if (res.data.result.message) {
@@ -1074,7 +1074,7 @@ jQuery(document).ready(function () {
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
-	                                resetLegacyFormAfterSuccessfulSubmission($theForm, res);
+                                resetLegacyFormAfterSuccessfulSubmission($theForm, res);
 
                                 // Scroll to success msg if not in viewport
                                 const successMsg = $(successMsgSelector);
@@ -1087,7 +1087,7 @@ jQuery(document).ready(function () {
                         })
                         .fail(function (res) {
 
-	                            emitLegacySubmissionFailure($theForm, res);
+                            emitLegacySubmissionFailure($theForm, res);
 
 
                             if (!res || !res.responseJSON || !(res.responseJSON.data || res.responseJSON.errors)) {
