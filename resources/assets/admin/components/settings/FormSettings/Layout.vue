@@ -526,6 +526,29 @@
                                v-model="misc.noConflictStatus"></el-switch>
                 </el-form-item>
 
+                <el-form-item class="ff-form-item">
+                    <template slot="label">
+                        {{ $t('jQuery Loading Mode') }}
+                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                            <div slot="content">
+                                <p>
+                                    {{ $t('Control whether Fluent Forms should load jQuery for public forms. Auto loads jQuery only when a dependent Fluent Forms script still requires it.') }}
+                                </p>
+                            </div>
+                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                        </el-tooltip>
+                    </template>
+
+                    <el-select class="w-100 ff-input-s1" v-model="misc.jquery_loading_mode">
+                        <el-option :label="$t('Auto (Recommended)')" value="auto"></el-option>
+                        <el-option :label="$t('Always Load jQuery')" value="enabled"></el-option>
+                        <el-option :label="$t('Do Not Load jQuery')" value="disabled"></el-option>
+                    </el-select>
+                    <p class="text-note mt-1">
+                        {{ $t('Recommended Settings: Auto. Use Disabled only when you are sure your forms and enabled integrations no longer depend on jQuery.') }}
+                    </p>
+                </el-form-item>
+
                 <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
                     <template slot="label">
                         <span>
@@ -894,8 +917,11 @@
                 this.$set(this.data.misc, "isAnalyticsDisabled", true);
             }
 
+            if (!this.data.misc.jquery_loading_mode) {
+                this.$set(this.data.misc, 'jquery_loading_mode', 'auto');
+            }
+
             this.misc = this.data.misc;
         }
     }
 </script>
-

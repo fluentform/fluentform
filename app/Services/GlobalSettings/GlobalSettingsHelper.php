@@ -281,7 +281,15 @@ class GlobalSettingsHelper
             $sanitizedSettings['misc']['email_footer_text'] = wp_unslash($settings['misc']['email_footer_text']);
         }
 
+        $jqueryLoadingMode = Arr::get($sanitizedSettings, 'misc.jquery_loading_mode', 'auto');
+        if (!in_array($jqueryLoadingMode, ['auto', 'enabled', 'disabled'], true)) {
+            $jqueryLoadingMode = 'auto';
+        }
+
+        $sanitizedSettings['misc']['jquery_loading_mode'] = $jqueryLoadingMode;
+
         update_option('_fluentform_global_form_settings', $sanitizedSettings, 'no');
+        update_option('ff_jquery_loading_mode', $jqueryLoadingMode, 'no');
 
         return ([
             'message' => __('Global settings has been saved', 'fluentform')
