@@ -125,7 +125,7 @@ class Component
         wp_register_script(
             'flatpickr',
             fluentFormMix('libs/flatpickr/flatpickr.min.js'),
-            ['jquery'],
+            [],
             '4.6.9',
             true
         );
@@ -1273,7 +1273,8 @@ class Component
                 <?php if (defined('ELEMENTOR_PRO_VERSION')): ?>
 
                 window.addEventListener('elementor/popup/show', function (e) {
-                    var ffForms = jQuery('#elementor-popup-modal-' + e.detail.id).find('form.frm-fluent-form');
+                    var popupContainer = document.getElementById('elementor-popup-modal-' + e.detail.id);
+                    var ffForms = popupContainer ? popupContainer.querySelectorAll('form.frm-fluent-form') : [];
 
                     /**
                      * Support conversation form in elementor popup
@@ -1289,9 +1290,35 @@ class Component
                         }
                     }
                     if (ffForms.length) {
-                        jQuery.each(ffForms, function(index, ffForm) {
-                            jQuery(ffForm).trigger('reInitExtras');
-                            jQuery(document).trigger('ff_reinit', [ffForm]);
+                        Array.prototype.forEach.call(ffForms, function (ffForm) {
+                            ffForm.dispatchEvent(new CustomEvent('reInitExtras', {
+                                bubbles: true,
+                                detail: {
+                                    form: ffForm
+                                }
+                            }));
+
+                            if (typeof window.jQuery === 'function') {
+                                window.jQuery(ffForm).trigger('reInitExtras');
+                                window.jQuery(document).trigger('ff_reinit', [ffForm]);
+                                return;
+                            }
+
+                            if (window.fluentFormBridge && typeof window.fluentFormBridge.emitEvent === 'function') {
+                                window.fluentFormBridge.emitEvent('ff_reinit', {
+                                    formItem: ffForm,
+                                    form: ffForm
+                                }, document, [ffForm]);
+                                return;
+                            }
+
+                            document.dispatchEvent(new CustomEvent('ff_reinit', {
+                                detail: {
+                                    formItem: ffForm,
+                                    form: ffForm
+                                },
+                                bubbles: true
+                            }));
                         });
                     }
                 });

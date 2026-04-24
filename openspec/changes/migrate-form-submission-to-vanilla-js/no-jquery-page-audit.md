@@ -11,6 +11,24 @@ Identify which remaining handles still pull `jquery` onto public Fluent Forms pa
 
 ## Fixture pages checked
 
+### `?ff_landing=86&ffjqmode=disabled`
+Observed scripts:
+- `fluent-form-submission`
+- `flatpickr`
+- `akismet-frontend`
+
+Result:
+- No `jquery-core` or `jquery-migrate` on the page.
+- Date fields now initialize without jQuery from the Fluent Forms side.
+- Runtime verification on this landing page confirmed:
+  - `window.jQuery` is absent
+  - `window.flatpickr` is present
+  - the rendered date input receives a live `_flatpickr` instance
+
+Field inventory snapshot:
+- `input_date`
+- standard supporting text fields
+
 ### `?ff_landing=344&ffjqmode=disabled`
 Observed scripts:
 - `fluent-form-submission`
@@ -88,7 +106,6 @@ Field inventory snapshot from raw form JSON:
 ### Free plugin
 | Handle | Why it still pulls jQuery | Source |
 | --- | --- | --- |
-| `flatpickr` | The form contains `input_date`, and core currently registers `flatpickr` with `['jquery']` even though the library itself is non-jQuery. This is a stale dependency and a good cleanup candidate. | `app/Modules/Component/Component.php:125`, `app/Services/FormBuilder/Components/DateTime.php:35` |
 | `jquery-mask` | The form contains masked text inputs, and mask support is still provided by the bundled jQuery mask plugin. Keep as vendor-backed for now unless the masking layer is replaced. | `app/Services/FormBuilder/Components/Text.php:52` |
 
 ### Pro plugin
@@ -107,6 +124,7 @@ Field inventory snapshot from raw form JSON:
 ### Pages that no longer need jQuery from Fluent Forms
 These are already clean on landing pages tested here:
 - ordinary forms using migrated `form-submission.js`
+- date fields using `flatpickr`
 - advanced forms using migrated ratings / NPS / conditional logic / calculations
 - step forms after the `slider.js` migration
 - save-progress when the form does not also include other legacy Pro features
@@ -120,10 +138,9 @@ These still bring jQuery because the page is using legacy or vendor-backed featu
 - mask-enabled text inputs
 
 ## Best next cleanup targets
-1. Remove the stale jQuery dependency from `flatpickr` registration in core.
-2. Audit Stripe-related dependency declarations to see whether `stripe_elements` truly needs jQuery or only the handler does.
-3. Treat uploader, rangeslider, and mask support as vendor/plugin replacement projects rather than quick inline rewrites.
-4. Keep using landing pages for no-jQuery verification because they expose Fluent Forms-owned dependencies more clearly than theme pages.
+1. Audit Stripe-related dependency declarations to see whether `stripe_elements` truly needs jQuery or only the handler does.
+2. Treat uploader, rangeslider, and mask support as vendor/plugin replacement projects rather than quick inline rewrites.
+3. Keep using landing pages for no-jQuery verification because they expose Fluent Forms-owned dependencies more clearly than theme pages.
 
 ## Bottom line
 - `344` and `240` prove that the migrated public runtime can now serve normal and step landing pages without jQuery.
