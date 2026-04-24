@@ -1,15 +1,23 @@
 <template>
-    <el-form-item v-if="editItem.settings.progress_indicator != ''">
-        <b><elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel></b>
-        <hr class="mb-3" />
+    <div v-if="editItem.settings.progress_indicator != ''">
+        <el-form-item>
+            <b><elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel></b>
+            <hr class="mb-3" />
 
-        <div v-for="(number, index) in formStepsCount" class="el-form-item" :key="index">
-            <label class="el-form-item__label">{{ $t('Step %d', number) }}</label>
-            <div class="el-form-item__content">
-                <el-input size="small" v-model="editItem.settings.step_titles[index]" @input="sanitizeStep(index)" @paste="sanitizeStep(index)"></el-input>
+            <div v-for="(number, index) in formStepsCount" class="el-form-item" :key="index">
+                <label class="el-form-item__label">{{ $t('Step %d', number) }}</label>
+                <div class="el-form-item__content">
+                    <el-input
+                        size="small"
+                        v-model="editItem.settings.step_titles[index]"
+                        :placeholder="defaultStepTitle(index)"
+                        @input="sanitizeStep(index)"
+                        @paste="sanitizeStep(index)"
+                    ></el-input>
+                </div>
             </div>
-        </div>
-    </el-form-item>
+        </el-form-item>
+    </div>
 </template>
 
 <script>
@@ -24,15 +32,48 @@ export default {
     computed: {
         formStepsCount() {
             let count = 1;
-            _ff.map(this.form_items, (field) => {
+            _ff.map(this.form_items, field => {
                 if (field.editor_options.template == "formStep") {
                     count++;
                 }
             });
             return count;
+        }
+    },
+    watch: {
+        formStepsCount() {
+            this.ensureStepSettings();
         },
+        'editItem.settings.progress_indicator'() {
+            this.ensureStepSettings();
+        }
+    },
+    mounted() {
+        this.ensureStepSettings();
     },
     methods: {
+        ensureStepSettings() {
+            if (!this.editItem.settings.progress_layout) {
+                this.$set(this.editItem.settings, 'progress_layout', 'top');
+            }
+
+            if (!this.editItem.settings.tabs_show_progress_bar) {
+                this.$set(this.editItem.settings, 'tabs_show_progress_bar', 'no');
+            }
+
+            if (!Array.isArray(this.editItem.settings.step_titles)) {
+                this.$set(this.editItem.settings, 'step_titles', []);
+            }
+
+            for (let index = 0; index < this.formStepsCount; index++) {
+                if (typeof this.editItem.settings.step_titles[index] === 'undefined') {
+                    this.$set(this.editItem.settings.step_titles, index, '');
+                }
+            }
+        },
+        defaultStepTitle(index) {
+            return this.$t('Step %d', index + 1);
+        },
         sanitizeInput(input) {
             // Decode HTML entities to their actual characters
             input = input.replace(/&gt;/gi, '>').replace(/&lt;/gi, '<').replace(/&amp;/gi, '&').replace(/&quot;/gi, '"').replace(/&apos;/gi, "'");

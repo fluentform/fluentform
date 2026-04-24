@@ -293,9 +293,43 @@ $fluentformElementCustomizationSettings = [
                 'label' => __('Steps', 'fluentform'),
             ],
             [
+                'value' => 'tabs',
+                'label' => __('Tabs', 'fluentform'),
+            ],
+            [
                 'value' => '',
                 'label' => __('None', 'fluentform'),
             ],
+        ],
+    ],
+    'progress_layout' => [
+        'template'  => 'radioButton',
+        'label'     => __('Tab Position', 'fluentform'),
+        'help_text' => __('Choose how step tabs should be displayed on the frontend.', 'fluentform'),
+        'options'   => [
+            [
+                'value' => 'top',
+                'label' => __('Top', 'fluentform'),
+            ],
+            [
+                'value' => 'left',
+                'label' => __('Left', 'fluentform'),
+            ],
+        ],
+        'dependency' => [
+            'depends_on' => 'settings/progress_indicator',
+            'value'      => 'tabs',
+            'operator'   => '==',
+        ],
+    ],
+    'tabs_show_progress_bar' => [
+        'template'   => 'inputYesNoCheckBox',
+        'label'      => __('Show Progress Bar Under Tabs', 'fluentform'),
+        'help_text'  => __('Enable a compact progress bar under the step tabs.', 'fluentform'),
+        'dependency' => [
+            'depends_on' => 'settings/progress_indicator',
+            'value'      => 'tabs',
+            'operator'   => '==',
         ],
     ],
     'step_animation' => [
