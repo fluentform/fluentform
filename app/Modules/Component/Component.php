@@ -148,7 +148,7 @@ class Component
         wp_register_script(
             'form-save-progress',
             fluentFormMix('js/form-save-progress.js'),
-            ['jquery'],
+            ['fluent-form-submission'],
             FLUENTFORM_VERSION,
             true
         );
