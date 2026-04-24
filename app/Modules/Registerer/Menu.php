@@ -973,6 +973,16 @@ class Menu
                     }
                 }
 
+                if (!empty($formFields['stepsWrapper']['stepStart'])) {
+                    $stepStart = $formFields['stepsWrapper']['stepStart'];
+
+                    $formFields['stepsWrapper']['stepStart'] = apply_filters(
+                        'fluentform/editor_init_element_' . $stepStart['element'],
+                        $stepStart,
+                        $form
+                    );
+                }
+
                 $formFields['fields'] = array_values($formFields['fields']);
                 $formFields = json_encode($formFields, true);
             }

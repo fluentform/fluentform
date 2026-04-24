@@ -440,6 +440,8 @@ return [
         'general' => [
             'class',
             'progress_indicator',
+            'progress_layout',
+            'tabs_show_progress_bar',
             'step_animation',
             'step_titles',
             'disable_auto_focus',
