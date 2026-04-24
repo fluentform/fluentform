@@ -133,3 +133,47 @@ Verification evidence source:
   `sendData`, `addGlobalValidator`, `addFieldValidationRule`, `removeFieldValidationRule`,
   `showFormSubmissionProgress`, `hideFormSubmissionProgress`.
 - grep cross-checks confirm consumer call sites in Free and Pro source trees.
+
+## Browser/E2E Runtime Check (Local `forms.test`, 2026-04-24)
+
+Tooling used:
+- Playwright 1.58.2 runner at `/tmp/ff-e2e/run-ff-e2e.mjs`
+- Runtime reports:
+  - `/tmp/ff-e2e/report-enabled.json`
+  - `/tmp/ff-e2e/report-disabled.json`
+
+Test method:
+- Temporary public pages were created with Fluent Form shortcodes.
+- jQuery mode was forced with a temporary MU plugin using:
+  - `fluentform/jquery_loading_mode => enabled`
+  - `fluentform/jquery_loading_mode => disabled`
+- For each mode, browser checks recorded:
+  - global API presence (`window.fluentFormApp`, `window.ff_helper`)
+  - native/jQuery event receipt
+  - loaded JS URLs
+  - submission POST payload presence
+  - console/page JS errors
+
+Key observed results:
+- `window.fluentFormApp` and `window.ff_helper` were present in tested pages (`PASS`).
+- Native lifecycle events were observed (`fluentform_init`, `fluentform_init_single`).
+- Submission failure path event observed in runtime (`fluentform_submission_failed`) on real submit attempts.
+- In Disabled mode, dependency toggle for `fluent-form-submission` was verified from page footer diagnostics:
+  - enabled => deps `["jquery"]`
+  - disabled => deps `[]`
+- Disabled mode still had pages where `window.jQuery` was present due other enqueued scripts/theme context.
+  This is environment-level jQuery presence, not a failure of dependency toggle by itself.
+
+Runtime PASS/RISK updates from executed checks:
+
+| Handle | Runtime status | Evidence |
+|---|---|---|
+| `fluent-form-submission` | PASS (partial runtime) | Init + failed submission events observed; ajax payload posted in real browser run; global API present |
+| `fluentform-advanced` | RISK | Step/file fixture page produced runtime error (`TypeError ... reading 'attr'`) in this environment; step transition parity not proven |
+| `fluentform-payment-handler` | RISK | Payment/captcha fixture produced runtime error (`TypeError ... reading 'settings'`) in one mode; next-action parity not proven |
+
+Unresolved runtime gaps (still blocking full assurance):
+- Multi-step next/prev + `update_slider` parity could not be proven with stable fixture data.
+- Captcha reset lifecycle after server failure could not be deterministically asserted.
+- File-upload payload parity and payment next-action parity remain incomplete.
+- Pro script matrix remains static-verified, pending full browser proof on dedicated Pro-ready fixtures.
