@@ -7,12 +7,6 @@
                 emitEvent: function (eventName, detail, targetElement, jqueryEventArguments, options) {
                     const eventOptions = options || {};
                     const eventTarget = targetElement || document;
-                    const browserEvent = new CustomEvent(eventName, {
-                        detail: detail,
-                        bubbles: typeof eventOptions.bubbles === 'boolean' ? eventOptions.bubbles : true
-                    });
-                    eventTarget.dispatchEvent(browserEvent);
-
                     if (typeof window.jQuery === 'function') {
                         const $jqueryEventTarget = window.jQuery(eventTarget);
                         if (typeof jqueryEventArguments !== 'undefined') {
@@ -22,7 +16,14 @@
                         } else {
                             $jqueryEventTarget.trigger(eventName);
                         }
+                        return;
                     }
+
+                    const browserEvent = new CustomEvent(eventName, {
+                        detail: detail,
+                        bubbles: typeof eventOptions.bubbles === 'boolean' ? eventOptions.bubbles : true
+                    });
+                    eventTarget.dispatchEvent(browserEvent);
                 }
             };
             return window.fluentFormBridge;

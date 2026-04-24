@@ -13,9 +13,9 @@ Status legend:
 | Handle | Enqueue source | Runtime file | Event dependency | Direct runtime API dependency | Status |
 |---|---|---|---|---|---|
 | `fluent-form-submission` | `Component::renderShortCode()` | `resources/assets/public/form-submission.js` | emits all lifecycle + step events | defines `window.fluentFormApp`, `window.ff_helper` | PASS (partial runtime) |
-| `fluentform-advanced` | `Component::maybeHasAdvandedFields()` | `resources/assets/public/fluentform-advanced.js` | listens `fluentform_init`, `update_slider` | uses form instance state | RISK |
+| `fluentform-advanced` | `Component::maybeHasAdvandedFields()` | `resources/assets/public/fluentform-advanced.js` | listens `fluentform_init`, `update_slider` | uses form instance state | PASS (partial runtime) |
 | `form-save-progress` | save-progress component/pro integration | `resources/assets/public/form-save-progress.js` | listens `fluentform_init`, `ff_to_next_page`, `ff_to_prev_page` | uses submit/reset flow | STATIC-ONLY |
-| `fluentform-payment-handler` | `PaymentHandler` on payment forms | `resources/assets/public/payment_handler.js` | listens `fluentform_init_single`, `ff_reinit`, submit events | uses `window.ff_helper`, `window.fluentFormApp(...).sendData`, `formInstance.*` | RISK |
+| `fluentform-payment-handler` | `PaymentHandler` on payment forms | `resources/assets/public/payment_handler.js` | listens `fluentform_init_single`, `ff_reinit`, submit events | uses `window.ff_helper`, `window.fluentFormApp(...).sendData`, `formInstance.*` | PASS (partial runtime) |
 | `flatpickr` | date-time field | `resources/assets/libs/flatpickr/flatpickr.min.js` | no FF lifecycle binding | input widget only | STATIC-ONLY |
 | `choices` | select/select-country/chained select | `resources/assets/libs/choices/choices.min.js` | no FF lifecycle binding | widget-only | STATIC-ONLY |
 | `jquery-mask` | masked text input | `resources/assets/libs/jquery.mask.min.js` | no FF lifecycle binding | jQuery plugin invocation in form runtime | RISK |
@@ -58,6 +58,10 @@ Status legend:
   - grep-confirmed event call sites in `resources/assets/public`, `../fluentformpro/src/assets/public`, and `../fluentformpro/src/assets/js`
   - PHP enqueue inventory and dependency graph in `Component.php` and Pro enqueue sources
   - local browser/E2E notes for the rows with executed runtime evidence
+- 2026-04-24: Bridge compatibility fix:
+  - when jQuery is present, the bridge now emits legacy jQuery events first-class and skips duplicate native DOM dispatch for those same event names
+  - this prevents legacy `.on(...)` handlers from receiving a native `CustomEvent` with missing positional jQuery arguments before the explicit jQuery trigger
+  - JS regression coverage for this behavior lives in `tests/js/form-submission.test.js`
 - 2026-04-24: Status interpretation used for this document:
   - `PASS (partial runtime)` only where real browser/runtime evidence exists
   - `STATIC-ONLY` where source/dependency/API linkage is confirmed but browser fixture proof is still missing
@@ -147,10 +151,13 @@ Verification evidence source:
 ## Browser/E2E Runtime Check (Local `forms.test`, 2026-04-24)
 
 Tooling used:
-- Playwright 1.58.2 runner at `/tmp/ff-e2e/run-ff-e2e.mjs`
+- Playwright 1.58.2 runners at:
+  - `/tmp/ff-e2e/run-ff-e2e.mjs` (initial pass)
+  - `/tmp/ff-e2e/run-ff-e2e-current.mjs` (current fixture pass)
 - Runtime reports:
   - `/tmp/ff-e2e/report-enabled.json`
   - `/tmp/ff-e2e/report-disabled.json`
+  - `/tmp/ff-e2e/report-current.json`
 
 Test method:
 - Temporary public pages were created with Fluent Form shortcodes.
@@ -166,24 +173,26 @@ Test method:
 
 Key observed results:
 - `window.fluentFormApp` and `window.ff_helper` were present in tested pages (`PASS`).
-- Native lifecycle events were observed (`fluentform_init`, `fluentform_init_single`).
-- Submission failure path event observed in runtime (`fluentform_submission_failed`) on real submit attempts.
-- In Disabled mode, dependency toggle for `fluent-form-submission` was verified from page footer diagnostics:
+- Simple form `383` submitted successfully in both `enabled` and `disabled` mode checks.
+- Step conversational form `186` loaded without JS crash in both modes after the bridge payload fix, and user input advanced the conversational flow to the next question.
+- Payment/captcha form `386` loaded without the earlier `instance.settings` crash in both modes after the bridge payload fix.
+- In Disabled mode, dependency toggle for `fluent-form-submission` was previously verified from page footer diagnostics:
   - enabled => deps `["jquery"]`
   - disabled => deps `[]`
-- Disabled mode still had pages where `window.jQuery` was present due other enqueued scripts/theme context.
-  This is environment-level jQuery presence, not a failure of dependency toggle by itself.
+- Disabled mode may still show `window.jQuery` on some pages due other theme/plugin scripts.
+  This is environment-level jQuery presence, not a failure of Fluent Forms dependency resolution by itself.
 
 Runtime PASS/RISK updates from executed checks:
 
 | Handle | Runtime status | Evidence |
 |---|---|---|
 | `fluent-form-submission` | PASS (partial runtime) | Init + failed submission events observed; ajax payload posted in real browser run; global API present |
-| `fluentform-advanced` | RISK | Step/file fixture page produced runtime error (`TypeError ... reading 'attr'`) in this environment; step transition parity not proven |
-| `fluentform-payment-handler` | RISK | Payment/captcha fixture produced runtime error (`TypeError ... reading 'settings'`) in one mode; next-action parity not proven |
+| `fluentform-advanced` | PASS (partial runtime) | Current step-form fixture `186` now loads without the prior `fluentform_init` `$theForm.attr(...)` crash in either mode; `update_slider` parity still not proven |
+| `fluentform-payment-handler` | PASS (partial runtime) | Current payment form `386` now loads without the prior `instance.settings` init crash in either mode; submit/next-action parity still not proven |
 
 Unresolved runtime gaps (still blocking full assurance):
-- Multi-step next/prev + `update_slider` parity could not be proven with stable fixture data.
+- Multi-step `ff_to_next_page` / `ff_to_prev_page` / `update_slider` parity is still not proven with a deterministic non-conversational step fixture.
 - Captcha reset lifecycle after server failure could not be deterministically asserted.
-- File-upload payload parity and payment next-action parity remain incomplete.
+- File-upload payload parity remains incomplete; current conversational file fixture did not expose a visible file input during the scripted pass.
+- Payment next-action parity remains incomplete.
 - Pro script matrix remains static-verified, pending full browser proof on dedicated Pro-ready fixtures.

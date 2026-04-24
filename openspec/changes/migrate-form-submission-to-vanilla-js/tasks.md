@@ -39,4 +39,8 @@
 ## Status Notes
 
 - JS verification now covers bridge dispatch, public globals, instance cache lifecycle, submit success, submit failure, next-action, loading fallback, and the `ff_reinit` recursion guard in `tests/js/form-submission.test.js`.
+- Browser verification now also confirms:
+  - simple form `383` submits successfully in both `enabled` and `disabled` mode checks
+  - the earlier `fluentform-advanced` init crash (`$theForm.attr(...)`) is resolved
+  - the earlier payment-handler init crash (`instance.settings`) is resolved
 - `2.3`, `3.2`, `3.3`, `5.1`, `5.2`, and `5.3` remain open because step-form parity, file-upload multipart parity, payment next-action/browser fixture coverage, and full Pro runtime verification still need deterministic browser/E2E coverage rather than unit-only checks.

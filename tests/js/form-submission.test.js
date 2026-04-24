@@ -135,7 +135,7 @@ test('boots the vanilla runtime and exposes public globals', () => {
     assert.equal(typeof window.ff_helper.formatCurrency, 'function');
 });
 
-test('bridge emits native and legacy jQuery events when jQuery is present', () => {
+test('bridge emits legacy jQuery events without dispatching duplicate native DOM events when jQuery is present', () => {
     const { window, jqueryCalls } = createRuntimeWindow({ withJquery: true });
     const nativeEvents = [];
 
@@ -151,9 +151,7 @@ test('bridge emits native and legacy jQuery events when jQuery is present', () =
         { bubbles: false }
     );
 
-    assert.equal(nativeEvents.length, 1);
-    assert.deepEqual(nativeEvents[0].detail, { ok: true });
-    assert.equal(nativeEvents[0].bubbles, false);
+    assert.equal(nativeEvents.length, 0);
     assert.equal(jqueryCalls.length, 1);
     assert.equal(jqueryCalls[0].eventName, 'fluentform_demo');
     assert.deepEqual(jqueryCalls[0].args, [{ legacy: true }]);
