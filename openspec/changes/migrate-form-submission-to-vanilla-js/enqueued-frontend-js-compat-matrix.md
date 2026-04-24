@@ -63,3 +63,49 @@ Status legend:
   - OpenSpec strict validation passed for change `migrate-form-submission-to-vanilla-js`.
   - `npm run dev` compiled successfully.
   - Build regenerates `assets/js/fluent_gutenblock.js`; this artifact is explicitly excluded from migration-scope commits.
+
+## Frontend Render Enqueue Inventory (Pro, verified from PHP enqueue paths)
+
+This list captures Pro JS handles that can be enqueued on public form render paths and therefore must remain compatible with the vanilla migration and jQuery-mode switching.
+
+| Handle | Enqueue source | Frontend render condition | jQuery dependency in enqueue |
+|---|---|---|---|
+| `fluentformpro-payment-handler` | `src/Payments/PaymentHandler.php` | Pro compatible payment path | Yes |
+| `fluentform-payment-handler` | `src/Payments/PaymentHandler.php` | Pro legacy payment path | Yes |
+| `ff_razorpay_handler` | `src/Payments/PaymentMethods/RazorPay/RazorPayProcessor.php` | RazorPay-enabled forms | Yes |
+| `ff_paystack_handler` | `src/Payments/PaymentMethods/Paystack/PaystackProcessor.php` | Paystack-enabled forms | Yes |
+| `ff_paddle_handler` | `src/Payments/PaymentMethods/Paddle/PaddleProcessor.php` | Paddle-enabled forms | Yes |
+| `ff_authorizenet_handler` | `src/Payments/PaymentMethods/AuthorizeNet/AuthorizeNetProcessor.php` | Authorize.Net-enabled forms | Yes |
+| `ff_paypal` | `src/Payments/PaymentMethods/PayPal/PayPalProcessor.php` | PayPal-enabled forms | Yes |
+| `fluentform-chat-field-script` | `src/classes/Chat/ChatFieldController.php`, `src/classes/Chat/ChatField.php` | Chat field present | Yes |
+| `ff_address_autocomplete` | `src/classes/AddressAutoComplete.php` | Address autocomplete field present | Yes |
+| `fluentform-chained-element-script` | `src/Components/ChainedSelect/ChainedSelect.php` | Chained select field present | Yes |
+| `fluentform-dynamic-autocomplete` | `src/Components/DynamicField/DynamicField.php` | Dynamic field present | Yes |
+| `ff_accordion` | `src/Components/Accordion.php` | Accordion UI field present | Yes |
+| `fluentformpro_post_update` | `src/Components/Post/PopulatePostForm.php` | Post update component present | Yes |
+| `fluentform_tiny_mce_editor` | `src/Components/Post/Components/PostContent.php` | Post content field/editor present | Yes |
+| `fluentformpro_user_update` | `src/Integrations/UserRegistration/UserUpdateFormHandler.php` | Frontend user update integration active | Yes |
+| `fluentform-uploader-jquery-ui-widget` | `src/Components/Uploader.php`, `src/Components/Post/Components/FeaturedImage.php` | Pro uploader/featured image field present | Yes |
+| `fluentform-uploader-iframe-transport` | `src/Components/Uploader.php`, `src/Components/Post/Components/FeaturedImage.php` | Pro uploader/featured image field present | Yes |
+| `fluentform-uploader` | `src/Components/Uploader.php`, `src/Components/Post/Components/FeaturedImage.php` | Pro uploader/featured image field present | Yes |
+| `intlTelInput` | `src/Components/PhoneField.php` | Phone field present | No (enqueue deps) |
+| `rangeslider` | `src/Components/RangeSliderField.php` | Range slider field present | Yes |
+
+External script handles also loaded in form render context:
+
+| Handle | Source | Notes |
+|---|---|---|
+| `razorpay` | RazorPay processor | Gateway SDK |
+| `paystack` | Paystack processor | Gateway SDK |
+| `paddle` | Paddle processor | Gateway SDK |
+| `authorize-net-accept-js` | Authorize.Net processor | Gateway SDK |
+| `lity` | Form modal + Authorize.Net modal | Modal dependency; jQuery-based |
+| `stripe_elements` | Stripe handler | Stripe SDK (registered with jQuery dep in Pro code) |
+| `square-web-sdk` | Square handler | Square SDK (registered with jQuery dep in Pro code) |
+
+## Compatibility Concerns Added To Task Scope
+
+- jQuery event parity for all lifecycle and step events consumed by Free and Pro listeners.
+- Direct runtime API call parity (`window.fluentFormApp`, `window.ff_helper`, `formInstance` methods).
+- Next-action and gateway callback parity (`fluentform_next_action_*` paths).
+- Disabled-mode safety for jQuery-bound scripts: no fatal JS errors in bridge/no-jQuery path.

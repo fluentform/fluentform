@@ -1,9 +1,9 @@
 ## 1. Discovery and Baseline Mapping
 
-- [ ] 1.1 Build a jQuery usage inventory from `resources/assets/public/form-submission.js` (network, event bus, DOM helpers, animation, deferred).
-- [ ] 1.2 Build Free consumer matrix for lifecycle events (`fluentform_init*`, `fluentform_submission_*`, `fluentform_reset`, `ff_reinit`, step events).
-- [ ] 1.3 Build Pro consumer matrix in `/Volumes/Projects/work/forms/wp-content/plugins/fluentformpro/src/assets/public` and `src/assets/js` for the same lifecycle events.
-- [ ] 1.4 Document current script dependency graph (`wp_register_script` / `wp_enqueue_script`) and identify jQuery hard dependencies.
+- [x] 1.1 Build a jQuery usage inventory from `resources/assets/public/form-submission.js` (network, event bus, DOM helpers, animation, deferred).
+- [x] 1.2 Build Free consumer matrix for lifecycle events (`fluentform_init*`, `fluentform_submission_*`, `fluentform_reset`, `ff_reinit`, step events).
+- [x] 1.3 Build Pro consumer matrix in `/Volumes/Projects/work/forms/wp-content/plugins/fluentformpro/src/assets/public` and `src/assets/js` for the same lifecycle events.
+- [x] 1.4 Document current script dependency graph (`wp_register_script` / `wp_enqueue_script`) and identify jQuery hard dependencies.
 
 ## 2. Vanilla Core Migration (No Behavior Change)
 
