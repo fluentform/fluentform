@@ -11,7 +11,7 @@
             <tbody>
             <tr v-for="(item, itemIndex) in settings[field.key]" :key="'item_'+itemIndex">
                 <td>
-                    <el-select class="w-100" v-model="item.label">
+                    <el-select class="w-100" v-model="item.label" filterable popper-class="ff_dropdown_wide">
                         <el-option
                             v-for="(optionLabel, optionValue) in field.options"
                             :key="optionValue"

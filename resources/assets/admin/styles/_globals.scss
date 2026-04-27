@@ -634,6 +634,20 @@ a.lead-text{
   z-index: 99999999999 !important;
 }
 
+.ff_dropdown_wide {
+  min-width: 200px;
+  max-width: 450px;
+
+  .el-select-dropdown__item {
+    white-space: normal;
+    word-break: break-word;
+    height: auto;
+    line-height: 1.4;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}
+
 ul.ff_entry_list {
   list-style: disc;
   margin-left: 20px;
