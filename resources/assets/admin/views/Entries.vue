@@ -14,7 +14,7 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <el-dropdown @command="selectFieldsToExport" trigger="click">
-                            <el-button>
+                            <el-button :disabled="exportingEntries">
                                 {{ $t('Export') }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
@@ -555,7 +555,12 @@
                         <el-button @click="closeInputSelection" type="info" class="el-button--soft">
                             {{ $t('Cancel') }}
                         </el-button>
-                        <el-button type="primary" icon="el-icon-download" @click="exportEntries()">
+                        <el-button
+                            type="primary"
+                            icon="el-icon-download"
+                            :loading="exportingEntries"
+                            @click="exportEntries()"
+                        >
                             {{ $t('Export') }}
                         </el-button>
                     </span>
@@ -1134,6 +1139,10 @@
                 this.input_selection_visibility  = false;
             },
             selectFieldsToExport(format = 'csv'){
+                if (this.exportingEntries) {
+                    return;
+                }
+
                 this.selectExportFormat = format;
 
                 if (format == 'json'){
@@ -1144,6 +1153,9 @@
                 }
             },
             exportEntries() {
+                if (this.exportingEntries) {
+                    return;
+                }
 
                 this.input_selection_visibility  = false;
 
@@ -1184,7 +1196,79 @@
 				if (this.advanced_filter_active) {
 					data.advanced_filter = this.advanced_filter;
 				}
-	            location.href = ajaxurl + '?' + jQuery.param(data);
+                this.submitExportRequest(data);
+            },
+            submitExportRequest(data) {
+                this.exportingEntries = true;
+
+                const iframeName = `ff-export-${Date.now()}`;
+                const $iframe = jQuery('<iframe>', {
+                    name: iframeName,
+                    style: 'display:none;'
+                });
+                const $form = jQuery('<form>', {
+                    method: 'POST',
+                    action: ajaxurl,
+                    target: iframeName,
+                    style: 'display:none;'
+                });
+                let hasLoadedInitialFrame = false;
+                let cleanupTimer = null;
+
+                const cleanup = () => {
+                    if (cleanupTimer) {
+                        window.clearTimeout(cleanupTimer);
+                        cleanupTimer = null;
+                    }
+
+                    this.exportingEntries = false;
+                    $form.remove();
+                    $iframe.remove();
+                };
+
+                $iframe.on('load', () => {
+                    if (!hasLoadedInitialFrame) {
+                        hasLoadedInitialFrame = true;
+                        return;
+                    }
+
+                    try {
+                        const iframeDocument = $iframe[0].contentDocument || $iframe[0].contentWindow.document;
+                        const responseText = jQuery(iframeDocument.body).text().trim();
+
+                        if (responseText) {
+                            this.$fail(this.$t('Export failed. Please try again.'));
+                        }
+                    } catch (e) {
+                        // Ignore iframe document access errors and fall back to cleanup.
+                    }
+
+                    cleanup();
+                });
+
+                jQuery.param(data)
+                    .split('&')
+                    .forEach(item => {
+                        const [rawName, rawValue = ''] = item.split('=');
+                        const name = decodeURIComponent(rawName.replace(/\+/g, ' '));
+                        const value = decodeURIComponent(rawValue.replace(/\+/g, ' '));
+
+                        $form.append(
+                            jQuery('<input>', {
+                                type: 'hidden',
+                                name,
+                                value
+                            })
+                        );
+                    });
+
+                jQuery('body').append($iframe, $form);
+                $form.trigger('submit');
+
+                cleanupTimer = window.setTimeout(() => {
+                    this.$fail(this.$t('Export timed out. Please try again.'));
+                    cleanup();
+                }, 30000);
             },
             dateFormat(date, format) {
                 if (!format) {
