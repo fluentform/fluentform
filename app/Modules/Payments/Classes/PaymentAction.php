@@ -52,6 +52,8 @@ class PaymentAction
 
     protected $couponField = [];
 
+    protected $resolvedPaymentOptionCounts = [];
+
     public function __construct($form, $insertData, $data)
     {
         $this->form = $form;
@@ -300,6 +302,7 @@ class PaymentAction
         }
 
         $data = $this->submissionData['response'];
+        $this->resolvedPaymentOptionCounts = [];
 
         foreach ($paymentInputs as $paymentInput) {
             $name = ArrayHelper::get($paymentInput, 'attributes.name');
@@ -433,6 +436,7 @@ class PaymentAction
     private function getItemFromVariables($item, $key)
     {
         $elementName = $item['element'];
+        $parentHolder = ArrayHelper::get($item, 'attributes.name');
         $pricingOptions = ArrayHelper::get($item, 'settings.pricing_options');
         $pricingOptions = apply_filters_deprecated(
             'fluentform_payment_field_' . $elementName . '_pricing_options',
@@ -447,21 +451,31 @@ class PaymentAction
         );
         $pricingOptions = apply_filters('fluentform/payment_field_' . $elementName . '_pricing_options', $pricingOptions, $item, $this->form);
 
+        $lookupValue = sanitize_text_field((string) $key);
+        $this->resolvedPaymentOptionCounts[$parentHolder][$lookupValue] = ($this->resolvedPaymentOptionCounts[$parentHolder][$lookupValue] ?? 0) + 1;
+        $targetOccurrence = $this->resolvedPaymentOptionCounts[$parentHolder][$lookupValue];
+
         $selectedOption = [];
+        $matchedOccurrence = 0;
         foreach ($pricingOptions as $priceOption) {
             $label = sanitize_text_field($priceOption['label']);
             $value = sanitize_text_field($priceOption['value']);
-            if ($label == $key || $value == $key) {
-                $selectedOption = $priceOption;
+            if ($label == $lookupValue || $value == $lookupValue) {
+                $matchedOccurrence++;
+
+                if ($matchedOccurrence === $targetOccurrence) {
+                    $selectedOption = $priceOption;
+                    break;
+                }
             }
         }
 
-        if (!$selectedOption || empty($selectedOption['value']) || !is_numeric($selectedOption['value'])) {
+        if (empty($selectedOption['value']) || !is_numeric($selectedOption['value'])) {
             return false;
         }
 
         return [
-            'parent_holder' => ArrayHelper::get($item, 'attributes.name'),
+            'parent_holder' => $parentHolder,
             'item_name'     => $selectedOption['label'],
             'item_price'    => $selectedOption['value']
         ];

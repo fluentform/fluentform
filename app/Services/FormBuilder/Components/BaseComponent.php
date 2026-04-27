@@ -98,6 +98,79 @@ class BaseComponent
         }
         return $defaultValues;
     }
+
+    protected function getStoredDefaultOptionIndexes($data, $optionCount)
+    {
+        $storedIndexes = ArrayHelper::get($data, 'settings.default_value_option_indexes');
+
+        if (!is_array($storedIndexes)) {
+            return null;
+        }
+
+        $storedIndexes = array_values(array_filter(array_map('intval', $storedIndexes), function ($index) use ($optionCount) {
+            return $index >= 0 && $index < $optionCount;
+        }));
+
+        return $storedIndexes ?: null;
+    }
+
+    protected function getStoredDefaultOptionIds($data, $options)
+    {
+        $storedOptionIds = ArrayHelper::get($data, 'settings.default_value_option_ids');
+
+        if (!is_array($storedOptionIds)) {
+            return null;
+        }
+
+        $validOptionIds = [];
+
+        foreach ($storedOptionIds as $storedOptionId) {
+            $storedOptionId = (string) $storedOptionId;
+
+            foreach ($options as $option) {
+                if ((string) ArrayHelper::get($option, '_ff_option_id') === $storedOptionId) {
+                    $validOptionIds[] = $storedOptionId;
+                    break;
+                }
+            }
+        }
+
+        return $validOptionIds ?: null;
+    }
+
+    protected function consumeStoredDefaultOptionIndex($storedIndexes, $optionIndex)
+    {
+        if (!is_array($storedIndexes)) {
+            return [false, $storedIndexes];
+        }
+
+        $matchedIndex = array_search((int) $optionIndex, $storedIndexes, true);
+
+        if ($matchedIndex === false) {
+            return [false, $storedIndexes];
+        }
+
+        unset($storedIndexes[$matchedIndex]);
+
+        return [true, array_values($storedIndexes)];
+    }
+
+    protected function consumeStoredDefaultOptionId($storedOptionIds, $optionId)
+    {
+        if (!is_array($storedOptionIds)) {
+            return [false, $storedOptionIds];
+        }
+
+        $matchedIndex = array_search((string) $optionId, $storedOptionIds, true);
+
+        if ($matchedIndex === false) {
+            return [false, $storedOptionIds];
+        }
+
+        unset($storedOptionIds[$matchedIndex]);
+
+        return [true, array_values($storedOptionIds)];
+    }
     
     /**
      * Determine if the given element has conditions bound

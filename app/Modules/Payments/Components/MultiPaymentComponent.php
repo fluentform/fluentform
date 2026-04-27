@@ -218,7 +218,9 @@ class MultiPaymentComponent extends BaseFieldManager
         }
 
         $defaultValues = (array)$this->extractValueFromAttributes($data);
-        if ($dynamicValues = $this->extractDynamicValues($data, $form)) {
+        $dynamicValues = $this->extractDynamicValues($data, $form);
+        $hasDynamicValues = !empty($dynamicValues);
+        if ($hasDynamicValues) {
             $defaultValues = $dynamicValues;
         }
 
@@ -241,6 +243,16 @@ class MultiPaymentComponent extends BaseFieldManager
         );
 
         $formattedOptions = apply_filters('fluentform/payment_field_' . $elementName . '_pricing_options', $formattedOptions, $data, $form);
+
+        foreach ($formattedOptions as $index => &$option) {
+            $option['_ff_original_index'] = $index;
+        }
+        unset($option);
+
+        $storedDefaultOptionIds = $hasDynamicValues ? null : $this->getStoredDefaultOptionIds($data, $formattedOptions);
+        $storedDefaultOptionIndexes = $hasDynamicValues ? null : $this->getStoredDefaultOptionIndexes($data, count($formattedOptions));
+        $hasStoredDefaultOptionIds = is_array($storedDefaultOptionIds);
+        $hasStoredDefaultOptionIndexes = is_array($storedDefaultOptionIndexes);
 
         $hasImageOption = ArrayHelper::get($data, 'settings.enable_image_input');
 
@@ -280,13 +292,35 @@ class MultiPaymentComponent extends BaseFieldManager
         }
         $groupId = $this->makeElementId($data, $form);
 
+        $remainingDefaultValues = array_count_values(array_map('strval', $defaultValues));
+
         foreach ($formattedOptions as $index => $option) {
             $quantityLabel = ArrayHelper::get($option,'quantiy_label');
             if ($type == 'select') {
-                if (!$defaultValues && $index == 0) {
+                list($checked, $storedDefaultOptionIds) = $this->consumeStoredDefaultOptionId(
+                    $storedDefaultOptionIds,
+                    ArrayHelper::get($option, '_ff_option_id')
+                );
+
+                if (!$checked && !$hasStoredDefaultOptionIds && $hasStoredDefaultOptionIndexes) {
+                    list($checked, $storedDefaultOptionIndexes) = $this->consumeStoredDefaultOptionIndex(
+                        $storedDefaultOptionIndexes,
+                        ArrayHelper::get($option, '_ff_original_index', $index)
+                    );
+                }
+
+                if (!$checked && !$defaultValues && $index == 0 && !$hasStoredDefaultOptionIds && !$hasStoredDefaultOptionIndexes) {
                     $checked = true;
-                } else {
-                    $checked = in_array($option['value'], $defaultValues);
+                } elseif (!$checked && !$hasStoredDefaultOptionIds && !$hasStoredDefaultOptionIndexes) {
+                    $optionValue = (string) $option['value'];
+                    $checked = !empty($remainingDefaultValues[$optionValue]);
+                }
+
+                if ($checked && !$hasStoredDefaultOptionIds && !$hasStoredDefaultOptionIndexes) {
+                    $optionValue = (string) $option['value'];
+                    if (!empty($remainingDefaultValues[$optionValue])) {
+                        $remainingDefaultValues[$optionValue]--;
+                    }
                 }
                 $optionAtts = $this->buildAttributes([
                     'value' => $option['label'],
@@ -303,11 +337,31 @@ class MultiPaymentComponent extends BaseFieldManager
             $displayType = isset($data['settings']['display_type']) ? ' ff-el-form-check-' . $data['settings']['display_type'] : '';
             $parentClass = "ff-el-form-check{$displayType}";
 
-            if (in_array($option['value'], $defaultValues)) {
-                $data['attributes']['checked'] = true;
+            list($isDefaultOption, $storedDefaultOptionIds) = $this->consumeStoredDefaultOptionId(
+                $storedDefaultOptionIds,
+                ArrayHelper::get($option, '_ff_option_id')
+            );
+
+            if (!$isDefaultOption && !$hasStoredDefaultOptionIds && $hasStoredDefaultOptionIndexes) {
+                list($isDefaultOption, $storedDefaultOptionIndexes) = $this->consumeStoredDefaultOptionIndex(
+                    $storedDefaultOptionIndexes,
+                    ArrayHelper::get($option, '_ff_original_index', $index)
+                );
+            }
+
+            if (!$isDefaultOption && !$hasStoredDefaultOptionIds && !$hasStoredDefaultOptionIndexes) {
+                $optionValue = (string) $option['value'];
+                $isDefaultOption = !empty($remainingDefaultValues[$optionValue]);
+
+                if ($isDefaultOption) {
+                    $remainingDefaultValues[$optionValue]--;
+                }
+            }
+
+            $data['attributes']['checked'] = $isDefaultOption;
+
+            if ($isDefaultOption) {
                 $parentClass .= ' ff_item_selected';
-            } else {
-                $data['attributes']['checked'] = false;
             }
 
             if ($firstTabIndex) {

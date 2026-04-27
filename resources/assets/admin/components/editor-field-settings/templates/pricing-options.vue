@@ -8,7 +8,7 @@
             />
 
             <el-radio-group
-                @change="editItem.attributes.value = ''"
+                @change="resetDefaultSelection()"
                 v-model="editItem.attributes.type"
                 size="small"
             >
@@ -75,8 +75,8 @@
                                 :type="optionsType"
                                 name="fluentform__default-option"
                                 :value="option.value"
-                                :checked="isChecked(option.value)"
-                                @change="updateDefaultOption(option)"
+                                :checked="isChecked(index)"
+                                @change="updateDefaultOption(index)"
                             />
                         </div>
 
@@ -181,6 +181,9 @@
             },
             hasImageSupport() {
                 return this.editItem.element != 'select';
+            },
+            selectedOptionIndexSet() {
+                return new Set(this.getSelectedOptionIndexes());
             }
         },
         methods: {
@@ -188,16 +191,16 @@
                 const {index, list, item} = data;
                 item.id = new Date().getTime();
                 list.splice(index, 0, item);
+                this.syncSelectionMetadata();
             },
             handleMoved(item) {
                 const {index, list} = item;
                 list.splice(index, 1);
+                this.syncSelectionMetadata();
             },
 
-            isChecked(optVal) {
-                if (typeof this.editItem.attributes.value != 'number') {
-                    return this.editItem.attributes.value.includes(optVal);
-                }
+            isChecked(optionIndex) {
+                return this.selectedOptionIndexSet.has(optionIndex);
             },
 
             increase(index) {
@@ -211,12 +214,15 @@
                 };
 
                 options.splice(index + 1, 0, newOpt);
+                this.ensureOptionIds();
+                this.syncSelectionMetadata();
             },
 
             decrease(index) {
                 let options = this.editItem.settings.pricing_options;
                 if (options.length > 1) {
                     options.splice(index, 1);
+                    this.syncSelectionMetadata();
                 } else {
                     this.$notify.error({
                         message: 'You have to have at least one option.',
@@ -226,38 +232,150 @@
             },
 
             clear() {
-                let attributes = this.editItem.attributes;
-                if (attributes.type == 'checkbox' || attributes.multiple) {
-                    attributes.value = [];
-                } else {
-                    attributes.value = '';
-                }
+                this.applySelectedOptionIds([]);
                 this.$refs.defaultOptions.map(el => el.checked = false);
             },
 
-            updateDefaultOption(option) {
-                let attributes = this.editItem.attributes;
-                if (attributes.type == 'checkbox' || attributes.multiple) {
-                    if (typeof attributes.value != 'object') {
-                        attributes.value = [];
-                    }
+            updateDefaultOption(optionIndex) {
+                const selectedIds = this.getSelectedOptionIds().slice();
+                const optionId = this.getOptionId(this.editItem.settings.pricing_options[optionIndex]);
 
+                if (this.isMultipleSelection()) {
                     if (event.target.checked) {
-                        attributes.value.push(option.value);
+                        if (!selectedIds.includes(optionId)) {
+                            selectedIds.push(optionId);
+                        }
                     } else {
-                        attributes.value.splice(attributes.value.indexOf(option.value), 1);
+                        const removalIndex = selectedIds.indexOf(optionId);
+
+                        if (removalIndex !== -1) {
+                            selectedIds.splice(removalIndex, 1);
+                        }
                     }
                 } else {
+                    selectedIds.splice(0, selectedIds.length);
+
                     if (event.target.checked) {
-                        attributes.value = option.value;
-                    } else {
-                        attributes.value = '';
+                        selectedIds.push(optionId);
                     }
                 }
+
+                this.applySelectedOptionIds(selectedIds);
             },
 
             createOptionsToRender() {
                 this.optionsToRender = this.editItem.settings.pricing_options;
+            },
+            generateOptionId() {
+                return 'ffo_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+            },
+            ensureOptionIds() {
+                this.editItem.settings.pricing_options.forEach((option, index) => {
+                    if (!option._ff_option_id) {
+                        this.$set(option, '_ff_option_id', this.generateOptionId() + '_' + index);
+                    }
+                });
+            },
+            getOptionId(option) {
+                if (!option._ff_option_id) {
+                    this.$set(option, '_ff_option_id', this.generateOptionId());
+                }
+
+                return String(option._ff_option_id);
+            },
+            getSelectedOptionIndexes() {
+                const optionIds = this.editItem.settings.pricing_options.map(option => this.getOptionId(option));
+
+                return this.getSelectedOptionIds()
+                    .map(optionId => optionIds.indexOf(optionId))
+                    .filter(index => index !== -1);
+            },
+            getSelectedOptionIds() {
+                const storedIds = this.getStoredSelectedOptionIds();
+
+                if (storedIds !== null) {
+                    return storedIds;
+                }
+
+                const storedIndexes = this.getStoredSelectedOptionIndexes();
+
+                if (storedIndexes !== null) {
+                    return storedIndexes.map(index => this.getOptionId(this.editItem.settings.pricing_options[index]));
+                }
+
+                const optionValues = this.editItem.settings.pricing_options.map(option => String(option.value));
+                const remainingValues = [].concat(this.editItem.attributes.value || []).map(String);
+                const selectedIndexes = [];
+
+                remainingValues.forEach(selectedValue => {
+                    const matchedIndex = optionValues.findIndex((value, index) => {
+                        return value === selectedValue && !selectedIndexes.includes(index);
+                    });
+
+                    if (matchedIndex !== -1) {
+                        selectedIndexes.push(matchedIndex);
+                    }
+                });
+
+                return selectedIndexes.map(index => this.getOptionId(this.editItem.settings.pricing_options[index]));
+            },
+            getStoredSelectedOptionIds() {
+                if (!Array.isArray(this.editItem.settings.default_value_option_ids)) {
+                    return null;
+                }
+
+                const validIds = this.editItem.settings.default_value_option_ids
+                    .map(String)
+                    .filter(optionId => this.editItem.settings.pricing_options.some(option => this.getOptionId(option) === optionId));
+
+                return validIds.length ? validIds : null;
+            },
+            getStoredSelectedOptionIndexes() {
+                if (!Array.isArray(this.editItem.settings.default_value_option_indexes)) {
+                    return null;
+                }
+
+                const optionCount = this.editItem.settings.pricing_options.length;
+                const validIndexes = this.editItem.settings.default_value_option_indexes
+                    .map(index => parseInt(index, 10))
+                    .filter(index => !isNaN(index) && index >= 0 && index < optionCount);
+
+                return validIndexes.length ? validIndexes : null;
+            },
+            applySelectedOptionIds(selectedIds) {
+                const normalizedIds = selectedIds
+                    .map(String)
+                    .filter((optionId, index, list) => {
+                        return list.indexOf(optionId) === index && this.editItem.settings.pricing_options.some(option => this.getOptionId(option) === optionId);
+                    });
+                const optionIds = this.editItem.settings.pricing_options.map(option => this.getOptionId(option));
+                const normalizedIndexes = normalizedIds
+                    .map(optionId => optionIds.indexOf(optionId))
+                    .filter(index => index !== -1);
+
+                this.$set(this.editItem.settings, 'default_value_option_ids', normalizedIds);
+                this.$set(this.editItem.settings, 'default_value_option_indexes', normalizedIndexes);
+
+                if (this.isMultipleSelection()) {
+                    this.editItem.attributes.value = normalizedIndexes.map(index => {
+                        return this.editItem.settings.pricing_options[index].value;
+                    });
+                } else {
+                    this.editItem.attributes.value = normalizedIndexes.length
+                        ? this.editItem.settings.pricing_options[normalizedIndexes[0]].value
+                        : '';
+                }
+            },
+            resetDefaultSelection() {
+                this.applySelectedOptionIds([]);
+            },
+            syncSelectionMetadata() {
+                this.applySelectedOptionIds(this.getSelectedOptionIds());
+            },
+            isMultipleSelection() {
+                const attributes = this.editItem.attributes;
+
+                return attributes.type == 'checkbox' || attributes.multiple;
             },
             showProMessage() {
                 this.$notify.error('Images with options is available in the Pro version');
@@ -266,7 +384,8 @@
         },
         mounted() {
             this.createOptionsToRender();
+            this.ensureOptionIds();
+            this.syncSelectionMetadata();
         }
     };
 </script>
-

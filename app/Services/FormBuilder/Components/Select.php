@@ -62,13 +62,15 @@ class Select extends BaseComponent
         }
 
         $defaultValues = (array) $this->extractValueFromAttributes($data);
+        $dynamicValues = $this->extractDynamicValues($data, $form);
+        $hasDynamicValues = !empty($dynamicValues);
 
-        if ($dynamicValues = $this->extractDynamicValues($data, $form)) {
+        if ($hasDynamicValues) {
             $defaultValues = $dynamicValues;
         }
 
         $atts = $this->buildAttributes($data['attributes']);
-        $options = $this->buildOptions($data, $defaultValues);
+        $options = $this->buildOptions($data, $defaultValues, $hasDynamicValues);
 
         $ariaRequired = 'false';
         if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
@@ -103,7 +105,7 @@ class Select extends BaseComponent
      *
      * @return string/html [compiled options]
      */
-    protected function buildOptions($data, $defaultValues)
+    protected function buildOptions($data, $defaultValues, $hasDynamicValues = false)
     {
         if (! $formattedOptions = ArrayHelper::get($data, 'settings.advanced_options')) {
             $options = ArrayHelper::get($data, 'options', []);
@@ -117,6 +119,16 @@ class Select extends BaseComponent
             }
         }
 
+        foreach ($formattedOptions as $index => &$option) {
+            $option['_ff_original_index'] = $index;
+        }
+        unset($option);
+
+        $storedDefaultOptionIds = $hasDynamicValues ? null : $this->getStoredDefaultOptionIds($data, $formattedOptions);
+        $storedDefaultOptionIndexes = $hasDynamicValues ? null : $this->getStoredDefaultOptionIndexes($data, count($formattedOptions));
+        $hasStoredDefaultOptionIds = is_array($storedDefaultOptionIds);
+        $hasStoredDefaultOptionIndexes = is_array($storedDefaultOptionIndexes);
+
         if ('yes' == ArrayHelper::get($data, 'settings.randomize_options')) {
             shuffle($formattedOptions);
         }
@@ -127,12 +139,31 @@ class Select extends BaseComponent
         } elseif (! empty($data['attributes']['placeholder'])) {
             $opts .= '<option value="">' . wp_strip_all_tags($data['attributes']['placeholder']) . '</option>';
         }
+        $remainingDefaultValues = array_count_values(array_map('strval', $defaultValues));
+
         foreach ($formattedOptions as $option) {
-            if (in_array($option['value'], $defaultValues)) {
-                $selected = 'selected';
-            } else {
-                $selected = '';
+            list($isDefaultOption, $storedDefaultOptionIds) = $this->consumeStoredDefaultOptionId(
+                $storedDefaultOptionIds,
+                ArrayHelper::get($option, '_ff_option_id')
+            );
+
+            if (!$isDefaultOption && !$hasStoredDefaultOptionIds && $hasStoredDefaultOptionIndexes) {
+                list($isDefaultOption, $storedDefaultOptionIndexes) = $this->consumeStoredDefaultOptionIndex(
+                    $storedDefaultOptionIndexes,
+                    ArrayHelper::get($option, '_ff_original_index')
+                );
             }
+
+            if (!$isDefaultOption && !$hasStoredDefaultOptionIds && !$hasStoredDefaultOptionIndexes) {
+                $optionValue = (string) ArrayHelper::get($option, 'value');
+                $isDefaultOption = !empty($remainingDefaultValues[$optionValue]);
+
+                if ($isDefaultOption) {
+                    $remainingDefaultValues[$optionValue]--;
+                }
+            }
+
+            $selected = $isDefaultOption ? 'selected' : '';
     
             $atts = [
                 'data-calc_value'        => ArrayHelper::get($option, 'calc_value'),
