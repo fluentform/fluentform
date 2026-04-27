@@ -124,6 +124,7 @@ import selectGroup from "./templates/selectGroup.vue";
 import CustomSettingsField from "./templates/CustomSettingsField.vue";
 import dynamicFilter from "./templates/dynamicFilter.vue";
 import repeaterContainers from "./templates/repeaterContainers.vue";
+import { dependencyPasses } from '../../dependency';
 
 export default {
     name: 'FieldOptionsSettings',
@@ -243,18 +244,11 @@ export default {
             return total;
         },
 
-        /**
-        * Helper function for show/hide dependent elements
-        & @return {Boolean}
-         */
-        compare(operand1, operator, operand2) {
-            switch(operator) {
-                case '==':
-                    return operand1 == operand2
-                    break;
-                case '!=':
-                    return operand1 != operand2
-                    break;
+        resolveDependencyValue(dependency) {
+            if (dependency && dependency.depends_on === 'parent_container') {
+                const isInsideRepeater = this.isInsideRepeaterContainer(this.editItem);
+
+                return isInsideRepeater ? 'repeater_container' : '';
             }
         },
 
@@ -263,29 +257,12 @@ export default {
          * @param listItem
          * @return {boolean}
          */
-        // @todo add multiple dependency support
         dependancyPass(listItem) {
-            if (listItem.dependency) {
-                let optionPaths = listItem.dependency.depends_on.split('/');
-                
-                // Special handling for parent_container check
-                if (listItem.dependency.depends_on === 'parent_container') {
-                    const isInsideRepeater = this.isInsideRepeaterContainer(this.editItem);
-                    const parentType = isInsideRepeater ? 'repeater_container' : '';
-                    
-                    return this.compare(parentType, listItem.dependency.operator, listItem.dependency.value);
-                }
-
-                let dependencyVal = optionPaths.reduce((obj, prop) => {
-                    return obj[prop]
-                }, this.editItem);
-
-                if ( this.compare(listItem.dependency.value, listItem.dependency.operator, dependencyVal) ) {
-                    return true;
-                }
-                return false;
-            }
-            return true;
+            return dependencyPasses(
+                listItem.dependencies || listItem.dependency,
+                this.editItem,
+                dependency => this.resolveDependencyValue(dependency)
+            );
         },
         willShow(key, listItem) {
             return this.elementOptions.includes(key) && this.dependancyPass(listItem) && this.conversionPass(listItem, key);
