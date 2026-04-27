@@ -455,8 +455,6 @@ class Form
 
         $jsScripts = [];
 
-        $pluginUrl = plugins_url() . '/fluentform';
-
         foreach ($wp_scripts->queue as $script) {
 
             if (!isset($wp_scripts->registered[$script])) {
@@ -466,7 +464,7 @@ class Form
             $item = $wp_scripts->registered[$script];
             $src = $wp_scripts->registered[$script]->src;
 
-            if (false === !strpos($src, $pluginUrl)) {
+            if (!$this->shouldPrintConversationalAsset($src)) {
                 continue;
             }
 
@@ -502,8 +500,6 @@ class Form
 
         $cssStyles = [];
 
-        $pluginUrl = plugins_url() . '/fluentform';
-
         foreach ($wp_styles->queue as $style) {
 
             if (!isset($wp_styles->registered[$style])) {
@@ -513,7 +509,7 @@ class Form
             $item = $wp_styles->registered[$style];
             $src = $wp_styles->registered[$style]->src;
 
-            if (false === !strpos($src, $pluginUrl)) {
+            if (!$this->shouldPrintConversationalAsset($src)) {
                 continue;
             }
 
@@ -545,17 +541,45 @@ class Form
         return $cssStyles;
     }
 
+    private function shouldPrintConversationalAsset($src)
+    {
+        if (!$src) {
+            return false;
+        }
+
+        $pluginUrls = [
+            untrailingslashit(plugins_url() . '/fluentform'),
+        ];
+
+        if (defined('FLUENTFORMPRO_DIR_URL')) {
+            $pluginUrls[] = untrailingslashit(FLUENTFORMPRO_DIR_URL);
+        }
+
+        foreach ($pluginUrls as $pluginUrl) {
+            if (strpos($src, $pluginUrl) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function renderShortcode($form)
     {
         $formId = $form->id;
-        $form = Converter::convert($form);
+        $fileUploadSettings = apply_filters('fluentform/file_upload_settings_for_js', [], $form);
+
         $this->enqueueScripts();
+        do_action('fluentform/conversational_enqueue_assets', $form, $fileUploadSettings);
+
+        $form = Converter::convert($form);
         $submitCss = $this->getSubmitBttnStyle($form);
         $metaSettings = $this->getMetaSettings($formId);
         $designSettings = $this->getDesignSettings($formId);
         $instanceId = $form->instance_index;
         $varName = 'fluent_forms_global_var_' . $instanceId;
-        wp_localize_script('fluent_forms_conversational_form', $varName, [
+
+        $localizedVars = [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
             'nonce'                    => wp_create_nonce(),
@@ -573,8 +597,15 @@ class Form
             'request_error_txt'        => __('An error occurred while processing your request', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
-            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
-        ]);
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete'),
+            'file_upload_settings'     => $fileUploadSettings,
+        ];
+
+        wp_localize_script(
+            'fluent_forms_conversational_form',
+            $varName,
+            apply_filters('fluentform/global_form_vars', $localizedVars)
+        );
 
         $hasSaveProgressButton = false;
         $saveProgressButton = [];
@@ -730,8 +761,12 @@ class Form
         $form = wpFluentForm()->applyFilters('fluentform_rendering_form', $form);
 
         $form = wpFluentForm()->applyFilters('fluentform/rendering_form', $form);
-        $form = Converter::convert($form);
+        $fileUploadSettings = apply_filters('fluentform/file_upload_settings_for_js', [], $form);
+
         $this->enqueueScripts();
+        do_action('fluentform/conversational_enqueue_assets', $form, $fileUploadSettings);
+
+        $form = Converter::convert($form);
 
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
@@ -749,7 +784,7 @@ class Form
 
         $designSettings = $this->getDesignSettings($formId);
 
-        wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
+        $localizedVars = [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
             'nonce'                    => wp_create_nonce(),
@@ -767,8 +802,15 @@ class Form
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
             'rest'                     => Helper::getRestInfo(),
-            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
-        ]);
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete'),
+            'file_upload_settings'     => $fileUploadSettings,
+        ];
+
+        wp_localize_script(
+            'fluent_forms_conversational_form',
+            'fluent_forms_global_var',
+            apply_filters('fluentform/global_form_vars', $localizedVars)
+        );
         
         $hasSaveProgressButton = false;
         $saveProgressButton = [];

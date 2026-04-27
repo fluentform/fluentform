@@ -720,6 +720,68 @@ $fluentformElementCustomizationSettings = [
             ],
         ],
     ],
+    'enable_crop' => [
+        'template'  => 'inputYesNoCheckBox',
+        'label'     => __('Enable crop', 'fluentform'),
+        'help_text' => __('If enabled, users must crop the image before it is uploaded.', 'fluentform'),
+    ],
+    'crop_mode' => [
+        'template'   => 'radioButton',
+        'label'      => __('Crop Type', 'fluentform'),
+        'help_text'  => __('Choose whether users crop by ratio or by exact width and height.', 'fluentform'),
+        'options'    => [
+            [
+                'value' => 'ratio',
+                'label' => __('Crop Ratio', 'fluentform'),
+            ],
+            [
+                'value' => 'dimensions',
+                'label' => __('Width and Height', 'fluentform'),
+            ],
+        ],
+        'dependency' => [
+            'depends_on' => 'settings/enable_crop',
+            'value'      => 'yes',
+            'operator'   => '==',
+        ],
+    ],
+    'crop_ratio' => [
+        'template'   => 'select',
+        'label'      => __('Crop ratio', 'fluentform'),
+        'help_text'  => __('Choose the default crop ratio users will see before upload.', 'fluentform'),
+        'options'    => [
+            [
+                'value' => 'free',
+                'label' => __('Free', 'fluentform'),
+            ],
+            [
+                'value' => '1:1',
+                'label' => '1:1',
+            ],
+            [
+                'value' => '4:3',
+                'label' => '4:3',
+            ],
+            [
+                'value' => '16:9',
+                'label' => '16:9',
+            ],
+            [
+                'value' => '3:4',
+                'label' => '3:4',
+            ],
+        ],
+    ],
+    'crop_width' => [
+        'template'  => 'inputNumber',
+        'label'     => __('Width (px)', 'fluentform'),
+        'help_text' => __('Required crop width in pixels.', 'fluentform'),
+    ],
+    'crop_height' => [
+        'template'  => 'inputNumber',
+        'label'     => __('Height (px)', 'fluentform'),
+        'help_text' => __('Required crop height in pixels.', 'fluentform'),
+    ],
     'container_width' => [
         'template'             => 'containerWidth',
         'label'                => __('Column Width %', 'fluentform'),

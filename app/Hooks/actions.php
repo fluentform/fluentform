@@ -315,6 +315,29 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             if (!isset($element['settings']['file_location_type'])) {
                 $element['settings']['file_location_type'] = 'follow_global_settings';
             }
+            if ('input_image' === $element['element']) {
+                if (!isset($element['settings']['enable_crop'])) {
+                    $element['settings']['enable_crop'] = 'no';
+                }
+                if (!isset($element['settings']['crop_mode'])) {
+                    $element['settings']['crop_mode'] = (
+                        isset($element['settings']['enforce_image_dimensions']) &&
+                        $element['settings']['enforce_image_dimensions'] === 'yes'
+                    ) ? 'dimensions' : 'ratio';
+                }
+                if (!isset($element['settings']['crop_ratio'])) {
+                    $element['settings']['crop_ratio'] = 'free';
+                }
+                if (!isset($element['settings']['enforce_image_dimensions'])) {
+                    $element['settings']['enforce_image_dimensions'] = 'no';
+                }
+                if (!isset($element['settings']['crop_width'])) {
+                    $element['settings']['crop_width'] = '';
+                }
+                if (!isset($element['settings']['crop_height'])) {
+                    $element['settings']['crop_height'] = '';
+                }
+            }
             return $element;
         });
     }

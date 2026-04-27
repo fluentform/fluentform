@@ -1,5 +1,5 @@
 <template>
-    <el-form-item>
+    <el-form-item v-if="shouldShowSelectField">
         <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
 
         <el-select class="el-fluid" :multiple="isMultiple" v-model="model" :filterable="listItem.filterable" :allow-create="listItem.creatable" :placeholder="listItem.placeholder">
@@ -18,7 +18,7 @@ import elLabel from '../../includes/el-label.vue'
 
 export default {
     name: 'customSelect',
-    props: ['listItem', 'value'],
+    props: ['listItem', 'value', 'editItem', 'prop'],
     components: {
         elLabel
     },
@@ -35,6 +35,14 @@ export default {
     computed: {
         isMultiple() {
             return this.listItem?.is_multiple || false;
+        },
+        // @todo remove this special handling after adding proper chained dependency support to editor settings
+        shouldShowSelectField() {
+            if (this.prop !== 'crop_ratio') {
+                return true;
+            }
+
+            return this.editItem?.settings?.enable_crop === 'yes' && this.editItem?.settings?.crop_mode === 'ratio';
         }
     }
 }
