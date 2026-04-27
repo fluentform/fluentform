@@ -1976,6 +1976,10 @@ class TranslationString
             'Default Currency' => __('Default Currency', 'fluentform'),
             'Provide your default currency.You can also change your currency to each form in form\'s payment settings' => __('Provide your default currency.You can also change your currency to each form in form\'s payment settings', 'fluentform'),
             'Currency Sign Position' => __('Currency Sign Position', 'fluentform'),
+            'Left ($100)' => __('Left ($100)', 'fluentform'),
+            'Right (100$)' => __('Right (100$)', 'fluentform'),
+            'Left Space ($ 100)' => __('Left Space ($ 100)', 'fluentform'),
+            'Right Space (100 $)' => __('Right Space (100 $)', 'fluentform'),
             'Currency Separators' => __('Currency Separators', 'fluentform'),
             'Comma as Thousand and Dot as Decimal (EG: 12,000.00)' => __('Comma as Thousand and Dot as Decimal (EG: 12,000.00)', 'fluentform'),
             'Dot as Thousand and Comma as Decimal ( EG: 12.000,00 )' => __('Dot as Thousand and Comma as Decimal ( EG: 12.000,00 )', 'fluentform'),
@@ -1995,9 +1999,9 @@ class TranslationString
             'PayPal IPN Settings(Recommended for Subscription Payment)' => __('PayPal IPN Settings(Recommended for Subscription Payment)', 'fluentform'),
             'In order to function completely for subscription / recurring payments, you must configure your PayPal IPN.' => __('In order to function completely for subscription / recurring payments, you must configure your PayPal IPN.', 'fluentform'),
             /* translators: 1-2: HTML tags for label formatting, 3: the IPN URL */
-            '%1$sIPN URL:%2$s %3$s' => __('%1$sIPN URL:%2$s %3$s', 'fluentform'),
+            '%sIPN URL:%s %s' => __('%sIPN URL:%s %s', 'fluentform'),
             /* translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for PayPal IPN link */
-            '%1$sPlease read the documentation%2$s to learn how to setup %3$sPayPal IPN%4$s' => __('%1$sPlease read the documentation%2$s to learn how to setup %3$sPayPal IPN%4$s', 'fluentform'),
+            '%sPlease read the documentation%s to learn how to setup %sPayPal IPN%s' => __('%sPlease read the documentation%s to learn how to setup %sPayPal IPN%s', 'fluentform'),
             'Enable Stripe Payment Method' => __('Enable Stripe Payment Method', 'fluentform'),
             'Stripe Test API Keys' => __('Stripe Test API Keys', 'fluentform'),
             'Test Publishable key' => __('Test Publishable key', 'fluentform'),
@@ -2010,7 +2014,7 @@ class TranslationString
             'account dashboard' => __('account dashboard', 'fluentform'),
             'to configure them.Please add a webhook endpoint for the URL below.' => __('to configure them.Please add a webhook endpoint for the URL below.', 'fluentform'),
             /* translators: 1-2: HTML tags for label formatting, 3: the webhook URL */
-            '%1$sWebhook URL:%2$s %3$s' => __('%1$sWebhook URL:%2$s %3$s', 'fluentform'),
+            '%sWebhook URL:%s %s' => __('%sWebhook URL:%s %s', 'fluentform'),
             'Stripe IPN' => __('Stripe IPN', 'fluentform'),
             'Please enable the following Webhook events for this URL: ' => __('Please enable the following Webhook events for this URL:', 'fluentform'),
             'Sorry! No settings found.Maybe your payment module is disabled!' => __('Sorry! No settings found.Maybe your payment module is disabled!', 'fluentform'),
@@ -2103,7 +2107,7 @@ class TranslationString
             'Currency' => __('Currency', 'fluentform'),
             'Enable Debug Log (Recommended for debug purpose only)' => __('Enable Debug Log (Recommended for debug purpose only)', 'fluentform'),
             /* translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for Stripe IPN link */
-            '%1$sPlease read the documentation%2$s to learn how to setup %3$sStripe IPN%4$s' => __('%1$sPlease read the documentation%2$s to learn how to setup %3$sStripe IPN%4$s', 'fluentform'),
+            '%sPlease read the documentation%s to learn how to setup %sStripe IPN%s' => __('%sPlease read the documentation%s to learn how to setup %sStripe IPN%s', 'fluentform'),
         );
 
         return apply_filters('fluentform/payments_i18n', $i18n);

@@ -24,7 +24,7 @@
                 border 
                 :key="optionName"
             >
-                {{ redirectOption }}
+                {{ $t(redirectOption) }}
             </el-radio>
 
             <error-view field="redirectTo" :errors="errors" />

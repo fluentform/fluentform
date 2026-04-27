@@ -115,7 +115,7 @@
                                 <el-radio 
                                     v-for="(sign, sign_key) in currency_sign_positions" 
                                     :key="sign_key"
-                                    :label="sign_key">{{sign}}
+                                    :label="sign_key">{{ $t(sign) }}
                                 </el-radio>
                             </el-radio-group>
                         </el-form-item>
@@ -172,7 +172,7 @@ export default {
                 left: 'Left ($100)',
                 right: 'Right (100$)',
                 left_space: 'Left Space ($ 100)',
-                right_space: 'Right Space 100 $'
+                right_space: 'Right Space (100 $)'
             },
             general_settings: this.settings.general,
             current_page: 'general'
