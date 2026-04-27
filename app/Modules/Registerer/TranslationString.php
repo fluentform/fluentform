@@ -1721,7 +1721,7 @@ class TranslationString
             'Bulk Actions' => __('Bulk Actions', 'fluentform'),
             'Export ' => __('Export ', 'fluentform'),
             'Export as CSV' => __('Export as CSV', 'fluentform'),
-            'Export as Excel(xlsv)' => __('Export as Excel(xlsv)', 'fluentform'),
+            'Export as Excel(xlsx)' => __('Export as Excel(xlsx)', 'fluentform'),
             'Export as ODS' => __('Export as ODS', 'fluentform'),
             'Step Completed' => __('Step Completed', 'fluentform'),
             'Back to All' => __('Back to All', 'fluentform'),
