@@ -492,6 +492,13 @@ class FormService
                 'image'       => fluentformMix('img/pro-fields/accordion-tab.png'),
                 'video'       => '',
             ];
+	        $disabled['input_toggle'] = [
+		        'disabled'    => true,
+		        'title'       => __('Toggle', 'fluentform'),
+		        'description' => __('Toggle is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
+		        'image'       => fluentformMix('img/pro-fields/toggle.png'),
+		        'video'       => '',
+	        ];
         }
         
         $disabled = apply_filters_deprecated(
