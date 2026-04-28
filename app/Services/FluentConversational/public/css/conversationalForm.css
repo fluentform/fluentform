@@ -1639,6 +1639,15 @@ ul.ff-errors-in-stack {
   flex: 0 1 auto;
 }
 
+.ff_conv_toggle__choice:focus {
+  outline: none;
+}
+
+.ff_conv_toggle__choice:focus-visible {
+  border-radius: 8px;
+  box-shadow: 0 0 0 3px rgba(4, 69, 175, 0.22);
+}
+
 .ff_conv_toggle__choice.is-active {
   color: var(--ff-conv-toggle-selected-color);
 }
