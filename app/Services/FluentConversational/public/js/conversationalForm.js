@@ -32986,7 +32986,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
-var _hoisted_1 = ["aria-label"];
+var _hoisted_1 = ["aria-label", "disabled"];
 var _hoisted_2 = {
   key: 0,
   "class": "ff_conv_toggle__media"
@@ -32995,7 +32995,7 @@ var _hoisted_3 = ["src", "alt"];
 var _hoisted_4 = {
   "class": "ff_conv_toggle__text"
 };
-var _hoisted_5 = ["aria-label"];
+var _hoisted_5 = ["aria-label", "disabled"];
 var _hoisted_6 = {
   key: 0,
   "class": "ff_conv_toggle__media"
@@ -33019,6 +33019,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       'is-active': $options.selectedIndex === 0
     }]),
     "aria-label": $options.leftAriaLabel,
+    disabled: _ctx.disabled,
     onClick: _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
       return $options.selectOption(0);
     }, ["prevent"]))
@@ -33041,18 +33042,20 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "active-color": $options.activeSwitchColor,
     "inactive-color": $options.inactiveSwitchColor,
     "aria-label": $options.switchAriaLabel,
+    disabled: _ctx.disabled,
     onChange: $options.handleSwitchChange,
     onFocus: $options.onChoiceFocus,
     onBlur: _ctx.unsetFocus
   }, null, 8
   /* PROPS */
-  , ["modelValue", "active-color", "inactive-color", "aria-label", "onChange", "onFocus", "onBlur"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  , ["modelValue", "active-color", "inactive-color", "aria-label", "disabled", "onChange", "onFocus", "onBlur"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     ref: "rightChoice",
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["ff_conv_toggle__choice ff_conv_toggle__choice--right", {
       'is-active': $options.selectedIndex === 1
     }]),
     "aria-label": $options.rightAriaLabel,
+    disabled: _ctx.disabled,
     onClick: _cache[2] || (_cache[2] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
       return $options.selectOption(1);
     }, ["prevent"]))
