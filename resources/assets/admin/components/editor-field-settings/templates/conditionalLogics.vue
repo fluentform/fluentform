@@ -367,7 +367,7 @@
                             } else if (['input_radio', 'select', 'input_checkbox', 'dynamic_field'].includes(formItem.element)) {
                                 let options = formItem.options ? this.formatOptions(formItem.options) : null;
                                 if (!options) {
-                                    options = formItem.settings.advanced_options;
+                                    options = this.flattenAdvancedOptions(formItem.settings.advanced_options || []);
                                 }
 								if ('text' === formItem.attributes.type) {
 									options = null
@@ -570,6 +570,20 @@
                     label: value,
                     value: key
                 }));
+
+                return options;
+            },
+            flattenAdvancedOptions(items) {
+                let options = [];
+
+                each(items, item => {
+                    if (item && item.type === 'group' && Array.isArray(item.options)) {
+                        options = options.concat(this.flattenAdvancedOptions(item.options));
+                        return;
+                    }
+
+                    options.push(item);
+                });
 
                 return options;
             }

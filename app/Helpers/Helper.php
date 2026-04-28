@@ -56,6 +56,95 @@ class Helper
         return $input;
     }
 
+    public static function isOptionGroup($option)
+    {
+        return is_array($option)
+            && ArrayHelper::get($option, 'type') === 'group'
+            && is_array(ArrayHelper::get($option, 'options'));
+    }
+
+    public static function sanitizeAdvancedOptions($options, $depth = 0)
+    {
+        if (!is_array($options)) {
+            return [];
+        }
+
+        $sanitized = [];
+
+        foreach ($options as $option) {
+            if (!is_array($option)) {
+                continue;
+            }
+
+            if (self::isOptionGroup($option)) {
+                $groupOptions = self::sanitizeAdvancedOptions(
+                    ArrayHelper::get($option, 'options', []),
+                    $depth + 1
+                );
+
+                if ($depth > 0) {
+                    $sanitized = array_merge($sanitized, $groupOptions);
+                    continue;
+                }
+
+                $sanitized[] = [
+                    'type'    => 'group',
+                    'label'   => wp_kses_post(ArrayHelper::get($option, 'label', '')),
+                    'options' => $groupOptions,
+                ];
+                continue;
+            }
+
+            $sanitized[] = [
+                'label'      => wp_kses_post(ArrayHelper::get($option, 'label', '')),
+                'value'      => sanitize_text_field(ArrayHelper::get($option, 'value', '')),
+                'image'      => sanitize_url(ArrayHelper::get($option, 'image', '')),
+                'calc_value' => sanitize_text_field(ArrayHelper::get($option, 'calc_value', '')),
+                'disabled'   => ArrayHelper::isTrue($option, 'disabled'),
+            ];
+        }
+
+        return $sanitized;
+    }
+
+    public static function flattenAdvancedOptions($options)
+    {
+        if (!is_array($options)) {
+            return [];
+        }
+
+        $flattened = [];
+
+        foreach ($options as $option) {
+            if (self::isOptionGroup($option)) {
+                $flattened = array_merge(
+                    $flattened,
+                    self::flattenAdvancedOptions(ArrayHelper::get($option, 'options', []))
+                );
+                continue;
+            }
+
+            if (!is_array($option)) {
+                continue;
+            }
+
+            $flattened[] = $option;
+        }
+
+        return $flattened;
+    }
+
+    public static function advancedOptionsValueLabelMap($options)
+    {
+        $formatted = [];
+
+        foreach (self::flattenAdvancedOptions($options) as $option) {
+            $formatted[ArrayHelper::get($option, 'value')] = ArrayHelper::get($option, 'label');
+        }
+
+        return $formatted;
+    }
+
     public static function makeMenuUrl($page = 'fluent_forms_settings', $component = null)
     {
         $baseUrl = admin_url('admin.php?page=' . $page);
@@ -1039,7 +1128,7 @@ class Helper
                     // @todo : Update all reference in form templates
                 }
 
-                $options = array_column($formattedOptions, 'value');
+                $options = array_column(self::flattenAdvancedOptions($formattedOptions), 'value');
                 
                 // Add field-specific __ff_other__ to options if "Other" option is enabled
                 if (in_array($fieldType, ['input_checkbox', 'input_radio']) &&

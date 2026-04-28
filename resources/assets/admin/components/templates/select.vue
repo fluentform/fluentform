@@ -17,9 +17,24 @@ export default {
     props: ['item'],
     computed :{
         defaultVal() {
-            let option = find(this.item.settings.advanced_options, { value: this.item.attributes.value });
+            let option = find(this.flattenedOptions, { value: this.item.attributes.value });
 
             return option ? option.label : null;
+        },
+        flattenedOptions() {
+            return this.flattenOptions(this.item.settings.advanced_options || []);
+        }
+    },
+    methods: {
+        flattenOptions(options) {
+            return options.reduce((formatted, option) => {
+                if (option && option.type === 'group' && Array.isArray(option.options)) {
+                    return formatted.concat(this.flattenOptions(option.options));
+                }
+
+                formatted.push(option);
+                return formatted;
+            }, []);
         }
     },
     components: {
