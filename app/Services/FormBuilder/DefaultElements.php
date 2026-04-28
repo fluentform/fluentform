@@ -1868,6 +1868,17 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'CustomEditorField',
         ],
     ];
+    $fluentformDefaultElements['advanced']['input_toggle'] = [
+        'index'          => 19,
+        'element'        => 'input_toggle',
+        'attributes'     => [],
+        'settings'       => [],
+        'editor_options' => [
+            'title'      => __('Toggle', 'fluentform'),
+            'icon_class' => 'ff-edit-tint',
+            'template'   => 'inputToggle',
+        ],
+	];
 }
 
 if (defined('FLUENTFORMPRO')) {

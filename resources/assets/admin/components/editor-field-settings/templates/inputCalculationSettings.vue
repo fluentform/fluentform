@@ -76,7 +76,11 @@
                     return '{select.' + item.attributes.name + '}';
                 } else if (item.element == 'input_checkbox') {
                     return '{checkbox.' + item.attributes.name + '}';
-                } else if (item.element == 'input_radio' || item.element == 'net_promoter_score') {
+                } else if (
+                    item.element == 'input_radio' ||
+                    item.element == 'input_toggle' ||
+                    item.element == 'net_promoter_score'
+                ) {
                     return '{radio.' + item.attributes.name + '}';
                 } else if (item.element == 'repeater_field') {
                     return '{repeat.'+item.attributes.name+'}';
@@ -109,7 +113,8 @@
                 return (
                     item.element == 'select' ||
                     item.element == 'input_checkbox' ||
-                    item.element == 'input_radio'
+                    item.element == 'input_radio' ||
+                    item.element == 'input_toggle'
                 ) && item.settings.calc_value_status
             }
         }

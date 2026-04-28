@@ -66,8 +66,11 @@
                         ></el-input>
                     </div>
 
-                    <action-btn>
-                        <action-btn-add @click="increase(index)" size="mini"></action-btn-add>
+                    <action-btn v-if="!isToggleField">
+                        <action-btn-add
+                                @click="increase(index)"
+                                size="mini"
+                        ></action-btn-add>
                         <action-btn-remove @click="decrease(index)" size="mini"></action-btn-remove>
                     </action-btn>
                 </vddl-nodrag>
@@ -84,7 +87,7 @@
         <el-button
                 size="mini"
                 @click="initBulkEdit()"
-                v-if="!editItem.settings.calc_value_status && !editItem.settings.enable_image_input"
+                v-if="!isToggleField && !editItem.settings.calc_value_status && !editItem.settings.enable_image_input"
         >{{ $t('Bulk Edit / Predefined Data Sets') }} </el-button>
 
         <el-dialog
@@ -192,6 +195,9 @@
                 set(val) {
                     this.$set(this.editItem.settings, 'values_visible', val);
                 }
+            },
+            isToggleField() {
+                return this.editItem && this.editItem.element === 'input_toggle';
             },
         },
         methods: {

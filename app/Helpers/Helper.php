@@ -1023,7 +1023,7 @@ class Helper
                 $options = ['on'];
             } elseif ('terms_and_condition' == $fieldType) {
                 $options = ['on', 'off'];
-            } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
+            } elseif (in_array($fieldType, ['input_radio', 'input_toggle', 'select', 'input_checkbox'])) {
                 if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
                 }
@@ -1069,6 +1069,7 @@ class Helper
             $isValid = true;
             switch ($fieldType) {
                 case 'input_radio':
+                case 'input_toggle':
                 case 'select':
                 case 'net_promoter_score':
                 case 'ratings':

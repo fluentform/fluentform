@@ -317,6 +317,9 @@ class Converter
                 $question['nextStepOnAnswer'] = true;
                 $question = static::hasPictureMode($field, $question);
                 $question = static::maybeAddOtherOption($field, $question);
+            } elseif ('input_toggle' === $field['element']) {
+                $question['options'] = self::getAdvancedOptions($field, $form);
+                $question['nextStepOnAnswer'] = true;
             } elseif ('custom_html' === $field['element']) {
                 $question['content'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.html_codes', ''), $form);
             } elseif ('section_break' === $field['element']) {
@@ -963,6 +966,7 @@ class Converter
             $fieldTypes['save_progress_button'] = 'FlowFormSaveAndResumeType';
             $fieldTypes['dynamic_field'] = 'FlowFormDynamicFieldType';
             $fieldTypes['net_promoter_score'] = 'FlowFormNetPromoterScoreType';
+            $fieldTypes['input_toggle'] = 'FlowFormToggleType';
         }
         
         return apply_filters('fluentform/conversational_field_types', $fieldTypes);
