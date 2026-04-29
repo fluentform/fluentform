@@ -42,6 +42,27 @@ add_filter('fluentform/get_global_settings_values', function ($values, $key) {
             $values['_fluentform_global_form_settings']['default_messages'] = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
         }
 
+        if (in_array('_fluentform_global_form_settings', $key)) {
+            if (empty($values['_fluentform_global_form_settings']) || !is_array($values['_fluentform_global_form_settings'])) {
+                $values['_fluentform_global_form_settings'] = [];
+            }
+
+            if (empty($values['_fluentform_global_form_settings']['misc']) || !is_array($values['_fluentform_global_form_settings']['misc'])) {
+                $values['_fluentform_global_form_settings']['misc'] = [];
+            }
+
+            $storedJqueryLoadingMode = get_option('ff_jquery_loading_mode', '');
+            if (!$storedJqueryLoadingMode) {
+                $storedJqueryLoadingMode = \FluentForm\Framework\Helpers\ArrayHelper::get(
+                    $values,
+                    '_fluentform_global_form_settings.misc.jquery_loading_mode',
+                    'auto'
+                );
+            }
+
+            $values['_fluentform_global_form_settings']['misc']['jquery_loading_mode'] = $storedJqueryLoadingMode ?: 'auto';
+        }
+
         // Ensure _fluentform_default_style_template has default structure if not set
         if (in_array('_fluentform_default_style_template', $key)) {
             if (empty($values['_fluentform_default_style_template']) || $values['_fluentform_default_style_template'] === false) {

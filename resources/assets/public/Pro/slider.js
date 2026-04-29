@@ -1,5 +1,53 @@
-export default function ($, $theForm, fluentFormVars, formSelector) {
-    return new FluentFormSlider($, $theForm, fluentFormVars, formSelector).getPublicAPI();
+function resolveSliderArguments(jqueryOrFormReference, formReferenceOrVars, fluentFormVars, formSelector) {
+    const hasLegacySignature = typeof jqueryOrFormReference === 'function';
+
+    if (hasLegacySignature) {
+        return {
+            jquery: jqueryOrFormReference,
+            formReference: formReferenceOrVars,
+            fluentFormVars,
+            formSelector
+        };
+    }
+
+    return {
+        jquery: typeof window.jQuery === 'function' ? window.jQuery : null,
+        formReference: jqueryOrFormReference,
+        fluentFormVars: formReferenceOrVars,
+        formSelector: fluentFormVars
+    };
+}
+
+function resolveFormElement(formReference) {
+    if (!formReference) {
+        return null;
+    }
+
+    if (formReference.nodeType === 1) {
+        return formReference;
+    }
+
+    if (formReference[0] && formReference[0].nodeType === 1) {
+        return formReference[0];
+    }
+
+    return null;
+}
+
+export default function (jqueryOrFormReference, formReferenceOrVars, fluentFormVars, formSelector) {
+    const resolvedArguments = resolveSliderArguments(
+        jqueryOrFormReference,
+        formReferenceOrVars,
+        fluentFormVars,
+        formSelector
+    );
+
+    return new FluentFormSlider(
+        resolvedArguments.jquery,
+        resolvedArguments.formReference,
+        resolvedArguments.fluentFormVars,
+        resolvedArguments.formSelector
+    ).getPublicAPI();
 }
 
 class FluentFormSlider {
@@ -10,10 +58,11 @@ class FluentFormSlider {
      * @param {object} fluentFormVars - Global variables for the form
      * @param {string} formSelector - CSS selector for the form
      */
-    constructor($, $theForm, fluentFormVars, formSelector) {
+    constructor($, formReference, fluentFormVars, formSelector) {
         // Instance properties
         this.$ = $;
-        this.$theForm = $theForm;
+        this.formElement = resolveFormElement(formReference);
+        this.$theForm = this.$ && this.formElement ? this.$(this.formElement) : null;
         this.fluentFormVars = fluentFormVars;
         this.formSelector = formSelector;
         this.activeStep = 0;
@@ -25,12 +74,99 @@ class FluentFormSlider {
         this.fluentFormVars.stepAnimationDuration = parseInt(this.fluentFormVars.stepAnimationDuration);
 
         // Set up step persistence
-        this.stepPersistency = this.$theForm.find('.ff-step-container').attr('data-enable_step_data_persistency') === 'yes';
+        this.stepPersistency = this.getStepContainer()?.getAttribute('data-enable_step_data_persistency') === 'yes';
         this.stepResume = false;
 
         if (this.stepPersistency) {
-            this.stepResume = this.$theForm.find('.ff-step-container').attr('data-enable_step_page_resume') === 'yes';
+            this.stepResume = this.getStepContainer()?.getAttribute('data-enable_step_page_resume') === 'yes';
         }
+    }
+
+    getFormElement() {
+        return this.formElement;
+    }
+
+    getJqueryForm() {
+        if (this.$theForm) {
+            return this.$theForm;
+        }
+
+        if (this.$ && this.formElement) {
+            this.$theForm = this.$(this.formElement);
+            return this.$theForm;
+        }
+
+        if (typeof window.jQuery === 'function' && this.formElement) {
+            this.$ = window.jQuery;
+            this.$theForm = window.jQuery(this.formElement);
+            return this.$theForm;
+        }
+
+        return null;
+    }
+
+    query(selector) {
+        return this.formElement ? this.formElement.querySelector(selector) : null;
+    }
+
+    queryAll(selector) {
+        return this.formElement ? Array.from(this.formElement.querySelectorAll(selector)) : [];
+    }
+
+    getStepContainer() {
+        return this.query('.ff-step-container');
+    }
+
+    getStepElements() {
+        return this.queryAll('.fluentform-step');
+    }
+
+    getStepTitleElements() {
+        return this.queryAll('.ff-step-titles li');
+    }
+
+    getProgressTitleElements() {
+        return this.queryAll('.ff-el-progress-title li');
+    }
+
+    getActiveStepElement() {
+        return this.query('.fluentform-step.active');
+    }
+
+    getBridge() {
+        return window.fluentFormBridge;
+    }
+
+    emitBridgeEvent(eventName, detail, targetElement, jqueryArguments) {
+        if (this.getBridge() && typeof this.getBridge().emitEvent === 'function') {
+            this.getBridge().emitEvent(eventName, detail, targetElement, jqueryArguments);
+        }
+    }
+
+    getLegacyFormReference() {
+        return this.getJqueryForm() || this.formElement;
+    }
+
+    isConditionallyExcluded(element) {
+        return !!(element && element.closest('.has-conditions.ff_excluded'));
+    }
+
+    getStepFields(stepElement) {
+        if (!stepElement) {
+            return [];
+        }
+
+        return Array.from(stepElement.querySelectorAll('input, select, textarea')).filter((element) => {
+            if (element.disabled) {
+                return false;
+            }
+
+            if (element.type === 'button' || element.type === 'submit' || element.type === 'reset') {
+                return false;
+            }
+
+            return !this.isConditionallyExcluded(element);
+        });
     }
 
     /**
@@ -58,10 +194,15 @@ class FluentFormSlider {
      * Remove prev button from first step
      */
     removePrevFromFirstStep() {
-        this.$theForm
-            .find('.fluentform-step:first')
-            .find('.step-nav [data-action="prev"]')
-            .remove();
+        const firstStep = this.getStepElements()[0];
+        if (!firstStep) {
+            return;
+        }
+
+        const prevNavigator = firstStep.querySelector('.step-nav [data-action="prev"]');
+        if (prevNavigator) {
+            prevNavigator.remove();
+        }
     }
 
     /**
@@ -69,7 +210,7 @@ class FluentFormSlider {
      * @return {object} Form instance
      */
     getFormInstance() {
-        return window.fluentFormApp(this.$theForm);
+        return window.fluentFormApp(this.formElement);
     }
 
     /**
@@ -78,21 +219,24 @@ class FluentFormSlider {
     initFormWithSavedState() {
         if (!this.stepPersistency) return;
 
-        const $ = this.$;
-        const self = this;
+        const requestUrl = new URL(this.fluentFormVars.ajaxUrl, window.location.origin);
+        requestUrl.search = new URLSearchParams({
+            form_id: this.formElement?.dataset.form_id || '',
+            action: 'fluentform_step_form_get_data',
+            nonce: this.fluentFormVars?.nonce || '',
+            hash: this.fluentFormVars?.hash || ''
+        }).toString();
 
-        $(document).ready(e => {
-            $.getJSON(this.fluentFormVars.ajaxUrl, {
-                form_id: this.$theForm.data('form_id'),
-                action: 'fluentform_step_form_get_data',
-                nonce: this.fluentFormVars?.nonce,
-                hash: this.fluentFormVars?.hash
-            }).then(data => {
+        fetch(requestUrl.toString(), {
+            credentials: 'same-origin'
+        })
+            .then((response) => response.json())
+            .then((data) => {
                 if (data) {
-                    self.populateFormDataAndSetActiveStep(data);
+                    this.populateFormDataAndSetActiveStep(data);
                 }
-            });
-        });
+            })
+            .catch(() => {});
     }
 
     /**
@@ -336,16 +480,15 @@ class FluentFormSlider {
      * Register event handlers for form steps slider initialization
      */
     initStepSlider() {
-        const $ = this.$;
-        const formSteps = this.$theForm.find('.fluentform-step');
+        const formSteps = this.getStepElements();
         const totalSteps = formSteps.length;
-        const stepTitles = this.$theForm.find('.ff-step-titles li');
+        const stepTitles = this.getStepTitleElements();
 
         // Pre-skip steps that are fully hidden by conditions on initial load to avoid flicker
         if (!window.ff_disable_auto_step) {
             let candidateStepIndex = this.activeStep;
             let stepSkipSafetyCounter = 0;
-            while (candidateStepIndex < totalSteps && this.isStepAllFieldsHidden($(formSteps[candidateStepIndex])) && stepSkipSafetyCounter < totalSteps) {
+            while (candidateStepIndex < totalSteps && this.isStepAllFieldsHidden(formSteps[candidateStepIndex]) && stepSkipSafetyCounter < totalSteps) {
                 candidateStepIndex++;
                 stepSkipSafetyCounter++;
             }
@@ -355,27 +498,38 @@ class FluentFormSlider {
         }
 
         // Use display:none/block and hide all steps initially
-        formSteps.css('display', 'none');
+        formSteps.forEach((stepElement) => {
+            stepElement.style.display = 'none';
+            stepElement.setAttribute('role', 'group');
+            stepElement.setAttribute('aria-hidden', 'true');
+            stepElement.classList.remove('active');
+        });
 
         // Show the computed first step
-        $(formSteps[this.activeStep]).css('display', 'block');
+        const activeStepElement = formSteps[this.activeStep];
+        if (activeStepElement) {
+            activeStepElement.style.display = 'block';
+            activeStepElement.setAttribute('aria-hidden', 'false');
+            activeStepElement.classList.add('active');
+        }
 
-        // Add accessibility attributes
-        formSteps.attr('role', 'group');
-        formSteps.attr('aria-hidden', 'true');
-        $(formSteps[this.activeStep]).attr('aria-hidden', 'false');
+        stepTitles.forEach((stepTitle, index) => {
+            stepTitle.classList.toggle('active', index === this.activeStep);
+        });
 
-        $(formSteps[this.activeStep]).addClass('active');
-        $(stepTitles[this.activeStep]).addClass('active');
-
-        const firstStep = formSteps.first();
-        if (firstStep.hasClass('active')) {
-            firstStep.find('button[data-action="next"]').css('visibility', 'visible');
+        const firstStep = formSteps[0];
+        if (firstStep && firstStep.classList.contains('active')) {
+            firstStep.querySelectorAll('button[data-action="next"]').forEach((buttonElement) => {
+                buttonElement.style.visibility = 'visible';
+            });
         }
 
         // submit button should only be printed on last step
-        if (formSteps.length && !formSteps.last().hasClass('active')) {
-            this.$theForm.find('button[type="submit"]').css('visibility', 'hidden');
+        const submitButtons = this.queryAll('button[type="submit"]');
+        if (formSteps.length && !(formSteps[formSteps.length - 1] && formSteps[formSteps.length - 1].classList.contains('active'))) {
+            submitButtons.forEach((buttonElement) => {
+                buttonElement.style.visibility = 'hidden';
+            });
         }
 
         this.stepProgressBarHandle({activeStep: this.activeStep, totalSteps});
@@ -391,79 +545,85 @@ class FluentFormSlider {
      * @param {object} formSteps - Form step elements
      */
     registerClickableStepNav(stepTitlesNavs, formSteps) {
-        const $ = this.$;
-        const self = this;
-
         if (stepTitlesNavs.length === 0) {
             return;
         }
 
         // Add this line to assign step numbers to each title
-        $.each(stepTitlesNavs, function (i, elm) {
-            $(elm).attr('data-step-number', i);
-
-            // Also add these for accessibility and visual indication
-            $(elm).attr({
-                'role': 'button',
-                'tabindex': '0',
-                'aria-label': 'Go to step ' + (i + 1),
-                'style': 'cursor: pointer;'
-            });
+        stepTitlesNavs.forEach((stepTitle, index) => {
+            stepTitle.setAttribute('data-step-number', index);
+            stepTitle.setAttribute('role', 'button');
+            stepTitle.setAttribute('tabindex', '0');
+            stepTitle.setAttribute('aria-label', 'Go to step ' + (index + 1));
+            stepTitle.style.cursor = 'pointer';
         });
 
-        stepTitlesNavs.on('click keydown', function (e) {
-            // Handle keyboard events
-            if (e.type === 'keydown' && !(e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32)) {
+        if (this.clickableStepNavigationHandler) {
+            this.formElement.removeEventListener('click', this.clickableStepNavigationHandler);
+            this.formElement.removeEventListener('keydown', this.clickableStepNavigationHandler);
+        }
+
+        this.clickableStepNavigationHandler = (event) => {
+            const stepTitle = event.target.closest('.ff-step-titles li');
+            if (!stepTitle || !this.formElement.contains(stepTitle)) {
                 return;
             }
 
-            if (e.type === 'keydown') {
-                e.preventDefault();
+            if (event.type === 'keydown' && !(event.key === 'Enter' || event.key === ' ' || event.keyCode === 13 || event.keyCode === 32)) {
+                return;
             }
 
-            let formInstance = self.getFormInstance();
-            let $this = $(this);
+            if (event.type === 'keydown') {
+                event.preventDefault();
+            }
+
+            const formInstance = this.getFormInstance();
             let currentStep = 0;
-            const animDuration = self.fluentFormVars.stepAnimationDuration;
+            const animDuration = this.fluentFormVars.stepAnimationDuration;
 
             try {
-                let targetStep = $this.data('step-number');
-                if (isNaN(targetStep)) {
+                const targetStep = Number(stepTitle.getAttribute('data-step-number'));
+                if (Number.isNaN(targetStep)) {
                     return;
                 }
-                //validate other steps before target step before next step
-                $.each(formSteps, (index, steps) => {
-                    currentStep = index
+
+                formSteps.forEach((stepElement, index) => {
+                    currentStep = index;
                     if (index < targetStep) {
-                        const elements = $(steps).find(':input').not(':button').filter(function (i, el) {
-                            return !$(el).closest('.has-conditions').hasClass('ff_excluded');
-                        });
-                        elements.length && formInstance.validate(elements)
+                        const elements = this.getStepFields(stepElement);
+                        if (elements.length) {
+                            formInstance.validate(elements);
+                        }
                     }
                 });
 
-                self.updateSlider(targetStep, animDuration, true)
+                this.updateSlider(targetStep, animDuration, true)
                     .then(() => {
-                        self.handleFocus(animDuration);
+                        this.handleFocus(animDuration);
                     })
-                    .catch(error => {
-                        console.error("An error occurred during the slider update:", error);
+                    .catch((error) => {
+                        console.error('An error occurred during the slider update:', error);
                     });
-            } catch (e) {
-                if (!(e instanceof window.ffValidationError)) {
-                    throw e;
+            } catch (error) {
+                if (!(error instanceof window.ffValidationError)) {
+                    throw error;
                 }
-                self.updateSlider(currentStep, animDuration, true)
+
+                this.updateSlider(currentStep, animDuration, true)
                     .then(() => {
-                        self.handleFocus(animDuration);
+                        this.handleFocus(animDuration);
                     })
-                    .catch(error => {
-                        console.error("An error occurred during the slider update:", error);
+                    .catch((updateError) => {
+                        console.error('An error occurred during the slider update:', updateError);
                     });
-                formInstance.showErrorMessages(e.messages);
+
+                formInstance.showErrorMessages(error.messages);
                 formInstance.scrollToFirstError(350);
             }
-        });
+        };
+
+        this.formElement.addEventListener('click', this.clickableStepNavigationHandler);
+        this.formElement.addEventListener('keydown', this.clickableStepNavigationHandler);
     }
 
     /**
@@ -471,43 +631,41 @@ class FluentFormSlider {
      * @param {object} stepData - Step data with activeStep and totalSteps
      */
     stepProgressBarHandle(stepData) {
-        const $ = this.$;
-
-        if (this.$theForm.find('.ff-el-progress').length) {
-            const {totalSteps, activeStep} = stepData;
-            const completeness = (100 / totalSteps * (activeStep + 1));
-            const stepTitles = this.$theForm.find('.ff-el-progress-title li');
-            const progressBar = this.$theForm.find('.ff-step-header .ff-el-progress-bar');
-            const span = progressBar.find('span');
-
-            // Add smooth animation to progress bar
-            progressBar.css({
-                transition: 'width 0.3s ease-in-out',
-                width: completeness + '%'
-            });
-
-            if (completeness) {
-                progressBar.append(span.text(parseInt(completeness) + '%'))
-            } else {
-                span.empty();
-            }
-
-            let stepText = this.fluentFormVars.step_text;
-
-            let stepTitle = $(stepTitles[activeStep]).text();
-            stepText = stepText
-                .replace('%activeStep%', activeStep + 1)
-                .replace('%totalStep%', totalSteps)
-                .replace('%stepTitle%', stepTitle);
-
-            // Add ARIA live region for step announcements
-            this.$theForm.find('.ff-el-progress-status')
-                .html(stepText)
-                .attr('aria-live', 'polite');
-
-            stepTitles.css('display', 'none');
-            $(stepTitles[activeStep]).css('display', 'inline');
+        if (!this.query('.ff-el-progress')) {
+            return;
         }
+
+        const {totalSteps, activeStep} = stepData;
+        const completeness = (100 / totalSteps * (activeStep + 1));
+        const stepTitles = this.getProgressTitleElements();
+        const progressBar = this.query('.ff-step-header .ff-el-progress-bar');
+        const progressSpan = progressBar ? progressBar.querySelector('span') : null;
+
+        if (progressBar) {
+            progressBar.style.transition = 'width 0.3s ease-in-out';
+            progressBar.style.width = completeness + '%';
+        }
+
+        if (progressSpan) {
+            progressSpan.textContent = completeness ? parseInt(completeness) + '%' : '';
+        }
+
+        let stepText = this.fluentFormVars.step_text;
+        const currentStepTitle = stepTitles[activeStep] ? stepTitles[activeStep].textContent : '';
+        stepText = stepText
+            .replace('%activeStep%', activeStep + 1)
+            .replace('%totalStep%', totalSteps)
+            .replace('%stepTitle%', currentStepTitle);
+
+        const progressStatus = this.query('.ff-el-progress-status');
+        if (progressStatus) {
+            progressStatus.innerHTML = stepText;
+            progressStatus.setAttribute('aria-live', 'polite');
+        }
+
+        stepTitles.forEach((stepTitle, index) => {
+            stepTitle.style.display = index === activeStep ? 'inline' : 'none';
+        });
     }
 
         /**
@@ -519,10 +677,16 @@ class FluentFormSlider {
          *
          */
         //@Todo Check thi
-        isStepAllFieldsHidden($step) {
-            const $ = this.$;
-            const $groups = $step.find('.ff-el-group').not('.ff-custom_html');
-            if ($groups.length === 0) {
+        isStepAllFieldsHidden(stepElement) {
+            if (!stepElement) {
+                return false;
+            }
+
+            const groups = Array.from(stepElement.querySelectorAll('.ff-el-group')).filter((groupElement) => {
+                return !groupElement.classList.contains('ff-custom_html');
+            });
+
+            if (groups.length === 0) {
                 return false;
             }
 
@@ -539,26 +703,22 @@ class FluentFormSlider {
          * @return {Promise}
          */
         animateProgressToStep(activeStep, totalSteps, durationMs) {
-            const $ = this.$;
-            const progressBar = this.$theForm.find('.ff-step-header .ff-el-progress-bar');
-            if (!progressBar.length || !totalSteps) {
+            const progressBar = this.query('.ff-step-header .ff-el-progress-bar');
+            if (!progressBar || !totalSteps) {
                 return Promise.resolve();
             }
 
             const completeness = (100 / totalSteps * (activeStep + 1));
 
             if (durationMs && durationMs > 0) {
-                progressBar.css({ transition: `width ${durationMs}ms ease-in-out` });
+                progressBar.style.transition = `width ${durationMs}ms ease-in-out`;
             } else {
-                progressBar.css({ transition: 'none' });
+                progressBar.style.transition = 'none';
             }
 
-            if (progressBar[0]) {
-                // Force reflow to ensure transition is applied
-                progressBar[0].offsetHeight;
-            }
+            progressBar.offsetHeight;
 
-            progressBar.css('width', completeness + '%');
+            progressBar.style.width = completeness + '%';
 
             return new Promise(resolve => {
                 let resolved = false;
@@ -577,7 +737,7 @@ class FluentFormSlider {
                     }
                 };
 
-                progressBar.one('transitionend webkitTransitionEnd oTransitionEnd', onEnd);
+                progressBar.addEventListener('transitionend', onEnd, { once: true });
             });
         }
 
@@ -587,61 +747,90 @@ class FluentFormSlider {
      * @param {number} animDuration - Animation duration in milliseconds
      */
     registerStepNavigators(animDuration) {
-        const $ = this.$;
-        const self = this;
-
         this.handleFocus(animDuration);
+        if (this.stepNavigationHandler) {
+            this.formElement.removeEventListener('click', this.stepNavigationHandler);
+        }
 
-        $(this.formSelector).on('click', '.fluentform-step .step-nav button, .fluentform-step .step-nav img', function (e) {
-            const btn = $(this).data('action');
+        this.stepNavigationHandler = (event) => {
+            const navigationControl = event.target.closest('.fluentform-step .step-nav button, .fluentform-step .step-nav img');
+            if (!navigationControl || !this.formElement.contains(navigationControl)) {
+                return;
+            }
+
+            const buttonAction = navigationControl.getAttribute('data-action');
+            const currentStep = navigationControl.closest('.fluentform-step');
+            const formInstance = this.getFormInstance();
             let actionType = 'next';
-            let current = $(this).closest('.fluentform-step');
-            let formInstance = self.getFormInstance();
 
-            if (btn === 'next') {
+            if (buttonAction === 'next') {
                 try {
-                    const elements = current.find(':input').not(':button').filter(function (i, el) {
-                        return !$(el).closest('.has-conditions').hasClass('ff_excluded');
-                    });
-                    elements.length && formInstance.validate(elements);
-                    self.activeStep++;
-                } catch (e) {
-                    if (!(e instanceof window.ffValidationError)) {
-                        throw e;
+                    const stepFields = this.getStepFields(currentStep);
+                    if (stepFields.length) {
+                        formInstance.validate(stepFields);
                     }
-                    formInstance.showErrorMessages(e.messages);
+                    this.activeStep++;
+                } catch (error) {
+                    if (!(error instanceof window.ffValidationError)) {
+                        throw error;
+                    }
+
+                    formInstance.showErrorMessages(error.messages);
                     formInstance.scrollToFirstError(350);
                     return;
                 }
-                self.$theForm.trigger('ff_to_next_page', self.activeStep);
 
-                $(document).trigger('ff_to_next_page', {
-                    step: self.activeStep,
-                    form: self.$theForm
-                });
+                this.emitBridgeEvent(
+                    'ff_to_next_page',
+                    { form: this.formElement, step: this.activeStep },
+                    this.formElement,
+                    [this.activeStep]
+                );
+                this.emitBridgeEvent(
+                    'ff_to_next_page',
+                    { form: this.formElement, step: this.activeStep },
+                    document,
+                    [{ step: this.activeStep, form: this.getLegacyFormReference() }]
+                );
 
-                const formSteps = self.$theForm.find('.fluentform-step');
-                self.$theForm.trigger('ff_render_dynamic_smartcodes', $(formSteps[self.activeStep]));
+                const formSteps = this.getStepElements();
+                const activeStepElement = formSteps[this.activeStep];
+                this.emitBridgeEvent(
+                    'ff_render_dynamic_smartcodes',
+                    activeStepElement,
+                    this.formElement,
+                    [this.$ ? this.$(activeStepElement) : activeStepElement]
+                );
             } else {
-                self.activeStep--;
+                this.activeStep--;
                 actionType = 'prev';
-                self.$theForm.trigger('ff_to_prev_page', self.activeStep);
-                $(document).trigger('ff_to_prev_page', {
-                    step: self.activeStep,
-                    form: self.$theForm
-                });
+
+                this.emitBridgeEvent(
+                    'ff_to_prev_page',
+                    { form: this.formElement, step: this.activeStep },
+                    this.formElement,
+                    [this.activeStep]
+                );
+                this.emitBridgeEvent(
+                    'ff_to_prev_page',
+                    { form: this.formElement, step: this.activeStep },
+                    document,
+                    [{ step: this.activeStep, form: this.getLegacyFormReference() }]
+                );
             }
 
-            const autoScroll = self.$theForm.find('.ff-step-container').attr('data-disable_auto_focus') != 'yes';
+            const autoScroll = this.getStepContainer()?.getAttribute('data-disable_auto_focus') !== 'yes';
 
-            self.updateSlider(self.activeStep, animDuration, autoScroll, actionType)
+            this.updateSlider(this.activeStep, animDuration, autoScroll, actionType)
                 .then(() => {
-                    self.handleFocus(animDuration);
+                    this.handleFocus(animDuration);
                 })
-                .catch(error => {
-                    console.error("An error occurred during the slider update:", error);
+                .catch((error) => {
+                    console.error('An error occurred during the slider update:', error);
                 });
-        });
+        };
+
+        this.formElement.addEventListener('click', this.stepNavigationHandler);
     }
 
     /**
@@ -653,67 +842,87 @@ class FluentFormSlider {
      * @return {Promise} Promise that resolves when animation is complete
      */
     updateSlider(goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
-        const $ = this.$;
-        const self = this;
-
         return new Promise((resolve) => {
-            $('div' + this.formSelector + '_errors').empty();
+            const errorContainer = document.querySelector('div' + this.formSelector + '_errors');
+            if (errorContainer) {
+                errorContainer.innerHTML = '';
+            }
+
             this.activeStep = goBackToStep;
 
-            const stepTitles = this.$theForm.find('.ff-step-titles li'),
-                formSteps = this.$theForm.find('.fluentform-step'),
-                totalSteps = formSteps.length;
+            const stepTitles = this.getStepTitleElements();
+            const formSteps = this.getStepElements();
+            const totalSteps = formSteps.length;
 
             // Pre-skip steps that are fully hidden due to conditions before making any visible change
             if (!window.ff_disable_auto_step && totalSteps) {
                 // Determine direction by comparing desired step with current DOM active index
-                const currentDomActiveIndex = self.$theForm.find('.fluentform-step')
-                    .index(self.$theForm.find('.fluentform-step.active'));
+                const currentDomActiveIndex = formSteps.findIndex((stepElement) => stepElement.classList.contains('active'));
                 const isNavigatingBackward = actionType === 'prev' || (currentDomActiveIndex > -1 && this.activeStep < currentDomActiveIndex);
 
                 if (isNavigatingBackward) {
                     // Walk backwards until a non-empty step is found
-                    while (this.activeStep > 0 && this.isStepAllFieldsHidden($(formSteps[this.activeStep]))) {
+                    while (this.activeStep > 0 && this.isStepAllFieldsHidden(formSteps[this.activeStep])) {
                         this.activeStep--;
                     }
                 } else {
                     // Walk forward until a non-empty step is found
-                    while (this.activeStep < totalSteps - 1 && this.isStepAllFieldsHidden($(formSteps[this.activeStep]))) {
+                    while (this.activeStep < totalSteps - 1 && this.isStepAllFieldsHidden(formSteps[this.activeStep])) {
                         this.activeStep++;
                     }
                 }
             }
 
-            formSteps.css('display', 'none').removeClass('active').attr('aria-hidden', 'true');
-            $(formSteps[this.activeStep]).css('display', 'block').addClass('active').attr('aria-hidden', 'false');
+            formSteps.forEach((stepElement) => {
+                stepElement.style.display = 'none';
+                stepElement.classList.remove('active');
+                stepElement.setAttribute('aria-hidden', 'true');
+            });
+
+            const activeStepElement = formSteps[this.activeStep];
+            if (activeStepElement) {
+                activeStepElement.style.display = 'block';
+                activeStepElement.classList.add('active');
+                activeStepElement.setAttribute('aria-hidden', 'false');
+            }
 
             // Change step title
-            stepTitles.removeClass('ff_active ff_completed');
-            $.each([...Array(this.activeStep).keys()], (step) => {
-                $($(stepTitles[step])).addClass('ff_completed');
+            stepTitles.forEach((stepTitle) => {
+                stepTitle.classList.remove('ff_active', 'ff_completed');
             });
-            $(stepTitles[this.activeStep]).addClass('ff_active');
+            [...Array(this.activeStep).keys()].forEach((stepIndex) => {
+                if (stepTitles[stepIndex]) {
+                    stepTitles[stepIndex].classList.add('ff_completed');
+                }
+            });
+            if (stepTitles[this.activeStep]) {
+                stepTitles[this.activeStep].classList.add('ff_active');
+            }
 
             const scrollTop = function () {
                 if (window.ff_disable_step_scroll) {
                     return;
                 }
 
-                const scrollElement = self.$theForm.find('.ff_step_start');
+                const scrollElement = this.query('.ff_step_start');
+                if (!scrollElement) {
+                    return;
+                }
                 let formTop;
 
                 if (window.ff_scroll_top_offset) {
                     formTop = window.ff_scroll_top_offset;
                 } else {
-                    formTop = scrollElement.offset().top - 100;
+                    formTop = scrollElement.getBoundingClientRect().top + window.scrollY - 100;
                 }
 
-                const isInViewport = function ($el) {
-                    const elementTop = $el.offset().top;
-                    const elementBottom = elementTop + $el.outerHeight();
+                const isInViewport = function (element) {
+                    const rect = element.getBoundingClientRect();
+                    const elementTop = rect.top;
+                    const elementBottom = rect.bottom;
 
-                    const viewportTop = $(window).scrollTop();
-                    const viewportBottom = viewportTop + $(window).height();
+                    const viewportTop = 0;
+                    const viewportBottom = window.innerHeight;
 
                     return elementBottom > viewportTop && elementTop < viewportBottom;
                 };
@@ -721,18 +930,21 @@ class FluentFormSlider {
                 const isVisible = isInViewport(scrollElement);
 
                 if (!isVisible || window.ff_force_scroll) {
-                    // Smoother scrolling
-                    $('html, body').animate({
-                        scrollTop: formTop
-                    }, 500, 'swing');
+                    window.scrollTo({
+                        top: formTop,
+                        behavior: 'smooth'
+                    });
                 }
-            };
+            }.bind(this);
 
-            const animationType = $(formSteps[this.activeStep]).closest('.ff-step-container').data('animation_type');
+            const animationType = this.getStepContainer()?.dataset.animation_type || 'none';
 
             // Get the current and next step elements
-            const $currentStep = $(formSteps[this.activeStep]);
-            $currentStep.find('.step-nav button, .step-nav img').css('visibility', 'hidden');
+            if (activeStepElement) {
+                activeStepElement.querySelectorAll('.step-nav button, .step-nav img').forEach((element) => {
+                    element.style.visibility = 'hidden';
+                });
+            }
 
             // Prepare synchronized progress animation
             // Alias totalSteps just for separation of concern when computing completeness for the progress bar
@@ -758,51 +970,49 @@ class FluentFormSlider {
 
             const completeStepChange = function () {
                 let isFormReset = goBackToStep === 0 && !isScrollTop;
-                let isFormSubmitting = self.$theForm.hasClass('ff_submitting');
+                let isFormSubmitting = this.formElement.classList.contains('ff_submitting');
 
                 // Fire ajax request to persist the step state/data
-                if (self.stepPersistency && !self.isPopulatingStepData && !isFormReset && !isFormSubmitting) {
-                    self.saveStepData(self.$theForm, self.activeStep).then(response => {
+                if (this.stepPersistency && !this.isPopulatingStepData && !isFormReset && !isFormSubmitting) {
+                    this.saveStepData(this.formElement, this.activeStep).then(response => {
                         // console.log(response);
                     });
                 }
 
                 // Update progress bar and titles after animation completes
-                self.stepProgressBarHandle({activeStep: self.activeStep, totalSteps});
+                this.stepProgressBarHandle({activeStep: this.activeStep, totalSteps});
 
                 // Show submit button on last step
-                if (formSteps.last().hasClass('active')) {
-                    self.$theForm.find('button[type="submit"]').css('visibility', 'visible');
-                } else {
-                    self.$theForm.find('button[type="submit"]').css('visibility', 'hidden');
-                }
+                this.queryAll('button[type="submit"]').forEach((buttonElement) => {
+                    buttonElement.style.visibility = formSteps[formSteps.length - 1]?.classList.contains('active') ? 'visible' : 'hidden';
+                });
 
                 // Step skipping logic
                 if (!window.ff_disable_auto_step) {
-                    let $activeStepDom = self.$theForm.find('.fluentform-step.active');
-                    let childDomCounts = self.$theForm.find('.fluentform-step.active > div').length - 1;
-                    let hiddenDomCounts = self.$theForm.find('.fluentform-step.active > .ff_excluded').length;
+                    const activeStepDom = this.getActiveStepElement();
+                    let childDomCounts = activeStepDom ? activeStepDom.querySelectorAll(':scope > div').length - 1 : 0;
+                    let hiddenDomCounts = activeStepDom ? activeStepDom.querySelectorAll(':scope > .ff_excluded').length : 0;
 
-                    if (self.$theForm.find('.fluentform-step.active > .ff-t-container').length) {
-                        childDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container').length;
-                        childDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
-                        hiddenDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
+                    if (activeStepDom && activeStepDom.querySelectorAll(':scope > .ff-t-container').length) {
+                        childDomCounts -= activeStepDom.querySelectorAll(':scope > .ff-t-container').length;
+                        childDomCounts += activeStepDom.querySelectorAll(':scope > .ff-t-container > .ff-t-cell > div').length;
+                        hiddenDomCounts += activeStepDom.querySelectorAll(':scope > .ff-t-container > .ff-t-cell > .ff_excluded').length;
 
-                        if (self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
-                            hiddenDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
-                            hiddenDomCounts -= self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
-                            hiddenDomCounts += self.$theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+                        if (activeStepDom.querySelectorAll(':scope > .ff-t-container.ff_excluded').length) {
+                            hiddenDomCounts -= activeStepDom.querySelectorAll(':scope > .ff-t-container.ff_excluded').length;
+                            hiddenDomCounts -= activeStepDom.querySelectorAll(':scope > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
+                            hiddenDomCounts += activeStepDom.querySelectorAll(':scope > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
                         }
                     }
 
                     if (childDomCounts === hiddenDomCounts) {
                         // Step is empty, skip to next step with faster animation
                         // This recursively calls updateSlider until a non-empty step is found
-                        const nextStep = actionType === 'prev' ? self.activeStep - 1 : self.activeStep + 1;
+                        const nextStep = actionType === 'prev' ? this.activeStep - 1 : this.activeStep + 1;
                         if (nextStep >= 0 && nextStep < totalSteps) {
-                            const nextStepAnimationType = $(formSteps[nextStep]).closest('.ff-step-container').data('animation_type');
+                            const nextStepAnimationType = this.getStepContainer()?.dataset.animation_type || 'none';
                             const fastAnimDuration = (nextStepAnimationType === 'none') ? 50 : 100;
-                            self.updateSlider(nextStep, fastAnimDuration, isScrollTop, actionType)
+                            this.updateSlider(nextStep, fastAnimDuration, isScrollTop, actionType)
                                 .then(() => {
                                     resolve();
                                 })
@@ -815,82 +1025,79 @@ class FluentFormSlider {
                     }
                 }
 
-                self.$theForm.find('.fluentform-step.active').find('.step-nav button[data-action="next"]').css('visibility', 'visible');
-                self.$theForm.find('.fluentform-step.active').find('.step-nav button[data-action="prev"]').css('visibility', 'visible');
-                self.$theForm.find('.fluentform-step.active').find('.step-nav img[data-action="next"]').css('visibility', 'visible');
-                self.$theForm.find('.fluentform-step.active').find('.step-nav img[data-action="prev"]').css('visibility', 'visible');
+                const visibleActiveStep = this.getActiveStepElement();
+                if (visibleActiveStep) {
+                    visibleActiveStep.querySelectorAll('.step-nav button[data-action="next"], .step-nav button[data-action="prev"], .step-nav img[data-action="next"], .step-nav img[data-action="prev"]').forEach((element) => {
+                        element.style.visibility = 'visible';
+                    });
+                }
 
                 resolve(); // Resolve the promise after animations, scrolling, and step skipping logic
-            };
+            }.bind(this);
 
             let contentPromise;
             switch (animationType) {
                 case 'slide':
                     // Prepare for slide animation with enhanced smoothness
-                    $currentStep.css({
-                        display: 'block',
-                        position: 'relative',
-                        left: this.isRtl ? '-100%' : '100%',  // Start position outside viewport
-                        opacity: 0,
-                        transition: `all ${animDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1.0)` // Smooth easing curve
-                    });
-
-                    // Force browser reflow to ensure transition works
-                    $currentStep[0].offsetHeight;
-
-                    $currentStep.css({
-                        left: '0%',
-                        opacity: 1
-                    });
+                    if (activeStepElement) {
+                        activeStepElement.style.display = 'block';
+                        activeStepElement.style.position = 'relative';
+                        activeStepElement.style.left = this.isRtl ? '-100%' : '100%';
+                        activeStepElement.style.opacity = '0';
+                        activeStepElement.style.transition = `all ${animDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1.0)`;
+                        activeStepElement.offsetHeight;
+                        activeStepElement.style.left = '0%';
+                        activeStepElement.style.opacity = '1';
+                    }
 
                     contentPromise = new Promise((res) => setTimeout(() => {
-                        $currentStep.css({ position: '', left: '', transition: '' });
+                        if (activeStepElement) {
+                            activeStepElement.style.position = '';
+                            activeStepElement.style.left = '';
+                            activeStepElement.style.transition = '';
+                        }
                         res();
                     }, animDuration + 50));
                     break;
 
                 case 'fade':
                     // Enhanced fade animation with CSS transitions
-                    $currentStep.css({
-                        display: 'block',
-                        opacity: 0,
-                        transition: `opacity ${animDuration}ms ease-in-out`
-                    });
-
-                    // Force browser reflow
-                    $currentStep[0].offsetHeight;
-
-                    // Trigger fade in
-                    $currentStep.css('opacity', 1);
+                    if (activeStepElement) {
+                        activeStepElement.style.display = 'block';
+                        activeStepElement.style.opacity = '0';
+                        activeStepElement.style.transition = `opacity ${animDuration}ms ease-in-out`;
+                        activeStepElement.offsetHeight;
+                        activeStepElement.style.opacity = '1';
+                    }
 
                     contentPromise = new Promise((res) => setTimeout(() => {
-                        $currentStep.css('transition', '');
+                        if (activeStepElement) {
+                            activeStepElement.style.transition = '';
+                        }
                         res();
                     }, animDuration + 50));
                     break;
 
                 case 'slide_down':
                     // Enhanced slide down with height transition
-                    $currentStep.css({
-                        display: 'block',
-                        opacity: 0,
-                        maxHeight: '0',
-                        overflow: 'hidden',
-                        transition: `all ${animDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1.0)`
-                    });
-
-                    // Force reflow
-                    $currentStep[0].offsetHeight;
-
-                    // Get target height then apply it
-                    const targetHeight = $currentStep[0].scrollHeight;
-                    $currentStep.css({
-                        maxHeight: targetHeight + 'px',
-                        opacity: 1
-                    });
+                    if (activeStepElement) {
+                        activeStepElement.style.display = 'block';
+                        activeStepElement.style.opacity = '0';
+                        activeStepElement.style.maxHeight = '0';
+                        activeStepElement.style.overflow = 'hidden';
+                        activeStepElement.style.transition = `all ${animDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1.0)`;
+                        activeStepElement.offsetHeight;
+                        const targetHeight = activeStepElement.scrollHeight;
+                        activeStepElement.style.maxHeight = targetHeight + 'px';
+                        activeStepElement.style.opacity = '1';
+                    }
 
                     contentPromise = new Promise((res) => setTimeout(() => {
-                        $currentStep.css({ maxHeight: '', overflow: '', transition: '' });
+                        if (activeStepElement) {
+                            activeStepElement.style.maxHeight = '';
+                            activeStepElement.style.overflow = '';
+                            activeStepElement.style.transition = '';
+                        }
                         res();
                     }, animDuration + 50));
                     break;
@@ -924,31 +1131,37 @@ class FluentFormSlider {
      * @param {number} animDuration - Animation duration in milliseconds
      */
     handleFocus(animDuration) {
-        const $ = this.$;
         const self = this;
         let isAnimating = false;
 
         const getCurrentStepIndex = function () {
-            return self.$theForm.find(".fluentform-step").index(self.$theForm.find(".fluentform-step.active"));
+            return self.getStepElements().findIndex((stepElement) => stepElement.classList.contains('active'));
         }
 
         const focusOnStep = function (step, shouldFocus = false) {
-            const autoFocusEnabled = self.$theForm.find(".ff-step-container").attr("data-disable_auto_focus") != "yes";
+            const autoFocusEnabled = self.getStepContainer()?.getAttribute("data-disable_auto_focus") !== "yes";
 
             if (!self.isInitialLoad) {
                 if (!autoFocusEnabled) {
                     const focusOnStepChange = !!window.fluentFormVars?.step_change_focus;
                     if (focusOnStepChange && !window.ff_disable_step_scroll) {
                         setTimeout(() => {
-                            $(`${self.formSelector} .fluentform-step.active`).attr("tabindex", "-1").focus().removeAttr("tabindex");
+                            const activeStep = self.getActiveStepElement();
+                            if (activeStep) {
+                                activeStep.setAttribute('tabindex', '-1');
+                                activeStep.focus();
+                                activeStep.removeAttribute('tabindex');
+                            }
                         }, animDuration);
                     }
                 } else if (!window.ff_disable_step_scroll) {
-                    const focusableElements = step.find("input, .ff-custom_html, select, textarea, button, a").filter(":visible");
+                    const focusableElements = Array.from(step.querySelectorAll('input, .ff-custom_html, select, textarea, button, a')).filter((element) => {
+                        return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
+                    });
 
                     if (focusableElements.length && shouldFocus) {
                         setTimeout(() => {
-                            focusableElements.first().focus();
+                            focusableElements[0].focus();
                         }, animDuration + 50);
                     }
                 }
@@ -961,12 +1174,19 @@ class FluentFormSlider {
             isAnimating = true;
             setTimeout(() => {
                 isAnimating = false;
-                focusOnStep(self.$theForm.find(".fluentform-step.active"), true);
+                const activeStep = self.getActiveStepElement();
+                if (activeStep) {
+                    focusOnStep(activeStep, true);
+                }
             }, animDuration + 50);
         }
 
         const setupKeyboardNavigation = function () {
-            self.$theForm.off("keydown.stepNavigation").on("keydown.stepNavigation", function (e) {
+            if (self.stepKeyboardHandler) {
+                self.formElement.removeEventListener('keydown', self.stepKeyboardHandler);
+            }
+
+            self.stepKeyboardHandler = function (e) {
                 if (isAnimating) return;
 
                 // Only handle space key, let tab work naturally
@@ -976,35 +1196,46 @@ class FluentFormSlider {
                     return; // Let tab navigation work naturally
                 }
 
-                const $nextButton = $(`${self.formSelector} .fluentform-step.active .ff-btn-next`);
-                const $prevButton = $(`${self.formSelector} .fluentform-step.active .ff-btn-prev`);
+                const nextButton = self.query('.fluentform-step.active .ff-btn-next');
+                const prevButton = self.query('.fluentform-step.active .ff-btn-prev');
 
-                if (document.activeElement === $nextButton[0]) {
+                if (document.activeElement === nextButton) {
                     e.preventDefault();
-                    $nextButton.click();
+                    nextButton.click();
                     return;
                 }
 
-                if (document.activeElement === $prevButton[0]) {
+                if (document.activeElement === prevButton) {
                     e.preventDefault();
-                    $prevButton.click();
+                    prevButton.click();
                     return;
                 }
-            });
+            };
+
+            self.formElement.addEventListener('keydown', self.stepKeyboardHandler);
         }
 
         // Setup keyboard navigation
         setupKeyboardNavigation();
 
         // Handle focus after step changes, including conditional skips
-        this.$theForm.on('ff_to_next_page ff_to_prev_page', function () {
-            handleStepChange();
-        });
+        if (this.stepFocusRemover) {
+            this.stepFocusRemover();
+        }
+
+        if (this.getBridge() && typeof this.getBridge().onEvent === 'function') {
+            this.stepFocusRemover = this.getBridge().onEvent(this.formElement, ['ff_to_next_page', 'ff_to_prev_page'], function () {
+                handleStepChange();
+            });
+        }
 
         // Only focus if autoFocus is enabled, it's not the first step, and it's not the initial load
-        const autoFocusEnabled = this.$theForm.find(".ff-step-container").attr("data-disable_auto_focus") !== "yes";
+        const autoFocusEnabled = this.getStepContainer()?.getAttribute("data-disable_auto_focus") !== "yes";
         if (autoFocusEnabled && getCurrentStepIndex() !== 0 && !this.isInitialLoad) {
-            focusOnStep($(`${this.formSelector} .fluentform-step.active`), true);
+            const activeStep = this.getActiveStepElement();
+            if (activeStep) {
+                focusOnStep(activeStep, true);
+            }
         }
 
         this.isInitialLoad = false;
@@ -1017,89 +1248,116 @@ class FluentFormSlider {
      * @return {Promise} Ajax promise
      */
     saveStepData($theForm, activeStep) {
-        const $ = this.$;
-
-        const $inputs = $theForm.find(':input').filter(function (i, el) {
-            return !$(el).closest('.has-conditions').hasClass('ff_excluded');
+        const formElement = resolveFormElement($theForm) || this.formElement;
+        const inputs = Array.from(formElement.querySelectorAll('input, select, textarea')).filter((element) => {
+            return !this.isConditionallyExcluded(element);
         });
 
-        $inputs.filter((i, el) => {
-            let $el = $(el);
-            return $el.parents().hasClass('ff_repeater_table') &&
-                $el.attr('type') == 'select' &&
-                !$el.val();
-        }).prepend('<option selected disabled />');
+        const params = new URLSearchParams();
 
-        let inputData = $inputs.serialize();
+        inputs.forEach((inputElement) => {
+            if (!inputElement.name || inputElement.disabled || inputElement.type === 'file') {
+                return;
+            }
 
-        let hasFiles = false;
-        $.each($theForm.find('[type=file]'), function (index, fileInput) {
-            const params = {}, fileInputName = fileInput.name + '[]';
-            params[fileInputName] = [];
+            if (inputElement.closest('.ff_repeater_table') && inputElement.tagName === 'SELECT' && !inputElement.value) {
+                return;
+            }
 
-            $(fileInput)
-                .closest('div')
-                .find('.ff-uploaded-list')
-                .find('.ff-upload-preview[data-src]')
-                .each(function (i, div) {
-                    params[fileInputName][i] = $(this).data('src');
+            if ((inputElement.type === 'checkbox' || inputElement.type === 'radio') && !inputElement.checked) {
+                return;
+            }
+
+            if (inputElement.tagName === 'SELECT' && inputElement.multiple) {
+                Array.from(inputElement.selectedOptions).forEach((selectedOption) => {
+                    params.append(inputElement.name, selectedOption.value);
                 });
+                return;
+            }
 
-            $.each(params, function (k, v) {
-                if (v.length) {
-                    const obj = {};
-                    obj[k] = v;
-                    inputData += '&' + $.param(obj);
-                    hasFiles = true;
-                }
+            params.append(inputElement.name, inputElement.value);
+        });
+
+        Array.from(formElement.querySelectorAll('[type=file]')).forEach((fileInput) => {
+            const fileInputName = fileInput.name + '[]';
+            const uploadedItems = Array.from(
+                fileInput.closest('div')?.querySelectorAll('.ff-uploaded-list .ff-upload-preview[data-src]') || []
+            );
+
+            uploadedItems.forEach((previewElement) => {
+                params.append(fileInputName, previewElement.getAttribute('data-src'));
             });
         });
 
         const formData = {
             active_step: activeStep,
-            data: inputData,
-            form_id: $theForm.data('form_id'),
+            data: params.toString(),
+            form_id: formElement.dataset.form_id,
             action: 'fluentform_step_form_save_data',
             nonce: this.fluentFormVars?.nonce
         };
 
-        return $.post(this.fluentFormVars.ajaxUrl, formData);
+        return fetch(this.fluentFormVars.ajaxUrl, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: new URLSearchParams(formData).toString()
+        }).then((response) => response.json());
     }
 
     /**
      * Auto slider for single field steps
      */
     maybeAutoSlider() {
-        const $ = this.$;
-        const self = this;
-
-        let autoSlider = this.$theForm.find('.ff-step-container').attr('data-enable_auto_slider') == 'yes';
+        let autoSlider = this.getStepContainer()?.getAttribute('data-enable_auto_slider') === 'yes';
         if (!autoSlider) {
             return;
         }
 
-        const maybeAction = function ($el) {
-            let count = $el.closest('.fluentform-step.active').find('.ff-el-group:not(.ff_excluded):not(.ff-custom_html)').length;
-            if (count == 1) {
-                let condCounts = $el.closest('.fluentform-step.active').find('.ff_excluded').length;
+        const maybeAction = (element) => {
+            const activeStep = element.closest('.fluentform-step.active');
+            if (!activeStep) {
+                return;
+            }
+
+            let count = activeStep.querySelectorAll('.ff-el-group:not(.ff_excluded):not(.ff-custom_html)').length;
+            if (count === 1) {
+                let condCounts = activeStep.querySelectorAll('.ff_excluded').length;
                 if (condCounts) {
                     let timeout = window.ffTransitionTimeOut || 500;
                     setTimeout(() => {
-                        $el.closest('.fluentform-step.active').find('.ff-btn-next').trigger('click');
+                        activeStep.querySelector('.ff-btn-next')?.click();
                     }, timeout);
                 } else {
-                    $el.closest('.fluentform-step.active').find('.ff-btn-next').trigger('click');
+                    activeStep.querySelector('.ff-btn-next')?.click();
                 }
             }
+        };
+
+        if (this.autoSliderClickHandler) {
+            this.formElement.removeEventListener('click', this.autoSliderClickHandler);
+        }
+        if (this.autoSliderChangeHandler) {
+            this.formElement.removeEventListener('change', this.autoSliderChangeHandler);
         }
 
-        this.$theForm.find('.ff-el-form-check-radio,.ff-el-net-label, .ff-el-ratings label').on('click', function () {
-            maybeAction($(this));
-        });
+        this.autoSliderClickHandler = (event) => {
+            const triggerElement = event.target.closest('.ff-el-form-check-radio, .ff-el-net-label, .ff-el-ratings label');
+            if (triggerElement) {
+                maybeAction(triggerElement);
+            }
+        };
 
-        this.$theForm.find('select').on('change', function () {
-            maybeAction($(this));
-        });
+        this.autoSliderChangeHandler = (event) => {
+            if (event.target.matches('select')) {
+                maybeAction(event.target);
+            }
+        };
+
+        this.formElement.addEventListener('click', this.autoSliderClickHandler);
+        this.formElement.addEventListener('change', this.autoSliderChangeHandler);
     }
 
     /**

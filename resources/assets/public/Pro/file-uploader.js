@@ -1,4 +1,18 @@
 export default function ($, $form, form, fluentFormVars, formSelector) {
+    const getMaxFileCountLimit = function (rules) {
+        if (!rules || !('max_file_count' in rules)) {
+            return null;
+        }
+
+        const limit = Number(rules.max_file_count.value);
+
+        if (!Number.isFinite(limit) || limit < 1) {
+            return null;
+        }
+
+        return limit;
+    };
+
     /**
      * Get translated upload message
      * @param {string} key - Message key
@@ -48,10 +62,10 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
 
             // Set maximum allowed files count protection
             var rules = form.rules[element.prop('name')];
-            var maxFiles = rules['max_file_count']['value'];
+            var maxFiles = getMaxFileCountLimit(rules);
 
             if ('max_file_count' in rules) {
-                rules['max_file_count']['remaining'] = Number(maxFiles);
+                rules['max_file_count']['remaining'] = maxFiles;
             }
 
             // Set html accept property for file types
@@ -87,7 +101,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     $(formSelector + '_errors').empty();
                     $(this).closest('div').find('.error').html('');
                     var remaining = rules['max_file_count']['remaining'];
-                    if (!remaining || data.files.length > remaining) {
+                    if (remaining !== null && data.files.length > remaining) {
                         var msg = 'Maximum 1 file is allowed!';
                         msg = maxFiles > 1 ? 'Maximum ' + maxFiles + ' files are allowed!' : msg;
                         if (rules.max_file_count && rules.max_file_count.message) {
@@ -235,7 +249,9 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                                 .find('.ff-upload-progress-inline-text')
                                 .text(fluentFormVars.upload_completed_txt);
 
-                            rules['max_file_count']['remaining'] -= 1;
+                            if (rules['max_file_count']['remaining'] !== null) {
+                                rules['max_file_count']['remaining'] -= 1;
+                            }
                             data.context.attr('data-src', data.result.data.files[0].url);
                             data.context.find('.ff-upload-remove').attr({
                                 'data-href': data.result.data.files[0].file,
@@ -282,7 +298,9 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
             });
 
             $el.on('change_remaining', function (e, data) {
-                rules['max_file_count']['remaining'] += data;
+                if (rules['max_file_count']['remaining'] !== null) {
+                    rules['max_file_count']['remaining'] += data;
+                }
             });
 
         });

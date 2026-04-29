@@ -1,11 +1,14 @@
 class ConditionApp {
 
-    constructor(fields, formData) {
+    constructor(fields, formData, getFieldElement) {
         this.fields = fields;
         this.formData = formData;
         this.counter = 0;
         this.field_statues = {};
         this.elementCache = {};
+        this.getFieldElement = typeof getFieldElement === 'function' ? getFieldElement : function () {
+            return null;
+        };
     }
 
     setFields(fields) {
@@ -125,10 +128,10 @@ class ConditionApp {
     getItemEvaluateValue(item, val) {
         val = val || null;
 
-        let $el = this.elementCache[item.field];
-        if (!$el || !$el.length) {
-            $el = jQuery(`[name='${item.field}']`);
-            this.elementCache[item.field] = $el;
+        let fieldElement = this.elementCache[item.field];
+        if (!fieldElement) {
+            fieldElement = this.getFieldElement(item.field);
+            this.elementCache[item.field] = fieldElement;
         }
 
         if (item.operator == '=') {
@@ -142,8 +145,8 @@ class ConditionApp {
                 return val !== null && val.indexOf(item.value) != -1;
             }
 
-            if ($el.hasClass('ff_numeric') ) {
-                return this.parseFormattedNumericValue($el, val) == this.parseFormattedNumericValue($el, item.value);
+            if (this.isNumericField(fieldElement)) {
+                return this.parseFormattedNumericValue(fieldElement, val) == this.parseFormattedNumericValue(fieldElement, item.value);
             }
 
             return val == item.value;
@@ -152,19 +155,19 @@ class ConditionApp {
                 return val !== null && val.indexOf(item.value) == -1;
             }
 
-            if ($el.hasClass('ff_numeric') ) {
-                return this.parseFormattedNumericValue($el, val) != this.parseFormattedNumericValue($el, item.value);
+            if (this.isNumericField(fieldElement)) {
+                return this.parseFormattedNumericValue(fieldElement, val) != this.parseFormattedNumericValue(fieldElement, item.value);
             }
 
             return val != item.value;
         } else if (item.operator == '>') {
-            return val && this.parseFormattedNumericValue($el, val) > this.parseFormattedNumericValue($el, item.value);
+            return val && this.parseFormattedNumericValue(fieldElement, val) > this.parseFormattedNumericValue(fieldElement, item.value);
         } else if (item.operator == '<') {
-            return val && this.parseFormattedNumericValue($el, val) < this.parseFormattedNumericValue($el, item.value);
+            return val && this.parseFormattedNumericValue(fieldElement, val) < this.parseFormattedNumericValue(fieldElement, item.value);
         } else if (item.operator == '>=') {
-            return val && this.parseFormattedNumericValue($el, val) >= this.parseFormattedNumericValue($el, item.value);
+            return val && this.parseFormattedNumericValue(fieldElement, val) >= this.parseFormattedNumericValue(fieldElement, item.value);
         } else if (item.operator == '<=') {
-            return val && this.parseFormattedNumericValue($el, val) <= this.parseFormattedNumericValue($el, item.value);
+            return val && this.parseFormattedNumericValue(fieldElement, val) <= this.parseFormattedNumericValue(fieldElement, item.value);
         } else if (item.operator == 'startsWith') {
             return val && val.startsWith(item.value);
         } else if (item.operator == 'endsWith') {
@@ -195,9 +198,13 @@ class ConditionApp {
         return new RegExp(regex, 'g');
     }
 
-    parseFormattedNumericValue($el, val) {
-        if ($el.hasClass('ff_numeric') ) {
-            let formatConfig = JSON.parse($el.attr('data-formatter'));
+    isNumericField(fieldElement) {
+        return !!(fieldElement && fieldElement.classList && fieldElement.classList.contains('ff_numeric'));
+    }
+
+    parseFormattedNumericValue(fieldElement, val) {
+        if (this.isNumericField(fieldElement)) {
+            let formatConfig = JSON.parse(fieldElement.getAttribute('data-formatter'));
 
             return currency(val, formatConfig).value;
         }

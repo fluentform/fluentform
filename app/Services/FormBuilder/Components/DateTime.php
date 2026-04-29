@@ -152,36 +152,67 @@ class DateTime extends BaseComponent
         add_action('wp_footer', function () use ($config, $customConfigObject, $id, $form) {
             ?>
             <script type="text/javascript">
-                jQuery(document).ready(function($) {
+                (function () {
+                    var formSelector = '.<?php echo esc_attr($form->instance_css_class); ?>';
+                    var inputId = '<?php echo esc_attr($id); ?>';
+
                     function initPicker() {
-                        if (typeof flatpickr == 'undefined') {
+                        if (typeof window.flatpickr === 'undefined') {
                             return;
                         }
-                        flatpickr.localize(window.fluentFormVars.date_i18n);
-                        var config = <?php echo fluentform_kses_js($config); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped  -- $config is escaped using fluentform_kses_js ?> ;
-                        try {
-                            var customConfig = <?php echo fluentform_kses_js($customConfigObject); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $config is escaped using fluentform_kses_js ?>;
-                        } catch (e) {
-                            var customConfig = {};
+
+                        var dateInput = document.getElementById(inputId);
+                        if (!dateInput) {
+                            return;
                         }
 
-                        var config = $.extend({}, config, customConfig);
-                        if (!config.locale) {
-                            config.locale = 'default';
+                        if (dateInput._flatpickr) {
+                            dateInput._flatpickr.destroy();
                         }
-                        if (jQuery('#<?php echo esc_attr($id); ?>').length) {
-                            flatpickr('#<?php echo esc_attr($id); ?>', config);
+
+                        if (window.fluentFormVars && window.fluentFormVars.date_i18n) {
+                            window.flatpickr.localize(window.fluentFormVars.date_i18n);
                         }
+
+                        var pickerConfig = <?php echo fluentform_kses_js($config); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped  -- $config is escaped using fluentform_kses_js ?>;
+                        var customConfig = {};
+
+                        try {
+                            customConfig = <?php echo fluentform_kses_js($customConfigObject); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $config is escaped using fluentform_kses_js ?>;
+                        } catch (e) {
+                            customConfig = {};
+                        }
+
+                        pickerConfig = Object.assign({}, pickerConfig, customConfig);
+                        if (!pickerConfig.locale) {
+                            pickerConfig.locale = 'default';
+                        }
+
+                        window.flatpickr(dateInput, pickerConfig);
                     }
-                    initPicker();
-                    $(document).on(
-                        'reInitExtras',
-                        '.<?php echo esc_attr($form->instance_css_class); ?>',
-                        function() {
+
+                    function onReady(callback) {
+                        if (document.readyState === 'loading') {
+                            document.addEventListener('DOMContentLoaded', callback, { once: true });
+                            return;
+                        }
+
+                        callback();
+                    }
+
+                    document.addEventListener('reInitExtras', function (event) {
+                        var eventTarget = event.target;
+                        if (!eventTarget || typeof eventTarget.closest !== 'function') {
+                            return;
+                        }
+
+                        if (eventTarget.closest(formSelector)) {
                             initPicker();
                         }
-                    );
-                });
+                    });
+
+                    onReady(initPicker);
+                })();
             </script>
             <?php
         }, 99999);

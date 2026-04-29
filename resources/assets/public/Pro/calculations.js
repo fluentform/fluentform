@@ -41,8 +41,10 @@ export const mexpToken = [
         token: 'max',
         show: 'max',
         value: function (a, b) {
-            if (a > b)
+            if (a > b) {
                 return a;
+            }
+
             return b;
         }
     },
@@ -51,26 +53,26 @@ export const mexpToken = [
         token: 'min',
         show: 'min',
         value: function (a, b) {
-            if (a < b)
+            if (a < b) {
                 return a;
+            }
+
             return b;
         }
     }
 ];
 
-// polyfill for matchAll
-export  function findAll(regexPattern, sourceString) {
-    let output = [];
+export function findAll(regexPattern, sourceString) {
+    const output = [];
+    const regexPatternWithGlobal = RegExp(regexPattern, 'g');
     let match;
-    // make sure the pattern has the global flag
-    let regexPatternWithGlobal = RegExp(regexPattern, "g")
-    while (match = regexPatternWithGlobal.exec(sourceString)) {
-        // get rid of the string copy
-        delete match.input
-        // store the match data
-        output.push(match)
+
+    while ((match = regexPatternWithGlobal.exec(sourceString))) {
+        delete match.input;
+        output.push(match);
     }
-    return output
+
+    return output;
 }
 
 export function isContain(item, value) {
@@ -82,73 +84,375 @@ export function getName(item, replace) {
     return item.replace(regx, '');
 }
 
-export default function ($, $theForm, calculationMessages = {}) {
-    // Set default messages if not provided
+function isFormLike(value) {
+    return !!(
+        value && (
+            value.nodeType === 1 ||
+            (value[0] && value[0].nodeType === 1)
+        )
+    );
+}
+
+function resolveCalculationArguments(jqueryOrFormReference, formReferenceOrMessages, maybeMessages) {
+    if (isFormLike(jqueryOrFormReference)) {
+        return {
+            formReference: jqueryOrFormReference,
+            calculationMessages: formReferenceOrMessages || {}
+        };
+    }
+
+    return {
+        formReference: formReferenceOrMessages,
+        calculationMessages: maybeMessages || {}
+    };
+}
+
+function getFormElement(formReference) {
+    if (!formReference) {
+        return null;
+    }
+
+    if (formReference.nodeType === 1) {
+        return formReference;
+    }
+
+    if (formReference[0] && formReference[0].nodeType === 1) {
+        return formReference[0];
+    }
+
+    return null;
+}
+
+function toArray(list) {
+    return Array.prototype.slice.call(list || []);
+}
+
+function getBridge() {
+    if (window.fluentFormBridge && typeof window.fluentFormBridge.onEvent === 'function') {
+        return window.fluentFormBridge;
+    }
+
+    return {
+        onEvent: function (targetElement, eventNames, handler, options) {
+            const eventTarget = targetElement || document;
+            const names = Array.isArray(eventNames)
+                ? eventNames
+                : String(eventNames || '').split(/\s+/).filter(Boolean);
+
+            names.forEach((eventName) => {
+                eventTarget.addEventListener(eventName, (event) => {
+                    handler(event, event.detail, [event.detail], 'native');
+                }, options || false);
+            });
+
+            return function () {};
+        }
+    };
+}
+
+function escapeAttributeValue(value) {
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+        return window.CSS.escape(String(value));
+    }
+
+    return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function createAttributeSelector(attributeName, attributeValue) {
+    return '[' + attributeName + '="' + escapeAttributeValue(attributeValue) + '"]';
+}
+
+function triggerNativeChange(targetElement) {
+    targetElement.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+export default function (jqueryOrFormReference, formReferenceOrMessages, maybeMessages) {
+    const resolvedArguments = resolveCalculationArguments(
+        jqueryOrFormReference,
+        formReferenceOrMessages,
+        maybeMessages
+    );
+    const formElement = getFormElement(resolvedArguments.formReference);
+
+    if (!formElement) {
+        return;
+    }
+
     const messages = {
         calculation_error: 'Calculation error occurred',
         invalid_formula: 'Invalid formula provided',
         division_by_zero: 'Division by zero error',
-        ...calculationMessages
+        ...resolvedArguments.calculationMessages
     };
-    var calculationFields = $theForm.find('.ff_has_formula');
+    const calculationFields = toArray(formElement.querySelectorAll('.ff_has_formula'));
 
     if (!calculationFields.length) {
         return;
     }
 
-    let repeaterTriggerCache = {};
-    let repeaterInputsTriggerCache = {};
+    const repeaterTriggerCache = {};
+    const repeaterInputsTriggerCache = {};
+    const fluentFormEventBridge = getBridge();
     mexp.addToken(mexpToken);
 
-    var doCalculation = function () {
-        jQuery.each(calculationFields, (index, field) => {
-            var $field = jQuery(field);
-            var formula = $field.data('calculation_formula');
-            let regEx = /{(.*?)}/g;
-            // let matches = [...formula.matchAll(regEx)];
-            let matches = findAll(regEx, formula);
-            let replaces = {};
+    function isAccessible(elementOrElements) {
+        const elements = Array.isArray(elementOrElements)
+            ? elementOrElements
+            : (elementOrElements ? [elementOrElements] : []);
+        const firstElement = elements[0];
 
-            jQuery.each(matches, (index, match) => {
-                let itemKey = match[0];
-                jQuery.each(['{input.', '{select.', '{checkbox.', '{radio.', '{repeat.', '{payment.'], (prefixIndex, prefix) => {
-                    if (isContain(itemKey, prefix)) {
-                        let name = getName(itemKey, prefix);
-                        let value = 0;
-                        if (prefix === '{select.') {
-                            value = getSelectFieldValue(name);
-                        } else if (prefix === '{checkbox.') {
-                            value = getCheckboxValue(name);
-                        } else if (prefix === '{radio.') {
-                            value = getRadioFieldValue(name);
-                        } else if (prefix === '{repeat.') {
-                            value = getRepeatFieldValue(name);
-                        } else if (prefix === '{payment.') {
-                            value = getPaymentFieldValue(name);
-                        } else {
-                            let $el = $theForm.find('input[name=' + name + ']');
-                            if (isAccessible($el)) {
-                                value = window.ff_helper.numericVal($el);
-                            }
-                        }
-                        replaces[itemKey] = value;
-                        return false; // to break out of this loop
+        if (!firstElement) {
+            return false;
+        }
+
+        return !firstElement.closest('.ff_excluded.has-conditions');
+    }
+
+    function getFormElements(selector) {
+        return toArray(formElement.querySelectorAll(selector));
+    }
+
+    function getDataCalcValue(selector) {
+        let itemValue = 0;
+        const selectedItems = getFormElements(selector);
+
+        if (!selectedItems.length || !isAccessible(selectedItems)) {
+            return itemValue;
+        }
+
+        selectedItems.forEach((item) => {
+            const eachItemValue = item.getAttribute('data-calc_value');
+            if (eachItemValue && !isNaN(eachItemValue)) {
+                itemValue += Number(eachItemValue);
+            }
+        });
+
+        return itemValue;
+    }
+
+    function getRadioFieldValue(name, forPaymentField = false) {
+        const checkedInput = formElement.querySelector(
+            'input[name="' + escapeAttributeValue(name) + '"]:checked'
+        );
+
+        if (!checkedInput) {
+            return forPaymentField ? undefined : 0;
+        }
+
+        if (forPaymentField) {
+            return checkedInput.getAttribute('data-payment_value');
+        }
+
+        if (isAccessible(checkedInput)) {
+            return checkedInput.getAttribute('data-calc_value') || 0;
+        }
+
+        return 0;
+    }
+
+    function getSelectFieldValue(name, forPaymentField = false) {
+        const selectElement = formElement.querySelector(
+            'select' + createAttributeSelector('data-name', name)
+        );
+
+        if (!selectElement) {
+            return forPaymentField ? undefined : 0;
+        }
+
+        if (forPaymentField) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            return selectedOption ? selectedOption.dataset.payment_value : undefined;
+        }
+
+        const value = getDataCalcValue(
+            'select' + createAttributeSelector('data-name', name) + ' option:checked'
+        );
+        selectElement.setAttribute('data-calc_value', value);
+
+        return value;
+    }
+
+    function getCheckboxValue(name, forPaymentField = false) {
+        if (!forPaymentField) {
+            return getDataCalcValue(
+                'input' + createAttributeSelector('data-name', name) + ':checked'
+            );
+        }
+
+        const checkboxElement = formElement.querySelector(
+            ':is(input, select, textarea)' + createAttributeSelector('data-name', name)
+        );
+        if (!checkboxElement) {
+            return 0;
+        }
+
+        const groupId = checkboxElement.dataset.group_id;
+        if (!groupId) {
+            return 0;
+        }
+
+        const checkedGroupItems = getFormElements(
+            'input' + createAttributeSelector('data-group_id', groupId) + ':checked'
+        );
+
+        return checkedGroupItems.reduce((groupTotal, groupItem) => {
+            const itemPrice = groupItem.dataset.payment_value;
+            if (!itemPrice) {
+                return groupTotal;
+            }
+
+            return groupTotal + parseFloat(itemPrice);
+        }, 0);
+    }
+
+    function getRepeatFieldValue(name) {
+        let value = 0;
+        const nameParts = name.split('.');
+        let indexName = false;
+        let rootName = name;
+
+        if (nameParts.length > 1) {
+            rootName = nameParts[0];
+            indexName = nameParts[1];
+        }
+
+        const targetTable = formElement.querySelector(
+            'table' + createAttributeSelector('data-root_name', rootName)
+        );
+
+        if (!targetTable) {
+            return value;
+        }
+
+        if (!repeaterTriggerCache[rootName]) {
+            repeaterTriggerCache[rootName] = true;
+            fluentFormEventBridge.onEvent(targetTable, 'repeat_change', () => {
+                doCalculation();
+            });
+        }
+
+        if (!isAccessible(targetTable)) {
+            return value;
+        }
+
+        if (!indexName) {
+            return targetTable.querySelectorAll('tbody tr').length;
+        }
+
+        const tds = toArray(targetTable.querySelectorAll('tbody tr td:nth-child(' + indexName + ')'));
+
+        tds.forEach((td, tdIndex) => {
+            const tdInput = td.querySelector('input, select, textarea');
+            if (!tdInput) {
+                return;
+            }
+
+            const cacheName = rootName + '_' + indexName + '_' + (tdInput.id || tdInput.name || tdIndex);
+            if (!repeaterInputsTriggerCache[cacheName]) {
+                repeaterInputsTriggerCache[cacheName] = true;
+                tdInput.addEventListener('change', doCalculation);
+            }
+
+            let parsedValue = 0;
+            if (tdInput.tagName === 'SELECT') {
+                const selectedOption = tdInput.options[tdInput.selectedIndex];
+                parsedValue = parseFloat(selectedOption ? selectedOption.getAttribute('data-calc_value') : 0);
+            } else {
+                parsedValue = parseFloat(tdInput.value);
+            }
+
+            if (!isNaN(parsedValue)) {
+                value += parsedValue;
+            }
+        });
+
+        if (value) {
+            return value.toFixed(2);
+        }
+
+        return value;
+    }
+
+    function getPaymentFieldValue(name) {
+        let value = 0;
+        const paymentElement = formElement.querySelector(
+            ':is(input, select, textarea)' + createAttributeSelector('data-name', name)
+        );
+
+        if (!paymentElement || !isAccessible(paymentElement)) {
+            return value;
+        }
+
+        const elementType = paymentElement.type;
+        if (elementType === 'radio') {
+            value = getRadioFieldValue(name, true);
+        } else if (elementType === 'hidden') {
+            value = paymentElement.getAttribute('data-payment_value');
+        } else if (elementType === 'number' || elementType === 'text') {
+            value = window.ff_helper.numericVal(paymentElement);
+        } else if (elementType === 'checkbox') {
+            value = getCheckboxValue(name, true);
+        } else if (elementType === 'select-one') {
+            value = getSelectFieldValue(name, true);
+        }
+
+        return value;
+    }
+
+    function doCalculation() {
+        calculationFields.forEach((field) => {
+            let formula = field.dataset.calculation_formula;
+            const regEx = /{(.*?)}/g;
+            const matches = findAll(regEx, formula);
+            const replaces = {};
+
+            matches.forEach((match) => {
+                const itemKey = match[0];
+                ['{input.', '{select.', '{checkbox.', '{radio.', '{repeat.', '{payment.'].some((prefix) => {
+                    if (!isContain(itemKey, prefix)) {
+                        return false;
                     }
-                })
+
+                    const name = getName(itemKey, prefix);
+                    let value = 0;
+
+                    if (prefix === '{select.') {
+                        value = getSelectFieldValue(name);
+                    } else if (prefix === '{checkbox.') {
+                        value = getCheckboxValue(name);
+                    } else if (prefix === '{radio.') {
+                        value = getRadioFieldValue(name);
+                    } else if (prefix === '{repeat.') {
+                        value = getRepeatFieldValue(name);
+                    } else if (prefix === '{payment.') {
+                        value = getPaymentFieldValue(name);
+                    } else {
+                        const inputElement = formElement.querySelector(
+                            'input[name="' + escapeAttributeValue(name) + '"]'
+                        );
+                        if (isAccessible(inputElement)) {
+                            value = window.ff_helper.numericVal(inputElement);
+                        }
+                    }
+
+                    replaces[itemKey] = value;
+                    return true;
+                });
             });
 
-            jQuery.each(replaces, (key, value) => {
-                if (!value) {
-                    value = 0;
+            Object.keys(replaces).forEach((key) => {
+                let replaceValue = replaces[key];
+                if (!replaceValue) {
+                    replaceValue = 0;
                 }
-                formula = formula.split(key).join(value);
+                formula = formula.split(key).join(replaceValue);
             });
+
             let calculatedValue = '';
             try {
-                formula = formula.replace(/\n/g, "");
+                formula = formula.replace(/\n/g, '');
                 calculatedValue = mexp.eval(formula);
 
-                // Check for division by zero
                 if (calculatedValue === Infinity || calculatedValue === -Infinity) {
                     console.log(messages.division_by_zero, field);
                     calculatedValue = '';
@@ -158,185 +462,54 @@ export default function ($, $theForm, calculationMessages = {}) {
                 }
             } catch (error) {
                 console.log(messages.calculation_error + ':', error, field);
-                calculatedValue = ''; // Reset to empty on error
+                calculatedValue = '';
             }
 
-            if ($field[0].type == 'text') {
-                const $fieldDom = $($field);
-                const prevValue = $fieldDom.val();
+            if (field.type === 'text') {
+                const prevValue = field.value;
+                const formattedValue = window.ff_helper.formatCurrency(field, calculatedValue);
 
-                const formattedValue = window.ff_helper.formatCurrency($fieldDom, calculatedValue);
+                field.value = formattedValue;
+                field.defaultValue = formattedValue;
 
-                $fieldDom.val(formattedValue)
-                        .prop('defaultValue', formattedValue);
-
-                if (prevValue == '') {
+                if (prevValue === '') {
                     return;
                 }
 
-                if (prevValue != formattedValue) {
-                    $fieldDom.trigger('change');
+                if (prevValue !== formattedValue) {
+                    triggerNativeChange(field);
                 }
             } else {
-                $field.text(calculatedValue);
+                field.textContent = calculatedValue;
             }
         });
-    };
-
-    function isAccessible($el) {
-        if ($el.closest('.ff_excluded.has-conditions').length) {
-            return false;
-        }
-        return true;
     }
 
-    function getDataCalcValue(selector) {
-        let itemValue = 0;
-        let selectedItems = $theForm.find(selector);
-
-        if (selectedItems.closest('.ff_excluded.has-conditions').length) {
-            return itemValue;
-        }
-
-        $.each(selectedItems, (indexItem, item) => {
-            let eachItemValue = $(item).attr('data-calc_value');
-            if (eachItemValue && !isNaN(eachItemValue)) {
-                itemValue += Number(eachItemValue);
-            }
+    function initNumberCalculations() {
+        getFormElements(
+            'input[type="number"],input[data-calc_value],select[data-calc_value],.ff_numeric,.ff_payment_item'
+        ).forEach((element) => {
+            element.addEventListener('change', doCalculation);
+            element.addEventListener('keyup', doCalculation);
         });
-        return itemValue;
-    }
-
-    /**
-     * Init Calculation input number fild
-     */
-    var initNumberCalculations = function () {
-        $theForm.find(
-            'input[type=number],input[data-calc_value],select[data-calc_value],.ff_numeric,.ff_payment_item'
-        ).on('change keyup', doCalculation);
 
         doCalculation();
 
-        $theForm.on('do_calculation', () => {
+        fluentFormEventBridge.onEvent(formElement, 'do_calculation', () => {
             doCalculation();
         });
 
-        jQuery(document).on('fluentform_reset', function() {
-            calculationFields.val('').prop('defaultValue', '');
-            // For number fields with default value, formula need to be calculated
-            // Call with delay to make sure the number field default value is set
-            setTimeout(function() {
+        fluentFormEventBridge.onEvent(document.body, 'fluentform_reset', () => {
+            calculationFields.forEach((field) => {
+                field.value = '';
+                field.defaultValue = '';
+            });
+
+            setTimeout(() => {
                 doCalculation();
             }, 100);
         });
-    };
-    
-    function getRepeatFieldValue(name) {
-        let value = 0;
-        // We may have column index here
-        const splits = name.split('.');
-        let indexName = false;
-        if (splits.length > 1) {
-            name = splits[0];
-            indexName = splits[1];
-        }
-        let $targetTable = $theForm.find('table[data-root_name=' + name + ']');
-        if (!repeaterTriggerCache[name]) {
-            repeaterTriggerCache[name] = true;
-            $targetTable.on('repeat_change', () => {
-                doCalculation();
-            });
-        }
-        if (isAccessible($targetTable)) {
-            if (!indexName) {
-                value = $targetTable.find('tbody tr').length
-            } else {
-                const tds = $targetTable.find('tbody tr td:nth-child('+indexName+')');
-                $.each(tds, (tdIndex, td) => {
-                    const $tdInput = $(td).find(':input');
-                    const cacheName = name+'_'+indexName + '_' + $tdInput.attr('id');
-                    if (!repeaterInputsTriggerCache[cacheName]) {
-                        repeaterInputsTriggerCache[cacheName] = true;
-                        $tdInput.on('change', () => {
-                            doCalculation();
-                        });
-                    }
-                    let parsedValue = 0;
-                    if ($tdInput.attr('type') === 'select') {
-                        parsedValue = parseFloat($tdInput.find('option:selected').attr('data-calc_value'));
-                    } else {
-                        parsedValue = parseFloat($tdInput.val());
-                    }
-                    if(!isNaN(parsedValue)) {
-                        value += parsedValue;
-                    }
-                });
-                if (value) {
-                    value = value.toFixed(2);
-                }
-            }
-        }
-        return value;
     }
-    
-    function getPaymentFieldValue(name) {
-        let value= 0;
-        let $elem = $theForm.find(':input[data-name=' + name + ']');
-        if ($elem.length && isAccessible($elem)) {
-            let elementType = $elem[0].type;
-            if (elementType === 'radio') {
-                value = getRadioFieldValue(name, true);
-            } else if (elementType === 'hidden') {
-                value = $elem.attr('data-payment_value');
-            } else if (elementType === 'number' || elementType === 'text') {
-                value = window.ff_helper.numericVal($elem);
-            } else if (elementType === 'checkbox') {
-                value = getCheckboxValue(name, true);
-            } else if (elementType === 'select-one') {
-                value = getSelectFieldValue(name, true);
-            }
-        }
-        return value
-    }
-    
-    function getRadioFieldValue(name , forPaymentField = false) {
-        let value =0;
-        let $el = $theForm.find('input[name=' + name + ']:checked');
-        if (forPaymentField) {
-            return $el.attr('data-payment_value');
-        }
-        if (isAccessible($el)) {
-            value = $el.attr('data-calc_value') || 0;
-        }
-        return value;
-    }
-    
-    function getSelectFieldValue(name, forPaymentField = false) {
-        let value = 0;
-        if (forPaymentField) {
-            return $theForm.find('select[name=' + name + '] option:selected').data('payment_value');
-        }
-        value = getDataCalcValue('select[data-name=' + name + '] option:selected');
-        $theForm.find('select[data-name=' + name + ']').attr('data-calc_value', value);
-        return value;
-    }
-    
-    function getCheckboxValue(name, forPaymentField = false) {
-        if (!forPaymentField) {
-            return getDataCalcValue('input[data-name=' + name + ']:checked');
-        }
-        let $elem = $theForm.find(':input[data-name=' + name + ']');
-        let groupId = $elem.data('group_id');
-        let groups = $theForm.find('input[data-group_id="' + groupId + '"]:checked');
-        let groupTotal = 0;
-        groups.each((index, group) => {
-            let itemPrice = jQuery(group).data('payment_value');
-            if (itemPrice) {
-                groupTotal += parseFloat(itemPrice);
-            }
-        });
-        return groupTotal;
-    }
-    
+
     initNumberCalculations();
 }

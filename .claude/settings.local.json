@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Volumes/Projects/work/forms/**)",
+      "Bash(wp db *)",
+      "Bash(npx playwright *)",
+      "Bash(npm install *)"
+    ]
+  }
+}
