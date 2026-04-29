@@ -394,7 +394,7 @@ git push -u origin feat/your-feature-name
 
 ## Available Review Skills
 
-All features can use these agent skills:
+All features can use these **globally-available** agent skills:
 
 | Skill | Purpose | Use When |
 |-------|---------|----------|
@@ -403,6 +403,8 @@ All features can use these agent skills:
 | **php-cs-fixer-style** | PHP code style compliance | After code written (style check) |
 | **pr-descriptor** | Generate PR descriptions | After approval (create PR body) |
 | **agents-onboarding** | Architecture/AGENTS.md updates | Major features or refactors |
+
+**Available globally to all projects** from `~/.claude/skills/` (symlinked to `/Volumes/Projects/Tools/agent-skills/`)
 
 ---
 

@@ -2,11 +2,24 @@
 
 **When to read:** When running validation skills, before pushing branches, during code review
 
+**Skills location:** Global `~/.claude/skills/` (auto-loaded by Claude Code)
+
+**Setup:** See `SETUP-AGENT-SKILLS.md` for one-time global setup.
+
+These 5 skills are available globally to all projects:
+- `plugin-audit` — Security + optimization review
+- `debugger` — Bug discovery with finder→verifier loop
+- `php-cs-fixer-style` — PHP/JS code style compliance
+- `pr-descriptor` — Why-first PR description generation
+- `agents-onboarding` — Architecture documentation
+
+**Invoke in conversation:** "Use the plugin-audit skill to..." or "Use the debugger skill to..."
+
 ---
 
 ## The 5 Agent Review Skills
 
-Available for direct invocation via slash commands:
+Available for direct invocation during development:
 
 ### 1. /plugin-audit
 

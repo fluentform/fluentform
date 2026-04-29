@@ -47,7 +47,8 @@ When working on a specific area, read the relevant skill file for detailed patte
 
 | Topic | File | When to read |
 |-------|------|-------------|
-| Architecture | `.claude/skills/architecture.md` | Understanding project structure, models, routes, stores, modules |
+| **Agent Architecture** | `AGENTS.md` | **AI agents:** Complete code structure, models, APIs, flows. Read first before making changes. |
+| Architecture Details | `.claude/skills/architecture.md` | Understanding project structure, models, routes, stores, modules |
 | Coding patterns | `.claude/skills/coding-patterns.md` | Writing new code — controller, handler, Vue component, API patterns |
 | Bug fixes | `.claude/skills/workflow-bugfix.md` | Fixing bugs or security vulnerabilities |
 | Forms | `.claude/skills/workflow-forms.md` | Form builder, fields, rendering, submissions, entries |
