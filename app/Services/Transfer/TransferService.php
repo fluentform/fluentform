@@ -20,6 +20,23 @@ use FluentForm\Framework\Support\Arr;
 
 class TransferService
 {
+    public static function sanitizeImportedMetaValue($metaKey, $metaValue)
+    {
+        if (!is_string($metaValue)) {
+            return $metaValue;
+        }
+
+        if ($metaKey === '_custom_form_css') {
+            return fluentformSanitizeCSS($metaValue);
+        }
+
+        if ($metaKey === '_custom_form_js') {
+            return fluentform_kses_js($metaValue);
+        }
+
+        return wp_kses_post($metaValue);
+    }
+
     public static function exportForms($formIds)
     {
         $result = Form::with(['formMeta'])
@@ -98,9 +115,7 @@ class TransferService
                             if ("ffc_form_settings_generated_css" == $metaKey || "ffc_form_settings_meta" == $metaKey) {
                                 $metaValue = str_replace('ff_conv_app_' . Arr::get($formItem, 'id'), 'ff_conv_app_' . $formId, $metaValue);
                             }
-                            if (is_string($metaValue)) {
-                                $metaValue = wp_kses_post($metaValue);
-                            }
+                            $metaValue = static::sanitizeImportedMetaValue($metaKey, $metaValue);
                             $settings = [
                                 'form_id'  => $formId,
                                 'meta_key' => $metaKey,
