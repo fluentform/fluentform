@@ -1299,14 +1299,15 @@ function initVanillaSubmissionRuntime() {
         return true;
     };
 
-    document.addEventListener("submit", function (submitEvent) {
+    // Define listener functions as variables for proper cleanup
+    const submitHandler = function (submitEvent) {
         if (handleFluentFormSubmit(submitEvent)) {
             return;
         }
         handleLoadingFormSubmit(submitEvent);
-    });
+    };
 
-    document.addEventListener("reset", function (e) {
+    const resetHandler = function (e) {
         const formEl = e.target.closest("form.frm-fluent-form");
         if (!formEl) {
             return;
@@ -1322,9 +1323,9 @@ function initVanillaSubmissionRuntime() {
             document.body,
             [formEl, formConfig]
         );
-    });
+    };
 
-    document.addEventListener("ff_reinit", function (e) {
+    const reinitHandler = function (e) {
         const detail = e.detail || {};
         const formItem = detail.formItem || detail.form || null;
         const formEl = resolveElement(formItem);
@@ -1332,7 +1333,19 @@ function initVanillaSubmissionRuntime() {
             return;
         }
         reinitializeFormInstance(formEl);
-    });
+    };
+
+    // Attach listeners with stored references for cleanup
+    document.addEventListener("submit", submitHandler);
+    document.addEventListener("reset", resetHandler);
+    document.addEventListener("ff_reinit", reinitHandler);
+
+    // Store cleanup function on window for potential future use (AJAX form reloads)
+    window._fluentFormSubmissionCleanup = function () {
+        document.removeEventListener("submit", submitHandler);
+        document.removeEventListener("reset", resetHandler);
+        document.removeEventListener("ff_reinit", reinitHandler);
+    };
 }
 
 module.exports = { initVanillaSubmissionRuntime };
