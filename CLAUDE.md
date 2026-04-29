@@ -47,10 +47,22 @@ When working on a specific area, read the relevant skill file for detailed patte
 
 | Topic | File | When to read |
 |-------|------|-------------|
-| Architecture | `.claude/skills/architecture.md` | Understanding project structure, models, routes, stores, modules |
+| **Agent Architecture** | `AGENTS.md` | **AI agents:** Complete code structure, models, APIs, flows. Read first before making changes. |
+| Architecture Details | `.claude/skills/architecture.md` | Understanding project structure, models, routes, stores, modules |
 | Coding patterns | `.claude/skills/coding-patterns.md` | Writing new code — controller, handler, Vue component, API patterns |
 | Bug fixes | `.claude/skills/workflow-bugfix.md` | Fixing bugs or security vulnerabilities |
 | Forms | `.claude/skills/workflow-forms.md` | Form builder, fields, rendering, submissions, entries |
 | Integrations | `.claude/skills/workflow-integrations.md` | Notifications, integrations, webhooks, conditional logic |
 | Payments | `.claude/skills/workflow-payments.md` | Payment processing, Stripe, transactions, subscriptions |
 | Conversational | `.claude/skills/workflow-conversational.md` | Conversational form mode, design editor, share pages |
+
+## Pre-Commit Validation Process
+
+See **`PRECOMMIT-WORKFLOW.md`** for the complete pre-commit review workflow required for all PRs.
+
+Quick steps:
+1. Run unit tests: `node --test tests/js/*.test.js`
+2. Create validation checklist: `openspec/changes/migrate-form-submission-to-vanilla-js/PR-N-VALIDATION-CHECKLIST.md`
+3. Fix all HIGH priority issues
+4. Document MEDIUM/LOW issues with rationale
+5. Commit checklist file and push branch
