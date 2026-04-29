@@ -54,3 +54,14 @@ When working on a specific area, read the relevant skill file for detailed patte
 | Integrations | `.claude/skills/workflow-integrations.md` | Notifications, integrations, webhooks, conditional logic |
 | Payments | `.claude/skills/workflow-payments.md` | Payment processing, Stripe, transactions, subscriptions |
 | Conversational | `.claude/skills/workflow-conversational.md` | Conversational form mode, design editor, share pages |
+
+## Pre-Commit Validation Process
+
+See **`PRECOMMIT-WORKFLOW.md`** for the complete pre-commit review workflow required for all PRs.
+
+Quick steps:
+1. Run unit tests: `node --test tests/js/*.test.js`
+2. Create validation checklist: `openspec/changes/migrate-form-submission-to-vanilla-js/PR-N-VALIDATION-CHECKLIST.md`
+3. Fix all HIGH priority issues
+4. Document MEDIUM/LOW issues with rationale
+5. Commit checklist file and push branch
