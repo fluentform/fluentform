@@ -64,6 +64,10 @@ function ensureFluentFormJqueryBridge() {
             const removers = [];
 
             names.forEach(function (eventName) {
+                // Track handlers to prevent duplicates (if using addEventListener)
+                const handlerKey =
+                    "__fluentFormHandler_" + eventName + "_" + handler.name;
+
                 // Use jQuery if available (for backward compatibility), otherwise use native listeners
                 if (typeof window.jQuery === "function") {
                     const jqueryTarget = window.jQuery(
@@ -94,6 +98,28 @@ function ensureFluentFormJqueryBridge() {
                     const nativeHandler = function (event) {
                         handler(event, event.detail, [event.detail], "native");
                     };
+
+                    // Warn if similar handler already registered (for debugging, but allow duplicates)
+                    // Different features/packages may legitimately register handlers at different times
+                    if (
+                        targetNode[handlerKey] &&
+                        typeof window.console !== "undefined"
+                    ) {
+                        console.warn(
+                            "fluentFormBridge: Handler with name '" +
+                                handler.name +
+                                "' already registered for event '" +
+                                eventName +
+                                "'. This may be intentional (multiple features) or accidental (initialization twice)."
+                        );
+                    }
+
+                    // Track handler for warning purposes (not blocking)
+                    if (!targetNode[handlerKey]) {
+                        targetNode[handlerKey] = [];
+                    }
+                    targetNode[handlerKey].push(nativeHandler);
+
                     targetNode.addEventListener(
                         eventName,
                         nativeHandler,
@@ -105,6 +131,13 @@ function ensureFluentFormJqueryBridge() {
                             nativeHandler,
                             options || false
                         );
+                        // Clean up tracking
+                        const idx = targetNode[handlerKey].indexOf(
+                            nativeHandler
+                        );
+                        if (idx !== -1) {
+                            targetNode[handlerKey].splice(idx, 1);
+                        }
                     });
                 }
             });
