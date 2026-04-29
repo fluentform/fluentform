@@ -1010,6 +1010,15 @@ class Menu
             $elementPlacements,
             $form
         );
+        $elementCustomizationSettings = fluentformLoadFile('Services/FormBuilder/ElementCustomization.php');
+
+        if (Helper::isConversionForm($formId)) {
+            unset(
+                $elementCustomizationSettings['enable_floating_label'],
+                $elementCustomizationSettings['floating_label_style']
+            );
+        }
+
         $data = [
             'plugin'                         => $pluginSlug,
             'form_id'                        => $formId,
@@ -1018,7 +1027,7 @@ class Menu
             'form'                           => $form,
             'hasPro'                         => defined('FLUENTFORMPRO'),
             'countries'                      => getFluentFormCountryList(),
-            'element_customization_settings' => fluentformLoadFile('Services/FormBuilder/ElementCustomization.php'),
+            'element_customization_settings' => $elementCustomizationSettings,
             'validation_rule_settings'       => fluentformLoadFile('Services/FormBuilder/ValidationRuleSettings.php'),
             'conversational_form_fields'     => array_keys(Converter::fieldTypes()),
             'form_editor_str'                => TranslationString::getEditorI18n(),

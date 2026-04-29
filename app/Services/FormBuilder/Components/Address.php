@@ -35,6 +35,16 @@ class Address extends BaseComponent
         $provider = ArrayHelper::get($data, 'settings.autocomplete_provider');
         $legacyGoogleEnable = ArrayHelper::get($data, 'settings.enable_g_autocomplete', 'no') === 'yes';
         $isLegacyProvider = !ArrayHelper::has($data, 'settings.autocomplete_provider');
+        $enableFloatingLabel = ArrayHelper::get($data, 'settings.enable_floating_label', 'no');
+        $floatingLabelStyle = ArrayHelper::get($data, 'settings.floating_label_style', 'inline');
+
+        if (
+            !empty($data['settings']['label']) &&
+            'yes' === $enableFloatingLabel &&
+            'outlined' === $floatingLabelStyle
+        ) {
+            $data['attributes']['class'] .= ' ff-composite-floating-outlined';
+        }
         // Render coordinate fields if Pro is active and coordinate saving is enabled
         if (Helper::hasPro() && 'yes' == ArrayHelper::get($data, 'settings.save_coordinates')) {
             $coordinateFields = [
@@ -113,6 +123,8 @@ class Address extends BaseComponent
                     $itemName = $item['attributes']['name'];
                     $item['attributes']['data-key_name'] = $itemName;
                     $item['attributes']['name'] = $rootName . '[' . $itemName . ']';
+                    $item['settings']['enable_floating_label'] = $enableFloatingLabel;
+                    $item['settings']['floating_label_style'] = $floatingLabelStyle;
 
                     if ('select_country' === $item['element'] && $googleAutoComplete) {
                         $selectedCountries = (array) ArrayHelper::get($item, 'attributes.value', []);

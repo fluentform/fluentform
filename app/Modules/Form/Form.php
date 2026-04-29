@@ -439,6 +439,8 @@ class Form
             'container_class'           => 'sanitize_text_field',
             'label'                     => 'wp_kses_post',
             'label_placement'           => 'sanitize_text_field',
+            'enable_floating_label'     => 'sanitize_text_field',
+            'floating_label_style'      => 'sanitize_text_field',
             'help_message'              => 'wp_kses_post',
             'admin_field_label'         => 'sanitize_text_field',
             'prefix_label'              => 'sanitize_text_field',

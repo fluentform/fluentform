@@ -415,6 +415,27 @@ $app->addFilter('fluentform/editor_element_settings_placement', function($placem
     return $placements;
 }, 10, 2);
 
+$app->addFilter('fluentform/editor_element_settings_placement', function ($placements, $form) {
+    if (!$form || !\FluentForm\App\Helpers\Helper::isConversionForm($form->id)) {
+        return $placements;
+    }
+
+    foreach ($placements as $element => $sections) {
+        foreach (['general', 'advanced'] as $section) {
+            if (empty($sections[$section]) || !is_array($sections[$section])) {
+                continue;
+            }
+
+            $placements[$element][$section] = array_values(array_diff(
+                $sections[$section],
+                ['enable_floating_label', 'floating_label_style']
+            ));
+        }
+    }
+
+    return $placements;
+}, 20, 2);
+
 
 /*
  * Remove this after WP Fusion Update their plugin

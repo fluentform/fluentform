@@ -116,6 +116,7 @@ import chainSelectDataSource from './templates/chainSelectDataSource.vue';
 import paymentMethodsConfig from './templates/paymentMethodsConfig.vue';
 import targetProduct from './templates/targetProduct.vue';
 import inputYesNoCheckBox from "./templates/inputYesNoCheckbox";
+import inputSwitch from "./templates/inputSwitch.vue";
 import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
 import ConversionStylePref from "../../conversion_templates/ConversionStylePref";
 import ContainerWidth from "./templates/containerWidth";
@@ -170,6 +171,7 @@ export default {
         ff_paymentMethodsConfig: paymentMethodsConfig,
         ff_targetProduct: targetProduct,
         ff_inputYesNoCheckBox: inputYesNoCheckBox,
+        ff_inputSwitch: inputSwitch,
         ff_fieldsRepeatSettings: fieldsRepeatSettings,
         ConversionStylePref,
         ff_containerWidth: ContainerWidth,
@@ -288,6 +290,14 @@ export default {
             return true;
         },
         willShow(key, listItem) {
+            if (
+                key === 'label_placement' &&
+                this.editItem.settings &&
+                this.editItem.settings.enable_floating_label === 'yes'
+            ) {
+                return false;
+            }
+
             return this.elementOptions.includes(key) && this.dependancyPass(listItem) && this.conversionPass(listItem, key);
         },
         conversionPass(listItem, key) {
@@ -304,7 +314,9 @@ export default {
                 'layout_class',
                 'class',
                 'rows',
-                'cols'
+                'cols',
+                'enable_floating_label',
+                'floating_label_style'
             ];
 
             if(!this.hasPro) {

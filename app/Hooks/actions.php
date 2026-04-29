@@ -226,6 +226,12 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (empty($field['settings']['label_placement'])) {
             $field['settings']['label_placement'] = '';
         }
+        if (!isset($field['settings']['enable_floating_label'])) {
+            $field['settings']['enable_floating_label'] = 'no';
+        }
+        if (!isset($field['settings']['floating_label_style'])) {
+            $field['settings']['floating_label_style'] = 'inline';
+        }
         return $field;
     });
 
@@ -470,6 +476,30 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         return $item;
     });
 
+    $floatingLabelInputs = [
+        'input_email',
+        'input_text',
+        'textarea',
+        'input_number',
+        'input_date',
+        'select',
+        'input_url',
+        'select_country',
+        'input_password',
+    ];
+
+    foreach ($floatingLabelInputs as $inputType) {
+        add_filter('fluentform/editor_init_element_' . $inputType, function ($item) {
+            if (!isset($item['settings']['enable_floating_label'])) {
+                $item['settings']['enable_floating_label'] = 'no';
+            }
+            if (!isset($item['settings']['floating_label_style'])) {
+                $item['settings']['floating_label_style'] = 'inline';
+            }
+            return $item;
+        });
+    }
+
     if ($inputs = \FluentForm\App\Modules\Form\FormFieldsParser::getInputs($form, ['element'])) {
         foreach ($inputs as $input) {
             add_filter('fluentform/editor_init_element_'. $input['element'], function ($field) {
@@ -495,6 +525,13 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_address', function ($item) {
+        if (!isset($item['settings']['enable_floating_label'])) {
+            $item['settings']['enable_floating_label'] = 'no';
+        }
+        if (!isset($item['settings']['floating_label_style'])) {
+            $item['settings']['floating_label_style'] = 'inline';
+        }
+
         // Initialize autocomplete provider settings
         if (!isset($item['settings']['autocomplete_provider'])) {
             // If google autocomplete setting is enabled, set provider to google

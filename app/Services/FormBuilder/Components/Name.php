@@ -55,18 +55,22 @@ class Name extends Select
 
         $labelPlacement = ArrayHelper::get($data, 'settings.label_placement');
         $labelPlacementClass = '';
+        $enableFloatingLabel = ArrayHelper::get($data, 'settings.enable_floating_label', 'no');
+        $floatingLabelStyle = ArrayHelper::get($data, 'settings.floating_label_style', 'inline');
 
-        if ($labelPlacement) {
+        if ($labelPlacement && 'yes' !== $enableFloatingLabel) {
             $labelPlacementClass = ' ff-el-form-' . $labelPlacement;
         }
 
         foreach ($data['fields'] as $field) {
-            if ($field['settings']['visible']) {
-                $fieldName = $field['attributes']['name'];
-                $field['attributes']['name'] = $rootName . '[' . $fieldName . ']';
-                @$field['attributes']['class'] = trim(
-                    'ff-el-form-control ' .
-                    $field['attributes']['class']
+                if ($field['settings']['visible']) {
+                    $fieldName = $field['attributes']['name'];
+                    $field['attributes']['name'] = $rootName . '[' . $fieldName . ']';
+                    $field['settings']['enable_floating_label'] = $enableFloatingLabel;
+                    $field['settings']['floating_label_style'] = $floatingLabelStyle;
+                    @$field['attributes']['class'] = trim(
+                        'ff-el-form-control ' .
+                        $field['attributes']['class']
                 );
 
                 if ($tabIndex = Helper::getNextTabIndex()) {

@@ -92,6 +92,55 @@ jQuery(document).ready(function () {
                 var globalValidators = {};
 
                 var isSending = false;
+
+                var initFloatingLabels = function () {
+                    var $floatingFields = $theForm.find('.ff-el-form-floating');
+
+                    if (!$floatingFields.length) {
+                        return;
+                    }
+
+                    var hasValue = function ($field) {
+                        var $control = $field
+                            .find('> .ff-el-input--content')
+                            .find('input.ff-el-form-control, textarea.ff-el-form-control, select.ff-el-form-control')
+                            .first();
+
+                        if (!$control.length) {
+                            return false;
+                        }
+
+                        var value = $control.val();
+
+                        if (Array.isArray(value)) {
+                            return value.length > 0;
+                        }
+
+                        return value === 0 || value === '0' || !!value;
+                    };
+
+                    var refreshField = function ($field) {
+                        $field.toggleClass('ff-el-has-value', hasValue($field));
+                    };
+
+                    var refreshAllFields = function () {
+                        $floatingFields.each(function () {
+                            refreshField($(this));
+                        });
+                    };
+
+                    refreshAllFields();
+                    setTimeout(refreshAllFields, 120);
+
+                    $theForm.off('.ffFloatingLabels');
+                    $theForm.on(
+                        'input.ffFloatingLabels change.ffFloatingLabels keyup.ffFloatingLabels blur.ffFloatingLabels',
+                        '.ff-el-form-floating :input',
+                        function () {
+                            refreshField($(this).closest('.ff-el-form-floating'));
+                        }
+                    );
+                };
                 /**
                  * Register all the event handlers
                  *
@@ -101,6 +150,7 @@ jQuery(document).ready(function () {
                     registerFormSubmissionHandler();
                     maybeInlineForm();
                     initInlineErrorItems();
+                    initFloatingLabels();
                     $theForm.removeClass('ff-form-loading').addClass('ff-form-loaded');
 
                     $theForm.on('show_element_error', function (e, data) {
