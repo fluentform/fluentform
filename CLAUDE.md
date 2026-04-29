@@ -30,6 +30,8 @@ Admin mounts multiple Vue apps: form editor, all forms, entries, settings, repor
 
 ## Coding Rules
 
+**Important:** Never add co-author attribution in commit messages.
+
 1. **Vue 2 Options API only** — no Composition API. Use `data()`, `computed`, `methods`, `watch`
 2. **Sanitize all input** — `sanitize_text_field()`, `intval()`, `sanitize_url()`, `wp_kses_post()`
 3. **Hook prefix:** `fluentform/` (e.g., `do_action('fluentform/submission_inserted', $submission, $entryId, $form)`)
