@@ -141,3 +141,83 @@ Internal optimization to reduce jQuery dependency and improve form submission pe
 - **Draft PRs:** Always create as draft; user finalizes body
 - **Never add co-author attribution** in commit messages
 - **Main branch is `dev`** for all PRs
+
+## Pre-Commit Review Process (REQUIRED for All PRs)
+
+**All PRs must pass validation before commits are final.** This ensures quality and catches security issues early.
+
+### Workflow
+
+1. **Create branch** from `dev`
+2. **Make code changes**
+3. **Run validation** (unit tests, security audit, code style)
+4. **Create validation checklist** file in `openspec/changes/migrate-form-submission-to-vanilla-js/`
+5. **Fix all HIGH priority issues** before committing
+6. **Document MEDIUM/LOW priority** issues with rationale
+7. **Update checklist** with findings and status
+8. **Commit with validation file** as part of branch
+9. **Push branch** for draft PR creation
+
+### Validation Checklist File
+
+**Location:** `openspec/changes/migrate-form-submission-to-vanilla-js/PR-N-VALIDATION-CHECKLIST.md`
+
+**Structure:**
+- Security Review (HIGH/MEDIUM/LOW findings)
+- Code Quality (style, refactoring, dead code)
+- Testing (unit tests, browser tests, compatibility)
+- Files Changed (what was modified)
+- Before Merge Checklist (tasks to complete)
+- Completion Status (% done, critical path, ready?)
+
+**Example:** See `PR-1-VALIDATION-CHECKLIST.md` for complete template
+
+### Tools & Commands
+
+```bash
+# Run unit tests
+node --test tests/js/*.test.js
+
+# Run plugin audit (via Agent delegation)
+# Run debugger sweep (via Agent delegation)
+# Run code style checks as needed
+```
+
+### Status Markers in Checklist
+
+```markdown
+## HIGH Priority Issues
+- [x] XSS vulnerability (FIXED)
+- [ ] Prototype pollution (PENDING)
+
+## MEDIUM Priority Issues
+- [x] Event validation (FIXED)
+- [ ] Dead code cleanup (ACCEPT - defer to 6.3.0)
+
+## Testing
+- [x] 43/43 unit tests pass
+- [ ] Browser tests (TBD)
+```
+
+### Before Pushing
+
+Ensure checklist shows:
+- ✅ All HIGH issues resolved
+- ✅ MEDIUM/LOW documented (fixed or deferred with reason)
+- ✅ Critical tests passing (unit tests)
+- ✅ Status: "Ready for Draft PR: YES"
+
+Then commit and push:
+
+```bash
+git add openspec/changes/migrate-form-submission-to-vanilla-js/PR-N-VALIDATION-CHECKLIST.md
+git commit -m "CHORE: Update PR-N validation - all critical issues fixed"
+git push origin pr/N-feature
+```
+
+### Note on Checklist Files
+
+- **Checked in:** Yes, part of branch history
+- **Final artifact:** Can be removed after PR merges (not in master)
+- **Purpose:** Audit trail + code reviewer reference
+- **Scope:** One per PR (PR-1, PR-2, etc.)
