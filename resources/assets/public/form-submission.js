@@ -1,3 +1,16 @@
+(function() {
+
+  // Load extracted modules for minimal file size and better code organization
+  const { ensureFluentFormJqueryBridge } = require("./modules/event-bridge.js");
+  const { initVanillaSubmissionRuntime } = require("./modules/form-submission.plain.js");
+
+  const hasJquery = typeof window.jQuery === "function";
+  ensureFluentFormJqueryBridge();
+  if (!hasJquery) {
+    initVanillaSubmissionRuntime();
+    return;
+  }
+
 jQuery(document).ready(function () {
 
     // ios hack to keep the recaptcha on viewport on success
@@ -52,11 +65,19 @@ jQuery(document).ready(function () {
         var fluentFormAppStore = {};
 
         window.fluentFormApp = function ($theForm) {
+            if ($theForm && typeof $theForm.attr !== 'function' && typeof $ === 'function') {
+                $theForm = $($theForm);
+            }
+
+            if (!$theForm || typeof $theForm.attr !== 'function') {
+                return false;
+            }
+
             var formInstanceSelector = $theForm.attr('data-form_instance');
             // Sanitize the selector - only allow alphanumeric, underscore and hyphen
             formInstanceSelector = formInstanceSelector ? formInstanceSelector.replace(/[^a-zA-Z0-9_-]/g, '') : '';
-            var formObj = window['fluent_form_' + formInstanceSelector];
-            var form = (formObj && typeof formObj === 'object') ? formObj : null;
+            var formConfiguration = window['fluent_form_' + formInstanceSelector];
+            var form = (formConfiguration && typeof formConfiguration === 'object') ? formConfiguration : null;
             if (!form) {
                 console.log('No Fluent form JS vars found!');
                 return false;
@@ -119,12 +140,13 @@ jQuery(document).ready(function () {
                 };
 
                 var fireUpdateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
-                    $theForm.trigger('update_slider', {
+                    const sliderPayload = {
                         goBackToStep: goBackToStep,
                         animDuration: animDuration,
                         isScrollTop: isScrollTop,
                         actionType: actionType
-                    });
+                    };
+                    window.fluentFormBridge.emitEvent('update_slider', sliderPayload, $theForm[0], [sliderPayload]);
                 };
 
                 var fireGlobalBeforeSendCallbacks = function ($theForm, formData) {
@@ -151,6 +173,58 @@ jQuery(document).ready(function () {
 
                     return jQuery.when.apply(jQuery, processItemsDeferred);
                 }
+
+                var emitLegacySubmissionFailure = function ($theForm, response) {
+                    const failedPayload = {
+                        form: $theForm,
+                        response: response
+                    };
+
+                    window.fluentFormBridge.emitEvent('fluentform_submission_failed', {
+                        form: $theForm[0],
+                        response: response,
+                        config: form
+                    }, $theForm[0], [failedPayload]);
+                };
+
+                var emitLegacySubmissionNextAction = function ($theForm, response) {
+                    $theForm.trigger('fluentform_next_action_' + response.data.nextAction, {
+                        form: $theForm,
+                        response: response
+                    });
+                };
+
+                var emitLegacySubmissionSuccess = function ($theForm, response) {
+                    $theForm.triggerHandler('fluentform_submission_success', {
+                        form: $theForm,
+                        config: form,
+                        response: response
+                    });
+
+                    window.fluentFormBridge.emitEvent('fluentform_submission_success', {
+                        form: $theForm[0],
+                        config: form,
+                        response: response
+                    }, document.body, [{
+                        form: $theForm,
+                        config: form,
+                        response: response
+                    }]);
+                };
+
+                var resetLegacyFormAfterSuccessfulSubmission = function ($theForm, response) {
+                    if (response.data.result.action == 'hide_form') {
+                        $theForm.hide().addClass('ff_force_hide');
+                        $theForm[0].reset();
+                        return;
+                    }
+
+                    window.fluentFormBridge.emitEvent('fluentform_reset', {
+                        form: $theForm[0],
+                        config: form
+                    }, document.body, [$theForm, form]);
+                    $theForm[0].reset();
+                };
 
                 var submissionAjaxHandler = function ($theForm) {
                     try {
@@ -319,10 +393,7 @@ jQuery(document).ready(function () {
                         .then(function (res) {
                             if (!res || !res.data || !res.data.result) {
                                 // This is an error
-                                $theForm.trigger('fluentform_submission_failed', {
-                                    form: $theForm,
-                                    response: res
-                                });
+                                emitLegacySubmissionFailure($theForm, res);
                                 showErrorMessages(res);
                                 return;
                             }
@@ -332,33 +403,11 @@ jQuery(document).ready(function () {
                             }
 
                             if (res.data.nextAction) {
-                                $theForm.trigger('fluentform_next_action_' + res.data.nextAction, {
-                                    form: $theForm,
-                                    response: res
-                                });
+                                emitLegacySubmissionNextAction($theForm, res);
                                 return;
                             }
 
-                            $theForm.triggerHandler('fluentform_submission_success', {
-                                form: $theForm,
-                                config: form,
-                                response: res
-                            });
-
-                            jQuery(document.body).trigger('fluentform_submission_success', {
-                                form: $theForm,
-                                config: form,
-                                response: res
-                            });
-
-                            const customSuccessEvent = new CustomEvent('fluentform_submission_success', {
-                                detail: {
-                                    form: $theForm[0],
-                                    config: form,
-                                    response: res
-                                }
-                            });
-                            document.dispatchEvent(customSuccessEvent);
+                            emitLegacySubmissionSuccess($theForm, res);
 
                             if ('redirectUrl' in res.data.result) {
                                 if (res.data.result.message) {
@@ -401,13 +450,7 @@ jQuery(document).ready(function () {
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
-                                if (res.data.result.action == 'hide_form') {
-                                    $theForm.hide().addClass('ff_force_hide');
-                                    $theForm[0].reset();
-                                } else {
-                                    jQuery(document.body).trigger('fluentform_reset', [$theForm, form]);
-                                    $theForm[0].reset();
-                                }
+                                resetLegacyFormAfterSuccessfulSubmission($theForm, res);
 
                                 // Scroll to success msg if not in viewport
                                 const successMsg = $(successMsgSelector);
@@ -420,20 +463,7 @@ jQuery(document).ready(function () {
                         })
                         .fail(function (res) {
 
-                            $theForm.trigger('fluentform_submission_failed', {
-                                form: $theForm,
-                                response: res
-                            });
-
-
-                            const customFailedEvent = new CustomEvent('fluentform_submission_failed', {
-                                detail: {
-                                    form: $theForm[0],
-                                    response: res,
-                                    config: form
-                                }
-                            });
-                            document.dispatchEvent(customFailedEvent);
+                            emitLegacySubmissionFailure($theForm, res);
 
 
                             if (!res || !res.responseJSON || !(res.responseJSON.data || res.responseJSON.errors)) {
@@ -683,6 +713,10 @@ jQuery(document).ready(function () {
                  * @throes error
                  */
                 var validate = function (elements) {
+                    if (elements && typeof elements.each !== 'function' && typeof $ === 'function') {
+                        elements = $(elements);
+                    }
+
                     if (!elements.length) {
                         elements = $('form.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
                             return !$(el).closest('.has-conditions').hasClass('ff_excluded');
@@ -914,9 +948,19 @@ jQuery(document).ready(function () {
 
                 var initTriggers = function () {
                     $theForm = getTheForm();
-                    jQuery(document.body).trigger('fluentform_init', [$theForm, form]);
-                    jQuery(document.body).trigger('fluentform_init_' + form.id, [$theForm, form]);
-                    $theForm.trigger('fluentform_init_single', [this, form]);
+                    window.fluentFormBridge.emitEvent('fluentform_init', {
+                        form: $theForm[0],
+                        config: form
+                    }, document.body, [$theForm, form]);
+                    window.fluentFormBridge.emitEvent('fluentform_init_' + form.id, {
+                        form: $theForm[0],
+                        config: form
+                    }, document.body, [$theForm, form]);
+                    window.fluentFormBridge.emitEvent('fluentform_init_single', {
+                        form: $theForm[0],
+                        app: this,
+                        config: form
+                    }, $theForm[0], [this, form]);
                     $theForm.find('input.ff-el-form-control').on('keypress', function (e) {
                         return e.which !== 13;
                     });
@@ -1440,6 +1484,10 @@ jQuery(document).ready(function () {
                  * @throws Error
                  */
                 this.validate = function (elements, rules) {
+                    if (elements && typeof elements.each !== 'function') {
+                        elements = $(elements);
+                    }
+
                     var self = this, isValid = true, el, elName;
                     elements.each(function (index, element) {
                         el = $(element);
@@ -1756,6 +1804,10 @@ jQuery(document).ready(function () {
             initSingleForm($theForm);
             fluentFormCommonActions.init();
             $theForm.attr('data-ff_reinit', 'yes');
+            window.fluentFormBridge.emitEvent('ff_reinit', {
+                form: $theForm[0],
+                config: formInstance.config || null
+            }, document, [$theForm]);
         });
 
         fluentFormCommonActions.init();
@@ -1818,7 +1870,7 @@ jQuery(document).ready(function () {
         }
     })(window.fluentFormVars, jQuery);
 
-    jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
+jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
         e.preventDefault();
         jQuery(this).parent().find('.ff_msg_temp').remove();
         jQuery('<div/>', {
@@ -1828,3 +1880,4 @@ jQuery(document).ready(function () {
             .insertAfter(jQuery(this));
     });
 });
+})();
