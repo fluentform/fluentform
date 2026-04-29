@@ -238,6 +238,360 @@
             }
         };
 
+        const getErrorPlacementSetting = function (formConfig) {
+            return formConfig?.settings?.layout?.errorMessagePlacement || '';
+        };
+
+        const getFieldElement = function (formEl, fieldName) {
+            if (!formEl || !fieldName) {
+                return null;
+            }
+
+            return formEl.querySelector(`[data-name="${CSS.escape(fieldName)}"]`)
+                || formEl.querySelector(`[name="${CSS.escape(fieldName)}"]`)
+                || formEl.querySelector(`[name="${CSS.escape(fieldName)}[]"]`);
+        };
+
+        const normalizeErrorMessages = function (fieldErrors) {
+            if (Array.isArray(fieldErrors)) {
+                return fieldErrors;
+            }
+
+            if (fieldErrors && typeof fieldErrors === 'object') {
+                return Object.values(fieldErrors);
+            }
+
+            return [fieldErrors];
+        };
+
+        const clearValidationErrors = function (formEl) {
+            const stack = formEl.parentElement?.querySelector('.ff-errors-in-stack');
+            if (stack) {
+                stack.innerHTML = '';
+                stack.style.display = 'none';
+            }
+
+            formEl.querySelectorAll('.ff-el-group').forEach((groupElement) => {
+                groupElement.classList.remove('ff-el-is-error');
+                groupElement.querySelectorAll('.error.text-danger, .error').forEach((errorElement) => errorElement.remove());
+            });
+
+            formEl.querySelectorAll('[aria-invalid="true"]').forEach((fieldElement) => {
+                fieldElement.setAttribute('aria-invalid', 'false');
+            });
+        };
+
+        const showErrorInStack = function (formEl, errors) {
+            const stack = formEl.parentElement?.querySelector('.ff-errors-in-stack');
+            if (!stack || !errors || (typeof errors === 'object' && !Array.isArray(errors) && !Object.keys(errors).length)) {
+                return;
+            }
+
+            stack.innerHTML = '';
+
+            Object.keys(errors).forEach((fieldName) => {
+                const fieldErrors = normalizeErrorMessages(errors[fieldName]);
+                const fieldElement = getFieldElement(formEl, fieldName);
+
+                fieldErrors.forEach((errorText) => {
+                    const errorWrapper = document.createElement('div');
+                    errorWrapper.className = 'error text-danger';
+                    errorWrapper.setAttribute('role', 'alert');
+
+                    const textElement = document.createElement('span');
+                    textElement.className = 'error-text';
+                    textElement.textContent = errorText;
+                    if (fieldElement?.name) {
+                        textElement.dataset.name = fieldElement.name;
+                    }
+
+                    const clearElement = document.createElement('span');
+                    clearElement.className = 'error-clear';
+                    clearElement.innerHTML = '&times;';
+                    clearElement.addEventListener('click', function () {
+                        errorWrapper.remove();
+                        if (!stack.children.length) {
+                            stack.style.display = 'none';
+                        }
+                    });
+
+                    textElement.addEventListener('click', function () {
+                        const targetName = textElement.dataset.name;
+                        if (!targetName) {
+                            return;
+                        }
+                        const focusTarget = formEl.querySelector(`[name="${CSS.escape(targetName)}"]`);
+                        if (focusTarget) {
+                            focusTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            focusTarget.focus();
+                        }
+                    });
+
+                    errorWrapper.append(textElement, clearElement);
+                    stack.appendChild(errorWrapper);
+                });
+
+                if (fieldElement) {
+                    fieldElement.setAttribute('aria-invalid', 'true');
+                    fieldElement.closest('.ff-el-group')?.classList.add('ff-el-is-error');
+                }
+            });
+
+            stack.style.display = '';
+        };
+
+        const showErrorBelowElement = function (formEl, fieldName, message) {
+            const fieldElement = getFieldElement(formEl, fieldName);
+            if (!fieldElement) {
+                showErrorInStack(formEl, { [fieldName || 'error']: [message] });
+                return;
+            }
+
+            fieldElement.setAttribute('aria-invalid', 'true');
+
+            const groupElement = fieldElement.closest('.ff-el-group');
+            groupElement?.classList.add('ff-el-is-error');
+
+            const errorElement = document.createElement('div');
+            errorElement.className = 'error text-danger';
+            errorElement.setAttribute('role', 'alert');
+            errorElement.textContent = message;
+
+            const contentWrapper = fieldElement.closest('.ff-el-input--content');
+            if (contentWrapper) {
+                contentWrapper.querySelectorAll('div.error').forEach((existingError) => existingError.remove());
+                contentWrapper.appendChild(errorElement);
+                return;
+            }
+
+            if (groupElement) {
+                groupElement.querySelectorAll(':scope > .error.text-danger').forEach((existingError) => existingError.remove());
+                groupElement.appendChild(errorElement);
+                return;
+            }
+
+            fieldElement.parentElement?.appendChild(errorElement);
+        };
+
+        const showValidationErrors = function (formEl, formConfig, errors) {
+            if (!errors) {
+                return;
+            }
+
+            clearValidationErrors(formEl);
+
+            if (typeof errors === 'string') {
+                showErrorInStack(formEl, { error: [errors] });
+                return;
+            }
+
+            const errorPlacement = getErrorPlacementSetting(formConfig);
+            if (!errorPlacement || errorPlacement === 'stackToBottom') {
+                showErrorInStack(formEl, errors);
+                return;
+            }
+
+            Object.keys(errors).forEach((fieldName) => {
+                const fieldErrors = normalizeErrorMessages(errors[fieldName]);
+                fieldErrors.forEach((errorText) => showErrorBelowElement(formEl, fieldName, errorText));
+            });
+        };
+
+        const normalizeSubmissionErrors = function (response) {
+            if (!response) {
+                return response;
+            }
+
+            if (response.errors && typeof response.errors === 'object') {
+                return response.errors;
+            }
+
+            if (response.data && response.data.errors) {
+                return response.data.errors;
+            }
+
+            if (response.data && !response.data.result) {
+                return response.data;
+            }
+
+            return response;
+        };
+
+        const createVanillaValidator = function (formEl, formConfig) {
+            const normalizeFieldName = function (fieldElement) {
+                if (!fieldElement) {
+                    return '';
+                }
+
+                if (fieldElement.dataset.type === 'repeater_item' || fieldElement.dataset.type === 'repeater_container') {
+                    return fieldElement.getAttribute('data-name') || '';
+                }
+
+                return String(fieldElement.name || '').replace(/\[\]$/, '');
+            };
+
+            const getFieldValue = function (fieldElement) {
+                if (!fieldElement) {
+                    return '';
+                }
+
+                if (fieldElement.type === 'checkbox' || fieldElement.type === 'radio') {
+                    const checked = formEl.querySelectorAll(`[name="${CSS.escape(fieldElement.name)}"]:checked`);
+                    return checked.length ? checked[0].value || 'on' : '';
+                }
+
+                if (fieldElement.tagName === 'SELECT' && fieldElement.multiple) {
+                    return Array.from(fieldElement.selectedOptions).map((option) => option.value);
+                }
+
+                if (fieldElement.type === 'file') {
+                    return fieldElement.closest('div')?.querySelectorAll('.ff-uploaded-list .ff-upload-preview[data-src]').length || 0;
+                }
+
+                return fieldElement.value || '';
+            };
+
+            const validationMethods = {
+                required(fieldElement, rule) {
+                    if (!rule?.value) {
+                        return true;
+                    }
+
+                    if (fieldElement.type === 'checkbox' || fieldElement.type === 'radio') {
+                        const checked = formEl.querySelectorAll(`[name="${CSS.escape(fieldElement.name)}"]:checked`);
+                        return checked.length > 0;
+                    }
+
+                    if (fieldElement.tagName === 'SELECT' && fieldElement.multiple) {
+                        return Array.from(fieldElement.selectedOptions).length > 0;
+                    }
+
+                    if (fieldElement.tagName === 'SELECT') {
+                        return Boolean(fieldElement.value);
+                    }
+
+                    if (fieldElement.type === 'file') {
+                        return getFieldValue(fieldElement) > 0;
+                    }
+
+                    return String(getFieldValue(fieldElement)).trim().length > 0;
+                },
+                url(fieldElement, rule) {
+                    const value = String(getFieldValue(fieldElement) || '');
+                    if (!rule?.value || !value.length) {
+                        return true;
+                    }
+                    return /^(ftp|http|https):\/\/[^ "]+$/.test(value);
+                },
+                email(fieldElement, rule) {
+                    const value = String(getFieldValue(fieldElement) || '');
+                    if (!rule?.value || !value.length) {
+                        return true;
+                    }
+                    return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}(\.[0-9]{1,3}){3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value.toLowerCase());
+                },
+                numeric(fieldElement, rule) {
+                    const value = window.ff_helper.numericVal(fieldElement).toString();
+                    if (!rule?.value || !value.length) {
+                        return true;
+                    }
+                    return !Number.isNaN(Number(value));
+                },
+                min(fieldElement, rule) {
+                    const value = window.ff_helper.numericVal(fieldElement).toString();
+                    if (!value.length || !rule?.value || !validationMethods.numeric(fieldElement, rule)) {
+                        return true;
+                    }
+                    return Number(value) >= Number(rule.value);
+                },
+                max(fieldElement, rule) {
+                    const value = window.ff_helper.numericVal(fieldElement).toString();
+                    if (!value.length || !rule?.value || !validationMethods.numeric(fieldElement, rule)) {
+                        return true;
+                    }
+                    return Number(value) <= Number(rule.value);
+                },
+                digits(fieldElement, rule) {
+                    const value = window.ff_helper.numericVal(fieldElement).toString();
+                    if (!value.length || !rule?.value || !validationMethods.numeric(fieldElement, rule)) {
+                        return true;
+                    }
+                    return value.length === Number(rule.value);
+                },
+                max_file_size() { return true; },
+                max_file_count() { return true; },
+                allowed_file_types() { return true; },
+                allowed_image_types() { return true; },
+                force_failed() { return false; },
+                valid_phone_number(fieldElement) {
+                    const value = String(getFieldValue(fieldElement) || '');
+                    if (!value) {
+                        return true;
+                    }
+
+                    let iti;
+                    if (typeof window.intlTelInputGlobals !== 'undefined') {
+                        iti = window.intlTelInputGlobals.getInstance(fieldElement);
+                    } else if (fieldElement._iti) {
+                        iti = fieldElement._iti;
+                    }
+
+                    if (!iti) {
+                        return true;
+                    }
+
+                    if (fieldElement.classList.contains('ff_el_with_extended_validation')) {
+                        const isValid = fieldElement.dataset.strict_validation === 'yes' && typeof iti.isValidNumberPrecise === 'function'
+                            ? iti.isValidNumberPrecise()
+                            : iti.isValidNumber();
+                        if (isValid && typeof iti.getNumber === 'function') {
+                            fieldElement.value = iti.getNumber();
+                        }
+                        return isValid;
+                    }
+
+                    return true;
+                }
+            };
+
+            return {
+                validate(elements) {
+                    const fields = Array.from(elements && typeof elements.length !== 'undefined' ? elements : []);
+                    const errors = {};
+
+                    clearValidationErrors(formEl);
+
+                    fields.forEach((fieldElement) => {
+                        const fieldName = normalizeFieldName(fieldElement);
+                        if (!fieldName || !formConfig.rules?.[fieldName]) {
+                            return;
+                        }
+
+                        Object.keys(formConfig.rules[fieldName]).forEach((ruleName) => {
+                            const rule = formConfig.rules[fieldName][ruleName];
+                            const validator = validationMethods[ruleName];
+                            if (typeof validator !== 'function') {
+                                return;
+                            }
+
+                            if (!validator(fieldElement, rule)) {
+                                if (!errors[fieldName]) {
+                                    errors[fieldName] = {};
+                                }
+                                errors[fieldName][ruleName] = rule.message;
+                            }
+                        });
+                    });
+
+                    if (Object.keys(errors).length) {
+                        const validationError = new window.ffValidationError('Validation Error!');
+                        validationError.messages = errors;
+                        throw validationError;
+                    }
+                }
+            };
+        };
+
         const addHiddenData = function (formEl, items) {
             Object.keys(items || {}).forEach((itemName) => {
                 const itemValue = items[itemName];
@@ -309,6 +663,56 @@
 
         const getAjaxUrl = function (formConfig) {
             return window.fluentFormVars?.ajaxUrl || formConfig?.ajaxUrl || window.ajaxurl;
+        };
+
+        const emitResetSliderEvent = function (formEl) {
+            if (!formEl || typeof window.jQuery === 'function') {
+                return;
+            }
+
+            if (!formEl.classList.contains('ff-form-has-steps')) {
+                return;
+            }
+
+            const sliderPayload = {
+                goBackToStep: 0,
+                animDuration: parseInt(window.fluentFormVars?.stepAnimationDuration || 0),
+                isScrollTop: false,
+                actionType: 'next'
+            };
+
+            jqueryEventBridge.emitEvent('update_slider', sliderPayload, formEl, [sliderPayload]);
+        };
+
+        const emitErrorStepSliderEvent = function (formEl) {
+            if (!formEl || typeof window.jQuery === 'function') {
+                return;
+            }
+
+            if (!formEl.classList.contains('ff-form-has-steps')) {
+                return;
+            }
+
+            const formSteps = Array.from(formEl.querySelectorAll('.fluentform-step'));
+            if (!formSteps.length) {
+                return;
+            }
+
+            const firstErroredField = formEl.querySelector('.ff-el-group.ff-el-is-error');
+            const errorStep = firstErroredField?.closest('.fluentform-step');
+            const goBackToStep = errorStep ? formSteps.indexOf(errorStep) : -1;
+            if (goBackToStep < 0) {
+                return;
+            }
+
+            const sliderPayload = {
+                goBackToStep: goBackToStep,
+                animDuration: parseInt(window.fluentFormVars?.stepAnimationDuration || 0),
+                isScrollTop: false,
+                actionType: 'next'
+            };
+
+            jqueryEventBridge.emitEvent('update_slider', sliderPayload, formEl, [sliderPayload]);
         };
 
         const emitInitEvents = function (app, formEl, formConfig) {
@@ -456,7 +860,13 @@
                 },
                 addFieldValidationRule: addFieldValidationRule,
                 removeFieldValidationRule: removeFieldValidationRule,
-                validate: function () { },
+                validate: function (elements) {
+                    const validator = createVanillaValidator(formEl, formConfig);
+                    const fieldList = elements && typeof elements.length !== 'undefined'
+                        ? elements
+                        : formEl.querySelectorAll('input, select, textarea');
+                    validator.validate(fieldList);
+                },
                 scrollToFirstError: function () {
                     const firstError = formEl.querySelector('.ff-el-is-error, .error');
                     if (firstError) {
@@ -464,19 +874,7 @@
                     }
                 },
                 showErrorMessages: function (errors) {
-                    if (!errors) {
-                        return;
-                    }
-                    let message = '';
-                    if (typeof errors === 'string') {
-                        message = errors;
-                    } else if (Array.isArray(errors) && errors.length) {
-                        message = errors[0];
-                    } else if (typeof errors === 'object') {
-                        const first = Object.values(errors)[0];
-                        message = Array.isArray(first) ? first[0] : first;
-                    }
-                    showErrorMessage(formEl, message || 'Submission failed');
+                    showValidationErrors(formEl, formConfig, errors || 'Submission failed');
                 },
                 sendData: async function (targetFormEl, payload) {
                     const ajaxUrl = getAjaxUrl(formConfig);
@@ -511,8 +909,11 @@
                         await runBeforeSubmitCallbacks(payload);
                         const res = await app.sendData(formEl, payload);
                         if (!res || !res.data || !res.data.result) {
+                            const errorPayload = normalizeSubmissionErrors(res);
                             emitSubmissionFailure(res);
-                            app.showErrorMessages(res);
+                            app.showErrorMessages(errorPayload);
+                            app.scrollToFirstError();
+                            emitErrorStepSliderEvent(formEl);
                             return;
                         }
 
@@ -671,6 +1072,7 @@
             if (!formEl) {
                 return;
             }
+            emitResetSliderEvent(formEl);
             const formConfig = getFormConfig(formEl);
             jqueryEventBridge.emitEvent('fluentform_reset', { form: formEl, config: formConfig }, document.body, [formEl, formConfig]);
         });
@@ -748,6 +1150,14 @@ jQuery(document).ready(function () {
         var fluentFormAppStore = {};
 
         window.fluentFormApp = function ($theForm) {
+            if ($theForm && typeof $theForm.attr !== 'function' && typeof $ === 'function') {
+                $theForm = $($theForm);
+            }
+
+            if (!$theForm || typeof $theForm.attr !== 'function') {
+                return false;
+            }
+
             var formInstanceSelector = $theForm.attr('data-form_instance');
             // Sanitize the selector - only allow alphanumeric, underscore and hyphen
             formInstanceSelector = formInstanceSelector ? formInstanceSelector.replace(/[^a-zA-Z0-9_-]/g, '') : '';
@@ -1388,6 +1798,10 @@ jQuery(document).ready(function () {
                  * @throes error
                  */
                 var validate = function (elements) {
+                    if (elements && typeof elements.each !== 'function' && typeof $ === 'function') {
+                        elements = $(elements);
+                    }
+
                     if (!elements.length) {
                         elements = $('form.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
                             return !$(el).closest('.has-conditions').hasClass('ff_excluded');
@@ -2155,6 +2569,10 @@ jQuery(document).ready(function () {
                  * @throws Error
                  */
                 this.validate = function (elements, rules) {
+                    if (elements && typeof elements.each !== 'function') {
+                        elements = $(elements);
+                    }
+
                     var self = this, isValid = true, el, elName;
                     elements.each(function (index, element) {
                         el = $(element);

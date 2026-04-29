@@ -14,8 +14,6 @@ These files are realistic next-step migration targets because they are mostly ev
 | File | Why it is a good candidate | Main compatibility concerns | Required proof before marking done |
 |---|---|---|---|
 | `resources/assets/public/fluentform-advanced.js` | Small-to-medium runtime helper; mostly reacts to `fluentform_init` and `update_slider` | Must preserve legacy event arguments and slider update timing | Browser proof for `update_slider` parity on step forms |
-| `resources/assets/public/Pro/slider.js` | Largest remaining core blocker for step forms; directly controls multi-step navigation, progress, and draft restore | `ff_to_next_page`, `ff_to_prev_page`, `update_slider`, keyboard flow, scroll/focus behavior, and saved-step replay timing | Deterministic non-conversational step-form fixture and event-order audit |
-| `resources/assets/public/form-save-progress.js` | App logic around form state and lifecycle hooks; no third-party jQuery plugin dependency | Step event parity (`ff_to_next_page`, `ff_to_prev_page`) and restored draft timing | Deterministic multi-step fixture with save-progress enabled |
 | `../fluentformpro/src/assets/js/chatFieldScript.js` | Event-driven UI controller; form submit success/failure reactions are straightforward | Needs the same submit lifecycle payloads and button-state timing | Browser proof on real chat field form |
 | `../fluentformpro/src/assets/public/razorpay_handler.js` | Small gateway-specific handler with limited surface area | `fluentform_init_single` and `fluentform_next_action_razorpay` parity | Real gateway next-action fixture or mocked browser flow |
 | `../fluentformpro/src/assets/public/paystack_handler.js` | Similar to Razorpay; compact and event-driven | `fluentform_init_single` and `fluentform_next_action_paystack` parity | Real or mocked gateway next-action proof |
@@ -28,6 +26,9 @@ These files now run with plain-JS internals and rely on the main runtime for com
 |---|---|---|
 | `resources/assets/public/form-submission.js` | Vanilla runtime path in place; bridge and loading mode implemented | Deterministic runtime proof for steps, captcha reset, file upload, and payment next-action |
 | `resources/assets/public/Pro/calculations.js` | Migrated to plain DOM/event APIs; uses `window.fluentFormBridge.onEvent(...)` for cross-mode event subscription | Browser proof on payment + calculated field forms and reset behavior in a full runtime fixture |
+| `resources/assets/public/Pro/slider.js` | Migrated to plain JS internals; step landing pages now render without jQuery from Fluent Forms | Deterministic event-order/payload proof for `ff_to_next_page`, `ff_to_prev_page`, and `update_slider` |
+| `resources/assets/public/form-save-progress.js` | Migrated to plain JS internals; depends on bridge/runtime instead of direct jQuery | Runtime proof for step transitions and restored-draft timing |
+| `app/Services/FormBuilder/Components/DateTime.php` | Date field bootstrap now uses plain JS around `flatpickr` | Date re-init proof is already covered on no-jQuery landing fixture |
 
 ### Group 2: Plain JS later
 
@@ -35,9 +36,9 @@ These files can be migrated to plain JS, but they are larger or more behaviorall
 
 | File | Why it should wait | Main migration risks | Recommended prerequisite |
 |---|---|---|---|
-| `resources/assets/public/payment_handler.js` | Large payment runtime with totals, coupons, validators, next-action logic, and inline payment state | Event order, validator API parity, next-action flows, field-state sync | Close `3.2`, `3.3`, and payment next-action runtime fixtures first |
-| `../fluentformpro/src/assets/public/payment_handler_pro.js` | Smaller than legacy handler, but still gateway-sensitive and validator-heavy | Global validator parity, reset behavior, inline gateway state | Pro payment fixture coverage and validator runtime assertions |
-| `../fluentformpro/src/assets/public/payment_handler.js` | Legacy Pro payment path with broad jQuery usage and gateway branching | High regression surface across coupons, totals, SCA, inline elements | Finish Free payment handler migration pattern first |
+| `resources/assets/public/payment_handler.js` | Large payment runtime with totals, coupons, validators, next-action logic, and inline payment state | Event order, validator API parity, next-action flows, field-state sync, and late-loader bootstrap when jQuery appears after initial vanilla form init | Close `3.2`, `3.3`, and payment next-action runtime fixtures first; keep payment pages on the jQuery-required path until live fixtures prove the migrated path |
+| `../fluentformpro/src/assets/public/payment_handler_pro.js` | Smaller than legacy handler, but still gateway-sensitive and validator-heavy | Global validator parity, reset behavior, inline gateway state, and late-loader bootstrap on mixed pages | Pro payment fixture coverage and validator runtime assertions; keep jQuery required if mixed landing pages still fail |
+| `../fluentformpro/src/assets/public/payment_handler.js` | Legacy Pro payment path with broad jQuery usage and gateway branching | High regression surface across coupons, totals, SCA, inline elements, and late-loader bootstrap on mixed pages | Finish Free payment handler migration pattern first; do not claim no-jQuery support for this path early |
 | `../fluentformpro/src/assets/js/fluentformproPostUpdate.js` | Long, stateful DOM updater with post-form population flow | Field mutation order, repeaters, uploader interactions, validation rules | Stable runtime API parity and dedicated post-update fixture |
 | `../fluentformpro/src/assets/public/authorizenet_accept_handler.js` | Modal + gateway callback flow with more UI coupling than Razorpay/Paystack | Lity/modal dependency, payment callback sequencing, error rendering | Separate modal replacement or isolation strategy first |
 | `../fluentformpro/src/assets/public/ff_address_autocomplete.js` | Third-party API heavy and UI-heavy; large field controller | External callback timing, dynamic field updates, custom parsing triggers | Dedicated fixture plus API-callback-safe adapter plan |
@@ -70,13 +71,18 @@ These are not immediate migration targets for this change, either because they a
 
 ## Migration sequence
 
-1. Finish runtime proof for step events, captcha reset, file upload parity, and payment next-action parity in the current submission runtime.
-2. Migrate `resources/assets/public/Pro/slider.js`.
-3. Re-verify step-form fixtures and `update_slider` parity on landing/preview surfaces.
+1. Finish runtime proof for step events, captcha reset, file upload parity, and final payment next-action parity in the current submission runtime.
+2. Re-verify step-form fixtures and `update_slider` parity on landing/preview surfaces.
+3. Re-verify save-progress through step transitions and draft restore timing.
 4. Migrate `fluentform-advanced.js`.
-5. Migrate `form-save-progress.js`.
-6. Migrate small Pro gateway handlers (`razorpay_handler.js`, `paystack_handler.js`).
-7. Reassess payment handlers with the stronger event/runtime guarantees in place.
+5. Migrate small Pro gateway handlers (`razorpay_handler.js`, `paystack_handler.js`).
+6. Reassess payment handlers with the stronger event/runtime guarantees in place, including already-loaded-form bootstrap on mixed pages and the refreshed asset-version strategy that prevents stale cached handler scripts from masking live results.
+7. Within payment handlers, prefer this slice order:
+   - duplicate/conflicting `payment_method` resolution fixes
+   - coupon-state bootstrap/idempotency helpers
+   - Deferred-to-Promise validator conversion
+   - coupon AJAX/apply/remove replacement
+   - then gateway-specific next-action cleanup and mixed-page startup tracing
 8. Handle uploader, modal, mask, and slider-library dependencies as replacement projects rather than direct conversions.
 
 ## Compatibility contract for every migrated file

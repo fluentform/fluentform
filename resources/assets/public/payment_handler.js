@@ -101,7 +101,7 @@ export class Payment_handler {
             // If minimum amount isn't purchased before this discount can be used, remove the discount and show error message
             if (discount.min_amount && discount.min_amount > this.totalAmount) {
                 delete this.appliedCoupons[discount.code];
-                this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                this.setAppliedCouponsFieldValue();
                 this.$form.find(`.ff_resp_item_${discount.code}`).remove();
                 this.recordCouponMessage(this.$form.find('.ff_coupon_wrapper'), discount.code, `${discount.code} - ${discount.min_amount_message}`, 'error');
                 return;
@@ -446,13 +446,55 @@ export class Payment_handler {
         return Object.values(this.appliedCoupons);
     }
 
+    getAppliedCouponsField() {
+        const formElement = this.getFormElement();
+
+        if (!formElement) {
+            return null;
+        }
+
+        return formElement.querySelector('.__ff_all_applied_coupons');
+    }
+
+    ensureAppliedCouponsField() {
+        const existingField = this.getAppliedCouponsField();
+
+        if (existingField) {
+            return existingField;
+        }
+
+        const formElement = this.getFormElement();
+
+        if (!formElement) {
+            return null;
+        }
+
+        const hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.className = '__ff_all_applied_coupons';
+        hiddenField.name = '__ff_all_applied_coupons';
+        formElement.appendChild(hiddenField);
+
+        return hiddenField;
+    }
+
+    setAppliedCouponsFieldValue() {
+        const couponStateField = this.ensureAppliedCouponsField();
+
+        if (!couponStateField) {
+            return;
+        }
+
+        couponStateField.value = JSON.stringify(Object.keys(this.appliedCoupons));
+    }
+
     initDiscountCode() {
         let couponCodes = this.$form.find('.ff_coupon_wrapper');
         if (!couponCodes.length) {
             return false;
         }
 
-        this.$form.append('<input type="hidden" class="__ff_all_applied_coupons" name="__ff_all_applied_coupons"/>')
+        this.ensureAppliedCouponsField();
 
         jQuery.each(couponCodes, (index, codeWrapper) => {
             let $codeWrapper = jQuery(codeWrapper);
@@ -464,14 +506,13 @@ export class Payment_handler {
                     return '';
                 }
                 $input.attr('disabled', true);
-                let inputName = $input.attr('name');
 
-                jQuery.post(window.fluentFormVars.ajaxUrl, {
+                this.postAjaxJson({
                     action: 'fluentform_apply_coupon',
                     form_id: this.formId,
                     total_amount: this.totalAmount,
                     coupon: code,
-                    other_coupons: this.$form.find('.__ff_all_applied_coupons').val()
+                    other_coupons: this.ensureAppliedCouponsField()?.value || ''
                 })
                     .then(response => {
                         const coupon = response.coupon;
@@ -479,7 +520,7 @@ export class Payment_handler {
                             return;
                         }
                         this.appliedCoupons[coupon.code] = coupon;
-                        this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                        this.setAppliedCouponsFieldValue();
                         let couponAmount = coupon.amount + '%';
                         if (coupon.coupon_type == 'fixed') {
                             couponAmount = this.getFormattedPrice(coupon.amount);
@@ -504,10 +545,15 @@ export class Payment_handler {
                         this.recordCouponMessage($codeWrapper, code, formattedMessage, 'success');
                         $input.val('');
                     })
-                    .fail((errors) => {
-                        this.recordCouponMessage($codeWrapper, code, errors.responseJSON.message, 'error');
+                    .catch((errors) => {
+                        this.recordCouponMessage(
+                            $codeWrapper,
+                            code,
+                            errors?.responseJSON?.message || this.getPaymentMessage('coupon_failed_text', 'Coupon could not be applied right now.'),
+                            'error'
+                        );
                     })
-                    .always(() => {
+                    .finally(() => {
                         $input.attr('disabled', false);
                         this.$form.trigger('do_calculation');
                     });
@@ -535,7 +581,7 @@ export class Payment_handler {
                 $responseDiv.find('.ff_resp_item_' + coupon_code).remove();
                 if (coupon_code in this.appliedCoupons) {
                     delete this.appliedCoupons[coupon_code];
-                    this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                    this.setAppliedCouponsFieldValue();
                     this.$form.trigger('do_calculation');
                 }
             }
@@ -721,28 +767,120 @@ export class Payment_handler {
         }
     }
 
-    initPaymentMethodChange() {
-        const $paymentMethods = this.$form.find('.ff_payment_method');
-        if ($paymentMethods.length > 1) {
-            this.paymentMethod = $paymentMethods.filter((i, e) => e.checked).val();
-        } else {
-            this.paymentMethod = $paymentMethods.val();
+    getFormElement() {
+        return this.$form && this.$form[0] ? this.$form[0] : null;
+    }
+
+    getPaymentMethodInputs() {
+        const formElement = this.getFormElement();
+
+        if (!formElement) {
+            return [];
         }
 
-        if ($paymentMethods.length > 1) {
-            $paymentMethods.change((event) => {
-                this.paymentMethod = event.target.value;
+        return Array.from(formElement.querySelectorAll('.ff_payment_method'));
+    }
 
-                jQuery(event.target).closest('.ff-el-input--content').find('.ff_pay_inline').css({ display: 'none' });
+    isInlineElementExcluded(inlineElementId) {
+        const inlineElement = document.getElementById(inlineElementId);
 
-                if (this.paymentMethod === 'stripe') {
-                    jQuery(event.target).closest('.ff-el-input--content').find('.stripe-inline-wrapper').css({ display: 'block' });
+        if (!inlineElement) {
+            return false;
+        }
+
+        return !!inlineElement.closest('.ff_excluded');
+    }
+
+    appendSerializedFormData(formData, items) {
+        const serializedData = new URLSearchParams(formData.data || '');
+
+        Object.entries(items || {}).forEach(([key, value]) => {
+            serializedData.set(key, value);
+        });
+
+        formData.data = serializedData.toString();
+
+        return formData.data;
+    }
+
+    postAjaxJson(payload) {
+        return fetch(window.fluentFormVars.ajaxUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            credentials: 'same-origin',
+            body: new URLSearchParams(payload).toString()
+        }).then(response => response.json());
+    }
+
+    syncInlinePaymentVisibility(container, paymentMethod) {
+        if (!container) {
+            return;
+        }
+
+        container.querySelectorAll('.ff_pay_inline').forEach((element) => {
+            element.style.display = 'none';
+        });
+
+        if (paymentMethod === 'stripe') {
+            const stripeWrapper = container.querySelector('.stripe-inline-wrapper');
+            if (stripeWrapper) {
+                stripeWrapper.style.display = 'block';
+            }
+        }
+
+        if (paymentMethod === 'square') {
+            const squareWrapper = container.querySelector('.square-inline-wrapper');
+            if (squareWrapper) {
+                squareWrapper.style.display = 'block';
+            }
+        }
+    }
+
+    initPaymentMethodChange() {
+        const paymentMethods = this.getPaymentMethodInputs();
+
+        if (!paymentMethods.length) {
+            this.paymentMethod = '';
+            return;
+        }
+
+        if (paymentMethods.length > 1) {
+            const selectedMethod = paymentMethods.find((element) => element.checked);
+            this.paymentMethod = selectedMethod ? selectedMethod.value : '';
+
+            paymentMethods.forEach((paymentMethodInput) => {
+                if (paymentMethodInput.dataset.ffPaymentMethodChangeBound === 'yes') {
+                    return;
                 }
 
-                if (this.paymentMethod === 'square') {
-                    jQuery(event.target).closest('.ff-el-input--content').find('.square-inline-wrapper').css({ display: 'block' });
-                }
+                paymentMethodInput.addEventListener('change', (event) => {
+                    if (!event.target.checked) {
+                        return;
+                    }
+
+                    const container = event.target.closest('.ff-el-input--content');
+
+                    if (!container) {
+                        return;
+                    }
+
+                    this.paymentMethod = event.target.value;
+                    this.syncInlinePaymentVisibility(container, this.paymentMethod);
+                });
+
+                paymentMethodInput.dataset.ffPaymentMethodChangeBound = 'yes';
             });
+
+            if (selectedMethod) {
+                this.syncInlinePaymentVisibility(
+                    selectedMethod.closest('.ff-el-input--content'),
+                    this.paymentMethod
+                );
+            }
+        } else {
+            this.paymentMethod = paymentMethods[0].value;
         }
     }
 
@@ -750,7 +888,7 @@ export class Payment_handler {
         var that = this;
         this.formInstance.addGlobalValidator('stripeInlinePayment', function ($theForm, formData) {
             if (that.paymentMethod === 'stripe' && !that.hasPaymentItems) {
-                if (!jQuery('#' + inlineElementId).closest('.ff_excluded').length) {
+                if (!that.isInlineElementExcluded(inlineElementId)) {
                     that.formInstance.showFormSubmissionProgress($theForm);
                     jQuery('<div/>', {
                         'id': that.formId + '_success',
@@ -759,30 +897,31 @@ export class Payment_handler {
                         .html(that.getPaymentMessage('processing_text', 'Processing...'))
                         .insertAfter(that.$form);
                     that.toggleStripeInlineCardError();
-                    var dfd = jQuery.Deferred();
-                    that.stripe.createPaymentMethod(
-                        'card',
-                        that.stripeCard
-                    ).then(result => {
-                        //that.formInstance.hideFormSubmissionProgress($theForm);
-                        if (result.error) {
-                            that.toggleStripeInlineCardError(result.error);
-                        } else {
-                            that.stripeCard.update({ disabled: true });
-                            that.formInstance.hideFormSubmissionProgress($theForm);
-                            jQuery('<div/>', {
-                                'id': that.formId + '_success',
-                                'class': 'ff-message-success ff_msg_temp'
-                            })
-                                .html(that.getPaymentMessage('processing_text', 'Processing...'))
-                                .insertAfter(that.$form);
-                            formData.data += '&' + jQuery.param({
-                                '__stripe_payment_method_id': result.paymentMethod.id
-                            });
-                            dfd.resolve();
-                        }
+
+                    return new Promise((resolve) => {
+                        that.stripe.createPaymentMethod(
+                            'card',
+                            that.stripeCard
+                        ).then(result => {
+                            //that.formInstance.hideFormSubmissionProgress($theForm);
+                            if (result.error) {
+                                that.toggleStripeInlineCardError(result.error);
+                            } else {
+                                that.stripeCard.update({ disabled: true });
+                                that.formInstance.hideFormSubmissionProgress($theForm);
+                                jQuery('<div/>', {
+                                    'id': that.formId + '_success',
+                                    'class': 'ff-message-success ff_msg_temp'
+                                })
+                                    .html(that.getPaymentMessage('processing_text', 'Processing...'))
+                                    .insertAfter(that.$form);
+                                that.appendSerializedFormData(formData, {
+                                    '__stripe_payment_method_id': result.paymentMethod.id
+                                });
+                                resolve();
+                            }
+                        });
                     });
-                    return dfd.promise();
                 }
             }
         });
@@ -893,24 +1032,189 @@ export class Payment_handler {
         jQuery('#form_success').remove();
     }
 }
+
+function bootstrapLoadedPaymentForms($, callback) {
+    if (typeof window.fluentFormApp !== 'function') {
+        return;
+    }
+
+    $.each($('form.fluentform_has_payment'), function () {
+        const $form = $(this);
+
+        if (!$form.hasClass('ff-form-loaded') && $form.attr('data-ff_reinit') !== 'yes') {
+            return;
+        }
+
+        const instance = getPaymentFormInstance($form);
+        if (!instance) {
+            return;
+        }
+
+        callback($form, instance);
+    });
+}
+
+function getPaymentFormInstance($form) {
+    if (typeof window.fluentFormApp !== 'function') {
+        return null;
+    }
+
+    const formElement = $form && $form[0] ? $form[0] : null;
+
+    if (formElement) {
+        try {
+            const nativeInstance = window.fluentFormApp(formElement);
+
+            if (nativeInstance) {
+                return nativeInstance;
+            }
+        } catch (error) {
+            // Ignore and fall back to the legacy jQuery-style call shape.
+        }
+    }
+
+    try {
+        return window.fluentFormApp($form);
+    } catch (error) {
+        return null;
+    }
+}
+
+function observeLoadedPaymentForms($, callback) {
+    if (typeof MutationObserver === 'undefined') {
+        return;
+    }
+
+    $.each($('form.fluentform_has_payment'), function () {
+        const formElement = this;
+
+        if (!formElement || formElement.dataset.ffPaymentLoadObserved === 'yes') {
+            return;
+        }
+
+        formElement.dataset.ffPaymentLoadObserved = 'yes';
+
+        const observer = new MutationObserver(() => {
+            const $form = $(formElement);
+
+            if (!$form.hasClass('ff-form-loaded') && $form.attr('data-ff_reinit') !== 'yes') {
+                return;
+            }
+
+            observer.disconnect();
+            delete formElement.dataset.ffPaymentLoadObserved;
+
+            if (typeof window.fluentFormApp !== 'function') {
+                return;
+            }
+
+            const instance = getPaymentFormInstance($form);
+
+            if (instance) {
+                callback($form, instance);
+            }
+        });
+
+        observer.observe(formElement, {
+            attributes: true,
+            attributeFilter: ['class', 'data-ff_reinit']
+        });
+    });
+}
+
+function bindLoadedPaymentFormBootstrap($, callback) {
+    const boot = () => bootstrapLoadedPaymentForms($, callback);
+    const retryDelays = [150, 500, 1500, 3000];
+
+    boot();
+    observeLoadedPaymentForms($, callback);
+    retryDelays.forEach((delay) => {
+        window.setTimeout(boot, delay);
+    });
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot, { once: true });
+    }
+
+    window.addEventListener('load', boot, { once: true });
+}
+
+function initPaymentHandlerOnce($form, instance, handlerFactory) {
+    const initKey = 'ff_payment_handler_initialized';
+    const formElement = $form && $form[0] ? $form[0] : null;
+
+    if ($form.data(initKey)) {
+        return;
+    }
+
+    $form.data(initKey, true);
+    if (formElement) {
+        formElement.setAttribute('data-ff-payment-bootstrap', 'attempted');
+        formElement.removeAttribute('data-ff-payment-bootstrap-error');
+    }
+
+    try {
+        handlerFactory($form, instance);
+        if (formElement) {
+            formElement.setAttribute('data-ff-payment-bootstrap', 'done');
+        }
+    } catch (error) {
+        $form.removeData(initKey);
+        if (formElement) {
+            formElement.setAttribute('data-ff-payment-bootstrap', 'failed');
+            formElement.setAttribute('data-ff-payment-bootstrap-error', error && error.message ? error.message : 'unknown');
+        }
+        console.error('Fluent Forms payment handler bootstrap failed', error);
+        throw error;
+    }
+}
+
+function bindPaymentInitEvents($, callback) {
+    $.each($('form.fluentform_has_payment'), function () {
+        const $form = $(this);
+
+        if (window.fluentFormBridge && typeof window.fluentFormBridge.onEvent === 'function') {
+            window.fluentFormBridge.onEvent($form[0], 'fluentform_init_single', function (event, detail, jqueryArguments, source) {
+                const instance = source === 'jquery'
+                    ? jqueryArguments[0]
+                    : detail?.app;
+
+                if (!instance) {
+                    return;
+                }
+
+                callback($form, instance);
+            });
+
+            return;
+        }
+
+        $form.on('fluentform_init_single', function (event, instance) {
+            callback($form, instance);
+        });
+    });
+}
 // Register payment handler events only if pro is not installed.
 // If pro is installed, payment handler events is registered from payment_handler_pro.js
 if (!window.fluentFormVars?.pro_payment_script_compatible) {
     (function ($) {
-        $.each($('form.fluentform_has_payment'), function () {
-            const $form = $(this);
-            $form.on('fluentform_init_single', function (event, instance) {
-                (new Payment_handler($form, instance)).init();
+        const initPaymentHandler = ($form, instance) => {
+            initPaymentHandlerOnce($form, instance, (bootForm, bootInstance) => {
+                (new Payment_handler(bootForm, bootInstance)).init();
             });
-        });
+        };
+
+        bindPaymentInitEvents($, initPaymentHandler);
+        bindLoadedPaymentFormBootstrap($, initPaymentHandler);
 
         $(document).on('ff_reinit', function (e, formItem) {
             var $form = $(formItem);
-            const instance = fluentFormApp($form);
+            const instance = getPaymentFormInstance($form);
             if (!instance) {
                 return false;
             }
-            (new Payment_handler($form, instance)).init();
+            $form.removeData('ff_payment_handler_initialized');
+            initPaymentHandler($form, instance);
         });
     }(jQuery));
 }

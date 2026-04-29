@@ -106,12 +106,14 @@ class PaymentHandler
             }
 
             $src = fluentFormMix('js/payment_handler.js');
-            $version = FLUENTFORM_VERSION;
+            $scriptPath = FLUENTFORM_DIR_PATH . 'assets/js/payment_handler.js';
+            $version = file_exists($scriptPath) ? (string) filemtime($scriptPath) : FLUENTFORM_VERSION;
 
             // If pro is installed and script is compatible, load script from pro
             if (Helper::isProPaymentScriptCompatible()) {
                 $src = FLUENTFORMPRO_DIR_URL . 'public/js/payment_handler_pro.js';
-                $version = FLUENTFORMPRO_VERSION;
+                $scriptPath = FLUENTFORMPRO_DIR_PATH . 'public/js/payment_handler_pro.js';
+                $version = file_exists($scriptPath) ? (string) filemtime($scriptPath) : FLUENTFORMPRO_VERSION;
             }
 
             wp_enqueue_script('fluentform-payment-handler',

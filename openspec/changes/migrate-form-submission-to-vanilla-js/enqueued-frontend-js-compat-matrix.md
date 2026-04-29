@@ -14,9 +14,9 @@ Status legend:
 |---|---|---|---|---|---|
 | `fluent-form-submission` | `Component::renderShortCode()` | `resources/assets/public/form-submission.js` | emits all lifecycle + step events | defines `window.fluentFormApp`, `window.ff_helper` | PASS (partial runtime) |
 | `fluentform-advanced` | `Component::maybeHasAdvandedFields()` | `resources/assets/public/fluentform-advanced.js` | listens `fluentform_init`, `update_slider` | uses form instance state | PASS (partial runtime) |
-| `form-save-progress` | save-progress component/pro integration | `resources/assets/public/form-save-progress.js` | listens `fluentform_init`, `ff_to_next_page`, `ff_to_prev_page` | uses submit/reset flow | STATIC-ONLY |
+| `form-save-progress` | save-progress component/pro integration | `resources/assets/public/form-save-progress.js` | listens `fluentform_init`, `ff_to_next_page`, `ff_to_prev_page` | uses submit/reset flow | PASS (runtime-backed) |
 | `fluentform-payment-handler` | `PaymentHandler` on payment forms | `resources/assets/public/payment_handler.js` | listens `fluentform_init_single`, `ff_reinit`, submit events | uses `window.ff_helper`, `window.fluentFormApp(...).sendData`, `formInstance.*` | PASS (partial runtime) |
-| `flatpickr` | date-time field | `resources/assets/libs/flatpickr/flatpickr.min.js` | no FF lifecycle binding | input widget only | STATIC-ONLY |
+| `flatpickr` | date-time field | `resources/assets/libs/flatpickr/flatpickr.min.js` | no FF lifecycle binding | input widget only | PASS (partial runtime) |
 | `choices` | select/select-country/chained select | `resources/assets/libs/choices/choices.min.js` | no FF lifecycle binding | widget-only | STATIC-ONLY |
 | `jquery-mask` | masked text input | `resources/assets/libs/jquery.mask.min.js` | no FF lifecycle binding | jQuery plugin invocation in form runtime | RISK |
 | `currency` | numeric formatter field | `resources/assets/libs/currency.min.js` | no FF lifecycle binding | formatter utility only | STATIC-ONLY |
@@ -77,6 +77,17 @@ Status legend:
   - OpenSpec strict validation passed for change `migrate-form-submission-to-vanilla-js`.
   - `npm run dev` compiled successfully.
   - Build regenerates `assets/js/fluent_gutenblock.js`; this artifact is explicitly excluded from migration-scope commits.
+- 2026-04-27: Captcha reset coverage:
+  - JS runtime coverage now proves failed-submit reset calls for reCAPTCHA, hCaptcha, and Turnstile in the vanilla submission runtime.
+  - Remaining gap is real browser-session proof that the widget can be re-completed and resubmitted without page reload.
+- 2026-04-27: File-upload submission coverage:
+  - JS runtime coverage now proves uploaded preview references are serialized in the existing `<field_name>[]` shape.
+  - JS runtime coverage now proves submit is blocked while `.ff_uploading` is present.
+  - Browser fixture `?ff_landing=234&ffjqmode=disabled` is now prepared and confirmed to render the visible `file-upload` field on step 2.
+  - Live endpoint verification on fixture `234` now proves successful PDF upload, invalid-type rejection, and uploaded temp-file removal against the real AJAX actions.
+  - Browser-visible verification on fixture `234` now also proves preview rendering, real upload request dispatch, `100% Completed` progress text, and remove/reset behavior after fixing the shared `max_file_count = -1` unlimited-upload bug in `resources/assets/public/Pro/file-uploader.js`.
+  - The same fixture still loads `jquery-core`, `jquery-migrate`, `jquery.ui.widget`, `jquery.iframe-transport`, and `jquery.fileupload` in `disabled` mode because the Pro uploader vendor stack remains hard-wired to jQuery.
+  - Remaining gap is now the larger Pro uploader/vendor stack behavior.
 
 ## Frontend Render Enqueue Inventory (Pro, verified from PHP enqueue paths)
 
@@ -114,8 +125,8 @@ External script handles also loaded in form render context:
 | `paddle` | Paddle processor | Gateway SDK |
 | `authorize-net-accept-js` | Authorize.Net processor | Gateway SDK |
 | `lity` | Form modal + Authorize.Net modal | Modal dependency; jQuery-based |
-| `stripe_elements` | Stripe handler | Stripe SDK (registered with jQuery dep in Pro code) |
-| `square-web-sdk` | Square handler | Square SDK (registered with jQuery dep in Pro code) |
+| `stripe_elements` | Stripe handler | Stripe SDK; jQuery-free dependency declaration after cleanup |
+| `square-web-sdk` | Square handler | Square SDK; jQuery-free dependency declaration after cleanup |
 
 ## Compatibility Concerns Added To Task Scope
 
@@ -134,7 +145,7 @@ Status legend for this section:
 |---|---|---|---|
 | `resources/assets/public/payment_handler.js` | `window.ff_helper.numericVal`, `window.fluentFormApp(...).sendData`, `formInstance.addGlobalValidator`, `addFieldValidationRule`, `removeFieldValidationRule`, `show/hideFormSubmissionProgress` | PASS (static) | PENDING (runtime) |
 | `resources/assets/public/Pro/calculations.js` | `window.ff_helper.numericVal`, `window.ff_helper.formatCurrency` | PASS (static) | PENDING (runtime) |
-| `resources/assets/public/Pro/slider.js` | `window.fluentFormApp(this.$theForm)` | PASS (static) | PENDING (runtime) |
+| `resources/assets/public/Pro/slider.js` | `window.fluentFormApp(this.$theForm)` | PASS (static) | PASS (partial runtime) |
 | `../fluentformpro/src/assets/public/payment_handler.js` | same payment runtime API set as Free handler | PASS (static) | PENDING (runtime) |
 | `../fluentformpro/src/assets/public/payment_handler_pro.js` | `formInstance.addGlobalValidator`, `show/hideFormSubmissionProgress`, `fluentFormApp($form)` | PASS (static) | PENDING (runtime) |
 | `../fluentformpro/src/assets/public/razorpay_handler.js` | `formInstance.sendData`, `show/hideFormSubmissionProgress` | PASS (static) | PENDING (runtime) |
@@ -187,12 +198,14 @@ Runtime PASS/RISK updates from executed checks:
 | Handle | Runtime status | Evidence |
 |---|---|---|
 | `fluent-form-submission` | PASS (partial runtime) | Init + failed submission events observed; ajax payload posted in real browser run; global API present |
-| `fluentform-advanced` | PASS (partial runtime) | Current step-form fixture `186` now loads without the prior `fluentform_init` `$theForm.attr(...)` crash in either mode; `update_slider` parity still not proven |
+| `fluentform-advanced` | PASS (partial runtime) | Current step fixtures now load without the prior `fluentform_init` `$theForm.attr(...)` crash in either mode; shared slider navigation order is now proven for `ff_to_next_page` / `ff_to_prev_page`, fixture `240` intro-step behavior is now covered so validation only begins on the second `Next`, and legacy tracing now confirms `update_slider` is only required for reset/error-step jumps rather than ordinary navigation |
+| `form-save-progress` | PASS (runtime-backed) | Live save-progress UI works on landing fixture `54`; JS coverage now proves native `ff_to_next_page` step tracking and restored-draft slider handoff without jQuery, so step-transition and draft-restore behavior are covered even when the save-progress module boots after the vanilla runtime |
 | `fluentform-payment-handler` | PASS (partial runtime) | Current payment form `386` now loads without the prior `instance.settings` init crash in either mode; submit/next-action parity still not proven |
+| `fluentform-payment-handler` on mixed landing page `54` | PASS (runtime-backed fixture) | Save-progress UI and migrated datepicker work live on the same page without console errors. Source/test coverage now includes bridge-aware bootstrap hardening for already-loaded forms, a plain-JS payment-method visibility slice in the Free shared handler and Pro legacy handler, native hidden coupon-state helpers, Promise-based inline validator flows, and fetch-based coupon apply requests. A separate backend routing issue was traced and fixed: duplicate `payment_method` components could make the backend choose hosted Stripe while the visible UI was configured for inline Stripe. After removing the duplicate field from the live fixture, enabled/jQuery runtime checks correctly stay on the inline error path. The fresh-navigation disabled-mode race was then traced to stale cached payment-handler assets still loading under the unchanged `?ver=6.2.2` URL after rebuilds. Payment handler enqueue versions now use built asset `filemtime(...)`, and repeated disabled-mode reloads on landing page `54` now deterministically show `data-ff-payment-bootstrap=\"done\"`, a hidden coupon-state field, and a mounted Stripe iframe. Disabled-mode submit verification stays on the inline Stripe path and returns the expected inline validation error (`Your card number is incomplete.`). PayPal submit behavior matches enabled mode, returning the same business-rule error about mixing subscriptions and single payments in one request. Matching successful Stripe submits now complete in both `disabled` and `enabled` modes with the same on-page success state, the same rendered payment summary, and no stack errors or inline Stripe card errors. |
 
 Unresolved runtime gaps (still blocking full assurance):
-- Multi-step `ff_to_next_page` / `ff_to_prev_page` / `update_slider` parity is still not proven with a deterministic non-conversational step fixture.
-- Captcha reset lifecycle after server failure could not be deterministically asserted.
-- File-upload payload parity remains incomplete; current conversational file fixture did not expose a visible file input during the scripted pass.
+- Multi-step `ff_to_next_page` / `ff_to_prev_page` order is now proven on deterministic fixture `240` from the shared slider runtime, and legacy tracing now confirms `update_slider` should remain a reset/error-step compatibility event rather than a per-click navigation event.
+- Captcha reset lifecycle after server failure is now asserted in JS for all supported providers, but browser-session re-complete/resubmit proof is still open.
+- File-upload payload parity and shared browser preview/progress/reset behavior are now runtime-backed on fixture `234`; the remaining uploader risk is concentrated in the larger Pro vendor stack, which still forces jQuery on upload pages today.
 - Payment next-action parity remains incomplete.
 - Pro script matrix remains static-verified, pending full browser proof on dedicated Pro-ready fixtures.

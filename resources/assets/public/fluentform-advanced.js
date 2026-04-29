@@ -7,6 +7,7 @@ import formSlider from "./Pro/slider";
 import calculation from "./Pro/calculations";
 
 const advancedFormCleanupStore = new WeakMap();
+const advancedStepFormBootstrapStore = new WeakSet();
 
 function getEventBridge() {
     if (window.fluentFormBridge) {
@@ -294,8 +295,13 @@ function setupStepSlider(formElement, formConfig) {
     });
 }
 
-function setupAdvancedForm(formElement, formConfig) {
+function setupAdvancedForm(formElement, formConfig, options = {}) {
     if (!formElement || !formConfig) {
+        return;
+    }
+
+    const shouldForceReinit = !!options.force;
+    if (!shouldForceReinit && advancedStepFormBootstrapStore.has(formElement)) {
         return;
     }
 
@@ -330,6 +336,7 @@ function setupAdvancedForm(formElement, formConfig) {
     advancedFormCleanupStore.set(formElement, function cleanupFormHandlers() {
         cleanupCallbacks.forEach((cleanup) => cleanup());
     });
+    advancedStepFormBootstrapStore.add(formElement);
 }
 
 function handleFluentFormInit(event, detail, args, source) {
@@ -342,10 +349,31 @@ function handleFluentFormInit(event, detail, args, source) {
         return;
     }
 
-    setupAdvancedForm(formElement, formConfig);
+    setupAdvancedForm(formElement, formConfig, { force: true });
+}
+
+function bootstrapRenderedStepForms(rootReference = document) {
+    const rootElement = rootReference && typeof rootReference.querySelectorAll === "function"
+        ? rootReference
+        : document;
+
+    Array.from(rootElement.querySelectorAll("form.frm-fluent-form.ff-form-has-steps")).forEach((formElement) => {
+        if (advancedStepFormBootstrapStore.has(formElement)) {
+            return;
+        }
+
+        const formConfig = getLoadedFormConfig(formElement);
+        if (!formConfig) {
+            return;
+        }
+
+        setupAdvancedForm(formElement, formConfig);
+    });
 }
 
 getEventBridge().onEvent(document.body, "fluentform_init", handleFluentFormInit);
+
+bootstrapRenderedStepForms(document);
 
 Array.from(document.querySelectorAll("form.frm-fluent-form.ff-form-loaded")).forEach((formElement) => {
     const formConfig = getLoadedFormConfig(formElement);
@@ -356,6 +384,18 @@ Array.from(document.querySelectorAll("form.frm-fluent-form.ff-form-loaded")).for
 
     setupAdvancedForm(formElement, formConfig);
 });
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function handleAdvancedBootstrapReady() {
+        bootstrapRenderedStepForms(document);
+    }, { once: true });
+} else {
+    bootstrapRenderedStepForms(document);
+}
+
+window.addEventListener("load", function handleAdvancedBootstrapLoad() {
+    bootstrapRenderedStepForms(document);
+}, { once: true });
 
 // Polyfill for startsWith and endsWith
 (function (sp) {

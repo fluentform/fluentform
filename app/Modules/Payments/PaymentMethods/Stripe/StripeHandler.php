@@ -142,7 +142,7 @@ class StripeHandler
 
     public function enqueueAssets()
     {
-        wp_enqueue_script('stripe_elements', 'https://js.stripe.com/v3/', array('jquery'), '3.0', true);
+        wp_enqueue_script('stripe_elements', 'https://js.stripe.com/v3/', array(), '3.0', true);
     }
 
     public function validateSettings($errors, $settings)

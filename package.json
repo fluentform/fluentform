@@ -33,6 +33,7 @@
     },
     "devDependencies": {
         "@babel/preset-react": "^7.22.5",
+        "@playwright/test": "^1.59.1",
         "@wordpress/hooks": "^3.4.1",
         "async": "^2.6.4",
         "babel-plugin-component": "^1.1.1",

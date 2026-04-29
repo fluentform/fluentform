@@ -120,6 +120,175 @@ function loadSliderModule(window) {
     return module.exports;
 }
 
+function loadFileUploaderModule(window, jQueryInstance) {
+    const source = fs.readFileSync(
+        path.resolve(__dirname, '../../resources/assets/public/Pro/file-uploader.js'),
+        'utf8'
+    ).replace('export default function', 'function defaultExport') + '\nmodule.exports = defaultExport;';
+
+    const module = { exports: {} };
+    const factory = new Function('window', 'document', 'module', 'exports', 'jQuery', '$', source);
+    factory(window, window.document, module, module.exports, jQueryInstance, jQueryInstance);
+
+    return module.exports;
+}
+
+function createUploaderJquery(window) {
+    const eventLog = [];
+
+    class JQueryCollection {
+        constructor(elements) {
+            this.elements = elements.filter(Boolean);
+            this.length = this.elements.length;
+            this.elements.forEach((element, index) => {
+                this[index] = element;
+            });
+        }
+
+        each(callback) {
+            this.elements.forEach((element, index) => {
+                callback.call(element, index, element);
+            });
+
+            return this;
+        }
+
+        closest(selector) {
+            return new JQueryCollection(
+                this.elements.map((element) => element.closest(selector)).filter(Boolean)
+            );
+        }
+
+        is(selector) {
+            return this.elements.some((element) => element.matches(selector));
+        }
+
+        width() {
+            return 240;
+        }
+
+        append(child) {
+            const childCollection = child instanceof JQueryCollection ? child : jquery(child);
+            this.elements.forEach((element) => {
+                childCollection.elements.forEach((childElement) => {
+                    element.appendChild(childElement);
+                });
+            });
+
+            return this;
+        }
+
+        prop(name, value) {
+            if (typeof value === 'undefined') {
+                const element = this.elements[0];
+                return element ? element[name] : undefined;
+            }
+
+            this.elements.forEach((element) => {
+                element[name] = value;
+            });
+
+            return this;
+        }
+
+        find(selector) {
+            return new JQueryCollection(
+                this.elements.flatMap((element) => Array.from(element.querySelectorAll(selector)))
+            );
+        }
+
+        empty() {
+            this.elements.forEach((element) => {
+                element.innerHTML = '';
+            });
+
+            return this;
+        }
+
+        html(value) {
+            if (typeof value === 'undefined') {
+                return this.elements[0] ? this.elements[0].innerHTML : undefined;
+            }
+
+            this.elements.forEach((element) => {
+                element.innerHTML = value;
+            });
+
+            return this;
+        }
+
+        remove() {
+            this.elements.forEach((element) => element.remove());
+            return this;
+        }
+
+        trigger(eventName, payload) {
+            eventLog.push({ eventName, payload });
+            return this;
+        }
+
+        on() {
+            return this;
+        }
+
+        serializeArray() {
+            return [];
+        }
+
+        fileupload(options) {
+            this.elements.forEach((element) => {
+                element.__fileuploadOptions = options;
+            });
+
+            return this;
+        }
+    }
+
+    function jquery(target, attributes = {}) {
+        if (target instanceof JQueryCollection) {
+            return target;
+        }
+
+        if (typeof target === 'string') {
+            if (target.startsWith('<') && target.endsWith('/>')) {
+                const tagName = target.slice(1, -2);
+                const element = window.document.createElement(tagName);
+                Object.entries(attributes).forEach(([key, value]) => {
+                    if (key === 'class') {
+                        element.className = value;
+                    } else if (key === 'html') {
+                        element.innerHTML = value;
+                    } else if (key === 'text') {
+                        element.textContent = value;
+                    } else if (key === 'style') {
+                        element.setAttribute('style', value);
+                    } else {
+                        element.setAttribute(key, value);
+                    }
+                });
+
+                return new JQueryCollection([element]);
+            }
+
+            return new JQueryCollection(Array.from(window.document.querySelectorAll(target)));
+        }
+
+        if (target && target.nodeType) {
+            return new JQueryCollection([target]);
+        }
+
+        if (Array.isArray(target)) {
+            return new JQueryCollection(target);
+        }
+
+        return new JQueryCollection([]);
+    }
+
+    jquery.fn = JQueryCollection.prototype;
+
+    return { jquery, eventLog };
+}
+
 test('dom-rating keeps active state and rating text in sync without jQuery', async () => {
     const ratingModule = loadDefaultExport('resources/assets/public/Pro/dom-rating.js');
     const dom = createDom(`
@@ -537,6 +706,89 @@ test('fluentform-advanced bootstraps already loaded forms in no-jquery mode', ()
     assert.equal(formElement.querySelector('.ff-el-progress-bar').style.width, '100%');
 });
 
+test('fluentform-advanced bootstraps preview-rendered step forms before ff-form-loaded is applied', () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <form
+                    class="frm-fluent-form ff-form-has-steps ff_form_instance_test"
+                    data-form_instance="ff_form_instance_test"
+                >
+                    <div class="ff-step-container" data-animation_type="none" data-disable_auto_focus="yes">
+                        <div class="ff-step-header">
+                            <div class="ff-el-progress">
+                                <div class="ff-el-progress-bar"><span></span></div>
+                            </div>
+                        </div>
+                        <div class="fluentform-step">
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-prev" data-action="prev">Prev</button>
+                                <button type="button" class="ff-btn-next" data-action="next">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    const formElement = window.document.querySelector('form');
+    const sliderCalls = [];
+
+    window.fluentFormVars = {
+        stepAnimationDuration: 0,
+        is_rtl: false
+    };
+    window.fluent_form_ff_form_instance_test = {
+        id: 234,
+        form_instance: 'ff_form_instance_test'
+    };
+    window.fluentFormBridge = {
+        emitEvent(eventName, detail, targetElement) {
+            (targetElement || window.document).dispatchEvent(new window.CustomEvent(eventName, {
+                detail,
+                bubbles: true
+            }));
+        },
+        onEvent(targetElement, eventNames, handler) {
+            const names = Array.isArray(eventNames) ? eventNames : String(eventNames).split(/\s+/).filter(Boolean);
+            const removers = names.map((eventName) => {
+                const listener = (event) => handler(event, event.detail, [event.detail], 'native');
+                targetElement.addEventListener(eventName, listener);
+                return () => targetElement.removeEventListener(eventName, listener);
+            });
+
+            return () => removers.forEach((removeListener) => removeListener());
+        }
+    };
+
+    loadFluentformAdvancedModule(window, {
+        initNetPromoter() {},
+        initRepeatButtons() {},
+        initRepeater() {},
+        ratingDom() {},
+        formConditional() {},
+        fileUploader() {},
+        formSlider(formReference) {
+            sliderCalls.push(formReference);
+            return {
+                init() {
+                    formElement.querySelector('.ff-btn-prev')?.remove();
+                    formElement.querySelector('.ff-el-progress-bar').style.width = '100%';
+                },
+                updateSlider() {}
+            };
+        },
+        calculation() {}
+    });
+
+    assert.equal(sliderCalls.length, 1);
+    assert.equal(sliderCalls[0], formElement);
+    assert.equal(formElement.querySelector('.ff-btn-prev'), null);
+    assert.equal(formElement.querySelector('.ff-el-progress-bar').style.width, '100%');
+});
+
 test('slider navigates step forms without requiring jQuery', async () => {
     const dom = createDom(`
         <!doctype html>
@@ -641,4 +893,392 @@ test('slider navigates step forms without requiring jQuery', async () => {
     assert.equal(steps[0].classList.contains('active'), true);
     assert.equal(steps[1].classList.contains('active'), false);
     assert.equal(events.some((item) => item.eventName === 'ff_to_prev_page'), true);
+
+    const navigationEvents = events.filter((item) => ['ff_to_next_page', 'ff_to_prev_page'].includes(item.eventName));
+    assert.deepEqual(navigationEvents.map((item) => `${item.eventName}:${item.target}`), [
+        'ff_to_next_page:form',
+        'ff_to_next_page:document',
+        'ff_to_prev_page:form',
+        'ff_to_prev_page:document'
+    ]);
+});
+
+test('slider validates the first data step after an intro step without advancing', async () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <form class="frm-fluent-form ff-form-has-steps ff_form_instance_test" data-form_id="240">
+                    <div class="ff-step-container" data-animation_type="none" data-disable_auto_focus="yes">
+                        <ul class="ff-step-titles">
+                            <li>Intro</li>
+                            <li>Details</li>
+                            <li>Review</li>
+                        </ul>
+                        <div class="ff-step-header">
+                            <div class="ff-el-progress">
+                                <div class="ff-el-progress-bar"><span></span></div>
+                            </div>
+                            <div class="ff-el-progress-status"></div>
+                            <ul class="ff-el-progress-title">
+                                <li>Intro</li>
+                                <li>Details</li>
+                                <li>Review</li>
+                            </ul>
+                        </div>
+                        <div class="fluentform-step" data-name="step_start-240_4">
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-next" data-action="next">Next</button>
+                            </div>
+                        </div>
+                        <div class="fluentform-step" data-name="form_step-240_1">
+                            <div class="ff-el-group">
+                                <input type="text" name="book_title" data-name="book_title" value="">
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-prev" data-action="prev">Prev</button>
+                                <button type="button" class="ff-btn-next" data-action="next">Next</button>
+                            </div>
+                        </div>
+                        <div class="fluentform-step" data-name="form_step-240_2">
+                            <div class="ff-el-group">
+                                <input type="text" name="review_text" data-name="review_text" value="">
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-prev" data-action="prev">Prev</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    const formElement = window.document.querySelector('form');
+    const eventNames = [];
+    const appCalls = {
+        validate: [],
+        showErrorMessages: [],
+        scrollToFirstError: []
+    };
+
+    window.fluentFormVars = {
+        is_rtl: false,
+        stepAnimationDuration: 0,
+        step_text: 'Step %activeStep% of %totalStep% - %stepTitle%'
+    };
+    window.ffTransitionTimeOut = 0;
+    window.ffValidationError = class ffValidationError extends Error {};
+    window.fluentFormBridge = {
+        emitEvent(eventName, detail, targetElement) {
+            eventNames.push(eventName);
+            (targetElement || window.document).dispatchEvent(new window.CustomEvent(eventName, {
+                detail,
+                bubbles: true
+            }));
+        },
+        onEvent() {
+            return () => {};
+        }
+    };
+
+    window.fluentFormApp = () => ({
+        validate(elements) {
+            const fieldNames = Array.from(elements).map((element) => element.getAttribute('name'));
+            appCalls.validate.push(fieldNames);
+
+            if (fieldNames.includes('book_title')) {
+                const error = new window.ffValidationError('Validation Error!');
+                error.messages = {
+                    book_title: {
+                        required: 'Book Title is Required...!'
+                    }
+                };
+                throw error;
+            }
+        },
+        showErrorMessages(errors) {
+            appCalls.showErrorMessages.push(errors);
+        },
+        scrollToFirstError(duration) {
+            appCalls.scrollToFirstError.push(duration);
+        }
+    });
+
+    const sliderFactory = loadSliderModule(window);
+    const sliderInstance = sliderFactory(formElement, window.fluentFormVars, '.ff_form_instance_test');
+    sliderInstance.init();
+
+    let steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[0].classList.contains('active'), true);
+    assert.equal(steps[1].classList.contains('active'), false);
+
+    steps[0].querySelector('.ff-btn-next').click();
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+
+    steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[0].classList.contains('active'), false);
+    assert.equal(steps[1].classList.contains('active'), true);
+    assert.deepEqual(appCalls.validate, []);
+    assert.deepEqual(eventNames.filter((eventName) => eventName === 'ff_to_next_page'), [
+        'ff_to_next_page',
+        'ff_to_next_page'
+    ]);
+
+    steps[1].querySelector('.ff-btn-next').click();
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+
+    steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[1].classList.contains('active'), true);
+    assert.equal(steps[2].classList.contains('active'), false);
+    assert.deepEqual(appCalls.validate, [['book_title']]);
+    assert.deepEqual(appCalls.showErrorMessages, [{
+        book_title: {
+            required: 'Book Title is Required...!'
+        }
+    }]);
+    assert.deepEqual(appCalls.scrollToFirstError, [350]);
+    assert.deepEqual(eventNames.filter((eventName) => eventName === 'ff_to_next_page'), [
+        'ff_to_next_page',
+        'ff_to_next_page'
+    ]);
+});
+
+test('condition-driven hidden step fields stay excluded from slider validation until shown', async () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <form class="frm-fluent-form ff_form_instance_test">
+                    <div class="ff-step-container">
+                        <div class="fluentform-step active" data-name="form_step-conditional_0">
+                            <label>
+                                <input type="checkbox" name="toggle[]" value="show">
+                                Show book title
+                            </label>
+                            <div class="ff-el-group has-conditions ff_excluded" id="conditional-book-title">
+                                <input type="text" name="book_title" data-name="book_title" value="">
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-next" data-action="next">Next</button>
+                            </div>
+                        </div>
+                        <div class="fluentform-step" data-name="form_step-conditional_1">
+                            <div class="ff-el-group">
+                                <input type="text" name="review_text" data-name="review_text" value="">
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="ff-btn-prev" data-action="prev">Prev</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    const formElement = window.document.querySelector('form');
+    const toggleInput = window.document.querySelector('input[name="toggle[]"]');
+    const conditionalGroup = window.document.querySelector('#conditional-book-title');
+    const appCalls = {
+        validate: [],
+        showErrorMessages: [],
+        scrollToFirstError: []
+    };
+
+    if (!window.CSS) {
+        window.CSS = {};
+    }
+    if (!window.CSS.escape) {
+        window.CSS.escape = (value) => String(value).replace(/"/g, '\\"');
+    }
+
+    window.currency = (value) => ({
+        value: Number(String(value).replace(/[^0-9.-]/g, '')) || 0
+    });
+    window.fluentFormVars = {
+        is_rtl: false,
+        stepAnimationDuration: 0,
+        step_text: 'Step %activeStep% of %totalStep% - %stepTitle%'
+    };
+    window.ffTransitionTimeOut = 0;
+    window.ffValidationError = class ffValidationError extends Error {};
+    window.fluentFormBridge = {
+        emitEvent(eventName, detail, targetElement) {
+            (targetElement || window.document).dispatchEvent(new window.CustomEvent(eventName, {
+                detail,
+                bubbles: true
+            }));
+        },
+        onEvent(targetElement, eventNames, handler) {
+            const names = String(eventNames).split(/\s+/).filter(Boolean);
+            const removers = names.map((eventName) => {
+                const listener = (event) => handler(event, event.detail, [event.detail], 'native');
+                targetElement.addEventListener(eventName, listener);
+                return () => targetElement.removeEventListener(eventName, listener);
+            });
+
+            return () => removers.forEach((removeListener) => removeListener());
+        }
+    };
+
+    const ConditionApp = loadConditionClassModule(window);
+    const formConditionals = loadFormConditionalsModule(window, ConditionApp);
+    formConditionals(formElement, {
+        form_instance: 'ff_form_instance_test',
+        debounce_time: 1,
+        conditionals: {
+            book_title: {
+                status: true,
+                type: 'all',
+                conditions: [
+                    {
+                        field: 'toggle',
+                        operator: '=',
+                        value: 'show'
+                    }
+                ]
+            }
+        }
+    });
+
+    window.fluentFormApp = () => ({
+        validate(elements) {
+            const fieldNames = Array.from(elements).map((element) => element.getAttribute('name'));
+            appCalls.validate.push(fieldNames);
+
+            if (fieldNames.includes('book_title')) {
+                const error = new window.ffValidationError('Validation Error!');
+                error.messages = {
+                    book_title: {
+                        required: 'Book Title is Required...!'
+                    }
+                };
+                throw error;
+            }
+        },
+        showErrorMessages(errors) {
+            appCalls.showErrorMessages.push(errors);
+        },
+        scrollToFirstError(duration) {
+            appCalls.scrollToFirstError.push(duration);
+        }
+    });
+
+    const sliderFactory = loadSliderModule(window);
+    const sliderInstance = sliderFactory(formElement, window.fluentFormVars, '.ff_form_instance_test');
+    sliderInstance.init();
+
+    await new Promise((resolve) => window.setTimeout(resolve, 15));
+    assert.equal(conditionalGroup.classList.contains('ff_excluded'), true);
+
+    formElement.querySelector('.ff-btn-next').click();
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+
+    let steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[0].classList.contains('active'), false);
+    assert.equal(steps[1].classList.contains('active'), true);
+    assert.deepEqual(appCalls.validate, [['toggle[]']]);
+    assert.deepEqual(appCalls.showErrorMessages, []);
+
+    steps[1].querySelector('.ff-btn-prev').click();
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+
+    steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[0].classList.contains('active'), true);
+    assert.equal(steps[1].classList.contains('active'), false);
+
+    toggleInput.checked = true;
+    toggleInput.dispatchEvent(new window.Event('change', { bubbles: true }));
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+    assert.equal(conditionalGroup.classList.contains('ff_excluded'), false);
+
+    steps[0].querySelector('.ff-btn-next').click();
+    await new Promise((resolve) => window.setTimeout(resolve, 20));
+
+    steps = Array.from(window.document.querySelectorAll('.fluentform-step'));
+    assert.equal(steps[0].classList.contains('active'), true);
+    assert.equal(steps[1].classList.contains('active'), false);
+    assert.deepEqual(appCalls.validate, [['toggle[]'], ['toggle[]', 'book_title']]);
+    assert.deepEqual(appCalls.showErrorMessages, [{
+        book_title: {
+            required: 'Book Title is Required...!'
+        }
+    }]);
+    assert.deepEqual(appCalls.scrollToFirstError, [350]);
+});
+
+test('file-uploader treats negative max_file_count as unlimited instead of rejecting valid files', () => {
+    const dom = createDom(`
+        <!doctype html>
+        <html>
+            <body>
+                <form id="form1">
+                    <div id="form1_errors"></div>
+                    <div class="ff-el-group">
+                        <div>
+                            <input type="file" name="file-upload">
+                            <div class="error"></div>
+                        </div>
+                    </div>
+                </form>
+            </body>
+        </html>
+    `);
+    const { window } = dom;
+    const { jquery, eventLog } = createUploaderJquery(window);
+    const formElement = window.document.querySelector('#form1');
+    const fileInput = formElement.querySelector('input[type="file"]');
+    const fileUploader = loadFileUploaderModule(window, jquery);
+
+    window.jQuery = jquery;
+    window.$ = jquery;
+
+    const form = {
+        id: 234,
+        rules: {
+            'file-upload': {
+                max_file_count: {
+                    value: '-1',
+                    message: 'Too many files'
+                },
+                allowed_file_types: {
+                    value: ['pdf']
+                }
+            }
+        }
+    };
+
+    fileUploader(
+        jquery,
+        jquery(formElement),
+        form,
+        {
+            ajaxUrl: 'https://example.test/wp-admin/admin-ajax.php',
+            upload_start_txt: 'Upload started',
+            uploading_txt: 'Uploading',
+            upload_completed_txt: '100% Completed'
+        },
+        '#form1'
+    );
+
+    const uploaderOptions = fileInput.__fileuploadOptions;
+
+    assert.equal(typeof uploaderOptions.change, 'function');
+    assert.equal(form.rules['file-upload'].max_file_count.remaining, null);
+    assert.equal(fileInput.accept, '.pdf');
+
+    const result = uploaderOptions.change.call(fileInput, {}, {
+        files: [
+            {
+                name: 'general.pdf',
+                size: 42000,
+                type: 'application/pdf'
+            }
+        ]
+    });
+
+    assert.equal(result, true);
+    assert.equal(eventLog.length, 0);
+    assert.equal(form.rules['file-upload'].max_file_count.remaining, null);
 });
