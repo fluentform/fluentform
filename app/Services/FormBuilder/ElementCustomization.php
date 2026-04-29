@@ -135,6 +135,11 @@ $fluentformElementCustomizationSettings = [
         'label'     => __('Options', 'fluentform'),
         'help_text' => __('Create visual options for the field and checkmark them for default selection.', 'fluentform'),
     ],
+    'enable_option_groups' => [
+        'template'  => 'inputYesNoCheckBox',
+        'label'     => __('Enable Option Grouping', 'fluentform'),
+        'help_text' => __('Turn this on to organize dropdown and multiselect options under group labels.', 'fluentform'),
+    ],
     'enable_select_2' => [
         'template'  => 'inputYesNoCheckBox',
         'label'     => __('Enable Searchable Smart Options', 'fluentform'),

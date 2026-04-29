@@ -238,12 +238,26 @@
                 let options = element.options;
                 if(!options) {
                     let formattedOptions = {};
-                    each(element.settings.advanced_options, (optionItem) => {
+                    each(this.flattenAdvancedOptions(element.settings.advanced_options || []), (optionItem) => {
                         formattedOptions[optionItem.value] = optionItem.label;
                     });
                     return formattedOptions;
                 }
                 return options;
+            },
+            flattenAdvancedOptions(options) {
+                let flattened = [];
+
+                each(options, option => {
+                    if (option && option.type === 'group' && Array.isArray(option.options)) {
+                        flattened = flattened.concat(this.flattenAdvancedOptions(option.options));
+                        return;
+                    }
+
+                    flattened.push(option);
+                });
+
+                return flattened;
             }
         }
     }

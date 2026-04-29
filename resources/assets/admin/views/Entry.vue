@@ -87,7 +87,7 @@
                                                 </template>
                                                 <template
                                                     v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
-                                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
+                                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'], original_data[label_index])"></div>
                                                 </template>
                                                 <template v-else>
                                                     <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
@@ -449,7 +449,12 @@
             explodeFileUrls(value, chunkSize = 4) {
                 return value ? _ff.chunk(value.split(', '), chunkSize) : [];
             },
-            maybeExtractCommaArrayInfo(dataValue, field) {
+            maybeExtractCommaArrayInfo(dataValue, field, rawValue = null) {
+
+                const groupedHtml = this.renderGroupedEntryValue(field, rawValue, dataValue);
+                if (groupedHtml) {
+                    return groupedHtml;
+                }
 
                 if (typeof dataValue == 'string' && field.element == 'input_checkbox') {
                     return dataValue;
@@ -480,7 +485,7 @@
                     let advancedOptions = field.settings.advanced_options;
                     if(advancedOptions) {
                         options = {};
-                        each(advancedOptions, (optionItem) => {
+                        each(this.flattenAdvancedOptions(advancedOptions), (optionItem) => {
                             options[optionItem.value] = optionItem.label;
                         });
                     }
@@ -503,8 +508,158 @@
                 itemHtml += '</ul>';
                 return itemHtml;
             },
+            renderGroupedEntryValue(field, rawValue, fallbackValue) {
+                if (!this.hasGroupedAdvancedOptions(field)) {
+                    return '';
+                }
+
+                const selectedValues = this.normalizeEntryValues(rawValue, fallbackValue, field);
+
+                if (!selectedValues.length) {
+                    return '';
+                }
+
+                let groupsHtml = '';
+                let matchedStandaloneOptions = [];
+                let matchedGroupedValues = [];
+                let matchedStandaloneValues = [];
+
+                each(field.settings.advanced_options || [], optionItem => {
+                    if (!optionItem) {
+                        return;
+                    }
+
+                    if (optionItem.type !== 'group' || !Array.isArray(optionItem.options)) {
+                        if (selectedValues.includes(String(optionItem.value))) {
+                            matchedStandaloneOptions.push(optionItem.label || optionItem.value);
+                            matchedStandaloneValues.push(String(optionItem.value));
+                        }
+
+                        return;
+                    }
+
+                    let matchedOptions = [];
+
+                    each(optionItem.options, option => {
+                        if (!option) {
+                            return;
+                        }
+
+                        if (selectedValues.includes(String(option.value))) {
+                            matchedOptions.push(option.label || option.value);
+                            matchedGroupedValues.push(String(option.value));
+                        }
+                    });
+
+                    if (!matchedOptions.length) {
+                        return;
+                    }
+
+                    let matchedHtml = '';
+                    if (matchedOptions.length === 1) {
+                        matchedHtml = `<div class="wpf_entry_group_value">${this.escapeEntryHtml(matchedOptions[0])}</div>`;
+                    } else {
+                        matchedHtml = '<ul class="entry_item_list">';
+                        each(matchedOptions, optionLabel => {
+                            matchedHtml += `<li>${this.escapeEntryHtml(optionLabel)}</li>`;
+                        });
+                        matchedHtml += '</ul>';
+                    }
+
+                    groupsHtml += `
+                        <div class="entry_item_group">
+                            <div class="entry_item_group__label">${this.escapeEntryHtml(optionItem.label || 'Group')}</div>
+                            ${matchedHtml}
+                        </div>
+                    `;
+                });
+
+                const unmatchedStandaloneValues = selectedValues.filter(value => {
+                    if (matchedGroupedValues.includes(value)) {
+                        return false;
+                    }
+
+                    return !matchedStandaloneValues.includes(value);
+                });
+
+                each(unmatchedStandaloneValues, value => {
+                    matchedStandaloneOptions.push(value);
+                });
+
+                let standaloneHtml = '';
+
+                if (matchedStandaloneOptions.length === 1) {
+                    standaloneHtml = `<div class="wpf_entry_group_value">${this.escapeEntryHtml(matchedStandaloneOptions[0])}</div>`;
+                } else if (matchedStandaloneOptions.length > 1) {
+                    standaloneHtml = '<ul class="entry_item_list">';
+                    each(matchedStandaloneOptions, optionLabel => {
+                        standaloneHtml += `<li>${this.escapeEntryHtml(optionLabel)}</li>`;
+                    });
+                    standaloneHtml += '</ul>';
+                }
+
+                if (!groupsHtml && !standaloneHtml) {
+                    return '';
+                }
+
+                return `<div class="wpf_entry_grouped_response">${standaloneHtml}${groupsHtml}</div>`;
+            },
+            normalizeEntryValues(rawValue, fallbackValue, field) {
+                let values = [];
+
+                if (Array.isArray(rawValue)) {
+                    values = rawValue;
+                } else if (typeof rawValue === 'string' && rawValue) {
+                    if (field.element === 'select' && field.attributes && !field.attributes.multiple) {
+                        values = [rawValue];
+                    } else {
+                        values = rawValue.split(',');
+                    }
+                } else if (Array.isArray(fallbackValue)) {
+                    values = fallbackValue;
+                } else if (typeof fallbackValue === 'string' && fallbackValue) {
+                    if (field.element === 'select' && field.attributes && !field.attributes.multiple) {
+                        values = [fallbackValue];
+                    } else {
+                        values = fallbackValue.split(',');
+                    }
+                }
+
+                return values
+                    .map(value => String(value).trim())
+                    .filter(Boolean);
+            },
+            hasGroupedAdvancedOptions(field) {
+                const advancedOptions = field && field.settings && field.settings.advanced_options;
+
+                return Array.isArray(advancedOptions) && advancedOptions.some(option => {
+                    return option && option.type === 'group' && Array.isArray(option.options);
+                });
+            },
+            escapeEntryHtml(value) {
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            },
             dataType(data) {
                 return typeof data;
+            },
+            flattenAdvancedOptions(items) {
+                let options = [];
+
+                each(items, item => {
+                    if (item && item.type === 'group' && Array.isArray(item.options)) {
+                        options = options.concat(this.flattenAdvancedOptions(item.options));
+                        return;
+                    }
+
+                    options.push(item);
+                });
+
+                return options;
             },
             prettifyJson(entry) {
                 let data = {

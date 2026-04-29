@@ -15,12 +15,26 @@
 			                v-if="fieldItem.attributes.type === 'select'"
 			                v-model="model[rowIndex][fieldIndex]" size="mini"
 		                >
-			                <el-option
-				                v-for="option in fieldItem.settings.advanced_options"
-				                :key="option.value"
-				                :label="option.label"
-				                :value="option.value">
-			                </el-option>
+			                <template v-for="(option, optionIndex) in fieldItem.settings.advanced_options">
+			                    <el-option-group
+				                    v-if="isOptionGroup(option)"
+				                    :key="`group-${optionIndex}`"
+				                    :label="option.label"
+			                    >
+				                    <el-option
+					                    v-for="groupOption in option.options"
+					                    :key="groupOption.value"
+					                    :label="groupOption.label"
+					                    :value="groupOption.value">
+				                    </el-option>
+			                    </el-option-group>
+			                    <el-option
+				                    v-else
+				                    :key="option.value"
+				                    :label="option.label"
+				                    :value="option.value">
+			                    </el-option>
+			                </template>
 		                </el-select>
 	                    <el-input
 		                    v-else
@@ -72,6 +86,9 @@
             },
             initNewRow() {
                 this.model = [new Array(this.field.raw.fields.length).fill('')];
+            },
+            isOptionGroup(option) {
+                return option && option.type === 'group' && Array.isArray(option.options);
             }
         },
         computed: {
