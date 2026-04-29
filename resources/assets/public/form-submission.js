@@ -141,6 +141,12 @@ jQuery(document).ready(function () {
                         }
                     );
                 };
+
+                var scheduleFloatingLabelRefresh = function () {
+                    setTimeout(function () {
+                        initFloatingLabels();
+                    }, 0);
+                };
                 /**
                  * Register all the event handlers
                  *
@@ -454,9 +460,11 @@ jQuery(document).ready(function () {
                                 if (res.data.result.action == 'hide_form') {
                                     $theForm.hide().addClass('ff_force_hide');
                                     $theForm[0].reset();
+                                    scheduleFloatingLabelRefresh();
                                 } else {
                                     jQuery(document.body).trigger('fluentform_reset', [$theForm, form]);
                                     $theForm[0].reset();
+                                    scheduleFloatingLabelRefresh();
                                 }
 
                                 // Scroll to success msg if not in viewport
@@ -613,6 +621,8 @@ jQuery(document).ready(function () {
                             reset(getElement(condition.field));
                         });
                     });
+
+                    scheduleFloatingLabelRefresh();
                 };
 
                 /**
