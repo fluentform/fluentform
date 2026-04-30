@@ -8,8 +8,24 @@
             <span class="ff-entry-ranking-editor__index">{{ index + 1 }}</span>
             <span class="ff-entry-ranking-editor__label">{{ item.label }}</span>
             <div class="ff-entry-ranking-editor__actions">
-                <el-button icon="el-icon-arrow-up" size="mini" circle @click="move(index, -1)" :disabled="index === 0"></el-button>
-                <el-button icon="el-icon-arrow-down" size="mini" circle @click="move(index, 1)" :disabled="index === orderedItems.length - 1"></el-button>
+                <el-button
+                    icon="el-icon-arrow-up"
+                    size="mini"
+                    circle
+                    :aria-label="$t('Move up')"
+                    :title="$t('Move up')"
+                    @click="move(index, -1)"
+                    :disabled="index === 0"
+                ></el-button>
+                <el-button
+                    icon="el-icon-arrow-down"
+                    size="mini"
+                    circle
+                    :aria-label="$t('Move down')"
+                    :title="$t('Move down')"
+                    @click="move(index, 1)"
+                    :disabled="index === orderedItems.length - 1"
+                ></el-button>
             </div>
         </div>
     </div>

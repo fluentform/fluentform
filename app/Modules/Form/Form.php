@@ -670,6 +670,17 @@ class Form
                     'title' => sprintf('Name attribute %s has duplicate value.', $duplicateString),
                 ], 422);
             }
+
+            $duplicateRankingFields = Helper::getRankingFieldsWithDuplicateOptionValues($fields);
+            if ($duplicateRankingFields) {
+                $duplicateRankingFields = implode(', ', array_unique($duplicateRankingFields));
+                wp_send_json([
+                    'title' => sprintf(
+                        __('Ranking field %s has duplicate option values. Please make each option value unique.', 'fluentform'),
+                        $duplicateRankingFields
+                    ),
+                ], 422);
+            }
         }
 
         if (!sanitize_text_field($this->request->get('title'))) {
