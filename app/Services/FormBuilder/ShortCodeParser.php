@@ -380,8 +380,7 @@ class ShortCodeParser
         if ('admin_view_url' == $key) {
             return admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry->form_id . '#/entries/' . $entry->id);
         } elseif ('entry_uid' == $key) {
-            $meta = SubmissionMeta::retrieve('_entry_uid_hash', $entry->id);
-            return $meta ? substr($meta, 0, 12) : '';
+            return static::getShortEntryUid($entry);
         } elseif ('entry_uid_link' == $key) {
             return static::getEntryUidLink($entry);
         } elseif (false !== strpos($key, 'meta.')) {
@@ -657,6 +656,22 @@ class ShortCodeParser
 
         // Generate the link
         return site_url('?ff_entry=1&hash=' . $meta->value);
+    }
+
+    protected static function getShortEntryUid($entry)
+    {
+        if (empty($entry->id)) {
+            return '';
+        }
+
+        $entryId = strtoupper(base_convert((string) absint($entry->id), 10, 36));
+        $entryHash = SubmissionMeta::retrieve('_entry_uid_hash', $entry->id);
+
+        if (!$entryHash) {
+            return $entryId;
+        }
+
+        return $entryId . '-' . strtoupper(substr($entryHash, 0, 4));
     }
 
     public static function resetData()

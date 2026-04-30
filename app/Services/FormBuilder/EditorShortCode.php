@@ -86,7 +86,7 @@ class EditorShortCode
             '{submission.status}'         => __('Submission Status', 'fluentform'),
             '{submission.created_at}'     => __('Submission Create Date', 'fluentform'),
             '{submission.admin_view_url}' => __('Submission Admin View URL', 'fluentform'),
-            '{submission.entry_uid}'      => __('Entry ID', 'fluentform'),
+            '{submission.entry_uid}'      => __('Entry Unique ID', 'fluentform'),
         ];
 
         if ($form) {
