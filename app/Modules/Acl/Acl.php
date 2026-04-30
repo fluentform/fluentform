@@ -202,11 +202,20 @@ class Acl
             return false;
         }
 
-        foreach ($capabilities as $key => $capability) {
-            // Handle both flat ['cap1', 'cap2'] and nested {role: {cap: true}} formats
-            $capToCheck = is_array($capability) ? $key : $capability;
-            if (is_string($capToCheck) && $user->has_cap($capToCheck)) {
-                return $capToCheck;
+        foreach ($capabilities as $capability) {
+            // Nested {role: {cap: true, ...}} format — check each inner capability name.
+            if (is_array($capability)) {
+                foreach (array_keys($capability) as $nestedCap) {
+                    if (is_string($nestedCap) && $user->has_cap($nestedCap)) {
+                        return $nestedCap;
+                    }
+                }
+                continue;
+            }
+
+            // Flat ['cap1', 'cap2'] format.
+            if (is_string($capability) && $user->has_cap($capability)) {
+                return $capability;
             }
         }
 
