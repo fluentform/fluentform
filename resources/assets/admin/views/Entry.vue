@@ -387,15 +387,16 @@
                         );
                     })
                     .then(() => {
-                        this.getEntryResources();
-						const statusUpdate = window.fluent_form_entries_vars.update_status;
-						if (
-							statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
-							statusUpdate !== this.entry.status
-						) {
-							this.handleStatusChange(statusUpdate);
-							this.getEntryResources();
-						}
+                        const statusUpdate = window.fluent_form_entries_vars.update_status;
+                        if (
+                            statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
+                            statusUpdate !== this.entry.status
+                        ) {
+                            return this.handleStatusChange(statusUpdate)
+                                .then(() => this.getEntryResources());
+                        }
+
+                        return this.getEntryResources();
                     })
                     .catch(error => {
                         this.$fail(error.message);
@@ -423,7 +424,7 @@
 
                 const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', this.entry_id);
 
-                FluentFormsGlobal.$rest.post(url, data)
+                return FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.entry.status = status;
                         this.$success(response.message);
