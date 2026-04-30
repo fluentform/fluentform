@@ -130,11 +130,16 @@
                                     />
                                 </template>
                                 <template v-else>
-                                    <div class="group-title" @click="startTitleEdit(group)">
+                                    <button
+                                        type="button"
+                                        class="group-title"
+                                        :aria-label="$t('Edit group title')"
+                                        @click="startTitleEdit(group)"
+                                    >
                                         <span v-if="group.title">{{ group.title }}</span>
                                         <span v-else>{{ `${$t('Group')} ${groupIndex + 1}` }}</span>
                                         <i class="el-icon-edit-outline" style="font-size: 12px; margin-left: 5px;"></i>
-                                    </div>
+                                    </button>
                                 </template>
                                 <el-tooltip class="item" :content="$t('Enter a descriptive name for this condition group if you want. This helps you identify different sets of rules easily.')" placement="bottom" popper-class="ff_tooltip_wrap">
                                     <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
