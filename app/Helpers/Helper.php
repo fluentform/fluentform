@@ -1112,7 +1112,7 @@ class Helper
                 $options = ['on'];
             } elseif ('terms_and_condition' == $fieldType) {
                 $options = ['on', 'off'];
-            } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
+            } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox', 'input_ranking'])) {
                 if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
                 }
@@ -1157,6 +1157,32 @@ class Helper
 
             $isValid = true;
             switch ($fieldType) {
+                case 'input_ranking':
+                    $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
+                    if ($skipValidationInputsWithOptions) {
+                        break;
+                    }
+
+                    if (!is_array($inputValue)) {
+                        $isValid = false;
+                        break;
+                    }
+
+                    $filteredValues = array_values(array_filter(array_map('sanitize_text_field', $inputValue), function ($value) {
+                        return $value !== '';
+                    }));
+
+                    $normalizedOptions = array_values(array_filter(array_map('sanitize_text_field', $options), function ($value) {
+                        return $value !== '';
+                    }));
+
+                    sort($filteredValues);
+                    sort($normalizedOptions);
+
+                    $isValid = count($inputValue) === count($options)
+                        && count($filteredValues) === count(array_unique($filteredValues))
+                        && $filteredValues === $normalizedOptions;
+                    break;
                 case 'input_radio':
                 case 'select':
                 case 'net_promoter_score':

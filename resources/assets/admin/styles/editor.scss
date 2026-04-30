@@ -1669,3 +1669,201 @@ mark {
     visibility: visible;
   }
 }
+
+.ff-ranking-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ff-ranking-preview--grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ff-ranking-preview-columns, 3), minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ff-ranking-preview__item,
+.ff-entry-ranking-editor__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__item {
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-height: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  gap: 10px;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__item--no-image {
+  justify-content: flex-start;
+}
+
+.ff-ranking-preview__item-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__item-main {
+  position: relative;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__item--no-image .ff-ranking-preview__item-main {
+  min-height: 0;
+  padding-top: 44px;
+  padding-left: 0;
+  justify-content: flex-start;
+}
+
+.ff-ranking-preview__handle {
+  width: 32px;
+  height: 32px;
+  z-index: 2;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dcdfe6;
+  border-radius: 50%;
+  background: #fff;
+  user-select: none;
+  font-size: 20px;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__handle {
+  position: absolute;
+  top: 0;
+  left: 4px;
+}
+
+.ff-ranking-preview__index,
+.ff-entry-ranking-editor__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  background: var(--fluentform-primary, #1a7efb);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(47, 115, 255, 0.18);
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 999px;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__index {
+  position: absolute;
+  top: 0;
+  left: 44px;
+  z-index: 2;
+  background: var(--fluentform-primary, #1a7efb);
+  font-size: 15px;
+}
+
+.ff-ranking-preview__image {
+  display: inline-flex;
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f5f7fa;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  background: #eef1f6;
+  min-width: 0;
+}
+
+.ff-ranking-preview__label,
+.ff-entry-ranking-editor__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #303133;
+  font-size: 16px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__label {
+  white-space: normal;
+  display: block;
+  padding-top: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__item--no-image .ff-ranking-preview__label {
+  width: 100%;
+}
+
+.ff-ranking-preview__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ff-ranking-preview--grid .ff-ranking-preview__actions {
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #eef1f6;
+}
+
+.ff-ranking-preview__move {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dcdfe6;
+  border-radius: 6px;
+  background: #fff;
+  color: #606266;
+  line-height: 1;
+  padding: 4px;
+}
+
+.ff-entry-ranking-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ff-entry-ranking-editor__actions {
+  display: inline-flex;
+  gap: 8px;
+}

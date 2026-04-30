@@ -19,7 +19,7 @@
 
             <div class="top-check-action">
                 <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
-                <el-checkbox v-if="hasCalValue" v-model="editItem.settings.calc_value_status">{{ $t('Calc Values') }}</el-checkbox>
+                <el-checkbox v-if="hasCalcValueSupport" v-model="editItem.settings.calc_value_status">{{ $t('Calc Values') }}</el-checkbox>
                 <template v-if="has_pro">
                     <el-checkbox v-if="hasImageSupport" v-model="editItem.settings.enable_image_input">{{ $t('Photo') }}</el-checkbox>
                 </template>
@@ -93,7 +93,7 @@
                                 :key="`group-${groupIndex}-option-${optionIndex}`"
                                 class="ff_option_group__row"
                             >
-                                <div class="checkbox ff_option_group__default">
+                                <div v-if="!isRankingField" class="checkbox ff_option_group__default">
                                     <input
                                         class="form-control"
                                         :type="optionsType"
@@ -163,7 +163,7 @@
                 effect-allowed="move"
             >
                 <vddl-nodrag class="nodrag">
-                    <div class="checkbox">
+                    <div v-if="!isRankingField" class="checkbox">
                         <input
                             ref="defaultOptions"
                             class="form-control"
@@ -221,6 +221,7 @@
         <el-button
             type="warning"
             size="mini"
+            v-if="!isRankingField"
             :disabled="!editItem.attributes.value || (Array.isArray(editItem.attributes.value) && !editItem.attributes.value.length)"
             @click.prevent="clear"
         >{{ $t('Clear Selection') }}</el-button>
@@ -351,6 +352,12 @@
             isToggleField() {
                 return this.editItem && this.editItem.element === 'input_toggle';
             },
+            isRankingField() {
+                return this.editItem && this.editItem.element === 'input_ranking';
+            },
+            hasCalcValueSupport() {
+                return this.hasCalValue && !this.isRankingField;
+            }
         },
         methods: {
             handleDrop(data) {
@@ -431,11 +438,14 @@
             },
             decrease(index) {
                 let options = this.editItem.settings.advanced_options;
-                if (options.length > 1) {
+                const minOptions = this.isRankingField ? 2 : 1;
+                if (options.length > minOptions) {
                     options.splice(index, 1);
                 } else {
                     this.$notify.error({
-                        message: 'You have to have at least one option.',
+                        message: this.isRankingField
+                            ? 'You have to have at least two options.'
+                            : 'You have to have at least one option.',
                         offset: 30
                     });
                 }

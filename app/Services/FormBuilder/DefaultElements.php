@@ -1858,6 +1858,18 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputSlider',
         ],
     ];
+    $fluentformDefaultElements['advanced']['input_ranking'] = [
+        'index'          => 21,
+        'element'        => 'input_ranking',
+        'attributes'     => [],
+        'settings'       => [],
+        'options'        => [],
+        'editor_options' => [
+            'title'      => __('Ranking Field', 'fluentform'),
+            'icon_class' => 'dashicons dashicons-sort',
+            'template'   => 'rankingField',
+        ],
+    ];
     $fluentformDefaultElements['advanced']['color-picker'] = [
         'index'          => 16,
         'element'        => 'color-picker',

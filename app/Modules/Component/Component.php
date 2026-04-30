@@ -399,6 +399,13 @@ class Component
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/RaY2VcPWk6I',
             ];
+            $disabled['input_ranking'] = [
+                'disabled'    => true,
+                'title'       => __('Ranking Field', 'fluentform'),
+                'description' => __('Ranking Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
+                'image'       => '',
+                'video'       => '',
+            ];
             $disabled['color-picker'] = [
                 'disabled'    => true,
                 'title'       => __('Color Picker', 'fluentform'),
