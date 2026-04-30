@@ -24,6 +24,20 @@ export default {
             orderedItems: []
         };
     },
+    watch: {
+        value: {
+            handler() {
+                this.buildItems();
+            },
+            deep: true
+        },
+        'field.raw.settings.advanced_options': {
+            handler() {
+                this.buildItems();
+            },
+            deep: true
+        }
+    },
     methods: {
         flattenOptions(options) {
             const flattened = [];
