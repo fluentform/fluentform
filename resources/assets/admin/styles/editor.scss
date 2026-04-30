@@ -992,6 +992,18 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
   width: calc(100% - 28px);
 }
 
+.group-title {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
 .conditional-logic {
   .action-btn {
     align-self: center;
