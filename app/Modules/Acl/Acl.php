@@ -255,7 +255,18 @@ class Acl
         }
 
         foreach ($capabilities as $capability) {
-            if ($user->has_cap($capability)) {
+            // Nested {role: {cap: true, ...}} format — check each inner capability name.
+            if (is_array($capability)) {
+                foreach (array_keys($capability) as $nestedCap) {
+                    if (is_string($nestedCap) && $user->has_cap($nestedCap)) {
+                        return $nestedCap;
+                    }
+                }
+                continue;
+            }
+
+            // Flat ['cap1', 'cap2'] format.
+            if (is_string($capability) && $user->has_cap($capability)) {
                 return $capability;
             }
         }
