@@ -267,7 +267,7 @@
                             </action-btn>
                         </div>
 
-                        <div class="preview-section" v-if="!isGroupEmpty(group) && group.isGroupOpen && getGroupPreview(group)">
+                        <div class="preview-section" v-if="!isGroupEmpty(group) && group.isGroupOpen && getGroupPreview(group).length">
                             <div class="preview-header" @click="togglePreview(group)">
                                 <div class="preview-toggle">
                                     <i :class="[
@@ -279,7 +279,26 @@
 
                             <div v-show="group.isPreviewOpen" class="preview-content">
                                 <div class="group-preview">
-                                    <div class="preview-conditions" v-html="getGroupPreview(group)"></div>
+                                    <div class="preview-conditions">
+                                        <template v-for="(preview, previewIndex) in getGroupPreview(group)">
+                                            <span :key="`field-${groupIndex}-${previewIndex}`" class="preview-field">{{ preview.fieldLabel }}</span>
+                                            <span :key="`operator-${groupIndex}-${previewIndex}`" class="preview-operator">{{ preview.operator }}</span>
+                                            <span
+                                                :key="`value-${groupIndex}-${previewIndex}`"
+                                                class="preview-value"
+                                                :class="{ 'empty-value': preview.isEmpty }"
+                                            >
+                                                {{ preview.value }}
+                                            </span>
+                                            <span
+                                                v-if="previewIndex !== getGroupPreview(group).length - 1"
+                                                :key="`and-${groupIndex}-${previewIndex}`"
+                                                class="preview-and"
+                                            >
+                                                {{ $t('AND') }}
+                                            </span>
+                                        </template>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -538,7 +557,7 @@
             },
 
             getGroupPreview(group) {
-                const conditions = group.rules.map(rule => {
+                return group.rules.map(rule => {
                     if (!rule.field || !rule.operator) return '';
 
                     const fieldLabel = this.dependencies[rule.field]?.field_label || rule.field;
@@ -547,14 +566,13 @@
                         : (this.dependencies[rule.field]?.options?.find(opt => opt.value === rule.value)?.label || rule.value);
                     const operator = this.getOperatorLabel(rule.operator);
 
-                    return `
-                <span class="preview-field">${fieldLabel}</span>
-                <span class="preview-operator">${operator}</span>
-                <span class="preview-value ${!value ? 'empty-value' : ''}">${value || 'empty'}</span>
-            `;
+                    return {
+                        fieldLabel,
+                        operator,
+                        value: value || 'empty',
+                        isEmpty: !value
+                    };
                 }).filter(preview => preview);
-
-                return conditions.join('<span class="preview-and">AND</span>');
             },
 
             getOperatorLabel(operator) {
