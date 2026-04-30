@@ -379,6 +379,9 @@ class ShortCodeParser
         }
         if ('admin_view_url' == $key) {
             return admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry->form_id . '#/entries/' . $entry->id);
+        } elseif ('entry_uid' == $key) {
+            $meta = SubmissionMeta::retrieve('_entry_uid_hash', $entry->id);
+            return $meta ? substr($meta, 0, 12) : '';
         } elseif ('entry_uid_link' == $key) {
             return static::getEntryUidLink($entry);
         } elseif (false !== strpos($key, 'meta.')) {
