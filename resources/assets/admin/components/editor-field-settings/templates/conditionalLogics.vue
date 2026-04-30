@@ -35,26 +35,58 @@
                 </select>
                 <select v-model="condition.operator" :placeholder="$t('Select')" class="condition-operator ff-select ff-select-small">
                     <option value="" disabled>{{ $t('Select') }}</option>
-                    <option value="=">{{ $t('equal') }}</option>
-                    <option value="!=">{{ $t('not equal') }}</option>
+                    <template v-if="isRankingDependency(condition.field)">
+                        <option value="list_match">{{ $t('list match') }}</option>
+                        <option value="list_not_match">{{ $t('list not match') }}</option>
+                    </template>
+                    <template v-else>
+                        <option value="=">{{ $t('equal') }}</option>
+                        <option value="!=">{{ $t('not equal') }}</option>
 
-                    <template
-                            v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
-                        <option value=">">{{ $t('greater than') }}</option>
-                        <option value="<">{{ $t('less than') }}</option>
-                        <option value=">=">{{ $t('greater than or equal') }}</option>
-                        <option value="<=">{{ $t('less than or equal') }}</option>
-                        <option value="contains">{{ $t('includes') }}</option>
-                        <option value="doNotContains">{{ $t('not includes') }}</option>
-                        <option value="startsWith">{{ $t('starts with') }}</option>
-                        <option value="endsWith">{{ $t('ends with') }}</option>
-                        <option value="test_regex">{{ $t('Regex match') }}</option>
+                        <template
+                                v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
+                            <option value=">">{{ $t('greater than') }}</option>
+                            <option value="<">{{ $t('less than') }}</option>
+                            <option value=">=">{{ $t('greater than or equal') }}</option>
+                            <option value="<=">{{ $t('less than or equal') }}</option>
+                            <option value="contains">{{ $t('includes') }}</option>
+                            <option value="doNotContains">{{ $t('not includes') }}</option>
+                            <option value="startsWith">{{ $t('starts with') }}</option>
+                            <option value="endsWith">{{ $t('ends with') }}</option>
+                            <option value="test_regex">{{ $t('Regex match') }}</option>
+                        </template>
                     </template>
                 </select>
 
                 <template v-if="condition.field">
+                    <div
+                        v-if="isRankingDependency(condition.field)"
+                        class="condition-value ff-ranking-condition-builder"
+                    >
+                        <div
+                            v-for="(selectedValue, rankIndex) in getRankingConditionArray(condition.field, condition)"
+                            :key="`${condition.field}-${i}-${rankIndex}`"
+                            class="ff-ranking-condition-builder__row"
+                        >
+                            <span class="ff-ranking-condition-builder__index">{{ rankIndex + 1 }}</span>
+                            <select
+                                class="ff-select ff-select-small ff-ranking-condition-builder__select"
+                                :value="selectedValue"
+                                @change="updateRankingConditionPosition(condition, condition.field, rankIndex, $event.target.value)"
+                            >
+                                <option value="">{{ $t('Select') }}</option>
+                                <option
+                                    v-for="(option, optionIndex) in getRankingPositionOptions(condition.field, condition, rankIndex)"
+                                    :key="`${condition.field}-${rankIndex}-${optionIndex}`"
+                                    :value="option.value"
+                                >
+                                    {{ option.label }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     <input
-                            v-if="!dependencies[condition.field] ||!dependencies[condition.field].options"
+                            v-else-if="!dependencies[condition.field] ||!dependencies[condition.field].options"
                             class="form-control-2 condition-value"
                             type="text"
                             v-model="condition.value"
@@ -152,26 +184,58 @@
                                 class="condition-operator ff-select ff-select-small"
                             >
                                 <option value="" disabled>{{ $t('Select') }}</option>
-                                <option value="=">{{ $t('equal') }}</option>
-                                <option value="!=">{{ $t('not equal') }}</option>
+                                <template v-if="isRankingDependency(condition.field)">
+                                    <option value="list_match">{{ $t('list match') }}</option>
+                                    <option value="list_not_match">{{ $t('list not match') }}</option>
+                                </template>
+                                <template v-else>
+                                    <option value="=">{{ $t('equal') }}</option>
+                                    <option value="!=">{{ $t('not equal') }}</option>
 
-                                <template v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
-                                    <option value=">">{{ $t('greater than') }}</option>
-                                    <option value="<">{{ $t('less than') }}</option>
-                                    <option value=">=">{{ $t('greater than or equal') }}</option>
-                                    <option value="<=">{{ $t('less than or equal') }}</option>
-                                    <option value="contains">{{ $t('includes') }}</option>
-                                    <option value="doNotContains">{{ $t('not includes') }}</option>
-                                    <option value="startsWith">{{ $t('starts with') }}</option>
-                                    <option value="endsWith">{{ $t('ends with') }}</option>
-                                    <option value="test_regex">{{ $t('Regex match') }}</option>
+                                    <template v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
+                                        <option value=">">{{ $t('greater than') }}</option>
+                                        <option value="<">{{ $t('less than') }}</option>
+                                        <option value=">=">{{ $t('greater than or equal') }}</option>
+                                        <option value="<=">{{ $t('less than or equal') }}</option>
+                                        <option value="contains">{{ $t('includes') }}</option>
+                                        <option value="doNotContains">{{ $t('not includes') }}</option>
+                                        <option value="startsWith">{{ $t('starts with') }}</option>
+                                        <option value="endsWith">{{ $t('ends with') }}</option>
+                                        <option value="test_regex">{{ $t('Regex match') }}</option>
+                                    </template>
                                 </template>
                             </select>
 
                             <!-- Value Input -->
                             <template v-if="condition.field">
+                                <div
+                                    v-if="isRankingDependency(condition.field)"
+                                    class="condition-value ff-ranking-condition-builder"
+                                >
+                                    <div
+                                        v-for="(selectedValue, rankIndex) in getRankingConditionArray(condition.field, condition)"
+                                        :key="`${condition.field}-${groupIndex}-${conditionIndex}-${rankIndex}`"
+                                        class="ff-ranking-condition-builder__row"
+                                    >
+                                        <span class="ff-ranking-condition-builder__index">{{ rankIndex + 1 }}</span>
+                                        <select
+                                            class="ff-select ff-select-small ff-ranking-condition-builder__select"
+                                            :value="selectedValue"
+                                            @change="updateRankingConditionPosition(condition, condition.field, rankIndex, $event.target.value)"
+                                        >
+                                            <option value="">{{ $t('Select') }}</option>
+                                            <option
+                                                v-for="(option, optionIndex) in getRankingPositionOptions(condition.field, condition, rankIndex)"
+                                                :key="`${condition.field}-${rankIndex}-${optionIndex}`"
+                                                :value="option.value"
+                                            >
+                                                {{ option.label }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <input
-                                    v-if="!dependencies[condition.field] || !dependencies[condition.field].options"
+                                    v-else-if="!dependencies[condition.field] || !dependencies[condition.field].options"
                                     class="form-control-2 condition-value"
                                     type="text"
                                     v-model="condition.value"
@@ -307,6 +371,7 @@
                     'item_quantity_component',
                     'cpt_selection',
                     'dynamic_field',
+                    'input_ranking',
                     'subscription_payment_component'
                 ],
                 showPreventMessage: false,
@@ -364,7 +429,7 @@
                                     options: this.formatOptions(window.FluentFormApp.countries),
                                     field_label: formItem.settings.label
                                 };
-                            } else if (['input_radio', 'select', 'input_checkbox', 'dynamic_field'].includes(formItem.element)) {
+                            } else if (['input_radio', 'select', 'input_checkbox', 'dynamic_field', 'input_ranking'].includes(formItem.element)) {
                                 let options = formItem.options ? this.formatOptions(formItem.options) : null;
                                 if (!options) {
                                     options = this.flattenAdvancedOptions(formItem.settings.advanced_options || []);
@@ -374,7 +439,9 @@
 								}
                                 dependencies[formItem.attributes.name] = {
                                     options: options,
-                                    field_label: formItem.settings.label
+                                    field_label: formItem.settings.label,
+                                    input_type: formItem.element,
+                                    is_ranking: formItem.element === 'input_ranking'
                                 }
                             } else if (formItem.element == 'payment_method') {
                                 let options = [];
@@ -475,7 +542,9 @@
                     if (!rule.field || !rule.operator) return '';
 
                     const fieldLabel = this.dependencies[rule.field]?.field_label || rule.field;
-                    const value = this.dependencies[rule.field]?.options?.find(opt => opt.value === rule.value)?.label || rule.value;
+                    const value = this.isRankingDependency(rule.field)
+                        ? this.getRankingConditionPreview(rule.field, rule)
+                        : (this.dependencies[rule.field]?.options?.find(opt => opt.value === rule.value)?.label || rule.value);
                     const operator = this.getOperatorLabel(rule.operator);
 
                     return `
@@ -500,9 +569,67 @@
                     'doNotContains': this.$t('does not contain'),
                     'startsWith': this.$t('starts with'),
                     'endsWith': this.$t('ends with'),
-                    'test_regex': this.$t('matches regex')
+                    'test_regex': this.$t('matches regex'),
+                    'list_match': this.$t('list match'),
+                    'list_not_match': this.$t('list not match')
                 };
                 return operators[operator] || operator;
+            },
+            isRankingDependency(fieldName) {
+                return !!(fieldName && this.dependencies[fieldName] && this.dependencies[fieldName].is_ranking);
+            },
+            getRankingConditionArray(fieldName, condition) {
+                const options = (this.dependencies[fieldName] && this.dependencies[fieldName].options) || [];
+                let selected = [];
+
+                if (condition && condition.value) {
+                    try {
+                        const parsed = JSON.parse(condition.value);
+                        if (Array.isArray(parsed)) {
+                            selected = parsed.map(item => item || '');
+                        }
+                    } catch (e) {
+                        selected = [];
+                    }
+                }
+
+                while (selected.length < options.length) {
+                    selected.push('');
+                }
+
+                return selected.slice(0, options.length);
+            },
+            getRankingPositionOptions(fieldName, condition, rankIndex) {
+                const allOptions = (this.dependencies[fieldName] && this.dependencies[fieldName].options) || [];
+                const selected = this.getRankingConditionArray(fieldName, condition);
+                const currentValue = selected[rankIndex];
+                const usedValues = selected.filter((value, index) => value && index !== rankIndex);
+
+                return allOptions.filter(option => {
+                    return option.value === currentValue || !usedValues.includes(option.value);
+                });
+            },
+            updateRankingConditionPosition(condition, fieldName, rankIndex, value) {
+                const selected = this.getRankingConditionArray(fieldName, condition);
+                const previousIndex = selected.findIndex((item, index) => item === value && index !== rankIndex);
+
+                if (previousIndex !== -1) {
+                    selected[previousIndex] = '';
+                }
+
+                selected[rankIndex] = value;
+                condition.value = JSON.stringify(selected);
+            },
+            getRankingConditionPreview(fieldName, condition) {
+                const options = (this.dependencies[fieldName] && this.dependencies[fieldName].options) || [];
+                const selected = this.getRankingConditionArray(fieldName, condition)
+                    .filter(Boolean)
+                    .map(value => {
+                        const option = options.find(item => item.value === value);
+                        return option ? option.label : value;
+                    });
+
+                return selected.join(' > ');
             },
             decreaseLogic(index) {
                 if (this.conditional_logics.conditions.length > 1) {
