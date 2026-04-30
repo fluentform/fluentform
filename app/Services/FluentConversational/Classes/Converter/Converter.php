@@ -317,6 +317,13 @@ class Converter
                 $question['nextStepOnAnswer'] = true;
                 $question = static::hasPictureMode($field, $question);
                 $question = static::maybeAddOtherOption($field, $question);
+            } elseif ('input_ranking' === $field['element']) {
+                $question['options'] = self::getAdvancedOptions($field, $form);
+                $question['type'] = 'FlowFormRankingType';
+                $question['multiple'] = true;
+                $question['allowImages'] = (bool) ArrayHelper::get($field, 'settings.enable_image_input');
+                $question['rankingDisplayType'] = ArrayHelper::get($field, 'settings.ranking_display_type', 'list');
+                $question['rankingGridColumns'] = ArrayHelper::get($field, 'settings.ranking_grid_columns', '3');
             } elseif ('custom_html' === $field['element']) {
                 $question['content'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.html_codes', ''), $form);
             } elseif ('section_break' === $field['element']) {
@@ -963,6 +970,7 @@ class Converter
             $fieldTypes['save_progress_button'] = 'FlowFormSaveAndResumeType';
             $fieldTypes['dynamic_field'] = 'FlowFormDynamicFieldType';
             $fieldTypes['net_promoter_score'] = 'FlowFormNetPromoterScoreType';
+            $fieldTypes['input_ranking'] = 'FlowFormRankingType';
         }
         
         return apply_filters('fluentform/conversational_field_types', $fieldTypes);

@@ -333,7 +333,8 @@ class Form
             'save_progress_button',
             'dynamic_field',
             'rangeslider',
-            'net_promoter_score'
+            'net_promoter_score',
+            'input_ranking'
         ];
 
         if (defined('FLUENTFORM_SIGNATURE')) {
