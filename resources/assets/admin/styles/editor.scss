@@ -944,7 +944,7 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
   margin-bottom: 10px;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
 }
 
@@ -955,6 +955,47 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
 
 .condition-operator {
   width: 85px;
+}
+
+.ff-ranking-condition-builder {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  padding: 10px 12px;
+  border: 1px solid #dcdfe6;
+  border-radius: 6px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.ff-ranking-condition-builder__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &:not(:last-child) {
+    margin-bottom: 8px;
+  }
+}
+
+.ff-ranking-condition-builder__index {
+  width: 18px;
+  flex: 0 0 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #606266;
+  text-align: center;
+  line-height: 1;
+}
+
+.ff-ranking-condition-builder__select {
+  width: calc(100% - 28px);
+}
+
+.conditional-logic {
+  .action-btn {
+    align-self: center;
+  }
 }
 
 .form-control-2 {
