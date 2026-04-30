@@ -84,6 +84,19 @@ class Updater
                     sprintf('Name attribute %s has duplicate value.', esc_html($duplicateString))
                 );
             }
+
+            $duplicateRankingFields = Helper::getRankingFieldsWithDuplicateOptionValues($attributes['formFields']);
+
+            if ($duplicateRankingFields) {
+                $duplicateRankingFields = implode(', ', array_unique($duplicateRankingFields));
+
+                throw new Exception(
+                    sprintf(
+                        __('Ranking field %s has duplicate option values. Please make each option value unique.', 'fluentform'),
+                        esc_html($duplicateRankingFields)
+                    )
+                );
+            }
         }
 
         if (!$attributes['title']) {
