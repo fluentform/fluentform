@@ -325,6 +325,7 @@ class Converter
                 $question['allowImages'] = (bool) ArrayHelper::get($field, 'settings.enable_image_input');
                 $question['rankingDisplayType'] = ArrayHelper::get($field, 'settings.ranking_display_type', 'list');
                 $question['rankingGridColumns'] = ArrayHelper::get($field, 'settings.ranking_grid_columns', '3');
+                $question['showResetIcon'] = ArrayHelper::get($field, 'settings.show_reset_icon', 'no') === 'yes';
             } elseif ('custom_html' === $field['element']) {
                 $question['content'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.html_codes', ''), $form);
             } elseif ('section_break' === $field['element']) {
