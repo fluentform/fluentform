@@ -20,7 +20,7 @@
             <div v-if="conditional_logics.type!='group'" v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
                 <select
                         v-model="condition.field"
-                        @change="condition.value = ''"
+                        @change="handleConditionFieldChange(condition)"
                         :placeholder="$t('Select')"
                         class="condition-field ff-select ff-select-small"
                 >
@@ -166,7 +166,7 @@
                              class="conditional-logic" v-show="group.isGroupOpen">
                             <select
                                 v-model="condition.field"
-                                @change="condition.value = ''"
+                                @change="handleConditionFieldChange(condition)"
                                 :placeholder="$t('Select')"
                                 class="condition-field ff-select ff-select-small"
                             >
@@ -273,14 +273,20 @@
                         </div>
 
                         <div class="preview-section" v-if="!isGroupEmpty(group) && group.isGroupOpen && getGroupPreview(group).length">
-                            <div class="preview-header" @click="togglePreview(group)">
+                            <button
+                                type="button"
+                                class="preview-header"
+                                :aria-expanded="group.isPreviewOpen ? 'true' : 'false'"
+                                :aria-label="$t('Toggle group preview')"
+                                @click="togglePreview(group)"
+                            >
                                 <div class="preview-toggle">
                                     <i :class="[
                                     { 'el-icon-arrow-up': group.isPreviewOpen },
                                     { 'el-icon-arrow-down': !group.isPreviewOpen }
                                 ]"></i>
                                 </div>
-                            </div>
+                            </button>
 
                             <div v-show="group.isPreviewOpen" class="preview-content">
                                 <div class="group-preview">
@@ -597,6 +603,28 @@
                     'list_not_match': this.$t('list not match')
                 };
                 return operators[operator] || operator;
+            },
+            getAllowedOperators(fieldName) {
+                if (!fieldName) {
+                    return [];
+                }
+
+                if (this.isRankingDependency(fieldName)) {
+                    return ['list_match', 'list_not_match'];
+                }
+
+                if (this.dependencies[fieldName] && this.dependencies[fieldName].options) {
+                    return ['=', '!='];
+                }
+
+                return ['=', '!=', '>', '<', '>=', '<=', 'contains', 'doNotContains', 'startsWith', 'endsWith', 'test_regex'];
+            },
+            handleConditionFieldChange(condition) {
+                condition.value = '';
+
+                if (!this.getAllowedOperators(condition.field).includes(condition.operator)) {
+                    condition.operator = '';
+                }
             },
             isRankingDependency(fieldName) {
                 return !!(fieldName && this.dependencies[fieldName] && this.dependencies[fieldName].is_ranking);
