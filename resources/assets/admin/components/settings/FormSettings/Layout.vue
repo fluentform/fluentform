@@ -342,6 +342,32 @@
                     <el-switch class="el-switch-lg" v-model="misc.isAnalyticsDisabled"></el-switch>
                 </el-form-item>
 
+                <el-form-item class="ff-form-item">
+                    <template slot="label">
+                        {{ $t('jQuery Loading Mode') }}
+                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                            <div slot="content">
+                                <p>
+                                    {{ $t('Control how jQuery is loaded for forms. Auto (recommended) uses vanilla JavaScript with jQuery fallback.') }}
+                                </p>
+                            </div>
+                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                        </el-tooltip>
+                    </template>
+                    <el-row :gutter="24">
+                        <el-col :sm="24" :md="12">
+                            <el-select class="w-100 ff-input-s1" v-model="misc.jquery_loading_mode">
+                                <el-option label="Auto (Recommended)" value="auto"></el-option>
+                                <el-option label="Force Enable jQuery" value="enabled"></el-option>
+                                <el-option label="Disable jQuery (Vanilla JS)" value="disabled"></el-option>
+                            </el-select>
+                            <p v-if="misc.jquery_loading_mode === 'disabled'" class="text-note mt-2">
+                                {{ $t('jQuery is still loaded automatically on forms that use conditional logic, multi-step, repeaters, file/image uploads, ratings, NPS, save-progress or payments. "Disable" only skips jQuery on plain forms (text, email, numeric, date, dropdown, checkbox, radio, etc.).') }}
+                            </p>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+
                 <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
                     <template slot="label">
                         <span>
@@ -880,6 +906,9 @@
             }
             if (!this.data.misc.default_admin_date_time) {
                 this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
+            }
+            if (!this.data.misc.jquery_loading_mode) {
+                this.$set(this.data.misc, 'jquery_loading_mode', 'auto');
             }
 
             if (!this.data.misc.autosave_enabled) {

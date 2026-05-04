@@ -66,7 +66,19 @@ const formConditional = function ($, $theForm, form) {
             });
 
             jQuery(document.body).on('fluentform_reset', function(event, resetForm) {
-                if (!resetForm || !resetForm.length || resetForm[0] !== $theForm[0] || $theForm.hasClass('ff_force_hide')) {
+                // `resetForm` is undefined on the bridge's ghost CustomEvent fire;
+                // the .length check below already covers that, but also guard plain
+                // DOM elements (passed before the bridge wrapped them).
+                if (!resetForm || (!resetForm.length && resetForm.nodeType !== 1)) {
+                    return;
+                }
+                if (resetForm.length && resetForm[0] !== $theForm[0]) {
+                    return;
+                }
+                if (!resetForm.length && resetForm !== $theForm[0]) {
+                    return;
+                }
+                if ($theForm.hasClass('ff_force_hide')) {
                     return;
                 }
                 setTimeout(() => {

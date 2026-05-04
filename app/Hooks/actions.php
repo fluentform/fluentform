@@ -690,7 +690,12 @@ add_action('wp', function () use ($app) {
 
     if ($fluentFormPages) {
         add_action('wp_enqueue_scripts', function () use ($app) {
-            wp_enqueue_script('jquery');
+            // Commit 1: Core Submission Runtime - respect admin's jQuery loading mode setting
+            // Conditionally enqueue jQuery only if not disabled in Global Settings
+            // Pro payment/gateway handlers will implement similar checks in Commit 2 & 6
+            if (\FluentForm\App\Helpers\Helper::shouldLoadJQuery()) {
+                wp_enqueue_script('jquery');
+            }
             wp_enqueue_script(
                 'fluent_forms_global',
                 fluentFormMix('js/fluent_forms_global.js'),

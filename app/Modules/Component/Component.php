@@ -68,10 +68,28 @@ class Component
             FLUENTFORM_VERSION
         );
 
+        // Scripts whose JS is still authored as a jQuery IIFE and would crash in "jQuery disabled"
+        // mode without it — fluentform-advanced.js bootstraps Pro/_ConditionClass, form-conditionals,
+        // calculations, file-uploader, slider, repeaters, ratings, NPS; form-save-progress.js wraps
+        // its entire body in `(function ($) { ... })(jQuery)`. Until each one is migrated to vanilla,
+        // they always pull jQuery in. Pro can extend this list via the filter below to declare its
+        // own jQuery-bound script handles. Remove a handle once its JS no longer needs $.
+        $scriptsRequiringJquery = apply_filters('fluentform/scripts_requiring_jquery', [
+            'fluentform-advanced',
+            'form-save-progress',
+        ]);
+
+        $resolveScriptDeps = function ($handle) use ($scriptsRequiringJquery) {
+            if (in_array($handle, $scriptsRequiringJquery, true)) {
+                return ['jquery'];
+            }
+            return Helper::shouldLoadJQuery() ? ['jquery'] : [];
+        };
+
         wp_register_script(
             'fluent-form-submission',
             fluentFormMix('js/form-submission.js'),
-            ['jquery'],
+            $resolveScriptDeps('fluent-form-submission'),
             FLUENTFORM_VERSION,
             true
         );
@@ -79,7 +97,7 @@ class Component
         wp_register_script(
             'fluentform-advanced',
             fluentFormMix('js/fluentform-advanced.js'),
-            ['jquery'],
+            $resolveScriptDeps('fluentform-advanced'),
             FLUENTFORM_VERSION,
             true
         );
@@ -94,11 +112,11 @@ class Component
                 '4.6.9'
             );
         }
-        // Date Pickckr Script
+        // Date Pickckr Script (third-party flatpickr 4.x is jQuery-free, so honor the mode)
         wp_register_script(
             'flatpickr',
             fluentFormMix('libs/flatpickr/flatpickr.min.js'),
-            ['jquery'],
+            $resolveScriptDeps('flatpickr'),
             '4.6.9',
             true
         );
@@ -121,7 +139,7 @@ class Component
         wp_register_script(
             'form-save-progress',
             fluentFormMix('js/form-save-progress.js'),
-            ['jquery'],
+            $resolveScriptDeps('form-save-progress'),
             FLUENTFORM_VERSION,
             true
         );
@@ -641,6 +659,7 @@ class Component
             'pro_version'                   => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,
             'fluentform_version'            => FLUENTFORM_VERSION,
             'force_init'                    => false,
+            'jQueryMode'                    => Helper::getJQueryLoadingMode(),
             'stepAnimationDuration'         => 350,
             'upload_completed_txt'          => __('100% Completed', 'fluentform'),
             'upload_start_txt'              => __('0% Completed', 'fluentform'),
@@ -758,6 +777,7 @@ class Component
         }
           
         if (!Helper::isElementorEditor()) {
+            $jqueryEnabled = Helper::shouldLoadJQuery();
             ?>
             <script type="text/javascript">
                 window.fluent_form_<?php echo esc_attr($instanceCssClass); ?> = <?php echo wp_json_encode($form_vars); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form_vars is escaped before being passed in.?>;
@@ -767,12 +787,28 @@ class Component
                         console.log('No fluentFormApp found');
                         return;
                     }
-                    var ajax_formInstance = window.fluentFormApp(jQuery('form.<?php echo esc_attr($form_vars['form_instance']); ?>'));
+                    var ajax_form_target_<?php echo esc_attr($form_vars['id']); ?>;
+                    <?php if ($jqueryEnabled): ?>
+                    if (typeof window.jQuery === 'function') {
+                        ajax_form_target_<?php echo esc_attr($form_vars['id']); ?> = window.jQuery('form.<?php echo esc_attr($form_vars['form_instance']); ?>');
+                    } else {
+                        ajax_form_target_<?php echo esc_attr($form_vars['id']); ?> = document.querySelector('form.<?php echo esc_attr($form_vars['form_instance']); ?>');
+                    }
+                    <?php else: ?>
+                    ajax_form_target_<?php echo esc_attr($form_vars['id']); ?> = document.querySelector('form.<?php echo esc_attr($form_vars['form_instance']); ?>');
+                    <?php endif; ?>
+                    var ajax_formInstance = window.fluentFormApp(ajax_form_target_<?php echo esc_attr($form_vars['id']); ?>);
                     if (ajax_formInstance) {
                         ajax_formInstance.initFormHandlers();
+                        // Match initSingleFormWithRetry — both phases run for parity
+                        // with the DOM-ready init path (`fluentform_init`,
+                        // `fluentform_init_<id>`, `fluentform_init_single` events).
+                        if (typeof ajax_formInstance.initTriggers === 'function') {
+                            ajax_formInstance.initTriggers();
+                        }
                     }
                 }
-                
+
                 initFFInstance_<?php echo esc_attr($form_vars['id']); ?>();
                 <?php endif; ?>
             </script>
@@ -1144,27 +1180,45 @@ class Component
                 <?php if (defined('ELEMENTOR_PRO_VERSION')): ?>
 
                 window.addEventListener('elementor/popup/show', function (e) {
-                    var ffForms = jQuery('#elementor-popup-modal-' + e.detail.id).find('form.frm-fluent-form');
+                    var popupModal = document.getElementById('elementor-popup-modal-' + e.detail.id);
+                    var ffForms = popupModal
+                        ? popupModal.querySelectorAll('form.frm-fluent-form')
+                        : [];
 
                     /**
                      * Support conversation form in elementor popup
                      * No regular form found, check for conversational form
                      */
                     if (!ffForms.length) {
-                        const elements = document.getElementsByClassName('ffc_conv_form');
+                        var elements = document.getElementsByClassName('ffc_conv_form');
                         if (elements.length) {
-                            let jsEvent = new CustomEvent('ff-elm-conv-form-event', {
+                            var jsEvent = new CustomEvent('ff-elm-conv-form-event', {
                                 detail: elements
                             });
                             document.dispatchEvent(jsEvent);
                         }
                     }
-                    if (ffForms.length) {
-                        jQuery.each(ffForms, function(index, ffForm) {
-                            jQuery(ffForm).trigger('reInitExtras');
-                            jQuery(document).trigger('ff_reinit', [ffForm]);
-                        });
+
+                    if (!ffForms.length) {
+                        return;
                     }
+
+                    var hasJQuery = typeof window.jQuery === 'function';
+                    Array.prototype.forEach.call(ffForms, function (ffForm) {
+                        if (hasJQuery) {
+                            window.jQuery(ffForm).trigger('reInitExtras');
+                            window.jQuery(document).trigger('ff_reinit', [ffForm]);
+                            return;
+                        }
+                        ffForm.dispatchEvent(new CustomEvent('reInitExtras', {
+                            bubbles: true,
+                            detail: { form: ffForm }
+                        }));
+                        document.dispatchEvent(new CustomEvent('ff_reinit', {
+                            bubbles: true,
+                            detail: { formItem: ffForm, form: ffForm }
+                        }));
+                    });
                 });
                 <?php endif; ?>
             </script>

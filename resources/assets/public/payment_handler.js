@@ -900,6 +900,19 @@ if (!window.fluentFormVars?.pro_payment_script_compatible) {
         $.each($('form.fluentform_has_payment'), function () {
             const $form = $(this);
             $form.on('fluentform_init_single', function (event, instance) {
+                // The dual-emit bridge fires both jQuery `$.trigger` and a
+                // native CustomEvent. The CustomEvent dispatch reaches this
+                // jQuery handler too (jQuery `.on()` listens via
+                // addEventListener for non-special events) but with NO
+                // positional args — `instance` is undefined on that call.
+                // Skip the ghost call so we don't double-instantiate
+                // Payment_handler with an undefined instance and crash on
+                // `this.formInstance.settings`. The same guard MUST be
+                // applied to Pro's payment_handler_pro.js — apply this
+                // pattern in the corresponding listener there as well.
+                if (!instance) {
+                    return;
+                }
                 (new Payment_handler($form, instance)).init();
             });
         });

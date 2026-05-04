@@ -8,12 +8,17 @@ import calculation from './Pro/calculations';
 
 (function ($) {
     $(document.body).on('fluentform_init', function (e, $theForm, form) {
-        const formInstanceSelector = $theForm.attr('data-form_instance');
-
+        // The dual-emit bridge fires both `$.trigger(event, [args])` and a native
+        // CustomEvent. The native dispatch reaches this jQuery handler with no
+        // positional args (jQuery's addEventListener wrapper). Skip that ghost call.
+        if (!$theForm) {
+            return;
+        }
         if (!form) {
             console.log('No Fluent form JS vars found!');
             return;
         }
+        const formInstanceSelector = $theForm.attr('data-form_instance');
 
         const formId = form.form_id_selector;
         const formSelector = '.' + form.form_instance;

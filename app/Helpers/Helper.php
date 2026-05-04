@@ -1538,4 +1538,28 @@ class Helper
                // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking REST API context
                (defined('REST_REQUEST') && REST_REQUEST && !empty($_REQUEST['context']) && $_REQUEST['context'] === 'edit');
     }
+
+    const JQUERY_MODE_AUTO = 'auto';
+    const JQUERY_MODE_ENABLED = 'enabled';
+    const JQUERY_MODE_DISABLED = 'disabled';
+
+    private static $globalFormSettings = null;
+
+    private static function getGlobalFormSettings()
+    {
+        if (static::$globalFormSettings === null) {
+            static::$globalFormSettings = get_option('_fluentform_global_form_settings', []);
+        }
+        return static::$globalFormSettings;
+    }
+
+    public static function shouldLoadJQuery()
+    {
+        return static::getJQueryLoadingMode() !== self::JQUERY_MODE_DISABLED;
+    }
+
+    public static function getJQueryLoadingMode()
+    {
+        return ArrayHelper::get(static::getGlobalFormSettings(), 'misc.jquery_loading_mode', self::JQUERY_MODE_AUTO);
+    }
 }

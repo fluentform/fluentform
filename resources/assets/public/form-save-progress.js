@@ -2,6 +2,11 @@ import formSlider from "./Pro/slider";
 
 (function ($) {
     $(document.body).on('fluentform_init', function (e, $theForm, form) {
+        // Bridge fires both $.trigger and a native CustomEvent; skip the ghost
+        // CustomEvent fire that arrives without positional args.
+        if (!$theForm || !form) {
+            return;
+        }
 
         const formSelector = '.' + form.form_instance;
         let hash = -1;
