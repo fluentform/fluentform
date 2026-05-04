@@ -15,6 +15,8 @@ Skill files provide deep codebase knowledge to Claude Code. They are auto-loaded
 | `workflow-conversational.md` | Working on conversational form mode, design editor, share pages |
 | `workflow-pr.md` | Committing code, pushing branches, creating pull requests |
 | `workflow-release.md` | Preparing releases — version bumps, build, changelog, pre-release checks |
+| `workflow-js-migration-review.md` | Deep review checklist for jQuery → vanilla JS migrations specifically |
+| `jquery-migration-check.md` | Re-check the specific findings from the 2026-05-01 jQuery migration review |
 
 ## Documentation Hierarchy
 
