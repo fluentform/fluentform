@@ -5,7 +5,8 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "hots": "mix watch --hots",
-        "production": "mix --production"
+        "production": "mix --production",
+        "test:browser": "node tests/browser/form57-vanilla.mjs"
     },
     "dependencies": {
         "chroma-js": "^2.4.2",

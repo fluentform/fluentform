@@ -1,36 +1,93 @@
 /**
- * Fluid Form Event Bridge - jQuery/Native dual-support event system
- * Provides unified event API that works with or without jQuery
+ * Fluent Forms event bridge
+ *
+ * Single API for emitting and listening to FluentForm events under either
+ * runtime: with jQuery on the page (Pro / payments / save-progress / 3rd-party
+ * brings it in) or without it (jQuery-disabled mode).
+ *
+ *   • emitEvent fires ONE path per mode:
+ *       - jQuery present → $.trigger only
+ *       - jQuery absent  → native CustomEvent only
+ *     Every event the bridge emits was a `$.trigger`-only event in dev, so
+ *     skipping the CustomEvent when jQuery is present matches dev behavior
+ *     exactly and avoids a dual-fire that crashed legacy `(event, instance)`
+ *     handlers when the CustomEvent path delivered them no positional args.
+ *
+ *   • onEvent registers via the matching path. Internal listeners that need
+ *     to work in both modes go through here so they don't have to care.
  */
 
 const { isJQueryAvailable } = require("./jquery-mode-constants.js");
 
-// Fire jQuery events whenever jQuery is on the page, regardless of the loading mode.
-// "Disabled" mode controls whether we declare jQuery as a script DEP — but our own
-// allowlist (fluentform-advanced, form-save-progress, payments) and third-party plugins
-// can still bring jQuery in. When it's there, legacy `$.on()` handlers expect their
-// positional `[$theForm, form]` args; without `$.trigger`, they only get the CustomEvent
-// fire (no extra args) and crash on `$theForm.attr(...)`.
-function shouldFireJqueryEvents() {
-    return isJQueryAvailable();
+const VALID_EVENT_NAME = /^[a-z_][a-z0-9_]*$/i;
+
+const isElementNode = node => node?.nodeType === 1;
+const isJqueryWrapper = obj => typeof obj?.jquery === "string";
+
+// HTMLFormElement is array-like (`form[0]` returns the first field), so a naive
+// `target[0]?.nodeType === 1` unwrap accidentally redirects listeners to the
+// first input. Only unwrap when handed a real jQuery collection.
+const unwrapJquery = target =>
+    isJqueryWrapper(target) ? target[0] : target;
+
+// Wrap raw DOM nodes in jQuery so legacy handlers like `function (e, $form)`
+// keep working when vanilla emit sites pass a plain element.
+const wrapElementsForJquery = args =>
+    args.map(arg => (isElementNode(arg) ? window.jQuery(arg) : arg));
+
+const splitEventNames = eventNames =>
+    Array.isArray(eventNames)
+        ? eventNames
+        : String(eventNames || "").split(/\s+/).filter(Boolean);
+
+function triggerJqueryEvent(target, eventName, jqueryArgs, detail) {
+    const $target = window.jQuery(target);
+    const event = window.jQuery.Event(eventName);
+    const args = jqueryArgs ?? (detail !== undefined ? [detail] : []);
+    $target.trigger(event, wrapElementsForJquery(args));
+    return event;
+}
+
+function dispatchNativeEvent(target, eventName, detail, options) {
+    const event = new CustomEvent(eventName, {
+        detail,
+        cancelable: true,
+        bubbles: typeof options?.bubbles === "boolean" ? options.bubbles : true,
+    });
+    target.dispatchEvent(event);
+    return event;
+}
+
+function attachJqueryListener(target, eventName, handler) {
+    const $target = window.jQuery(target);
+    const wrapped = function (event, ...rest) {
+        handler(event, rest[0], rest, "jquery");
+    };
+    $target.on(eventName, wrapped);
+    return () => $target.off(eventName, wrapped);
+}
+
+function attachNativeListener(target, eventName, handler, options) {
+    if (typeof target?.addEventListener !== "function") {
+        return () => {};
+    }
+    const wrapped = function (event) {
+        handler(event, event.detail, [event.detail], "native");
+    };
+    target.addEventListener(eventName, wrapped, options || false);
+    return () => target.removeEventListener(eventName, wrapped, options || false);
 }
 
 function ensureFluentFormJqueryBridge() {
     if (window.fluentFormBridge) {
         return window.fluentFormBridge;
     }
+
     window.fluentFormBridge = {
-        emitEvent: function (
-            eventName,
-            detail,
-            targetElement,
-            jqueryEventArguments,
-            options
-        ) {
-            // Validate event name to prevent prototype pollution and unexpected events
+        emitEvent(eventName, detail, targetElement, jqueryArgs, options) {
             if (
                 typeof eventName !== "string" ||
-                !/^[a-z_][a-z0-9_]*$/i.test(eventName)
+                !VALID_EVENT_NAME.test(eventName)
             ) {
                 console.warn(
                     "fluentFormBridge: Invalid event name:",
@@ -39,170 +96,27 @@ function ensureFluentFormJqueryBridge() {
                 return;
             }
 
-            const eventOptions = options || {};
-            const eventTarget = targetElement || document;
+            const target = targetElement || document;
 
-            // Fire the native CustomEvent first so addEventListener handlers can
-            // cancel before any jQuery handlers run. We then reconcile the result
-            // into the jQuery .trigger() so cancellation flows in BOTH directions:
-            //   native preventDefault()       → jQuery sees event.isDefaultPrevented()
-            //   native stopPropagation()      → jQuery .trigger() is skipped
-            //   jQuery preventDefault()       → reflected back onto the native event
-            //   jQuery stopPropagation()      → propagated to the native event
-            const browserEvent = new CustomEvent(eventName, {
-                detail: detail,
-                cancelable: true,
-                bubbles:
-                    typeof eventOptions.bubbles === "boolean"
-                        ? eventOptions.bubbles
-                        : true,
-            });
-
-            eventTarget.dispatchEvent(browserEvent);
-
-            const nativePreventedDefault = browserEvent.defaultPrevented;
-
-            // Note: native `stopPropagation()` only affects ancestor bubbling of
-            // the native event chain — it does NOT mean "skip jQuery handlers on
-            // the same target." We deliberately do not short-circuit here; jQuery
-            // handlers attached to the same eventTarget should still run.
-
-            if (shouldFireJqueryEvents()) {
-                const $target = window.jQuery(eventTarget);
-                const jqueryEvent = window.jQuery.Event(eventName, {
-                    // Carry the native cancellation flag into the jQuery event so
-                    // jQuery handlers see it via `e.isDefaultPrevented()`.
-                    isDefaultPrevented: nativePreventedDefault
-                        ? () => true
-                        : undefined,
-                });
-
-                // Wrap raw DOM nodes so legacy handlers like `function(e, $theForm)`
-                // keep working when vanilla emit sites pass a plain `formEl`.
-                const baseArgs = jqueryEventArguments
-                    ?? (detail !== undefined ? [detail] : []);
-                const triggerArgs = baseArgs.map(arg =>
-                    arg?.nodeType === 1 ? window.jQuery(arg) : arg
-                );
-
-                $target.trigger(jqueryEvent, triggerArgs);
-
-                // Reflect any new cancellation (jQuery handler called
-                // preventDefault) back onto the native event, in case any caller
-                // checks `browserEvent.defaultPrevented` after emitEvent returns.
-                if (
-                    !nativePreventedDefault &&
-                    jqueryEvent.isDefaultPrevented?.() === true
-                ) {
-                    browserEvent.preventDefault();
-                }
-            }
-
-            return browserEvent;
+            return isJQueryAvailable()
+                ? triggerJqueryEvent(target, eventName, jqueryArgs, detail)
+                : dispatchNativeEvent(target, eventName, detail, options);
         },
-        onEvent: function (targetElement, eventNames, handler, options) {
-            const eventTarget = targetElement || document;
-            // HTMLFormElement is array-like (`form[0]` returns the first field), so the
-            // old `eventTarget[0]?.nodeType === 1` unwrap accidentally redirected listeners
-            // to the first input instead of the form. Only unwrap when we were handed a
-            // jQuery wrapper (which advertises `.jquery`).
-            const targetNode =
-                eventTarget && typeof eventTarget.jquery === "string"
-                    ? eventTarget[0]
-                    : eventTarget;
-            const names = Array.isArray(eventNames)
-                ? eventNames
-                : String(eventNames || "")
-                      .split(/\s+/)
-                      .filter(Boolean);
-            const removers = [];
 
-            names.forEach(function (eventName) {
-                // Track handlers to prevent duplicates (if using addEventListener)
-                const handlerKey =
-                    "__fluentFormHandler_" + eventName + "_" + handler.name;
+        onEvent(targetElement, eventNames, handler, options) {
+            const target = unwrapJquery(targetElement || document);
+            const names = splitEventNames(eventNames);
 
-                // Use jQuery if available (for backward compatibility), otherwise use native listeners
-                if (isJQueryAvailable()) {
-                    const jqueryTarget = window.jQuery(
-                        targetNode || eventTarget
-                    );
-                    const jqueryHandler = function (event) {
-                        const jqueryArguments = Array.prototype.slice.call(
-                            arguments,
-                            1
-                        );
-                        handler(
-                            event,
-                            jqueryArguments[0],
-                            jqueryArguments,
-                            "jquery"
-                        );
-                    };
+            const removers = names.map(eventName =>
+                isJQueryAvailable()
+                    ? attachJqueryListener(target, eventName, handler)
+                    : attachNativeListener(target, eventName, handler, options)
+            );
 
-                    jqueryTarget.on(eventName, jqueryHandler);
-                    removers.push(function () {
-                        jqueryTarget.off(eventName, jqueryHandler);
-                    });
-                } else if (
-                    targetNode &&
-                    typeof targetNode.addEventListener === "function"
-                ) {
-                    // Fall back to native event listeners when jQuery is not available
-                    const nativeHandler = function (event) {
-                        handler(event, event.detail, [event.detail], "native");
-                    };
-
-                    // Warn if similar handler already registered (for debugging, but allow duplicates)
-                    // Different features/packages may legitimately register handlers at different times
-                    if (
-                        targetNode[handlerKey] &&
-                        typeof window.console !== "undefined"
-                    ) {
-                        console.warn(
-                            "fluentFormBridge: Handler with name '" +
-                                handler.name +
-                                "' already registered for event '" +
-                                eventName +
-                                "'. This may be intentional (multiple features) or accidental (initialization twice)."
-                        );
-                    }
-
-                    // Track handler for warning purposes (not blocking)
-                    if (!targetNode[handlerKey]) {
-                        targetNode[handlerKey] = [];
-                    }
-                    targetNode[handlerKey].push(nativeHandler);
-
-                    targetNode.addEventListener(
-                        eventName,
-                        nativeHandler,
-                        options || false
-                    );
-                    removers.push(function () {
-                        targetNode.removeEventListener(
-                            eventName,
-                            nativeHandler,
-                            options || false
-                        );
-                        // Clean up tracking
-                        const idx = targetNode[handlerKey].indexOf(
-                            nativeHandler
-                        );
-                        if (idx !== -1) {
-                            targetNode[handlerKey].splice(idx, 1);
-                        }
-                    });
-                }
-            });
-
-            return function () {
-                removers.forEach(function (removeListener) {
-                    removeListener();
-                });
-            };
+            return () => removers.forEach(remove => remove());
         },
     };
+
     return window.fluentFormBridge;
 }
 

@@ -664,10 +664,18 @@ function initVanillaSubmissionRuntime() {
         };
         formEl.addEventListener("focusin", fireFirstInteractionOnce);
 
-        // CAPTCHA lazy-render bindings — match jQuery path behavior.
-        formEl.addEventListener("fluentform_first_interaction", function () {
-            maybeRenderCaptchas(formEl);
-        });
+        // CAPTCHA lazy-render bindings — match jQuery path behavior. Use
+        // bridge.onEvent so this listener works in both modes: with jQuery,
+        // the bridge fires only $.trigger (skipping CustomEvent); without
+        // jQuery it fires only the native CustomEvent. bridge.onEvent
+        // registers via the matching path.
+        jqueryEventBridge.onEvent(
+            formEl,
+            "fluentform_first_interaction",
+            function () {
+                maybeRenderCaptchas(formEl);
+            }
+        );
 
         const renderOnStepChange = function () {
             maybeRenderCaptchas(formEl);
@@ -1512,9 +1520,24 @@ function initVanillaSubmissionRuntime() {
         );
     };
 
-    const reinitHandler = function (e) {
-        const detail = e.detail || {};
-        const formItem = detail.formItem || detail.form || null;
+    const reinitHandler = function (e, primaryArg) {
+        // Three delivery shapes converge here via bridge.onEvent:
+        //   • Native CustomEvent (vanilla mode): formItem is on `e.detail`.
+        //   • jQuery `.trigger('ff_reinit', formItem)` (jQuery mode, e.g.
+        //     Elementor / 3rd-party): formItem is the second positional arg.
+        //   • Native CustomEvent intercepted by jQuery's `.on()` wrapper:
+        //     `e` is a jQuery event whose `e.detail` may be undefined; the
+        //     real CustomEvent is on `e.originalEvent.detail`.
+        const detail = e?.detail || e?.originalEvent?.detail || {};
+        const formItem =
+            (primaryArg && (primaryArg.nodeType === 1 || primaryArg.jquery)
+                ? primaryArg
+                : null) ||
+            primaryArg?.formItem ||
+            primaryArg?.form ||
+            detail.formItem ||
+            detail.form ||
+            null;
         const formEl = resolveElement(formItem);
         if (!formEl || reinitializingForms.has(formEl)) {
             return;
@@ -1558,13 +1581,23 @@ function initVanillaSubmissionRuntime() {
 
     document.addEventListener("submit", submitHandler);
     document.addEventListener("reset", resetHandler);
-    document.addEventListener("ff_reinit", reinitHandler);
+    // ff_reinit comes from external code via $.trigger (Pro / Elementor) and
+    // also from our own emit at line ~1356. Route via bridge.onEvent so we
+    // hear it under both runtime modes — raw addEventListener never received
+    // jQuery-triggered ff_reinit on the dev branch (a pre-existing gap).
+    const removeReinitListener = jqueryEventBridge.onEvent(
+        document,
+        "ff_reinit",
+        reinitHandler
+    );
     document.addEventListener("keydown", enterKeyGuard);
 
     window._fluentFormSubmissionCleanup = function () {
         document.removeEventListener("submit", submitHandler);
         document.removeEventListener("reset", resetHandler);
-        document.removeEventListener("ff_reinit", reinitHandler);
+        if (typeof removeReinitListener === "function") {
+            removeReinitListener();
+        }
         document.removeEventListener("keydown", enterKeyGuard);
     };
 
