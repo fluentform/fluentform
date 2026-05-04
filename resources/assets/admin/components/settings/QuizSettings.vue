@@ -60,10 +60,41 @@
                                     </table>
                                 </el-form-item>
                                 <el-form-item :label="$t('Quiz Questions')" class="quiz-questions ff-form-item">
-                                    <p v-if="resultType == 'personality'">{{ $t('Personality quiz has no right or wrong answer, just enable the questions. Make sure the answers value match with the personality options values. That is all.') }}</p>
+                                    <p v-if="resultType == 'personality'">{{ $t('Personality quiz has no right or wrong answer. Enable the questions and make sure the answer values match the personality option values. Ranking questions use position-based scores, so the value placed higher can contribute more to the final result.') }}</p>
                                     <template v-if="quizFields">
-                                        <div v-for="(input, key) in quizFields" :key="key">
-                                            <quiz-input :input="getInput(key)" :original_input="quizFields[key]" :is_personality_quiz="resultType =='personality'"></quiz-input>
+                                        <div v-if="regularQuizFieldEntries.length" class="quiz-question-section">
+                                            <div class="quiz-question-section__title">{{ $t('Standard Questions') }}</div>
+                                            <div
+                                                v-for="([key, input]) in regularQuizFieldEntries"
+                                                :key="key"
+                                                class="quiz-question-section__item"
+                                            >
+                                                <quiz-input
+                                                    :input="getInput(key)"
+                                                    :original_input="input"
+                                                    :is_personality_quiz="resultType =='personality'"
+                                                ></quiz-input>
+                                            </div>
+                                        </div>
+                                        <div v-if="rankingQuizFieldEntries.length" class="quiz-question-section quiz-question-section--ranking">
+                                            <div class="quiz-question-section__title">{{ $t('Ranking Questions') }}</div>
+                                            <p class="quiz-question-section__description" v-if="resultType == 'personality'">
+                                                {{ $t('Ranking questions award the configured position score to the personality value placed in each rank. Higher ranks can contribute more points by default, and you can adjust each position score if needed.') }}
+                                            </p>
+                                            <p class="quiz-question-section__description" v-else>
+                                                {{ $t('Ranking questions use an ordered answer. Normal scoring requires the full order to match, and advanced scoring awards points only when an option is placed in its configured position.') }}
+                                            </p>
+                                            <div
+                                                v-for="([key, input]) in rankingQuizFieldEntries"
+                                                :key="key"
+                                                class="quiz-question-section__item quiz-question-section__item--ranking"
+                                            >
+                                                <quiz-input
+                                                    :input="getInput(key)"
+                                                    :original_input="input"
+                                                    :is_personality_quiz="resultType =='personality'"
+                                                ></quiz-input>
+                                            </div>
                                         </div>
                                     </template>
                                 </el-form-item>
@@ -135,14 +166,38 @@
                 deleting: false,
                 settings: false,
                 loading: false,
-                resultType: '',
                 settingsFields: [],
                 quizFields: {},
                 errors: new Errors()
             }
         },
-        computed: {},
+        computed: {
+            resultType() {
+                return this.settings ? this.settings.result_type : '';
+            },
+            regularQuizFieldEntries() {
+                if (!this.quizFields) {
+                    return [];
+                }
+
+                return Object.entries(this.quizFields).filter(([, input]) => {
+                    return !this.isRankingField(input);
+                });
+            },
+            rankingQuizFieldEntries() {
+                if (!this.quizFields) {
+                    return [];
+                }
+
+                return Object.entries(this.quizFields).filter(([, input]) => {
+                    return this.isRankingField(input);
+                });
+            }
+        },
         methods: {
+            isRankingField(input) {
+                return input && input.element === 'input_ranking';
+            },
             getInput(key) {
                 if (this.settings.saved_quiz_fields[key]) {
                     return this.settings.saved_quiz_fields[key];
@@ -160,7 +215,6 @@
                         this.settings = response.data.settings;
                         this.quizFields = response.data.quiz_fields;
                         this.settingsFields = response.data.settings_fields;
-                        this.resultType = response.data.settings.result_type;
                     })
                     .fail(error => {
                     })
