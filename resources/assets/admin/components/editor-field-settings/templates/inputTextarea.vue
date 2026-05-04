@@ -6,7 +6,7 @@
                 <i class="tooltip-icon el-icon-info"></i>
             </el-tooltip>
         </div>
-        <el-input :disabled="listItem.disabled" :class="listItem.css_class" v-model="model" :rows="listItem.rows" :cols="listItem.cols" type="textarea" @input="afterSanitizeInput"></el-input>
+        <el-input :disabled="listItem.disabled" :class="listItem.css_class" v-model="model" :rows="listItem.rows" :cols="listItem.cols" :placeholder="listItem.placeholder" type="textarea" @input="afterSanitizeInput"></el-input>
         <p v-if="listItem.inline_help_text" v-html="listItem.inline_help_text"></p>
     </el-form-item>
 </template>

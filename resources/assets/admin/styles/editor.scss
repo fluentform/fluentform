@@ -1090,10 +1090,6 @@ mark {
   }
 }
 
-.ff-el-rate {
-  display: inline-block;
-}
-
 .net-promoter-button {
   border-radius: inherit;
 }
@@ -1109,8 +1105,51 @@ mark {
   }
 }
 
-.ff-el-rate {
-  display: inline-block;
+.ff-el-rating-preview {
+  --ff-rating-inactive-color: #d4d4d4;
+  --ff-rating-active-color: #ffb100;
+
+  align-items: flex-start;
+  display: flex;
+  gap: 8px;
+}
+
+.ff-el-rating-preview__item {
+  align-items: center;
+  color: var(--ff-rating-inactive-color);
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  &.is-active {
+    color: var(--ff-rating-active-color);
+  }
+}
+
+.ff-el-rating-preview__icon {
+  display: inline-flex;
+
+  svg {
+    display: block;
+    height: 24px;
+    width: 24px;
+  }
+
+  svg * {
+    &[fill]:not([fill="none"]) {
+      fill: currentColor !important;
+    }
+
+    &[stroke]:not([stroke="none"]) {
+      stroke: currentColor !important;
+    }
+  }
+}
+
+.ff-el-rating-preview__value {
+  font-size: 12px;
+  line-height: 1;
 }
 
 .repeat-field--item {
