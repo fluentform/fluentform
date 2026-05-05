@@ -34,7 +34,31 @@ class TransferService
             return fluentform_kses_js($metaValue);
         }
 
+        $decoded = json_decode($metaValue);
+        if (is_array($decoded) || is_object($decoded)) {
+            self::sanitizeJsonNode($decoded);
+            $encoded = wp_json_encode($decoded);
+            return $encoded ?: $metaValue;
+        }
+
         return wp_kses_post($metaValue);
+    }
+
+    private static function sanitizeJsonNode(&$node)
+    {
+        if (is_array($node)) {
+            foreach ($node as &$value) {
+                self::sanitizeJsonNode($value);
+            }
+            unset($value);
+        } elseif (is_object($node)) {
+            foreach (get_object_vars($node) as $key => $value) {
+                self::sanitizeJsonNode($value);
+                $node->{$key} = $value;
+            }
+        } elseif (is_string($node)) {
+            $node = wp_kses_post($node);
+        }
     }
 
     public static function exportForms($formIds)
