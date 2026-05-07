@@ -4,7 +4,9 @@
             <tbody>
             <filter-item v-for="(item, itemKey) in items" :view_only="view_only" @removeItem="removeItem(itemKey)"
                          :key="itemKey"
-                         :filterLabels="filterLabels" :item="item"/>
+                         :filterLabels="filterLabels"
+                         :filterOptions="filterOptions"
+                         :item="item"/>
             </tbody>
         </table>
 

@@ -1,8 +1,29 @@
 <template>
     <tr>
         <td style="width: 210px; line-height: 110%;" class="filter_name">
-            {{ itemConfig.provider|ucFirst }} <span class="fs_provider_separator">/</span>
-            {{ itemConfig.label }}
+            <el-popover
+                v-if="!view_only && filterOptions && filterOptions.length"
+                placement="bottom-start"
+                width="450"
+                trigger="click"
+                v-model="changeFieldOpen">
+                <el-cascader-panel
+                    style="width: 100%"
+                    :options="filterOptions"
+                    v-model="changeFieldSelection"
+                    @change="maybeChangeField" />
+                <span slot="reference" class="ff_filter_field_btn" :title="$t('Click to change field')">
+                    {{ itemConfig.provider | ucFirst }}
+                    <span class="fs_provider_separator">/</span>
+                    {{ itemConfig.label }}
+                    <i class="el-icon-edit-outline ff_filter_field_edit_icon"></i>
+                </span>
+            </el-popover>
+            <span v-else>
+                {{ itemConfig.provider | ucFirst }}
+                <span class="fs_provider_separator">/</span>
+                {{ itemConfig.label }}
+            </span>
             <span v-if="itemConfig.help">
                 <el-tooltip class="item" effect="dark" placement="top-start">
                     <i class="el-icon el-icon-info"></i>
@@ -15,7 +36,7 @@
                        @visible-change="maybeOperatorSelected"
                        v-model="item.operator">
                 <el-option v-for="(optionLabel, option) in operators" :key="option" :value="option"
-                           :label="optionLabel"></el-option>
+                           :label="optionLabel" :title="operatorHelp[option] || ''"></el-option>
             </el-select>
         </td>
         <td class="fc_filter_value">
@@ -23,8 +44,10 @@
                 --
             </template>
             <template v-else>
-                <el-input size="mini" v-if="isNumericType" type="number"
-                          :placeholder="$t('Condition Value')"
+                <el-input size="mini"
+                          v-if="isNumericType"
+                          :type="isMultiValueOperator ? 'text' : 'number'"
+                          :placeholder="isMultiValueOperator ? $t('Comma-separated values, e.g. 1,5,10') : $t('Condition Value')"
                           v-model="item.value"/>
                 <template v-else-if="itemConfig.type == 'dates'">
 	                <el-date-picker :type="dateType"
@@ -109,17 +132,49 @@ import isArray from 'lodash/isArray';
 
 export default {
     name: 'RichFilterItem',
-    props: ['item', 'filterLabels', 'view_only'],
+    props: {
+        item: { type: Object, required: true },
+        filterLabels: { type: Object, default: () => ({}) },
+        filterOptions: { type: Array, default: () => [] },
+        view_only: { type: Boolean, default: false }
+    },
     components: {
 
     },
     data() {
         return {
 			all_operator : window.fluent_form_entries_vars.advanced_filters_operators || {},
-			all_columns : window.fluent_form_entries_vars.advanced_filters_columns || {}
+			all_columns : window.fluent_form_entries_vars.advanced_filters_columns || {},
+            changeFieldOpen: false,
+            changeFieldSelection: []
         }
     },
     computed: {
+        /**
+         * Short, plain-language descriptions for each operator. Shown as a
+         * native title tooltip when the user hovers an option in the
+         * operator dropdown.
+         */
+        operatorHelp() {
+            return {
+                '=': this.$t('Field value is exactly equal to the input'),
+                '!=': this.$t('Field value is anything other than the input'),
+                '>': this.$t('Field value is greater than the input'),
+                '<': this.$t('Field value is less than the input'),
+                '>=': this.$t('Field value is greater than or equal to the input'),
+                '<=': this.$t('Field value is less than or equal to the input'),
+                'IN': this.$t('Field value matches any item in the comma-separated list'),
+                'NOT IN': this.$t('Field value does not match any item in the comma-separated list'),
+                'BETWEEN': this.$t('Field value falls between two values (inclusive)'),
+                'NOT BETWEEN': this.$t('Field value falls outside the two values'),
+                'contains': this.$t('Field value contains this text anywhere'),
+                'doNotContains': this.$t('Field value does not contain this text'),
+                'startsWith': this.$t('Field value begins with this text'),
+                'endsWith': this.$t('Field value ends with this text'),
+                'is_null': this.$t('Field has no value'),
+                'not_null': this.$t('Field has any value')
+            };
+        },
 	    operators() {
 		    let operators = { ...this.all_operator };
 		    const type = this.itemConfig.type;
@@ -138,7 +193,7 @@ export default {
 				    allow_operators = ['=', '!='];
 			    }
 		    } else if (this.isNumericType) {
-			    allow_operators = ['>', '<', '>=', '<=', '=', '!='];
+			    allow_operators = ['>', '<', '>=', '<=', '=', '!=', 'IN', 'NOT IN'];
 		    } else {
 				allow_operators = ['=', '!=', 'IN', 'NOT IN', 'contains', 'doNotContains', 'startsWith', 'endsWith'];
 		    }
@@ -152,6 +207,14 @@ export default {
 	    isNumericType(){
 			return this.itemConfig.type == 'numeric' || this.all_columns.numeric.includes(this.item.source.join('.'));
 	    },
+        /**
+         * Operators that accept a comma-separated list of values. The input
+         * for these must be plain text so users can type commas — a
+         * native number input strips them.
+         */
+        isMultiValueOperator() {
+            return ['IN', 'NOT IN'].includes(this.item.operator);
+        },
 	    dateType() {
 		    if (['BETWEEN', 'NOT BETWEEN'].includes(this.item.operator)) {
 			    return this.itemConfig.date_type + 'range';
@@ -174,6 +237,21 @@ export default {
         }
     },
     methods: {
+        /**
+         * Replace the field source for this filter row with the cascader's
+         * new selection. Resets the operator and value because the new field
+         * may not support the previously selected operator/value type.
+         */
+        maybeChangeField(newSource) {
+            if (!Array.isArray(newSource) || newSource.length !== 2) {
+                return;
+            }
+            this.item.source = [...newSource];
+            this.item.operator = '';
+            this.item.value = '';
+            this.changeFieldOpen = false;
+            this.changeFieldSelection = [];
+        },
         closingSource(status) {
             if (!status) {
                 setTimeout(() => {

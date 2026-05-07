@@ -891,6 +891,30 @@ span.ff_tag {
   margin-bottom: 20px;
   padding: 12px;
 
+  // Subtle help banner explaining AND-within-group / OR-between-groups
+  .ff_filter_help_bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    background: #f4f8fb;
+    border: 1px solid #dfe6ef;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #606266;
+
+    .el-icon-info {
+      color: #1565C9;
+      font-size: 14px;
+    }
+
+    strong {
+      color: #1565C9;
+      font-weight: 700;
+    }
+  }
+
   .ff_rich_filters{
     padding: 10px;
     background: #fdfdfd;
@@ -908,6 +932,32 @@ span.ff_tag {
       box-shadow:none;
       .filter_name{
         font-weight: 500;
+
+        .ff_filter_field_btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 2px 6px;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.15s ease;
+
+          &:hover {
+            background: #E8F2FF;
+
+            .ff_filter_field_edit_icon {
+              opacity: 1;
+            }
+          }
+        }
+
+        .ff_filter_field_edit_icon {
+          margin-left: 4px;
+          font-size: 13px;
+          color: #1565C9;
+          opacity: 0.4;
+          transition: opacity 0.15s ease;
+        }
       }
     }
   }

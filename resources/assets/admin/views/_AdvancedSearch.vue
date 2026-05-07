@@ -1,5 +1,14 @@
 <template>
-    <div class="ff_as_container" v-show="advanced_filter">
+    <div class="ff_as_container" v-show="advanced_filter" @keyup.enter="handleEnterKey">
+        <div class="ff_filter_help_bar">
+            <i class="el-icon-info"></i>
+            <span>
+                {{ $t('Conditions inside a group are joined with') }}
+                <strong>{{ $t('AND') }}</strong>.
+                {{ $t('Multiple groups are joined with') }}
+                <strong>{{ $t('OR') }}</strong>.
+            </span>
+        </div>
         <div v-for="(rich_filter, filterIndex) in advanced_filters" :key="filterIndex" class="ff_filter_group_wrap">
             <div class="fc_rich_filter">
                 <rich-filter
@@ -45,7 +54,8 @@
             </div>
             <div
                 v-else-if="filterIndex < advanced_filters.length - 1"
-                class="ff_or_separator">
+                class="ff_or_separator"
+                :title="$t('Entries matching either group are returned')">
                 <span>{{ $t('OR') }}</span>
             </div>
 
@@ -134,6 +144,25 @@
             runSearch(){
                 this.lastAppliedFilters = JSON.stringify(this.advanced_filters);
                 this.$emit("runSearch", this.advanced_filters);
+            },
+            /**
+             * Trigger the filter when the user presses Enter from any input
+             * inside the panel. We blur the active element so the user gets
+             * an obvious "I just submitted" feedback (collapsed cursor) and
+             * any open Element UI popovers (cascader, select) aren't
+             * inadvertently submitted by their internal Enter handlers.
+             */
+            handleEnterKey(event) {
+                // Skip when an Element UI dropdown/cascader is open: its
+                // own Enter handler should win (selecting an option).
+                const target = event && event.target;
+                if (target && target.closest && target.closest('.el-select-dropdown, .el-cascader-panel, .el-popover')) {
+                    return;
+                }
+                if (target && typeof target.blur === 'function') {
+                    target.blur();
+                }
+                this.runSearch();
             },
             addConditionGroup() {
                 this.advanced_filters.push([]);
