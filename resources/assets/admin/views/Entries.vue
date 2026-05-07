@@ -145,11 +145,18 @@
             <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
-                        <label for="search_bar">
-                           <b> {{ $t('Advanced Filter') }}</b>
-                        </label>
-                        <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
-
+                        <el-button
+                            :type="advanced_filter_active ? 'primary' : 'default'"
+                            :plain="!advanced_filter_active"
+                            icon="el-icon-s-operation"
+                            @click="advanced_filter_active = !advanced_filter_active"
+                            :title="$t('Toggle advanced filter panel')">
+                            {{ advanced_filter_active ? $t('Hide Filters') : $t('Advanced Filter') }}
+                            <el-badge
+                                v-if="hasAppliedFilters"
+                                :value="appliedFilterGroupCount"
+                                class="ff_advanced_filter_badge" />
+                        </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
                         <label for="search_bar" class="screen-reader-text">
@@ -265,6 +272,10 @@
 				    </a>
 			    </notice>
 	    </template>
+
+        <applied-filter-summary
+            :filters="advanced_filter"
+            @clear-group="clearFilterGroup" />
 
         <div style="min-height: 300px;" class="entries_table">
             <div class="ff_table">
@@ -578,6 +589,7 @@
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
     import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
     import AdvancedSearch from "@/admin/views/_AdvancedSearch";
+    import AppliedFilterSummary from "@/admin/views/_AppliedFilterSummary";
     import Notice from '@/admin/components/Notice/Notice.vue'
 
     export default {
@@ -585,6 +597,7 @@
         props: ['form_id', 'has_pdf'],
         components: {
             AdvancedSearch,
+            AppliedFilterSummary,
             Confirm,
             EmailResend,
             ColumnDragAndDrop,
@@ -782,6 +795,29 @@
             },
 
             /**
+             * Whether any advanced filters are currently applied. Used for
+             * the chip summary, the count badge on the Advanced Filter
+             * toggle, and to gate sending the filter to the server. The
+             * panel's visibility (advanced_filter_active) is intentionally
+             * NOT part of this check — once a filter is applied to the
+             * query, hiding the editing panel must not silently make the
+             * indicators disappear, otherwise admins can be looking at
+             * filtered data while believing it's unfiltered.
+             */
+            hasAppliedFilters() {
+                if (!Array.isArray(this.advanced_filter)) return false;
+                return this.advanced_filter.some(group => Array.isArray(group) && group.length > 0);
+            },
+
+            /**
+             * Number of populated filter groups, used for the badge count.
+             */
+            appliedFilterGroupCount() {
+                if (!Array.isArray(this.advanced_filter)) return 0;
+                return this.advanced_filter.filter(group => Array.isArray(group) && group.length > 0).length;
+            },
+
+            /**
              * Compute columns order
              * @return {Array}
              */
@@ -876,6 +912,31 @@
                 this.advanced_filter = query
                 this.getData();
             },
+
+            /**
+             * Remove a single filter group by index and re-run search
+             * @param {Number} groupIndex
+             */
+            clearFilterGroup(groupIndex) {
+                if (!Array.isArray(this.advanced_filter)) return;
+                const updatedFilters = this.advanced_filter.filter((_, idx) => idx !== groupIndex);
+
+                if (updatedFilters.length === 0) {
+                    this.clearAllAdvancedFilters();
+                    return;
+                }
+
+                this.advanced_filter = updatedFilters;
+                this.getData();
+            },
+
+            /**
+             * Clear all advanced filters and re-run search
+             */
+            clearAllAdvancedFilters() {
+                this.advanced_filter = [[]];
+                this.getData();
+            },
             getData() {
                 let data = {
                     form_id: this.form_id,
@@ -894,9 +955,15 @@
 	            if (this.basicFilter) {
 		            this.basicFilter = false;
 	            }
-	            if (this.advanced_filter_active) {
+                // Send the advanced filter whenever it has data, regardless
+                // of whether the editing panel is currently visible. Gating
+                // by advanced_filter_active would let the user collapse the
+                // panel and silently get unfiltered results back from the
+                // server while the chips and badge still claim a filter is
+                // applied.
+                if (this.hasAppliedFilters) {
                     data.advanced_filter = this.advanced_filter;
-	            }
+                }
 
                 this.loading = true;
 
@@ -1181,7 +1248,7 @@
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
                 }
-				if (this.advanced_filter_active) {
+				if (this.hasAppliedFilters) {
 					data.advanced_filter = this.advanced_filter;
 				}
 	            location.href = ajaxurl + '?' + jQuery.param(data);
@@ -1342,3 +1409,4 @@
 	    }
     };
 </script>
+

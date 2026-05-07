@@ -77,16 +77,16 @@ class EditorShortCode
     public static function getSubmissionShortcodes($form = false)
     {
         $submissionProperties = [
+            '{submission.serial_number}'  => __('#Submission Serial Number', 'fluentform'),
             '{submission.id}'             => __('Submission ID', 'fluentform'),
-            '{submission.serial_number}'  => __('Submission Serial Number', 'fluentform'),
-            '{submission.source_url}'     => __('Source URL', 'fluentform'),
             '{submission.user_id}'        => __('User Id', 'fluentform'),
+            '{submission.entry_uid}'      => __('Entry Unique ID', 'fluentform'),
+            '{submission.source_url}'     => __('Source URL', 'fluentform'),
             '{submission.browser}'        => __('Submitter Browser', 'fluentform'),
             '{submission.device}'         => __('Submitter Device', 'fluentform'),
             '{submission.status}'         => __('Submission Status', 'fluentform'),
             '{submission.created_at}'     => __('Submission Create Date', 'fluentform'),
             '{submission.admin_view_url}' => __('Submission Admin View URL', 'fluentform'),
-            '{submission.entry_uid}'      => __('Entry Unique ID', 'fluentform'),
         ];
 
         if ($form) {
