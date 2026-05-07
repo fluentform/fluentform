@@ -402,6 +402,7 @@ class Converter
                 $question['dateCustomConfig'] = $dateField->getCustomConfig($field['settings']);
             } elseif (in_array($field['element'], ['input_image', 'input_file'])) {
                 $question['multiple'] = true;
+                $question['btn_text'] = ArrayHelper::get($field, 'settings.btn_text', __('Choose File', 'fluentform'));
                 
                 $maxFileCount = ArrayHelper::get($field, 'settings.validation_rules.max_file_count');
                 $maxFileSize = ArrayHelper::get($field, 'settings.validation_rules.max_file_size');
