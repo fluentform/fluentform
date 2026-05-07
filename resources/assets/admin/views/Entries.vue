@@ -266,6 +266,41 @@
 			    </notice>
 	    </template>
 
+        <div v-if="hasAppliedFilters" class="ff_applied_filters_summary mb-4">
+            <span class="ff_applied_filters_label">
+                <i class="el-icon-search"></i>
+                {{ $t('Active Filters:') }}
+            </span>
+            <template v-for="(group, groupIndex) in appliedFiltersSummary">
+                <span v-if="groupIndex > 0" :key="'or_' + groupIndex" class="ff_filter_or_separator">{{ $t('OR') }}</span>
+                <el-tag
+                    :key="'filter_group_' + groupIndex"
+                    closable
+                    type="info"
+                    size="small"
+                    class="ff_filter_chip"
+                    @close="clearFilterGroup(groupIndex)">
+                    <template v-for="(item, itemIndex) in group">
+                        <span v-if="itemIndex > 0" :key="'and_' + itemIndex" class="ff_filter_and_separator"> {{ $t('AND') }} </span>
+                        <span :key="'item_' + itemIndex" class="ff_filter_item_text">
+                            <strong>{{ item.fieldLabel }}</strong>
+                            {{ item.operatorLabel }}
+                            <em>{{ item.displayValue }}</em>
+                        </span>
+                    </template>
+                </el-tag>
+            </template>
+            <el-button
+                @click="clearAllAdvancedFilters"
+                size="mini"
+                plain
+                type="danger"
+                icon="el-icon-close"
+                class="ff_clear_all_filters">
+                {{ $t('Clear All') }}
+            </el-button>
+        </div>
+
         <div style="min-height: 300px;" class="entries_table">
             <div class="ff_table">
                 <el-skeleton :loading="loading" animated :rows="6">
@@ -782,6 +817,46 @@
             },
 
             /**
+             * Whether any advanced filters are currently applied
+             * @return {Boolean}
+             */
+            hasAppliedFilters() {
+                if (!this.advanced_filter_active) return false;
+                if (!Array.isArray(this.advanced_filter)) return false;
+                if (!this.advanced_filter.length) return false;
+                return this.advanced_filter.some(group => Array.isArray(group) && group.length > 0);
+            },
+
+            /**
+             * Format applied filters for human-readable summary display
+             * @return {Array} Array of filter groups with formatted labels
+             */
+            appliedFiltersSummary() {
+                if (!this.hasAppliedFilters) return [];
+
+                const filterOptions = window.fluent_form_entries_vars && window.fluent_form_entries_vars.advanced_filters || [];
+                const operators = window.fluent_form_entries_vars && window.fluent_form_entries_vars.advanced_filters_operators || {};
+
+                return this.advanced_filter
+                    .filter(group => Array.isArray(group) && group.length > 0)
+                    .map(group => {
+                        return group.map(item => {
+                            const fieldLabel = this.lookupFieldLabel(item.source, filterOptions);
+                            const operatorLabel = operators[item.operator] || item.operator;
+                            const displayValue = this.formatFilterValue(item.value);
+                            return {
+                                source: item.source,
+                                operator: item.operator,
+                                value: item.value,
+                                fieldLabel,
+                                operatorLabel,
+                                displayValue
+                            };
+                        });
+                    });
+            },
+
+            /**
              * Compute columns order
              * @return {Array}
              */
@@ -874,6 +949,63 @@
             },
             runAdvanceSearch(query){
                 this.advanced_filter = query
+                this.getData();
+            },
+
+            /**
+             * Look up the human-readable field label from filter options
+             * @param {Array} source - [provider, fieldName]
+             * @param {Array} filterOptions - The available filter options
+             * @return {String} Field label
+             */
+            lookupFieldLabel(source, filterOptions) {
+                if (!Array.isArray(source) || source.length < 2) return '';
+                const [provider, fieldName] = source;
+
+                const providerGroup = filterOptions.find(opt => opt.value === provider);
+                if (!providerGroup || !providerGroup.children) return fieldName;
+
+                const field = providerGroup.children.find(child => child.value === fieldName);
+                return field ? `${providerGroup.label} / ${field.label}` : fieldName;
+            },
+
+            /**
+             * Format filter value for display
+             * @param {*} value
+             * @return {String}
+             */
+            formatFilterValue(value) {
+                if (value === null || value === undefined || value === '') {
+                    return '(empty)';
+                }
+                if (Array.isArray(value)) {
+                    return value.join(', ');
+                }
+                return String(value);
+            },
+
+            /**
+             * Remove a single filter group by index and re-run search
+             * @param {Number} groupIndex
+             */
+            clearFilterGroup(groupIndex) {
+                if (!Array.isArray(this.advanced_filter)) return;
+                const updatedFilters = this.advanced_filter.filter((_, idx) => idx !== groupIndex);
+
+                if (updatedFilters.length === 0) {
+                    this.clearAllAdvancedFilters();
+                    return;
+                }
+
+                this.advanced_filter = updatedFilters;
+                this.getData();
+            },
+
+            /**
+             * Clear all advanced filters and re-run search
+             */
+            clearAllAdvancedFilters() {
+                this.advanced_filter = [[]];
                 this.getData();
             },
             getData() {
@@ -1342,3 +1474,53 @@
 	    }
     };
 </script>
+
+<style>
+.ff_applied_filters_summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f4f8fb;
+    border: 1px solid #dfe6ef;
+    border-left: 3px solid #0077cc;
+    border-radius: 4px;
+}
+.ff_applied_filters_label {
+    font-weight: 600;
+    color: #303133;
+    margin-right: 4px;
+}
+.ff_applied_filters_label .el-icon-search {
+    margin-right: 4px;
+    color: #0077cc;
+}
+.ff_filter_chip {
+    margin-right: 4px;
+}
+.ff_filter_chip .ff_filter_item_text {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.ff_filter_chip .ff_filter_item_text em {
+    font-style: normal;
+    font-weight: 500;
+    color: #0077cc;
+}
+.ff_filter_or_separator {
+    font-weight: 700;
+    color: #0077cc;
+    font-size: 12px;
+    padding: 0 4px;
+}
+.ff_filter_and_separator {
+    color: #909399;
+    font-weight: 500;
+    font-size: 11px;
+}
+.ff_clear_all_filters {
+    margin-left: auto;
+}
+</style>
