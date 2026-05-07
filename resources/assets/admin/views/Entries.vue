@@ -145,11 +145,18 @@
             <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
-                        <label for="search_bar">
-                           <b> {{ $t('Advanced Filter') }}</b>
-                        </label>
-                        <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
-
+                        <el-button
+                            :type="advanced_filter_active ? 'primary' : 'default'"
+                            :plain="!advanced_filter_active"
+                            icon="el-icon-s-operation"
+                            @click="advanced_filter_active = !advanced_filter_active"
+                            :title="$t('Toggle advanced filter panel')">
+                            {{ advanced_filter_active ? $t('Hide Filters') : $t('Advanced Filter') }}
+                            <el-badge
+                                v-if="hasAppliedFilters"
+                                :value="appliedFiltersSummary.length"
+                                class="ff_advanced_filter_badge" />
+                        </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
                         <label for="search_bar" class="screen-reader-text">
@@ -1475,52 +1482,3 @@
     };
 </script>
 
-<style>
-.ff_applied_filters_summary {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    background: #f4f8fb;
-    border: 1px solid #dfe6ef;
-    border-left: 3px solid #0077cc;
-    border-radius: 4px;
-}
-.ff_applied_filters_label {
-    font-weight: 600;
-    color: #303133;
-    margin-right: 4px;
-}
-.ff_applied_filters_label .el-icon-search {
-    margin-right: 4px;
-    color: #0077cc;
-}
-.ff_filter_chip {
-    margin-right: 4px;
-}
-.ff_filter_chip .ff_filter_item_text {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-.ff_filter_chip .ff_filter_item_text em {
-    font-style: normal;
-    font-weight: 500;
-    color: #0077cc;
-}
-.ff_filter_or_separator {
-    font-weight: 700;
-    color: #0077cc;
-    font-size: 12px;
-    padding: 0 4px;
-}
-.ff_filter_and_separator {
-    color: #909399;
-    font-weight: 500;
-    font-size: 11px;
-}
-.ff_clear_all_filters {
-    margin-left: auto;
-}
-</style>

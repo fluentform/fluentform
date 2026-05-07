@@ -20,12 +20,12 @@
                                    style="width: 100%"
                                    :options="filterOptions"
                                    v-model="new_item"/>
-                <el-button slot="reference"  size="small" icon="el-icon-plus">
+                <el-button slot="reference"  size="small" class="blue-soft" icon="el-icon-plus">
                     {{ $t('Add') }}
                 </el-button>
             </el-popover>
             {{ $t(add_label) }}
-            <el-button style="float: right;" @click="$emit('maybeRemove')" size="mini" type="danger"
+            <el-button v-if="canRemove" style="float: right;" @click="$emit('maybeRemove')" size="mini" type="danger"
                        icon="el-icon-delete"></el-button>
         </div>
 
@@ -39,9 +39,9 @@
                                    style="width: 100%"
                                    :options="filterOptions"
                                    v-model="new_item"/>
-                <el-button slot="reference" size="small" icon="el-icon-plus">
-                    {{ $t('Add') }}
-                </el-button>
+              <el-button slot="reference"  size="small" class="blue-soft" icon="el-icon-plus">
+                {{ $t('Add') }}
+              </el-button>
             </el-popover>
             {{ $t(add_label) }}
         </div>
@@ -78,6 +78,10 @@ export default {
             default() {
                 return false;
             }
+        },
+        canRemove: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

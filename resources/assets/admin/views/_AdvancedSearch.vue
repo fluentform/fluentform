@@ -2,7 +2,12 @@
     <div class="ff_as_container" v-show="advanced_filter">
         <div v-for="(rich_filter, filterIndex) in advanced_filters" :key="filterIndex" class="ff_filter_group_wrap">
             <div class="fc_rich_filter">
-                <rich-filter :filterOptions="editorShortcodes" :add_label="filterLabel" @maybeRemove="maybeRemoveGroup(filterIndex)" :items="rich_filter"/>
+                <rich-filter
+                    :filterOptions="editorShortcodes"
+                    :add_label="filterLabel"
+                    :items="rich_filter"
+                    :can-remove="advanced_filters.length > 1"
+                    @maybeRemove="maybeRemoveGroup(filterIndex)" />
 
                 <div v-if="rich_filter.length > 0" class="ff_filter_group_actions">
                     <el-button
@@ -26,17 +31,36 @@
             </div>
 
 
-            <div class="ff_cond_or">
-                <em @click="addConditionGroup()"
-                    style="cursor: pointer; color: rgb(0, 119, 204); font-weight: bold;"><i
-                        class="el-icon-plus"></i> {{ $t('OR') }}</em>
+            <div
+                v-if="rich_filter.length > 0 && filterIndex === advanced_filters.length - 1"
+                class="ff_cond_or_wrap">
+                <button
+                    type="button"
+                    class="ff_add_or_group_btn"
+                    @click="addConditionGroup()"
+                    :title="$t('Add another filter group combined with OR')">
+                    <i class="el-icon-plus"></i>
+                    <span>{{ $t('Add OR Group') }}</span>
+                </button>
+            </div>
+            <div
+                v-else-if="filterIndex < advanced_filters.length - 1"
+                class="ff_or_separator">
+                <span>{{ $t('OR') }}</span>
             </div>
 
 
         </div>
         <el-row :gutter="20">
             <el-col :md="12" :xs="24">
-                <el-button type="primary" size="small" @click="runSearch">{{ $t('Filter') }}</el-button>
+                <el-button
+                    type="primary"
+                    size="small"
+                    @click="runSearch"
+                    :class="{'ff_filter_btn_modified': hasUnappliedChanges}"
+                    :title="hasUnappliedChanges ? $t('You have unapplied filter changes') : ''">
+                    {{ $t('Filter') }}<span v-if="hasUnappliedChanges" class="ff_filter_modified_dot">●</span>
+                </el-button>
             </el-col>
             <el-col :md="12" :xs="24">
                 <div class="text-right">
@@ -72,7 +96,18 @@
                 },
                 editorShortcodes: [],
                 advanced_filters: [[]],
-                filterLabel: this.$t('Filters Info'),}
+                lastAppliedFilters: '[[]]',
+                filterLabel: this.$t('Add your filters here'),}
+        },
+        computed: {
+            /**
+             * True when the current filter state differs from the last applied
+             * filter snapshot. Used to show a subtle "unsaved changes" hint
+             * on the Filter button.
+             */
+            hasUnappliedChanges() {
+                return JSON.stringify(this.advanced_filters) !== this.lastAppliedFilters;
+            }
         },
         methods: {
             fetchAllEditorShortcodes() {
@@ -97,6 +132,7 @@
                 this.advanced_filters.splice(index + 1, 0, clonedGroup);
             },
             runSearch(){
+                this.lastAppliedFilters = JSON.stringify(this.advanced_filters);
                 this.$emit("runSearch", this.advanced_filters);
             },
             addConditionGroup() {
@@ -105,26 +141,8 @@
         },
         mounted() {
             this.fetchAllEditorShortcodes();
+            this.lastAppliedFilters = JSON.stringify(this.advanced_filters);
         }
     }
 </script>
 
-<style>
-.ff_as_container .ff_filter_group_wrap {
-    position: relative;
-}
-.ff_as_container .fc_rich_filter {
-    position: relative;
-}
-.ff_as_container .ff_filter_group_actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    padding: 8px 12px 4px;
-    border-top: 1px dashed #e4e7ed;
-    margin-top: 4px;
-}
-.ff_as_container .ff_filter_group_actions .el-button {
-    font-size: 12px;
-}
-</style>
