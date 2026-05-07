@@ -276,8 +276,7 @@
         <applied-filter-summary
             v-if="advanced_filter_active"
             :filters="advanced_filter"
-            @clear-group="clearFilterGroup"
-            @clear-all="clearAllAdvancedFilters" />
+            @clear-group="clearFilterGroup" />
 
         <div style="min-height: 300px;" class="entries_table">
             <div class="ff_table">

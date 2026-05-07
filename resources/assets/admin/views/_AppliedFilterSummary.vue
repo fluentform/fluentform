@@ -33,15 +33,6 @@
                 </template>
             </el-tag>
         </template>
-        <el-button
-            size="mini"
-            plain
-            type="danger"
-            icon="el-icon-close"
-            class="ff_clear_all_filters"
-            @click="$emit('clear-all')">
-            {{ $t('Clear All') }}
-        </el-button>
     </div>
 </template>
 
@@ -53,8 +44,9 @@
  * fluent_form_entries_vars provided by the backend.
  *
  * Emits:
- *  - clear-group(index): user closed a chip; parent should drop that group
- *  - clear-all: user clicked "Clear All"; parent should reset filters
+ *  - clear-group(index): user closed a chip; parent should drop that group.
+ *    For bulk clear, parent provides "Clear Filters" inside the filter
+ *    panel itself, so we don't duplicate that affordance here.
  */
 export default {
     name: 'AppliedFilterSummary',
