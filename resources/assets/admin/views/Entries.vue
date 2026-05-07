@@ -274,7 +274,6 @@
 	    </template>
 
         <applied-filter-summary
-            v-if="advanced_filter_active"
             :filters="advanced_filter"
             @clear-group="clearFilterGroup" />
 
@@ -797,10 +796,15 @@
 
             /**
              * Whether any advanced filters are currently applied. Used for
-             * the count badge on the Advanced Filter toggle button.
+             * the chip summary, the count badge on the Advanced Filter
+             * toggle, and to gate sending the filter to the server. The
+             * panel's visibility (advanced_filter_active) is intentionally
+             * NOT part of this check — once a filter is applied to the
+             * query, hiding the editing panel must not silently make the
+             * indicators disappear, otherwise admins can be looking at
+             * filtered data while believing it's unfiltered.
              */
             hasAppliedFilters() {
-                if (!this.advanced_filter_active) return false;
                 if (!Array.isArray(this.advanced_filter)) return false;
                 return this.advanced_filter.some(group => Array.isArray(group) && group.length > 0);
             },
@@ -951,9 +955,15 @@
 	            if (this.basicFilter) {
 		            this.basicFilter = false;
 	            }
-	            if (this.advanced_filter_active) {
+                // Send the advanced filter whenever it has data, regardless
+                // of whether the editing panel is currently visible. Gating
+                // by advanced_filter_active would let the user collapse the
+                // panel and silently get unfiltered results back from the
+                // server while the chips and badge still claim a filter is
+                // applied.
+                if (this.hasAppliedFilters) {
                     data.advanced_filter = this.advanced_filter;
-	            }
+                }
 
                 this.loading = true;
 
@@ -1238,7 +1248,7 @@
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
                 }
-				if (this.advanced_filter_active) {
+				if (this.hasAppliedFilters) {
 					data.advanced_filter = this.advanced_filter;
 				}
 	            location.href = ajaxurl + '?' + jQuery.param(data);
