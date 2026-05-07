@@ -88,11 +88,36 @@
     export default {
         name: 'AdvancedSearch',
         props: {
-            advanced_filter: {},
-
+            advanced_filter: {
+                type: [Array, Object],
+                default: () => ([[]])
+            }
         },
         components: {
             RichFilter,
+        },
+        watch: {
+            /**
+             * Keep the panel's internal editor state in sync with the
+             * parent's filter prop. When the parent removes a group via a
+             * chip click, this fires and the panel reflects the new state
+             * the next time the user opens it (otherwise reopening would
+             * show a stale group and clicking Filter would silently
+             * re-apply the removed filter).
+             */
+            advanced_filter: {
+                handler(newVal) {
+                    if (!Array.isArray(newVal)) return;
+                    const incoming = JSON.stringify(newVal);
+                    if (incoming === JSON.stringify(this.advanced_filters)) return;
+                    this.advanced_filters = JSON.parse(incoming);
+                    // The parent already considers this state "applied"
+                    // (it just ran getData with it), so align the
+                    // unsaved-changes baseline accordingly.
+                    this.lastAppliedFilters = incoming;
+                },
+                deep: true
+            }
         },
         data() {
             return {
@@ -170,6 +195,12 @@
         },
         mounted() {
             this.fetchAllEditorShortcodes();
+            // Hydrate from the parent prop on first mount in case the
+            // parent already has a filter to display (e.g. opening the
+            // page with an applied filter from a remembered state).
+            if (Array.isArray(this.advanced_filter) && this.advanced_filter.length) {
+                this.advanced_filters = JSON.parse(JSON.stringify(this.advanced_filter));
+            }
             this.lastAppliedFilters = JSON.stringify(this.advanced_filters);
         }
     }

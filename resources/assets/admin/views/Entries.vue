@@ -274,6 +274,7 @@
 	    </template>
 
         <applied-filter-summary
+            v-if="advanced_filter_active"
             :filters="advanced_filter"
             @clear-group="clearFilterGroup"
             @clear-all="clearAllAdvancedFilters" />
