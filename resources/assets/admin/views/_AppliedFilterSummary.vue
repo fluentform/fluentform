@@ -4,21 +4,21 @@
             <i class="el-icon-search"></i>
             {{ $t('Active Filters:') }}
         </span>
-        <template v-for="(group, gi) in summary">
+        <template v-for="(group, displayIndex) in summary">
             <span
-                v-if="gi > 0"
-                :key="'or_' + gi"
+                v-if="displayIndex > 0"
+                :key="'or_' + group.originalIndex"
                 class="ff_filter_or_separator">
                 {{ $t('OR') }}
             </span>
             <el-tag
-                :key="'group_' + gi"
+                :key="'group_' + group.originalIndex"
                 closable
                 type="info"
                 size="small"
                 class="ff_filter_chip"
-                @close="$emit('clear-group', gi)">
-                <template v-for="(item, ii) in group">
+                @close="$emit('clear-group', group.originalIndex)">
+                <template v-for="(item, ii) in group.items">
                     <span
                         v-if="ii > 0"
                         :key="'and_' + ii"
@@ -71,13 +71,24 @@ export default {
         },
         summary() {
             if (!this.hasFilters) return [];
-            return this.filters
-                .filter(group => Array.isArray(group) && group.length > 0)
-                .map(group => group.map(item => ({
-                    fieldLabel: this.lookupFieldLabel(item.source),
-                    operatorLabel: this.operators[item.operator] || item.operator,
-                    displayValue: this.formatValue(item.value)
-                })));
+            // Preserve the original index in the parent's advanced_filter
+            // array so the chip-close handler can target the correct group
+            // even when there are empty groups before populated ones.
+            // Emitting the compacted (post-filter) index would point the
+            // parent at the wrong group and silently delete the wrong filter.
+            const result = [];
+            this.filters.forEach((group, originalIndex) => {
+                if (!Array.isArray(group) || group.length === 0) return;
+                result.push({
+                    originalIndex,
+                    items: group.map(item => ({
+                        fieldLabel: this.lookupFieldLabel(item.source),
+                        operatorLabel: this.operators[item.operator] || item.operator,
+                        displayValue: this.formatValue(item.value)
+                    }))
+                });
+            });
+            return result;
         }
     },
     methods: {
