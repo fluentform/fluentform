@@ -1,8 +1,28 @@
 <template>
     <div class="ff_as_container" v-show="advanced_filter">
-        <div v-for="(rich_filter, filterIndex) in advanced_filters" :key="filterIndex">
+        <div v-for="(rich_filter, filterIndex) in advanced_filters" :key="filterIndex" class="ff_filter_group_wrap">
             <div class="fc_rich_filter">
                 <rich-filter :filterOptions="editorShortcodes" :add_label="filterLabel" @maybeRemove="maybeRemoveGroup(filterIndex)" :items="rich_filter"/>
+
+                <div v-if="rich_filter.length > 0" class="ff_filter_group_actions">
+                    <el-button
+                        @click="duplicateGroup(filterIndex)"
+                        size="mini"
+                        plain
+                        icon="el-icon-document-copy"
+                        :title="$t('Duplicate this group with all conditions')">
+                        {{ $t('Duplicate Group') }}
+                    </el-button>
+                    <el-button
+                        v-if="advanced_filters.length > 1"
+                        @click="maybeRemoveGroup(filterIndex)"
+                        size="mini"
+                        plain
+                        type="danger"
+                        icon="el-icon-delete"
+                        :title="$t('Remove this filter group')">
+                    </el-button>
+                </div>
             </div>
 
 
@@ -63,6 +83,19 @@
                     this.advanced_filters.splice(index, 1);
                 }
             },
+            /**
+             * Duplicate a filter group with all its conditions.
+             * Inserts the clone immediately after the source group so the
+             * user can quickly tweak the duplicate's values.
+             */
+            duplicateGroup(index) {
+                const sourceGroup = this.advanced_filters[index];
+                if (!sourceGroup || !sourceGroup.length) {
+                    return;
+                }
+                const clonedGroup = JSON.parse(JSON.stringify(sourceGroup));
+                this.advanced_filters.splice(index + 1, 0, clonedGroup);
+            },
             runSearch(){
                 this.$emit("runSearch", this.advanced_filters);
             },
@@ -75,3 +108,23 @@
         }
     }
 </script>
+
+<style>
+.ff_as_container .ff_filter_group_wrap {
+    position: relative;
+}
+.ff_as_container .fc_rich_filter {
+    position: relative;
+}
+.ff_as_container .ff_filter_group_actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding: 8px 12px 4px;
+    border-top: 1px dashed #e4e7ed;
+    margin-top: 4px;
+}
+.ff_as_container .ff_filter_group_actions .el-button {
+    font-size: 12px;
+}
+</style>
