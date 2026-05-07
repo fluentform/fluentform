@@ -1,6 +1,6 @@
 <template>
     <div class="ff_rich_filters">
-        <table v-if="items.length && !working" style="width: 100%;" class="ff_table">
+        <table v-if="items.length && !working" class="ff_table">
             <tbody>
             <filter-item v-for="(item, itemKey) in items" :view_only="view_only" @removeItem="removeItem(itemKey)"
                          :key="itemKey"
@@ -19,7 +19,7 @@
                 v-model="addVisible"
                 trigger="click">
                 <el-cascader-panel @change="maybeSelected"
-                                   style="width: 100%"
+                                   class="ff_filter_field_picker"
                                    :options="filterOptions"
                                    v-model="new_item"/>
                 <el-button slot="reference"  size="small" class="blue-soft" icon="el-icon-plus">
@@ -27,7 +27,7 @@
                 </el-button>
             </el-popover>
             {{ $t(add_label) }}
-            <el-button v-if="canRemove" style="float: right;" @click="$emit('maybeRemove')" size="mini" type="danger"
+            <el-button v-if="canRemove" class="ff_filter_empty_remove" @click="$emit('maybeRemove')" size="mini" type="danger"
                        icon="el-icon-delete"></el-button>
         </div>
 
@@ -38,7 +38,7 @@
                 v-model="addVisible"
                 trigger="click">
                 <el-cascader-panel @change="maybeSelected"
-                                   style="width: 100%"
+                                   class="ff_filter_field_picker"
                                    :options="filterOptions"
                                    v-model="new_item"/>
               <el-button slot="reference"  size="small" class="blue-soft" icon="el-icon-plus">

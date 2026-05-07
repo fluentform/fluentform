@@ -961,6 +961,36 @@ span.ff_tag {
       }
     }
   }
+
+  // Cascader panel inside the field-change popover and the empty
+  // filter group's add picker
+  .ff_filter_field_picker {
+    width: 100%;
+  }
+
+  // Layout columns inside a filter row
+  .ff_table {
+    width: 100%;
+
+    .filter_name {
+      width: 210px;
+      line-height: 110%;
+    }
+
+    .fc_filter_operator {
+      width: 190px;
+    }
+
+    .fc_filter_actions {
+      width: 50px;
+      text-align: right;
+    }
+  }
+
+  // Delete button in an empty filter group (right-aligned alongside the Add)
+  .ff_filter_empty_remove {
+    float: right;
+  }
   .ff_cond_or {
     // Legacy "OR" used elsewhere; keep minimal so it doesn't break other contexts
     border-bottom: 1px dashed #d5dce1;

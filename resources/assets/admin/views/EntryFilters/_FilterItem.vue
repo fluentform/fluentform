@@ -1,6 +1,6 @@
 <template>
     <tr>
-        <td style="width: 210px; line-height: 110%;" class="filter_name">
+        <td class="filter_name">
             <el-popover
                 v-if="!view_only && filterOptions && filterOptions.length"
                 placement="bottom-start"
@@ -8,7 +8,7 @@
                 trigger="click"
                 v-model="changeFieldOpen">
                 <el-cascader-panel
-                    style="width: 100%"
+                    class="ff_filter_field_picker"
                     :options="filterOptions"
                     v-model="changeFieldSelection"
                     @change="maybeChangeField" />
@@ -31,7 +31,7 @@
                 </el-tooltip>
             </span>
         </td>
-        <td style="width: 190px" class="fc_filter_operator">
+        <td class="fc_filter_operator">
             <el-select :disabled="view_only" size="mini" :placeholder="$t('Select Operator')"
                        @visible-change="maybeOperatorSelected"
                        v-model="item.operator">
@@ -114,7 +114,7 @@
 	                      type="text" v-model="item.value"/>
             </template>
         </td>
-        <td v-if="!view_only" style="width: 50px; text-align: right;">
+        <td v-if="!view_only" class="fc_filter_actions">
             <el-button
                 plain
                 icon="el-icon-delete"

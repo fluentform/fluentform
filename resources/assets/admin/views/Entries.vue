@@ -154,7 +154,7 @@
                             {{ advanced_filter_active ? $t('Hide Filters') : $t('Advanced Filter') }}
                             <el-badge
                                 v-if="hasAppliedFilters"
-                                :value="appliedFiltersSummary.length"
+                                :value="appliedFilterGroupCount"
                                 class="ff_advanced_filter_badge" />
                         </el-button>
                     </btn-group-item>
@@ -273,40 +273,10 @@
 			    </notice>
 	    </template>
 
-        <div v-if="hasAppliedFilters" class="ff_applied_filters_summary mb-4">
-            <span class="ff_applied_filters_label">
-                <i class="el-icon-search"></i>
-                {{ $t('Active Filters:') }}
-            </span>
-            <template v-for="(group, groupIndex) in appliedFiltersSummary">
-                <span v-if="groupIndex > 0" :key="'or_' + groupIndex" class="ff_filter_or_separator">{{ $t('OR') }}</span>
-                <el-tag
-                    :key="'filter_group_' + groupIndex"
-                    closable
-                    type="info"
-                    size="small"
-                    class="ff_filter_chip"
-                    @close="clearFilterGroup(groupIndex)">
-                    <template v-for="(item, itemIndex) in group">
-                        <span v-if="itemIndex > 0" :key="'and_' + itemIndex" class="ff_filter_and_separator"> {{ $t('AND') }} </span>
-                        <span :key="'item_' + itemIndex" class="ff_filter_item_text">
-                            <strong>{{ item.fieldLabel }}</strong>
-                            {{ item.operatorLabel }}
-                            <em>{{ item.displayValue }}</em>
-                        </span>
-                    </template>
-                </el-tag>
-            </template>
-            <el-button
-                @click="clearAllAdvancedFilters"
-                size="mini"
-                plain
-                type="danger"
-                icon="el-icon-close"
-                class="ff_clear_all_filters">
-                {{ $t('Clear All') }}
-            </el-button>
-        </div>
+        <applied-filter-summary
+            :filters="advanced_filter"
+            @clear-group="clearFilterGroup"
+            @clear-all="clearAllAdvancedFilters" />
 
         <div style="min-height: 300px;" class="entries_table">
             <div class="ff_table">
@@ -620,6 +590,7 @@
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
     import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
     import AdvancedSearch from "@/admin/views/_AdvancedSearch";
+    import AppliedFilterSummary from "@/admin/views/_AppliedFilterSummary";
     import Notice from '@/admin/components/Notice/Notice.vue'
 
     export default {
@@ -627,6 +598,7 @@
         props: ['form_id', 'has_pdf'],
         components: {
             AdvancedSearch,
+            AppliedFilterSummary,
             Confirm,
             EmailResend,
             ColumnDragAndDrop,
@@ -824,43 +796,21 @@
             },
 
             /**
-             * Whether any advanced filters are currently applied
-             * @return {Boolean}
+             * Whether any advanced filters are currently applied. Used for
+             * the count badge on the Advanced Filter toggle button.
              */
             hasAppliedFilters() {
                 if (!this.advanced_filter_active) return false;
                 if (!Array.isArray(this.advanced_filter)) return false;
-                if (!this.advanced_filter.length) return false;
                 return this.advanced_filter.some(group => Array.isArray(group) && group.length > 0);
             },
 
             /**
-             * Format applied filters for human-readable summary display
-             * @return {Array} Array of filter groups with formatted labels
+             * Number of populated filter groups, used for the badge count.
              */
-            appliedFiltersSummary() {
-                if (!this.hasAppliedFilters) return [];
-
-                const filterOptions = window.fluent_form_entries_vars && window.fluent_form_entries_vars.advanced_filters || [];
-                const operators = window.fluent_form_entries_vars && window.fluent_form_entries_vars.advanced_filters_operators || {};
-
-                return this.advanced_filter
-                    .filter(group => Array.isArray(group) && group.length > 0)
-                    .map(group => {
-                        return group.map(item => {
-                            const fieldLabel = this.lookupFieldLabel(item.source, filterOptions);
-                            const operatorLabel = operators[item.operator] || item.operator;
-                            const displayValue = this.formatFilterValue(item.value);
-                            return {
-                                source: item.source,
-                                operator: item.operator,
-                                value: item.value,
-                                fieldLabel,
-                                operatorLabel,
-                                displayValue
-                            };
-                        });
-                    });
+            appliedFilterGroupCount() {
+                if (!Array.isArray(this.advanced_filter)) return 0;
+                return this.advanced_filter.filter(group => Array.isArray(group) && group.length > 0).length;
             },
 
             /**
@@ -957,38 +907,6 @@
             runAdvanceSearch(query){
                 this.advanced_filter = query
                 this.getData();
-            },
-
-            /**
-             * Look up the human-readable field label from filter options
-             * @param {Array} source - [provider, fieldName]
-             * @param {Array} filterOptions - The available filter options
-             * @return {String} Field label
-             */
-            lookupFieldLabel(source, filterOptions) {
-                if (!Array.isArray(source) || source.length < 2) return '';
-                const [provider, fieldName] = source;
-
-                const providerGroup = filterOptions.find(opt => opt.value === provider);
-                if (!providerGroup || !providerGroup.children) return fieldName;
-
-                const field = providerGroup.children.find(child => child.value === fieldName);
-                return field ? `${providerGroup.label} / ${field.label}` : fieldName;
-            },
-
-            /**
-             * Format filter value for display
-             * @param {*} value
-             * @return {String}
-             */
-            formatFilterValue(value) {
-                if (value === null || value === undefined || value === '') {
-                    return '(empty)';
-                }
-                if (Array.isArray(value)) {
-                    return value.join(', ');
-                }
-                return String(value);
             },
 
             /**
