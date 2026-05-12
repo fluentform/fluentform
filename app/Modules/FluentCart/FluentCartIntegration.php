@@ -2,10 +2,16 @@
 
 namespace FluentForm\App\Modules\FluentCart;
 
-use FluentCart\Api\StoreSettings;
-use FluentCart\App\Models\Order as FluentCartOrder;
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Hooks\Handlers\GlobalNotificationHandler;
+use FluentCart\App\Models\Cart as FluentCartCart;
+use FluentCart\App\Models\Meta as FluentCartMeta;
+use FluentCart\App\Models\Order as FluentCartOrder;
+use FluentCart\App\Models\OrderMeta as FluentCartOrderMeta;
+use FluentCart\App\Models\OrderTransaction as FluentCartOrderTransaction;
+use FluentCart\App\Vite as FluentCartVite;
 use FluentForm\App\Models\Form;
+use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Support\Arr;
@@ -38,12 +44,22 @@ class FluentCartIntegration
      */
     protected function registerHooks()
     {
-        add_filter("fluent_cart/store_settings/fields", [$this, 'addFormSettingsToFluentCart']);
-        add_filter('fluent_cart/store_settings/sanitizer', [$this, 'addFormSettingsSanitizer']);
-        add_action('fluent_cart/before_billing_fields', [$this, 'renderFormBeforeCheckout'], 10);
-        add_action('fluent_cart/checkout/prepare_other_data', [$this, 'saveFluentFormDataToOrder'], 10, 1);
+        add_filter('fluent_cart/integration/order_integrations', [$this, 'registerCheckoutIntegration']);
+        add_filter('fluent_cart/integration/get_integration_defaults_fluent_forms', [$this, 'getCheckoutIntegrationDefaults']);
+        add_filter('fluent_cart/integration/get_integration_settings_fields_fluent_forms', [$this, 'getCheckoutIntegrationSettingsFields'], 10, 2);
+        add_filter('fluent_cart/integration/integration_saving_data_fluent_forms', [$this, 'validateCheckoutIntegrationFeed'], 10, 2);
+        add_filter('fluentform/global_notification_active_types', [$this, 'filterCheckoutNotificationTypes'], 10, 2);
+        add_filter('fluentform/form_payment_fields', [$this, 'filterCheckoutPaymentFields']);
+        add_action('fluentform/notify_on_form_submit', [$this, 'storeCheckoutSubmissionContext'], 1, 3);
+        add_action('fluent_cart/before_checkout_form', [$this, 'renderFormBeforeCheckout'], 10);
+        add_action('fluent_cart/order_paid_done', [$this, 'runDeferredNotificationsForPaidOrder'], 10, 1);
+        add_filter('fluent_cart/widgets/single_order', [$this, 'addOrderFormWidget'], 10, 2);
         add_filter('fluent_cart/widgets/single_order_page', [$this, 'addOrderFormWidget'], 10, 2);
+        add_filter('fluentform/submissions_widgets', [$this, 'addSubmissionOrderWidget'], 10, 3);
         add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
+        add_action('wp_ajax_fluentform_fluentcart_attach_submission', [$this, 'attachSubmissionToOrder']);
+        add_action('wp_ajax_nopriv_fluentform_fluentcart_attach_submission', [$this, 'attachSubmissionToOrder']);
     }
 
     /**
@@ -53,6 +69,10 @@ class FluentCartIntegration
      */
     public function enqueueAssets()
     {
+        if (!$this->isFluentCartCheckoutPage()) {
+            return;
+        }
+
         wp_enqueue_script(
             'fluent-cart-form-integration',
             fluentFormMix('js/fluent-cart/fluent-cart-fluent-form-connection.js'),
@@ -60,60 +80,98 @@ class FluentCartIntegration
             FLUENTFORM_VERSION,
             true
         );
+
+        wp_localize_script('fluent-cart-form-integration', 'fluentFormFluentCart', $this->getScriptConfig());
     }
 
-    /**
-     * Add form settings to Fluent Cart settings
-     *
-     * @param array $fields
-     * @return array
-     */
-    public function addFormSettingsToFluentCart($fields)
+    public function enqueueAdminAssets()
     {
-        $forms = $this->getFormsForSelection();
+        if (!$this->isFluentCartAdminPage()) {
+            return;
+        }
 
-        $fields['setting_tabs']['schema']['store_setup']['schema']['hr7'] = [
-            "type"  => "html",
-            "value" => "<hr class='settings-devider'>"
+        wp_enqueue_script(
+            'fluent-cart-form-integration',
+            fluentFormMix('js/fluent-cart/fluent-cart-fluent-form-connection.js'),
+            ['jquery'],
+            FLUENTFORM_VERSION,
+            true
+        );
+        wp_localize_script('fluent-cart-form-integration', 'fluentFormFluentCart', $this->getScriptConfig());
+    }
+
+    public function registerCheckoutIntegration($integrations)
+    {
+        $integrations['fluent_forms'] = [
+            'priority'                => 15,
+            'title'                   => __('Fluent Forms', 'fluentform'),
+            'description'             => __('Render a Fluent Form inside the Fluent Cart checkout and store the submitted form data with the order.', 'fluentform'),
+            'category'                => 'core',
+            'disable_global_settings' => true,
+            'config_url'              => '',
+            'logo'                    => $this->getCheckoutIntegrationLogo(),
+            'enabled'                 => $this->hasAvailableForms(),
+            'scopes'                  => ['global'],
+            'installable'             => '',
+            'delay_on_product_action' => false,
+            'delay_on_global_action'  => false,
         ];
 
-        $fields['setting_tabs']['schema']['store_setup']['schema']['fluent_forms_checkout'] = [
-            "type"            => "grid",
-            "columns"         => [
-                "default" => 1,
-                "md"      => 3
-            ],
-            "disable_nesting" => true,
-            "schema"          => [
-                "label"        => [
-                    "type"  => "html",
-                    "value" => "<span class='setting-label'>Select FluentForm for Fluent Cart Checkout</span>
-                                <div class='form-note'>Map Fluent Form to render in Fluent Cart Checkout Page</div>"
+        return $integrations;
+    }
+
+    public function getCheckoutIntegrationDefaults($settings)
+    {
+        return [
+            'enabled' => 'yes',
+            'name'    => __('Fluent Forms Checkout', 'fluentform'),
+            'form_id' => '',
+        ];
+    }
+
+    public function getCheckoutIntegrationSettingsFields($settings, $args = [])
+    {
+        return [
+            'fields'            => [
+                [
+                    'key'         => 'name',
+                    'label'       => __('Feed Title', 'fluentform'),
+                    'required'    => true,
+                    'placeholder' => __('Fluent Forms Checkout', 'fluentform'),
+                    'component'   => 'text',
+                    'inline_tip'  => __('This label is used inside Fluent Cart integrations.', 'fluentform'),
                 ],
-                "fluent_forms" => [
-                    "wrapperClass" => "col-span-2 flex items-center",
-                    "type"         => "select",
-                    "filterable"   => true,
-                    'clearable'    => true,
-                    "options"      => $forms,
-                    "value"        => ''
-                ]
-            ]
+                [
+                    'key'         => 'form_id',
+                    'label'       => __('Checkout Form', 'fluentform'),
+                    'required'    => true,
+                    'placeholder' => __('Select a Fluent Form', 'fluentform'),
+                    'component'   => 'select',
+                    'options'     => $this->getFormOptionsForIntegration(),
+                    'inline_tip'  => __('The selected form will render before the Fluent Cart checkout form on the checkout page.', 'fluentform'),
+                ],
+            ],
+            'integration_title' => __('Fluent Forms', 'fluentform'),
         ];
-
-        return $fields;
     }
 
-    /**
-     * Add form settings sanitizer
-     *
-     * @param array $sanitizer
-     * @return array
-     */
-    public function addFormSettingsSanitizer($sanitizer)
+    public function validateCheckoutIntegrationFeed($integration, $args)
     {
-        $sanitizer['fluent_forms'] = 'sanitize_text_field';
-        return $sanitizer;
+        $existingFeedId = $this->getCheckoutIntegrationFeedId();
+        $currentFeedId = (int)Arr::get($args, 'integration_id');
+
+        if ($existingFeedId && !$currentFeedId) {
+            return new \WP_Error(
+                'fluentform_checkout_integration_exists',
+                __('Fluent Forms checkout integration is already configured. Edit the existing feed instead of creating another one.', 'fluentform')
+            );
+        }
+
+        $integration['name'] = sanitize_text_field((string)Arr::get($integration, 'name'));
+        $integration['form_id'] = (string)absint(Arr::get($integration, 'form_id'));
+        $integration['enabled'] = Arr::get($integration, 'enabled') === 'no' ? 'no' : 'yes';
+
+        return $integration;
     }
 
 
@@ -125,17 +183,25 @@ class FluentCartIntegration
      */
     public function renderFormBeforeCheckout($data = [])
     {
-        $settings = new StoreSettings();
-        $formId = intval($settings->get('fluent_forms'));
+        $formId = $this->getCheckoutFormId();
 
         if (!$formId) {
             return;
         }
 
+        $renderingFilter = function ($form) use ($formId) {
+            if ((int)$form->id !== (int)$formId) {
+                return $form;
+            }
+
+            return $this->makeCheckoutCompatibleForm($form);
+        };
+
         add_filter('fluentform/is_hide_submit_btn_' . $formId, '__return_true');
         add_filter('fluentform/replace_form_tag_' . $formId, function ($tag) {
             return 'div';
         });
+        add_filter('fluentform/rendering_form', $renderingFilter, 10, 1);
         add_filter('fluentform/html_attributes', function ($attributes, $form) use ($formId) {
             if ($form->id == $formId) {
                 $attributes['data-fluent-cart-checkout-form'] = 'true';
@@ -144,7 +210,9 @@ class FluentCartIntegration
             return $attributes;
         }, 10, 2);
 
-        echo do_shortcode('[fluentform id="' . $formId . '"]');
+        echo do_shortcode('[fluentform id="' . $formId . '" title="false" description="false"]');
+
+        remove_filter('fluentform/rendering_form', $renderingFilter, 10);
     }
 
     /**
@@ -185,6 +253,107 @@ class FluentCartIntegration
         }
     }
 
+    protected function getFormOptionsForIntegration()
+    {
+        $forms = $this->getFormsForSelection();
+
+        return array_reduce($forms, function ($options, $form) {
+            $value = Arr::get($form, 'value');
+            $label = Arr::get($form, 'label');
+
+            if (!$value || $value === 'none' || !$label) {
+                return $options;
+            }
+
+            $options[(string)$value] = $label;
+
+            return $options;
+        }, []);
+    }
+
+    protected function hasAvailableForms()
+    {
+        return !empty($this->getFormOptionsForIntegration());
+    }
+
+    protected function makeCheckoutCompatibleForm($form)
+    {
+        $formClone = clone $form;
+        $formFields = json_decode($formClone->form_fields, true);
+
+        if (!is_array($formFields)) {
+            return $formClone;
+        }
+
+        $formFields['fields'] = $this->stripCheckoutPaymentFields(Arr::get($formFields, 'fields', []));
+        $formClone->fields = $formFields;
+        $formClone->form_fields = wp_json_encode($formFields);
+        $formClone->has_payment = 0;
+
+        return $formClone;
+    }
+
+    protected function stripCheckoutPaymentFields($fields)
+    {
+        $sanitizedFields = [];
+
+        foreach ((array)$fields as $field) {
+            if (!is_array($field)) {
+                continue;
+            }
+
+            if ($this->isCheckoutPaymentField($field)) {
+                continue;
+            }
+
+            if (Arr::get($field, 'element') === 'container') {
+                $columns = Arr::get($field, 'columns', []);
+
+                foreach ($columns as $index => $column) {
+                    $columns[$index]['fields'] = $this->stripCheckoutPaymentFields(Arr::get($column, 'fields', []));
+                }
+
+                $columns = array_values(array_filter($columns, function ($column) {
+                    return !empty(Arr::get($column, 'fields', []));
+                }));
+
+                if (!$columns) {
+                    continue;
+                }
+
+                $field['columns'] = $columns;
+            }
+
+            $sanitizedFields[] = $field;
+        }
+
+        return $sanitizedFields;
+    }
+
+    protected function isCheckoutPaymentField($field)
+    {
+        $element = Arr::get($field, 'element');
+        $paymentElements = [
+            'custom_payment_component',
+            'multi_payment_component',
+            'payment_method',
+            'payment_coupon',
+            'payment_summary_component',
+            'subscription_payment_component',
+            'item_quantity_component',
+        ];
+
+        if (in_array($element, $paymentElements, true)) {
+            return true;
+        }
+
+        if ($element === 'rangeslider' && Arr::get($field, 'settings.enable_target_product') === 'yes') {
+            return true;
+        }
+
+        return Arr::get($field, 'settings.is_payment_field') === 'yes';
+    }
+
     /**
      * Save Fluent Forms data to order meta
      *
@@ -201,8 +370,7 @@ class FluentCartIntegration
         }
 
         // Get the configured form ID
-        $settings = new StoreSettings();
-        $formId = intval($settings->get('fluent_forms'));
+        $formId = $this->getCheckoutFormId();
 
         if (!$formId) {
             return;
@@ -218,107 +386,375 @@ class FluentCartIntegration
         $order->updateMeta('fluent_form_id', $formId);
     }
 
-    /**
-     * Extract Fluent Forms data from request data
-     *
-     * @param array $requestData
-     * @param int $formId
-     * @return array
-     */
-    protected function extractFluentFormData($requestData, $formId)
+    public function attachSubmissionToOrder()
     {
-        $formData = [];
+        if (!wp_verify_nonce(sanitize_text_field((string) Arr::get($_REQUEST, '_ajax_nonce')), 'fluentform_fluentcart_checkout')) {
+            wp_send_json_error([
+                'message' => __('Fluent Forms checkout request could not be verified.', 'fluentform'),
+            ], 403);
+        }
+
+        $submissionId = absint(Arr::get($_REQUEST, 'submission_id'));
+        $formId = absint(Arr::get($_REQUEST, 'form_id'));
+        $orderId = absint(Arr::get($_REQUEST, 'order_id'));
+        $transactionHash = sanitize_text_field((string)Arr::get($_REQUEST, 'transaction_hash'));
+        $checkoutHash = $this->getCheckoutCartHashFromRequest();
+
+        if (!$submissionId || !$formId || !$checkoutHash) {
+            wp_send_json_error([
+                'message' => __('Missing Fluent Forms checkout submission data.', 'fluentform'),
+            ], 422);
+        }
+
+        if ($formId !== $this->getCheckoutFormId()) {
+            wp_send_json_error([
+                'message' => __('This Fluent Forms checkout submission is not valid for the active Fluent Cart integration.', 'fluentform'),
+            ], 403);
+        }
+
+        $submission = Submission::find($submissionId);
+
+        if (!$submission || (int)$submission->form_id !== $formId) {
+            wp_send_json_error([
+                'message' => __('Fluent Forms submission could not be verified.', 'fluentform'),
+            ], 404);
+        }
+
+        if (Helper::getSubmissionMeta($submissionId, '_ff_fluentcart_cart_hash') !== $checkoutHash) {
+            wp_send_json_error([
+                'message' => __('This Fluent Forms checkout submission is not valid for the current checkout session.', 'fluentform'),
+            ], 403);
+        }
+
+        $order = $this->resolveCheckoutOrder($orderId, $transactionHash);
+
+        if (!$order) {
+            wp_send_json_error([
+                'message' => __('Fluent Cart order could not be resolved for this submission.', 'fluentform'),
+            ], 404);
+        }
+
+        $cart = FluentCartCart::find($checkoutHash);
+        if (!$cart || (int)$cart->order_id !== (int)$order->id) {
+            wp_send_json_error([
+                'message' => __('This Fluent Cart order is not valid for the current checkout session.', 'fluentform'),
+            ], 403);
+        }
+
+        $formData = json_decode($submission->response, true);
+        if (!is_array($formData)) {
+            $formData = [];
+        }
+
+        $order->updateMeta('fluent_form_data', $formData);
+        $order->updateMeta('fluent_form_id', $formId);
+        $order->updateMeta('fluent_form_submission_id', $submissionId);
+        Helper::setSubmissionMeta($submissionId, '_ff_fluentcart_order_id', (int)$order->id, $formId);
+        Helper::setSubmissionMeta($submissionId, '_ff_fluentcart_notifications_deferred', 'yes', $formId);
+
+        if ($this->isOrderPaid($order)) {
+            $this->dispatchDeferredNotificationsForOrder($order, $submission, $formId);
+        }
+
+        wp_send_json_success([
+            'order_id'      => $order->id,
+            'form_id'       => $formId,
+            'submission_id' => $submissionId,
+        ]);
+    }
+
+    public function filterCheckoutPaymentFields($paymentFields)
+    {
+        if (!$this->shouldBypassCheckoutPaymentHandling()) {
+            return $paymentFields;
+        }
+
+        return [];
+    }
+
+    public function filterCheckoutNotificationTypes($types, $formId)
+    {
+        if (!$this->shouldDeferCheckoutNotifications((int)$formId)) {
+            return $types;
+        }
+
+        return [];
+    }
+
+    public function storeCheckoutSubmissionContext($submissionId, $formData, $form)
+    {
+        $formId = is_object($form) ? absint($form->id) : 0;
+
+        if (!$submissionId || !$this->shouldBypassCheckoutPaymentHandling() || $formId !== $this->getCheckoutFormId()) {
+            return;
+        }
+
+        $checkoutHash = $this->getCheckoutCartHashFromRequest();
+        if (!$checkoutHash) {
+            return;
+        }
+
+        Helper::setSubmissionMeta($submissionId, '_ff_fluentcart_cart_hash', $checkoutHash, $formId);
+    }
+
+    public function runDeferredNotificationsForPaidOrder($data)
+    {
+        $order = Arr::get((array)$data, 'order');
+
+        if (!$order || !is_object($order)) {
+            return;
+        }
+
+        $this->dispatchDeferredNotificationsForOrder($order);
+    }
+
+    protected function resolveCheckoutOrder($orderId = 0, $transactionHash = '')
+    {
+        if ($orderId && class_exists(FluentCartOrder::class)) {
+            $order = FluentCartOrder::find($orderId);
+            if ($order) {
+                return $order;
+            }
+        }
+
+        if ($transactionHash && class_exists(FluentCartOrderTransaction::class)) {
+            $transaction = FluentCartOrderTransaction::query()
+                ->where('uuid', $transactionHash)
+                ->first();
+
+            if ($transaction && $transaction->order) {
+                return $transaction->order;
+            }
+        }
+
+        return null;
+    }
+
+    protected function getCheckoutFormId()
+    {
+        return absint(Arr::get($this->getCheckoutIntegrationConfig(), 'form_id'));
+    }
+
+    protected function getCheckoutIntegrationConfig()
+    {
+        if (!class_exists(FluentCartMeta::class)) {
+            return [];
+        }
+
+        $feed = FluentCartMeta::query()
+            ->where('object_type', 'order_integration')
+            ->where('meta_key', 'fluent_forms')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if (!$feed) {
+            return [];
+        }
+
+        $config = $feed->meta_value;
+
+        if (!is_array($config) || Arr::get($config, 'enabled') === 'no') {
+            return [];
+        }
+
+        return $config;
+    }
+
+    protected function getCheckoutIntegrationFeedId()
+    {
+        if (!class_exists(FluentCartMeta::class)) {
+            return 0;
+        }
+
+        $feed = FluentCartMeta::query()
+            ->where('object_type', 'order_integration')
+            ->where('meta_key', 'fluent_forms')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        return $feed ? (int)$feed->id : 0;
+    }
+
+    protected function getCheckoutIntegrationLogo()
+    {
+        if (class_exists(FluentCartVite::class)) {
+            return FluentCartVite::getAssetUrl('images/integrations/fluent-form.svg');
+        }
+
+        return '';
+    }
+
+    protected function isFluentCartAdminPage()
+    {
+        return is_admin() && isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'fluent-cart';
+    }
+
+    protected function isFluentCartCheckoutPage()
+    {
+        return !is_admin() && (bool)$this->getCurrentCheckoutHash();
+    }
+
+    protected function getCurrentCheckoutHash()
+    {
+        return sanitize_text_field((string) Arr::get($_GET, 'fct_cart_hash'));
+    }
+
+    protected function shouldBypassCheckoutPaymentHandling()
+    {
+        $requestFormId = absint(Arr::get($_REQUEST, 'form_id'));
+        $context = $this->getCheckoutRequestContext();
+
+        if (!$requestFormId || $context !== '1') {
+            return false;
+        }
+
+        return $requestFormId === $this->getCheckoutFormId();
+    }
+
+    protected function getCheckoutRequestContext()
+    {
+        $context = sanitize_text_field((string) Arr::get($_REQUEST, '__ff_fluent_cart_checkout_context'));
+
+        if ($context !== '') {
+            return $context;
+        }
+
+        $serializedFormData = (string) Arr::get($_REQUEST, 'data');
+        if (!$serializedFormData) {
+            return '';
+        }
+
+        parse_str(wp_unslash($serializedFormData), $parsedData);
+
+        return sanitize_text_field((string) Arr::get($parsedData, '__ff_fluent_cart_checkout_context'));
+    }
+
+    protected function getCheckoutCartHashFromRequest()
+    {
+        $checkoutHash = sanitize_text_field((string) Arr::get($_REQUEST, 'checkout_hash'));
+
+        if ($checkoutHash !== '') {
+            return $checkoutHash;
+        }
+
+        $checkoutHash = sanitize_text_field((string) Arr::get($_REQUEST, 'fct_cart_hash'));
+        if ($checkoutHash !== '') {
+            return $checkoutHash;
+        }
+
+        $requestData = $this->getCheckoutSerializedRequestData();
+
+        $checkoutHash = sanitize_text_field((string) Arr::get($requestData, 'fct_cart_hash'));
+        if ($checkoutHash !== '') {
+            return $checkoutHash;
+        }
+
+        $referer = sanitize_text_field((string) Arr::get($requestData, '_wp_http_referer'));
+        if (!$referer) {
+            $referer = wp_unslash((string) Arr::get($_SERVER, 'HTTP_REFERER'));
+        }
+
+        if (!$referer) {
+            return '';
+        }
+
+        $queryString = wp_parse_url($referer, PHP_URL_QUERY);
+        if (!$queryString) {
+            return '';
+        }
+
+        parse_str($queryString, $queryArgs);
+
+        return sanitize_text_field((string) Arr::get($queryArgs, 'fct_cart_hash'));
+    }
+
+    protected function getCheckoutSerializedRequestData()
+    {
+        $serializedFormData = (string) Arr::get($_REQUEST, 'data');
+        if (!$serializedFormData) {
+            return [];
+        }
+
+        parse_str(wp_unslash($serializedFormData), $parsedData);
+
+        return is_array($parsedData) ? $parsedData : [];
+    }
+
+    protected function shouldDeferCheckoutNotifications($formId = 0)
+    {
+        if (!$this->shouldBypassCheckoutPaymentHandling()) {
+            return false;
+        }
+
+        return !$formId || $formId === $this->getCheckoutFormId();
+    }
+
+    protected function dispatchDeferredNotificationsForOrder($order, $submission = null, $formId = 0)
+    {
+        if (!$order || !is_object($order) || !method_exists($order, 'getMeta') || !$this->isOrderPaid($order)) {
+            return false;
+        }
+
+        $submissionId = $submission ? (int)$submission->id : absint($order->getMeta('fluent_form_submission_id'));
+        $formId = $formId ?: absint($order->getMeta('fluent_form_id'));
+
+        if (!$submissionId || !$formId) {
+            return false;
+        }
+
+        $status = Helper::getSubmissionMeta($submissionId, '_ff_fluentcart_notifications_processed');
+        if (in_array($status, ['processing', 'yes'], true)) {
+            return false;
+        }
+
+        if (!$submission) {
+            $submission = Submission::find($submissionId);
+        }
+
+        if (!$submission || (int)$submission->form_id !== $formId) {
+            return false;
+        }
 
         $form = Form::find($formId);
         if (!$form) {
-            return $formData;
+            return false;
         }
 
-        $formFields = json_decode($form->form_fields, true);
-        $allFieldNames = $this->extractAllFieldNames($formFields);
-
-        foreach ($requestData as $key => $value) {
-            $isFormField = false;
-            
-            if (in_array($key, $allFieldNames)) {
-                $isFormField = true;
-            } else {
-                foreach ($allFieldNames as $fieldName) {
-                    if (strpos($key, $fieldName . '[') === 0) {
-                        $isFormField = true;
-                        break;
-                    }
-                }
-            }
-
-            if ($isFormField) {
-                $formData[$key] = $value;
-            }
+        $formData = json_decode($submission->response, true);
+        if (!is_array($formData)) {
+            $formData = [];
         }
 
-        return $formData;
+        Helper::setSubmissionMeta($submissionId, '_ff_fluentcart_notifications_processed', 'processing', $formId);
+
+        try {
+            (new GlobalNotificationHandler($this->app))->globalNotify($submissionId, $formData, $form);
+            Helper::setSubmissionMeta($submissionId, '_ff_fluentcart_notifications_processed', 'yes', $formId);
+
+            return true;
+        } catch (\Throwable $e) {
+            Helper::setSubmissionMeta($submissionId, '_ff_fluentcart_notifications_processed', 'failed', $formId);
+
+            if (method_exists($order, 'addLog')) {
+                $order->addLog('Fluent Forms Integration Error', $e->getMessage(), 'error');
+            }
+
+            return false;
+        }
     }
 
-    /**
-     * Recursively extract all field names from form structure
-     *
-     * @param array $formFields
-     * @return array
-     */
-    protected function extractAllFieldNames($formFields)
+    protected function isOrderPaid($order)
     {
-        $fieldNames = [];
-        
-        if (!isset($formFields['fields']) || !is_array($formFields['fields'])) {
-            return $fieldNames;
-        }
-
-        $this->recursiveExtractFieldNames($formFields['fields'], $fieldNames);
-
-        return $fieldNames;
+        return is_object($order) && isset($order->payment_status) && $order->payment_status === 'paid';
     }
 
-    /**
-     * Recursively extract field names from fields array
-     *
-     * @param array $fields
-     * @param array $fieldNames Reference to field names array
-     * @return void
-     */
-    protected function recursiveExtractFieldNames($fields, &$fieldNames)
+    protected function getScriptConfig()
     {
-        foreach ($fields as $field) {
-            if (!is_array($field)) {
-                continue;
-            }
-
-            $element = Arr::get($field, 'element');
-            $fieldName = Arr::get($field, 'attributes.name');
-
-            if ($element === 'container' && isset($field['columns'])) {
-                foreach ($field['columns'] as $column) {
-                    if (isset($column['fields']) && is_array($column['fields'])) {
-                        $this->recursiveExtractFieldNames($column['fields'], $fieldNames);
-                    }
-                }
-            } elseif (isset($field['fields']) && is_array($field['fields'])) {
-                if ($fieldName) {
-                    $fieldNames[] = $fieldName;
-                }
-                
-                foreach ($field['fields'] as $nestedField) {
-                    $nestedFieldName = Arr::get($nestedField, 'attributes.name');
-                    if ($nestedFieldName) {
-                        if ($fieldName) {
-                            $fieldNames[] = $fieldName . '[' . $nestedFieldName . ']';
-                        }
-                        $fieldNames[] = $nestedFieldName;
-                    }
-                }
-            } elseif ($fieldName) {
-                $fieldNames[] = $fieldName;
-            }
-        }
+        return [
+            'ajaxUrl'      => admin_url('admin-ajax.php'),
+            'ajaxNonce'    => wp_create_nonce('fluentform_fluentcart_checkout'),
+            'checkoutHash' => $this->getCurrentCheckoutHash(),
+        ];
     }
 
     /**
@@ -335,17 +771,26 @@ class FluentCartIntegration
         }
 
         if (is_array($order)) {
-            $orderId = Arr::get($order, 'order_id');
-            if (!$orderId) {
-                return $widgets;
+            $orderModel = Arr::get($order, 'order');
+
+            if (is_object($orderModel) && method_exists($orderModel, 'getMeta')) {
+                $order = $orderModel;
+            } else {
+                $orderId = absint(Arr::get($order, 'order_id'));
+                $orderUuid = sanitize_text_field((string) Arr::get($order, 'order_uuid'));
+
+                if ($orderId) {
+                    $orderModel = FluentCartOrder::find($orderId);
+                } elseif ($orderUuid) {
+                    $orderModel = FluentCartOrder::where('uuid', $orderUuid)->first();
+                }
+
+                if (!$orderModel) {
+                    return $widgets;
+                }
+
+                $order = $orderModel;
             }
-            
-            $orderModel = FluentCartOrder::where('uuid', $orderId)->first();
-            if (!$orderModel) {
-                return $widgets;
-            }
-            
-            $order = $orderModel;
         }
 
         if (!is_object($order) || !method_exists($order, 'getMeta')) {
@@ -353,105 +798,57 @@ class FluentCartIntegration
         }
 
         $formId = $order->getMeta('fluent_form_id');
-        $formData = $order->getMeta('fluent_form_data');
+        $submissionId = absint($order->getMeta('fluent_form_submission_id'));
 
-        if (!$formId || empty($formData)) {
+        if (!$formId || !$submissionId) {
             return $widgets;
         }
 
         $form = Form::find($formId);
-        if (!$form) {
-            return $widgets;
-        }
-
-        $fields = FormFieldsParser::getEntryInputs($form);
-        $formattedData = $this->formatFormDataForDisplay($formData, $fields, $form);
-
-        if (empty($formattedData)) {
-            return $widgets;
-        }
-
+        $formTitle = $form ? $form->title : ('#' . $formId);
         $htmlContent = '<div class="fluent-form-data-display">';
-        
-        foreach ($formattedData as $fieldName => $fieldValue) {
-            $field = $this->findFieldByName($fields, $fieldName);
-            
-            if (!$field) {
-                continue;
-            }
-            
-            $rawField = Arr::get($field, 'raw');
-            $subFields = Arr::get($rawField, 'fields', []);
-            if (empty($subFields)) {
-                $subFields = Arr::get($field, 'fields', []);
-            }
-            
-            if (!empty($subFields) && is_array($fieldValue)) {
-                $parentLabel = $this->getFieldLabel($field, $fieldName);
-                
-                if ($parentLabel && $parentLabel !== $fieldName) {
-                    $htmlContent .= '<div class="ff-field-group" style="margin-bottom: 20px;">';
-                    $htmlContent .= '<div class="ff-field-group-label" style="font-weight: 600; margin-bottom: 10px; color: #333; font-size: 14px;">' . htmlspecialchars($parentLabel, ENT_QUOTES, 'UTF-8') . '</div>';
-                }
-                
-                foreach ($subFields as $subFieldName => $subField) {
-                    if (!isset($fieldValue[$subFieldName])) {
-                        continue;
-                    }
-                    
-                    $subFieldValue = $fieldValue[$subFieldName];
-                    if ($subFieldValue === '' || $subFieldValue === null) {
-                        continue;
-                    }
-                    
-                    $subFieldLabel = Arr::get($subField, 'settings.label');
-                    if (!$subFieldLabel) {
-                        $subFieldLabel = ucwords(str_replace('_', ' ', $subFieldName));
-                    }
-                    
-                    $htmlContent .= '<div class="ff-field-display" style="margin-bottom: 10px; margin-left: ' . ($parentLabel ? '15px' : '0') . ';">';
-                    $htmlContent .= '<div class="ff-field-label" style="font-weight: 600; margin-bottom: 5px; color: #333;">' . htmlspecialchars($subFieldLabel, ENT_QUOTES, 'UTF-8') . '</div>';
-                    $htmlContent .= '<div class="ff-field-value" style="color: #666; word-wrap: break-word;">' . htmlspecialchars($subFieldValue, ENT_QUOTES, 'UTF-8') . '</div>';
-                    $htmlContent .= '</div>';
-                }
-                
-                if ($parentLabel && $parentLabel !== $fieldName) {
-                    $htmlContent .= '</div>';
-                }
-            } else {
-                $label = $this->getFieldLabel($field, $fieldName);
-                
-                if (is_array($fieldValue)) {
-                    $htmlContent .= '<div class="ff-field-display" style="margin-bottom: 15px;">';
-                    $htmlContent .= '<div class="ff-field-label" style="font-weight: 600; margin-bottom: 5px; color: #333;">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</div>';
-                    $htmlContent .= '<div class="ff-field-value" style="color: #666; word-wrap: break-word;">';
-                    $htmlContent .= '<ul style="margin: 0; padding-left: 20px;">';
-                    foreach ($fieldValue as $item) {
-                        if ($item !== '' && $item !== null) {
-                            $htmlContent .= '<li style="margin-bottom: 5px;">' . htmlspecialchars($item, ENT_QUOTES, 'UTF-8') . '</li>';
-                        }
-                    }
-                    $htmlContent .= '</ul>';
-                    $htmlContent .= '</div>';
-                    $htmlContent .= '</div>';
-                } else {
-                    $formattedValue = $this->formatFieldValue($fieldValue, $field);
-                    
-                    $htmlContent .= '<div class="ff-field-display" style="margin-bottom: 15px;">';
-                    $htmlContent .= '<div class="ff-field-label" style="font-weight: 600; margin-bottom: 5px; color: #333;">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</div>';
-                    $htmlContent .= '<div class="ff-field-value" style="color: #666; word-wrap: break-word;">' . htmlspecialchars($formattedValue, ENT_QUOTES, 'UTF-8') . '</div>';
-                    $htmlContent .= '</div>';
-                }
-            }
-        }
-        
+        $htmlContent .= '<a href="' . esc_url($this->getSubmissionAdminUrl($formId, $submissionId)) . '" target="_blank" rel="noopener">' . sprintf(esc_html__('Open %s entry #%d', 'fluentform'), esc_html($formTitle), absint($submissionId)) . '</a>';
         $htmlContent .= '</div>';
 
         $widgets[] = [
-            'title' => 'Fluent Form Data',
-            'sub_title' => sprintf('Form: %s', $form->title),
+            'title' => 'Fluent Forms Entry',
+            'sub_title' => sprintf('Form: %s', $formTitle),
+            'subtitle' => sprintf('Form: %s', $formTitle),
             'type' => 'html',
             'content' => $htmlContent,
+        ];
+
+        return $widgets;
+    }
+
+    public function addSubmissionOrderWidget($widgets, $resources, $submission)
+    {
+        if (!$submission || empty($submission->id)) {
+            return $widgets;
+        }
+
+        $order = $this->findOrderBySubmissionId($submission->id);
+
+        if (!$order) {
+            return $widgets;
+        }
+
+        $orderTitle = $order->payment_method_title ?: ucwords(str_replace('_', ' ', (string) $order->payment_method));
+        $total = number_format((float) $order->total_amount, 2);
+
+        $html = '<ul class="fc_full_listed fcrm_fluentcart_customer_commerce_info">';
+        $html .= '<li><span class="fc_list_sub">' . esc_html__('Order', 'fluentform') . '</span> <span class="fc_list_value"><a href="' . esc_url($this->getOrderAdminUrl($order->id)) . '" target="_blank" rel="noopener">#' . absint($order->id) . '</a></span></li>';
+        $html .= '<li><span class="fc_list_sub">' . esc_html__('Payment Status', 'fluentform') . '</span> <span class="fc_list_value">' . esc_html($order->payment_status ?: '-') . '</span></li>';
+        $html .= '<li><span class="fc_list_sub">' . esc_html__('Order Status', 'fluentform') . '</span> <span class="fc_list_value">' . esc_html($order->status ?: '-') . '</span></li>';
+        $html .= '<li><span class="fc_list_sub">' . esc_html__('Payment Method', 'fluentform') . '</span> <span class="fc_list_value">' . esc_html($orderTitle ?: '-') . '</span></li>';
+        $html .= '<li><span class="fc_list_sub">' . esc_html__('Total', 'fluentform') . '</span> <span class="fc_list_value">' . esc_html($total) . '</span></li>';
+        $html .= '<li><span class="fc_list_sub">' . esc_html__('Created', 'fluentform') . '</span> <span class="fc_list_value">' . esc_html((string) $order->created_at) . '</span></li>';
+        $html .= '</ul>';
+        $html .= $this->getCompactAdminWidgetStyle();
+
+        $widgets['fluent_cart'] = [
+            'title'   => __('Fluent Cart', 'fluentform'),
+            'content' => $html
         ];
 
         return $widgets;
@@ -519,6 +916,58 @@ class FluentCartIntegration
             }
         }
         return null;
+    }
+
+    protected function findOrderBySubmissionId($submissionId)
+    {
+        if (!$submissionId || !class_exists(FluentCartOrderMeta::class)) {
+            return null;
+        }
+
+        $orderMeta = FluentCartOrderMeta::query()
+            ->where('meta_key', 'fluent_form_submission_id')
+            ->where('meta_value', (string) $submissionId)
+            ->first();
+
+        if (!$orderMeta || empty($orderMeta->order_id)) {
+            return null;
+        }
+
+        return FluentCartOrder::find((int) $orderMeta->order_id);
+    }
+
+    protected function getOrderAdminUrl($orderId)
+    {
+        return admin_url('admin.php?page=fluent-cart#/orders/' . absint($orderId) . '/view');
+    }
+
+    protected function getSubmissionAdminUrl($formId, $submissionId)
+    {
+        return admin_url('admin.php?page=fluent_forms&form_id=' . absint($formId) . '&route=entries#/entries/' . absint($submissionId));
+    }
+
+    protected function getCompactAdminWidgetStyle()
+    {
+        return '<style>
+ul.fc_full_listed {
+    border-radius: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.fc_full_listed li {
+    border-bottom: 1px solid #ebeef4;
+    display: block;
+    margin: 0;
+    padding: 5px 0;
+}
+ul.fc_full_listed > li span.fc_list_sub {
+    font-weight: 500;
+}
+ul.fc_full_listed > li span.fc_list_value {
+    float: right;
+}
+</style>';
     }
 
     /**
