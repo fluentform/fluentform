@@ -253,7 +253,22 @@ class Submission extends Model
 
         $query = $this->customQuery($attributes);
 
-        $submission = $query->select($columns)->where('id', $operator, $entryId)->first();
+        // Adjacency must match customQuery's sort order. Compare on the same
+        // (sortColumn, id) row-tuple the listing orders by, so Next/Prev walk
+        // in display order regardless of which sort column the filter selects.
+        // When sortColumn is id the tuple degenerates to a simple id compare.
+        $sortColumn = self::getSortColumn();
+        $current = static::select(['id', $sortColumn])->find($entryId);
+        if (!$current) {
+            return apply_filters('fluentform/next_submission', null, $entryId, $attributes);
+        }
+
+        $submission = $query->select($columns)
+            ->whereRaw(
+                "(fluentform_submissions.{$sortColumn}, fluentform_submissions.id) {$operator} (?, ?)",
+                [$current->{$sortColumn}, $entryId]
+            )
+            ->first();
 
         return apply_filters('fluentform/next_submission', $submission, $entryId, $attributes);
     }
