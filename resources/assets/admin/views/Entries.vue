@@ -1114,12 +1114,32 @@
             // row-click handler. Element UI 2.15 does not expose tabindex on
             // rows natively; we set it post-render via the table ref. Re-run
             // every time entries change (filter, sort, paginate).
+            //
+            // Important: when columns use fixed="left"/"right", Element UI
+            // clones each visual row into separate <tr> elements - one inside
+            // .el-table__body-wrapper (the main scroll body), one inside
+            // .el-table__fixed (the pinned-left clone), and one inside
+            // .el-table__fixed-right (the pinned-right clone). A blanket
+            // selector matches all three and creates duplicate tab stops per
+            // visible row. Scope to the main body wrapper only so each row
+            // has exactly one tab stop. The pinned-left/right slices stay
+            // visually attached to the focused row via the parent table
+            // alignment - they just do not receive focus themselves.
             applyRowTabindex() {
                 if (typeof document === 'undefined') return;
                 this.$nextTick(() => {
                     const tableEl = this.$refs.entriesTable && this.$refs.entriesTable.$el;
                     if (!tableEl) return;
-                    const rows = tableEl.querySelectorAll('tbody tr.el-table__row');
+                    let mainBody = null;
+                    const wrappers = tableEl.querySelectorAll('.el-table__body-wrapper');
+                    wrappers.forEach((wrapper) => {
+                        if (mainBody) return;
+                        if (!wrapper.closest('.el-table__fixed') && !wrapper.closest('.el-table__fixed-right')) {
+                            mainBody = wrapper;
+                        }
+                    });
+                    if (!mainBody) return;
+                    const rows = mainBody.querySelectorAll('tbody tr.el-table__row');
                     rows.forEach((row) => {
                         if (!row.hasAttribute('tabindex')) {
                             row.setAttribute('tabindex', '0');
@@ -1130,10 +1150,14 @@
             // Enter on a focused row opens the entry. Enter on an interactive
             // descendant (link, button, checkbox, action icon) is left alone
             // so the descendant handles it itself - no double activation.
+            // Only main-body rows have tabindex (see applyRowTabindex), so
+            // the target's siblings within parentElement match this.entries
+            // 1:1 in order.
             handleTableKeydown(event) {
                 if (event.key !== 'Enter') return;
                 const target = event.target;
                 if (!target || !target.matches || !target.matches('tr.el-table__row')) return;
+                if (target.closest('.el-table__fixed') || target.closest('.el-table__fixed-right')) return;
                 const rows = Array.from(target.parentElement.querySelectorAll('tr.el-table__row'));
                 const index = rows.indexOf(target);
                 if (index < 0 || !this.entries[index]) return;
