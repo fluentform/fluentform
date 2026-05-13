@@ -750,8 +750,18 @@ tr.el-table__row td {
 // is clickable; the click handler in Entries.vue skips selection cells,
 // the Actions column, and any interactive descendant so existing buttons,
 // links, checkboxes, and text selection keep working unchanged.
+// applyRowTabindex adds tabindex=0 to each row so keyboard users can
+// reach it via Tab and activate it with Enter (same handler).
 .ff_entries_table tr.el-table__row {
   cursor: pointer;
+
+  &:focus,
+  &:focus-visible {
+    outline: 2px solid #409eff;
+    outline-offset: -2px;
+    position: relative;
+    z-index: 1;
+  }
 
   td.el-table-column--selection,
   .el-table-column--selection {

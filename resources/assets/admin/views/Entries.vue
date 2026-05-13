@@ -309,6 +309,7 @@
             <div class="ff_table">
                 <el-skeleton :loading="loading" animated :rows="6">
                     <el-table
+                        ref="entriesTable"
                          :size="isCompact? 'mini':''"
                         :data="entries"
                         :stripe="true"
@@ -316,6 +317,7 @@
                         @sort-change="handleTableSort"
                         @selection-change="handleSelectionChange"
                         @row-click="handleRowClick"
+                        @keydown.native="handleTableKeydown"
                     >
 
                         <el-table-column type="selection" width="30" :fixed="pinnedColumn !== 'none' ? 'left' : false"></el-table-column>
@@ -660,6 +662,9 @@
                 if (!this.search_string.length) {
                     this.getData();
                 }
+            },
+            entries() {
+                this.applyRowTabindex();
             },
             radioOption() {
                 const start = new Date();
@@ -1077,6 +1082,37 @@
             handleSelectionChange(val) {
                 this.entrySelections = val;
             },
+            // Makes every rendered row reachable by Tab so keyboard users can
+            // activate the whole row with Enter, mirroring the mouse-only
+            // row-click handler. Element UI 2.15 does not expose tabindex on
+            // rows natively; we set it post-render via the table ref. Re-run
+            // every time entries change (filter, sort, paginate).
+            applyRowTabindex() {
+                if (typeof document === 'undefined') return;
+                this.$nextTick(() => {
+                    const tableEl = this.$refs.entriesTable && this.$refs.entriesTable.$el;
+                    if (!tableEl) return;
+                    const rows = tableEl.querySelectorAll('tbody tr.el-table__row');
+                    rows.forEach((row) => {
+                        if (!row.hasAttribute('tabindex')) {
+                            row.setAttribute('tabindex', '0');
+                        }
+                    });
+                });
+            },
+            // Enter on a focused row opens the entry. Enter on an interactive
+            // descendant (link, button, checkbox, action icon) is left alone
+            // so the descendant handles it itself - no double activation.
+            handleTableKeydown(event) {
+                if (event.key !== 'Enter') return;
+                const target = event.target;
+                if (!target || !target.matches || !target.matches('tr.el-table__row')) return;
+                const rows = Array.from(target.parentElement.querySelectorAll('tr.el-table__row'));
+                const index = rows.indexOf(target);
+                if (index < 0 || !this.entries[index]) return;
+                event.preventDefault();
+                this.handleRowClick(this.entries[index], null, event);
+            },
             loadPinnedColumn() {
                 if (!this.form_id) return;
                 try {
@@ -1094,11 +1130,10 @@
                     // localStorage unavailable; the choice still applies for this session.
                 }
             },
-            // Mouse-only convenience: the entire row is clickable to open the
-            // entry detail. Keyboard users navigate via the router-link in the
-            // # column (focusable, opens on Enter); we deliberately do not add
-            // tabindex to the row itself to avoid duplicate tab stops alongside
-            // that link.
+            // Click anywhere on the row to open the entry detail. Reached via
+            // mouse click (@row-click), keyboard (Tab to row + Enter, wired via
+            // applyRowTabindex + handleTableKeydown), or the existing eye-icon
+            // / # column router-link.
             handleRowClick(row, column, event) {
                 // Don't navigate while the user is selecting text to copy.
                 // Browsers normally suppress click after a drag-select, but
@@ -1505,6 +1540,7 @@
             this.shortcodesToExport = this.getDefaultShortcodesToExport()
             this.loadLastExportFields();
             this.loadPinnedColumn();
+            this.applyRowTabindex();
         },
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
