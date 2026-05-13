@@ -46,6 +46,7 @@
                                         :placeholder="$t('Search forms...')"
                                         prefix-icon="el-icon-search"
                                         clearable
+                                        @keydown.native="handleFormSwitcherInputKeydown"
                                     />
                                 </li>
                                 <el-dropdown-item
@@ -1174,6 +1175,29 @@
                     });
                 } else {
                     this.formSearch = '';
+                }
+            },
+            // Keyboard support for the form switcher search:
+            //   ArrowDown - jump focus into the filtered list (Element UI's
+            //   dropdown then handles further up/down navigation natively).
+            //   Enter     - pick the first matching non-disabled form so a
+            //   user can type and press Enter without ever leaving the input.
+            handleFormSwitcherInputKeydown(event) {
+                const key = event.key;
+                if (key === 'ArrowDown') {
+                    event.preventDefault();
+                    this.$nextTick(() => {
+                        const menu = document.querySelector('.ff_form_switcher_menu');
+                        if (!menu) return;
+                        const item = menu.querySelector('.el-dropdown-menu__item:not(.is-disabled)');
+                        if (item && typeof item.focus === 'function') item.focus();
+                    });
+                } else if (key === 'Enter') {
+                    const target = (this.filteredForms || []).find((f) => f && f.id != this.form_id);
+                    if (target) {
+                        event.preventDefault();
+                        this.handleSwitchForm(target.id);
+                    }
                 }
             },
             loadPinnedColumn() {
