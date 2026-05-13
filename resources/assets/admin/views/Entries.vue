@@ -284,9 +284,10 @@
                          :size="isCompact? 'mini':''"
                         :data="entries"
                         :stripe="true"
-                        :class="{'compact': isCompact}"
+                        :class="['ff_entries_table', {'compact': isCompact}]"
                         @sort-change="handleTableSort"
                         @selection-change="handleSelectionChange"
+                        @row-click="handleRowClick"
                     >
 
                         <el-table-column type="selection" width="30"></el-table-column>
@@ -1027,6 +1028,40 @@
             },
             handleSelectionChange(val) {
                 this.entrySelections = val;
+            },
+            handleRowClick(row, column, event) {
+                // Don't navigate while the user is selecting text to copy.
+                // Browsers normally suppress click after a drag-select, but
+                // double/triple-click word/line selection still fires click
+                // events; guarding here keeps copy workflows intact.
+                const selection = typeof window !== 'undefined' ? window.getSelection() : null;
+                if (selection && selection.toString().length > 0) {
+                    return;
+                }
+                // Skip the selection checkbox and Actions columns.
+                if (column && (column.type === 'selection' || column.label === this.$t('Actions'))) {
+                    return;
+                }
+                // Skip any interactive descendant. The router-link in the #
+                // column, the favorite/read icons, popovers, dropdowns, and
+                // the per-row eye/trash buttons all handle their own clicks.
+                if (event && event.target && event.target.closest(
+                    'a, button, input, label, .el-checkbox, .action_button, .el-popover, .el-dropdown, .ff_entry_table_popover_content'
+                )) {
+                    return;
+                }
+                this.$router.push({
+                    name: 'form-entry',
+                    params: {
+                        form_id: row.form_id,
+                        entry_id: row.id,
+                    },
+                    query: {
+                        sort_by: this.sort_by,
+                        current_page: this.paginate.current_page,
+                        type: this.entry_type,
+                    },
+                });
             },
             removeEntry(entryId, index) {
                 let action = 'post';
