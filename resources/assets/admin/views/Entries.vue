@@ -29,6 +29,7 @@
                     <btn-group-item as="div">
                         <el-dropdown
                             @command="handleSwitchForm"
+                            @visible-change="handleFormSwitcherVisible"
                             class="current_form_name"
                             trigger="click"
                         >
@@ -36,14 +37,27 @@
                                 {{ current_form_title }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
-                            <el-dropdown-menu slot="dropdown" style="max-height:300px; overflow-y:scroll;">
+                            <el-dropdown-menu slot="dropdown" class="ff_form_switcher_menu">
+                                <li class="ff_form_switcher_search" @click.stop>
+                                    <el-input
+                                        v-model="formSearch"
+                                        ref="formSwitcherSearch"
+                                        size="small"
+                                        :placeholder="$t('Search forms...')"
+                                        prefix-icon="el-icon-search"
+                                        clearable
+                                    />
+                                </li>
                                 <el-dropdown-item
-                                        v-for="form in forms"
+                                        v-for="form in filteredForms"
                                         :key="'form_switch_'+form.id"
                                         :command="form.id"
                                         :disabled="form.id == form_id"
                                 >{{ form.title }}
                                 </el-dropdown-item>
+                                <li v-if="!filteredForms.length" class="ff_form_switcher_empty">
+                                    {{ $t('No matching forms') }}
+                                </li>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
@@ -709,6 +723,7 @@
                 bulkAction: '',
 	            idShortByClassName: '',
                 pinnedColumn: 'id',
+                formSearch: '',
                 paginate: {
                     total: 0,
                     current_page: parseInt(this.$route.query.page) || 1,
@@ -791,6 +806,18 @@
             }
         },
         computed: {
+            // Filter the form switcher list against the search box. Matches
+            // form title or form id (so users can paste an id and jump).
+            filteredForms() {
+                const list = Array.isArray(this.forms) ? this.forms : [];
+                const q = (this.formSearch || '').trim().toLowerCase();
+                if (!q) return list;
+                return list.filter((form) => {
+                    const title = (form && form.title) ? String(form.title).toLowerCase() : '';
+                    const id = (form && form.id !== undefined) ? String(form.id) : '';
+                    return title.indexOf(q) !== -1 || id.indexOf(q) !== -1;
+                });
+            },
             /**
              * Compute bulk action options
              * @return {Array}
@@ -1112,6 +1139,18 @@
                 if (index < 0 || !this.entries[index]) return;
                 event.preventDefault();
                 this.handleRowClick(this.entries[index], null, event);
+            },
+            // Auto-focuses the search field when the form switcher opens and
+            // clears the query when it closes, so each open starts fresh.
+            handleFormSwitcherVisible(isOpen) {
+                if (isOpen) {
+                    this.$nextTick(() => {
+                        const ref = this.$refs.formSwitcherSearch;
+                        if (ref && typeof ref.focus === 'function') ref.focus();
+                    });
+                } else {
+                    this.formSearch = '';
+                }
             },
             loadPinnedColumn() {
                 if (!this.form_id) return;
