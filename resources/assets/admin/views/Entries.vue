@@ -294,6 +294,18 @@
                         <el-table-column label="#" sortable="custom" prop="id" width="100px" :class-name="idShortByClassName">
                             <template slot-scope="scope">
                                 <div class="has_hover_item">
+                                    <el-tooltip
+                                        placement="top"
+                                        :content="getStatusName(scope.row.status)"
+                                        :open-delay="150"
+                                    >
+                                        <span
+                                            class="ff_entry_status_dot"
+                                            :class="'ff_entry_status_dot--' + (scope.row.status || 'unknown')"
+                                            role="img"
+                                            :aria-label="$t('Status') + ': ' + getStatusName(scope.row.status)"
+                                        ></span>
+                                    </el-tooltip>
                                     <router-link :to="{
                                             name: 'form-entry',
                                             params: {

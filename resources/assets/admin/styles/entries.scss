@@ -677,6 +677,39 @@ tr.el-table__row td {
   padding: 18px 0px;
 }
 
+// Compact status indicator that replaces the dedicated "Entry Status"
+// column. Filled blue = unread, hollow gray = read, red = trashed,
+// gold = favourite. Hover surfaces the label via the title attribute;
+// screen readers get aria-label.
+.ff_entry_status_dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  background: #c0c4cc;
+  box-shadow: none;
+
+  &--unread {
+    background: #409eff;
+  }
+  &--read {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px #c0c4cc;
+  }
+  &--trashed {
+    background: #f56c6c;
+  }
+  &--spam {
+    background: #e6a23c;
+  }
+  &--favorites {
+    background: #f7ba2a;
+  }
+}
+
 // Whole-row click navigates to the entry detail. Cursor signals the row
 // is clickable; the click handler in Entries.vue skips selection cells,
 // the Actions column, and any interactive descendant so existing buttons,
