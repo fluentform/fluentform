@@ -549,6 +549,9 @@ trait FluentCartProductFeed
             return;
         }
 
+        $productId = absint($productId);
+        $metaValues = [];
+
         foreach ($fields as $field) {
             if (!is_array($field)) {
                 continue;
@@ -560,24 +563,46 @@ trait FluentCartProductFeed
                 continue;
             }
 
-            $existing = ProductMeta::query()
-                ->where('object_id', absint($productId))
-                ->where('object_type', 'product')
-                ->where('meta_key', $metaKey)
-                ->first();
+            $metaValues[$metaKey] = sanitize_text_field((string) Arr::get($field, 'item_value', ''));
+        }
 
-            if ($existing) {
-                $existing->meta_value = sanitize_text_field((string) Arr::get($field, 'item_value', ''));
-                $existing->save();
+        if (!$metaValues) {
+            return;
+        }
+
+        $existingMetas = [];
+        $existingRows = ProductMeta::query()
+            ->where('object_id', $productId)
+            ->where('object_type', 'product')
+            ->whereIn('meta_key', array_keys($metaValues))
+            ->get();
+
+        foreach ($existingRows as $row) {
+            $existingMetas[$row->meta_key] = $row;
+        }
+
+        $newRows = [];
+        $now = current_time('mysql', true);
+
+        foreach ($metaValues as $metaKey => $metaValue) {
+            if (!empty($existingMetas[$metaKey])) {
+                $existingMetas[$metaKey]->meta_value = $metaValue;
+                $existingMetas[$metaKey]->save();
                 continue;
             }
 
-            ProductMeta::query()->create([
+            $newRows[] = [
                 'object_id'   => absint($productId),
                 'object_type' => 'product',
                 'meta_key'    => $metaKey,
-                'meta_value'  => sanitize_text_field((string) Arr::get($field, 'item_value', '')),
-            ]);
+                'meta_value'  => $metaValue,
+                'created_at'  => $now,
+                'updated_at'  => $now,
+            ];
+        }
+
+        if ($newRows) {
+            ProductMeta::query()->insert($newRows);
         }
     }
 
