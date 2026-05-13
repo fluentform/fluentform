@@ -495,6 +495,7 @@
 
                         <el-table-column
                                 fixed="right"
+                                column-key="actions"
                                 :label="$t('Actions')"
                                 :width="115"
                                 align="center"
@@ -1093,6 +1094,11 @@
                     // localStorage unavailable; the choice still applies for this session.
                 }
             },
+            // Mouse-only convenience: the entire row is clickable to open the
+            // entry detail. Keyboard users navigate via the router-link in the
+            // # column (focusable, opens on Enter); we deliberately do not add
+            // tabindex to the row itself to avoid duplicate tab stops alongside
+            // that link.
             handleRowClick(row, column, event) {
                 // Don't navigate while the user is selecting text to copy.
                 // Browsers normally suppress click after a drag-select, but
@@ -1102,8 +1108,10 @@
                 if (selection && selection.toString().length > 0) {
                     return;
                 }
-                // Skip the selection checkbox and Actions columns.
-                if (column && (column.type === 'selection' || column.label === this.$t('Actions'))) {
+                // Skip the selection checkbox and Actions columns. Check
+                // columnKey, not label, so the guard is not affected by
+                // translation of the "Actions" string at runtime.
+                if (column && (column.type === 'selection' || column.columnKey === 'actions')) {
                     return;
                 }
                 // Skip any interactive descendant. The router-link in the #
