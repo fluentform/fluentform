@@ -55,6 +55,7 @@ class FluentCartIntegration
         add_filter('fluentform/rendering_field_data_multi_payment_component', [$this, 'syncSinglePaymentFieldWithFluentCart'], 10, 2);
         add_filter('fluentform/rendering_field_data_subscription_payment_component', [$this, 'syncSubscriptionFieldWithFluentCart'], 10, 2);
         add_filter('fluentform/validate_input_item_payment_method', [$this, 'validateFluentCartPaymentSelection'], 20, 5);
+        add_filter('fluentform/validation_errors', [$this, 'validateFluentCartPaymentSubmission'], 20, 4);
         add_filter('fluentform/global_notification_active_types', [$this, 'filterCheckoutNotificationTypes'], 10, 2);
         add_filter('fluentform/form_payment_fields', [$this, 'filterCheckoutPaymentFields']);
         add_action('fluentform/before_insert_payment_form', [$this, 'syncPaymentFormBeforePaymentAction'], 5, 3);

@@ -9,6 +9,7 @@ class FluentCartCheckoutIntegration {
     constructor() {
         this.hasRegisteredCheckoutCallbacks = false;
         this.hasBoundCheckoutButton = false;
+        this.checkoutSubmissionResult = null;
         this.checkoutFormSelector = '[data-fluent-cart-checkout-form="true"]';
         this.init();
     }
@@ -231,19 +232,26 @@ class FluentCartCheckoutIntegration {
         this.hasRegisteredCheckoutCallbacks = true;
 
         window.fluentCartCheckout['beforeCheckoutCallbacks'].push(async (context = {}) => {
-            const isValid = this.validateCheckoutForm();
-
-            if (!isValid) {
+            if (!this.validateCheckoutForm()) {
                 this.resetCheckoutProcessingState(context);
+                return false;
             }
 
-            return isValid;
+            try {
+                this.checkoutSubmissionResult = this.checkoutSubmissionResult || await this.submitFluentFormViaAjax();
+            } catch (error) {
+                this.resetCheckoutProcessingState(context);
+                return false;
+            }
+
+            return true;
         });
 
         window.fluentCartCheckout['afterCheckoutCallbacks'].push(async (checkoutResponse) => {
             try {
-                const submissionResult = await this.submitFluentFormViaAjax();
+                const submissionResult = this.checkoutSubmissionResult || await this.submitFluentFormViaAjax();
                 await this.attachSubmissionToOrder(submissionResult, checkoutResponse);
+                this.checkoutSubmissionResult = null;
             } catch (error) {
                 this.handleCheckoutIntegrationFailure(error, checkoutResponse);
                 throw error;

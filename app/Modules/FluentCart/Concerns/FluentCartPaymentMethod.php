@@ -290,6 +290,29 @@ trait FluentCartPaymentMethod
         return $error;
     }
 
+    public function validateFluentCartPaymentSubmission($errors, $formData, $form, $fields)
+    {
+        if (sanitize_text_field((string)Arr::get($formData, 'payment_method')) !== 'fluent_cart') {
+            return $errors;
+        }
+
+        $targetFieldName = $this->resolveFluentCartPaymentValidationField($form, $formData);
+
+        if (!$this->isFluentCartPaymentEnabled()) {
+            $errors[$targetFieldName]['fluent_cart'] = __('Fluent Cart payment method is not available.', 'fluentform');
+
+            return $errors;
+        }
+
+        $context = $this->buildFluentCartPaymentContext($form, $formData, true);
+
+        if (is_wp_error($context)) {
+            $errors[$targetFieldName][$context->get_error_code()] = $context->get_error_message();
+        }
+
+        return $errors;
+    }
+
     public function processFluentCartPayment($submissionId, $submissionData, $form, $methodSettings, $hasSubscriptions, $totalPayable)
     {
         if (!$this->isFluentCartPaymentEnabled()) {
@@ -691,6 +714,8 @@ trait FluentCartPaymentMethod
 
     protected function buildFluentCartPaymentContext($form, $formData, $requireItems = true)
     {
+        FormFieldsParser::resetData();
+
         $inputs = FormFieldsParser::getInputs($form, ['element', 'attributes', 'settings', 'admin_label']);
         $quantityFields = $this->getFluentCartQuantityFieldMap($inputs);
         $items = [];
@@ -799,7 +824,7 @@ trait FluentCartPaymentMethod
                 );
             }
 
-            $selectedOptions = $fieldType === 'checkbox' ? Arr::wrap($selectedValue) : [$selectedValue];
+            $selectedOptions = $this->normalizeFluentCartSelectedPaymentOptions($selectedValue, $fieldType);
 
             foreach ($selectedOptions as $selectedOption) {
                 $pricingOption = $this->findFluentCartPricingOption($input, $selectedOption);
@@ -896,6 +921,54 @@ trait FluentCartPaymentMethod
         }
 
         return $quantityFields;
+    }
+
+    protected function resolveFluentCartPaymentValidationField($form, $formData)
+    {
+        $inputs = FormFieldsParser::getInputs($form, ['element', 'attributes']);
+        $firstPaymentField = '';
+
+        foreach ($inputs as $input) {
+            $element = Arr::get($input, 'element');
+            $fieldName = Arr::get($input, 'attributes.name');
+
+            if (!$fieldName || !in_array($element, [
+                'multi_payment_component',
+                'subscription_payment_component',
+                'custom_payment_component',
+                'payment_coupon',
+            ], true)) {
+                continue;
+            }
+
+            if (!$firstPaymentField) {
+                $firstPaymentField = $fieldName;
+            }
+
+            $value = Arr::get($formData, $fieldName);
+
+            if ($value !== null && $value !== '' && $value !== []) {
+                return $fieldName;
+            }
+        }
+
+        return $firstPaymentField ?: 'payment_method';
+    }
+
+    protected function normalizeFluentCartSelectedPaymentOptions($selectedValue, $fieldType)
+    {
+        $selectedOptions = $fieldType === 'checkbox' ? Arr::wrap($selectedValue) : [$selectedValue];
+        $normalizedOptions = [];
+
+        array_walk_recursive($selectedOptions, function ($option) use (&$normalizedOptions) {
+            if ($option === null || $option === '') {
+                return;
+            }
+
+            $normalizedOptions[] = $option;
+        });
+
+        return $normalizedOptions;
     }
 
     protected function resolveFluentCartQuantity($targetProduct, $quantityFields, $formData)

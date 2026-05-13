@@ -38,12 +38,12 @@
                 />
             </el-form-item>
 
-            <el-form-item>
+            <el-form-item v-if="!editItem.settings.use_fluent_cart_product">
                 <elLabel
-                slot="label"
-                :label="$t('Amount Label')"
-                :helpText="$t('Please Provide the Amount Label')"
-            />
+                    slot="label"
+                    :label="$t('Amount Label')"
+                    :helpText="$t('Please Provide the Amount Label')"
+                />
                 <el-input type="text" v-model="editItem.settings.price_label" />
             </el-form-item>
 
