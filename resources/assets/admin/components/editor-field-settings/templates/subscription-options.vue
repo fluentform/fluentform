@@ -94,6 +94,39 @@
                     />
                 </el-form-item>
 
+                <el-form-item v-if="hasFluentCartSubscriptionProducts">
+                    <el-checkbox
+                        v-model="item.use_fluent_cart_product"
+                        @change="handleFluentCartProductToggle(item)"
+                    >
+                        {{ $t('Use Fluent Cart Product') }}
+                    </el-checkbox>
+                </el-form-item>
+
+                <el-form-item v-if="hasFluentCartSubscriptionProducts && item.use_fluent_cart_product">
+                    <elLabel
+                        slot="label"
+                        :label="$t('Fluent Cart Subscription Product')"
+                        :helpText="$t('Map this plan to a Fluent Cart subscription product. Pricing and billing details will come from Fluent Cart.')"
+                    />
+
+                    <el-select
+                        size="mini"
+                        filterable
+                        clearable
+                        style="width: 100%;"
+                        v-model="item.fluent_cart_product_id"
+                        :placeholder="$t('Select a Fluent Cart subscription product')"
+                    >
+                        <el-option
+                            v-for="product in fluentCartSubscriptionProducts"
+                            :key="product.value"
+                            :label="product.label"
+                            :value="product.value"
+                        />
+                    </el-select>
+                </el-form-item>
+
                 <el-row :gutter="20">
                     <el-col :span="12">
                         <el-form-item>
@@ -103,13 +136,17 @@
                             />
 
                             <el-input-number
+                                v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true"
                                 :min="0"
                                 size="mini"
                                 v-model="item.subscription_amount"
                                 :disabled="item.user_input === 'yes'"
                             />
+                            <div v-else class="text-note">
+                                {{ $t('Price comes from the mapped Fluent Cart subscription product.') }}
+                            </div>
                         </el-form-item>
-                        <el-form-item>
+                        <el-form-item v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
                             <el-checkbox
                                 true-label="yes"
                                 false-label="no"
@@ -120,7 +157,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item>
+                        <el-form-item v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
                             <elLabel
                                 slot="label"
                                 :label="$t('Billing Interval')"
@@ -143,7 +180,7 @@
                     </el-col>
                 </el-row>
 
-                <template v-if="item.user_input === 'yes'">
+                <template v-if="item.user_input === 'yes' && item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
                     <el-form-item>
                         <elLabel
                             slot="label"
@@ -187,7 +224,7 @@
                     </el-row>
                 </template>
 
-                <el-row :gutter="20">
+                <el-row :gutter="20" v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
                     <el-col :span="12">
                         <el-form-item>
                             <elLabel
@@ -236,7 +273,7 @@
                     </el-col>
                 </el-row>
 
-                <el-row :gutter="20">
+                <el-row :gutter="20" v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
                     <el-col :span="12">
                         <el-form-item>
                             <elLabel
@@ -299,7 +336,7 @@
                     </el-col>
                 </el-row>
 
-                <el-form-item v-if="item.has_end_date === 'yes'">
+                <el-form-item v-if="item.has_end_date === 'yes' && item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
                     <elLabel
                         slot="label"
                         :label="$t('When Plan Expires')"
@@ -363,6 +400,14 @@
                 }
             }
         },
+        computed: {
+            fluentCartSubscriptionProducts() {
+                return (window.FluentFormApp?.fluent_cart_product_options || []).filter(product => product.payment_type === 'subscription');
+            },
+            hasFluentCartSubscriptionProducts() {
+                return this.fluentCartSubscriptionProducts.length > 0;
+            }
+        },
         created() {
             // Ensure backward compatibility for existing plans missing new fields
             if (this.editItem && this.editItem.settings && this.editItem.settings.subscription_options) {
@@ -375,6 +420,12 @@
                     }
                     if (typeof item.expire_behavior === 'undefined') {
                         this.$set(item, 'expire_behavior', 'show_error');
+                    }
+                    if (typeof item.fluent_cart_product_id === 'undefined') {
+                        this.$set(item, 'fluent_cart_product_id', '');
+                    }
+                    if (typeof item.use_fluent_cart_product === 'undefined') {
+                        this.$set(item, 'use_fluent_cart_product', !!item.fluent_cart_product_id);
                     }
                 });
             }
@@ -396,13 +447,25 @@
                     signup_fee: 0,
                     subscription_amount: '19.99',
                     plan_features: [],
+                    fluent_cart_product_id: '',
+                    use_fluent_cart_product: false,
                     has_end_date: 'no',
                     subscription_end_date: '',
                     expire_behavior: 'show_error'
                 });
             },
 
+            handleFluentCartProductToggle(item) {
+                if (item.use_fluent_cart_product === true || item.use_fluent_cart_product === 'yes') {
+                    item.user_input = 'no';
+                }
+            },
+
             getAdvancedText(item) {
+                if (item.use_fluent_cart_product === true || item.use_fluent_cart_product === 'yes') {
+                    return this.$t('Pricing and billing details come from the mapped Fluent Cart subscription product.');
+                }
+
                 let billAmount = item.subscription_amount;
 
                 if (item.user_input === 'yes') {

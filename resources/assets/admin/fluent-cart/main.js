@@ -380,7 +380,7 @@ class FluentCartCheckoutIntegration {
         }
 
         const orderContext = this.resolveCheckoutOrderContext(checkoutResponse);
-        if (!orderContext.orderId && !orderContext.transactionHash) {
+        if (!orderContext.orderId && !orderContext.transactionHash && !orderContext.checkoutHash) {
             throw new Error('Fluent Cart order context is missing from checkout response');
         }
 
@@ -417,20 +417,35 @@ class FluentCartCheckoutIntegration {
             checkoutResponse?.order_id,
             checkoutResponse?.order?.id,
             checkoutResponse?.data?.order_id,
-            checkoutResponse?.data?.order?.id
+            checkoutResponse?.data?.order?.id,
+            checkoutResponse?.response?.order_id,
+            checkoutResponse?.response?.order?.id
         ];
 
         const redirectCandidates = [
             checkoutResponse?.redirect_to,
             checkoutResponse?.data?.redirect_to,
-            checkoutResponse?.redirectUrl
+            checkoutResponse?.redirectUrl,
+            checkoutResponse?.redirect_url,
+            checkoutResponse?.data?.redirect_url,
+            checkoutResponse?.payment_args?.success_url,
+            checkoutResponse?.payment_args?.checkout_url,
+            checkoutResponse?.payment_args?.custom_payment_url
         ];
 
-        let transactionHash = '';
-        redirectCandidates.some((redirectUrl) => {
-            transactionHash = this.extractTransactionHash(redirectUrl);
-            return !!transactionHash;
-        });
+        const transactionHashCandidates = [
+            checkoutResponse?.transaction_hash,
+            checkoutResponse?.trx_hash,
+            checkoutResponse?.data?.transaction_hash,
+            checkoutResponse?.data?.trx_hash,
+            checkoutResponse?.transaction?.uuid,
+            checkoutResponse?.data?.transaction?.uuid,
+            checkoutResponse?.response?.transaction?.uuid,
+            checkoutResponse?.payment_args?.trx_hash,
+            checkoutResponse?.payment_args?.vendor_subscription_info?.trx_hash
+        ];
+
+        const transactionHash = this.resolveTransactionHash(transactionHashCandidates, redirectCandidates);
 
         return {
             orderId: this.normalizeOrderId(orderIdCandidates),
@@ -461,6 +476,23 @@ class FluentCartCheckoutIntegration {
         } catch (error) {
             return '';
         }
+    }
+
+    resolveTransactionHash(transactionHashCandidates = [], redirectCandidates = []) {
+        for (const candidate of transactionHashCandidates) {
+            if (candidate) {
+                return String(candidate);
+            }
+        }
+
+        for (const redirectUrl of redirectCandidates) {
+            const transactionHash = this.extractTransactionHash(redirectUrl);
+            if (transactionHash) {
+                return transactionHash;
+            }
+        }
+
+        return '';
     }
 
     getCheckoutHash() {
