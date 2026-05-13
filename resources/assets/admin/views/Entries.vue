@@ -1150,18 +1150,23 @@
                     });
                 });
             },
-            // When a tabbed row receives focus, ask Element UI to mark it as
-            // the current row. Element UI then applies its built-in
-            // current-row class across the main body and any fixed-column
-            // clones so the visual cue spans the whole visible row - the
-            // tabindex-only approach failed because Element UI's fixed
-            // wrappers (z-index: 3) overlay the main row's :focus outline.
+            // When focus lands anywhere inside a row - on the row itself, or
+            // on a descendant link / button / checkbox / action icon, in the
+            // main body or in a fixed-column clone - mark that row as
+            // current. Element UI then applies its built-in .current-row
+            // class across all sibling tables so the highlight spans the
+            // entire visible row regardless of where focus actually sits.
+            //
+            // The fixed-column tbody mirrors the main tbody in row order,
+            // so the row index from any tbody maps to the same this.entries
+            // slot. We do not restrict to the main body here.
             handleRowFocusIn(event) {
                 const target = event.target;
-                if (!target || !target.matches || !target.matches('tr.el-table__row')) return;
-                if (target.closest('.el-table__fixed') || target.closest('.el-table__fixed-right')) return;
-                const rows = Array.from(target.parentElement.querySelectorAll('tr.el-table__row'));
-                const index = rows.indexOf(target);
+                if (!target || !target.closest) return;
+                const tr = target.closest('tr.el-table__row');
+                if (!tr || !tr.parentElement) return;
+                const rows = Array.from(tr.parentElement.querySelectorAll('tr.el-table__row'));
+                const index = rows.indexOf(tr);
                 if (index < 0 || !this.entries[index]) return;
                 const tableInstance = this.$refs.entriesTable;
                 if (tableInstance && typeof tableInstance.setCurrentRow === 'function') {
