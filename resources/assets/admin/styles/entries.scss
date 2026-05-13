@@ -783,17 +783,17 @@ tr.el-table__row td {
 // is clickable; the click handler in Entries.vue skips selection cells,
 // the Actions column, and any interactive descendant so existing buttons,
 // links, checkboxes, and text selection keep working unchanged.
-// applyRowTabindex adds tabindex=0 to each row so keyboard users can
-// reach it via Tab and activate it with Enter (same handler).
+// applyRowTabindex adds tabindex=0 to each main-body row so keyboard
+// users can reach it via Tab. handleRowFocusIn promotes the focused row
+// to Element UI's current row, which paints a highlight that spans the
+// main body and any fixed-column clones - the :focus outline approach
+// was hidden by the fixed wrappers' z-index.
 .ff_entries_table tr.el-table__row {
   cursor: pointer;
 
   &:focus,
   &:focus-visible {
-    outline: 2px solid #409eff;
-    outline-offset: -2px;
-    position: relative;
-    z-index: 1;
+    outline: none;
   }
 
   td.el-table-column--selection,

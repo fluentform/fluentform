@@ -329,10 +329,12 @@
                         :data="entries"
                         :stripe="true"
                         :class="['ff_entries_table', {'compact': isCompact}]"
+                        highlight-current-row
                         @sort-change="handleTableSort"
                         @selection-change="handleSelectionChange"
                         @row-click="handleRowClick"
                         @keydown.native="handleTableKeydown"
+                        @focusin.native="handleRowFocusIn"
                     >
 
                         <el-table-column type="selection" width="30" :fixed="pinnedColumn !== 'none' ? 'left' : false"></el-table-column>
@@ -1147,6 +1149,24 @@
                         }
                     });
                 });
+            },
+            // When a tabbed row receives focus, ask Element UI to mark it as
+            // the current row. Element UI then applies its built-in
+            // current-row class across the main body and any fixed-column
+            // clones so the visual cue spans the whole visible row - the
+            // tabindex-only approach failed because Element UI's fixed
+            // wrappers (z-index: 3) overlay the main row's :focus outline.
+            handleRowFocusIn(event) {
+                const target = event.target;
+                if (!target || !target.matches || !target.matches('tr.el-table__row')) return;
+                if (target.closest('.el-table__fixed') || target.closest('.el-table__fixed-right')) return;
+                const rows = Array.from(target.parentElement.querySelectorAll('tr.el-table__row'));
+                const index = rows.indexOf(target);
+                if (index < 0 || !this.entries[index]) return;
+                const tableInstance = this.$refs.entriesTable;
+                if (tableInstance && typeof tableInstance.setCurrentRow === 'function') {
+                    tableInstance.setCurrentRow(this.entries[index]);
+                }
             },
             // Enter on a focused row opens the entry. Enter on an interactive
             // descendant (link, button, checkbox, action icon) is left alone
