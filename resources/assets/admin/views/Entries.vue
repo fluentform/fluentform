@@ -355,7 +355,6 @@
                                     trigger="hover"
                                     :open-delay="150"
                                     :popper-options="entryCellPopoverOptions"
-                                    :width="420"
                                 >
                                     <div
                                         class="ff_entry_table_popover_content"
