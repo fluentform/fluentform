@@ -96,6 +96,20 @@ class Submission extends Model
         return $this->hasMany(OrderItem::class, 'submission_id', 'id');
     }
 
+    /**
+     * Returns the column the entries listing should be sorted by.
+     * Defaults to created_at so imported entries respect their original
+     * submission date. Site owners can switch back to legacy id-based
+     * ordering via the fluentform/entries_default_sort_column filter.
+     */
+    public static function getSortColumn()
+    {
+        $column = apply_filters('fluentform/entries_default_sort_column', 'created_at');
+        $allowed = ['id', 'created_at'];
+
+        return in_array($column, $allowed, true) ? $column : 'created_at';
+    }
+
     public function customQuery($attributes = [], $searchExtender = null)
     {
         $entryType = Arr::get($attributes, 'entry_type');
@@ -122,7 +136,16 @@ class Submission extends Model
             $wheres[] = ['payment_status', $paymentStatuses];
         }
 
-        $query = $this->orderBy('fluentform_submissions.id', $sortBy)
+        // Sort by submission date so imported entries (which get new auto-increment ids
+        // but carry their original created_at) interleave correctly with native ones.
+        // Tie-break on id to keep pagination stable for rows sharing a timestamp.
+        // Filter lets site owners revert to legacy id-based ordering if needed.
+        $sortColumn = self::getSortColumn();
+        $query = $this->orderBy('fluentform_submissions.' . $sortColumn, $sortBy);
+        if ('id' !== $sortColumn) {
+            $query = $query->orderBy('fluentform_submissions.id', $sortBy);
+        }
+        $query = $query
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('fluentform_submissions.form_id', $formId);
             })
