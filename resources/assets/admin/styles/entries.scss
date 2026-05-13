@@ -677,6 +677,42 @@ tr.el-table__row td {
   padding: 18px 0px;
 }
 
+// Pin-column selector that sits at the top of the Columns dropdown.
+// Stops click propagation so picking an option does not close the
+// surrounding el-dropdown menu mid-interaction.
+.ff_pin_column_item {
+  cursor: default;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+.ff_pin_column_row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.ff_pin_column_label {
+  font-size: 13px;
+  color: #606266;
+  white-space: nowrap;
+}
+
+.ff_pin_column_select {
+  flex: 1;
+  min-width: 150px;
+}
+
+.ff_pin_column_divider {
+  margin: 0;
+  padding: 0;
+  height: 0;
+  line-height: 0;
+}
+
 // Compact status indicator that replaces the dedicated "Entry Status"
 // column. Filled blue = unread, hollow gray = read, red = trashed,
 // gold = favourite. Hover surfaces the label via the title attribute;

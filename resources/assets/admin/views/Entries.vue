@@ -180,6 +180,34 @@
                             </el-button>
                             <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown"
                                 style="max-height:300px; overflow-y:scroll;">
+                                <el-dropdown-item key="pin_column_row" class="ff_pin_column_item">
+                                    <div class="ff_pin_column_row" @click.stop>
+                                        <span class="ff_pin_column_label">{{ $t('Pin column:') }}</span>
+                                        <el-select
+                                            v-model="pinnedColumn"
+                                            size="small"
+                                            class="ff_pin_column_select"
+                                            @change="handlePinnedColumnChange"
+                                        >
+                                            <el-option :label="$t('None')" value="none"></el-option>
+                                            <el-option :label="$t('Entry #')" value="id"></el-option>
+                                            <el-option
+                                                v-for="column in formattedColumn"
+                                                :key="'pin_'+column.field"
+                                                :label="column.label"
+                                                :value="column.field"
+                                            ></el-option>
+                                            <el-option :label="$t('Entry Status')" value="status"></el-option>
+                                            <template v-if="has_payment">
+                                                <el-option :label="$t('Amount')" value="payment_total"></el-option>
+                                                <el-option :label="$t('Payment Status')" value="payment_status"></el-option>
+                                                <el-option :label="$t('Payment Method')" value="payment_method"></el-option>
+                                            </template>
+                                            <el-option :label="$t('Submitted at')" value="created_at"></el-option>
+                                        </el-select>
+                                    </div>
+                                </el-dropdown-item>
+                                <el-dropdown-item divided disabled class="ff_pin_column_divider"></el-dropdown-item>
                                 <el-dropdown-item v-for="(column, column_name) in columns" :key="column_name">
                                     <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"
                                                  v-model="visibleColumns">
@@ -290,8 +318,8 @@
                         @row-click="handleRowClick"
                     >
 
-                        <el-table-column type="selection" width="30"></el-table-column>
-                        <el-table-column label="#" sortable="custom" prop="id" width="100px" :class-name="idShortByClassName">
+                        <el-table-column type="selection" width="30" :fixed="pinnedColumn !== 'none' ? 'left' : false"></el-table-column>
+                        <el-table-column label="#" sortable="custom" prop="id" width="100px" :fixed="pinnedColumn === 'id' ? 'left' : false" :class-name="idShortByClassName">
                             <template slot-scope="scope">
                                 <div class="has_hover_item">
                                     <el-tooltip
@@ -359,6 +387,7 @@
                                 min-width="200"
                                 sortable="custom"
                                 :prop="'user_inputs_column_field-' + column.field"
+                                :fixed="pinnedColumn === column.field ? 'left' : false"
                                 :key="index">
                             <template slot-scope="scope">
                                 <el-popover
@@ -393,7 +422,8 @@
                                 :label="$t('Entry Status')"
                                 sortable
                                 prop="status"
-                                width="120px">
+                                width="120px"
+                                :fixed="pinnedColumn === 'status' ? 'left' : false">
                             <template slot-scope="scope">
                                 {{ getStatusName(scope.row.status) }}
                             </template>
@@ -404,7 +434,8 @@
                                     :label="$t('Amount')"
                                     sortable="custom"
                                     prop="payment_total"
-                                    min-width="120px">
+                                    min-width="120px"
+                                    :fixed="pinnedColumn === 'payment_total' ? 'left' : false">
                                 <template slot-scope="scope">
                                     <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
                                 </template>
@@ -413,7 +444,8 @@
                                     :label="$t('Payment Status')"
                                     sortable
                                     prop="payment_status"
-                                    min-width="140px">
+                                    min-width="140px"
+                                    :fixed="pinnedColumn === 'payment_status' ? 'left' : false">
                                 <template slot-scope="scope">
                                     <span class="ff_badge"
                                         :class="'ff_badge_'+scope.row.payment_status"
@@ -427,7 +459,8 @@
                                     :label="$t('Payment Method')"
                                     sortable
                                     prop="payment_method"
-                                    min-width="140px">
+                                    min-width="140px"
+                                    :fixed="pinnedColumn === 'payment_method' ? 'left' : false">
                                 <template slot-scope="scope">
                                     <span class="ff_badge" v-if="scope.row.payment_method"
                                         :class="`ff_badge_${
@@ -446,7 +479,8 @@
                                 :label="$t('Submitted at')"
                                 sortable
                                 prop="created_at"
-                                :width="dateColWidth">
+                                :width="dateColWidth"
+                                :fixed="pinnedColumn === 'created_at' ? 'left' : false">
                             <template slot-scope="scope">
                                 <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
@@ -668,6 +702,7 @@
                 columns: [],
                 bulkAction: '',
 	            idShortByClassName: '',
+                pinnedColumn: 'id',
                 paginate: {
                     total: 0,
                     current_page: parseInt(this.$route.query.page) || 1,
@@ -1040,6 +1075,23 @@
             },
             handleSelectionChange(val) {
                 this.entrySelections = val;
+            },
+            loadPinnedColumn() {
+                if (!this.form_id) return;
+                try {
+                    const saved = localStorage.getItem('ff_entries_pinned_col_' + this.form_id);
+                    if (saved !== null) this.pinnedColumn = saved;
+                } catch (e) {
+                    // localStorage unavailable (private mode, quota); ignore.
+                }
+            },
+            handlePinnedColumnChange(val) {
+                if (!this.form_id) return;
+                try {
+                    localStorage.setItem('ff_entries_pinned_col_' + this.form_id, val);
+                } catch (e) {
+                    // localStorage unavailable; the choice still applies for this session.
+                }
             },
             handleRowClick(row, column, event) {
                 // Don't navigate while the user is selecting text to copy.
@@ -1444,6 +1496,7 @@
             this.fieldsToExport = Object.keys(this.input_labels)
             this.shortcodesToExport = this.getDefaultShortcodesToExport()
             this.loadLastExportFields();
+            this.loadPinnedColumn();
         },
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
