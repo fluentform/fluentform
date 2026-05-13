@@ -604,8 +604,6 @@ trait FluentCartProductFeed
         if ($newRows) {
             ProductMeta::query()->insert($newRows);
         }
-
-        delete_transient('ff_fluentcart_product_custom_field_keys');
     }
 
     protected function getFluentCartProductCustomFieldOptions()
@@ -621,63 +619,9 @@ trait FluentCartProductFeed
             'internal_note'    => __('Internal Note', 'fluentform'),
         ];
 
-        foreach ($this->getFluentCartProductCustomFieldKeys() as $metaKey) {
-            if (!isset($options[$metaKey])) {
-                $options[$metaKey] = ucwords(str_replace(['_', '-'], ' ', $metaKey));
-            }
-        }
-
         $options = apply_filters('fluent_cart/product_custom_field_options', $options);
 
         return apply_filters('fluentform/fluent_cart_product_feed_custom_field_options', $options);
-    }
-
-    protected function getFluentCartProductCustomFieldKeys()
-    {
-        if (!class_exists(ProductMeta::class)) {
-            return [];
-        }
-
-        $cacheKey = 'ff_fluentcart_product_custom_field_keys';
-        $metaKeys = get_transient($cacheKey);
-
-        if (is_array($metaKeys)) {
-            return $metaKeys;
-        }
-
-        $excluded = [
-            'product_thumbnail',
-            'product_gallery',
-            'license_settings',
-            'license_keys',
-            '_fluent_sl_changelog',
-        ];
-
-        $metaRows = ProductMeta::query()
-            ->select('meta_key')
-            ->where('object_type', 'product')
-            ->groupBy('meta_key')
-            ->orderBy('meta_key', 'ASC')
-            ->limit(100)
-            ->get();
-
-        $metaKeys = [];
-
-        foreach ($metaRows as $row) {
-            $metaKey = sanitize_key((string) (is_object($row) ? $row->meta_key : Arr::get($row, 'meta_key', '')));
-
-            if (!$metaKey || in_array($metaKey, $excluded, true) || strpos($metaKey, 'fct_') === 0) {
-                continue;
-            }
-
-            $metaKeys[] = $metaKey;
-        }
-
-        $metaKeys = array_values(array_unique($metaKeys));
-
-        set_transient($cacheKey, $metaKeys, HOUR_IN_SECONDS);
-
-        return $metaKeys;
     }
 
     protected function fluentCartTableHasColumn($table, $column)
