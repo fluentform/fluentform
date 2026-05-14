@@ -258,6 +258,10 @@ class Submission extends Model
         // in display order regardless of which sort column the filter selects.
         // When sortColumn is id the tuple degenerates to a simple id compare.
         $sortColumn = self::getSortColumn();
+        // Re-assert whitelist; $sortColumn is interpolated into whereRaw below.
+        if (!in_array($sortColumn, ['id', 'created_at'], true)) {
+            $sortColumn = 'created_at';
+        }
         $current = static::select(['id', $sortColumn])->find($entryId);
         if (!$current) {
             return apply_filters('fluentform/next_submission', null, $entryId, $attributes);
