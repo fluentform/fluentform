@@ -26,7 +26,7 @@
                 </el-checkbox>
             </el-form-item>
 
-            <el-form-item v-if="!editItem.settings.use_fluent_cart_product">
+            <el-form-item v-if="!isSingleFluentCartProductEnabled">
                 <elLabel
                     slot="label"
                     :label="$t('Payment Amount')"
@@ -38,7 +38,7 @@
                 />
             </el-form-item>
 
-            <el-form-item v-if="!editItem.settings.use_fluent_cart_product">
+            <el-form-item v-if="!isSingleFluentCartProductEnabled">
                 <elLabel
                     slot="label"
                     :label="$t('Amount Label')"
@@ -47,7 +47,7 @@
                 <el-input type="text" v-model="editItem.settings.price_label" />
             </el-form-item>
 
-            <el-form-item v-if="hasFluentCartProducts && editItem.settings.use_fluent_cart_product">
+            <el-form-item v-if="isSingleFluentCartProductEnabled">
                 <elLabel
                     slot="label"
                     :label="$t('Fluent Cart Product')"
@@ -142,7 +142,7 @@
 
                             <div>
                                 <el-input
-                                    v-if="!option.use_fluent_cart_product"
+                                    v-if="!isOptionFluentCartProductEnabled(option)"
                                     min="0"
                                     step="any"
                                     type="number"
@@ -150,7 +150,7 @@
                                     v-model="option.value"
                                 />
                                 <el-select
-                                    v-else-if="hasFluentCartProducts"
+                                    v-else
                                     v-model="option.fluent_cart_product_id"
                                     filterable
                                     clearable
@@ -249,9 +249,15 @@
             },
             hasFluentCartProducts() {
                 return this.fluentCartProducts.length > 0;
+            },
+            isSingleFluentCartProductEnabled() {
+                return this.hasFluentCartProducts && this.editItem.settings.use_fluent_cart_product;
             }
         },
         methods: {
+            isOptionFluentCartProductEnabled(option) {
+                return this.hasFluentCartProducts && option.use_fluent_cart_product;
+            },
             handleDrop(data) {
                 const {index, list, item} = data;
                 item.id = new Date().getTime();

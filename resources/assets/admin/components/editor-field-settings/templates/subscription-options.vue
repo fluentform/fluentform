@@ -136,7 +136,7 @@
                             />
 
                             <el-input-number
-                                v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true"
+                                v-if="!isFluentCartProductEnabled(item)"
                                 :min="0"
                                 size="mini"
                                 v-model="item.subscription_amount"
@@ -146,7 +146,7 @@
                                 {{ $t('Price comes from the mapped Fluent Cart subscription product.') }}
                             </div>
                         </el-form-item>
-                        <el-form-item v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
+                        <el-form-item v-if="!isFluentCartProductEnabled(item)">
                             <el-checkbox
                                 true-label="yes"
                                 false-label="no"
@@ -157,7 +157,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
+                        <el-form-item v-if="!isFluentCartProductEnabled(item)">
                             <elLabel
                                 slot="label"
                                 :label="$t('Billing Interval')"
@@ -180,7 +180,7 @@
                     </el-col>
                 </el-row>
 
-                <template v-if="item.user_input === 'yes' && item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
+                <template v-if="item.user_input === 'yes' && !isFluentCartProductEnabled(item)">
                     <el-form-item>
                         <elLabel
                             slot="label"
@@ -224,7 +224,7 @@
                     </el-row>
                 </template>
 
-                <el-row :gutter="20" v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
+                <el-row :gutter="20" v-if="!isFluentCartProductEnabled(item)">
                     <el-col :span="12">
                         <el-form-item>
                             <elLabel
@@ -273,7 +273,7 @@
                     </el-col>
                 </el-row>
 
-                <el-row :gutter="20" v-if="item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
+                <el-row :gutter="20" v-if="!isFluentCartProductEnabled(item)">
                     <el-col :span="12">
                         <el-form-item>
                             <elLabel
@@ -336,7 +336,7 @@
                     </el-col>
                 </el-row>
 
-                <el-form-item v-if="item.has_end_date === 'yes' && item.use_fluent_cart_product !== 'yes' && item.use_fluent_cart_product !== true">
+                <el-form-item v-if="item.has_end_date === 'yes' && !isFluentCartProductEnabled(item)">
                     <elLabel
                         slot="label"
                         :label="$t('When Plan Expires')"
@@ -461,8 +461,12 @@
                 }
             },
 
+            isFluentCartProductEnabled(item) {
+                return this.hasFluentCartSubscriptionProducts && (item.use_fluent_cart_product === true || item.use_fluent_cart_product === 'yes');
+            },
+
             getAdvancedText(item) {
-                if (item.use_fluent_cart_product === true || item.use_fluent_cart_product === 'yes') {
+                if (this.isFluentCartProductEnabled(item)) {
                     return this.$t('Pricing and billing details come from the mapped Fluent Cart subscription product.');
                 }
 

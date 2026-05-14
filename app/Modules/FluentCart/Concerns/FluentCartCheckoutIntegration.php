@@ -361,6 +361,12 @@ trait FluentCartCheckoutIntegration
             ], 404);
         }
 
+        if (!class_exists(FluentCartCart::class)) {
+            wp_send_json_error([
+                'message' => __('Fluent Cart checkout session is not available.', 'fluentform'),
+            ], 404);
+        }
+
         $cart = FluentCartCart::find($checkoutHash);
         if (!$cart || (int)$cart->order_id !== (int)$order->id) {
             wp_send_json_error([

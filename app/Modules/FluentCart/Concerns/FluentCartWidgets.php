@@ -12,6 +12,10 @@ trait FluentCartWidgets
 
     public function addOrderFormWidget($widgets, $order)
     {
+        if (!class_exists(FluentCartOrder::class)) {
+            return $widgets;
+        }
+
         if (!$order) {
             return $widgets;
         }
@@ -111,7 +115,7 @@ trait FluentCartWidgets
 
     protected function findOrderBySubmissionId($submissionId)
     {
-        if (!$submissionId || !class_exists(FluentCartOrderMeta::class)) {
+        if (!$submissionId || !class_exists(FluentCartOrderMeta::class) || !class_exists(FluentCartOrder::class)) {
             return null;
         }
 

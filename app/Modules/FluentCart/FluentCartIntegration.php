@@ -7,6 +7,7 @@ use FluentForm\App\Modules\FluentCart\Concerns\FluentCartCustomerPortal;
 use FluentForm\App\Modules\FluentCart\Concerns\FluentCartLifecycleSync;
 use FluentForm\App\Modules\FluentCart\Concerns\FluentCartOrderFilters;
 use FluentForm\App\Modules\FluentCart\Concerns\FluentCartPaymentMethod;
+use FluentForm\App\Modules\FluentCart\Concerns\FluentCartProductFeed;
 use FluentForm\App\Modules\FluentCart\Concerns\FluentCartShortcodes;
 use FluentForm\App\Modules\FluentCart\Concerns\FluentCartSubmissionContext;
 use FluentForm\App\Modules\FluentCart\Concerns\FluentCartWidgets;
@@ -19,6 +20,7 @@ class FluentCartIntegration
     use FluentCartLifecycleSync;
     use FluentCartOrderFilters;
     use FluentCartPaymentMethod;
+    use FluentCartProductFeed;
     use FluentCartShortcodes;
     use FluentCartSubmissionContext;
     use FluentCartWidgets;
@@ -70,6 +72,21 @@ class FluentCartIntegration
         add_action('fluent_cart/subscription_canceled', [$this, 'syncFluentCartCanceledSubscription'], 20, 1);
         add_action('fluent_cart/subscription_eot', [$this, 'syncFluentCartEndedSubscription'], 20, 1);
         add_action('fluent_cart/subscription_expired_validity', [$this, 'syncFluentCartExpiredSubscription'], 20, 1);
+        add_filter('fluentform/global_notification_types', [$this, 'addFluentCartProductFeedType'], 20, 2);
+        add_filter('fluentform/global_notification_active_types', [$this, 'addFluentCartProductFeedActiveType'], 20, 2);
+        add_filter('fluentform/get_available_form_integrations', [$this, 'addFluentCartProductFeedIntegration'], 20, 2);
+        add_filter('fluentform/global_notification_feed_fluent_cart_product_feed', [$this, 'formatFluentCartProductFeedListItem'], 20, 2);
+        add_filter('fluentform/get_integration_defaults_fluent_cart_product', [$this, 'getFluentCartProductFeedDefaults'], 20, 2);
+        add_filter('fluentform/get_integration_defaults_fluent_cart_product_feed', [$this, 'getFluentCartProductFeedDefaults'], 20, 2);
+        add_filter('fluentform/get_integration_settings_fields_fluent_cart_product', [$this, 'getFluentCartProductFeedSettingsFields'], 20, 2);
+        add_filter('fluentform/get_integration_settings_fields_fluent_cart_product_feed', [$this, 'getFluentCartProductFeedSettingsFields'], 20, 2);
+        add_filter('fluentform/save_integration_value_fluent_cart_product', [$this, 'sanitizeFluentCartProductFeedValues'], 20, 3);
+        add_filter('fluentform/save_integration_value_fluent_cart_product_feed', [$this, 'sanitizeFluentCartProductFeedValues'], 20, 3);
+        add_filter('fluentform/save_integration_settings_fluent_cart_product', [$this, 'setFluentCartProductFeedMetaKey'], 20, 2);
+        add_filter('fluentform/save_integration_settings_fluent_cart_product_feed', [$this, 'setFluentCartProductFeedMetaKey'], 20, 2);
+        add_filter('fluentform/notifying_async_fluent_cart_product', '__return_false');
+        add_filter('fluentform/notifying_sync_fluent_cart_product_api_logs', '__return_true');
+        add_action('fluentform/integration_notify_fluent_cart_product_feed', [$this, 'createFluentCartProductFromFeed'], 20, 4);
         add_filter('fluent_cart/confirmation_shortcodes', [$this, 'addFluentFormsConfirmationShortcodes'], 20, 2);
         add_filter('fluent_cart/editor_shortcodes', [$this, 'addFluentFormsEmailShortcodes'], 20);
         add_filter('fluent_cart/smartcode_fallback', [$this, 'parseFluentFormsCartSmartCode'], 20, 2);
@@ -91,6 +108,6 @@ class FluentCartIntegration
     {
         return function_exists('fluentCart') ||
             class_exists('FluentCart\App\App') ||
-            defined('FLUENT_CART_VERSION');
+            defined('FLUENTCART_VERSION');
     }
 }
