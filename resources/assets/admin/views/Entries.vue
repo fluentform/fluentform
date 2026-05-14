@@ -1082,6 +1082,7 @@
                     .finally(() => {
                         this.getVisibleColumns();
                         this.loading = false;
+                        this.applyRowTabindex();
                     });
             },
             handleTableSort(column) {
@@ -1142,7 +1143,23 @@
                     tableEl.querySelectorAll('.ff_entry_status_dot, .inline_actions .action_button, .ff_entry_table_cell, .ff_entry_table_cell__content, .el-tooltip, .el-popover__reference').forEach((node) => {
                         node.setAttribute('tabindex', '-1');
                     });
-                    tableEl.querySelectorAll('.el-table__fixed .el-table__body input, .el-table__fixed a[href], .el-table__fixed button, .el-table__body-wrapper td.el-table-column--selection input, .el-table__body-wrapper td.is-hidden input, .el-table__body-wrapper td.is-hidden a[href], .el-table__body-wrapper td.is-hidden button').forEach((node) => {
+                    // Strip tabindex from every focusable inside any row clone
+                    // (fixed-left, fixed-right, main body's selection cell and
+                    // is-hidden duplicates) so the row itself is the only tab
+                    // stop. Keyboard model: Tab moves between rows, ArrowUp/Down
+                    // navigates rows, Space toggles selection, Enter opens entry.
+                    tableEl.querySelectorAll([
+                        '.el-table__fixed input',
+                        '.el-table__fixed a[href]',
+                        '.el-table__fixed button',
+                        '.el-table__fixed-right input',
+                        '.el-table__fixed-right a[href]',
+                        '.el-table__fixed-right button',
+                        '.el-table__body-wrapper td.el-table-column--selection input',
+                        '.el-table__body-wrapper td.is-hidden input',
+                        '.el-table__body-wrapper td.is-hidden a[href]',
+                        '.el-table__body-wrapper td.is-hidden button'
+                    ].join(', ')).forEach((node) => {
                         node.setAttribute('tabindex', '-1');
                     });
 
@@ -1151,9 +1168,7 @@
                         if (this.entries[index] && this.entries[index].id !== undefined) {
                             row.setAttribute('data-entry-id', this.entries[index].id);
                         }
-                        if (!row.hasAttribute('tabindex')) {
-                            row.setAttribute('tabindex', '0');
-                        }
+                        row.setAttribute('tabindex', '0');
                     });
                 });
             },
@@ -1328,6 +1343,7 @@
                 } catch (e) {
                     // localStorage unavailable; the choice still applies for this session.
                 }
+                this.applyRowTabindex();
             },
             handleRowClick(row, column, event) {
                 const selection = typeof window !== 'undefined' ? window.getSelection() : null;

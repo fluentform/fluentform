@@ -438,6 +438,13 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 6.2.3 (Date: TBD) : Unreleased =
+- Adds entries table pinned column selection
+- Improves entries table keyboard navigation with row focus, Enter-to-open, and Space-to-select behavior
+- Improves entries table accessibility for fixed columns and icon-only actions
+- Improves entries form switcher with searchable form selection
+- Fixes entries table row focus handling with fixed columns
+
 = 6.2.2 (Date: April 23, 2026) =
 - Adds subscription field support in payment calculations
 - Fix raw cookie values for smartcodes
