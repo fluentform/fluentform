@@ -60,7 +60,12 @@
                                         :disabled="form.id == form_id"
                                 >{{ form.title }}
                                 </el-dropdown-item>
-                                <li v-if="!filteredForms.length" class="ff_form_switcher_empty">
+                                <li
+                                    v-if="!filteredForms.length"
+                                    class="ff_form_switcher_empty"
+                                    role="status"
+                                    aria-live="polite"
+                                >
                                     {{ $t('No matching forms') }}
                                 </li>
                             </el-dropdown-menu>
@@ -349,8 +354,9 @@
                                         class="ff_entry_status_dot"
                                         :class="'ff_entry_status_dot--' + (scope.row.status || 'unknown')"
                                         tabindex="-1"
-                                        aria-hidden="true"
+                                        role="img"
                                         :title="getStatusName(scope.row.status)"
+                                        :aria-label="$t('Status') + ': ' + getStatusName(scope.row.status)"
                                     ></span>
                                     <router-link
                                         tabindex="-1"
@@ -529,21 +535,23 @@
                             <template slot-scope="scope">
                                 <btn-group size="sm">
                                     <btn-group-item>
-                                        <router-link :to="{
-                                            name: 'form-entry',
-                                            params: {
-                                                form_id: scope.row.form_id,
-                                                entry_id: scope.row.id
-                                            },
-                                            query: {
-                                                sort_by: sort_by,
-                                                current_page: paginate.current_page,
-                                                pos: scope.$index,
-                                                type: entry_type
-                                            }
-                                        }">
+                                        <router-link
+                                            :aria-label="$t('View entry')"
+                                            :to="{
+                                                name: 'form-entry',
+                                                params: {
+                                                    form_id: scope.row.form_id,
+                                                    entry_id: scope.row.id
+                                                },
+                                                query: {
+                                                    sort_by: sort_by,
+                                                    current_page: paginate.current_page,
+                                                    pos: scope.$index,
+                                                    type: entry_type
+                                                }
+                                            }">
                                             <span class="el-button el-button--primary el-button--mini el-button--icon">
-                                                <i class="ff-icon ff-icon-eye-filled"></i>
+                                                <i class="ff-icon ff-icon-eye-filled" aria-hidden="true"></i>
                                             </span>
                                         </router-link>
                                     </btn-group-item>
@@ -556,6 +564,7 @@
                                                 size="mini"
                                                 type="danger"
                                                 icon="ff-icon ff-icon-trash"
+                                                :aria-label="$t('Delete entry')"
                                             />
                                         </confirm>
                                     </btn-group-item>
