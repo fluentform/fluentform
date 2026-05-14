@@ -458,6 +458,39 @@ a.input-image:hover {
     text-overflow: ellipsis;
   }
 }
+
+// Searchable form switcher dropdown. Search input is sticky at the top
+// while the form list scrolls beneath it. Empty state shown when the
+// query matches nothing.
+.ff_form_switcher_menu {
+  max-height: 340px;
+  overflow-y: auto;
+  min-width: 220px;
+  padding-top: 0;
+
+  .ff_form_switcher_search {
+    list-style: none;
+    padding: 8px 10px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
+    border-bottom: 1px solid #ebeef5;
+
+    .el-input__inner {
+      height: 30px;
+      line-height: 30px;
+    }
+  }
+
+  .ff_form_switcher_empty {
+    list-style: none;
+    padding: 10px 16px;
+    color: #909399;
+    font-size: 13px;
+    text-align: center;
+  }
+}
 .ff_form_editor_entries_actions{
   .ff_section_head_content{
     margin-bottom: 10px;
