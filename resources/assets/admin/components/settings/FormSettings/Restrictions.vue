@@ -1,7 +1,7 @@
 <template>
     <el-form @submit.native.prevent="checkEnter" ref="form-bottom" label-position="top">
         <!--Limit Number of Entries-->
-        <div class="el-form-item-wrap">
+        <div v-if="canShowSection('limitNumberOfEntries')" class="el-form-item-wrap">
             <el-form-item class="ff-form-item ff-form-item-flex">
                 <div slot="label" style="width: 390px;">
                     {{ $t('Maximum Number of Entries') }}
@@ -50,7 +50,7 @@
         </div><!-- .el-form-item-wrap -->
 
          <!--Schedule Form-->
-        <div class="el-form-item-wrap">
+        <div v-if="canShowSection('scheduleForm')" class="el-form-item-wrap">
             <el-form-item class="ff-form-item ff-form-item-flex">
                 <div slot="label" style="width: 390px;">
                     {{ $t('Form Scheduling') }}
@@ -138,10 +138,10 @@
             </transition>
         </div><!-- .el-form-item-wrap -->
 
-        <hr class="mb-4 mt-4">
+        <hr v-if="canShowSection('requireLogin')" class="mb-4 mt-4">
 
         <!--Require user to be logged in-->
-        <div class="el-form-item-wrap">
+        <div v-if="canShowSection('requireLogin')" class="el-form-item-wrap">
             <h5 class="mb-3">{{ $t('Login Requirement Settings') }}</h5>
             <el-form-item class="ff-form-item ff-form-item-flex">
                 <div slot="label" style="width: 390px;">
@@ -184,10 +184,10 @@
             </transition>
         </div><!-- .el-form-item-wrap -->
 
-        <hr class="mb-4 mt-4">
+        <hr v-if="canShowSection('denyEmptySubmission')" class="mb-4 mt-4">
 
         <!--Allow empty form submission-->
-        <div class="el-form-item-wrap">
+        <div v-if="canShowSection('denyEmptySubmission')" class="el-form-item-wrap">
             <h5 class="mb-3">{{ $t('Empty Submission Blocking') }}</h5>
             <el-form-item class="ff-form-item ff-form-item-flex">
                 <div slot="label" style="width: 390px;">
@@ -231,9 +231,9 @@
             </transition>
         </div><!-- .el-form-item -->
 
-        <hr class="mb-4 mt-4">
+        <hr v-if="canShowSection('restrictForm')" class="mb-4 mt-4">
         <!--Restrict form based on ip, country and keywords-->
-        <div class="el-form-item-wrap">
+        <div v-if="canShowSection('restrictForm')" class="el-form-item-wrap">
             <h5 class="mb-3">{{ $t('Restrict Form') }}</h5>
             <el-form-item class="ff-form-item ff-form-item-flex">
                 <div slot="label" style="width: 390px;">
@@ -255,7 +255,7 @@
 
             <transition name="slide-down">
                 <el-form-item v-if="form.restrictForm.enabled" class="conditional-items">
-                    <div v-if="hasFluentformPro">
+                    <div v-if="showProRestrictionFields && hasFluentformPro">
                         <el-checkbox v-model="form.restrictForm.fields.ip.status">
                             {{ $t('IP Based Restriction') }}
                         </el-checkbox>
@@ -307,7 +307,7 @@
                         </div>
                     </div>
 
-                    <div v-if="hasFluentformPro">
+                    <div v-if="showProRestrictionFields && hasFluentformPro">
                         <el-checkbox v-model="form.restrictForm.fields.country.status">
                             {{ $t('Country Based Restriction') }}
                         </el-checkbox>
@@ -426,6 +426,22 @@
             hasPro: {
                 required: true,
                 type: Boolean
+            },
+            visibleSections: {
+                type: Array,
+                default() {
+                    return [
+                        'limitNumberOfEntries',
+                        'scheduleForm',
+                        'requireLogin',
+                        'denyEmptySubmission',
+                        'restrictForm'
+                    ];
+                }
+            },
+            showProRestrictionFields: {
+                type: Boolean,
+                default: true
             }
         },
         data() {
@@ -486,6 +502,9 @@
 
             },
             checkEnter() {
+            },
+            canShowSection(section) {
+                return this.visibleSections.indexOf(section) !== -1;
             }
         },
         mounted() {
