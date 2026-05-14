@@ -108,6 +108,6 @@ class FluentCartIntegration
     {
         return function_exists('fluentCart') ||
             class_exists('FluentCart\App\App') ||
-            defined('FLUENT_CART_VERSION');
+            defined('FLUENTCART_VERSION');
     }
 }
