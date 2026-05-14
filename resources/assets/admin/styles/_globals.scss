@@ -1011,7 +1011,6 @@ label.el-radio, label.el-checkbox {
   display: flex;
   flex-direction: column;
   align-self: stretch;
-  background: $white;
   overflow: hidden;
   height: calc(100vh - 112px);
   height: calc(100dvh - 112px);
@@ -1065,7 +1064,6 @@ label.el-radio, label.el-checkbox {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 .ff_settings_wrapper .ff_settings_list {
@@ -2081,10 +2079,8 @@ label.el-radio, label.el-checkbox {
 
 .ff_settings_wrapper .ff_sidebar_toggle {
   font-size: 13px;
-  line-height: 1;
   width: 100%;
   min-height: 42px;
-  height: auto;
   cursor: pointer;
   background: #fff;
   border: 0;
@@ -2116,7 +2112,6 @@ label.el-radio, label.el-checkbox {
   .ff-icon {
     font-size: 16px;
     transform: rotate(180deg);
-    transition: transform 0.2s ease;
   }
 }
 
