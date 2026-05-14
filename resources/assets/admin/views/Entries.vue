@@ -28,6 +28,7 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <el-dropdown
+                            ref="formSwitcherDropdown"
                             @command="handleSwitchForm"
                             @visible-change="handleFormSwitcherVisible"
                             class="current_form_name"
@@ -37,7 +38,11 @@
                                 {{ current_form_title }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
-                            <el-dropdown-menu slot="dropdown" class="ff_form_switcher_menu">
+                            <el-dropdown-menu
+                                slot="dropdown"
+                                class="ff_form_switcher_menu"
+                                @keydown.native.capture="handleFormSwitcherMenuKeydown"
+                            >
                                 <li class="ff_form_switcher_search" @click.stop>
                                     <el-input
                                         v-model="formSearch"
@@ -46,7 +51,6 @@
                                         :placeholder="$t('Search forms...')"
                                         prefix-icon="el-icon-search"
                                         clearable
-                                        @keydown.native="handleFormSwitcherInputKeydown"
                                     />
                                 </li>
                                 <el-dropdown-item
@@ -329,29 +333,28 @@
                         :data="entries"
                         :stripe="true"
                         :class="['ff_entries_table', {'compact': isCompact}]"
+                        highlight-current-row
                         @sort-change="handleTableSort"
                         @selection-change="handleSelectionChange"
                         @row-click="handleRowClick"
-                        @keydown.native="handleTableKeydown"
+                        @keydown.native.capture="handleTableKeydown"
+                        @focusin.native="handleRowFocusIn"
                     >
 
                         <el-table-column type="selection" width="30" :fixed="pinnedColumn !== 'none' ? 'left' : false"></el-table-column>
                         <el-table-column label="#" sortable="custom" prop="id" width="100px" :fixed="pinnedColumn === 'id' ? 'left' : false" :class-name="idShortByClassName">
                             <template slot-scope="scope">
                                 <div class="has_hover_item">
-                                    <el-tooltip
-                                        placement="top"
-                                        :content="getStatusName(scope.row.status)"
-                                        :open-delay="150"
-                                    >
-                                        <span
-                                            class="ff_entry_status_dot"
-                                            :class="'ff_entry_status_dot--' + (scope.row.status || 'unknown')"
-                                            role="img"
-                                            :aria-label="$t('Status') + ': ' + getStatusName(scope.row.status)"
-                                        ></span>
-                                    </el-tooltip>
-                                    <router-link :to="{
+                                    <span
+                                        class="ff_entry_status_dot"
+                                        :class="'ff_entry_status_dot--' + (scope.row.status || 'unknown')"
+                                        tabindex="-1"
+                                        aria-hidden="true"
+                                        :title="getStatusName(scope.row.status)"
+                                    ></span>
+                                    <router-link
+                                        tabindex="-1"
+                                        :to="{
                                             name: 'form-entry',
                                             params: {
                                                 form_id: scope.row.form_id,
@@ -368,22 +371,26 @@
                                     </router-link>
                                     <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
                                         <span v-if="scope.row.is_favourite != '0'"
+                                            tabindex="-1"
                                             @click="changeFavorite(scope.row.id, scope.$index, 0)"
                                             :title="$t('Remove from Favorites')"
                                             class="icon-favorite el-icon-star-on action_button"
                                         />
                                         <span v-else
+                                            tabindex="-1"
                                             @click="changeFavorite(scope.row.id, scope.$index, 1)"
                                             :title="$t('Mark as Favorites')"
                                             class="icon-favorite el-icon-star-off action_button"
                                         />
 
                                         <span v-if="scope.row.status == 'read'"
+                                            tabindex="-1"
                                             @click="changeStatus(scope.row.id, scope.$index, 'unread')"
                                             :title="$t('Mark as Unread')"
                                             class="icon-status el-icon-circle-check action_button"
                                         />
                                         <span v-else
+                                            tabindex="-1"
                                             @click="changeStatus(scope.row.id, scope.$index, 'read')"
                                             :title="$t('Mark as Read')"
                                             class="icon-status el-icon-finished action_button"
@@ -391,7 +398,8 @@
                                     </div>
 
                                     <div class="inline_actions inline_item" v-else>
-                                            <span @click="restoreEntry(scope.row.id, scope.$index)"
+                                            <span tabindex="-1"
+                                                @click="restoreEntry(scope.row.id, scope.$index)"
                                                 class="el-icon-circle-check action_button">{{ $t('Restore') }}</span>
                                     </div>
                                 </div>
@@ -803,8 +811,9 @@
                 showImportEntriesModal: false,
                 app: window.fluent_forms_global_var,
                 advanced_filter_active : false,
-                advanced_filter : {},
-                exportWithNotes : false
+                advanced_filter : [[]],
+                exportWithNotes : false,
+                _isSwitchingForm: false
             }
         },
         computed: {
@@ -1111,39 +1120,120 @@
             handleSelectionChange(val) {
                 this.entrySelections = val;
             },
-            // Makes every rendered row reachable by Tab so keyboard users can
-            // activate the whole row with Enter, mirroring the mouse-only
-            // row-click handler. Element UI 2.15 does not expose tabindex on
-            // rows natively; we set it post-render via the table ref. Re-run
-            // every time entries change (filter, sort, paginate).
             applyRowTabindex() {
                 if (typeof document === 'undefined') return;
                 this.$nextTick(() => {
-                    const tableEl = this.$refs.entriesTable && this.$refs.entriesTable.$el;
-                    if (!tableEl) return;
-                    const rows = tableEl.querySelectorAll('tbody tr.el-table__row');
-                    rows.forEach((row) => {
+                    const tableEl = this.getEntriesTableElement();
+                    const mainBody = this.getMainTableBodyWrapper();
+                    if (!tableEl || !mainBody) return;
+
+                    tableEl.querySelectorAll('.el-table__fixed tr.el-table__row, .el-table__fixed-right tr.el-table__row').forEach((row) => {
+                        row.removeAttribute('tabindex');
+                    });
+                    tableEl.querySelectorAll('.ff_entry_status_dot, .inline_actions .action_button, .ff_entry_table_cell, .ff_entry_table_cell__content, .el-tooltip, .el-popover__reference').forEach((node) => {
+                        node.setAttribute('tabindex', '-1');
+                    });
+                    tableEl.querySelectorAll('.el-table__fixed .el-table__body input, .el-table__fixed a[href], .el-table__fixed button, .el-table__body-wrapper td.el-table-column--selection input, .el-table__body-wrapper td.is-hidden input, .el-table__body-wrapper td.is-hidden a[href], .el-table__body-wrapper td.is-hidden button').forEach((node) => {
+                        node.setAttribute('tabindex', '-1');
+                    });
+
+                    const rows = this.getMainTableRows();
+                    rows.forEach((row, index) => {
+                        if (this.entries[index] && this.entries[index].id !== undefined) {
+                            row.setAttribute('data-entry-id', this.entries[index].id);
+                        }
                         if (!row.hasAttribute('tabindex')) {
                             row.setAttribute('tabindex', '0');
                         }
                     });
                 });
             },
-            // Enter on a focused row opens the entry. Enter on an interactive
-            // descendant (link, button, checkbox, action icon) is left alone
-            // so the descendant handles it itself - no double activation.
-            handleTableKeydown(event) {
-                if (event.key !== 'Enter') return;
-                const target = event.target;
-                if (!target || !target.matches || !target.matches('tr.el-table__row')) return;
-                const rows = Array.from(target.parentElement.querySelectorAll('tr.el-table__row'));
-                const index = rows.indexOf(target);
-                if (index < 0 || !this.entries[index]) return;
-                event.preventDefault();
-                this.handleRowClick(this.entries[index], null, event);
+            getEntriesTableElement() {
+                const tableEl = this.$refs.entriesTable && this.$refs.entriesTable.$el;
+                return tableEl || null;
             },
-            // Auto-focuses the search field when the form switcher opens and
-            // clears the query when it closes, so each open starts fresh.
+            getMainTableBodyWrapper() {
+                const tableEl = this.getEntriesTableElement();
+                if (!tableEl) return null;
+                const wrappers = Array.from(tableEl.querySelectorAll('.el-table__body-wrapper'));
+                return wrappers.find((wrapper) => {
+                    return !wrapper.closest('.el-table__fixed') && !wrapper.closest('.el-table__fixed-right');
+                }) || null;
+            },
+            getMainTableRows() {
+                const mainBody = this.getMainTableBodyWrapper();
+                return mainBody ? Array.from(mainBody.querySelectorAll('tbody tr.el-table__row')) : [];
+            },
+            getEntryIndexFromRow(tr) {
+                if (!tr) return -1;
+                const entryId = tr.getAttribute('data-entry-id');
+                if (entryId !== null) {
+                    return this.entries.findIndex((entry) => String(entry.id) === String(entryId));
+                }
+                const rows = Array.from(tr.parentElement ? tr.parentElement.querySelectorAll('tr.el-table__row') : []);
+                return rows.indexOf(tr);
+            },
+            handleRowFocusIn(event) {
+                const target = event.target;
+                if (!target || !target.closest) return;
+                const tr = target.closest('tr.el-table__row');
+                if (!tr || !tr.parentElement) return;
+                const index = this.getEntryIndexFromRow(tr);
+                if (index < 0 || !this.entries[index]) return;
+                const tableInstance = this.$refs.entriesTable;
+                if (tableInstance && typeof tableInstance.setCurrentRow === 'function') {
+                    tableInstance.setCurrentRow(this.entries[index]);
+                }
+            },
+            handleTableKeydown(event) {
+                const isArrow = event.key === 'ArrowDown' || event.key === 'ArrowUp';
+                const isEnter = event.key === 'Enter';
+                const isSpace = event.key === ' ' || event.key === 'Spacebar';
+                if (!isArrow && !isEnter && !isSpace) return;
+
+                const target = event.target;
+                if (!target || !target.closest) return;
+
+                const tr = target.matches && target.matches('tr.el-table__row') ? target : null;
+                if (!tr || !tr.parentElement) return;
+                if (tr.closest('.el-table__fixed') || tr.closest('.el-table__fixed-right')) return;
+
+                const rowIndex = this.getEntryIndexFromRow(tr);
+                if (rowIndex < 0) return;
+
+                if (isEnter) {
+                    if (!this.entries[rowIndex]) return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    this.handleRowClick(this.entries[rowIndex], null, event);
+                    return;
+                }
+
+                if (isSpace) {
+                    const tableInstance = this.$refs.entriesTable;
+                    if (!this.entries[rowIndex] || !tableInstance || typeof tableInstance.toggleRowSelection !== 'function') return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    if (!event.repeat) {
+                        tableInstance.toggleRowSelection(this.entries[rowIndex]);
+                    }
+                    return;
+                }
+
+                const nextRowIndex = event.key === 'ArrowDown'
+                    ? Math.min(rowIndex + 1, this.entries.length - 1)
+                    : Math.max(rowIndex - 1, 0);
+                if (nextRowIndex === rowIndex) return;
+                const rows = this.getMainTableRows();
+                const nextEntry = this.entries[nextRowIndex];
+                const nextRow = nextEntry
+                    ? (rows.find((row) => row.getAttribute('data-entry-id') === String(nextEntry.id)) || rows[nextRowIndex])
+                    : null;
+                if (!nextRow) return;
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                nextRow.focus();
+            },
             handleFormSwitcherVisible(isOpen) {
                 if (isOpen) {
                     this.$nextTick(() => {
@@ -1151,29 +1241,65 @@
                         if (ref && typeof ref.focus === 'function') ref.focus();
                     });
                 } else {
+                    if (this._isSwitchingForm) return;
                     this.formSearch = '';
                 }
             },
-            // Keyboard support for the form switcher search:
-            //   ArrowDown - jump focus into the filtered list (Element UI's
-            //   dropdown then handles further up/down navigation natively).
-            //   Enter     - pick the first matching non-disabled form so a
-            //   user can type and press Enter without ever leaving the input.
-            handleFormSwitcherInputKeydown(event) {
-                const key = event.key;
-                if (key === 'ArrowDown') {
+            getFormSwitcherMenu() {
+                const dropdown = this.$refs.formSwitcherDropdown;
+                if (dropdown && dropdown.popperElm) return dropdown.popperElm;
+                return null;
+            },
+            focusFormSwitcherTarget(target) {
+                if (!target || typeof target.focus !== 'function') return;
+                window.setTimeout(() => {
+                    target.focus();
+                }, 0);
+            },
+            handleFormSwitcherMenuKeydown(event) {
+                if (!['ArrowDown', 'ArrowUp', 'Enter'].includes(event.key)) return;
+                const menu = this.getFormSwitcherMenu();
+                if (!menu) return;
+
+                const items = Array.from(menu.querySelectorAll('.el-dropdown-menu__item:not(.is-disabled)'));
+                const inputRef = this.$refs.formSwitcherSearch;
+                const inputEl = (inputRef && inputRef.$el) ? inputRef.$el.querySelector('input') : null;
+                const focused = document.activeElement;
+                const isOnInput = !!(inputEl && focused === inputEl);
+                const currentItemIndex = items.indexOf(focused);
+
+                if (event.key === 'ArrowDown') {
+                    if (!items.length) return;
                     event.preventDefault();
-                    this.$nextTick(() => {
-                        const menu = document.querySelector('.ff_form_switcher_menu');
-                        if (!menu) return;
-                        const item = menu.querySelector('.el-dropdown-menu__item:not(.is-disabled)');
-                        if (item && typeof item.focus === 'function') item.focus();
-                    });
-                } else if (key === 'Enter') {
-                    const target = (this.filteredForms || []).find((f) => f && f.id != this.form_id);
-                    if (target) {
+                    event.stopImmediatePropagation();
+                    const nextIndex = isOnInput || currentItemIndex < 0
+                        ? 0
+                        : Math.min(currentItemIndex + 1, items.length - 1);
+                    this.focusFormSwitcherTarget(items[nextIndex]);
+                    return;
+                }
+                if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    if (currentItemIndex <= 0) {
+                        this.focusFormSwitcherTarget(inputEl);
+                    } else {
+                        this.focusFormSwitcherTarget(items[currentItemIndex - 1]);
+                    }
+                    return;
+                }
+                if (event.key === 'Enter') {
+                    if (currentItemIndex >= 0) {
                         event.preventDefault();
-                        this.handleSwitchForm(target.id);
+                        event.stopImmediatePropagation();
+                        items[currentItemIndex].click();
+                    } else if (isOnInput) {
+                        const target = (this.filteredForms || []).find((f) => f && f.id != this.form_id);
+                        if (target) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            this.handleSwitchForm(target.id);
+                        }
                     }
                 }
             },
@@ -1194,28 +1320,16 @@
                     // localStorage unavailable; the choice still applies for this session.
                 }
             },
-            // Click anywhere on the row to open the entry detail. Reached via
-            // mouse click (@row-click), keyboard (Tab to row + Enter, wired via
-            // applyRowTabindex + handleTableKeydown), or the existing eye-icon
-            // / # column router-link.
             handleRowClick(row, column, event) {
-                // Don't navigate while the user is selecting text to copy.
-                // Browsers normally suppress click after a drag-select, but
-                // double/triple-click word/line selection still fires click
-                // events; guarding here keeps copy workflows intact.
                 const selection = typeof window !== 'undefined' ? window.getSelection() : null;
                 if (selection && selection.toString().length > 0) {
                     return;
                 }
-                // Skip the selection checkbox and Actions columns. Check
-                // columnKey, not label, so the guard is not affected by
-                // translation of the "Actions" string at runtime.
+
                 if (column && (column.type === 'selection' || column.columnKey === 'actions')) {
                     return;
                 }
-                // Skip any interactive descendant. The router-link in the #
-                // column, the favorite/read icons, popovers, dropdowns, and
-                // the per-row eye/trash buttons all handle their own clicks.
+
                 if (event && event.target && event.target.closest(
                     'a, button, input, label, .el-checkbox, .action_button, .el-popover, .el-dropdown, .ff_entry_table_popover_content'
                 )) {
@@ -1400,7 +1514,13 @@
                     });
             },
             handleSwitchForm(formId) {
-                window.location.href = window.fluent_form_entries_vars.entries_url_base + formId;
+                this._isSwitchingForm = true;
+                const menu = this.getFormSwitcherMenu();
+                if (menu) {
+                    menu.style.visibility = 'hidden';
+                    menu.style.pointerEvents = 'none';
+                }
+                window.location.assign(window.fluent_form_entries_vars.entries_url_base + formId);
             },
             closeInputSelection(){
                 this.input_selection_visibility  = false;
@@ -1616,4 +1736,3 @@
 	    }
     };
 </script>
-

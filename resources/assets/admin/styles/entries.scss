@@ -746,10 +746,6 @@ tr.el-table__row td {
   line-height: 0;
 }
 
-// Compact status indicator that replaces the dedicated "Entry Status"
-// column. Filled blue = unread, hollow gray = read, red = trashed,
-// gold = favourite. Hover surfaces the label via the title attribute;
-// screen readers get aria-label.
 .ff_entry_status_dot {
   display: inline-block;
   width: 8px;
@@ -779,21 +775,12 @@ tr.el-table__row td {
   }
 }
 
-// Whole-row click navigates to the entry detail. Cursor signals the row
-// is clickable; the click handler in Entries.vue skips selection cells,
-// the Actions column, and any interactive descendant so existing buttons,
-// links, checkboxes, and text selection keep working unchanged.
-// applyRowTabindex adds tabindex=0 to each row so keyboard users can
-// reach it via Tab and activate it with Enter (same handler).
 .ff_entries_table tr.el-table__row {
   cursor: pointer;
 
   &:focus,
   &:focus-visible {
-    outline: 2px solid #409eff;
-    outline-offset: -2px;
-    position: relative;
-    z-index: 1;
+    outline: none;
   }
 
   td.el-table-column--selection,
@@ -809,6 +796,27 @@ tr.el-table__row td {
   .action_button {
     cursor: pointer;
   }
+
+  a:focus .el-button,
+  a:focus-visible .el-button,
+  .el-button:focus,
+  .el-button:focus-visible,
+  .el-button.is-focus {
+    border-color: #1f2d3d !important;
+    box-shadow: 0 0 0 3px rgba(31, 45, 61, 0.35) !important;
+    outline: none;
+  }
+}
+
+
+.ff_entries_table .el-table__body tr.el-table__row:hover > td.el-table__cell,
+.ff_entries_table .el-table__body tr.hover-row > td.el-table__cell {
+  background-color: #eef6ff !important;
+}
+
+
+.ff_entries_table .el-table__body tr.el-table__row.current-row > td {
+  background-color: #e6f2ff !important;
 }
 
 .ff_entry_table_cell {
