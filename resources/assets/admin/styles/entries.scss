@@ -808,30 +808,15 @@ tr.el-table__row td {
   }
 }
 
-// Visible hover state on data rows. Element UI's default hover colour
-// (#f5f7fa) is indistinguishable from the striped row alternation, so
-// users get no feedback that the row is clickable. Use a primary-light
-// tint that already lives in Element UI's palette. Hover-row class is
-// applied to all main + fixed-column clones natively, so the highlight
-// spans the visible row across pinned cells.
+
 .ff_entries_table .el-table__body tr.el-table__row:hover > td.el-table__cell,
 .ff_entries_table .el-table__body tr.hover-row > td.el-table__cell {
   background-color: #eef6ff !important;
 }
 
-.ff_entries_table.el-table--striped .el-table__body tr.el-table__row.current-row > td,
-.ff_entries_table.el-table--striped .el-table__body tr.el-table__row.el-table__row--striped.current-row > td,
-.ff_entries_table .el-table__body tr.el-table__row.current-row > td,
-.ff_entries_table .el-table__body tr.el-table__row:focus > td,
-.ff_entries_table .el-table__body tr.el-table__row:focus-visible > td {
-  background-color: #e6f2ff !important;
-}
 
-.ff_entries_table .el-table__body tr.el-table__row:focus .el-checkbox__inner,
-.ff_entries_table .el-table__body tr.el-table__row:focus-visible .el-checkbox__inner,
-.ff_entries_table .el-table__body tr.el-table__row.current-row .el-checkbox__inner {
-  border-color: #1f2d3d !important;
-  box-shadow: 0 0 0 3px rgba(31, 45, 61, 0.35) !important;
+.ff_entries_table .el-table__body tr.el-table__row.current-row > td {
+  background-color: #e6f2ff !important;
 }
 
 .ff_entry_table_cell {

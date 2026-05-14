@@ -56,6 +56,25 @@ When working on a specific area, read the relevant skill file for detailed patte
 | Payments | `.claude/skills/workflow-payments.md` | Payment processing, Stripe, transactions, subscriptions |
 | Conversational | `.claude/skills/workflow-conversational.md` | Conversational form mode, design editor, share pages |
 
+## Plan Mode
+
+Do **not** enter plan mode for small tasks. Plan mode is reserved for
+non-trivial implementation work (multi-file refactors, new features
+spanning several modules, architectural changes). For the following,
+execute directly:
+
+- Single-file edits.
+- Git operations (stage / commit / push / stash) on already-understood
+  diffs.
+- Doc tweaks (README, CLAUDE.md, ADRs, in-line comments).
+- One- or two-line bug fixes.
+- Renames, typo fixes, formatting.
+- Continuing iteration on a change that was already discussed in the
+  current conversation.
+
+When in doubt about whether a task qualifies as small, prefer
+executing — a brief inline summary of intent is enough.
+
 ## Pre-Commit Validation Process
 
 See **`PRECOMMIT-WORKFLOW.md`** for the complete pre-commit review workflow required for all PRs.
