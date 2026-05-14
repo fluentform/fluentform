@@ -109,6 +109,13 @@ defined('ABSPATH') or die;
             let isFormSettingDesktop = function() {
                 return window.matchMedia('(min-width: 769px)').matches;
             };
+            let syncFormSettingSidebarMode = function() {
+                if (isFormSettingDesktop() && window.localStorage.getItem(formSettingSidebarStateKey) === 'yes') {
+                    formSettingSidebarElem.addClass('ff_settings_sidebar_collapsed');
+                } else if (!isFormSettingDesktop()) {
+                    formSettingSidebarElem.removeClass('ff_settings_sidebar_collapsed');
+                }
+            };
             let updateFormSettingToggleState = function() {
                 let collapseLabel = formSettingSidebarToggle.data('collapse-label') || 'Collapse settings menu';
                 let expandLabel = formSettingSidebarToggle.data('expand-label') || 'Expand settings menu';
@@ -122,9 +129,7 @@ defined('ABSPATH') or die;
                     .attr('title', isExpanded ? collapseLabel : expandLabel);
             };
 
-            if (isFormSettingDesktop() && window.localStorage.getItem(formSettingSidebarStateKey) === 'yes') {
-                formSettingSidebarElem.addClass('ff_settings_sidebar_collapsed');
-            }
+            syncFormSettingSidebarMode();
 
             formSettingSidebarToggle.on('click', function() {
                 if (isFormSettingDesktop()) {
@@ -146,7 +151,10 @@ defined('ABSPATH') or die;
                 updateFormSettingToggleState();
             });
 
-            jQuery(window).on('resize', updateFormSettingToggleState);
+            jQuery(window).on('resize', function() {
+                syncFormSettingSidebarMode();
+                updateFormSettingToggleState();
+            });
             updateFormSettingToggleState();
 
         ");
