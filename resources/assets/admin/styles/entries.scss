@@ -677,6 +677,107 @@ tr.el-table__row td {
   padding: 18px 0px;
 }
 
+// Pin-column selector that sits at the top of the Columns dropdown.
+// Stops click propagation so picking an option does not close the
+// surrounding el-dropdown menu mid-interaction.
+.ff_pin_column_item {
+  cursor: default;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+.ff_pin_column_row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.ff_pin_column_label {
+  font-size: 13px;
+  color: #606266;
+  white-space: nowrap;
+}
+
+.ff_pin_column_select {
+  flex: 1;
+  min-width: 150px;
+}
+
+.ff_pin_column_divider {
+  margin: 0;
+  padding: 0;
+  height: 0;
+  line-height: 0;
+}
+
+// Compact status indicator that replaces the dedicated "Entry Status"
+// column. Filled blue = unread, hollow gray = read, red = trashed,
+// gold = favourite. Hover surfaces the label via the title attribute;
+// screen readers get aria-label.
+.ff_entry_status_dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  background: #c0c4cc;
+  box-shadow: none;
+
+  &--unread {
+    background: #409eff;
+  }
+  &--read {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px #c0c4cc;
+  }
+  &--trashed {
+    background: #f56c6c;
+  }
+  &--spam {
+    background: #e6a23c;
+  }
+  &--favorites {
+    background: #f7ba2a;
+  }
+}
+
+// Whole-row click navigates to the entry detail. Cursor signals the row
+// is clickable; the click handler in Entries.vue skips selection cells,
+// the Actions column, and any interactive descendant so existing buttons,
+// links, checkboxes, and text selection keep working unchanged.
+// applyRowTabindex adds tabindex=0 to each row so keyboard users can
+// reach it via Tab and activate it with Enter (same handler).
+.ff_entries_table tr.el-table__row {
+  cursor: pointer;
+
+  &:focus,
+  &:focus-visible {
+    outline: 2px solid #409eff;
+    outline-offset: -2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  td.el-table-column--selection,
+  .el-table-column--selection {
+    cursor: default;
+  }
+
+  a,
+  button,
+  input,
+  label,
+  .el-checkbox,
+  .action_button {
+    cursor: pointer;
+  }
+}
+
 .ff_entry_table_cell {
   display: block;
   max-width: 100%;
