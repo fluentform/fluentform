@@ -299,7 +299,7 @@ class TransferService
         $data = array_merge([array_values($inputLabels)], $exportData);
         
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
-        $fileName = sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d');
+        $fileName = self::getReadableExportFileName($form->title);
         self::downloadOfficeDoc($data, $type, $fileName);
     }
 
@@ -461,10 +461,33 @@ class TransferService
         foreach ($submissions as $submission) {
             $submission->response = json_decode($submission->response, true);
         }
-        header('Content-disposition: attachment; filename=' . sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d') . '.json');
-        header('Content-type: application/json');
+        self::sendDownloadHeaders('application/json', self::getReadableExportFileName($form->title) . '.json');
         echo json_encode($submissions); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $submissions is escaped before being passed in.
         exit();
+    }
+
+    private static function getReadableExportFileName($formTitle)
+    {
+        $sanitizedTitle = sanitize_file_name(wp_strip_all_tags((string) $formTitle));
+
+        if (!$sanitizedTitle) {
+            $sanitizedTitle = 'export';
+        }
+
+        return $sanitizedTitle . '-' . date('Y-m-d');
+    }
+
+    private static function sendDownloadHeaders($contentType, $fileName)
+    {
+        $safeFileName = basename((string) $fileName);
+        $encodedFileName = rawurlencode($safeFileName);
+
+        header('Content-Type: ' . $contentType);
+        header(
+            'Content-Disposition: attachment; ' .
+            'filename="' . $encodedFileName . '"; ' .
+            'filename*=UTF-8\'\'' . $encodedFileName
+        );
     }
 
     private static function getSubmissions($args)
