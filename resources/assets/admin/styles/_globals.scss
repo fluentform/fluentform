@@ -1035,15 +1035,27 @@ label.el-radio, label.el-checkbox {
       overflow: visible;
     }
 
+    .ff_list_button_item.has_sub_menu {
+      height: 40px;
+      overflow: hidden;
+    }
+
     .ff_settings_menu_icon {
       display: inline-flex;
       margin-right: 0;
     }
 
+    .has_sub_menu .ff_list_button_link::after,
+    .ff_list_submenu::after,
+    .ff_list_submenu li::before,
+    .ff_list_submenu li::after {
+      display: none;
+    }
+
     .ff_list_submenu,
     .ff_settings_menu_label,
     .ff_sidebar_toggle_text {
-      display: none;
+      display: none !important;
     }
 
     .ff_sidebar_toggle {
