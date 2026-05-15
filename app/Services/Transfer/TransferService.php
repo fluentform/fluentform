@@ -540,14 +540,36 @@ class TransferService
         }
         $writer->openToBrowser($fileName);
 
-        // Convert data arrays to Row objects for OpenSpout v3
-        $rows = array_map(function ($rowData) {
-            return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($rowData);
-        }, $data);
+        $rows = self::getOfficeDocRows($data, $type);
 
         $writer->addRows($rows);
         $writer->close();
         die();
+    }
+
+    private static function getOfficeDocRows($data, $type)
+    {
+        if (strtolower($type) !== 'xlsx') {
+            return array_map(function ($rowData) {
+                return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($rowData);
+            }, $data);
+        }
+
+        $dateStyle = (new \OpenSpout\Writer\Common\Creator\Style\StyleBuilder())
+            ->setFormat('yyyy-mm-dd hh:mm:ss')
+            ->build();
+
+        return array_map(function ($rowData) use ($dateStyle) {
+            $cells = array_map(function ($cellValue) use ($dateStyle) {
+                if ($cellValue instanceof \DateTimeInterface) {
+                    return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCell($cellValue, $dateStyle);
+                }
+
+                return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCell($cellValue);
+            }, $rowData);
+
+            return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRow($cells);
+        }, $data);
     }
 
 }
