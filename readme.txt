@@ -439,6 +439,8 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 6.2.3 (Date: TBD) : Unreleased =
+- Improves conversational form sharing with Access settings, email/embed copy actions
+- Adds reusable keyboard save shortcut handling for form settings screens with accessible save-button shortcut hints
 - Adds entries table pinned column selection
 - Improves entries table keyboard navigation with row focus, Enter-to-open, and Space-to-select behavior
 - Improves entries table accessibility for fixed columns and icon-only actions

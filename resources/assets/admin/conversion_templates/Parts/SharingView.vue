@@ -15,6 +15,7 @@
                             :data-clipboard-text='share_url' 
                             slot="append"
                             icon="el-icon-document-copy"
+                            :title="$t('Copy Link')"
                         >
                         </el-button>
                     </el-input>
@@ -75,7 +76,8 @@
                                     class="copy_share"
                                     :data-clipboard-text='smart_shortcode' 
                                     slot="append"
-                                    icon="el-icon-document-copy">
+                                    icon="el-icon-document-copy"
+                                    :title="$t('Copy Shortcode')">
                                 </el-button>
                             </el-input>
                         </card>
@@ -90,7 +92,8 @@
                                     class="copy_share" 
                                     :data-clipboard-text='classic_shortcode'
                                     slot="append" 
-                                    icon="el-icon-document-copy">
+                                    icon="el-icon-document-copy"
+                                    :title="$t('Copy Shortcode')">
                                 </el-button>
                             </el-input>
                         </card>

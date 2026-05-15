@@ -1,6 +1,14 @@
 <template>
     <div class="fcc_conversational_design">
         <template v-if="!loading">
+            <el-alert
+                v-if="settings_error"
+                class="mb-4"
+                type="error"
+                show-icon
+                :closable="false"
+                :title="settings_error"
+            />
             <card class="ffc_design_sidebar">
                 <div class="ffc_sidebar_header">
                     <tab class="ff_tab_center">
@@ -70,7 +78,7 @@
                             </el-form-item>
                         </el-form>
                     </div>
-                    <div v-if="(active_tab == 'design' && has_pro) || active_tab == 'meta' || active_tab == 'access' || (active_tab == 'share' && has_pro_share_page)" class="ffc_design_submit">
+                    <div v-if="!settings_error && ((active_tab == 'design' && has_pro) || active_tab == 'meta' || active_tab == 'access' || (active_tab == 'share' && has_pro_share_page))" class="ffc_design_submit">
                         <el-tooltip placement="top" popper-class="ff_tooltip_wrap">
                             <div slot="content">
                                 {{ saveShortcutTooltip }}
@@ -143,6 +151,7 @@ export default {
             generated_css: '',
             saving: false,
             loading: true,
+            settings_error: '',
             share_url: '',
             has_pro: !!window.ffc_conv_vars.has_pro,
             has_pro_share_page: !!window.ffc_conv_vars.has_pro_share_page,
@@ -152,6 +161,11 @@ export default {
     },
     methods: {
         saveDesignSettings() {
+            if (this.settings_error) {
+                this.$fail(this.settings_error);
+                return;
+            }
+
             this.saving = true;
 
             let data = {
@@ -186,6 +200,7 @@ export default {
             this.loading = true;
             FluentFormsGlobal.$rest.get(FluentFormsGlobal.$rest.route('getFormSettingsConversationalDesign', this.form_id))
                 .then(response => {
+                    this.settings_error = '';
                     const designSettings = response.design_settings;
                     designSettings.background_brightness = parseInt(designSettings.background_brightness);
                     this.design_settings = designSettings;
@@ -197,7 +212,9 @@ export default {
                     this.setBaseUrl();
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.settings_error = (error && (error.message || (error.data && error.data.message)))
+                        || this.$t('Unable to load settings. Please refresh and try again.');
+                    this.$fail(this.settings_error);
                 })
                 .finally(() => {
                     this.loading = false;
@@ -243,7 +260,7 @@ export default {
             return url + separator + encodeURIComponent(key) + '=' + encodeURIComponent(value);
         },
         canUseKeyboardSaveShortcut() {
-            if (this.loading || this.saving) {
+            if (this.loading || this.saving || this.settings_error) {
                 return false;
             }
 
