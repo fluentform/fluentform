@@ -1036,7 +1036,6 @@ label.el-radio, label.el-checkbox {
     .ff_layout_section_sidebar {
       width: 56px;
       padding: 12px 8px;
-      overflow: hidden;
     }
 
     .ff_list_button_link {
@@ -1054,10 +1053,17 @@ label.el-radio, label.el-checkbox {
       margin-right: 0;
     }
 
+    .has_sub_menu .ff_list_button_link::after,
+    .ff_list_submenu::after,
+    .ff_list_submenu li::before,
+    .ff_list_submenu li::after {
+      display: none;
+    }
+
     .ff_list_submenu,
     .ff_settings_menu_label,
     .ff_sidebar_toggle_text {
-      display: none;
+      display: none !important;
     }
 
     .ff_sidebar_toggle {
