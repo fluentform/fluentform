@@ -1,0 +1,67 @@
+# Release Plan — pre-release-v6.2.3
+
+## Features
+
+1. **Feature: Step form tab navigation**: [card #21069](https://lounge.authlab.io/projects#/boards/16/tasks/21069-feature-step-form-ta) — [fluentform#902](https://github.com/fluentform/fluentform/pull/902) (OPEN), [fluentformpro#166](https://github.com/fluentform/fluentformpro/pull/166) (OPEN)
+2. **Add: PayPal Checkout API support (Orders API v2 + Subscriptions API)**: [card #20831](https://lounge.authlab.io/projects#/boards/16/tasks/20831-fluent-forms-stripe-) — [fluentformpro#140](https://github.com/fluentform/fluentformpro/pull/140) (OPEN)
+3. **Add: image crop flow for image uploads**: [card #20963](https://lounge.authlab.io/projects#/boards/16/tasks/20963-feature-image-croppi) — [fluentform#875](https://github.com/fluentform/fluentform/pull/875) (OPEN), [fluentformpro#149](https://github.com/fluentform/fluentformpro/pull/149) (OPEN), [fluent-conversational-js#35](https://github.com/WPManageNinja/fluent-conversational-js/pull/35) (OPEN)
+4. **FEAT: Add pretty URL support for share pages**: [card #21327](https://lounge.authlab.io/projects#/boards/16/tasks/21327-add-pretty-url-suppo) — [fluentformpro#182](https://github.com/fluentform/fluentformpro/pull/182) (MERGED)
+
+## Improvements
+
+5. **Improvement: migrate HubSpot integration to CRM/Lists v3 APIs**: [card #19335](https://lounge.authlab.io/projects#/boards/16/tasks/19335-improvement-hubspot-) — [fluentformpro#164](https://github.com/fluentform/fluentformpro/pull/164) (OPEN)
+6. **Improvement: ratings field**: [card #21170](https://lounge.authlab.io/projects#/boards/16/tasks/21170-improvement-ratings-) — [fluentform#916](https://github.com/fluentform/fluentform/pull/916) (OPEN), [fluent-conversational-js#40](https://github.com/WPManageNinja/fluent-conversational-js/pull/40) (OPEN)
+7. **FEAT: Improve share and access settings**: [card #21326](https://lounge.authlab.io/projects#/boards/16/tasks/21326-improve-share-and-ac) — [fluentform#935](https://github.com/fluentform/fluentform/pull/935) (MERGED)
+8. **IMPROVE: polish entries page keyboard and table UX**: [card #21330](https://lounge.authlab.io/projects#/boards/16/tasks/21330-polish-entries-page-) — [fluentform#930](https://github.com/fluentform/fluentform/pull/930) (MERGED)
+
+## Fixes
+
+9. **Fix: cross-browser form styling**: [card #8673](https://lounge.authlab.io/projects#/boards/16/tasks/8673-radio-button-issue-o) — [fluentformpro#181](https://github.com/fluentform/fluentformpro/pull/181) (OPEN)
+10. **Fix ACF grouped fields not available in post feed mapping**: [card #9393](https://lounge.authlab.io/projects#/boards/16/tasks/9393-acf-grouped-fields-a) — [fluentformpro#116](https://github.com/fluentform/fluentformpro/pull/116) (OPEN)
+11. **Fix Brevo integration not sending boolean attribute values**: [card #10147](https://lounge.authlab.io/projects#/boards/16/tasks/10147-brevo-integraion-is-) — [fluentformpro#111](https://github.com/fluentform/fluentformpro/pull/111) (OPEN)
+12. **Fix Google Sheet integration failing when sheet name contains special characters**: [card #10204](https://lounge.authlab.io/projects#/boards/16/tasks/10204-issue-with-google-sh) — [fluentformpro#108](https://github.com/fluentform/fluentformpro/pull/108) (OPEN)
+13. **Fix HubSpot custom field dropdown UI for long labels**: [card #10221](https://lounge.authlab.io/projects#/boards/16/tasks/10221-hubspot-feeds-custom) — [fluentform#795](https://github.com/fluentform/fluentform/pull/795) (OPEN)
+14. **Fix "Offline" payment method label not translatable in notifications**: [card #10327](https://lounge.authlab.io/projects#/boards/16/tasks/10327-issue-with-translati) — [fluentform#797](https://github.com/fluentform/fluentform/pull/797) (OPEN)
+15. **Fix payment status filter not working on translated sites**: [card #10329](https://lounge.authlab.io/projects#/boards/16/tasks/10329-payment-status-filte) — [fluentform#796](https://github.com/fluentform/fluentform/pull/796) (OPEN)
+16. **Fix Pipedrive integration error when campaigns are active**: [card #10620](https://lounge.authlab.io/projects#/boards/16/tasks/10620-pipedrive-integratio) — [fluentformpro#112](https://github.com/fluentform/fluentformpro/pull/112) (OPEN)
+17. **Fix repeater container table including non-input fields**: [card #10639](https://lounge.authlab.io/projects#/boards/16/tasks/10639-issue-with-repeater-) — [fluentformpro#105](https://github.com/fluentform/fluentformpro/pull/105) (OPEN)
+18. **Fix custom field conditional logic not appearing in form editor**: [card #11776](https://lounge.authlab.io/projects#/boards/16/tasks/11776-custom-field-conditi) — [fluentform#800](https://github.com/fluentform/fluentform/pull/800) (OPEN)
+19. **Fix HubSpot checkbox sending leading semicolon**: [card #11788](https://lounge.authlab.io/projects#/boards/16/tasks/11788-hubspot-error-for-mu) — [fluentformpro#106](https://github.com/fluentform/fluentformpro/pull/106) (OPEN)
+20. **Fix taxonomy field displaying IDs instead of titles in entries**: [card #12664](https://lounge.authlab.io/projects#/boards/16/tasks/12664-issue-with-taxonomy-) — [fluentformpro#114](https://github.com/fluentform/fluentformpro/pull/114) (OPEN)
+21. **Fix untranslatable strings in Loco Translate**: [card #12923](https://lounge.authlab.io/projects#/boards/16/tasks/12923-string-not-translata) — [fluentform#801](https://github.com/fluentform/fluentform/pull/801) (OPEN)
+22. **Fix: italic styling for custom html**: [card #13019](https://lounge.authlab.io/projects#/boards/16/tasks/13019-custom-html-field-it) — [fluent-conversational-js#10](https://github.com/WPManageNinja/fluent-conversational-js/pull/10) (OPEN)
+23. **Change Upgrade to Pro buttons from danger to primary color**: [card #13277](https://lounge.authlab.io/projects#/boards/16/tasks/13277-upgrade-to-pro-butto) — [fluentform#784](https://github.com/fluentform/fluentform/pull/784) (OPEN)
+24. **Fix "xlsv" typo to "xlsx" in export dropdown**: [card #19105](https://lounge.authlab.io/projects#/boards/16/tasks/19105-typo-in-export-dropd) — [fluentform#782](https://github.com/fluentform/fluentform/pull/782) (OPEN)
+25. **Fix AmoCRM OAuth redirect using wrong domain for amocrm.ru users**: [card #19183](https://lounge.authlab.io/projects#/boards/16/tasks/19183-issue-with-amocrm-in) — [fluentformpro#115](https://github.com/fluentform/fluentformpro/pull/115) (OPEN)
+26. **Fix conditional logic not equal operator when referenced field is missing**: [card #19202](https://lounge.authlab.io/projects#/boards/16/tasks/19202-conditional-login-no) — [fluentform#814](https://github.com/fluentform/fluentform/pull/814) (OPEN)
+27. **Fix "XXX" typo in German translation for "Entries"**: [card #19529](https://lounge.authlab.io/projects#/boards/16/tasks/19529-xxx-on-the-entries-l) — [fluentform#799](https://github.com/fluentform/fluentform/pull/799) (OPEN)
+28. **Fix landing page media_left layout cutting off form fields**: [card #19544](https://lounge.authlab.io/projects#/boards/16/tasks/19544-landing-page-layout-) — [fluentformpro#118](https://github.com/fluentform/fluentformpro/pull/118) (OPEN)
+29. **Fix Google Fonts not loading for multi-word font families in conversational forms**: [card #19913](https://lounge.authlab.io/projects#/boards/16/tasks/19913-conversational-form-) — [fluentform#807](https://github.com/fluentform/fluentform/pull/807) (OPEN)
+30. **Fix _load_textdomain_just_in_time notice on WordPress 6.7+ with WP Staging**: [card #20038](https://lounge.authlab.io/projects#/boards/16/tasks/20038-function-load-textdo) — [fluentform#792](https://github.com/fluentform/fluentform/pull/792) (OPEN)
+31. **Wrap "Click to Copy" tooltip in translation function**: [card #20163](https://lounge.authlab.io/projects#/boards/16/tasks/20163-copy-is-not-yet-tran) — [fluentform#785](https://github.com/fluentform/fluentform/pull/785) (OPEN)
+32. **Fix save progress email reply-to ignoring SMTP plugin configuration**: [card #20174](https://lounge.authlab.io/projects#/boards/16/tasks/20174-improvement-in-reply) — [fluentformpro#120](https://github.com/fluentform/fluentformpro/pull/120) (OPEN)
+33. **Fix Name field alignment when label is empty on one sub-field**: [card #20179](https://lounge.authlab.io/projects#/boards/16/tasks/20179-issue-with-name-fiel) — [fluentform#815](https://github.com/fluentform/fluentform/pull/815) (OPEN)
+34. **Fix subscription description when billing times is 1 with signup fee**: [card #20562](https://lounge.authlab.io/projects#/boards/16/tasks/20562-incorrect-descriptio) — [fluentform#818](https://github.com/fluentform/fluentform/pull/818) (OPEN), [fluentformpro#125](https://github.com/fluentform/fluentformpro/pull/125) (OPEN)
+35. **Fix: align preview text formatting**: [card #20592](https://lounge.authlab.io/projects#/boards/16/tasks/20592-inconsistent-text-fo) — [fluentform#878](https://github.com/fluentform/fluentform/pull/878) (OPEN)
+36. **Fix fatal error when textarea field receives array value**: [card #20601](https://lounge.authlab.io/projects#/boards/16/tasks/20601-issue-with-php-8-ver) — [fluentform#791](https://github.com/fluentform/fluentform/pull/791) (OPEN)
+37. **Fix: preserve multilingual AI form field hints**: [card #20967](https://lounge.authlab.io/projects#/boards/16/tasks/20967-ai-form-builder-miss) — [fluentform#884](https://github.com/fluentform/fluentform/pull/884) (OPEN)
+38. **Fix: handle held-review and guest Authorize.Net flows**: [card #20984](https://lounge.authlab.io/projects#/boards/16/tasks/20984-fluent-forms-pro-aut) — [fluentformpro#174](https://github.com/fluentform/fluentformpro/pull/174) (OPEN)
+39. **Fix: Excel export creation date format**: [card #21137](https://lounge.authlab.io/projects#/boards/16/tasks/21137-creation-date-missin) — [fluentform#917](https://github.com/fluentform/fluentform/pull/917) (OPEN)
+40. **Fix: preserve multilingual export filenames**: [card #21142](https://lounge.authlab.io/projects#/boards/16/tasks/21142-csv-export-filename-) — [fluentform#920](https://github.com/fluentform/fluentform/pull/920) (OPEN)
+41. **Fix: Preserve JSON escapes when importing form meta**: [card #21148](https://lounge.authlab.io/projects#/boards/16/tasks/21148-form-export-import-c) — [fluentform#918](https://github.com/fluentform/fluentform/pull/918) (OPEN)
+42. **Fix: align Authorize.Net billing payload**: [card #21152](https://lounge.authlab.io/projects#/boards/16/tasks/21152-phone-field-causes-a) — [fluentformpro#173](https://github.com/fluentform/fluentformpro/pull/173) (OPEN)
+43. **Fix: Detect forms inside page builder popups and templates**: [card #21207](https://lounge.authlab.io/projects#/boards/16/tasks/21207-find-feature-does-no) — [fluentform#933](https://github.com/fluentform/fluentform/pull/933) (OPEN)
+44. **Fix: preserve HubSpot property types for mapped contact fields**: [card #21217](https://lounge.authlab.io/projects#/boards/16/tasks/21217-default-fluent-forms) — [fluentformpro#177](https://github.com/fluentform/fluentformpro/pull/177) (OPEN)
+45. **SECURITY: Bump dompurify and postcss**: [card #21328](https://lounge.authlab.io/projects#/boards/16/tasks/21328-security-bump-dompur) — [fluentform#934](https://github.com/fluentform/fluentform/pull/934) (MERGED)
+46. **FIX: Sort entries by submission date instead of insertion order**: [card #21329](https://lounge.authlab.io/projects#/boards/16/tasks/21329-sort-entries-by-subm) — [fluentform#931](https://github.com/fluentform/fluentform/pull/931) (MERGED)
+47. **Fix: Dynamic field options startsWith and endsWith operators swapped**: [card #21331](https://lounge.authlab.io/projects#/boards/16/tasks/21331-fix-dynamic-field-op) — [fluentformpro#179](https://github.com/fluentform/fluentformpro/pull/179) (MERGED)
+48. **Fix: Advanced entries filter numeric, date and LIKE operators**: [card #21332](https://lounge.authlab.io/projects#/boards/16/tasks/21332-fix-advanced-entries) — [fluentformpro#178](https://github.com/fluentform/fluentformpro/pull/178) (OPEN)
+49. **FIX: Hide collapsed settings submenu artifacts on Submenu Collapse**: [card #21335](https://lounge.authlab.io/projects#/boards/16/tasks/21335-fix-hide-collapsed-s) — [fluentform#936](https://github.com/fluentform/fluentform/pull/936) (MERGED)
+50. **Fix: suppress Undefined array key "class" warning on step render**: [card #21336](https://lounge.authlab.io/projects#/boards/16/tasks/21336-fix-undefined-array-) — [fluentformpro#183](https://github.com/fluentform/fluentformpro/pull/183) (OPEN)
+
+## Docs Needed
+1. Feature: Step form tab navigation (new)
+2. Add: PayPal Checkout API support (update the existing one)
+3. Add: image crop flow for image uploads (new)
+4. Improvement: ratings field (update the existing one)
+5. Improve share and access settings (update the existing one)

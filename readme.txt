@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.2.2
+Stable tag: 6.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -438,14 +438,36 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.2.3 (Date: TBD) : Unreleased =
-- Improves conversational form sharing with Access settings, email/embed copy actions
-- Adds reusable keyboard save shortcut handling for form settings screens with accessible save-button shortcut hints
+= 6.2.3 (Date: May 20, 2026) =
+- Adds Tabs step indicator with Top and Left layouts, clickable step navigation, and compact progress bar option for multi-step forms
 - Adds entries table pinned column selection
 - Improves entries table keyboard navigation with row focus, Enter-to-open, and Space-to-select behavior
 - Improves entries table accessibility for fixed columns and icon-only actions
 - Improves entries form switcher with searchable form selection
+- Improves Upgrade to Pro CTA buttons by switching from danger to primary color
+- Improves conversational form sharing with Access settings, email/embed copy actions
+- Fixes dompurify and postcss to address security advisories
 - Fixes entries table row focus handling with fixed columns
+- Fixes payment status filter not working on translated admin sites
+- Fixes custom field conditional logic not appearing in the form editor settings
+- Fixes untranslatable strings in Loco Translate for AddConfirmation and GeneralSettings views
+- Fixes italic styling for custom HTML field in conversational forms
+- Fixes "xlsv" typo to "xlsx" in entries export dropdown
+- Fixes conditional logic not-equal operator when the referenced field is missing from input
+- Fixes "XXX" typo in German translation for "Entries"
+- Fixes Google Fonts URL building for multi-word font families in conversational forms
+- Fixes _load_textdomain_just_in_time notice on WordPress 6.7+ when WP Staging is active
+- Fixes "Click to Copy" tooltip in translation function for proper i18n
+- Fixes Name field alignment when one sub-field label is empty
+- Fixes inconsistent list rendering and rich-text spacing between form editor canvas and preview page
+- Fixes PHP fatal when textarea field stored value is an array on PHP 8+
+- Fixes AI form builder dropping required-field hints in non-English prompts
+- Fixes XLSX entry export missing creation date as a readable timestamp
+- Fixes CSV and XLSX export filenames becoming URL-encoded for Japanese and non-Latin form titles
+- Fixes form import corrupting JSON escapes in confirmation and email notification settings
+- Fixes Find feature not detecting forms used inside Popup templates and page builders
+- Fixes entries list sorting by submission date instead of insertion order
+- Fixes collapsed form settings sidebar showing submenu connector artifacts in icon-only mode
 
 = 6.2.2 (Date: April 23, 2026) =
 - Adds subscription field support in payment calculations
