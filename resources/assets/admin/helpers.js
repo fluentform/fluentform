@@ -103,7 +103,7 @@ export const isKeyboardSaveShortcut = (event) => {
 
     const key = (event.key || '').toLowerCase();
     const isSaveKey = key === 's' || event.keyCode === 83;
-    if (!isSaveKey || event.altKey) {
+    if (!isSaveKey || event.altKey || event.shiftKey) {
         return false;
     }
 
