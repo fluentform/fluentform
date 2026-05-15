@@ -404,6 +404,30 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         return $item;
     });
 
+    add_filter('fluentform/editor_init_element_ratings', function ($item) {
+        if (!isset($item['settings']['icon_source'])) {
+            $item['settings']['icon_source'] = 'preset';
+        }
+
+        if (!isset($item['settings']['icon_type'])) {
+            $item['settings']['icon_type'] = \FluentForm\App\Services\FormBuilder\RatingIcon::DEFAULT_ICON;
+        }
+
+        if (!isset($item['settings']['custom_icon_svg'])) {
+            $item['settings']['custom_icon_svg'] = '';
+        }
+
+        if (!isset($item['settings']['inactive_color'])) {
+            $item['settings']['inactive_color'] = \FluentForm\App\Services\FormBuilder\RatingIcon::DEFAULT_INACTIVE_COLOR;
+        }
+
+        if (!isset($item['settings']['active_color'])) {
+            $item['settings']['active_color'] = \FluentForm\App\Services\FormBuilder\RatingIcon::DEFAULT_ACTIVE_COLOR;
+        }
+
+        return $item;
+    });
+
 
     add_filter('fluentform/editor_init_element_container', function ($item) {
         if (!isset($item['settings']['conditional_logics'])) {

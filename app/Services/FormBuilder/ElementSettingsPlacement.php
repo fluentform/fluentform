@@ -468,6 +468,11 @@ return [
             'admin_field_label',
             'options',
             'show_text',
+            'icon_source',
+            'icon_type',
+            'custom_icon_svg',
+            'inactive_color',
+            'active_color',
             'validation_rules',
         ],
         'advanced' => [

@@ -82,10 +82,11 @@
     }
 
     &-ratings {
-      --fill-inactive: #d4d4d4;
-      --fill-active: #ffb100;
+      --ff-rating-inactive-color: #d4d4d4;
+      --ff-rating-active-color: #ffb100;
 
-      display: inline-block;
+      display: inline-flex;
+      gap: 3px;
       line-height: 40px;
 
       input[type=radio] {
@@ -95,34 +96,57 @@
         display: none;
       }
 
-      svg {
-        width: 22px;
-        height: 22px;
-        fill: var(--fill-inactive);
-        vertical-align: middle;
-        transition: all 0.3s;
-
-        &.scale {
-          transition: all 0.15s;
-        }
-      }
-
       label {
         margin-right: 3px;
-        display: inherit;
+        align-items: center;
+        border-radius: 4px;
+        display: inline-flex;
+        justify-content: center;
+        outline: none;
+
+        &:focus,
+        &:focus-within {
+          box-shadow: 0 0 0 2px rgba(255, 177, 0, 0.25);
+        }
+
+        .ff-rating-icon {
+          color: var(--ff-rating-inactive-color);
+          display: inline-flex;
+        }
+
+        .ff-rating-icon-svg {
+          display: block;
+          height: 22px;
+          transition: all 0.3s;
+          vertical-align: middle;
+          width: 22px;
+
+          &.scale {
+            transition: all 0.15s;
+          }
+        }
+
+        .ff-rating-icon-svg [fill]:not([fill="none"]) {
+          fill: currentColor !important;
+        }
+
+        .ff-rating-icon-svg [stroke]:not([stroke="none"]) {
+          stroke: currentColor !important;
+        }
 
         &.active {
-          svg {
-            fill: #ffb100;
-            fill: var(--fill-active);
+          .ff-rating-icon {
+            color: var(--ff-rating-active-color);
           }
         }
       }
 
-      label:hover {
+      label:hover,
+      label:focus,
+      label:focus-within {
         cursor: pointer;
 
-        svg {
+        .ff-rating-icon-svg {
           transform: scale(1.1);
 
           &.scalling {

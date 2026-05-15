@@ -3,9 +3,10 @@
 namespace FluentForm\App\Services\Form;
 
 use Exception;
-use FluentForm\App\Models\Form;
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
+use FluentForm\App\Services\FormBuilder\RatingIcon;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 
@@ -144,6 +145,11 @@ class Updater
             'admin_field_label'         => 'sanitize_text_field',
             'prefix_label'              => 'sanitize_text_field',
             'suffix_label'              => 'sanitize_text_field',
+            'icon_source'               => 'sanitize_key',
+            'icon_type'                 => 'sanitize_key',
+            'custom_icon_svg'           => [RatingIcon::class, 'sanitizeCustomSvg'],
+            'inactive_color'            => [RatingIcon::class, 'sanitizeColor'],
+            'active_color'              => [RatingIcon::class, 'sanitizeColor'],
             'unique_validation_message' => 'sanitize_text_field',
             'advanced_options'          => 'fluentform_options_sanitize',
             'html_codes'                => 'fluentform_sanitize_html',

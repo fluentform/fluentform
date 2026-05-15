@@ -5,6 +5,7 @@ namespace FluentForm\App\Modules\Form;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Payments\PaymentHelper;
+use FluentForm\App\Services\FormBuilder\RatingIcon;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -443,6 +444,11 @@ class Form
             'admin_field_label'         => 'sanitize_text_field',
             'prefix_label'              => 'sanitize_text_field',
             'suffix_label'              => 'sanitize_text_field',
+            'icon_source'               => 'sanitize_key',
+            'icon_type'                 => 'sanitize_key',
+            'custom_icon_svg'           => [RatingIcon::class, 'sanitizeCustomSvg'],
+            'inactive_color'            => [RatingIcon::class, 'sanitizeColor'],
+            'active_color'              => [RatingIcon::class, 'sanitizeColor'],
             'unique_validation_message' => 'sanitize_text_field',
             'advanced_options'          => 'fluentform_options_sanitize',
             'html_codes'                => 'fluentform_sanitize_html',

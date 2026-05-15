@@ -17,6 +17,7 @@ if (! defined('ABSPATH')) {
 }
 
 $fluentformDateFormats = (new \FluentForm\App\Services\FormBuilder\Components\DateTime())->getAvailableDateFormats();
+$fluentformRatingIconOptions = \FluentForm\App\Services\FormBuilder\RatingIcon::getPresetOptions();
 
 $fluentformDateConfigSettings = [
     'template'         => 'inputTextarea',
@@ -628,6 +629,55 @@ $fluentformElementCustomizationSettings = [
                 'label' => __('No', 'fluentform'),
             ],
         ],
+    ],
+    'icon_source' => [
+        'template'  => 'select',
+        'label'     => __('Icon Source', 'fluentform'),
+        'help_text' => __('Choose a preset icon or provide a custom SVG icon for this rating field.', 'fluentform'),
+        'options'   => [
+            [
+                'value' => 'preset',
+                'label' => __('Preset Icons', 'fluentform'),
+            ],
+            [
+                'value' => 'custom_svg',
+                'label' => __('Custom SVG', 'fluentform'),
+            ],
+        ],
+    ],
+    'icon_type' => [
+        'template'   => 'select',
+        'label'      => __('Preset Icon', 'fluentform'),
+        'help_text'  => __('Select which icon shape to use for this rating field.', 'fluentform'),
+        'options'    => $fluentformRatingIconOptions,
+        'dependency' => [
+            'depends_on' => 'settings/icon_source',
+            'value'      => 'preset',
+            'operator'   => '==',
+        ],
+    ],
+    'custom_icon_svg' => [
+        'template'         => 'inputTextarea',
+        'label'            => __('Custom SVG Icon', 'fluentform'),
+        'help_text'        => __('Paste a single inline SVG. Unsupported tags and attributes will be stripped on save.', 'fluentform'),
+        'placeholder'      => __('<svg viewBox="0 0 24 24">...</svg>', 'fluentform'),
+        'rows'             => 6,
+        'inline_help_text' => __('Use a simple monochrome SVG for the most predictable result across classic and conversational forms.', 'fluentform'),
+        'dependency'       => [
+            'depends_on' => 'settings/icon_source',
+            'value'      => 'custom_svg',
+            'operator'   => '==',
+        ],
+    ],
+    'inactive_color' => [
+        'template'  => 'inputColor',
+        'label'     => __('Inactive Color', 'fluentform'),
+        'help_text' => __('Color used before a rating item is selected.', 'fluentform'),
+    ],
+    'active_color' => [
+        'template'  => 'inputColor',
+        'label'     => __('Active Color', 'fluentform'),
+        'help_text' => __('Color used after a rating item becomes active or selected.', 'fluentform'),
     ],
     'numeric_formatter' => [
         'template'  => 'select',
