@@ -229,6 +229,18 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         return $field;
     });
 
+    add_filter('fluentform/editor_init_element_step_start', function ($item) {
+        if (!isset($item['settings']['progress_layout'])) {
+            $item['settings']['progress_layout'] = 'top';
+        }
+
+        if (!isset($item['settings']['tabs_show_progress_bar'])) {
+            $item['settings']['tabs_show_progress_bar'] = 'no';
+        }
+
+        return $item;
+    });
+
     $upgradableCheckInputs = [
         'input_radio',
         'select',
