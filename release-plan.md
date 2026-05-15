@@ -6,6 +6,7 @@
 2. **Add: PayPal Checkout API support (Orders API v2 + Subscriptions API)**: [card #20831](https://lounge.authlab.io/projects#/boards/16/tasks/20831-fluent-forms-stripe-) — [fluentformpro#140](https://github.com/fluentform/fluentformpro/pull/140) (OPEN)
 3. **Add: image crop flow for image uploads**: [card #20963](https://lounge.authlab.io/projects#/boards/16/tasks/20963-feature-image-croppi) — [fluentform#875](https://github.com/fluentform/fluentform/pull/875) (OPEN), [fluentformpro#149](https://github.com/fluentform/fluentformpro/pull/149) (OPEN), [fluent-conversational-js#35](https://github.com/WPManageNinja/fluent-conversational-js/pull/35) (OPEN)
 4. **FEAT: Add pretty URL support for share pages**: [card #21327](https://lounge.authlab.io/projects#/boards/16/tasks/21327-add-pretty-url-suppo) — [fluentformpro#182](https://github.com/fluentform/fluentformpro/pull/182) (MERGED)
+5. **Feature: Dropdown option grouping**: [card #21109](https://lounge.authlab.io/projects#/boards/16/tasks/21109-Feature-Dropdown-opt) — [fluentform#905](https://github.com/fluentform/fluentform/pull/905) (MERGED), [fluentformpro#168](https://github.com/fluentform/fluentformpro/pull/168) (MERGED), [fluent-conversational-js#37](https://github.com/WPManageNinja/fluent-conversational-js/pull/37) (MERGED)
 
 ## Improvements
 
@@ -58,6 +59,8 @@
 48. **Fix: Advanced entries filter numeric, date and LIKE operators**: [card #21332](https://lounge.authlab.io/projects#/boards/16/tasks/21332-fix-advanced-entries) — [fluentformpro#178](https://github.com/fluentform/fluentformpro/pull/178) (OPEN)
 49. **FIX: Hide collapsed settings submenu artifacts on Submenu Collapse**: [card #21335](https://lounge.authlab.io/projects#/boards/16/tasks/21335-fix-hide-collapsed-s) — [fluentform#936](https://github.com/fluentform/fluentform/pull/936) (MERGED)
 50. **Fix: suppress Undefined array key "class" warning on step render**: [card #21336](https://lounge.authlab.io/projects#/boards/16/tasks/21336-fix-undefined-array-) — [fluentformpro#183](https://github.com/fluentform/fluentformpro/pull/183) (OPEN)
+51. **Fix: Preserve custom CSS and JS during form import**: [card #21108](https://lounge.authlab.io/projects#/boards/16/tasks/21108-Import-problem-the-) — [fluentform#906](https://github.com/fluentform/fluentform/pull/906) (MERGED)
+52. **Fix: Global Settings sidebar collapse toggle on desktop**:  [card #21335](https://lounge.authlab.io/projects#/boards/16/tasks/21335-fix-hide-collapsed-s) — [fluentform#937](https://github.com/fluentform/fluentform/pull/937) (OPEN)
 
 ## Docs Needed
 1. Feature: Step form tab navigation (new)
@@ -65,3 +68,4 @@
 3. Add: image crop flow for image uploads (new)
 4. Improvement: ratings field (update the existing one)
 5. Improve share and access settings (update the existing one)
+6. Feature: Dropdown option grouping (new)

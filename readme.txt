@@ -440,6 +440,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 6.2.3 (Date: May 20, 2026) =
 - Adds Tabs step indicator with Top and Left layouts, clickable step navigation, and compact progress bar option for multi-step forms
+- Adds opt-in Dropdown and Multiselect option grouping with native optgroup rendering and grouped editor UI
 - Adds entries table pinned column selection
 - Improves entries table keyboard navigation with row focus, Enter-to-open, and Space-to-select behavior
 - Improves entries table accessibility for fixed columns and icon-only actions
@@ -468,6 +469,8 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes Find feature not detecting forms used inside Popup templates and page builders
 - Fixes entries list sorting by submission date instead of insertion order
 - Fixes collapsed form settings sidebar showing submenu connector artifacts in icon-only mode
+- Fixes form import corrupting custom CSS and JS characters such as > by using dedicated sanitizers for these meta keys
+- Fixes Global Settings sidebar collapse toggle being unresponsive on desktop and adds icon-only collapsed view
 
 = 6.2.2 (Date: April 23, 2026) =
 - Adds subscription field support in payment calculations
