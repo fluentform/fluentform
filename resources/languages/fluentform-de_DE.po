@@ -4235,7 +4235,7 @@ msgstr ""
 #: app/Modules/Registerer/AdminBar.php:121 app/Views/admin/global_menu.php:25
 #: app/Views/frameless/show_preview.php:33 app/Views/email/report/body.php:148
 msgid "Entries"
-msgstr "EinträgeXXX"
+msgstr "Einträge"
 
 #: app/Modules/Registerer/TranslationString.php:1518
 msgid "Entries By Browser"
