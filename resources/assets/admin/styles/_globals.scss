@@ -1021,6 +1021,79 @@ label.el-radio, label.el-checkbox {
   }
 }
 
+.ff_settings_wrapper .ff_settings_sidebar_wrap {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  overflow: hidden;
+  height: calc(100vh - 112px);
+  height: calc(100dvh - 112px);
+  min-height: 0;
+
+  &.ff_settings_sidebar_collapsed {
+    width: 56px;
+
+    .ff_layout_section_sidebar {
+      width: 56px;
+      padding: 12px 8px;
+      overflow: hidden;
+    }
+
+    .ff_list_button_link {
+      width: 40px;
+      height: 40px;
+      padding: 0 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    .ff_settings_menu_icon {
+      display: inline-flex;
+      margin-right: 0;
+    }
+
+    .ff_list_submenu,
+    .ff_settings_menu_label,
+    .ff_sidebar_toggle_text {
+      display: none;
+    }
+
+    .ff_sidebar_toggle {
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+
+      .ff-icon {
+        transform: rotate(0deg);
+      }
+    }
+  }
+}
+
+.ff_settings_sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.ff_settings_wrapper .ff_settings_list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 12px;
+}
+
+.ff_settings_menu_icon {
+  display: none;
+  font-size: 18px;
+  line-height: 1;
+  margin-right: 8px;
+}
+
 // global setting
 .ff_global_setting_wrap,
 .ff_tools_wrap {
@@ -2018,6 +2091,49 @@ label.el-radio, label.el-checkbox {
   display: none;
 }
 
+.ff_settings_wrapper .ff_sidebar_toggle {
+  font-size: 13px;
+  width: 100%;
+  min-height: 42px;
+  cursor: pointer;
+  background: #fff;
+  border: 0;
+  border-top: 1px solid #edf0f2;
+  border-radius: 0;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  color: #646970;
+  box-shadow: none;
+  display: flex;
+  padding: 0 16px;
+  margin-top: auto;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+
+  &:hover,
+  &:focus {
+    color: #1d2327;
+    background: #f6f7f7;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+  }
+
+  .ff-icon {
+    font-size: 16px;
+    transform: rotate(180deg);
+  }
+}
+
+.ff_settings_wrapper .ff_list_button_link:focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 2px;
+}
+
 .text-capitalize {
     text-transform: capitalize;
 }
@@ -2254,5 +2370,3 @@ label.el-radio, label.el-checkbox {
         }
     }
 }
-
-

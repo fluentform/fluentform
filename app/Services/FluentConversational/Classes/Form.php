@@ -94,10 +94,11 @@ class Form
         }
 
         wp_localize_script('fluent_forms_conversational_design', 'ffc_conv_vars', [
-            'form_id'     => $formId,
-            'preview_url' => Helper::getFrontendFacingUrl('?' . $paramKey . '=' . $formId),
-            'fonts'       => Fonts::getFonts(),
-            'has_pro'     => defined('FLUENTFORMPRO'),
+            'form_id'            => $formId,
+            'preview_url'        => Helper::getFrontendFacingUrl('?' . $paramKey . '=' . $formId),
+            'fonts'              => Fonts::getFonts(),
+            'has_pro'            => defined('FLUENTFORMPRO'),
+            'has_pro_share_page' => defined('FLUENTFORMPRO') && class_exists('\FluentFormPro\classes\SharePage\SharePage'),
         ]);
 
         wp_enqueue_style(
