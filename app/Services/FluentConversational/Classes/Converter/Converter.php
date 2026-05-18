@@ -6,10 +6,11 @@ defined('ABSPATH') or die;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
-use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
+use FluentForm\App\Services\FormBuilder\RatingIcon;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Converter
 {
@@ -388,8 +389,17 @@ class Converter
                     $question['required'] = true;
                 }
             } elseif ('ratings' === $field['element']) {
+                $iconSettings = RatingIcon::resolveSettings($field);
                 $question['show_text'] = ArrayHelper::get($field, 'settings.show_text');
                 $question['rateOptions'] = ArrayHelper::get($field, 'options', []);
+                $question['iconSource'] = $iconSettings['icon_source'];
+                $question['iconType'] = $iconSettings['icon_type'];
+                $question['customIconSvg'] = $iconSettings['custom_icon_svg'];
+                $question['inactiveColor'] = $iconSettings['inactive_color'];
+                $question['activeColor'] = $iconSettings['active_color'];
+                $question['iconSvg'] = RatingIcon::getResolvedIconSvg($field, [
+                    'class' => 'ff-rating-icon-svg',
+                ]);
                 $question['nextStepOnAnswer'] = true;
             } elseif ('input_date' === $field['element']) {
                 $app = wpFluentForm();

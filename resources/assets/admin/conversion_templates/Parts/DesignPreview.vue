@@ -126,10 +126,13 @@ export default {
                 css += `${prefix} .f-answer .ff-upload-preview .ff-upload-details .ff-el-progress .ff-el-progress-bar { background-color: ${settings.answer_color}; }`;
 
                 css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap::before { background-color: ${settings.answer_color}; }`;
-                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap .f-star-field .f-star-field-star .symbolOutline { fill: ${settings.answer_color}; }`;
                 css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap .f-star-field .f-star-field-rating { color: ${settings.answer_color}; }`;
-                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap.is-hovered .symbolFill { fill: ${this.hexToRGBA(settings.answer_color, '0.1')}; }`;
-                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap.is-selected .symbolFill { fill: ${settings.answer_color}; }`;
+                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap .f-star-field-star .ff-rating-icon-svg-holder { display: block; line-height: 0; width: 100%; }`;
+                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap .ff-rating-icon-svg { color: var(--ff-rating-inactive-color, ${this.hexToRGBA(settings.answer_color, '0.25')}); display: block; height: auto; max-height: 64px; max-width: 64px; width: 100%; }`;
+                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap .ff-rating-icon-svg [fill]:not([fill="none"]) { fill: currentColor !important; }`;
+                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap .ff-rating-icon-svg [stroke]:not([stroke="none"]) { stroke: currentColor !important; }`;
+                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap.is-hovered .ff-rating-icon-svg { color: var(--ff-rating-hover-color, ${this.hexToRGBA(settings.answer_color, '0.4')}); }`;
+                css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap.is-selected .ff-rating-icon-svg { color: var(--ff-rating-active-color, ${settings.answer_color}); }`;
 
                 css += `${prefix} .f-answer .f-payment-summary-wrap tbody td { background-color: ${this.hexToRGBA(settings.answer_color, '0.1')}; }`;
                 css += `${prefix} .f-answer .f-payment-summary-wrap tfoot th { background-color: ${this.hexToRGBA(settings.answer_color, '0.1')}; }`;
