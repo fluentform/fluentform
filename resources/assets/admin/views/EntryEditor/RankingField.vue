@@ -55,6 +55,33 @@ export default {
         }
     },
     methods: {
+        parseCurrentValue() {
+            if (Array.isArray(this.value)) {
+                return {
+                    values: this.value.map(String),
+                    shouldSync: true
+                };
+            }
+
+            if (typeof this.value === 'string' && this.value) {
+                try {
+                    const parsedValue = JSON.parse(this.value);
+                    if (Array.isArray(parsedValue)) {
+                        return {
+                            values: parsedValue.map(String),
+                            shouldSync: true
+                        };
+                    }
+                } catch (e) {
+                    // Ignore invalid string payloads and avoid rewriting them on open.
+                }
+            }
+
+            return {
+                values: [],
+                shouldSync: false
+            };
+        },
         flattenOptions(options) {
             const flattened = [];
 
@@ -80,29 +107,47 @@ export default {
                 (((this.field || {}).raw || {}).settings || {}).advanced_options || []
             );
             const options = optionItems.reduce((formatted, option) => {
-                formatted[option.value] = option.label || option.value;
+                formatted[String(option.value)] = option.label || option.value;
                 return formatted;
             }, {});
-            const currentValue = Array.isArray(this.value) ? this.value.slice() : [];
-            const items = [];
+            const optionValues = Object.keys(options);
+            const optionValueSet = new Set(optionValues);
+            const currentValueState = this.parseCurrentValue();
+            const currentValue = currentValueState.values;
+            const normalizedValues = [];
+            const usedValues = new Set();
 
             currentValue.forEach(value => {
-                items.push({
-                    value,
-                    label: options[value] || value
-                });
-            });
-
-            Object.keys(options).forEach(value => {
-                if (!currentValue.includes(value)) {
-                    items.push({
-                        value,
-                        label: options[value] || value
-                    });
+                if (!optionValueSet.has(value) || usedValues.has(value)) {
+                    return;
                 }
+
+                usedValues.add(value);
+                normalizedValues.push(value);
             });
 
-            this.orderedItems = items;
+            const displayValues = normalizedValues.slice();
+
+            optionValues.forEach(value => {
+                if (usedValues.has(value)) {
+                    return;
+                }
+
+                usedValues.add(value);
+                displayValues.push(value);
+            });
+
+            this.orderedItems = displayValues.map(value => ({
+                value,
+                label: options[value] || value
+            }));
+
+            const hasChanged = normalizedValues.length !== currentValue.length ||
+                normalizedValues.some((value, index) => currentValue[index] !== value);
+
+            if (currentValueState.shouldSync && currentValue.length && hasChanged) {
+                this.$emit('input', normalizedValues);
+            }
         },
         move(index, delta) {
             const targetIndex = index + delta;
