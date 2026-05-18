@@ -1294,6 +1294,8 @@ class Converter
             $saveAndResume = false;
             $hash = '';
             $form->save_state = false;
+            $userId = (int)get_current_user_id();
+            $viaLink = false;
 
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public form state parameter for save & resume functionality, verified by hash comparison in database
             $key = isset($_GET['fluent_state']) ? sanitize_text_field(wp_unslash($_GET['fluent_state'])) : false;
@@ -1301,14 +1303,44 @@ class Converter
             if ($key) {
                 $hash = base64_decode($key);
                 $form->save_state = true;
+                $viaLink = true;
             } else {
                 $cookieName = 'fluentform_step_form_hash_' . $form->id;
-                $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
+                $hash = isset($_COOKIE[$cookieName])
+                    ? sanitize_text_field(wp_unslash($_COOKIE[$cookieName]))
+                    : wp_generate_uuid4();
             }
 
             \FluentFormPro\classes\DraftSubmissionsManager::migrate();
 
-            $draftForm = \FluentFormPro\classes\DraftSubmissionsManager::get($hash);
+            $draftForm = null;
+
+            // Logged-in users: prefer their own latest draft for this form so
+            // cross-device restore works and a stale cookie can't pin them to
+            // an older row. Link-share path is explicit and skips this.
+            if (!$viaLink && $userId) {
+                $draftForm = wpFluent()->table('fluentform_draft_submissions')
+                    ->where('user_id', $userId)
+                    ->where('form_id', $form->id)
+                    ->orderBy('updated_at', 'desc')
+                    ->first();
+            }
+
+            if (!$draftForm) {
+                $candidate = \FluentFormPro\classes\DraftSubmissionsManager::get($hash);
+                // Privacy guard: a draft owned by a real user (user_id > 0)
+                // may only be loaded by that same user. Link-share path is
+                // explicit sharing and is exempt.
+                if ($candidate && !$viaLink) {
+                    $entryUserId = (int)$candidate->user_id;
+                    if ($entryUserId > 0 && $entryUserId !== $userId) {
+                        $candidate = null;
+                    }
+                }
+                if ($candidate) {
+                    $draftForm = $candidate;
+                }
+            }
 
             if ($draftForm) {
                 $saveAndResume = true;
@@ -1353,23 +1385,46 @@ class Converter
         $draftForm = null;
         $data = [];
         $formId = $form->id;
+        $userId = (int)get_current_user_id();
+        $viaLink = false;
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public form state parameter for save & resume functionality, verified by hash comparison in database
         $key = isset($_GET['fluent_state']) ? sanitize_text_field(wp_unslash($_GET['fluent_state'])) : false;
         if ($key) {
             $hash = base64_decode($key);
+            $viaLink = true;
         } else {
             $cookieName = 'fluentform_step_form_hash_' . $formId;
-            $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
+            $hash = isset($_COOKIE[$cookieName])
+                ? sanitize_text_field(wp_unslash($_COOKIE[$cookieName]))
+                : wp_generate_uuid4();
         }
 
-        if ($hash) {
-            $draftForm = \FluentFormPro\classes\DraftSubmissionsManager::get($hash, $formId);
-        } elseif (!$draftForm && $userId = get_current_user_id()) {
+        // Logged-in users: prefer their own latest draft (cross-device sync).
+        // Link-share path stays explicit and skips this.
+        if (!$viaLink && $userId) {
             $draftForm = wpFluent()->table('fluentform_draft_submissions')
                 ->where('user_id', $userId)
                 ->where('form_id', $formId)
+                ->orderBy('updated_at', 'desc')
                 ->first();
-        } else {
+        }
+
+        if (!$draftForm && $hash) {
+            $candidate = \FluentFormPro\classes\DraftSubmissionsManager::get($hash, $formId);
+            // Privacy guard: a draft owned by a real user (user_id > 0) may
+            // only be loaded by that same user. Link-share path is exempt.
+            if ($candidate && !$viaLink) {
+                $entryUserId = (int)$candidate->user_id;
+                if ($entryUserId > 0 && $entryUserId !== $userId) {
+                    $candidate = null;
+                }
+            }
+            if ($candidate) {
+                $draftForm = $candidate;
+            }
+        }
+
+        if (!$draftForm) {
             return $data;
         }
         
