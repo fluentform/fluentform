@@ -267,9 +267,11 @@ class Submission extends Model
             return apply_filters('fluentform/next_submission', null, $entryId, $attributes);
         }
 
+        global $wpdb;
+        $table = $wpdb->prefix . 'fluentform_submissions';
         $submission = $query->select($columns)
             ->whereRaw(
-                "(fluentform_submissions.{$sortColumn}, fluentform_submissions.id) {$operator} (?, ?)",
+                "({$table}.{$sortColumn}, {$table}.id) {$operator} (?, ?)",
                 [$current->{$sortColumn}, $entryId]
             )
             ->first();
