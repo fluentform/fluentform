@@ -297,6 +297,7 @@ export default {
             let unsupportedSettings = [
                 // 'conditional_logics',
                 'label_placement',
+                'upload_bttn_ui',
                 // 'calculation_settings',
                 'prefix_label',
                 'suffix_label',
