@@ -7,16 +7,16 @@
 <!--
 1-4 bullets describing the concrete behavior or surface that changed.
 Group by capability or area, not by file. Skip raw filenames.
-Lead each bullet with an action verb (Add / Fix / Refactor / Remove / Migrate).
+Lead each bullet with an ALL CAPS action verb (ADD / FIX / REFACTOR / REMOVE / MIGRATE).
 Omit this section entirely if the title already says everything.
 
 Good examples:
-- Preserve JSON escapes when importing form meta with quoted HTML
-- Fix conditional logic skipping fields across multi-step forms
-- Add subscription support to payment calculation totals
-- Harden shortcode output against unescaped event handlers
-- Refactor entry export to share notes preloading with CSV/XLSX paths
-- Drop deprecated `fluentform_logs_legacy` table and its migration shim
+- PRESERVE JSON escapes when importing form meta with quoted HTML
+- FIX conditional logic skipping fields across multi-step forms
+- ADD subscription support to payment calculation totals
+- HARDEN shortcode output against unescaped event handlers
+- REFACTOR entry export to share notes preloading with CSV/XLSX paths
+- DROP deprecated `fluentform_logs_legacy` table and its migration shim
 
 Avoid:
 - "Changed PHP files" / "Updated Vue components"  (too vague)
