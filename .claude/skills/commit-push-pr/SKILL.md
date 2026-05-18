@@ -10,7 +10,7 @@ Run the full git workflow: create/sync the feature branch, stage changes, commit
 ## Constraints
 
 - Do NOT add any `Co-Authored-By` trailer anywhere — not in the commit message, not in the PR body. Never reference Claude/Anthropic as co-author.
-- Commit subject and PR title use **Sentence case** after the prefix (only the first word capitalized; proper nouns/acronyms keep their case).
+- Commit subject and PR title use an **ALL CAPS prefix** followed by **Sentence case** (only the first word after the prefix capitalized; proper nouns/acronyms keep their case). Example: `FIX: Preserve JSON escapes when importing form meta`.
 - If the user provides a **ticket/task/issue link or ID** before requesting the commit (e.g. Jira/Linear/GitHub/GitLab/Asana/ClickUp/Trello URL or `#123`/`PROJ-456`), capture it and include it in BOTH the commit message body AND the PR body. Never invent or guess a ticket reference; only use what the user supplied.
 
 ## Execution Workflow
@@ -43,18 +43,18 @@ Run the full git workflow: create/sync the feature branch, stage changes, commit
 ### Step 4 — Commit
 
 - Draft a commit message:
-  - **Format** (matches `readme.txt` changelog style): `<Prefix>: <Sentence case subject>`.
+  - **Format** (matches `readme.txt` changelog style): `<PREFIX>: <Sentence case subject>`. The prefix is ALL CAPS; the subject is Sentence case (only the first word capitalized).
   - Allowed prefixes (pick the closest fit):
-    - `Add:` — new feature, option, field, hook, integration
-    - `Fix:` — bug fix
-    - `Update:` — adjustment to existing behavior, dependency, or copy
-    - `Improve:` — enhancement to existing UI/UX/perf without behavior change
-    - `Remove:` — removal of feature, file, or dependency
-    - `Security:` — security patch, hardening, vulnerability fix
-    - `Docs:` — documentation only
-    - `Chore:` — tooling, build, config, non-functional housekeeping
-    - `Release:` — version bump / release commit
-    - `Hotfix:` — urgent patch on top of a release
+    - `ADD:` — new feature, option, field, hook, integration
+    - `FIX:` — bug fix
+    - `UPDATE:` — adjustment to existing behavior, dependency, or copy
+    - `IMPROVE:` — enhancement to existing UI/UX/perf without behavior change
+    - `REMOVE:` — removal of feature, file, or dependency
+    - `SECURITY:` — security patch, hardening, vulnerability fix
+    - `DOCS:` — documentation only
+    - `CHORE:` — tooling, build, config, non-functional housekeeping
+    - `RELEASE:` — version bump / release commit
+    - `HOTFIX:` — urgent patch on top of a release
   - Subject ≤72 chars, sentence case, no trailing period. Subject states the *what*.
   - Body (optional) states the *why* if non-obvious. Wrap at ~72 chars.
   - **Ticket reference**: if the user supplied a ticket link or ID earlier, append a trailer line after a blank line. Use the closing keyword that fits the work:
@@ -66,12 +66,12 @@ Run the full git workflow: create/sync the feature branch, stage changes, commit
 
 #### Commit subject examples
 
-- `Fix: Preserve JSON escapes when importing form meta`
-- `Add: Subscription support for payment calculations`
-- `Update: Sanitize form_step and save_progress_button settings`
-- `Security: Block event handlers in sanitized HTML`
-- `Improve: ACL permission checks and helpers`
-- `Remove: Unused legacy migrator stubs`
+- `FIX: Preserve JSON escapes when importing form meta`
+- `ADD: Subscription support for payment calculations`
+- `UPDATE: Sanitize form_step and save_progress_button settings`
+- `SECURITY: Block event handlers in sanitized HTML`
+- `IMPROVE: ACL permission checks and helpers`
+- `REMOVE: Unused legacy migrator stubs`
 
 ### Step 5 — Push
 
@@ -126,7 +126,7 @@ Resolve template path in order:
 ### Step 9 — Open PR
 
 - `gh pr create --base dev --title "<title>" --body "<filled-template>"`
-- Title: same subject as the commit message, including the prefix (`Fix:`, `Add:`, `Improve:`, etc.).
+- Title: same subject as the commit message, including the ALL CAPS prefix (`FIX:`, `ADD:`, `IMPROVE:`, etc.).
 - For multi-commit PRs, restate cleanly using the dominant prefix.
 - Return the PR URL.
 
@@ -144,7 +144,7 @@ Verify before creating the PR:
 - Optional sections present only when meaningful.
 - All statements are evidence-backed.
 - No fluff, no bloat, no redundant details.
-- Commit subject AND PR title use the `Prefix: Sentence case subject` pattern with a prefix that actually fits.
+- Commit subject AND PR title use the `PREFIX: Sentence case subject` pattern (ALL CAPS prefix, Sentence case subject) with a prefix that actually fits.
 - If the user supplied a ticket reference, it appears in BOTH the commit body trailer AND the PR body. Never invented.
 - No `Co-Authored-By` line anywhere in commit or PR body. No Claude/AI co-author attribution.
 - Branch was synced with `origin/dev` before pushing (Step 2) — confirm no stale base.
