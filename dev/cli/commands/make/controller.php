@@ -19,6 +19,7 @@
 
     namespace {$fqn};
 
+    use $namespace\App\Http\Controllers\Controller;
     use $namespace\Framework\Request\Request;
 
     class {$name} extends Controller
