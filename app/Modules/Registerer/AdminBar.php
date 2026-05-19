@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Modules\Registerer;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -110,11 +112,11 @@ class AdminBar
             $title = __('Fluent Forms', 'fluentform');
         }
 
-        $allowForms = FormManagerService::getUserAllowedForms();
+        $allowForms = FormManagerService::getUserAllowedFormsScope();
         $hasUnreadSubmissions = wpFluent()->table('fluentform_submissions')
             ->where('status', 'unread')
-            ->when($allowForms, function ($q) use ($allowForms){
-                return $q->whereIn('form_id', $allowForms);
+            ->when(false !== $allowForms, function ($q) use ($allowForms){
+                return $q->whereIn('form_id', $allowForms ?: [0]);
             })
             ->count();
 

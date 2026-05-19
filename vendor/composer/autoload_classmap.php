@@ -7,10 +7,13 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'FluentForm\\App\\Databases\\Migrations\\FormSubmissions' => $baseDir . '/app/Compat/FormSubmissions.php',
+    'FluentForm\\App\\Databases\\Migrations\\SubmissionDetails' => $baseDir . '/app/Compat/SubmissionDetails.php',
     'FluentForm\\Database\\DBMigrator' => $baseDir . '/database/DBMigrator.php',
     'FluentForm\\Database\\Migrations\\FormAnalytics' => $baseDir . '/database/Migrations/FormAnalytics.php',
     'FluentForm\\Database\\Migrations\\FormMeta' => $baseDir . '/database/Migrations/FormMeta.php',
     'FluentForm\\Database\\Migrations\\Forms' => $baseDir . '/database/Migrations/Forms.php',
+    'FluentForm\\Database\\Migrations\\LegacyManagerScopes' => $baseDir . '/database/Migrations/LegacyManagerScopes.php',
     'FluentForm\\Database\\Migrations\\Logs' => $baseDir . '/database/Migrations/Logs.php',
     'FluentForm\\Database\\Migrations\\ScheduledActions' => $baseDir . '/database/Migrations/ScheduledActions.php',
     'FluentForm\\Database\\Migrations\\SubmissionDetails' => $baseDir . '/database/Migrations/SubmissionDetails.php',

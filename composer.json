@@ -22,7 +22,7 @@
     ],
     "require": {
         "wpfluent/framework": "^2.11.4",
-        "openspout/openspout": "^3.0"
+        "openspout/openspout": "^3.7"
     },
     "autoload": {
         "psr-4": {
@@ -46,12 +46,17 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "FluentForm\\App\\ComposerScript::postInstall"
+        ],
         "post-update-cmd": [
             "FluentForm\\App\\ComposerScript::postUpdate"
         ]
     },
     "config": {
-        "platform-check": false
+        "platform": {
+            "php": "7.4"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

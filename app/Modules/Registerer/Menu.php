@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Modules\Registerer;
 
+defined('ABSPATH') or die;
+
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Modules\Acl\Acl;
@@ -463,11 +465,11 @@ class Menu
             $entriesTitle = __('Entries', 'fluentform');
 
             if (Helper::isFluentAdminPage()) {
-                $allowForms = FormManagerService::getUserAllowedForms();
+                $allowForms = FormManagerService::getUserAllowedFormsScope();
                 $entriesCount = wpFluent()->table('fluentform_submissions')
                     ->where('status', 'unread')
-                    ->when($allowForms, function ($q) use ($allowForms){
-                        return $q->whereIn('form_id', $allowForms);
+                    ->when(false !== $allowForms, function ($q) use ($allowForms){
+                        return $q->whereIn('form_id', $allowForms ?: [0]);
                     })
                     ->count();
 
@@ -812,8 +814,8 @@ class Menu
             (new ActivationHandler())->migrate();
         }
 
-        if ($allowForms = FormManagerService::getUserAllowedForms()) {
-            $formsCount = wpFluent()->table('fluentform_forms')->whereIn('id', $allowForms)->count();
+        if (false !== ($allowForms = FormManagerService::getUserAllowedFormsScope())) {
+            $formsCount = wpFluent()->table('fluentform_forms')->whereIn('id', $allowForms ?: [0])->count();
         } else {
             $formsCount = wpFluent()->table('fluentform_forms')->count();
         }
@@ -971,6 +973,16 @@ class Menu
                     }
                 }
 
+                if (!empty($formFields['stepsWrapper']['stepStart'])) {
+                    $stepStart = $formFields['stepsWrapper']['stepStart'];
+
+                    $formFields['stepsWrapper']['stepStart'] = apply_filters(
+                        'fluentform/editor_init_element_' . $stepStart['element'],
+                        $stepStart,
+                        $form
+                    );
+                }
+
                 $formFields['fields'] = array_values($formFields['fields']);
                 $formFields = json_encode($formFields, true);
             }
@@ -1042,7 +1054,8 @@ class Menu
 				    'net_promoter_score',
 				    'rangeslider',
 				    'custom_payment_component',
-                    'item_quantity_component'
+                    'item_quantity_component',
+                    'subscription_payment_component'
 			    ]
 		    ];
 	    }
@@ -1138,12 +1151,12 @@ class Menu
 
     public function renderTransfer()
     {
-        $allowForms = FormManagerService::getUserAllowedForms();
+        $allowForms = FormManagerService::getUserAllowedFormsScope();
         $forms = wpFluent()->table('fluentform_forms')
             ->orderBy('id', 'desc')
             ->select(['id', 'title'])
-            ->when($allowForms, function ($q) use ($allowForms){
-                return $q->whereIn('id', $allowForms);
+            ->when(false !== $allowForms, function ($q) use ($allowForms){
+                return $q->whereIn('id', $allowForms ?: [0]);
             })
             ->get();
 
@@ -1181,7 +1194,7 @@ class Menu
         if (Helper::isConversionForm($formId)) {
             $shortcode = '[fluentform type="conversational" id="' . $formId . '"]';
         }
-        echo '<button title="Click to Copy" class="ff_shortcode_btn ff_shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
+        echo '<button title="' . esc_attr__('Click to Copy', 'fluentform') . '" class="ff_shortcode_btn ff_shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
         return;
     }
 

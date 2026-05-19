@@ -142,7 +142,7 @@ class ShortCodeParser
                 $value = static::getSubmissionData($submissionProperty);
             } elseif (false !== strpos($matches[1], 'cookie.')) {
                 $scookieProperty = substr($matches[1], strlen('cookie.'));
-                $value = wpFluentForm('request')->cookie($scookieProperty);
+                $value = array_key_exists($scookieProperty, $_COOKIE) ? wp_unslash($_COOKIE[$scookieProperty]) : '';
             } elseif (false !== strpos($matches[1], 'payment.')) {
                 $property = substr($matches[1], strlen('payment.'));
                 $deprecatedValue = apply_filters_deprecated(
@@ -379,6 +379,8 @@ class ShortCodeParser
         }
         if ('admin_view_url' == $key) {
             return admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry->form_id . '#/entries/' . $entry->id);
+        } elseif ('entry_uid' == $key) {
+            return static::getShortEntryUid($entry);
         } elseif ('entry_uid_link' == $key) {
             return static::getEntryUidLink($entry);
         } elseif (false !== strpos($key, 'meta.')) {
@@ -457,6 +459,7 @@ class ShortCodeParser
                     if (is_array($data) || is_object($data)) {
                         continue;
                     }
+                    // $label is admin-set, $data is already sanitized via fluentFormSanitizer() on submission insert
                     $html .= '<tr class="field-label"><th style="padding: 6px 12px; background-color: #f8f8f8; text-align: left;"><strong>' . $label . '</strong></th></tr><tr class="field-value"><td style="padding: 6px 12px 12px 12px;">' . $data . '</td></tr>';
                 }
             }
@@ -653,6 +656,22 @@ class ShortCodeParser
 
         // Generate the link
         return site_url('?ff_entry=1&hash=' . $meta->value);
+    }
+
+    protected static function getShortEntryUid($entry)
+    {
+        if (empty($entry->id)) {
+            return '';
+        }
+
+        $entryId = strtoupper(base_convert((string) absint($entry->id), 10, 36));
+        $entryHash = SubmissionMeta::retrieve('_entry_uid_hash', $entry->id);
+
+        if (!$entryHash) {
+            return $entryId;
+        }
+
+        return $entryId . '-' . strtoupper(substr($entryHash, 0, 4));
     }
 
     public static function resetData()

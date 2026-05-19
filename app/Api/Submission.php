@@ -202,7 +202,7 @@ class Submission
             ->where('payment_type', 'subscription')
             ->get();
 
-        if (!$submissions) {
+        if (count($submissions) === 0) {
             return [];
         }
 

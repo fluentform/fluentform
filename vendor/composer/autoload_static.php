@@ -7,15 +7,15 @@ namespace Composer\Autoload;
 class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
 {
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WPFluent\\' => 9,
         ),
-        'O' => 
+        'O' =>
         array (
             'OpenSpout\\' => 10,
         ),
-        'F' => 
+        'F' =>
         array (
             'FluentForm\\Framework\\' => 21,
             'FluentForm\\App\\' => 15,
@@ -23,19 +23,19 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
     );
 
     public static $prefixDirsPsr4 = array (
-        'WPFluent\\' => 
+        'WPFluent\\' =>
         array (
             0 => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent',
         ),
-        'OpenSpout\\' => 
+        'OpenSpout\\' =>
         array (
             0 => __DIR__ . '/..' . '/openspout/openspout/src',
         ),
-        'FluentForm\\Framework\\' => 
+        'FluentForm\\Framework\\' =>
         array (
             0 => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent',
         ),
-        'FluentForm\\App\\' => 
+        'FluentForm\\App\\' =>
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),
@@ -43,10 +43,13 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'FluentForm\\App\\Databases\\Migrations\\FormSubmissions' => __DIR__ . '/../..' . '/app/Compat/FormSubmissions.php',
+        'FluentForm\\App\\Databases\\Migrations\\SubmissionDetails' => __DIR__ . '/../..' . '/app/Compat/SubmissionDetails.php',
         'FluentForm\\Database\\DBMigrator' => __DIR__ . '/../..' . '/database/DBMigrator.php',
         'FluentForm\\Database\\Migrations\\FormAnalytics' => __DIR__ . '/../..' . '/database/Migrations/FormAnalytics.php',
         'FluentForm\\Database\\Migrations\\FormMeta' => __DIR__ . '/../..' . '/database/Migrations/FormMeta.php',
         'FluentForm\\Database\\Migrations\\Forms' => __DIR__ . '/../..' . '/database/Migrations/Forms.php',
+        'FluentForm\\Database\\Migrations\\LegacyManagerScopes' => __DIR__ . '/../..' . '/database/Migrations/LegacyManagerScopes.php',
         'FluentForm\\Database\\Migrations\\Logs' => __DIR__ . '/../..' . '/database/Migrations/Logs.php',
         'FluentForm\\Database\\Migrations\\ScheduledActions' => __DIR__ . '/../..' . '/database/Migrations/ScheduledActions.php',
         'FluentForm\\Database\\Migrations\\SubmissionDetails' => __DIR__ . '/../..' . '/database/Migrations/SubmissionDetails.php',

@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 /**
  * All registered filter's handlers should be in app\Hooks\Handlers,
  * addFilter is similar to add_filter and addCustomFlter is just a
@@ -211,10 +213,9 @@ foreach ($fluentformElements as $fluentformElement) {
 
         if ($response && ($isHtml || defined('FLUENTFORM_RENDERING_ENTRIES')) && in_array($element, ['select', 'input_radio']) && !is_array($response)) {
             if (!isset($field['options'])) {
-                $field['options'] = [];
-                foreach (\FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
-                    $field['options'][$option['value']] = $option['label'];
-                }
+                $field['options'] = \FluentForm\App\Helpers\Helper::advancedOptionsValueLabelMap(
+                    \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', [])
+                );
             }
             if (isset($field['options'][$response])) {
                 return $field['options'][$response];
@@ -257,7 +258,13 @@ foreach ($fluentformRules as $fluentformRuleName) {
 
 
 $app->addFilter('fluentform/response_render_textarea', function ($value, $field, $formId, $isHtml) {
-    if (!$value || !is_string($value)) {
+    if (is_array($value) || is_object($value)) {
+        $value = fluentImplodeRecursive(', ', array_filter(array_values((array) $value)));
+    }
+
+    $value = $value ? nl2br($value) : $value;
+
+    if (!$isHtml || !$value) {
         return $value;
     }
 
@@ -321,7 +328,7 @@ $app->addFilter('fluentform/permission_callback', function ($status, $permission
 
 // Get current user allowed form ids, if current user has specific form permission
 $app->addFilter('fluentform/current_user_allowed_forms', function ($form){
-    return \FluentForm\App\Services\Manager\FormManagerService::getUserAllowedForms();
+    return \FluentForm\App\Services\Manager\FormManagerService::getUserAllowedFormsScope();
 });
 
 $app->addFilter('fluentform/validate_input_item_input_email', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);

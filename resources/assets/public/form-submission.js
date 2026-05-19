@@ -66,6 +66,10 @@ jQuery(document).ready(function () {
                 return fluentFormAppStore[formInstanceSelector];
             }
 
+            if (!fluentFormVars.ajaxUrl) {
+                fluentFormVars.ajaxUrl = form.ajaxUrl || window.ajaxurl;
+            }
+
             var formId = form.form_id_selector;
             var formSelector = '.' + formInstanceSelector;
 

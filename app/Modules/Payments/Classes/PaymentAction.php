@@ -678,7 +678,7 @@ class PaymentAction
 
         $exitingItems = OrderItem::where('submission_id', $existing->id)->get();
 
-        if (!$exitingItems || $exitingItems->isEmpty()) {
+        if (!$exitingItems || count($exitingItems) === 0) {
             foreach ($items as $item) {
                 OrderItem::create($item);
             }

@@ -3,9 +3,10 @@
 namespace FluentForm\App\Services\Form;
 
 use Exception;
-use FluentForm\App\Models\Form;
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
+use FluentForm\App\Services\FormBuilder\RatingIcon;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 
@@ -84,6 +85,19 @@ class Updater
                     sprintf('Name attribute %s has duplicate value.', esc_html($duplicateString))
                 );
             }
+
+            $duplicateRankingFields = Helper::getRankingFieldsWithDuplicateOptionValues($attributes['formFields']);
+
+            if ($duplicateRankingFields) {
+                $duplicateRankingFields = implode(', ', array_unique($duplicateRankingFields));
+
+                throw new Exception(
+                    sprintf(
+                        __('Ranking field %s has duplicate option values. Please make each option value unique.', 'fluentform'),
+                        esc_html($duplicateRankingFields)
+                    )
+                );
+            }
         }
 
         if (!$attributes['title']) {
@@ -144,12 +158,23 @@ class Updater
             'admin_field_label'         => 'sanitize_text_field',
             'prefix_label'              => 'sanitize_text_field',
             'suffix_label'              => 'sanitize_text_field',
+            'icon_source'               => 'sanitize_key',
+            'icon_type'                 => 'sanitize_key',
+            'custom_icon_svg'           => [RatingIcon::class, 'sanitizeCustomSvg'],
+            'inactive_color'            => [RatingIcon::class, 'sanitizeColor'],
+            'active_color'              => [RatingIcon::class, 'sanitizeColor'],
             'unique_validation_message' => 'sanitize_text_field',
             'advanced_options'          => 'fluentform_options_sanitize',
             'html_codes'                => 'fluentform_sanitize_html',
             'description'               => 'fluentform_sanitize_html',
             'grid_columns'              => [Helper::class, 'sanitizeArrayKeysAndValues'],
             'grid_rows'                 => [Helper::class, 'sanitizeArrayKeysAndValues'],
+            'enable_crop'               => 'sanitize_text_field',
+            'crop_mode'                 => 'sanitize_text_field',
+            'crop_ratio'                => 'sanitize_text_field',
+            'crop_width'                => 'absint',
+            'crop_height'               => 'absint',
+            'enforce_image_dimensions'  => 'sanitize_text_field',
         ];
       
 
@@ -175,7 +200,49 @@ class Updater
 
             if ('welcome_screen' == $element) {
                 if ($value = Arr::get($field, 'settings.button_ui.text')) {
-                    $field['settings']['button_ui']['text'] = sanitize_text_field($value);
+                    $field['settings']['button_ui']['text'] = fluentform_sanitize_html($value);
+                }
+            }
+
+            if ('form_step' == $element) {
+                foreach (['next_btn', 'prev_btn'] as $buttonKey) {
+                    $buttonSettings = Arr::get($field, 'settings.' . $buttonKey);
+                    if (!is_array($buttonSettings)) {
+                        continue;
+                    }
+
+                    if (isset($buttonSettings['type'])) {
+                        $field['settings'][$buttonKey]['type'] = sanitize_text_field($buttonSettings['type']);
+                    }
+
+                    if (isset($buttonSettings['text'])) {
+                        $field['settings'][$buttonKey]['text'] = fluentform_sanitize_html($buttonSettings['text']);
+                    }
+
+                    if (isset($buttonSettings['img_url'])) {
+                        $field['settings'][$buttonKey]['img_url'] = esc_url_raw($buttonSettings['img_url']);
+                    }
+
+                    if (isset($buttonSettings['img_alt'])) {
+                        $field['settings'][$buttonKey]['img_alt'] = sanitize_text_field($buttonSettings['img_alt']);
+                    }
+                }
+            }
+
+            if ('save_progress_button' == $element) {
+                $buttonUi = Arr::get($field, 'settings.button_ui');
+                if (is_array($buttonUi)) {
+                    if (isset($buttonUi['type'])) {
+                        $field['settings']['button_ui']['type'] = sanitize_text_field($buttonUi['type']);
+                    }
+
+                    if (isset($buttonUi['text'])) {
+                        $field['settings']['button_ui']['text'] = fluentform_sanitize_html($buttonUi['text']);
+                    }
+
+                    if (isset($buttonUi['img_url'])) {
+                        $field['settings']['button_ui']['img_url'] = esc_url_raw($buttonUi['img_url']);
+                    }
                 }
             }
             
@@ -258,7 +325,7 @@ class Updater
             ],
             'button_ui'     => [
                 'type'    => 'sanitize_text_field',
-                'text'    => 'sanitize_text_field',
+                'text'    => 'fluentform_sanitize_html',
                 'img_url' => 'esc_url_raw',
             ],
         ];
@@ -294,7 +361,7 @@ class Updater
         $stepsSanitizationMap = [
             'prev_btn' => [
                 'type'    => 'sanitize_text_field',
-                'text'    => 'sanitize_text_field',
+                'text'    => 'fluentform_sanitize_html',
                 'img_url' => 'esc_url_raw',
             ],
         ];
@@ -307,6 +374,15 @@ class Updater
                     foreach ($field['settings']['step_titles'] as $index => $title) {
                         $field['settings']['step_titles'][$index] = fluentform_sanitize_html($title);
                     }
+                }
+
+                if (isset($field['settings']['tabs_show_progress_bar'])) {
+                    $field['settings']['tabs_show_progress_bar'] = sanitize_text_field($field['settings']['tabs_show_progress_bar']) === 'yes' ? 'yes' : 'no';
+                }
+
+                if (isset($field['settings']['progress_layout'])) {
+                    $progressLayout = sanitize_text_field($field['settings']['progress_layout']);
+                    $field['settings']['progress_layout'] = in_array($progressLayout, ['top', 'left'], true) ? $progressLayout : 'top';
                 }
 
                 if (!empty($field['settings']['prev_btn']) && is_array($field['settings']['prev_btn'])) {

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/lukmannakib/.claude/skills/**)",
+      "Bash(ln -s /Volumes/Projects/Tools/agent-skills/plugin-audit/SKILL.md plugin-audit.md)",
+      "Bash(ln -s /Volumes/Projects/Tools/agent-skills/debugger/SKILL.md debugger.md)",
+      "Bash(ln -s /Volumes/Projects/Tools/agent-skills/php-cs-fixer-style/SKILL.md php-cs-fixer-style.md)",
+      "Bash(ln -s /Volumes/Projects/Tools/agent-skills/pr-descriptor/SKILL.md pr-descriptor.md)"
+    ]
+  }
+}

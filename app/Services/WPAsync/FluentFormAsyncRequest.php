@@ -66,7 +66,7 @@ class FluentFormAsyncRequest
             'timeout' => 0.1,
             'blocking' => false,
             'body' => $data,
-            'cookies' => wpFluentForm('request')->cookie(),
+            'cookies' => $_COOKIE,
             'sslverify' => apply_filters('fluentform/https_local_ssl_verify', $sslVerify),
         );
 
@@ -103,7 +103,7 @@ class FluentFormAsyncRequest
 
         $actionFeeds = $actionFeedQuery->get();
 
-        if($actionFeeds->isEmpty()) {
+        if(count($actionFeeds) === 0) {
             return;
         }
 
@@ -223,7 +223,7 @@ class FluentFormAsyncRequest
             'origin_id' => $originId
         ])->get();
 
-        if ($pendingFeeds->isEmpty()) {
+        if (count($pendingFeeds) === 0) {
             do_action('fluentform/global_notify_completed', $originId, $form);
         }
     }

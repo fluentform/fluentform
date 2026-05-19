@@ -77,10 +77,11 @@ class EditorShortCode
     public static function getSubmissionShortcodes($form = false)
     {
         $submissionProperties = [
+            '{submission.serial_number}'  => __('#Submission Serial Number', 'fluentform'),
             '{submission.id}'             => __('Submission ID', 'fluentform'),
-            '{submission.serial_number}'  => __('Submission Serial Number', 'fluentform'),
-            '{submission.source_url}'     => __('Source URL', 'fluentform'),
             '{submission.user_id}'        => __('User Id', 'fluentform'),
+            '{submission.entry_uid}'      => __('Entry Unique ID', 'fluentform'),
+            '{submission.source_url}'     => __('Source URL', 'fluentform'),
             '{submission.browser}'        => __('Submitter Browser', 'fluentform'),
             '{submission.device}'         => __('Submitter Device', 'fluentform'),
             '{submission.status}'         => __('Submission Status', 'fluentform'),
@@ -149,7 +150,7 @@ class EditorShortCode
         return apply_filters('fluentform/form_settings_smartcodes', $groups, $form);
     }
 
-    public static function parse($string, $data, callable $arrayFormatter = null)
+    public static function parse($string, $data, ?callable $arrayFormatter = null)
     {
         if (is_array($string)) {
             return static::parseArray($string, $data, $arrayFormatter);
@@ -171,7 +172,7 @@ class EditorShortCode
         return $string;
     }
 
-    public static function parseString($string, $data, callable $arrayFormatter = null)
+    public static function parseString($string, $data, ?callable $arrayFormatter = null)
     {
         return preg_replace_callback('/{+(.*?)}/', function ($matches) use (&$data, &$arrayFormatter) {
             if (! isset($data[$matches[1]])) {

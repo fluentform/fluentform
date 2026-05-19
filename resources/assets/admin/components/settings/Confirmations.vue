@@ -149,7 +149,7 @@
                             <h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>
                             <p class="text">{{ $t('Upgrade to get access to all the advanced features.') }}</p>
                         </div>
-                        <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+                        <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--primary el-button--small">
                             {{ $t('Upgrade to Pro') }}
                         </a>
                     </notice>

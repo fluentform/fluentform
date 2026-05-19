@@ -25,10 +25,11 @@ class LogController extends Controller
                 $logger->get($attributes)
             );
         } catch (Exception $e) {
-            return $this->sendError([
-                'message' => __('Something went wrong, please try again!', 'fluentform'),
-                'error'   => $e->getMessage(),
-            ]);
+            $response = ['message' => __('Something went wrong, please try again!', 'fluentform')];
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $response['error'] = $e->getMessage();
+            }
+            return $this->sendError($response);
         }
     }
 
@@ -46,10 +47,11 @@ class LogController extends Controller
                 $logger->getFilters($attributes)
             );
         } catch (Exception $e) {
-            return $this->sendError([
-                'message' => __('Something went wrong, please try again!', 'fluentform'),
-                'error'   => $e->getMessage(),
-            ]);
+            $response = ['message' => __('Something went wrong, please try again!', 'fluentform')];
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $response['error'] = $e->getMessage();
+            }
+            return $this->sendError($response);
         }
     }
 
@@ -60,6 +62,14 @@ class LogController extends Controller
             
             $sanitizeMap = [
                 'log_id' => 'intval',
+                'log_ids' => function ($value) {
+                    if (is_array($value)) {
+                        return array_map('intval', $value);
+                    }
+
+                    return [];
+                },
+                'type' => 'sanitize_text_field',
             ];
             $attributes = fluentform_backend_sanitizer($attributes, $sanitizeMap);
             
@@ -67,9 +77,11 @@ class LogController extends Controller
                 $logger->remove($attributes)
             );
         } catch (Exception $e) {
-            return $this->sendError([
-                'message' => $e->getMessage(),
-            ]);
+            $response = ['message' => __('Something went wrong, please try again!', 'fluentform')];
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $response['error'] = $e->getMessage();
+            }
+            return $this->sendError($response);
         }
     }
 }

@@ -5,6 +5,7 @@ namespace FluentForm\App\Modules\Payments   ;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Subscription;
 use FluentForm\App\Models\Transaction;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\Classes\PaymentReceipt;
 use FluentForm\App\Modules\Payments\Orders\OrderData;
@@ -180,7 +181,7 @@ class TransactionShortcodes
             'statuses'   => ArrayHelper::get($atts, 'subscription_statuses', [])
         ]);
 
-        if (!$subscriptions) {
+        if (!count($subscriptions)) {
             return '';
         }
 
@@ -221,7 +222,7 @@ class TransactionShortcodes
             'statuses'          => ArrayHelper::get($atts, 'payment_statuses', [])
         ]);
 
-        if (!$transactions) {
+        if (!count($transactions)) {
             return '';
         }
 
@@ -282,7 +283,7 @@ class TransactionShortcodes
 
         $transactions = fluentFormApi('submissions')->transactionsBySubscriptionId($subscription->id);
 
-        if (!$transactions) {
+        if (!count($transactions)) {
             wp_send_json_error([
                 'message' => __('Sorry, no related payments found', 'fluentform'),
             ], 423);
@@ -452,10 +453,16 @@ class TransactionShortcodes
         $userid = get_current_user_id();
         $submission = fluentFormApi('submissions')->find($subscription->submission_id);
 
-        if (!$submission || ($submission->user_id != $userid && !$this->canCancelSubscription($subscription))) {
+        if (!$submission || !$this->canCancelSubscription($subscription)) {
             $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
         }
-    
+
+        $canManagePayments = Acl::hasPermission('fluentform_manage_payments', $submission->form_id);
+
+        if (!$canManagePayments && (int) $submission->user_id !== (int) $userid) {
+            $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
+        }
+
         $handler = apply_filters_deprecated(
             'fluentform_payment_manager_class_' . $submission->payment_method,
             [

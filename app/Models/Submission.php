@@ -96,7 +96,21 @@ class Submission extends Model
         return $this->hasMany(OrderItem::class, 'submission_id', 'id');
     }
 
-    public function customQuery($attributes = [])
+    /**
+     * Returns the column the entries listing should be sorted by.
+     * Defaults to created_at so imported entries respect their original
+     * submission date. Site owners can switch back to legacy id-based
+     * ordering via the fluentform/entries_default_sort_column filter.
+     */
+    public static function getSortColumn()
+    {
+        $column = apply_filters('fluentform/entries_default_sort_column', 'created_at');
+        $allowed = ['id', 'created_at'];
+
+        return in_array($column, $allowed, true) ? $column : 'created_at';
+    }
+
+    public function customQuery($attributes = [], $searchExtender = null)
     {
         $entryType = Arr::get($attributes, 'entry_type');
         $dateRange = Arr::get($attributes, 'date_range');
@@ -122,7 +136,16 @@ class Submission extends Model
             $wheres[] = ['payment_status', $paymentStatuses];
         }
 
-        $query = $this->orderBy('fluentform_submissions.id', $sortBy)
+        // Sort by submission date so imported entries (which get new auto-increment ids
+        // but carry their original created_at) interleave correctly with native ones.
+        // Tie-break on id to keep pagination stable for rows sharing a timestamp.
+        // Filter lets site owners revert to legacy id-based ordering if needed.
+        $sortColumn = self::getSortColumn();
+        $query = $this->orderBy('fluentform_submissions.' . $sortColumn, $sortBy);
+        if ('id' !== $sortColumn) {
+            $query = $query->orderBy('fluentform_submissions.id', $sortBy);
+        }
+        $query = $query
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('fluentform_submissions.form_id', $formId);
             })
@@ -145,14 +168,17 @@ class Submission extends Model
                 return $q->where('fluentform_submissions.created_at', '>=', $startDate)
                     ->where('fluentform_submissions.created_at', '<=', $endDate);
             })
-            ->when($search, function ($q) use ($search) {
+            ->when($search, function ($q) use ($search, $searchExtender) {
                 global $wpdb;
                 $escaped = $wpdb->esc_like($search);
-                return $q->where(function ($q) use ($escaped) {
-                    return $q->where('fluentform_submissions.id', 'LIKE', "%{$escaped}%")
+                return $q->where(function ($q) use ($escaped, $searchExtender) {
+                    $q->where('fluentform_submissions.id', 'LIKE', "%{$escaped}%")
                         ->orWhere('response', 'LIKE', "%{$escaped}%")
                         ->orWhere('fluentform_submissions.status', 'LIKE', "%{$escaped}%")
                         ->orWhere('fluentform_submissions.created_at', 'LIKE', "%{$escaped}%");
+                    if ($searchExtender) {
+                        $searchExtender($q, $escaped);
+                    }
                 });
             })
             ->when($wheres, function ($q) use ($wheres) {
@@ -183,7 +209,11 @@ class Submission extends Model
     public function paginateEntries($attributes = [])
     {
         $formId = Arr::get($attributes, 'form_id');
+        $allowFormIds = FormManagerService::getUserAllowedFormsScope();
         $query = $this->customQuery($attributes);
+        $query = $query->when(false !== $allowFormIds, function ($q) use ($allowFormIds) {
+            return $q->whereIn('fluentform_submissions.form_id', $allowFormIds ?: [0]);
+        });
         if (Arr::get($attributes, 'advanced_filter')) {
             $query = apply_filters('fluentform/apply_entries_advance_filter', $query, $attributes);
         }
@@ -223,7 +253,28 @@ class Submission extends Model
 
         $query = $this->customQuery($attributes);
 
-        $submission = $query->select($columns)->where('id', $operator, $entryId)->first();
+        // Adjacency must match customQuery's sort order. Compare on the same
+        // (sortColumn, id) row-tuple the listing orders by, so Next/Prev walk
+        // in display order regardless of which sort column the filter selects.
+        // When sortColumn is id the tuple degenerates to a simple id compare.
+        $sortColumn = self::getSortColumn();
+        // Re-assert whitelist; $sortColumn is interpolated into whereRaw below.
+        if (!in_array($sortColumn, ['id', 'created_at'], true)) {
+            $sortColumn = 'created_at';
+        }
+        $current = static::select(['id', $sortColumn])->find($entryId);
+        if (!$current) {
+            return apply_filters('fluentform/next_submission', null, $entryId, $attributes);
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . 'fluentform_submissions';
+        $submission = $query->select($columns)
+            ->whereRaw(
+                "({$table}.{$sortColumn}, {$table}.id) {$operator} (?, ?)",
+                [$current->{$sortColumn}, $entryId]
+            )
+            ->first();
 
         return apply_filters('fluentform/next_submission', $submission, $entryId, $attributes);
     }
@@ -297,9 +348,13 @@ class Submission extends Model
     }
 
     public function allSubmissions($attributes = []) {
-        $customQuery = $this->customQuery($attributes);
-        $search = Arr::get($attributes, 'search');
-        $allowFormIds = FormManagerService::getUserAllowedForms();
+        $searchExtender = function ($q, $escaped) {
+            $q->orWhereHas('form', function ($q) use ($escaped) {
+                $q->where('title', 'LIKE', "%{$escaped}%");
+            });
+        };
+        $customQuery = $this->customQuery($attributes, $searchExtender);
+        $allowFormIds = FormManagerService::getUserAllowedFormsScope();
 
         $result = $customQuery
             ->with([
@@ -308,15 +363,8 @@ class Submission extends Model
                 }
             ])
             ->select(['id', 'form_id', 'status', 'created_at', 'browser', 'currency', 'total_paid'])
-            ->when($allowFormIds, function ($q) use ($allowFormIds){
-                return $q->whereIn('form_id', $allowFormIds);
-            })
-            ->when($search, function ($q) use ($search){
-                global $wpdb;
-                $escaped = $wpdb->esc_like($search);
-                return $q->orWhereHas('form', function ($q) use ($escaped) {
-                    return $q->orWhere('title', 'LIKE', "%{$escaped}%");
-                });
+            ->when(false !== $allowFormIds, function ($q) use ($allowFormIds){
+                return $q->whereIn('form_id', $allowFormIds ?: [0]);
             })
             ->paginate()
             ->toArray();
@@ -339,8 +387,8 @@ class Submission extends Model
     public function availableForms()
     {
         $form = new Form();
-        if ($allowForms = FormManagerService::getUserAllowedForms()) {
-            return $form->select('id', 'title')->whereIn('id', $allowForms)->get();
+        if (false !== ($allowForms = FormManagerService::getUserAllowedFormsScope())) {
+            return $form->select('id', 'title')->whereIn('id', $allowForms ?: [0])->get();
         }
         return $form->select('id', 'title')->get();
     }
@@ -350,6 +398,7 @@ class Submission extends Model
         $from = date('Y-m-d H:i:s', strtotime('-30 days'));
         $to = date('Y-m-d H:i:s', strtotime('+1 days'));
         $formId = Arr::get($attributes, 'form_id');
+        $allowFormIds = FormManagerService::getUserAllowedFormsScope();
         $status = Arr::get($attributes, 'entry_status');
         $start = Arr::get($attributes, 'date_range.0', '');
         $end = Arr::get($attributes, 'date_range.1', '');
@@ -357,6 +406,9 @@ class Submission extends Model
 
         if ('all' === $dateRange) {
             $firstItem = self::orderBy('created_at', 'ASC')
+                ->when(false !== $allowFormIds, function ($q) use ($allowFormIds) {
+                    return $q->whereIn('form_id', $allowFormIds ?: [0]);
+                })
                 ->when($formId, function ($q) use ($formId) {
                     return $q->where('form_id', $formId);
                 })
@@ -393,6 +445,9 @@ class Submission extends Model
             ->whereBetween('created_at', [$from, $to])
             ->groupBy('date')
             ->orderBy('date', 'ASC')
+            ->when(false !== $allowFormIds, function ($q) use ($allowFormIds) {
+                return $q->whereIn('form_id', $allowFormIds ?: [0]);
+            })
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('form_id', $formId);
             })

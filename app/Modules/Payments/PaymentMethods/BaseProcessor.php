@@ -675,8 +675,8 @@ abstract class BaseProcessor
         if ($type == 'paid') {
             $returnData = $this->getReturnData();
         } else {
-            $pendingTitle = __('Payment was not marked as paid', 'fluentformpro');
-            $pendingMessage = __('Looks like you have is still on pending status', 'fluentformpro');
+            $pendingTitle = __('Payment was not marked as paid', 'fluentform');
+            $pendingMessage = __('Looks like you have is still on pending status', 'fluentform');
             $returnData = [
                 'insert_id' => $submission->id,
                 'title'     => apply_filters('fluentform/payment_pending_title', $pendingTitle, $submission, $form),

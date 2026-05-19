@@ -458,6 +458,39 @@ a.input-image:hover {
     text-overflow: ellipsis;
   }
 }
+
+// Searchable form switcher dropdown. Search input is sticky at the top
+// while the form list scrolls beneath it. Empty state shown when the
+// query matches nothing.
+.ff_form_switcher_menu {
+  max-height: 340px;
+  overflow-y: auto;
+  min-width: 220px;
+  padding-top: 0;
+
+  .ff_form_switcher_search {
+    list-style: none;
+    padding: 8px 10px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
+    border-bottom: 1px solid #ebeef5;
+
+    .el-input__inner {
+      height: 30px;
+      line-height: 30px;
+    }
+  }
+
+  .ff_form_switcher_empty {
+    list-style: none;
+    padding: 10px 16px;
+    color: #909399;
+    font-size: 13px;
+    text-align: center;
+  }
+}
 .ff_form_editor_entries_actions{
   .ff_section_head_content{
     margin-bottom: 10px;
@@ -596,6 +629,145 @@ ul.entry_item_list {
   list-style-type: disc;
 }
 
+.wpf_entry_grouped_response {
+  white-space: normal;
+  word-break: break-word;
+
+  .entry_item_list {
+    margin: 0;
+  }
+}
+
+.entry_item_group {
+  padding-left: 12px;
+  border-left: 2px solid #dbe7f5;
+  margin-bottom: 12px;
+  white-space: normal;
+  word-break: break-word;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__label {
+    font-weight: 600;
+    color: #2f3a4c;
+    margin-bottom: 6px;
+  }
+}
+
+.wpf_entry_group_value {
+  line-height: 1.6;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.wpf_entry_value {
+  .wpf_entry_grouped_response,
+  .entry_item_group,
+  .entry_item_list {
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
+.ff-ranking-response {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+  word-break: break-word;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid #e4e7ed;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  &__position {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #1a7efb;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  &__image {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__label {
+    min-width: 0;
+    color: #2f3a4c;
+    font-weight: 500;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+
+  &--grid {
+    display: grid;
+    grid-template-columns: repeat(var(--ff-ranking-response-grid-columns, 3), minmax(0, 1fr));
+    gap: 14px;
+
+    .ff-ranking-response__item {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      min-height: 100%;
+      position: relative;
+      padding: 14px;
+    }
+
+    .ff-ranking-response__position {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1;
+    }
+
+    .ff-ranking-response__image {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      flex: none;
+
+      img {
+        object-fit: contain;
+      }
+    }
+
+    .ff-ranking-response__label {
+      text-align: center;
+    }
+  }
+}
+
 .star_big {
   font-size: 20px;
   display: inline-block;
@@ -633,6 +805,251 @@ ul.entry_item_list {
 
 tr.el-table__row td {
   padding: 18px 0px;
+}
+
+// Pin-column selector that sits at the top of the Columns dropdown.
+// Stops click propagation so picking an option does not close the
+// surrounding el-dropdown menu mid-interaction.
+.ff_pin_column_item {
+  cursor: default;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+.ff_pin_column_row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.ff_pin_column_label {
+  font-size: 13px;
+  color: #606266;
+  white-space: nowrap;
+}
+
+.ff_pin_column_select {
+  flex: 1;
+  min-width: 150px;
+}
+
+.ff_pin_column_divider {
+  margin: 0;
+  padding: 0;
+  height: 0;
+  line-height: 0;
+}
+
+.ff_entry_status_dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  background: #c0c4cc;
+  box-shadow: none;
+
+  &--unread {
+    background: #409eff;
+  }
+  &--read {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px #c0c4cc;
+  }
+  &--trashed {
+    background: #f56c6c;
+  }
+  &--spam {
+    background: #e6a23c;
+  }
+  &--favorites {
+    background: #f7ba2a;
+  }
+}
+
+.ff_entries_table tr.el-table__row {
+  cursor: pointer;
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
+  td.el-table-column--selection,
+  .el-table-column--selection {
+    cursor: default;
+  }
+
+  a,
+  button,
+  input,
+  label,
+  .el-checkbox,
+  .action_button {
+    cursor: pointer;
+  }
+
+  a:focus .el-button,
+  a:focus-visible .el-button,
+  .el-button:focus,
+  .el-button:focus-visible,
+  .el-button.is-focus {
+    border-color: #1f2d3d !important;
+    box-shadow: 0 0 0 3px rgba(31, 45, 61, 0.35) !important;
+    outline: none;
+  }
+}
+
+
+.ff_entries_table .el-table__body tr.el-table__row:hover > td.el-table__cell,
+.ff_entries_table .el-table__body tr.hover-row > td.el-table__cell {
+  background-color: #eef6ff !important;
+}
+
+
+.ff_entries_table .el-table__body tr.el-table__row.current-row > td {
+  background-color: #e6f2ff !important;
+}
+
+.ff_entry_table_cell {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ff_entry_table_cell__content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+  max-height: calc(1.55em * 3);
+
+  > * {
+    max-width: 100%;
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  > *:first-child {
+    margin-top: 0 !important;
+  }
+
+  > *:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  pre,
+  table {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  br {
+    display: none;
+  }
+
+  .ff-ranking-response {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &__item {
+      padding: 6px 8px;
+      gap: 8px;
+      border-radius: 6px;
+    }
+
+    &__position {
+      flex: 0 0 22px;
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+    }
+
+    &__image {
+      flex: 0 0 28px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+    }
+
+    &__label {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    &--grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      .ff-ranking-response__item {
+        flex-direction: row;
+        align-items: center;
+        padding: 6px 8px;
+      }
+
+      .ff-ranking-response__position {
+        position: static;
+      }
+
+      .ff-ranking-response__image {
+        width: 28px;
+        height: 28px;
+        aspect-ratio: auto;
+
+        img {
+          object-fit: cover;
+        }
+      }
+
+      .ff-ranking-response__label {
+        text-align: left;
+      }
+    }
+  }
+}
+
+.compact .ff_entry_table_cell__content {
+  -webkit-line-clamp: 2;
+  max-height: calc(1.55em * 2);
+}
+
+.ff-entry-cell-popover {
+  max-width: min(520px, calc(100vw - 32px));
+}
+
+.ff_entry_table_popover_content {
+  max-height: #{"min(480px, calc(100vh - 180px))"};
+  overflow: auto;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .add_note_wrapper {
@@ -772,23 +1189,110 @@ span.ff_tag {
   border-radius: 8px;
   box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
   margin-bottom: 20px;
-  padding: 5px 10px 5px;
+  padding: 12px;
+
+  // Subtle help banner explaining AND-within-group / OR-between-groups
+  .ff_filter_help_bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    background: #f4f8fb;
+    border: 1px solid #dfe6ef;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #606266;
+
+    .el-icon-info {
+      color: #1565C9;
+      font-size: 14px;
+    }
+
+    strong {
+      color: #1565C9;
+      font-weight: 700;
+    }
+  }
 
   .ff_rich_filters{
     padding: 10px;
     background: #fdfdfd;
-    border: 1px solid #efefef;
-    border-radius: 4px;
+    border: 1px solid #e4e7ed;
+    border-radius: 6px;
+    transition: border-color 0.15s ease;
+
+    &:hover {
+      border-color: #c6d4e1;
+    }
+
     .ff_table{
       background: #f0f3f7;
       border: 1px solid #dedcdc;
       box-shadow:none;
       .filter_name{
         font-weight: 500;
+
+        .ff_filter_field_btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 2px 6px;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.15s ease;
+
+          &:hover {
+            background: #E8F2FF;
+
+            .ff_filter_field_edit_icon {
+              opacity: 1;
+            }
+          }
+        }
+
+        .ff_filter_field_edit_icon {
+          margin-left: 4px;
+          font-size: 13px;
+          color: #1565C9;
+          opacity: 0.4;
+          transition: opacity 0.15s ease;
+        }
       }
     }
   }
+
+  // Cascader panel inside the field-change popover and the empty
+  // filter group's add picker
+  .ff_filter_field_picker {
+    width: 100%;
+  }
+
+  // Layout columns inside a filter row
+  .ff_table {
+    width: 100%;
+
+    .filter_name {
+      width: 210px;
+      line-height: 110%;
+    }
+
+    .fc_filter_operator {
+      width: 190px;
+    }
+
+    .fc_filter_actions {
+      width: 50px;
+      text-align: right;
+    }
+  }
+
+  // Delete button in an empty filter group (right-aligned alongside the Add)
+  .ff_filter_empty_remove {
+    float: right;
+  }
   .ff_cond_or {
+    // Legacy "OR" used elsewhere; keep minimal so it doesn't break other contexts
     border-bottom: 1px dashed #d5dce1;
     margin: 0 0 15px;
     color: gray;
@@ -804,5 +1308,174 @@ span.ff_tag {
       position: relative;
       top: 9px;
     }
+  }
+
+  .ff_filter_group_wrap {
+    position: relative;
+    margin-bottom: 4px;
+
+    &:last-of-type {
+      margin-bottom: 12px;
+    }
+  }
+
+  .fc_rich_filter {
+    position: relative;
+  }
+
+  .ff_filter_group_actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding: 6px 8px 2px;
+    border-top: 1px dashed #e4e7ed;
+    margin-top: 4px;
+
+    .el-button {
+      font-size: 12px;
+    }
+  }
+
+  .ff_filter_modified_dot {
+    margin-left: 6px;
+    font-size: 9px;
+    color: #ffd54f;
+    line-height: 1;
+    vertical-align: middle;
+  }
+
+  // OR separator drawn between two existing filter groups (non-clickable)
+  .ff_or_separator {
+    position: relative;
+    text-align: center;
+    height: 1px;
+    background: #e4e7ed;
+    margin: 14px 0;
+
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 2px 12px;
+      color: #1565C9;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .ff_cond_or_wrap {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0 4px;
+  }
+
+  .ff_add_or_group_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: #fff;
+    color: #1565C9;
+    border: 1px dashed #1565C9;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #E8F2FF;
+      border-style: solid;
+    }
+
+    .el-icon-plus {
+      font-size: 13px;
+      font-weight: 700;
+    }
+  }
+
+  // Soft blue Add button used in empty filter group state
+  .el-button.blue-soft {
+    background-color: #E8F2FF;
+    border-color: #E8F2FF;
+    color: #1565C9;
+
+    &:hover,
+    &:focus {
+      background-color: #1565C9;
+      border-color: #1565C9;
+      color: #fff;
+    }
+  }
+}
+
+// Applied filters summary chips above the entries table
+.ff_applied_filters_summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f4f8fb;
+  border: 1px solid #dfe6ef;
+  border-left: 3px solid #1565C9;
+  border-radius: 4px;
+  margin-bottom: 16px;
+
+  .ff_applied_filters_label {
+    font-weight: 600;
+    color: #303133;
+    margin-right: 4px;
+
+    .el-icon-search {
+      margin-right: 4px;
+      color: #1565C9;
+    }
+  }
+
+  .ff_filter_chip {
+    margin-right: 4px;
+
+    .ff_filter_item_text {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      em {
+        font-style: normal;
+        font-weight: 500;
+        color: #1565C9;
+      }
+    }
+  }
+
+  .ff_filter_or_separator {
+    font-weight: 700;
+    color: #1565C9;
+    font-size: 12px;
+    padding: 0 4px;
+  }
+
+  .ff_filter_and_separator {
+    color: #909399;
+    font-weight: 500;
+    font-size: 11px;
+  }
+}
+
+.ff_advanced_filter_badge {
+  margin-left: 6px;
+
+  .el-badge__content {
+    background-color: #fff;
+    color: #1565C9;
+    border: none;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 6px;
+    font-size: 11px;
   }
 }

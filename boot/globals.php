@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die;
+
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\BaseComponent;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;
@@ -235,7 +237,7 @@ function fluentFormHandleScheduledTasks()
 {
     $failedActions = wpFluent()->table('ff_scheduled_actions')->where('status', 'failed')->where('retry_count', '<', 4)->get();
 
-    if ($failedActions) {
+    if (count($failedActions)) {
         $scheduler = wpFluentForm('fluentFormAsyncRequest');
 
         foreach ($failedActions as $action) {
@@ -317,23 +319,7 @@ function fluentFormPrintUnescapedInternalString($string)
 
 function fluentform_options_sanitize($options)
 {
-    $maps = [
-        'label'      => 'wp_kses_post',
-        'value'      => 'sanitize_text_field',
-        'image'      => 'sanitize_url',
-        'calc_value' => 'sanitize_text_field',
-    ];
-
-    $mapKeys = array_keys($maps);
-
-    foreach ($options as $optionIndex => $option) {
-        $attributes = array_filter(ArrayHelper::only($option, $mapKeys));
-        foreach ($attributes as $key => $value) {
-            $options[$optionIndex][$key] = call_user_func($maps[$key], $value);
-        }
-    }
-
-    return $options;
+    return \FluentForm\App\Helpers\Helper::sanitizeAdvancedOptions($options);
 }
 
 function fluentform_iframe_srcdoc_sanitize($value)
@@ -385,9 +371,6 @@ function fluentform_sanitize_html($html)
         'style'           => [],
     ];
     
-    //button
-    $tags['button']['onclick'] = [];
-
     //svg
     if (empty($tags['svg'])) {
         $svg_args = [
@@ -431,6 +414,19 @@ function fluentform_sanitize_html($html)
     );
 
     $tags = apply_filters('fluentform/allowed_html_tags', $tags);
+
+    // Event-handler attributes are executable JavaScript and must not be re-enabled by filters.
+    foreach ($tags as $tagName => $attributes) {
+        if (!is_array($attributes)) {
+            continue;
+        }
+
+        foreach (array_keys($attributes) as $attribute) {
+            if (preg_match('/^on[a-z]+/i', $attribute)) {
+                unset($tags[$tagName][$attribute]);
+            }
+        }
+    }
 
     return wp_kses($html, $tags);
 }
