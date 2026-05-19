@@ -53,7 +53,7 @@
             <div v-else>
                 <p>{{ $t('This field is only available on Fluent Forms Pro add-on') }}</p>
                 <a target="_blank"
-                   class="el-button el-button--danger"
+                   class="el-button el-button--primary"
                    :href="campaignUrl" >
                     {{ $t('Upgrade to Pro Now') }}
                 </a>
@@ -65,7 +65,7 @@
                         <h2 class="mb-3">{{ $t('Fluent Forms Payment Module') }}</h2>
                         <p>{{ $t('Accept Payment online as part of the Forms submission process. With Fluent Forms Powerful payment integration, you can easily accept and process payments in your Fluent Forms via Stripe/PayPal. Payment Module is available on Pro Version.') }}</p>
                         <a  target="_blank"
-                            class="el-button el-button--danger"
+                            class="el-button el-button--primary"
                             :href="campaignUrl" >
                             {{ $t('Upgrade to Pro Now') }}
                         </a>
@@ -76,7 +76,7 @@
                     <div v-else>
                         <p>{{ $t('This field is only available on Fluent Forms Pro add-on') }}</p>
                         <a target="_blank"
-                            class="el-button el-button--danger"
+                            class="el-button el-button--primary"
                             :href="campaignUrl" >
                             {{ $t('Upgrade to Pro Now') }}
                         </a>
