@@ -34,7 +34,31 @@ class TransferService
             return fluentform_kses_js($metaValue);
         }
 
+        $decoded = json_decode($metaValue);
+        if (is_array($decoded) || is_object($decoded)) {
+            self::sanitizeJsonNode($decoded);
+            $encoded = wp_json_encode($decoded);
+            return $encoded ?: $metaValue;
+        }
+
         return wp_kses_post($metaValue);
+    }
+
+    private static function sanitizeJsonNode(&$node)
+    {
+        if (is_array($node)) {
+            foreach ($node as &$value) {
+                self::sanitizeJsonNode($value);
+            }
+            unset($value);
+        } elseif (is_object($node)) {
+            foreach (get_object_vars($node) as $key => $value) {
+                self::sanitizeJsonNode($value);
+                $node->{$key} = $value;
+            }
+        } elseif (is_string($node)) {
+            $node = wp_kses_post($node);
+        }
     }
 
     public static function exportForms($formIds)
@@ -299,7 +323,7 @@ class TransferService
         $data = array_merge([array_values($inputLabels)], $exportData);
         
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
-        $fileName = sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d');
+        $fileName = self::getReadableExportFileName($form->title);
         self::downloadOfficeDoc($data, $type, $fileName);
     }
 
@@ -461,10 +485,33 @@ class TransferService
         foreach ($submissions as $submission) {
             $submission->response = json_decode($submission->response, true);
         }
-        header('Content-disposition: attachment; filename=' . sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d') . '.json');
-        header('Content-type: application/json');
+        self::sendDownloadHeaders('application/json', self::getReadableExportFileName($form->title) . '.json');
         echo json_encode($submissions); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $submissions is escaped before being passed in.
         exit();
+    }
+
+    private static function getReadableExportFileName($formTitle)
+    {
+        $sanitizedTitle = sanitize_file_name(wp_strip_all_tags((string) $formTitle));
+
+        if (!$sanitizedTitle) {
+            $sanitizedTitle = 'export';
+        }
+
+        return $sanitizedTitle . '-' . date('Y-m-d');
+    }
+
+    private static function sendDownloadHeaders($contentType, $fileName)
+    {
+        $safeFileName = basename((string) $fileName);
+        $encodedFileName = rawurlencode($safeFileName);
+
+        header('Content-Type: ' . $contentType);
+        header(
+            'Content-Disposition: attachment; ' .
+            'filename="' . $encodedFileName . '"; ' .
+            'filename*=UTF-8\'\'' . $encodedFileName
+        );
     }
 
     private static function getSubmissions($args)
@@ -540,14 +587,36 @@ class TransferService
         }
         $writer->openToBrowser($fileName);
 
-        // Convert data arrays to Row objects for OpenSpout v3
-        $rows = array_map(function ($rowData) {
-            return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($rowData);
-        }, $data);
+        $rows = self::getOfficeDocRows($data, $type);
 
         $writer->addRows($rows);
         $writer->close();
         die();
+    }
+
+    private static function getOfficeDocRows($data, $type)
+    {
+        if (strtolower($type) !== 'xlsx') {
+            return array_map(function ($rowData) {
+                return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($rowData);
+            }, $data);
+        }
+
+        $dateStyle = (new \OpenSpout\Writer\Common\Creator\Style\StyleBuilder())
+            ->setFormat('yyyy-mm-dd hh:mm:ss')
+            ->build();
+
+        return array_map(function ($rowData) use ($dateStyle) {
+            $cells = array_map(function ($cellValue) use ($dateStyle) {
+                if ($cellValue instanceof \DateTimeInterface) {
+                    return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCell($cellValue, $dateStyle);
+                }
+
+                return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createCell($cellValue);
+            }, $rowData);
+
+            return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRow($cells);
+        }, $data);
     }
 
 }

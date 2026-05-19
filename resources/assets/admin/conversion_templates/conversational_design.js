@@ -5,6 +5,7 @@ import {
     ColorPicker,
     Form,
     Input,
+    InputNumber,
     Row,
     Col,
     FormItem,
@@ -13,14 +14,21 @@ import {
     Option,
     Slider,
     Button,
+    Checkbox,
+    CheckboxGroup,
+    DatePicker,
     Loading,
     Message,
+    Radio,
+    RadioGroup,
     Switch,
     Notification,
+    Tooltip,
 } from 'element-ui';
 
 Vue.use(Form);
 Vue.use(Input);
+Vue.use(InputNumber);
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(FormItem);
@@ -31,6 +39,12 @@ Vue.use(OptionGroup);
 Vue.use(Slider);
 Vue.use(Switch);
 Vue.use(Button);
+Vue.use(Checkbox);
+Vue.use(CheckboxGroup);
+Vue.use(DatePicker);
+Vue.use(Radio);
+Vue.use(RadioGroup);
+Vue.use(Tooltip);
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service

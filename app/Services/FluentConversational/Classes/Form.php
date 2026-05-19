@@ -94,10 +94,11 @@ class Form
         }
 
         wp_localize_script('fluent_forms_conversational_design', 'ffc_conv_vars', [
-            'form_id'     => $formId,
-            'preview_url' => Helper::getFrontendFacingUrl('?' . $paramKey . '=' . $formId),
-            'fonts'       => Fonts::getFonts(),
-            'has_pro'     => defined('FLUENTFORMPRO'),
+            'form_id'            => $formId,
+            'preview_url'        => Helper::getFrontendFacingUrl('?' . $paramKey . '=' . $formId),
+            'fonts'              => Fonts::getFonts(),
+            'has_pro'            => defined('FLUENTFORMPRO'),
+            'has_pro_share_page' => defined('FLUENTFORMPRO') && class_exists('\FluentFormPro\classes\SharePage\SharePage'),
         ]);
 
         wp_enqueue_style(
@@ -184,7 +185,7 @@ class Form
             }
         }
 
-        return $prefix . ' { background-color: #FFFFFF; }' . $prefix . ' .ffc-counter-div span { color: #0445AF; }' . $prefix . ' .ffc-counter-div .counter-icon-span svg { fill: #0445AF !important; }' . $prefix . ' .f-label-wrap, ' . $prefix . ' .f-answer { color: #0445AF !important; }' . $prefix . ' .f-label-wrap .f-key { border-color: #0445AF !important; }' . $prefix . ' .f-label-wrap .f-key-hint { border-color: #0445AF !important; }' . $prefix . ' .f-answer .f-radios-wrap ul li { background-color: rgba(4,69,175, 0.1) !important; border: 1px solid #0445AF; }' . $prefix . ' .f-answer .f-radios-wrap ul li:focus { background-color: rgba(4,69,175, 0.3) !important }' . $prefix . ' .f-answer .f-radios-wrap ul li:hover { background-color: rgba(4,69,175, 0.3) !important }' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected .f-key { background-color: #0445AF !important; color: white; }' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected .f-key-hint { background-color: #0445AF; }' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected svg { fill: #0445AF !important; }' . $prefix . ' .f-answer input, ' . $prefix . ' .f-answer textarea{ color: #0445AF !important; box-shadow: #0445AF  0px 1px; }' . $prefix . ' .f-answer input:focus, ' . $prefix . ' .f-answer textarea:focus { box-shadow: #0445AF  0px 2px !important; }' . $prefix . ' .f-answer textarea::placeholder, ' . $prefix . ' .f-answer input::placeholder { color: #0445AF !important; }' . $prefix . ' .text-success { color: #0445AF !important; }' . $prefix . ' .f-answer .f-matrix-table tbody td { background-color: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .f-matrix-table input { border-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .f-matrix-table input.f-radio-control:checked::after { background-color: #0445AF; }' . $prefix . ' .f-answer .f-matrix-table input:focus::before { border-color: #0445AF; }' . $prefix . ' .f-answer .f-matrix-table input.f-checkbox-control:checked { background-color: #0445AF; }' . $prefix . ' .f-answer .f-matrix-table tbody tr::after { border-right-color: #0445AF; }' . $prefix . ' .f-answer .f-matrix-table .f-table-cell.f-row-cell { box-shadow: rgba(4,69,175, 0.1) 0px 0px 0px 100vh inset; }' . $prefix . ' .f-answer .ff_file_upload_field_wrap { background-color: rgba(4,69,175, 0.1); border-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .ff_file_upload_field_wrap:hover { background-color: rgba(4,69,175, 0.3);}' . $prefix . ' .f-answer .ff_file_upload_field_wrap:focus-within { background-color: rgba(4,69,175, 0.3); }' . $prefix . ' .f-answer .ff-upload-preview { border-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-thumb { background-color: rgba(4,69,175, 0.3); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-details { border-left-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-details .ff-el-progress { border-left-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-details .ff-el-progress { background-color: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-details .ff-el-progress .ff-el-progress-bar { background-color: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap::before { background-color: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap .f-star-field .f-star-field-star .symbolOutline { fill: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap .f-star-field .f-star-field-rating { color: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap.is-hovered .symbolFill { fill: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap.is-selected .symbolFill { fill: #0445AF; }' . $prefix . ' .f-answer .f-payment-summary-wrap tbody td { background-color: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .f-payment-summary-wrap tfoot th { background-color: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .stripe-inline-holder { border-bottom: 1px solid #0445AF; }' . $prefix . ' .f-answer .StripeElement--focus { border-bottom: 2.5px solid #0445AF; }' . $prefix . ' .ff_conv_input .f-info { color: #0445AF; }' . $prefix . ' .fh2 .f-text { color: #191919; }' . $prefix . ' .fh2 .f-tagline, ' . $prefix . ' .f-sub .f-help { color: rgba(25,25,25, 0.70); }' . $prefix . ' .fh2 .stripe-inline-header { color: #191919; }' . $prefix . ' .q-inner .o-btn-action, ' . $prefix . ' .footer-inner-wrap .f-nav { background-color: #0445AF; }' . $prefix . ' .q-inner .o-btn-action span, ' . $prefix . ' .footer-inner-wrap .f-nav a { color: #FFFFFF; } ' . $prefix . ' .f-enter .f-enter-desc { color: #0445AF; }' . $prefix . ' .footer-inner-wrap .f-nav a svg { fill: #FFFFFF; }' . $prefix . ' .vff-footer .f-progress-bar { background-color: rgba(4,69,175, 0.3); }' . $prefix . ' .vff-footer .f-progress-bar-inner { background-color: #0445AF; }' . $prefix . ' .q-inner .o-btn-action:hover { background-color: #0445AFD6; }' . $prefix . ' .q-inner .o-btn-action:focus::after { border-radius: 6px; inset: -3px; box-shadow: #0445AF 0px 0px 0px 2px; }' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected .f-key { color: #FFFFFF; }';
+        return $prefix . ' { background-color: #FFFFFF; }' . $prefix . ' .ffc-counter-div span { color: #0445AF; }' . $prefix . ' .ffc-counter-div .counter-icon-span svg { fill: #0445AF !important; }' . $prefix . ' .f-label-wrap, ' . $prefix . ' .f-answer { color: #0445AF !important; }' . $prefix . ' .f-label-wrap .f-key { border-color: #0445AF !important; }' . $prefix . ' .f-label-wrap .f-key-hint { border-color: #0445AF !important; }' . $prefix . ' .f-answer .f-radios-wrap ul li { background-color: rgba(4,69,175, 0.1) !important; border: 1px solid #0445AF; }' . $prefix . ' .f-answer .f-radios-wrap ul li:focus { background-color: rgba(4,69,175, 0.3) !important }' . $prefix . ' .f-answer .f-radios-wrap ul li:hover { background-color: rgba(4,69,175, 0.3) !important }' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected .f-key { background-color: #0445AF !important; color: white; }' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected .f-key-hint { background-color: #0445AF; }' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected svg { fill: #0445AF !important; }' . $prefix . ' .f-answer input, ' . $prefix . ' .f-answer textarea{ color: #0445AF !important; box-shadow: #0445AF  0px 1px; }' . $prefix . ' .f-answer input:focus, ' . $prefix . ' .f-answer textarea:focus { box-shadow: #0445AF  0px 2px !important; }' . $prefix . ' .f-answer textarea::placeholder, ' . $prefix . ' .f-answer input::placeholder { color: #0445AF !important; }' . $prefix . ' .text-success { color: #0445AF !important; }' . $prefix . ' .f-answer .f-matrix-table tbody td { background-color: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .f-matrix-table input { border-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .f-matrix-table input.f-radio-control:checked::after { background-color: #0445AF; }' . $prefix . ' .f-answer .f-matrix-table input:focus::before { border-color: #0445AF; }' . $prefix . ' .f-answer .f-matrix-table input.f-checkbox-control:checked { background-color: #0445AF; }' . $prefix . ' .f-answer .f-matrix-table tbody tr::after { border-right-color: #0445AF; }' . $prefix . ' .f-answer .f-matrix-table .f-table-cell.f-row-cell { box-shadow: rgba(4,69,175, 0.1) 0px 0px 0px 100vh inset; }' . $prefix . ' .f-answer .ff_file_upload_field_wrap { background-color: rgba(4,69,175, 0.1); border-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .ff_file_upload_field_wrap:hover { background-color: rgba(4,69,175, 0.3);}' . $prefix . ' .f-answer .ff_file_upload_field_wrap:focus-within { background-color: rgba(4,69,175, 0.3); }' . $prefix . ' .f-answer .ff-upload-preview { border-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-thumb { background-color: rgba(4,69,175, 0.3); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-details { border-left-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-details .ff-el-progress { border-left-color: rgba(4,69,175, 0.8); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-details .ff-el-progress { background-color: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .ff-upload-preview .ff-upload-details .ff-el-progress .ff-el-progress-bar { background-color: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap::before { background-color: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap .f-star-field .f-star-field-star .symbolOutline { fill: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap .f-star-field .f-star-field-rating { color: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap .f-star-field-star .ff-rating-icon-svg-holder { display: block; line-height: 0; width: 100%; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap .ff-rating-icon-svg { color: var(--ff-rating-inactive-color, rgba(4,69,175, 0.25)); display: block; height: auto; max-height: 64px; max-width: 64px; width: 100%; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap .ff-rating-icon-svg [fill]:not([fill="none"]) { fill: currentColor !important; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap .ff-rating-icon-svg [stroke]:not([stroke="none"]) { stroke: currentColor !important; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap.is-hovered .symbolFill { fill: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap.is-hovered .ff-rating-icon-svg { color: var(--ff-rating-hover-color, rgba(4,69,175, 0.4)); }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap.is-selected .symbolFill { fill: #0445AF; }' . $prefix . ' .f-answer .f-star-wrap .f-star-field-wrap.is-selected .ff-rating-icon-svg { color: var(--ff-rating-active-color, #0445AF); }' . $prefix . ' .f-answer .f-payment-summary-wrap tbody td { background-color: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .f-payment-summary-wrap tfoot th { background-color: rgba(4,69,175, 0.1); }' . $prefix . ' .f-answer .stripe-inline-holder { border-bottom: 1px solid #0445AF; }' . $prefix . ' .f-answer .StripeElement--focus { border-bottom: 2.5px solid #0445AF; }' . $prefix . ' .ff_conv_input .f-info { color: #0445AF; }' . $prefix . ' .fh2 .f-text { color: #191919; }' . $prefix . ' .fh2 .f-tagline, ' . $prefix . ' .f-sub .f-help { color: rgba(25,25,25, 0.70); }' . $prefix . ' .fh2 .stripe-inline-header { color: #191919; }' . $prefix . ' .q-inner .o-btn-action, ' . $prefix . ' .footer-inner-wrap .f-nav { background-color: #0445AF; }' . $prefix . ' .q-inner .o-btn-action span, ' . $prefix . ' .footer-inner-wrap .f-nav a { color: #FFFFFF; } ' . $prefix . ' .f-enter .f-enter-desc { color: #0445AF; }' . $prefix . ' .footer-inner-wrap .f-nav a svg { fill: #FFFFFF; }' . $prefix . ' .vff-footer .f-progress-bar { background-color: rgba(4,69,175, 0.3); }' . $prefix . ' .vff-footer .f-progress-bar-inner { background-color: #0445AF; }' . $prefix . ' .q-inner .o-btn-action:hover { background-color: #0445AFD6; }' . $prefix . ' .q-inner .o-btn-action:focus::after { border-radius: 6px; inset: -3px; box-shadow: #0445AF 0px 0px 0px 2px; }' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected .f-key { color: #FFFFFF; }';
     }
 
     public function render()
@@ -333,7 +334,8 @@ class Form
             'save_progress_button',
             'dynamic_field',
             'rangeslider',
-            'net_promoter_score'
+            'net_promoter_score',
+            'input_ranking'
         ];
 
         if (defined('FLUENTFORM_SIGNATURE')) {
@@ -455,8 +457,6 @@ class Form
 
         $jsScripts = [];
 
-        $pluginUrl = plugins_url() . '/fluentform';
-
         foreach ($wp_scripts->queue as $script) {
 
             if (!isset($wp_scripts->registered[$script])) {
@@ -466,7 +466,7 @@ class Form
             $item = $wp_scripts->registered[$script];
             $src = $wp_scripts->registered[$script]->src;
 
-            if (false === !strpos($src, $pluginUrl)) {
+            if (!$this->shouldPrintConversationalAsset($src)) {
                 continue;
             }
 
@@ -502,8 +502,6 @@ class Form
 
         $cssStyles = [];
 
-        $pluginUrl = plugins_url() . '/fluentform';
-
         foreach ($wp_styles->queue as $style) {
 
             if (!isset($wp_styles->registered[$style])) {
@@ -513,7 +511,7 @@ class Form
             $item = $wp_styles->registered[$style];
             $src = $wp_styles->registered[$style]->src;
 
-            if (false === !strpos($src, $pluginUrl)) {
+            if (!$this->shouldPrintConversationalAsset($src)) {
                 continue;
             }
 
@@ -545,17 +543,45 @@ class Form
         return $cssStyles;
     }
 
+    private function shouldPrintConversationalAsset($src)
+    {
+        if (!$src) {
+            return false;
+        }
+
+        $pluginUrls = [
+            untrailingslashit(plugins_url() . '/fluentform'),
+        ];
+
+        if (defined('FLUENTFORMPRO_DIR_URL')) {
+            $pluginUrls[] = untrailingslashit(FLUENTFORMPRO_DIR_URL);
+        }
+
+        foreach ($pluginUrls as $pluginUrl) {
+            if (strpos($src, $pluginUrl) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function renderShortcode($form)
     {
         $formId = $form->id;
-        $form = Converter::convert($form);
+        $fileUploadSettings = apply_filters('fluentform/file_upload_settings_for_js', [], $form);
+
         $this->enqueueScripts();
+        do_action('fluentform/conversational_enqueue_assets', $form, $fileUploadSettings);
+
+        $form = Converter::convert($form);
         $submitCss = $this->getSubmitBttnStyle($form);
         $metaSettings = $this->getMetaSettings($formId);
         $designSettings = $this->getDesignSettings($formId);
         $instanceId = $form->instance_index;
         $varName = 'fluent_forms_global_var_' . $instanceId;
-        wp_localize_script('fluent_forms_conversational_form', $varName, [
+
+        $localizedVars = [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
             'nonce'                    => wp_create_nonce(),
@@ -573,8 +599,15 @@ class Form
             'request_error_txt'        => __('An error occurred while processing your request', 'fluentform'),
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
-            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
-        ]);
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete'),
+            'file_upload_settings'     => $fileUploadSettings,
+        ];
+
+        wp_localize_script(
+            'fluent_forms_conversational_form',
+            $varName,
+            apply_filters('fluentform/global_form_vars', $localizedVars)
+        );
 
         $hasSaveProgressButton = false;
         $saveProgressButton = [];
@@ -730,8 +763,12 @@ class Form
         $form = wpFluentForm()->applyFilters('fluentform_rendering_form', $form);
 
         $form = wpFluentForm()->applyFilters('fluentform/rendering_form', $form);
-        $form = Converter::convert($form);
+        $fileUploadSettings = apply_filters('fluentform/file_upload_settings_for_js', [], $form);
+
         $this->enqueueScripts();
+        do_action('fluentform/conversational_enqueue_assets', $form, $fileUploadSettings);
+
+        $form = Converter::convert($form);
 
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
@@ -749,7 +786,7 @@ class Form
 
         $designSettings = $this->getDesignSettings($formId);
 
-        wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
+        $localizedVars = [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
             'nonce'                    => wp_create_nonce(),
@@ -767,8 +804,15 @@ class Form
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
             'rest'                     => Helper::getRestInfo(),
-            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete')
-        ]);
+            'file_delete_nonce'        => wp_create_nonce('fluentform_file_delete'),
+            'file_upload_settings'     => $fileUploadSettings,
+        ];
+
+        wp_localize_script(
+            'fluent_forms_conversational_form',
+            'fluent_forms_global_var',
+            apply_filters('fluentform/global_form_vars', $localizedVars)
+        );
         
         $hasSaveProgressButton = false;
         $saveProgressButton = [];

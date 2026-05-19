@@ -33,7 +33,7 @@
                 <h6 class="title">{{$t('This is a Pro Feature')}}</h6> 
                 <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
             </div>
-            <a target="_blank" :href="upgrade_url" class="el-button el-button--danger el-button--small">
+            <a target="_blank" :href="upgrade_url" class="el-button el-button--primary el-button--small">
                 {{$t('Upgrade to Pro')}}
             </a>
         </notice>
@@ -49,6 +49,7 @@
     import SelectField from './EntryEditor/SelectField';
     import RadioField from './EntryEditor/RadioField';
     import CheckboxField from './EntryEditor/CheckboxField';
+    import RankingField from './EntryEditor/RankingField';
     import TermsField from './EntryEditor/TermsField';
     import RepeatField from './EntryEditor/RepeatField';
     import MultiFile from './EntryEditor/MultiFile';
@@ -64,6 +65,7 @@
             SelectField,
             RadioField,
             CheckboxField,
+            RankingField,
             TermsField,
             RepeatField,
             MultiFile,
@@ -200,6 +202,14 @@
                         return {
                             component: 'checkbox-field',
                             type: 'checkbox',
+                            field: field
+                        }
+                        break;
+                    case 'input_ranking':
+                        field.raw.options = this.extractOptions(field.raw);
+                        return {
+                            component: 'ranking-field',
+                            type: 'ranking',
                             field: field
                         }
                         break;

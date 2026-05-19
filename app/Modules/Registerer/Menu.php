@@ -974,6 +974,16 @@ class Menu
                     }
                 }
 
+                if (!empty($formFields['stepsWrapper']['stepStart'])) {
+                    $stepStart = $formFields['stepsWrapper']['stepStart'];
+
+                    $formFields['stepsWrapper']['stepStart'] = apply_filters(
+                        'fluentform/editor_init_element_' . $stepStart['element'],
+                        $stepStart,
+                        $form
+                    );
+                }
+
                 $formFields['fields'] = array_values($formFields['fields']);
                 $formFields = json_encode($formFields, true);
             }
@@ -1186,7 +1196,7 @@ class Menu
         if (Helper::isConversionForm($formId)) {
             $shortcode = '[fluentform type="conversational" id="' . $formId . '"]';
         }
-        echo '<button title="Click to Copy" class="ff_shortcode_btn ff_shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
+        echo '<button title="' . esc_attr__('Click to Copy', 'fluentform') . '" class="ff_shortcode_btn ff_shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
         return;
     }
 

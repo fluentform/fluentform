@@ -34,15 +34,20 @@
                                 </a>
                             </btn-group-item>
                             <btn-group-item>
-                                <el-button
-                                    :loading="saving"
-                                    type="primary"
-                                    icon="el-icon-success"
-                                    @click="saveSettings()"
-                                    size="medium"
-                                >
-                                    {{saving ? $t('Saving') : $t('Save') }}
-                                </el-button>
+                                <el-tooltip placement="top" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        {{ saveShortcutTooltip }}
+                                    </div>
+                                    <el-button
+                                        :loading="saving"
+                                        type="primary"
+                                        icon="el-icon-success"
+                                        @click="saveSettings()"
+                                        size="medium"
+                                    >
+                                        {{saving ? $t('Saving') : $t('Save') }}
+                                    </el-button>
+                                </el-tooltip>
                             </btn-group-item>
                         </btn-group>
                     </card-head-group>
@@ -59,13 +64,22 @@
 
                     <p>{{error_text}}</p>
 
-                    <div v-if="settings.status == 'yes'" class="ff_landing">
+                    <div
+                        v-if="settings.status == 'yes'"
+                        class="ff_landing"
+                        :class="{'ff_landing_share_mode': active_tab == 'share'}"
+                    >
                         <div class="ff_landing_sidebar">
                             <div class="ffc_sidebar_header">
                                 <tab>
                                     <tab-item :class="{active : active_tab == 'design'}" @click="active_tab = 'design'">
                                         <tab-link>
                                             {{ $t('Design') }}
+                                        </tab-link>
+                                    </tab-item>
+                                    <tab-item :class="{active : active_tab == 'access'}" @click="active_tab = 'access'">
+                                        <tab-link>
+                                            {{ $t('Access') }}
                                         </tab-link>
                                     </tab-item>
                                     <tab-item :class="{active : active_tab == 'share'}" @click="active_tab = 'share'">
@@ -187,37 +201,124 @@
 
                                         <el-form-item v-if="share_url">
                                             <template slot="label">
-                                                {{ $t('Security Code') }}
+                                                {{ $t('Private Share Link') }}
                                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                                     <div slot="content">
                                                         <p>
-                                                            {{ $t('Add a Security Code to make your shareable URL extra secure.') }}
+                                                            {{ $t('Add a private token to the landing page URL. Only visitors with the full private link can access the page.') }}
                                                         </p>
                                                     </div>
                                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                                 </el-tooltip>
                                             </template>
-                                            <el-input v-model="settings.share_url_salt" />
+                                            <el-input
+                                                v-model="settings.share_url_salt"
+                                                :placeholder="$t('Optional private link token')"
+                                            />
+                                            <p class="text-note mt-2">
+                                                {{ $t('This is link-based access, not a user invite or password.') }}
+                                            </p>
                                         </el-form-item>
 
                                         <el-form-item>
-                                            <el-button
-                                                :loading="saving"
-                                                type="primary"
-                                                icon="el-icon-success"
-                                                @click="saveSettings()">
-                                                {{ $t('%s Settings', saving ? 'Saving' : 'Save') }}
-                                            </el-button>
+                                            <el-tooltip placement="top" popper-class="ff_tooltip_wrap">
+                                                <div slot="content">
+                                                    {{ saveShortcutTooltip }}
+                                                </div>
+                                                <el-button
+                                                    :loading="saving"
+                                                    type="primary"
+                                                    icon="el-icon-success"
+                                                    @click="saveSettings()">
+                                                    {{ $t('%s Settings', saving ? 'Saving' : 'Save') }}
+                                                </el-button>
+                                            </el-tooltip>
                                         </el-form-item>
                                     </div>
                                 </el-form>
                             </div>
-                            <div class="ff_landing_settings_wrapper ffc_sidebar_body" v-else-if="active_tab == 'share'">
-                                <p>{{ $t('Share your form by unique URL or copy and paste the shortcode to embed in your page and post') }}</p>
+                            <div class="ff_landing_settings_wrapper ffc_sidebar_body" v-else-if="active_tab == 'access'">
+                                <p>{{ $t('Control when this landing page can be viewed and submitted.') }}</p>
+                                <p>{{ $t('These controls reuse the same form restriction settings used in the regular form settings, so changes here apply to this form everywhere it is rendered.') }}</p>
+                                <form-restrictions
+                                    v-if="formSettings.restrictions"
+                                    :data="formSettings.restrictions"
+                                    :has-pro="true"
+                                    :visible-sections="accessSections"
+                                    :show-pro-restriction-fields="false"
+                                />
+                                <el-form label-position="top" class="mt-4">
+                                    <el-form-item>
+                                        <el-tooltip placement="top" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                {{ saveShortcutTooltip }}
+                                            </div>
+                                            <el-button
+                                                :loading="saving"
+                                                type="primary"
+                                                icon="el-icon-success"
+                                                size="small"
+                                                @click="saveSettings()">
+                                                {{ $t('%s Access Settings', saving ? 'Saving' : 'Save') }}
+                                            </el-button>
+                                        </el-tooltip>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                            <div class="ff_landing_settings_wrapper ffc_sidebar_body ff_landing_share_intro" v-else-if="active_tab == 'share'">
+                                <p>{{ $t('Share your form by unique URL, shortcode, email, QR code, or embed code.') }}</p>
+                                <el-form label-position="top" class="mt-4">
+                                    <el-form-item class="ff-form-item">
+                                        <template slot="label">
+                                            {{ $t('Pretty URL') }}
+                                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                                <div slot="content">
+                                                    <p>{{ $t('Enable a clean, memorable URL for your landing page.') }}</p>
+                                                </div>
+                                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                            </el-tooltip>
+                                        </template>
+                                        <el-switch
+                                            v-model="prettyUrl.enabled"
+                                            active-text=""
+                                            inactive-text=""
+                                        ></el-switch>
+                                    </el-form-item>
+
+                                    <el-form-item v-if="prettyUrl.enabled" class="ff-form-item">
+                                        <template slot="label">
+                                            {{ $t('URL Slug') }}
+                                        </template>
+                                        <el-input
+                                            v-model="prettyUrl.slug"
+                                            :placeholder="$t('my-form')"
+                                            @input="sanitizePrettyUrlSlug"
+                                        />
+                                        <p class="text-note mt-1" v-if="prettyUrl.slug">
+                                            {{ prettyUrlPreview }}
+                                        </p>
+                                    </el-form-item>
+
+                                    <el-form-item>
+                                        <el-tooltip placement="top" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                {{ saveShortcutTooltip }}
+                                            </div>
+                                            <el-button
+                                                :loading="prettyUrl.saving"
+                                                type="primary"
+                                                icon="el-icon-success"
+                                                size="small"
+                                                @click="saveSettings()">
+                                                {{ $t('%s Pretty URL', prettyUrl.saving ? 'Saving' : 'Save') }}
+                                            </el-button>
+                                        </el-tooltip>
+                                    </el-form-item>
+                                </el-form>
                             </div>
                         </div>
                         <div class="ff_landing_preview ffc_design_container">
-                            <template v-if="active_tab == 'design'">
+                            <template v-if="active_tab == 'design' || active_tab == 'access'">
                                 <browser :settings="settings" v-if="final_share_url && show_frame" :preview_url="final_share_url" @change-device-type="changeDeviceType"/>
                             </template>
                             <share v-else-if="final_share_url" :share_url="final_share_url" :form_id="form_id"  />
@@ -246,6 +347,8 @@
     import Tab from '@/admin/components/Tab/Tab.vue';
     import TabItem from '@/admin/components/Tab/TabItem.vue';
     import TabLink from '@/admin/components/Tab/TabLink.vue';
+    import FormRestrictions from '@/admin/components/settings/FormSettings/Restrictions.vue';
+    import { bindKeyboardSaveShortcut, getKeyboardSaveShortcutLabel } from '@/admin/helpers';
 
     export default {
         name: 'landing_pages',
@@ -264,13 +367,21 @@
             BtnGroupItem,
             Tab,
             TabItem,
-            TabLink
+            TabLink,
+            FormRestrictions
         },
         data() {
             return {
                 loading: false,
                 saving: false,
                 settings: false,
+                formSettings: {},
+                accessSections: [
+                    'limitNumberOfEntries',
+                    'scheduleForm',
+                    'requireLogin',
+                    'denyEmptySubmission'
+                ],
                 form_id: window.FluentFormApp.form_id,
                 error_text: '',
                 share_url: '',
@@ -289,16 +400,28 @@
                 },
                 active_tab: 'design',
                 show_frame: true,
-                setup: false
+                setup: false,
+                prettyUrl: {
+                    slug: '',
+                    enabled: false,
+                    pretty_url: '',
+                    saving: false
+                },
+                prettyUrlBaseSlug: 'form',
+                unbindKeyboardSaveShortcut: null
             }
         },
         computed: {
+            saveShortcutTooltip() {
+                return this.$t('Save settings') + ' (' + getKeyboardSaveShortcutLabel() + ')';
+            },
             final_share_url() {
-                if(this.settings.share_url_salt) {
-                    return this.share_url + '&form='+this.settings.share_url_salt;
-                } else {
-                    return this.share_url;
-                }
+                const url = (this.prettyUrl.enabled && this.prettyUrl.pretty_url) ? this.prettyUrl.pretty_url : this.share_url;
+                return this.addPrivateToken(url);
+            },
+            prettyUrlPreview() {
+                const base = window.location.origin + '/' + this.prettyUrlBaseSlug + '/';
+                return base + (this.prettyUrl.slug || 'my-form') + '/';
             }
         },
         watch: {
@@ -321,17 +444,29 @@
         methods: {
             saveSettings(silence) {
                 this.saving = true;
+                this.prettyUrl.saving = true;
                 this.show_frame = false;
 
                 let data = {
                     action: 'ff_store_landing_page_settings',
                     form_id: this.form_id,
-                    settings: this.settings
+                    settings: this.settings,
+                    form_settings: this.formSettings,
+                    pretty_url: {
+                        slug: this.prettyUrl.slug,
+                        enabled: this.prettyUrl.enabled
+                    }
                 };
 
                 FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.share_url = response.data.share_url;
+                        if (response.data.slug) {
+                            this.prettyUrl.slug = response.data.slug;
+                        }
+                        if (response.data.pretty_url !== undefined) {
+                            this.prettyUrl.pretty_url = response.data.pretty_url;
+                        }
                         if(!silence) {
                             this.$success(response.data.message);
                         }
@@ -339,10 +474,13 @@
                         this.setup = true;
                     })
                     .fail(error => {
-
+                        if (error.responseJSON && error.responseJSON.data) {
+                            this.$fail(error.responseJSON.data.message);
+                        }
                     })
                     .always(() => {
                         this.saving = false;
+                        this.prettyUrl.saving = false;
                         this.show_frame = true;
                     });
             },
@@ -387,10 +525,15 @@
                             ];
                         }
                         this.settings = settings;
+                        this.formSettings = this.normalizeFormSettings(response.data.form_settings || {});
                         this.settings.brightness = parseInt(this.settings.brightness);
                         this.settings.media_x_position = parseInt(this.settings.media_x_position);
                         this.settings.media_y_position = parseInt(this.settings.media_y_position);
 
+                        this.prettyUrl.slug = response.data.slug || '';
+                        this.prettyUrl.enabled = !!response.data.slug_enabled;
+                        this.prettyUrl.pretty_url = response.data.pretty_url || '';
+                        this.prettyUrlBaseSlug = response.data.base_slug || 'form';
                     })
                     .fail(error => {
                         if (!error.responseJSON) {
@@ -401,6 +544,67 @@
                     .always(() => {
                         this.loading = false;
                     });
+            },
+            normalizeFormSettings(settings) {
+                const defaults = {
+                    restrictions: {
+                        limitNumberOfEntries: {
+                            enabled: false,
+                            numberOfEntries: null,
+                            period: 'total',
+                            limitReachedMsg: 'Maximum number of entries exceeded.',
+                        },
+                        scheduleForm: {
+                            enabled: false,
+                            start: null,
+                            end: null,
+                            selectedDays: null,
+                            pendingMsg: 'Form submission is not started yet.',
+                            expiredMsg: 'Form submission is now closed.',
+                        },
+                        requireLogin: {
+                            enabled: false,
+                            requireLoginMsg: 'You must be logged in to submit the form.',
+                        },
+                        denyEmptySubmission: {
+                            enabled: false,
+                            message: "Sorry, you cannot submit an empty form. Let's hear what you wanna say."
+                        },
+                        restrictForm: {
+                            enabled: false,
+                            fields: {
+                                ip: {
+                                    status: false,
+                                    values: '',
+                                    message: 'Sorry! You can\'t submit a form from your IP address.',
+                                    validation_type: 'fail_on_condition_met'
+                                },
+                                country: {
+                                    status: false,
+                                    values: [],
+                                    message: 'Sorry! You can\'t submit a form the country you are residing.',
+                                    validation_type: 'fail_on_condition_met'
+                                },
+                                keywords: {
+                                    status: false,
+                                    values: '',
+                                    message: 'Sorry! Your submission contains some restricted keywords.'
+                                }
+                            }
+                        }
+                    }
+                };
+
+                settings.restrictions = Object.assign({}, defaults.restrictions, settings.restrictions || {});
+                Object.keys(defaults.restrictions).forEach(key => {
+                    settings.restrictions[key] = Object.assign(
+                        {},
+                        defaults.restrictions[key],
+                        settings.restrictions[key] || {}
+                    );
+                });
+
+                return settings;
             },
             string_to_slug (text) {
                 return text
@@ -433,12 +637,36 @@
                 }
 	            this.saveSettings(true);
             },
+            addPrivateToken(url) {
+                const token = this.settings && this.settings.share_url_salt;
+                if (!url || !token || url.includes('form=')) {
+                    return url;
+                }
+
+                return url + (url.includes('?') ? '&' : '?') + 'form=' + token;
+            },
+            sanitizePrettyUrlSlug(value) {
+                this.prettyUrl.slug = value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9-]/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-/, '');
+            },
+            canUseKeyboardSaveShortcut() {
+                return !!this.settings && !this.loading && !this.saving && !this.prettyUrl.saving;
+            },
             changeDeviceType (type) {
                 this.settings.remember_device_type = type;
             }
         },
         mounted() {
             this.fetchSettings();
+            this.unbindKeyboardSaveShortcut = bindKeyboardSaveShortcut(
+                () => this.saveSettings(),
+                {
+                    enabled: () => this.canUseKeyboardSaveShortcut()
+                }
+            );
             jQuery('head title').text('Landing Page Settings - Fluent Forms');
             
             if (window.localStorage) {
@@ -447,6 +675,12 @@
                 }
             } else {
                 jQuery('body').addClass('ff_full_screen').addClass('folded');
+            }
+        },
+        beforeDestroy() {
+            if (this.unbindKeyboardSaveShortcut) {
+                this.unbindKeyboardSaveShortcut();
+                this.unbindKeyboardSaveShortcut = null;
             }
         }
     };

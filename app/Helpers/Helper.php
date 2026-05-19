@@ -707,6 +707,25 @@ class Helper
         return array_diff_assoc($inputNames, $uniqueNames);
     }
 
+    public static function getRankingFieldsWithDuplicateOptionValues($fields)
+    {
+        if (is_string($fields)) {
+            $fields = json_decode($fields, true);
+        }
+
+        if (!is_array($fields)) {
+            return [];
+        }
+
+        $items = ArrayHelper::get($fields, 'fields', []);
+
+        if (!is_array($items)) {
+            return [];
+        }
+
+        return static::collectRankingFieldsWithDuplicateOptionValues($items);
+    }
+
     protected static function getFieldNamesStatuses($fields)
     {
         $names = [];
@@ -726,6 +745,64 @@ class Helper
         }
 
         return $names;
+    }
+
+    protected static function collectRankingFieldsWithDuplicateOptionValues($fields)
+    {
+        $duplicates = [];
+
+        foreach ($fields as $field) {
+            if ('container' === ArrayHelper::get($field, 'element')) {
+                $columns = ArrayHelper::get($field, 'columns', []);
+                foreach ($columns as $column) {
+                    $columnFields = ArrayHelper::get($column, 'fields', []);
+                    $duplicates = array_merge(
+                        $duplicates,
+                        static::collectRankingFieldsWithDuplicateOptionValues($columnFields)
+                    );
+                }
+                continue;
+            }
+
+            if (!empty($field['fields']) && is_array($field['fields'])) {
+                $duplicates = array_merge(
+                    $duplicates,
+                    static::collectRankingFieldsWithDuplicateOptionValues($field['fields'])
+                );
+                continue;
+            }
+
+            if ('input_ranking' !== ArrayHelper::get($field, 'element')) {
+                continue;
+            }
+
+            $formattedOptions = ArrayHelper::get($field, 'settings.advanced_options', []);
+            if (!$formattedOptions) {
+                $formattedOptions = [];
+                foreach (ArrayHelper::get($field, 'options', []) as $value => $label) {
+                    $formattedOptions[] = [
+                        'label' => $label,
+                        'value' => $value,
+                    ];
+                }
+            }
+
+            $optionValues = array_values(array_filter(array_map(
+                'sanitize_text_field',
+                array_column(static::flattenAdvancedOptions($formattedOptions), 'value')
+            ), function ($value) {
+                return $value !== '';
+            }));
+
+            if (count($optionValues) !== count(array_unique($optionValues))) {
+                $duplicates[] = ArrayHelper::get($field, 'settings.admin_field_label')
+                    ?: ArrayHelper::get($field, 'settings.label')
+                    ?: ArrayHelper::get($field, 'attributes.name')
+                    ?: __('Ranking Field', 'fluentform');
+            }
+        }
+
+        return $duplicates;
     }
 
     public static function isConversionForm($formId)
@@ -1112,7 +1189,7 @@ class Helper
                 $options = ['on'];
             } elseif ('terms_and_condition' == $fieldType) {
                 $options = ['on', 'off'];
-            } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
+            } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox', 'input_ranking'])) {
                 if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
                 }
@@ -1157,6 +1234,32 @@ class Helper
 
             $isValid = true;
             switch ($fieldType) {
+                case 'input_ranking':
+                    $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
+                    if ($skipValidationInputsWithOptions) {
+                        break;
+                    }
+
+                    if (!is_array($inputValue)) {
+                        $isValid = false;
+                        break;
+                    }
+
+                    $filteredValues = array_values(array_filter(array_map('sanitize_text_field', $inputValue), function ($value) {
+                        return $value !== '';
+                    }));
+
+                    $normalizedOptions = array_values(array_filter(array_map('sanitize_text_field', $options), function ($value) {
+                        return $value !== '';
+                    }));
+
+                    sort($filteredValues);
+                    sort($normalizedOptions);
+
+                    $isValid = count($inputValue) === count($options)
+                        && count($filteredValues) === count(array_unique($filteredValues))
+                        && $filteredValues === $normalizedOptions;
+                    break;
                 case 'input_radio':
                 case 'select':
                 case 'net_promoter_score':

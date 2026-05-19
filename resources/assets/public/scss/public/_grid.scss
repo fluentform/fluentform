@@ -12,6 +12,11 @@
             }
         }
 
+        .ff-name-field-wrapper .ff-t-cell,
+        .ff-name-address-wrapper .ff-t-cell {
+            justify-content: flex-end;
+        }
+
         .ff-t-cell {
             display: flex;
             flex-direction: column;

@@ -258,7 +258,13 @@ foreach ($fluentformRules as $fluentformRuleName) {
 
 
 $app->addFilter('fluentform/response_render_textarea', function ($value, $field, $formId, $isHtml) {
-    if (!$value || !is_string($value)) {
+    if (is_array($value) || is_object($value)) {
+        $value = fluentImplodeRecursive(', ', array_filter(array_values((array) $value)));
+    }
+
+    $value = $value ? nl2br($value) : $value;
+
+    if (!$isHtml || !$value) {
         return $value;
     }
 

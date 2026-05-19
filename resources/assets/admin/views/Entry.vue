@@ -64,7 +64,7 @@
                                             <div
                                                 v-for="(label, label_index) in labels"
                                                 :key="label_index"
-                                                v-show="show_empty == 'yes' || entry.user_inputs[label_index]"
+                                                v-show="show_empty == 'yes' || hasEntryValue(label_index)"
                                                 class="wpf_each_entry"
                                             >
 
@@ -73,7 +73,7 @@
                                                 </div>
 
                                                 <template v-if="formFields[label_index]['element'] == 'input_email'">
-                                                    <div v-show="entry.user_inputs[label_index]" class="wpf_entry_value">
+                                                    <div v-show="hasEntryValue(label_index)" class="wpf_entry_value">
                                                         <a :href="'mailto:'+entry.user_inputs[label_index]">{{
                                                             entry.user_inputs[label_index] }}</a>
                                                     </div>
@@ -387,15 +387,16 @@
                         );
                     })
                     .then(() => {
-                        this.getEntryResources();
-						const statusUpdate = window.fluent_form_entries_vars.update_status;
-						if (
-							statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
-							statusUpdate !== this.entry.status
-						) {
-							this.handleStatusChange(statusUpdate);
-							this.getEntryResources();
-						}
+                        const statusUpdate = window.fluent_form_entries_vars.update_status;
+                        if (
+                            statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
+                            statusUpdate !== this.entry.status
+                        ) {
+                            return this.handleStatusChange(statusUpdate)
+                                .then(() => this.getEntryResources());
+                        }
+
+                        return this.getEntryResources();
                     })
                     .catch(error => {
                         this.$fail(error.message);
@@ -423,7 +424,7 @@
 
                 const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', this.entry_id);
 
-                FluentFormsGlobal.$rest.post(url, data)
+                return FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.entry.status = status;
                         this.$success(response.message);
@@ -643,6 +644,50 @@
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;')
                     .replace(/'/g, '&#039;');
+            },
+            hasEntryValue(fieldKey) {
+                const formattedValue = this.entry.user_inputs[fieldKey];
+                const rawValue = this.original_data[fieldKey];
+                const field = this.formFields[fieldKey] && this.formFields[fieldKey].raw;
+
+                if (field && field.element === 'input_ranking') {
+                    return this.hasRankingEntryValue(rawValue, formattedValue);
+                }
+
+                return !!formattedValue;
+            },
+            hasRankingEntryValue(rawValue, formattedValue) {
+                if (Array.isArray(rawValue)) {
+                    return rawValue.length > 0;
+                }
+
+                if (typeof rawValue === 'string') {
+                    const trimmedRawValue = rawValue.trim();
+
+                    if (trimmedRawValue === '[]') {
+                        return false;
+                    }
+
+                    try {
+                        const parsedRawValue = JSON.parse(trimmedRawValue);
+
+                        if (Array.isArray(parsedRawValue)) {
+                            return parsedRawValue.length > 0;
+                        }
+                    } catch (e) {
+                        // Ignore invalid JSON and fall back to formatted value.
+                    }
+                }
+
+                if (Array.isArray(formattedValue)) {
+                    return formattedValue.length > 0;
+                }
+
+                if (typeof formattedValue === 'string') {
+                    return formattedValue.trim() !== '' && formattedValue.trim() !== '[]';
+                }
+
+                return !!formattedValue;
             },
             dataType(data) {
                 return typeof data;
