@@ -61,6 +61,7 @@ class TranslationString
             /* translators: %s is the payment status */
             'Payment: %s' => __('Payment: %s', 'fluentform'),
             'Tip: use Columns to show only the fields you need, or expand a row to review hidden details.' => __('Tip: use Columns to show only the fields you need, or expand a row to review hidden details.', 'fluentform'),
+            'Expand rows to review hidden fields.' => __('Expand rows to review hidden fields.', 'fluentform'),
             'View entry details' => __('View entry details', 'fluentform'),
             'Delete entry' => __('Delete entry', 'fluentform'),
             'More' => __('More', 'fluentform'),
@@ -640,7 +641,10 @@ class TranslationString
             'You don\'t have any integration module enabled. Please go to integration modules and enable and configured from 30 + available modules' => __('You don\'t have any integration module enabled. Please go to integration modules and enable and configured from 30 + available modules', 'fluentform'),
             'Configure Modules' => __('Configure Modules', 'fluentform'),
             'You haven\'t added any integration feed yet. Add new integration to connect your favourite tools with your forms' => __('You haven\'t added any integration feed yet. Add new integration to connect your favourite tools with your forms', 'fluentform'),
+            'No integration feeds yet' => __('No integration feeds yet', 'fluentform'),
+            'Connect this form to an enabled integration, or configure global modules first.' => __('Connect this form to an enabled integration, or configure global modules first.', 'fluentform'),
             'Integration' => __('Integration', 'fluentform'),
+            'View Documentation' => __('View Documentation', 'fluentform'),
             'View Documentations' => __('View Documentations', 'fluentform'),
             'View Video Instruction' => __('View Video Instruction', 'fluentform'),
             'View All' => __('View All', 'fluentform'),

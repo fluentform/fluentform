@@ -244,7 +244,7 @@
                 >{{ $t('Reset filters') }}</el-button>
             </div>
             <div class="ff_entries_scroll_hint">
-                {{ $t('Tip: use Columns to show only the fields you need, or expand a row to review hidden details.') }}
+                {{ $t('Expand rows to review hidden fields.') }}
             </div>
         </div>
 

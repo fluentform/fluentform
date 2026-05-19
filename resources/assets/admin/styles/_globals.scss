@@ -2004,6 +2004,35 @@ label.el-radio, label.el-checkbox {
   display: none;
 }
 
+.ff_integration_empty_state {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 190px;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+
+  h6 {
+    color: $--color-text-primary;
+    font-size: 18px;
+    line-height: 1.4;
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: $--color-text-regular;
+    line-height: 1.6;
+    margin: 0 0 20px;
+    max-width: 560px;
+  }
+
+  .btn-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 .text-capitalize {
     text-transform: capitalize;
 }
@@ -2240,5 +2269,4 @@ label.el-radio, label.el-checkbox {
         }
     }
 }
-
 

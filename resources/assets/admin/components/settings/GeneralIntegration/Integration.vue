@@ -33,12 +33,37 @@
                 <!-- GetResponse Feeds Table: 1 -->
                 <div class="ff-table-container">
                     <el-skeleton :loading="loading" animated :rows="6">
-                        <el-table v-if="!isEmpty(available_integrations)" :data="integrations">
-                            <template slot="empty">
-                                <div class="getting_started_message" style="padding-top: 16px; padding-bottom: 10px;">
-                                    <p>{{ $t('You haven\'t added any integration feed yet. Add new integration to connect your favourite tools with your forms') }}</p>
-                                </div>
-                            </template>
+                        <div v-if="!isEmpty(available_integrations) && !integrations.length" class="ff_integration_empty_state">
+                            <h6>{{ $t('No integration feeds yet') }}</h6>
+                            <p>{{ $t('Connect this form to an enabled integration, or configure global modules first.') }}</p>
+                            <btn-group>
+                                <btn-group-item>
+                                    <el-dropdown @command="add" :hide-on-click="false" trigger="click">
+                                        <el-button type="primary" size="medium">
+                                            {{ $t('Add New Integration') }}
+                                            <i class="el-icon-arrow-down el-icon--right"></i>
+                                        </el-button>
+                                        <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown" style="max-height: 400px; overflow: auto">
+                                            <el-dropdown-item>
+                                                <el-input @click.prevent autofocus v-model="search" :placeholder="$t('Search Integration')"></el-input>
+                                            </el-dropdown-item>
+                                            <el-dropdown-item v-for="(integration,integration_name) in filteredList" :key="integration_name" :command="integration_name">{{integration.title}}</el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </el-dropdown>
+                                </btn-group-item>
+                                <btn-group-item>
+                                    <a :href="all_module_config_url" class="el-button el-button--default">
+                                        {{ $t('Check Global Integration Settings') }}
+                                    </a>
+                                </btn-group-item>
+                                <btn-group-item>
+                                    <a class="el-button el-button--default el-button--soft" target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/">
+                                        {{ $t('View Documentation') }}
+                                    </a>
+                                </btn-group-item>
+                            </btn-group>
+                        </div>
+                        <el-table v-else-if="!isEmpty(available_integrations)" :data="integrations">
                             <el-table-column width="180" :label="$t('Status')">
                                 <template slot-scope="scope">
                                     <span class="mr-3" v-if="scope.row.enabled">{{$t('Enabled')}}</span>
@@ -94,7 +119,7 @@
                     </el-skeleton>
                 </div><!-- .ff-table-container -->
 
-                <p v-if="has_pro && !integrations.length" class="text-center">
+                <p v-if="has_pro && !integrations.length && isEmpty(available_integrations)" class="text-center">
                     <a :href="all_module_config_url">{{$t('Check Global Integration Settings')}}</a>
                     <a style="margin-left: 20px" target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/">
                         {{ $t('View Documentations') }}
@@ -293,5 +318,4 @@
         }
     }
 </script>
-
 

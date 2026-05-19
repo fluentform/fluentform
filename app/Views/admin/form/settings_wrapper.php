@@ -8,7 +8,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 
 <div class="ff_settings_wrapper ff_layout_section">
 	<div class="ff_settings_sidebar_wrap">
-		<span class="ff_sidebar_toggle" title="Toggle Setting">
+		<span class="ff_sidebar_toggle" role="button" aria-label="<?php esc_attr_e('Toggle settings sidebar', 'fluentform'); ?>" tabindex="0">
 			<i class="ff-icon ff-icon-arrow-right"></i>
 		</span>
 		<div class="ff_settings_sidebar ff_layout_section_sidebar">
