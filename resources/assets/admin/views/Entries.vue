@@ -291,6 +291,27 @@
 
         <ImportEntriesModal :app="app" :form_id="form_id" :visibility.sync="showImportEntriesModal" />
 
+        <div class="ff_entries_view_summary ff_form_entries_summary">
+            <div class="ff_entries_result_summary">
+                {{ formResultSummaryText }}
+            </div>
+            <div v-if="activeEntryFilters.length" class="ff_entries_filter_chips">
+                <span
+                    v-for="filter in activeEntryFilters"
+                    :key="filter.key"
+                    class="ff_entries_filter_chip"
+                >{{ filter.label }}</span>
+                <el-button
+                    type="text"
+                    size="mini"
+                    @click="clearEntryFilters"
+                >{{ $t('Reset filters') }}</el-button>
+            </div>
+            <div class="ff_entries_scroll_hint">
+                {{ $t('Expand rows to review hidden fields.') }}
+            </div>
+        </div>
+
         <el-dialog :visible.sync="visibleColReorderModal">
             <template slot="title">
                 <h4>{{$t('Change Column Display Order')}}</h4>
