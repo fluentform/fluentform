@@ -12,18 +12,29 @@
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
-                        <el-button @click="toggleChart()" type="primary" class="el-button--soft-2">
+                        <el-button
+                            @click="toggleChart()"
+                            type="primary"
+                            class="el-button--soft-2"
+                            :aria-expanded="chart_status == 'yes' ? 'true' : 'false'"
+                            aria-controls="ff_global_entries_chart"
+                        >
                             {{ chart_status == 'yes' ? $t('Hide Chart') : $t('Show Chart')}}
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
-                            <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
+                            <el-button
+                                @click="advancedFilter = !advancedFilter"
+                                :class="this.filter_date_range && 'ff_filter_selected'"
+                                :aria-expanded="advancedFilter ? 'true' : 'false'"
+                                aria-controls="ff_global_entries_filter"
+                            >
                                 <span>{{ $t('Filter') }}</span>
                                 <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
                                 <i v-else class="ff-icon ff-icon-filter"></i>
                             </el-button>
-                            <div v-if="advancedFilter" class="ff_advanced_search">
+                            <div v-if="advancedFilter" id="ff_global_entries_filter" class="ff_advanced_search">
                                 <div class="ff_advanced_search_radios">
                                     <el-radio-group v-model="radioOption" class="el-radio-group-column">
                                         <el-radio label="all">All</el-radio>
@@ -54,7 +65,7 @@
             </section-head-content>
         </section-head>
 
-        <div v-if="chart_status == 'yes'" ref="entry_chart" class="entry_chart mt-4 mb-4">
+        <div v-if="chart_status == 'yes'" id="ff_global_entries_chart" ref="entry_chart" class="entry_chart mt-4 mb-4">
             <entry-chart :form_id="selectedFormId" :date_range="filter_date_range" :entry_status="entry_status" ></entry-chart>
         </div>
 
@@ -104,7 +115,7 @@
                                 @keyup.enter.native="fetchEntries()"
                                 clearable
                                 v-model="search"
-                                :placeholder="$t('Search Forms')"
+                                :placeholder="$t('Search entries')"
                                 prefix-icon="el-icon-search"
                                 class="ff-input-s1"
                             >
@@ -112,6 +123,23 @@
                         </div>
                     </el-col>
                 </el-row>
+            </div>
+            <div class="ff_entries_view_summary">
+                <div class="ff_entries_result_summary">
+                    {{ resultSummaryText }}
+                </div>
+                <div v-if="activeFilters.length" class="ff_entries_filter_chips">
+                    <span
+                        v-for="filter in activeFilters"
+                        :key="filter.key"
+                        class="ff_entries_filter_chip"
+                    >{{ filter.label }}</span>
+                    <el-button
+                        type="text"
+                        size="mini"
+                        @click="clearFilters"
+                    >{{ $t('Reset filters') }}</el-button>
+                </div>
             </div>
             <div class="ff_table_wrap">
                 <div class="ff_table">
@@ -148,10 +176,17 @@
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Action')">
                                 <template slot-scope="scope">
-                                    <a :href="scope.row.entry_url" class="el-button el-button--primary el-button--soft el-button--small">
-                                        <i class="ff-icon ff-icon-eye"></i>
-                                        <span>{{$t('View')}}</span>
-                                    </a>
+                                    <el-tooltip
+                                        class="item"
+                                        placement="top"
+                                        popper-class="ff_tooltip_wrap"
+                                        :content="$t('View entry details')"
+                                    >
+                                        <a :href="scope.row.entry_url" class="el-button el-button--primary el-button--soft el-button--small">
+                                            <i class="ff-icon ff-icon-eye"></i>
+                                            <span>{{$t('View')}}</span>
+                                        </a>
+                                    </el-tooltip>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -249,7 +284,7 @@ export default {
                 last_page: 1,
                 per_page: localStorage.getItem('entriesPerPage') || 10
             },
-            chart_status: 'yes',
+            chart_status: 'no',
             entry_status: '',
             search: '',
             radioOption: (() => {
@@ -341,6 +376,19 @@ export default {
             this.radioOption = "";
 			this.filter_date_range = 'all';
             this.fetchEntries();
+        },
+        clearFilters() {
+            const shouldRefetch = this.radioOption === 'all';
+            this.selectedFormId = '';
+            this.entry_status = '';
+            this.search = '';
+            this.radioOption = 'all';
+            this.filter_date_range = 'all';
+            this.paginate.current_page = 1;
+
+            if (shouldRefetch) {
+                this.fetchEntries('reset');
+            }
         }
     },
     computed: {
@@ -354,7 +402,81 @@ export default {
 		},
 	    selectedFormName() {
 			return this.available_forms?.find(f => f.id === this.selectedFormId)?.title || '';
-	    }
+	    },
+        statusLabel() {
+            if (this.entry_status === 'unread') {
+                return this.$t('Unread Only');
+            }
+
+            if (this.entry_status === 'read') {
+                return this.$t('Read Only');
+            }
+
+            return this.$t('All statuses');
+        },
+        dateFilterLabel() {
+            const dateLabels = {
+                today: this.$t('Today'),
+                yesterday: this.$t('Yesterday'),
+                'last-week': this.$t('Last Week'),
+                'last-month': this.$t('Last Month'),
+                all: this.$t('All dates')
+            };
+
+            if (dateLabels[this.radioOption]) {
+                return dateLabels[this.radioOption];
+            }
+
+            if (Array.isArray(this.filter_date_range) && this.filter_date_range.length === 2) {
+                return `${this.filter_date_range[0]} - ${this.filter_date_range[1]}`;
+            }
+
+            return this.$t('All dates');
+        },
+        activeFilters() {
+            const filters = [];
+
+            if (this.selectedFormName) {
+                filters.push({
+                    key: 'form',
+                    label: this.$t('Form: %s', this.selectedFormName)
+                });
+            }
+
+            if (this.entry_status) {
+                filters.push({
+                    key: 'status',
+                    label: this.$t('Status: %s', this.statusLabel)
+                });
+            }
+
+            if (this.hasEnabledDateFilter && this.dateFilterLabel !== this.$t('All dates')) {
+                filters.push({
+                    key: 'date',
+                    label: this.$t('Date: %s', this.dateFilterLabel)
+                });
+            }
+
+            if (this.search) {
+                filters.push({
+                    key: 'search',
+                    label: this.$t('Search: %s', this.search)
+                });
+            }
+
+            return filters;
+        },
+        resultSummaryText() {
+            if (this.loading) {
+                return this.$t('Loading entries...');
+            }
+
+            if (this.activeFilters.length) {
+                return this.$t('Showing %s filtered entries', this.paginate.total);
+            }
+
+            return this.$t('Showing %s entries', this.paginate.total);
+        }
     },
     watch: {
         radioOption: {
@@ -402,9 +524,10 @@ export default {
         let status = localStorage.getItem('ff_chart_status');
         if (status) {
             this.chart_status = status;
+        } else if (window.matchMedia && window.matchMedia('(max-width: 782px)').matches) {
+            this.chart_status = 'no';
         }
         localStorage.removeItem('entriesCurrentPage');
     }
 };
 </script>
-
