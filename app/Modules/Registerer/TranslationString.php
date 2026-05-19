@@ -24,6 +24,7 @@ class TranslationString
             'Conversion' => __('Conversion', 'fluentform'),
             'Views' => __('Views', 'fluentform'),
             'Search Forms' => __('Search Forms', 'fluentform'),
+            'Search entries' => __('Search entries', 'fluentform'),
             'Search' => __('Search', 'fluentform'),
             'Click Here to Create Your First Form' => __('Click Here to Create Your First Form', 'fluentform'),
             'Check the video intro' => __('Check the video intro', 'fluentform'),
@@ -37,6 +38,36 @@ class TranslationString
             'All' => __('All', 'fluentform'),
             'Unread Only' => __('Unread Only', 'fluentform'),
             'Read Only' => __('Read Only', 'fluentform'),
+            'All statuses' => __('All statuses', 'fluentform'),
+            'All dates' => __('All dates', 'fluentform'),
+            'Reset filters' => __('Reset filters', 'fluentform'),
+            'Loading entries...' => __('Loading entries...', 'fluentform'),
+            /* translators: %s is the entries count */
+            'Showing %s entries' => __('Showing %s entries', 'fluentform'),
+            /* translators: %s is the filtered entries count */
+            'Showing %s filtered entries' => __('Showing %s filtered entries', 'fluentform'),
+            /* translators: 1: entries count, 2: form title */
+            'Showing %s entries for %s' => __('Showing %s entries for %s', 'fluentform'),
+            /* translators: 1: filtered entries count, 2: form title */
+            'Showing %s filtered entries for %s' => __('Showing %s filtered entries for %s', 'fluentform'),
+            /* translators: %s is the form title */
+            'Form: %s' => __('Form: %s', 'fluentform'),
+            /* translators: %s is the status label */
+            'Status: %s' => __('Status: %s', 'fluentform'),
+            /* translators: %s is the date filter label */
+            'Date: %s' => __('Date: %s', 'fluentform'),
+            /* translators: %s is the search term */
+            'Search: %s' => __('Search: %s', 'fluentform'),
+            /* translators: %s is the payment status */
+            'Payment: %s' => __('Payment: %s', 'fluentform'),
+            'Tip: use Columns to show only the fields you need, or expand a row to review hidden details.' => __('Tip: use Columns to show only the fields you need, or expand a row to review hidden details.', 'fluentform'),
+            'View entry details' => __('View entry details', 'fluentform'),
+            'Delete entry' => __('Delete entry', 'fluentform'),
+            'More' => __('More', 'fluentform'),
+            'More entry actions' => __('More entry actions', 'fluentform'),
+            'Refresh entries' => __('Refresh entries', 'fluentform'),
+            /* translators: %s is the entry serial number */
+            'Entry #%s' => __('Entry #%s', 'fluentform'),
             'Submission ID' => __('Submission ID', 'fluentform'),
             'Form' => __('Form', 'fluentform'),
             'Status' => __('Status', 'fluentform'),
@@ -2288,4 +2319,3 @@ class TranslationString
         ];
     }
 }
-

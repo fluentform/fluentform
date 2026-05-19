@@ -5,27 +5,7 @@
                 <h1 class="ff_section_title">{{$t('Entries')}}</h1>
             </section-head-content>
             <section-head-content>
-                <btn-group>
-                    <btn-group-item as="div">
-                        <el-button @click="gotoVisualReport()" type="primary">
-                            <i class="ff-icon ff-icon-donut-chart"></i>
-                            <span>{{ $t('Visual Report') }}</span>
-                        </el-button>
-                    </btn-group-item>
-                    <btn-group-item as="div">
-                        <el-dropdown @command="selectFieldsToExport" trigger="click">
-                            <el-button>
-                                {{ $t('Export') }}
-                                <i class="el-icon-arrow-down el-icon--right"></i>
-                            </el-button>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="csv">{{ $t('Export as %s', 'CSV') }}</el-dropdown-item>
-                                <el-dropdown-item command="xlsx">{{ $t('Export as %s', 'Excel (xlsv)') }}</el-dropdown-item>
-                                <el-dropdown-item command="ods">{{ $t('Export as %s', 'ODS') }}</el-dropdown-item>
-                                <el-dropdown-item command="json">{{ $t('Export as %s', 'JSON Data') }}</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </btn-group-item>
+                <btn-group class="ff_entries_header_actions">
                     <btn-group-item as="div">
                         <el-dropdown
                             @command="handleSwitchForm"
@@ -47,17 +27,21 @@
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
-                    <el-dropdown
-                            @command="showImport"
-                            class="more_menu"
-                    >
-                        <span class="el-dropdown-link">
-                            <i class="ff-icon ff-icon-more-vertical"/>
-                        </span>
+                    <el-dropdown @command="handleHeaderAction" class="more_menu">
+                        <el-button :aria-label="$t('More entry actions')">
+                            <i class="ff-icon ff-icon-more-vertical"></i>
+                            <span>{{ $t('More') }}</span>
+                        </el-button>
                         <el-dropdown-menu slot="dropdown" >
-                            <el-dropdown-item  >
-                                    {{ $t('Import') }}
-                            </el-dropdown-item >
+                            <el-dropdown-item command="visual_report">
+                                <i class="ff-icon ff-icon-donut-chart"></i>
+                                {{ $t('Visual Report') }}
+                            </el-dropdown-item>
+                            <el-dropdown-item command="import">{{ $t('Import') }}</el-dropdown-item>
+                            <el-dropdown-item command="export_csv">{{ $t('Export as %s', 'CSV') }}</el-dropdown-item>
+                            <el-dropdown-item command="export_xlsx">{{ $t('Export as %s', 'Excel (xlsv)') }}</el-dropdown-item>
+                            <el-dropdown-item command="export_ods">{{ $t('Export as %s', 'ODS') }}</el-dropdown-item>
+                            <el-dropdown-item command="export_json">{{ $t('Export as %s', 'JSON Data') }}</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
 
@@ -145,10 +129,16 @@
             <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
-                        <label for="search_bar">
-                           <b> {{ $t('Advanced Filter') }}</b>
-                        </label>
-                        <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
+	                        <label for="advanced_filter_toggle">
+	                           <b> {{ $t('Advanced Filter') }}</b>
+	                        </label>
+	                        <el-switch
+                                id="advanced_filter_toggle"
+                                inactive-color="#afb3ba"
+                                class="el-switch-sm"
+                                v-model="advanced_filter_active"
+                                :aria-label="$t('Advanced Filter')"
+                            />
 
                     </btn-group-item>
                     <btn-group-item as="div">
@@ -222,15 +212,41 @@
                         </div><!-- .ff_advanced_filter_wrap -->
                     </btn-group-item>
 	                <btn-group-item as="div">
-		                <el-button @click="getData" v-loading="loading && visibleColumns">
-			                <i class="ff-icon el-icon-refresh"></i>
-		                </el-button>
+			                <el-button
+                                @click="getData"
+                                v-loading="loading && visibleColumns"
+                                :aria-label="$t('Refresh entries')"
+                                :title="$t('Refresh entries')"
+                            >
+				                <i class="ff-icon el-icon-refresh"></i>
+			                </el-button>
 	                </btn-group-item>
                 </btn-group>
             </section-head-content>
         </section-head>
 
         <ImportEntriesModal :app="app" :form_id="form_id" :visibility.sync="showImportEntriesModal" />
+
+        <div class="ff_entries_view_summary ff_form_entries_summary">
+            <div class="ff_entries_result_summary">
+                {{ formResultSummaryText }}
+            </div>
+            <div v-if="activeEntryFilters.length" class="ff_entries_filter_chips">
+                <span
+                    v-for="filter in activeEntryFilters"
+                    :key="filter.key"
+                    class="ff_entries_filter_chip"
+                >{{ filter.label }}</span>
+                <el-button
+                    type="text"
+                    size="mini"
+                    @click="clearEntryFilters"
+                >{{ $t('Reset filters') }}</el-button>
+            </div>
+            <div class="ff_entries_scroll_hint">
+                {{ $t('Tip: use Columns to show only the fields you need, or expand a row to review hidden details.') }}
+            </div>
+        </div>
 
         <el-dialog :visible.sync="visibleColReorderModal">
             <template slot="title">
@@ -273,13 +289,31 @@
                          :size="isCompact? 'mini':''"
                         :data="entries"
                         :stripe="true"
+                        class="ff_entries_table"
                         :class="{'compact': isCompact}"
                         @sort-change="handleTableSort"
                         @selection-change="handleSelectionChange"
                     >
 
                         <el-table-column type="selection" width="30"></el-table-column>
-                        <el-table-column label="#" sortable="custom" prop="id" width="100px" :class-name="idShortByClassName">
+                        <el-table-column type="expand" width="34" class-name="ff_entry_expand_col">
+                            <template slot-scope="scope">
+                                <div class="ff_entry_mobile_details">
+                                    <div
+                                        v-for="item in getEntrySummaryItems(scope.row)"
+                                        :key="item.key"
+                                        class="ff_entry_mobile_detail"
+                                    >
+                                        <span class="ff_entry_mobile_detail_label">{{ item.label }}</span>
+                                        <span
+                                            class="ff_entry_mobile_detail_value"
+                                            v-html="item.value"
+                                        ></span>
+                                    </div>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="#" sortable="custom" prop="id" width="100px" :class-name="'ff_entry_id_col ' + idShortByClassName">
                             <template slot-scope="scope">
                                 <div class="has_hover_item">
                                     <router-link :to="{
@@ -330,11 +364,12 @@
                         </el-table-column>
 
                         <el-table-column
-                                v-for="(column, index) in formattedColumn"
+                                v-for="(column, index) in formattedVisibleColumn"
                                 :label="column.label"
                                 min-width="200"
                                 sortable="custom"
                                 :prop="'user_inputs_column_field-' + column.field"
+                                class-name="ff_entry_data_col"
                                 :key="index">
                             <template slot-scope="scope">
                                 <el-popover
@@ -370,6 +405,7 @@
                                 :label="$t('Entry Status')"
                                 sortable
                                 prop="status"
+                                class-name="ff_entry_status_col"
                                 width="120px">
                             <template slot-scope="scope">
                                 {{ getStatusName(scope.row.status) }}
@@ -381,6 +417,7 @@
                                     :label="$t('Amount')"
                                     sortable="custom"
                                     prop="payment_total"
+                                    class-name="ff_entry_payment_col"
                                     min-width="120px">
                                 <template slot-scope="scope">
                                     <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
@@ -390,6 +427,7 @@
                                     :label="$t('Payment Status')"
                                     sortable
                                     prop="payment_status"
+                                    class-name="ff_entry_payment_col"
                                     min-width="140px">
                                 <template slot-scope="scope">
                                     <span class="ff_badge"
@@ -404,6 +442,7 @@
                                     :label="$t('Payment Method')"
                                     sortable
                                     prop="payment_method"
+                                    class-name="ff_entry_payment_col"
                                     min-width="140px">
                                 <template slot-scope="scope">
                                     <span class="ff_badge" v-if="scope.row.payment_method"
@@ -423,6 +462,7 @@
                                 :label="$t('Submitted at')"
                                 sortable
                                 prop="created_at"
+                                class-name="ff_entry_submitted_col"
                                 :width="dateColWidth">
                             <template slot-scope="scope">
                                 <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
@@ -439,6 +479,7 @@
                         <el-table-column
                                 fixed="right"
                                 :label="$t('Actions')"
+                                class-name="ff_entry_actions_col"
                                 :width="115"
                                 align="center"
                         >
@@ -458,21 +499,36 @@
                                                 type: entry_type
                                             }
                                         }">
-                                            <span class="el-button el-button--primary el-button--mini el-button--icon">
-                                                <i class="ff-icon ff-icon-eye-filled"></i>
-                                            </span>
+                                            <el-tooltip
+                                                class="item"
+                                                placement="top"
+                                                popper-class="ff_tooltip_wrap"
+                                                :content="$t('View entry details')"
+                                            >
+                                                <span class="el-button el-button--primary el-button--mini el-button--icon">
+                                                    <i class="ff-icon ff-icon-eye-filled"></i>
+                                                    <span class="screen-reader-text">{{ $t('View entry details') }}</span>
+                                                </span>
+                                            </el-tooltip>
                                         </router-link>
                                     </btn-group-item>
                                     <btn-group-item>
                                         <confirm
                                             v-if="hasPermission('fluentform_manage_entries')"
                                             @on-confirm="removeEntry(scope.row.id, scope.$index)">
-                                            <el-button
-                                                class="el-button--icon"
-                                                size="mini"
-                                                type="danger"
-                                                icon="ff-icon ff-icon-trash"
-                                            />
+                                            <el-tooltip
+                                                class="item"
+                                                placement="top"
+                                                popper-class="ff_tooltip_wrap"
+                                                :content="$t('Delete entry')"
+                                            >
+                                                <el-button
+                                                    class="el-button--icon"
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="ff-icon ff-icon-trash"
+                                                />
+                                            </el-tooltip>
                                         </confirm>
                                     </btn-group-item>
                                 </btn-group>
@@ -807,6 +863,17 @@
 
                 return columnsOrder;
             },
+            formattedVisibleColumn() {
+                if (!this.entries.length) {
+                    return this.formattedColumn;
+                }
+
+                return this.formattedColumn.filter(column => {
+                    return this.entries.some(entry => {
+                        return this.getEntryCellValue(entry.user_inputs[column.field]);
+                    });
+                });
+            },
 	        hasEnabledDateFilter() {
 				return !!(this.radioOption && this.radioOption != 'all' ||
 					(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
@@ -826,17 +893,120 @@
                     gpuAcceleration: false,
                     boundariesPadding: adminBarHeight + 16
                 };
+            },
+            formResultSummaryText() {
+                if (this.loading) {
+                    return this.$t('Loading entries...');
+                }
+
+                if (this.activeEntryFilters.length) {
+                    return this.$t('Showing %s filtered entries for %s', this.paginate.total, this.current_form_title);
+                }
+
+                return this.$t('Showing %s entries for %s', this.paginate.total, this.current_form_title);
+            },
+            dateFilterLabel() {
+                const dateLabels = {
+                    today: this.$t('Today'),
+                    yesterday: this.$t('Yesterday'),
+                    'last-week': this.$t('Last Week'),
+                    'last-month': this.$t('Last Month'),
+                    all: this.$t('All dates')
+                };
+
+                if (dateLabels[this.radioOption]) {
+                    return dateLabels[this.radioOption];
+                }
+
+                if (Array.isArray(this.filter_date_range) && this.filter_date_range.length === 2) {
+                    return `${this.filter_date_range[0]} - ${this.filter_date_range[1]}`;
+                }
+
+                return this.$t('All dates');
+            },
+            activeEntryFilters() {
+                const filters = [];
+
+                if (this.entry_type) {
+                    filters.push({
+                        key: 'status',
+                        label: this.$t('Status: %s', this.getStatusName(this.entry_type))
+                    });
+                }
+
+                if (this.selectedPaymentStatuses.length) {
+                    filters.push({
+                        key: 'payment',
+                        label: this.$t('Payment: %s', this.selectedPaymentStatuses.join(', '))
+                    });
+                }
+
+                if (this.hasEnabledDateFilter && this.dateFilterLabel !== this.$t('All dates')) {
+                    filters.push({
+                        key: 'date',
+                        label: this.$t('Date: %s', this.dateFilterLabel)
+                    });
+                }
+
+                if (this.search_string) {
+                    filters.push({
+                        key: 'search',
+                        label: this.$t('Search: %s', this.search_string)
+                    });
+                }
+
+                return filters;
             }
         },
         methods: {
             getEntryCellValue(value) {
                 return value || '';
             },
+            getEntrySummaryItems(entry) {
+                const items = this.formattedColumn
+                    .map(column => {
+                        return {
+                            key: column.field,
+                            label: column.label,
+                            value: this.getEntryCellValue(entry.user_inputs[column.field])
+                        };
+                    })
+                    .filter(item => item.value);
+
+                items.push({
+                    key: 'entry_status',
+                    label: this.$t('Entry Status'),
+                    value: this.getStatusName(entry.status)
+                });
+
+                items.push({
+                    key: 'submitted_at',
+                    label: this.$t('Submitted at'),
+                    value: this.humanDiffTime(entry.created_at)
+                });
+
+                return items;
+            },
             getStatusName(status) {
                 if (this.entry_statuses[status]) {
                     return this.entry_statuses[status];
                 }
                 return status;
+            },
+            clearEntryFilters() {
+                const shouldRefetch = this.radioOption === 'all';
+                this.entry_type = '';
+                this.selectedPaymentStatuses = [];
+                this.search_string = '';
+                this.radioOption = 'all';
+                this.filter_date_range = null;
+                this.advanced_filter = {};
+                this.advanced_filter_active = false;
+                this.setPaginate();
+
+                if (shouldRefetch) {
+                    this.getData();
+                }
             },
             setPaginate(data = {}) {
                 this.paginate = {
@@ -1129,6 +1299,21 @@
             },
             handleSwitchForm(formId) {
                 window.location.href = window.fluent_form_entries_vars.entries_url_base + formId;
+            },
+            handleHeaderAction(command) {
+                if (command === 'visual_report') {
+                    this.gotoVisualReport();
+                    return;
+                }
+
+                if (command === 'import') {
+                    this.showImport();
+                    return;
+                }
+
+                if (command.indexOf('export_') === 0) {
+                    this.selectFieldsToExport(command.replace('export_', ''));
+                }
             },
             closeInputSelection(){
                 this.input_selection_visibility  = false;

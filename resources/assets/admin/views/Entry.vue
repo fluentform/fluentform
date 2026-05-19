@@ -2,9 +2,16 @@
     <div class="fluentform-wrapper">
         <section-head class="ff_section_head_between items-center" size="sm">
             <section-head-content>
-                <h3>
-                    <router-link :to="{ name: 'form-entries' }">{{$t('Entries')}}</router-link> <span role="presentation" class="el-breadcrumb__separator">/</span> {{$t('Serial Number')}} #{{entry.serial_number}}
-                </h3>
+                <div class="ff_entry_detail_title">
+                    <h3>
+                        <router-link :to="{ name: 'form-entries' }">{{$t('Entries')}}</router-link>
+                        <span role="presentation" class="el-breadcrumb__separator">/</span>
+                        {{ $t('Entry #%s', entry.serial_number || '') }}
+                    </h3>
+                    <div v-if="entry.id" class="ff_entry_detail_meta">
+                        {{ $t('Submission ID') }} #{{ entry.id }}
+                    </div>
+                </div>
             </section-head-content>
             <section-head-content>
                 <btn-group>
