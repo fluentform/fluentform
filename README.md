@@ -166,7 +166,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Improves entries table accessibility for fixed columns and icon-only actions
 - Improves entries form switcher with searchable form selection
 - Improves Upgrade to Pro CTA buttons by switching from danger to primary color
-- Improves conversational form sharing with Access settings, email/embed copy actions
+- Improves conversational form sharing with email/embed copy actions
 - Fixes dompurify and postcss to address security advisories
 - Fixes entries table row focus handling with fixed columns
 - Fixes payment status filter not working on translated admin sites
