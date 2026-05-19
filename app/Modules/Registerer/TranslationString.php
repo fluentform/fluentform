@@ -50,6 +50,9 @@ class TranslationString
             'Showing %s entries for %s' => __('Showing %s entries for %s', 'fluentform'),
             /* translators: 1: filtered entries count, 2: form title */
             'Showing %s filtered entries for %s' => __('Showing %s filtered entries for %s', 'fluentform'),
+            'Filtered entries' => __('Filtered entries', 'fluentform'),
+            /* translators: %s is the form title */
+            'Filtered entries for %s' => __('Filtered entries for %s', 'fluentform'),
             /* translators: %s is the form title */
             'Form: %s' => __('Form: %s', 'fluentform'),
             /* translators: %s is the status label */

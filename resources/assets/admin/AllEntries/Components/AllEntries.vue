@@ -124,7 +124,7 @@
                     </el-col>
                 </el-row>
             </div>
-            <div class="ff_entries_view_summary">
+            <div v-if="shouldShowSummary" class="ff_entries_view_summary">
                 <div class="ff_entries_result_summary">
                     {{ resultSummaryText }}
                 </div>
@@ -472,10 +472,13 @@ export default {
             }
 
             if (this.activeFilters.length) {
-                return this.$t('Showing %s filtered entries', this.paginate.total);
+                return this.$t('Filtered entries');
             }
 
-            return this.$t('Showing %s entries', this.paginate.total);
+            return '';
+        },
+        shouldShowSummary() {
+            return this.loading || !!this.activeFilters.length;
         }
     },
     watch: {

@@ -291,7 +291,7 @@
 
         <ImportEntriesModal :app="app" :form_id="form_id" :visibility.sync="showImportEntriesModal" />
 
-        <div class="ff_entries_view_summary ff_form_entries_summary">
+        <div v-if="shouldShowEntrySummary" class="ff_entries_view_summary ff_form_entries_summary">
             <div class="ff_entries_result_summary">
                 {{ formResultSummaryText }}
             </div>
@@ -982,6 +982,72 @@
                     gpuAcceleration: false,
                     boundariesPadding: adminBarHeight + 16
                 };
+            },
+            formResultSummaryText() {
+                if (this.loading) {
+                    return this.$t('Loading entries...');
+                }
+
+                if (this.activeEntryFilters.length) {
+                    return this.$t('Filtered entries for %s', this.current_form_title);
+                }
+
+                return '';
+            },
+            shouldShowEntrySummary() {
+                return this.loading || !!this.activeEntryFilters.length;
+            },
+            dateFilterLabel() {
+                const dateLabels = {
+                    today: this.$t('Today'),
+                    yesterday: this.$t('Yesterday'),
+                    'last-week': this.$t('Last Week'),
+                    'last-month': this.$t('Last Month'),
+                    all: this.$t('All dates')
+                };
+
+                if (dateLabels[this.radioOption]) {
+                    return dateLabels[this.radioOption];
+                }
+
+                if (Array.isArray(this.filter_date_range) && this.filter_date_range.length === 2) {
+                    return `${this.filter_date_range[0]} - ${this.filter_date_range[1]}`;
+                }
+
+                return this.$t('All dates');
+            },
+            activeEntryFilters() {
+                const filters = [];
+
+                if (this.entry_type) {
+                    filters.push({
+                        key: 'status',
+                        label: this.$t('Status: %s', this.getStatusName(this.entry_type))
+                    });
+                }
+
+                if (this.selectedPaymentStatuses.length) {
+                    filters.push({
+                        key: 'payment',
+                        label: this.$t('Payment: %s', this.selectedPaymentStatuses.join(', '))
+                    });
+                }
+
+                if (this.hasEnabledDateFilter && this.dateFilterLabel !== this.$t('All dates')) {
+                    filters.push({
+                        key: 'date',
+                        label: this.$t('Date: %s', this.dateFilterLabel)
+                    });
+                }
+
+                if (this.search_string) {
+                    filters.push({
+                        key: 'search',
+                        label: this.$t('Search: %s', this.search_string)
+                    });
+                }
+
+                return filters;
             }
         },
         methods: {
