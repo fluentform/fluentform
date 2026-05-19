@@ -77,11 +77,6 @@
                                             {{ $t('Design') }}
                                         </tab-link>
                                     </tab-item>
-                                    <tab-item :class="{active : active_tab == 'access'}" @click="active_tab = 'access'">
-                                        <tab-link>
-                                            {{ $t('Access') }}
-                                        </tab-link>
-                                    </tab-item>
                                     <tab-item :class="{active : active_tab == 'share'}" @click="active_tab = 'share'">
                                         <tab-link>
                                             {{ $t('Share') }}
@@ -237,34 +232,6 @@
                                     </div>
                                 </el-form>
                             </div>
-                            <div class="ff_landing_settings_wrapper ffc_sidebar_body" v-else-if="active_tab == 'access'">
-                                <p>{{ $t('Control when this landing page can be viewed and submitted.') }}</p>
-                                <p>{{ $t('These controls reuse the same form restriction settings used in the regular form settings, so changes here apply to this form everywhere it is rendered.') }}</p>
-                                <form-restrictions
-                                    v-if="formSettings.restrictions"
-                                    :data="formSettings.restrictions"
-                                    :has-pro="true"
-                                    :visible-sections="accessSections"
-                                    :show-pro-restriction-fields="false"
-                                />
-                                <el-form label-position="top" class="mt-4">
-                                    <el-form-item>
-                                        <el-tooltip placement="top" popper-class="ff_tooltip_wrap">
-                                            <div slot="content">
-                                                {{ saveShortcutTooltip }}
-                                            </div>
-                                            <el-button
-                                                :loading="saving"
-                                                type="primary"
-                                                icon="el-icon-success"
-                                                size="small"
-                                                @click="saveSettings()">
-                                                {{ $t('%s Access Settings', saving ? 'Saving' : 'Save') }}
-                                            </el-button>
-                                        </el-tooltip>
-                                    </el-form-item>
-                                </el-form>
-                            </div>
                             <div class="ff_landing_settings_wrapper ffc_sidebar_body ff_landing_share_intro" v-else-if="active_tab == 'share'">
                                 <p>{{ $t('Share your form by unique URL, shortcode, email, QR code, or embed code.') }}</p>
                                 <el-form label-position="top" class="mt-4">
@@ -318,8 +285,8 @@
                             </div>
                         </div>
                         <div class="ff_landing_preview ffc_design_container">
-                            <template v-if="active_tab == 'design' || active_tab == 'access'">
-                                <browser :settings="settings" v-if="final_share_url && show_frame" :preview_url="final_share_url" @change-device-type="changeDeviceType"/>
+                            <template v-if="active_tab == 'design'">
+                                <browser :settings="settings" v-if="final_share_url && show_frame" :preview_url="preview_iframe_url" @change-device-type="changeDeviceType"/>
                             </template>
                             <share v-else-if="final_share_url" :share_url="final_share_url" :form_id="form_id"  />
                         </div>
@@ -347,7 +314,6 @@
     import Tab from '@/admin/components/Tab/Tab.vue';
     import TabItem from '@/admin/components/Tab/TabItem.vue';
     import TabLink from '@/admin/components/Tab/TabLink.vue';
-    import FormRestrictions from '@/admin/components/settings/FormSettings/Restrictions.vue';
     import { bindKeyboardSaveShortcut, getKeyboardSaveShortcutLabel } from '@/admin/helpers';
 
     export default {
@@ -367,8 +333,7 @@
             BtnGroupItem,
             Tab,
             TabItem,
-            TabLink,
-            FormRestrictions
+            TabLink
         },
         data() {
             return {
@@ -376,12 +341,6 @@
                 saving: false,
                 settings: false,
                 formSettings: {},
-                accessSections: [
-                    'limitNumberOfEntries',
-                    'scheduleForm',
-                    'requireLogin',
-                    'denyEmptySubmission'
-                ],
                 form_id: window.FluentFormApp.form_id,
                 error_text: '',
                 share_url: '',
@@ -418,6 +377,13 @@
             final_share_url() {
                 const url = (this.prettyUrl.enabled && this.prettyUrl.pretty_url) ? this.prettyUrl.pretty_url : this.share_url;
                 return this.addPrivateToken(url);
+            },
+            preview_iframe_url() {
+                const url = this.final_share_url;
+                if (!url) {
+                    return url;
+                }
+                return url + (url.includes('?') ? '&' : '?') + 'design_mode=1';
             },
             prettyUrlPreview() {
                 const base = window.location.origin + '/' + this.prettyUrlBaseSlug + '/';
