@@ -54,6 +54,24 @@ copy_and_compress() {
 
   echo -e "\nCopy completed."
 
+  # Regenerate the composer autoloader against only the packages that were
+  # actually copied into the dist. Without this, autoload_files.php still
+  # references dev-only dependencies (symfony polyfills, phpstan,
+  # thecodingmachine/safe, ...) and the plugin fatals on activation with
+  # "Failed opening required ...polyfill-php80/bootstrap.php".
+  if [ -d "$destination_dir/vendor" ] && [ -f "$destination_dir/composer.json" ]; then
+    if command -v composer >/dev/null 2>&1; then
+      (
+        cd "$destination_dir" \
+          && composer dump-autoload --no-dev --classmap-authoritative --no-interaction 2>&1 \
+          | tail -5
+      )
+      echo "Regenerated composer autoloader in dist (no-dev, classmap-authoritative)"
+    else
+      echo "Warning: composer not found on PATH; autoloader not regenerated. The ZIP may fatal on activation."
+    fi
+  fi
+
   # Run the zip command and suppress output
   cd "$(dirname "$destination_dir")"
   local dest_dir_basename=$(basename "$destination_dir")
