@@ -446,6 +446,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Improves entries table accessibility for fixed columns and icon-only actions
 - Improves entries form switcher with searchable form selection
 - Fixes entries table row focus handling with fixed columns
+- Fixes query-string smartcode parsing and confirmation redirect URL encoding for encoded values
 
 = 6.2.2 (Date: April 23, 2026) =
 - Adds subscription field support in payment calculations
