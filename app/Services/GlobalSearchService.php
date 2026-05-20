@@ -44,7 +44,7 @@ class GlobalSearchService
             [
                 "title" => 'Global Settings > General',
                 "icon"  => '',
-                "path"  => '?page=fluent_forms_settings#settings',
+                "path"  => '?page=fluent_forms_settings#payments/general_settings',
                 "tags"  => [
                     'global',
                     'settings',
