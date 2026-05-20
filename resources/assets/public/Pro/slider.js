@@ -371,9 +371,8 @@ class FluentFormSlider {
             for (let i = 0; i < choiceJsInputs.length; i++) {
                 const handler = choiceJsInputs[i].handler;
                 const values = choiceJsInputs[i].values;
-                // First set the value
-                handler.setValue(values);
-                // Then trigger change on the original element
+                handler.removeActiveItems(values);
+                handler.setChoiceByValue(values);
                 const element = handler.passedElement?.element;
                 if (element) {
                     $(element).trigger('change');
