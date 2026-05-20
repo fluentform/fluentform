@@ -968,6 +968,13 @@ class Component
     public function addIsRenderableFilter()
     {
         $this->app->addFilter('fluentform/is_form_renderable', function ($isRenderable, $form) {
+            if (
+                $this->app->request->get('design_mode')
+                && Acl::hasAnyFormPermission()
+            ) {
+                return $isRenderable;
+            }
+
             $checkables = ['limitNumberOfEntries', 'scheduleForm', 'requireLogin'];
 
             // Ensure settings is an array
@@ -1008,7 +1015,7 @@ class Component
     private function limitNumberOfEntries($restrictions, $form, &$isRenderable)
     {
 
-        if (!$restrictions['enabled'] || !isset($restrictions['period']) || !isset($restrictions['numberOfEntries'])) {
+        if (!Arr::isTrue($restrictions, 'enabled') || !isset($restrictions['period']) || !isset($restrictions['numberOfEntries'])) {
             return true;
         }
 
@@ -1070,7 +1077,7 @@ class Component
      */
     private function scheduleForm($restrictions, $form, &$isRenderable)
     {
-        if (!$restrictions['enabled']) {
+        if (!Arr::isTrue($restrictions, 'enabled')) {
             return true;
         }
 
@@ -1109,7 +1116,7 @@ class Component
      */
     private function requireLogin($restrictions, $form, &$isRenderable)
     {
-        if (!$restrictions['enabled']) {
+        if (!Arr::isTrue($restrictions, 'enabled')) {
             return true;
         }
 
