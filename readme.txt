@@ -471,6 +471,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes collapsed form settings sidebar showing submenu connector artifacts in icon-only mode
 - Fixes form import corrupting custom CSS and JS characters such as > by using dedicated sanitizers for these meta keys
 - Fixes Global Settings sidebar collapse toggle being unresponsive on desktop and adds icon-only collapsed view
+- Fixes query-string smartcode parsing and confirmation redirect URL encoding for encoded values
 
 = 6.2.2 (Date: April 23, 2026) =
 - Adds subscription field support in payment calculations
