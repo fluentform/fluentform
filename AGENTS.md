@@ -14,7 +14,7 @@
 
 ## 1. Plugin Root & Bootstrap
 
-**Entry point:** `fluentform.php` (version 6.2.2 — check version constant `FLUENTFORM_VERSION`)
+**Entry point:** `fluentform.php` (version 6.2.3 — check version constant `FLUENTFORM_VERSION`)
 
 **Bootstrap sequence:**
 ```
@@ -541,6 +541,6 @@ All integrations:
 ---
 
 **Last Updated:** 2026-04-29  
-**Plugin Version:** 6.2.2  
+**Plugin Version:** 6.2.3  
 **Framework:** WPFluent + Vue 2 Admin + jQuery Public  
 **For AI Agents:** Use this doc + corresponding skill files before making changes. When in doubt, check policy authorization first.

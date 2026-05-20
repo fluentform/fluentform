@@ -3,9 +3,9 @@
 **Contributors:** techjewel, adreastrian, heera, pyrobd, hrdelwar, dhrupo, wpmanageninja  
 **Tags:** contact form, wp forms, forms, form builder, custom form  
 **Requires at least:** 4.5  
-**Tested up to:** 6.8
+**Tested up to:** 7.0
 **Requires PHP:** 7.4  
-**Stable tag:** 6.2.2
+**Stable tag:** 6.2.3
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,6 +159,31 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
+### 6.2.3 (Date: May 20, 2026) =
+- Adds option group support for Dropdown and Multi-select fields
+- Adds pinned column support in the entries table
+- Adds new icon presets, SVG icon support, and active/inactive color options for the Ratings field
+- Adds search to the form switcher in entries
+- Improves keyboard navigation in the entries table
+- Improves accessibility for fixed columns and action buttons in entries
+- Updates DOMPurify and PostCSS to address security vulnerabilities
+- Fixes conditional logic settings not showing for custom fields in the editor
+- Fixes conditional logic not-equal check when the target field has no value
+- Fixes Name field layout when a sub-field has no label
+- Fixes text and list formatting differences between the editor and preview
+- Fixes AI form builder losing field hints for non-English prompts
+- Fixes missing submission date in Excel exports
+- Fixes garbled export filenames for forms with non-Latin titles
+- Fixes form import breaking confirmation and notification settings
+- Fixes the Find feature missing forms inside page builder popups
+- Fixes entries not sorting by actual submission date
+- Fixes form import corrupting custom CSS and JavaScript code
+- Fixes visual artifacts in the collapsed form settings sidebar
+- Fixes Global Settings sidebar collapse toggle not working on desktop
+- Fixes the Excel export option incorrectly labeled as xlsv
+- Fixes several strings that could not be translated on non-English admin sites
+- Fixes the Entries page label showing garbled text on German-language sites
+
 ### 6.2.2 (Date: April 23, 2026) =
 - Hardens email attachment path resolution to keep notification attachments inside allowed paths
 - Hardens predefined form payload handling and confirmation validation
@@ -272,34 +297,6 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes the range slider in conversational forms causing incorrect progress percentage
 
 
-### 6.1.0 (Date: August 26, 2025) =
-- Adds Fluent Forms Report module
-- Adds close button to payment summary items
-- Adds keyboard shortcut for delete input field in the editor
-- Adds conversational forms scroll to top option
-- Adds conversational forms terms and condition hide disagree button
-- Improves export entries fields by remembering last selected fields
-- Improves IP detection
-- Improves consistency of settings deletion captchas
-- Fixes form API empty title retrieval issue
-- Fixes WPForm Migrator with empty forms
-- Fixes radio field customization UI default value selection
-- Fixes video playback in Support section
-- Fixes CleanTalk/Akismet protection spam submitting forms twice
-- Fixes integrations page sidebar menu selection indication on reload
-- Fixes conversational forms GDPR checkbox implementation
-- Fixes captcha conflict when global and form-specific settings differ
-- Fixes hide after submission option setting for conversational forms
-- Fixes Terms & Conditions field validation error messages for not Accepted
-- Removes non-functional Reset Form button from conversational forms form settings
-- Fixes payment method 'Test' Instead 'Offline' in payments shortcode
-- Fixes multiple address field autocomplete in conversational forms
-- Fixes submission on Enter key press with selected radio/checkbox using keyboard
-- Fixes entries chart date range filtering
-- Fixes database creation errors in WordPress Studio environments
-- Fixed trailing comma in keyword restriction that incorrectly blocked all submissions
-- Fixes WP Text Editor sanitizer removing links in success messages with search parameters
-- Fixes Object Injection Vulnerability unserialize issue when using user profile specific shortcodes
 
 [View complete changelog history](https://fluentforms.com/docs/changelog/)
 
