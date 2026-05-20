@@ -76,6 +76,22 @@ class ReportHelper
             $reports[$reportKey]['label'] = $inputLabels[$reportKey];
             $reports[$reportKey]['element'] = Arr::get($inputs, $reportKey, []);
             $reports[$reportKey]['options'] = $formInputs[$reportKey]['options'];
+
+            // Per-element transform hook: lets a field type that doesn't
+            // fit the default GROUP BY shape (e.g. Ranking, which needs
+            // per-position distribution rather than per-value frequency)
+            // replace the report payload entirely. Mirrors the
+            // `fluentform/response_render_{element}` convention.
+            $element = $reports[$reportKey]['element'];
+            if (is_string($element) && $element !== '') {
+                $reports[$reportKey] = apply_filters(
+                    'fluentform/reports/format_field_' . $element,
+                    $reports[$reportKey],
+                    array_merge($formInputs[$reportKey], ['name' => $reportKey]),
+                    $form->id,
+                    $statuses
+                );
+            }
         }
 
         return [

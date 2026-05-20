@@ -42,14 +42,15 @@
                             <card-head class="report_header">
                                 <span class="mr-3 title">{{ $t('Advance Field Report') }}</span>
                             </card-head>
-                            <report-card
+                            <component
+                                :is="cardComponentFor(report)"
                                 v-for="(report,report_key) in report_items"
                                 :key="report_key"
                                 :form_id="form_id"
                                 :report_key="report_key"
                                 :report_indexes="reportIndexes"
                                 :report="report">
-                            </report-card>
+                            </component>
                         </card>
                     </el-skeleton>
                 </div>
@@ -119,6 +120,7 @@
 
 <script type="text/babel">
 import ReportCard from './reportCard';
+import RankingReportCard from './RankingReportCard.vue';
 import each from 'lodash/each';
 import EntriesChart from '../../AllEntries/Components/chartView';
 import Card from '@/admin/components/Card/Card.vue';
@@ -134,6 +136,7 @@ export default {
     components: {
         EntriesChart,
         ReportCard,
+        RankingReportCard,
         Card,
         CardHead,
         CardBody,
@@ -235,6 +238,15 @@ export default {
             this.$router.push({
                 name: 'form-entries'
             });
+        },
+        cardComponentFor(report) {
+            // Per-element card switch: ranking has a custom shape
+            // (per-position distribution, average rank), every other
+            // reportable field uses the default GROUP BY pie/bar card.
+            if (report && (report.element === 'input_ranking' || report.type === 'ranking')) {
+                return 'RankingReportCard';
+            }
+            return 'ReportCard';
         },
         printReport() {
             window.print();

@@ -510,6 +510,148 @@ a.input-image:hover {
   min-height: 20px;
 }
 
+.ff_ranking_report_card {
+  border: 1px solid #dadbdd;
+  border-radius: 7px;
+  background: #fff;
+  padding: 16px;
+  margin-bottom: 16px;
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #303133;
+  }
+
+  &__total {
+    font-size: 12px;
+    color: #909399;
+  }
+
+  &__empty {
+    font-size: 13px;
+    color: #909399;
+    padding: 8px 12px;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__option {
+    padding: 12px 0;
+
+    & + & {
+      border-top: 1px solid #dadbdd;
+    }
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  &__option-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  &__rank {
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    background: #f5f7fa;
+    color: #303133;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  &__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #303133;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__average {
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: #909399;
+  }
+
+  &__bars {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__bar {
+    display: grid;
+    grid-template-columns: 32px 1fr 44px auto;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #606266;
+  }
+
+  &__bar-pos {
+    color: #909399;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  &__bar-track {
+    height: 8px;
+    background: #f5f7fa;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    background: var(--fluentform-primary, #1a7efb);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+
+  &__bar-pct {
+    text-align: right;
+    font-weight: 600;
+    color: #303133;
+  }
+
+  &__bar-count {
+    color: #909399;
+    white-space: nowrap;
+  }
+}
+
 @media print {
   div#adminmenumain, .ff_nav_action {
     display: none;
