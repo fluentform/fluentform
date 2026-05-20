@@ -419,7 +419,7 @@ class SubmissionHandlerService
                 true
             );
 
-            $redirectUrl = apply_filters('fluentform/redirect_url_value', wp_sanitize_redirect(rawurldecode($redirectUrl)), $insertId, $form, $formData);
+            $redirectUrl = apply_filters('fluentform/redirect_url_value', wp_sanitize_redirect($redirectUrl), $insertId, $form, $formData);
             $returnData = [
                 'redirectUrl' => esc_url_raw($redirectUrl),
                 'message'     => fluentform_sanitize_html($message),

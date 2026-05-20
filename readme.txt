@@ -462,6 +462,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes the Excel export option incorrectly labeled as xlsv
 - Fixes several strings that could not be translated on non-English admin sites
 - Fixes the Entries page label showing garbled text on German-language sites
+- Fixes confirmation redirect URL losing query-string values with encoded characters
 
 = 6.2.2 (Date: April 23, 2026) =
 - Adds subscription field support in payment calculations
