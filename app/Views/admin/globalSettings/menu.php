@@ -290,8 +290,8 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                             && ArrayHelper::get($component, 'hash') != 'h_captcha'
                                             && ArrayHelper::get($component, 'hash') != 'turnstile'
                                             && ArrayHelper::get($component, 'hash') != 'cleantalk'
-                                            && ArrayHelper::get($component, 'query.component') != 'payment_settings'
-                                            && ArrayHelper::get($component, 'query.component') != 'license_page'
+                                            && $componentName != 'payment_settings'
+                                            && $componentName != 'license_page'
                                             && ArrayHelper::get($component, 'hash') != 'admin_approval'
                                             && ArrayHelper::get($component, 'hash') != 'inventory_manager'
                                         )
