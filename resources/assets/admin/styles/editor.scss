@@ -1830,7 +1830,8 @@ mark {
   height: 26px;
   min-width: 26px;
   background: #f5f7fa;
-  color: #303133;
+  background: color-mix(in srgb, var(--ff-ranking-accent, #f5f7fa) 12%, #fff);
+  color: var(--ff-ranking-accent, #303133);
   font-size: 13px;
   font-weight: 700;
   border-radius: 999px;
@@ -1842,7 +1843,8 @@ mark {
   left: 4px;
   z-index: 2;
   background: #f5f7fa;
-  color: #303133;
+  background: color-mix(in srgb, var(--ff-ranking-accent, #f5f7fa) 12%, #fff);
+  color: var(--ff-ranking-accent, #303133);
   font-size: 13px;
 }
 
