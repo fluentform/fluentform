@@ -963,11 +963,11 @@ ul.entry_item_list {
     width: 26px;
     height: 26px;
     border-radius: 999px;
-    background: #e4e7ed;
-    // !important to win over Element UI's `.el-table .cell` color,
-    // which has the same specificity and otherwise renders the digit
-    // in the table's #606266 grey instead of our intended #303133.
-    color: #303133 !important;
+    background: #f5f7fa;
+    // No explicit color: inherits the surrounding table cell colour
+    // (#606266 from Element UI's `.el-table .cell`) so the badge digit
+    // matches the adjacent label and the rest of the table.
+    // Bold weight differentiates the badge, not a darker hue.
     font-size: 13px;
     font-weight: 700;
     display: inline-flex;
@@ -995,7 +995,6 @@ ul.entry_item_list {
 
   &__label {
     min-width: 0;
-    color: #303133 !important;
     font-weight: 500;
     line-height: 1.5;
     word-break: break-word;
