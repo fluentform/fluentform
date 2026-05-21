@@ -1738,7 +1738,7 @@ mark {
 .ff-ranking-preview {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .ff-ranking-preview--grid {
@@ -1753,9 +1753,9 @@ mark {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 16px;
-  border: 1px solid #dcdfe6;
-  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid #dadbdd;
+  border-radius: 7px;
   background: #fff;
 }
 
@@ -1799,24 +1799,26 @@ mark {
 }
 
 .ff-ranking-preview__handle {
-  width: 32px;
-  height: 32px;
+  width: 20px;
+  height: 28px;
+  margin-left: 4px;
   z-index: 2;
-  color: #6b7280;
+  color: #b9bcc1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #dcdfe6;
-  border-radius: 50%;
-  background: #fff;
+  border: none;
+  background: transparent;
   user-select: none;
-  font-size: 20px;
+  font-size: 18px;
+  cursor: default;
 }
 
 .ff-ranking-preview--grid .ff-ranking-preview__handle {
   position: absolute;
-  top: 0;
-  left: 4px;
+  top: 4px;
+  right: 4px;
+  left: auto;
 }
 
 .ff-ranking-preview__index,
@@ -1824,24 +1826,24 @@ mark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  background: var(--fluentform-primary, #1a7efb);
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(47, 115, 255, 0.18);
-  font-size: 16px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  background: #f5f7fa;
+  color: #303133;
+  font-size: 13px;
   font-weight: 700;
   border-radius: 999px;
 }
 
 .ff-ranking-preview--grid .ff-ranking-preview__index {
   position: absolute;
-  top: 0;
-  left: 44px;
+  top: 4px;
+  left: 4px;
   z-index: 2;
-  background: var(--fluentform-primary, #1a7efb);
-  font-size: 15px;
+  background: #f5f7fa;
+  color: #303133;
+  font-size: 13px;
 }
 
 .ff-ranking-preview__image {
@@ -1898,28 +1900,40 @@ mark {
 .ff-ranking-preview__actions {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  border: 1px solid #dadbdd;
+  border-radius: 7px;
+  overflow: hidden;
 }
 
 .ff-ranking-preview--grid .ff-ranking-preview__actions {
   justify-content: flex-end;
   margin-top: auto;
-  padding-top: 8px;
-  border-top: 1px solid #eef1f6;
 }
 
 .ff-ranking-preview__move {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid #dcdfe6;
-  border-radius: 6px;
-  background: #fff;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
   color: #606266;
   line-height: 1;
-  padding: 4px;
+  padding: 0;
+  cursor: default;
+
+  svg {
+    display: block;
+  }
+
+  & + & {
+    border-left: 1px solid #dadbdd;
+  }
+}
+
+.ff-ranking-preview__move--disabled {
+  color: #c8cbd0;
 }
 
 .ff-entry-ranking-editor {

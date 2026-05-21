@@ -17,7 +17,6 @@
                 }"
             >
                 <div class="ff-ranking-preview__item-main">
-                    <span class="ff-ranking-preview__handle" aria-hidden="true">&#8942;</span>
                     <span class="ff-ranking-preview__index">{{ index + 1 }}</span>
                     <span
                         v-if="item.settings.enable_image_input && option.image"
@@ -30,9 +29,22 @@
                     </span>
                 </div>
                 <div class="ff-ranking-preview__actions">
-                    <span v-if="index > 0" class="ff-ranking-preview__move" aria-hidden="true">↑</span>
-                    <span v-if="index < previewOptions.length - 1" class="ff-ranking-preview__move" aria-hidden="true">↓</span>
+                    <span
+                        class="ff-ranking-preview__move"
+                        :class="{ 'ff-ranking-preview__move--disabled': index === 0 }"
+                        aria-hidden="true"
+                    >
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 6 5 9 8"/></svg>
+                    </span>
+                    <span
+                        class="ff-ranking-preview__move"
+                        :class="{ 'ff-ranking-preview__move--disabled': index === previewOptions.length - 1 }"
+                        aria-hidden="true"
+                    >
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 5 6 8 9 5"/></svg>
+                    </span>
                 </div>
+                <span class="ff-ranking-preview__handle" aria-hidden="true">&#8942;</span>
             </div>
         </div>
     </withLabel>
