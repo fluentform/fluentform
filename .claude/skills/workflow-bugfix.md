@@ -61,7 +61,7 @@ Pattern: "render_item_"  Path: app/Services/FormBuilder/
 | **SQL Injection** | Raw user input in queries | `$wpdb->prepare()`, `wpFluent()` query builder |
 | **XSS** | Unsanitized output in HTML/JS | `esc_html()`, `esc_attr()`, `wp_kses_post()` |
 | **Broken Auth** | Missing policy method | Add capability check in Policy class |
-| **IDOR** | No ownership check | Verify submission belongs to expected form/user |
+| **IDOR** | Policy reads ID from merged bag, controller reads from URL route binding | Always resolve resource IDs from `$route->getParameter()` in policies — see coding-patterns.md |
 | **SSRF** | User URLs in `wp_remote_get()` | Validate URL, block private IPs |
 | **CSRF** | Missing nonce | REST API uses `X-WP-Nonce` automatically |
 | **File Upload** | Unrestricted file types | Validate extensions, use `wp_check_filetype()` |
@@ -92,6 +92,8 @@ Pattern: "render_item_"  Path: app/Services/FormBuilder/
 **6. Payment submissions.** Forms with `has_payment = 1` have a different submission flow. Payment-related hooks fire additionally. Don't assume all submissions follow the same path.
 
 **7. Conversational forms.** These use a separate rendering system (`FluentConversational/`) but share the same submission pipeline. Frontend JS is different though.
+
+**8. REST param confusion (IDOR footgun).** `WP_REST_Request::get_params()` merges sources with JSON body taking priority over URL route placeholders. A policy that reads `$request->get('form_id')` can be tricked into authorizing against a different record than the controller acts on (which uses route binding and always reads the URL). Fix: always read resource IDs via `$route->getParameter()` in policies. See the IDOR rule in `coding-patterns.md`.
 
 ## After Fixing
 
