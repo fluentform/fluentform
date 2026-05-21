@@ -159,14 +159,14 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.2.3 (Date: May 20, 2026) =
+### 6.2.3 (Date: May 21, 2026) =
 - Adds option group support for Dropdown and Multi-select fields
 - Adds pinned column support in the entries table
 - Adds new icon presets, SVG icon support, and active/inactive color options for the Ratings field
 - Adds search to the form switcher in entries
 - Improves keyboard navigation in the entries table
 - Improves accessibility for fixed columns and action buttons in entries
-- Updates DOMPurify and PostCSS to address security vulnerabilities
+- Updates DOMPurify, PostCSS, and the Babel transform helper to address security vulnerabilities (CVE-2026-44728)
 - Fixes conditional logic settings not showing for custom fields in the editor
 - Fixes conditional logic not-equal check when the target field has no value
 - Fixes Name field layout when a sub-field has no label
@@ -181,8 +181,13 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fixes visual artifacts in the collapsed form settings sidebar
 - Fixes Global Settings sidebar collapse toggle not working on desktop
 - Fixes the Excel export option incorrectly labeled as xlsv
+- Fixes entry Next and Previous navigation breaking on sites that use a custom database table prefix
+- Fixes fatal error when a Textarea field receives an array value during submission processing
+- Fixes multi-word Google Fonts not loading in conversational forms
+- Fixes textdomain_just_in_time notice on WordPress 6.7 and later, including WP Staging staging environments
 - Fixes several strings that could not be translated on non-English admin sites
 - Fixes the Entries page label showing garbled text on German-language sites
+- Fixes confirmation redirect URL losing query-string values with encoded characters
 
 ### 6.2.2 (Date: April 23, 2026) =
 - Hardens email attachment path resolution to keep notification attachments inside allowed paths
