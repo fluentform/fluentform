@@ -69,11 +69,7 @@ $page = sanitize_text_field($_GET['page']);
                 </a>
             <?php endif; ?>
         </li>
-        <li class="<?php echo ($page == 'fluent_forms_smtp') ? 'active' : '' ?>">
-            <?php if(!defined('FLUENT_MAIL') && !defined('FLUENTFORMPRO')): ?>
-                <a class="ff_menu_link" href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_smtp')); ?>">SMTP</a>
-            <?php endif; ?>
-        </li>
+
         <li class="<?php echo ($page == 'fluent_forms_docs') ? 'active' : '' ?>">
             <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_docs')); ?>" class="ff_menu_link">
                 <?php esc_html_e('Support', 'fluentform'); ?>

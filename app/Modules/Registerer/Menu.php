@@ -366,7 +366,7 @@ class Menu
             wp_enqueue_style('fluentform_settings_global');
         } elseif ('fluent_forms_add_ons' == $page) {
             wp_enqueue_style('fluentform-add-ons');
-        } elseif ('fluent_forms_docs' == $page || 'fluent_forms_smtp' == $page) {
+        } elseif ('fluent_forms_docs' == $page) {
             wp_enqueue_style('fluentform_doc_style');
         }
     }
@@ -538,16 +538,6 @@ class Menu
                 $fromRole ? $settingsCapability : 'fluentform_settings_manager',
                 'fluent_forms_transfer',
                 [$this, 'renderTransfer']
-            );
-
-            // Register FluentSMTP Sub Menu.
-            add_submenu_page(
-                'fluent_forms',
-                __('SMTP', 'fluentform'),
-                __('SMTP', 'fluentform'),
-                $fromRole ? $settingsCapability : 'fluentform_settings_manager',
-                'fluent_forms_smtp',
-                [$this, 'renderSmtpPromo']
             );
 
             // Register Add-Ons
@@ -792,7 +782,9 @@ class Menu
             'ace_path_url'         => fluentformMix('libs/ace'),
             'is_conversion_form'   => Helper::isConversionForm($form_id),
             'has_fluent_smtp'      => defined('FLUENTMAIL'),
-            'fluent_smtp_url'      => admin_url('admin.php?page=fluent_forms_smtp'),
+            'fluent_smtp_url'      => defined('FLUENTMAIL')
+                ? admin_url('options-general.php?page=fluent-mail#/connections')
+                : admin_url('admin.php?page=fluent_forms_add_ons&sub_page=suggested_plugins'),
             'form_settings_str'    => TranslationString::getSettingsI18n(),
             'integrationsResource' => [
                 'asset_url'   => fluentformMix('img/integrations.png'),
@@ -1208,7 +1200,6 @@ class Menu
             'fluent_forms_settings',
             'fluent_forms_add_ons',
             'fluent_forms_docs',
-            'fluent_forms_smtp',
         ];
 
         $page = sanitize_text_field($this->app->request->get('page'));
@@ -1257,20 +1248,6 @@ class Menu
         );
 
         do_action('fluentform/render_payment_entries');
-    }
-
-    public function renderSmtpPromo()
-    {
-        wp_enqueue_script('fluentform_admin_notice', fluentformMix('js/admin_notices.js'), [
-            'jquery',
-        ], FLUENTFORM_VERSION, true);
-
-        $this->app->view->render('admin.smtp.index', [
-            'logo'         => fluentformMix('img/fluentsmtp.svg'),
-            'banner_image' => fluentformMix('img/fluentsmtp-banner.png'),
-            'is_installed' => defined('FLUENTMAIL'),
-            'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
-        ]);
     }
 
     public function renderReports()

@@ -80,7 +80,7 @@
                                     {{ $t('Install') }}
                                 </el-button>
 
-                                <!-- Activate Button (already installed but inactive) -->
+                                <!-- Activate Button -->
                                 <el-button
                                     v-else-if="plugin.status === 'inactive'"
                                     size="small"
@@ -90,27 +90,31 @@
                                     {{ $t('Activate') }}
                                 </el-button>
 
-                                <!-- Active Badge -->
-                                <span v-else-if="plugin.status === 'active'" class="installed_status">
-                                    {{ $t('Already Active') }}
+                                <!-- Active: Configure/Dashboard (plugins with a setup page) -->
+                                <a
+                                    v-else-if="plugin.status === 'active' && plugin.setup_url"
+                                    :href="plugin.setup_url"
+                                    class="plugin_configure_btn"
+                                >
+                                    <i :class="plugin.setup_label === 'Configure' ? 'el-icon-setting' : 'el-icon-monitor'"></i>
+                                    {{ $t(plugin.setup_label || 'Configure') }}
+                                </a>
+
+                                <!-- Active: no setup page — show status badge only -->
+                                <span v-else-if="plugin.status === 'active'" class="plugin_active_badge">
+                                    <i class="el-icon-check"></i> {{ $t('Active') }}
                                 </span>
 
-                                <!-- Learn More Link -->
-                                <el-button
-                                    size="small"
-                                    type="secondary"
-                                >
+                                <!-- Learn More — always shown except during transitions -->
                                 <a
-                                    v-if="plugin.wporg_url"
+                                    v-if="plugin.wporg_url && plugin.status !== 'installing' && plugin.status !== 'activating'"
                                     :href="plugin.wporg_url"
                                     target="_blank"
                                     rel="noopener"
-                                    class="text-secondary"
-                                    style="font-size: 14px; text-decoration: none;"
+                                    class="plugin_learn_more_btn"
                                 >
                                     {{ $t('Learn More') }}
                                 </a>
-                                </el-button>
                             </div>
                         </div>
                     </div>
@@ -285,6 +289,7 @@
                             color: #6B7280;
                             border: none;
                         }
+
                     }
                 }
 
@@ -311,16 +316,61 @@
                     line-height: 1;
                 }
 
-                .installed_status {
+                .plugin_configure_btn {
                     display: inline-flex;
                     align-items: center;
-                    padding: 7px 16px;
+                    gap: 6px;
+                    padding: 7px 14px;
                     background: $--color-primary-light-9;
                     color: $--color-primary;
                     border-radius: 4px;
                     font-size: 13px;
                     font-weight: 500;
-                    justify-content: center;
+                    text-decoration: none;
+                    transition: background 0.15s ease;
+
+                    &:hover {
+                        background: $--color-primary-light-8;
+                    }
+
+                    i {
+                        font-size: 14px;
+                    }
+                }
+
+                .plugin_active_badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                    padding: 7px 14px;
+                    background: transparent;
+                    color: #2C6CFF;
+                    border: 1.5px solid #2C6CFF;
+                    border-radius: 4px;
+                    font-size: 13px;
+                    font-weight: 500;
+
+                    i {
+                        font-size: 13px;
+                    }
+                }
+
+                .plugin_learn_more_btn {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 7px 14px;
+                    color: #64748B;
+                    font-size: 13px;
+                    font-weight: 500;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    border: 1px solid #E2E8F0;
+                    transition: border-color 0.15s ease, color 0.15s ease;
+
+                    &:hover {
+                        color: $--color-primary;
+                        border-color: $--color-primary;
+                    }
                 }
             }
         }
