@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Fluent Forms\n"
@@ -11,9 +12,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Domain: fluentform\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.6.11; wp-6.6.2\n"
-"X-Domain: fluentform\n"
 
 #: app/Modules/Registerer/TranslationString.php:563
 msgid " create one!"
@@ -116,7 +117,8 @@ msgstr "%s non è installato."
 
 #. translators: %s is the payment gateway name
 #: app/Modules/Registerer/TranslationString.php:1694
-msgid "%s payment gateway does not support remote cancellation at this moment."
+msgid ""
+"%s payment gateway does not support remote cancellation at this moment."
 msgstr ""
 "Al momento %s il gateway di pagamento non supporta l'annullamento remoto."
 
@@ -161,12 +163,14 @@ msgstr "%s: per mostrare i dati da qualsiasi input"
 msgid "%sIPN URL:%s %s"
 msgstr ""
 
-#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for PayPal IPN link
+#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for
+#. PayPal IPN link
 #: app/Modules/Registerer/TranslationString.php:2010
 msgid "%sPlease read the documentation%s to learn how to setup %sPayPal IPN%s"
 msgstr ""
 
-#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for Stripe IPN link
+#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for
+#. Stripe IPN link
 #: app/Modules/Registerer/TranslationString.php:2116
 msgid "%sPlease read the documentation%s to learn how to setup %sStripe IPN%s"
 msgstr ""
@@ -271,8 +275,8 @@ msgstr "40+ integrazioni"
 #: app/Modules/Payments/PaymentMethods/Stripe/StripeHandler.php:188
 msgid ""
 "<b>Action Required: </b> The payment has been authorized but not captured "
-"yet. Please <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
-"Click here</a> to capture this payment in stripe.com"
+"yet. Please <a target=\"_blank\" rel=\"noopener noreferrer\" "
+"href=\"%s\">Click here</a> to capture this payment in stripe.com"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:663
@@ -315,11 +319,11 @@ msgstr "Una settimana fa"
 msgid ""
 "Accept Payment online as part of the Forms submission process. With Fluent "
 "Forms Powerful payment integration, you can easily accept and process "
-"payments in your Fluent Forms via Stripe/PayPal. Payment Module is available "
-"on Pro Version."
+"payments in your Fluent Forms via Stripe/PayPal. Payment Module is available"
+" on Pro Version."
 msgstr ""
-"Accetta pagamenti online come parte del processo di invio dei moduli. Con la "
-"potente integrazione dei pagamenti di Fluent Forms, puoi accettare ed "
+"Accetta pagamenti online come parte del processo di invio dei moduli. Con la"
+" potente integrazione dei pagamenti di Fluent Forms, puoi accettare ed "
 "elaborare facilmente i pagamenti nei tuoi Fluent Forms tramite Stripe / "
 "PayPal. Il modulo di pagamento è disponibile nella versione Pro."
 
@@ -386,8 +390,8 @@ msgstr "Azione Gancio"
 #: app/Modules/Component/Component.php:304
 #: app/Services/Form/FormService.php:364
 msgid ""
-"Action Hook is not available with the free version. Please upgrade to pro to "
-"get all the advanced features."
+"Action Hook is not available with the free version. Please upgrade to pro to"
+" get all the advanced features."
 msgstr ""
 "Action Hook non è disponibile con la versione gratuita. Passa alla versione "
 "pro per ottenere tutte le funzionalità avanzate."
@@ -660,8 +664,8 @@ msgid ""
 "Administrators have full access to Fluent Forms. By selecting additional "
 "roles below, you can give access to other user roles."
 msgstr ""
-"Gli amministratori hanno accesso completo a Fluent Forms. Selezionando ruoli "
-"aggiuntivi qui sotto, puoi concedere l'accesso ad altri ruoli utente."
+"Gli amministratori hanno accesso completo a Fluent Forms. Selezionando ruoli"
+" aggiuntivi qui sotto, puoi concedere l'accesso ad altri ruoli utente."
 
 #: app/Modules/Registerer/TranslationString.php:1466
 msgid "Advance"
@@ -898,10 +902,12 @@ msgstr ""
 msgid "All Types"
 msgstr "Tutti i tipi"
 
-#. translators: 1: action (create/update), 2: action past tense (created/updated)
+#. translators: 1: action (create/update), 2: action past tense
+#. (created/updated)
 #: app/Modules/Registerer/TranslationString.php:481
 msgid ""
-"Allow guest user to %1$s post. If allowed post can be %2$s with out login in."
+"Allow guest user to %1$s post. If allowed post can be %2$s with out login "
+"in."
 msgstr ""
 "Autorizzazione utente %1$s ospite a creare post. Se consentito, il post può "
 "essere %2$s creato dalla sessione di logout."
@@ -971,7 +977,8 @@ msgstr "Immagini consentite"
 msgid "Allows notification to be sent to different email "
 msgstr "Consente l'invio di notifiche a indirizzi e-mail diversi"
 
-#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for recurring payments link
+#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for
+#. recurring payments link
 #: app/Modules/Registerer/TranslationString.php:1927
 msgid ""
 "Also %1$splease check the documentation%2$s to learn how to accept "
@@ -1029,8 +1036,8 @@ msgstr ""
 msgid ""
 "An option for developers to add dynamic elements they want. It provides the "
 "chance to add whatever input type you want to add in this form. This way, "
-"you can bind your own functions to render the form to this action hook."
-"You'll be given 1 parameter to play with: $form."
+"you can bind your own functions to render the form to this action "
+"hook.You'll be given 1 parameter to play with: $form."
 msgstr ""
 "Un'opzione per gli sviluppatori per aggiungere elementi dinamici che "
 "desiderano. Offre la possibilità di aggiungere qualsiasi tipo di input si "
@@ -1045,7 +1052,8 @@ msgstr ""
 
 #: app/Services/Report/ReportHelper.php:854
 msgid ""
-"Analytics is disabled. Please enable it to view top performing form by views."
+"Analytics is disabled. Please enable it to view top performing form by "
+"views."
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:24
@@ -1457,8 +1465,8 @@ msgstr ""
 #. translators: 1: opening bold tag, 2: closing bold tag, 3: condition type
 #: app/Modules/Registerer/TranslationString.php:390
 msgid ""
-"Based on your selection, submission %1$swill be valid%2$s if %3$s conditions "
-"are met"
+"Based on your selection, submission %1$swill be valid%2$s if %3$s conditions"
+" are met"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1465
@@ -1741,8 +1749,8 @@ msgid ""
 "Broadcast your Fluent Forms Submission to any web api endpoint with the "
 "powerful webhook module."
 msgstr ""
-"Trasmetti l'invio dei tuoi moduli Fluent a qualsiasi endpoint API Web con il "
-"potente modulo webhook."
+"Trasmetti l'invio dei tuoi moduli Fluent a qualsiasi endpoint API Web con il"
+" potente modulo webhook."
 
 #: app/Modules/Registerer/TranslationString.php:32
 #: app/Modules/Registerer/TranslationString.php:1582
@@ -2113,8 +2121,8 @@ msgstr "Campo griglia controllabile"
 #: app/Modules/Component/Component.php:328
 #: app/Services/Form/FormService.php:388
 msgid ""
-"Checkable Grid is not available with the free version. Please upgrade to pro "
-"to get all the advanced features."
+"Checkable Grid is not available with the free version. Please upgrade to pro"
+" to get all the advanced features."
 msgstr ""
 "Checkable Grid non è disponibile con la versione gratuita. Passa alla "
 "versione pro per ottenere tutte le funzionalità avanzate."
@@ -2177,7 +2185,8 @@ msgstr ""
 #. translators: 1: opening link tag, 2: closing link tag
 #: app/Modules/Registerer/TranslationString.php:894
 msgid "Choose a pre - made form template or %1$screate a blank form%2$s"
-msgstr "Scegli un modello di modulo predefinito per %1$s iniziare subito %2$s."
+msgstr ""
+"Scegli un modello di modulo predefinito per %1$s iniziare subito %2$s."
 
 #: app/Modules/Registerer/TranslationString.php:200
 msgid "Choose a pre-made form template and customize it."
@@ -2257,10 +2266,11 @@ msgid "City"
 msgstr "Città"
 
 #: app/Services/FormBuilder/ElementCustomization.php:437
-msgid "Class for the field wrapper. This can be used to style current element."
+msgid ""
+"Class for the field wrapper. This can be used to style current element."
 msgstr ""
-"Classe per il wrapper del campo. Può essere utilizzata per definire lo stile "
-"dell'elemento corrente."
+"Classe per il wrapper del campo. Può essere utilizzata per definire lo stile"
+" dell'elemento corrente."
 
 #: app/Services/FormBuilder/ElementCustomization.php:442
 msgid "Class for the field. This can be used to style current element."
@@ -2305,8 +2315,8 @@ msgstr "Accesso intelligente"
 #: app/Modules/AddOnModule.php:340
 msgid ""
 "CleverReach is web-based email marketing software for managing email "
-"campaigns and contacts. Use Fluent Forms to grow your CleverReach subscriber "
-"list"
+"campaigns and contacts. Use Fluent Forms to grow your CleverReach subscriber"
+" list"
 msgstr ""
 "CleverReach è un software di email marketing basato sul Web per la gestione "
 "di campagne e-mail e contatti. Utilizza Fluent Forms per aumentare la tua "
@@ -2346,8 +2356,8 @@ msgid ""
 "Click to reset the settings if any quiz inputs name has been changed from "
 "the editor"
 msgstr ""
-"Fare clic per ripristinare le impostazioni se il nome di uno degli input del "
-"quiz è stato modificato dall'editor"
+"Fare clic per ripristinare le impostazioni se il nome di uno degli input del"
+" quiz è stato modificato dall'editor"
 
 #: app/Modules/Component/Component.php:1269
 msgid "Click to toggle"
@@ -2444,8 +2454,8 @@ msgid ""
 "Color Picker is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
-"Color Picker non è disponibile con la versione gratuita. Passa alla versione "
-"pro per ottenere tutte le funzionalità avanzate."
+"Color Picker non è disponibile con la versione gratuita. Passa alla versione"
+" pro per ottenere tutte le funzionalità avanzate."
 
 #: app/Services/FormBuilder/ElementCustomization.php:680
 msgid "Color used after a rating item becomes active or selected."
@@ -2692,16 +2702,16 @@ msgid ""
 "Connect HubSpot with Fluent Forms and subscribe a contact when a form is "
 "submitted."
 msgstr ""
-"Collega HubSpot a Fluent Forms e iscrivi un contatto quando viene inviato un "
-"modulo."
+"Collega HubSpot a Fluent Forms e iscrivi un contatto quando viene inviato un"
+" modulo."
 
 #: app/Modules/AddOnModule.php:228
 msgid ""
 "Connect iContact with Fluent Forms and subscribe a contact when a form is "
 "submitted."
 msgstr ""
-"Collega iContact con Fluent Forms e iscrivi un contatto quando viene inviato "
-"un modulo."
+"Collega iContact con Fluent Forms e iscrivi un contatto quando viene inviato"
+" un modulo."
 
 #: app/Modules/AddOnModule.php:244
 msgid ""
@@ -2713,8 +2723,8 @@ msgstr ""
 
 #: app/Modules/AddOnModule.php:236
 msgid ""
-"Connect Platform.ly with Fluent Forms and subscribe a contact when a form is "
-"submitted."
+"Connect Platform.ly with Fluent Forms and subscribe a contact when a form is"
+" submitted."
 msgstr ""
 "Collega Platform.ly con Fluent Forms e iscrivi un contatto quando viene "
 "inviato un modulo."
@@ -2724,8 +2734,8 @@ msgid ""
 "Connect SendFox with Fluent Forms and subscribe a contact when a form is "
 "submitted."
 msgstr ""
-"Collega SendFox a Fluent Forms e iscrivi un contatto quando viene inviato un "
-"modulo."
+"Collega SendFox a Fluent Forms e iscrivi un contatto quando viene inviato un"
+" modulo."
 
 #: app/Modules/Registerer/TranslationString.php:1911
 msgid "Connect With Stripe"
@@ -2770,8 +2780,8 @@ msgid ""
 "Contact Form By Fluent Forms is the advanced Contact form plugin with drag "
 "and drop, multi column supported form builder plugin"
 msgstr ""
-"Contact Form di Fluent Forms è il plugin avanzato per moduli di contatto con "
-"trascinamento della selezione, plugin per la creazione di moduli "
+"Contact Form di Fluent Forms è il plugin avanzato per moduli di contatto con"
+" trascinamento della selezione, plugin per la creazione di moduli "
 "multicolonna supportato"
 
 #: app/Views/admin/docs/index.php:116
@@ -2831,8 +2841,8 @@ msgstr "Modulo Conversazionale Per Passaggio Salva"
 #: app/Modules/Registerer/TranslationString.php:1241
 #: app/Modules/Registerer/TranslationString.php:1450
 msgid ""
-"Conversational Forms currently doesn't support the following fields: You may "
-"also lose data of these fields."
+"Conversational Forms currently doesn't support the following fields: You may"
+" also lose data of these fields."
 msgstr ""
 "Al momento Conversational Forms non supporta i seguenti campi: potresti "
 "anche perdere i dati di questi campi."
@@ -3065,8 +3075,8 @@ msgid ""
 "Create rules to dynamically display or hide this field based on values from "
 "another field."
 msgstr ""
-"Crea regole per visualizzare o nascondere dinamicamente questo campo in base "
-"ai valori di un altro campo."
+"Crea regole per visualizzare o nascondere dinamicamente questo campo in base"
+" ai valori di un altro campo."
 
 #: app/Modules/AddOnModule.php:348
 msgid ""
@@ -3085,7 +3095,8 @@ msgstr "Crea utilizzando ChatGPT"
 
 #: app/Services/FormBuilder/ElementCustomization.php:137
 msgid ""
-"Create visual options for the field and checkmark them for default selection."
+"Create visual options for the field and checkmark them for default "
+"selection."
 msgstr ""
 "Crea opzioni visive per il campo e selezionale per la selezione predefinita."
 
@@ -3603,8 +3614,8 @@ msgstr "Progetto"
 
 #: app/Modules/Registerer/TranslationString.php:118
 msgid ""
-"Design customization available on pro only.This is just a preview version.To "
-"use this feature please upgrade to Pro."
+"Design customization available on pro only.This is just a preview version.To"
+" use this feature please upgrade to Pro."
 msgstr ""
 "Personalizzazione del design disponibile solo sulla versione Pro. Questa è "
 "solo una versione di anteprima. Per utilizzare questa funzionalità, esegui "
@@ -3722,8 +3733,8 @@ msgstr "disabile"
 
 #: app/Modules/Payments/PaymentMethods/Stripe/StripeInlineProcessor.php:409
 msgid ""
-"Disabling strict SCA nonce verification is deprecated and will be removed in "
-"a future version."
+"Disabling strict SCA nonce verification is deprecated and will be removed in"
+" a future version."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1921
@@ -4382,8 +4393,8 @@ msgstr "Abilita questo feed"
 msgid ""
 "Enable this feed conditionally. Select to match whether all rules are "
 "required, any rule is sufficient, or use group logic. If the conditions "
-"match, the feed will be run. For groups, if any group's conditions are fully "
-"met, the feed will be run."
+"match, the feed will be run. For groups, if any group's conditions are fully"
+" met, the feed will be run."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1979
@@ -4430,13 +4441,13 @@ msgstr "Abilita importo input utente"
 
 #: app/Modules/Registerer/TranslationString.php:1940
 msgid ""
-"Enable your users to apply coupon / discount code while purchasing something "
-"using Fluent Forms Payment Module.Just activate this module and setup your "
+"Enable your users to apply coupon / discount code while purchasing something"
+" using Fluent Forms Payment Module.Just activate this module and setup your "
 "your coupons."
 msgstr ""
-"Consenti ai tuoi utenti di applicare coupon/codici sconto durante l'acquisto "
-"di qualcosa utilizzando il modulo di pagamento Fluent Forms. Basta attivare "
-"questo modulo e impostare i tuoi coupon."
+"Consenti ai tuoi utenti di applicare coupon/codici sconto durante l'acquisto"
+" di qualcosa utilizzando il modulo di pagamento Fluent Forms. Basta attivare"
+" questo modulo e impostare i tuoi coupon."
 
 #: app/Modules/Registerer/TranslationString.php:2104
 msgid ""
@@ -4446,8 +4457,8 @@ msgid ""
 "your payment methods."
 msgstr ""
 "Consenti ai tuoi utenti di pagare online come parte del processo di invio "
-"dei moduli. Con Fluent Forms Powerful payment integration, puoi accettare ed "
-"elaborare facilmente i pagamenti nei tuoi Fluent Forms. Basta attivare "
+"dei moduli. Con Fluent Forms Powerful payment integration, puoi accettare ed"
+" elaborare facilmente i pagamenti nei tuoi Fluent Forms. Basta attivare "
 "questo modulo e impostare i tuoi metodi di pagamento."
 
 #: app/Modules/Registerer/TranslationString.php:1904
@@ -4458,8 +4469,8 @@ msgid ""
 "your payment methods."
 msgstr ""
 "Consenti ai tuoi utenti di pagare online come parte del processo di invio "
-"dei moduli. Con Fluent Forms Powerful payment integration, puoi accettare ed "
-"elaborare facilmente i pagamenti nei tuoi Fluent Forms. Basta attivare "
+"dei moduli. Con Fluent Forms Powerful payment integration, puoi accettare ed"
+" elaborare facilmente i pagamenti nei tuoi Fluent Forms. Basta attivare "
 "questo modulo e impostare i tuoi metodi di pagamento."
 
 #: app/Modules/Registerer/TranslationString.php:465
@@ -4525,8 +4536,8 @@ msgid ""
 "Enter a code for this discount, such as 10PERCENT.Only alphanumeric "
 "characters are allowed."
 msgstr ""
-"Inserisci un codice per questo sconto, ad esempio 10PERCENT. Sono consentiti "
-"solo caratteri alfanumerici."
+"Inserisci un codice per questo sconto, ad esempio 10PERCENT. Sono consentiti"
+" solo caratteri alfanumerici."
 
 #: app/Modules/Registerer/TranslationString.php:554
 msgid "Enter a comma separated list of email addresses "
@@ -4641,11 +4652,11 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1965
 msgid ""
-"Enter the expiration date for this discount code in the format of yyyy - mm -"
-" dd. For no expiration, leave blank"
+"Enter the expiration date for this discount code in the format of yyyy - mm "
+"- dd. For no expiration, leave blank"
 msgstr ""
-"Inserisci la data di scadenza per questo codice sconto nel formato aaaa - mm "
-"- gg. Per nessuna scadenza, lascia vuoto"
+"Inserisci la data di scadenza per questo codice sconto nel formato aaaa - mm"
+" - gg. Per nessuna scadenza, lascia vuoto"
 
 #: app/Modules/Registerer/TranslationString.php:543
 msgid "Enter the name you would like the notification email "
@@ -4657,11 +4668,11 @@ msgstr "Inserisci il nome da cui desideri ricevere l'email di notifica"
 
 #: app/Modules/Registerer/TranslationString.php:1963
 msgid ""
-"Enter the start date for this discount code in the format of yyyy - mm - dd. "
-"For no start date, leave blank."
+"Enter the start date for this discount code in the format of yyyy - mm - dd."
+" For no start date, leave blank."
 msgstr ""
-"Inserisci la data di inizio per questo codice sconto nel formato aaaa - mm - "
-"gg. Per nessuna data di inizio, lascia vuoto."
+"Inserisci la data di inizio per questo codice sconto nel formato aaaa - mm -"
+" gg. Per nessuna data di inizio, lascia vuoto."
 
 #: app/Modules/Registerer/TranslationString.php:754
 #: app/Modules/Registerer/TranslationString.php:1181
@@ -4761,8 +4772,8 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1124
 msgid ""
-"Enter your reCAPTCHA Site Key, if you do not have a key you can register for "
-"one at the provided link. reCAPTCHA is a free service."
+"Enter your reCAPTCHA Site Key, if you do not have a key you can register for"
+" one at the provided link. reCAPTCHA is a free service."
 msgstr ""
 "Inserisci la chiave del tuo sito reCAPTCHA; se non ne hai una, puoi "
 "registrarti per averne una tramite il link fornito. reCAPTCHA è un servizio "
@@ -4779,8 +4790,8 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1103
 msgid ""
-"Enter your Turnstile Site Key, if you do not have a key you can register for "
-"one at the provided link Turnstile is a free service."
+"Enter your Turnstile Site Key, if you do not have a key you can register for"
+" one at the provided link Turnstile is a free service."
 msgstr ""
 "Inserisci la chiave del tuo sito Turnstile; se non ne hai una, puoi "
 "registrarti per averne una tramite il link fornito. Turnstile è un servizio "
@@ -5262,8 +5273,8 @@ msgstr "Creazione del feed. Attendi..."
 #: app/Modules/Component/Component.php:290
 #: app/Services/Form/FormService.php:348
 msgid ""
-"File Upload is not available with the free version. Please upgrade to pro to "
-"get all the advanced features."
+"File Upload is not available with the free version. Please upgrade to pro to"
+" get all the advanced features."
 msgstr ""
 "Il caricamento file non è disponibile con la versione gratuita. Passa alla "
 "versione pro per ottenere tutte le funzionalità avanzate."
@@ -5355,8 +5366,8 @@ msgid ""
 "signup forms in WordPress, so you can grow your email list."
 msgstr ""
 "Il modulo Fluent Forms ActiveCampaign ti consente di creare moduli di "
-"iscrizione alla lista ActiveCampaign in WordPress, così puoi ampliare la tua "
-"lista email."
+"iscrizione alla lista ActiveCampaign in WordPress, così puoi ampliare la tua"
+" lista email."
 
 #: app/Modules/Registerer/TranslationString.php:206
 msgid "Fluent Forms AI-Assisted"
@@ -5394,8 +5405,8 @@ msgstr "Fluent Forms Predefinito"
 
 #: app/Modules/AddOnModule.php:292
 msgid ""
-"Fluent Forms Drip Module allows you to create contacts on your Drip list, so "
-"you can grow your email list."
+"Fluent Forms Drip Module allows you to create contacts on your Drip list, so"
+" you can grow your email list."
 msgstr ""
 "Il modulo Drip di Fluent Forms ti consente di creare contatti nella tua "
 "lista Drip, in modo da poter ampliare la tua lista email."
@@ -5436,8 +5447,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1035
 msgid ""
 "Fluent Forms integrates with hCaptcha, a free service that protects your "
-"website from spam and abuse.Please note, these settings are required only if "
-"you decide to use the hCaptcha field."
+"website from spam and abuse.Please note, these settings are required only if"
+" you decide to use the hCaptcha field."
 msgstr ""
 "Fluent Forms si integra con hCaptcha, un servizio gratuito che protegge il "
 "tuo sito web da spam e abusi. Tieni presente che queste impostazioni sono "
@@ -5514,8 +5525,8 @@ msgstr ""
 #: boot/app.php:20
 #, fuzzy
 msgid ""
-"Fluent Forms Pro is not compatible with this version of Fluent Forms. Please "
-"update Fluent Forms Pro to version "
+"Fluent Forms Pro is not compatible with this version of Fluent Forms. Please"
+" update Fluent Forms Pro to version "
 msgstr ""
 "Sembra che tu stia utilizzando una vecchia versione di Fluent Forms Pro. "
 "Aggiorna alla versione più recente"
@@ -5553,32 +5564,32 @@ msgstr "Fluent Form"
 #. translators: 1: opening link tag, 2: closing link tag
 #: app/Modules/Registerer/TranslationString.php:2059
 msgid ""
-"FluentForms uses the pages below for handling the display of payment history "
-"and payment receipt. Please select the pages and add the instructed "
+"FluentForms uses the pages below for handling the display of payment history"
+" and payment receipt. Please select the pages and add the instructed "
 "shortcodes accordingly. %1$sPlease read the documentation%2$s for advanced "
 "shortcode usage."
 msgstr ""
 "FluentForms utilizza le pagine sottostanti per gestire la visualizzazione "
-"della cronologia dei pagamenti e della ricevuta di pagamento. Selezionare le "
-"pagine e %1$saggiungere gli shortcode indicati%2$s di conseguenza."
+"della cronologia dei pagamenti e della ricevuta di pagamento. Selezionare le"
+" pagine e %1$saggiungere gli shortcode indicati%2$s di conseguenza."
 
 #: app/Modules/Registerer/TranslationString.php:1923
 msgid ""
-"FluentForms uses the pages below for handling the display of payment history "
-"and payment receipt.Please select the pages and add the instructed "
+"FluentForms uses the pages below for handling the display of payment history"
+" and payment receipt.Please select the pages and add the instructed "
 "shortcodes accordingly."
 msgstr ""
 "FluentForms utilizza le pagine sottostanti per gestire la visualizzazione "
-"della cronologia dei pagamenti e della ricevuta di pagamento. Selezionare le "
-"pagine e aggiungere gli shortcode indicati di conseguenza."
+"della cronologia dei pagamenti e della ricevuta di pagamento. Selezionare le"
+" pagine e aggiungere gli shortcode indicati di conseguenza."
 
 #: app/Views/admin/smtp/index.php:39
 msgid ""
 "FluentSMTP - The ultimate SMTP & Email Service Connection Plugin for "
 "WordPress"
 msgstr ""
-"FluentSMTP - Il plugin definitivo per la connessione al servizio SMTP ed e-"
-"mail per WordPress"
+"FluentSMTP - Il plugin definitivo per la connessione al servizio SMTP ed "
+"e-mail per WordPress"
 
 #: app/Views/admin/smtp/index.php:29
 msgid "FluentSMTP is Activated and Running"
@@ -5640,8 +5651,8 @@ msgid ""
 "emails. "
 msgstr ""
 "Per gli utenti FluentCRM, abbiamo creato un plugin SMTP/Amazon SES ben "
-"ottimizzato. Ti aiuterà a gestire tutte le email del tuo sito web WordPress, "
-"incluse le email FluentCRM."
+"ottimizzato. Ti aiuterà a gestire tutte le email del tuo sito web WordPress,"
+" incluse le email FluentCRM."
 
 #: app/Modules/Registerer/TranslationString.php:1167
 msgid "For high volume of users, you can add an API token."
@@ -6112,12 +6123,12 @@ msgstr "Ottieni il link o condividilo sui siti social"
 #: app/Modules/AddOnModule.php:276
 msgid ""
 "GetGist is Easy to use all-in-one software for live chat, email marketing "
-"automation, forms, knowledge base, and more for a complete 360° view of your "
-"contacts."
+"automation, forms, knowledge base, and more for a complete 360° view of your"
+" contacts."
 msgstr ""
 "GetGist è un software completo e facile da usare per chat dal vivo, "
-"automazione dell'email marketing, moduli, knowledge base e altro ancora, per "
-"una visione completa a 360° dei tuoi contatti."
+"automazione dell'email marketing, moduli, knowledge base e altro ancora, per"
+" una visione completa a 360° dei tuoi contatti."
 
 #: app/Modules/AddOnModule.php:211
 msgid "GetResponse"
@@ -6702,9 +6713,9 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1494
 msgid ""
-"If Terms and Conditions checkbox is hidden (appears unchecked), please avoid "
-"marking this field as required. This ensures your forms will submit properly "
-"without any issues."
+"If Terms and Conditions checkbox is hidden (appears unchecked), please avoid"
+" marking this field as required. This ensures your forms will submit "
+"properly without any issues."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2254
@@ -6738,14 +6749,14 @@ msgid ""
 msgstr ""
 "Se non riesci a usare il Trasferimento dati di pagamento e i pagamenti non "
 "vengono contrassegnati come completati, seleziona questa casella. Ciò "
-"obbliga il sito a usare un metodo leggermente meno sicuro per verificare gli "
-"acquisti."
+"obbliga il sito a usare un metodo leggermente meno sicuro per verificare gli"
+" acquisti."
 
 #: app/Modules/Registerer/TranslationString.php:2081
 msgid ""
-"If you disable this then all the payment related functions will be disabled. "
-"If you want to process/accept payment using fluent forms. You should enable "
-"this."
+"If you disable this then all the payment related functions will be disabled."
+" If you want to process/accept payment using fluent forms. You should enable"
+" this."
 msgstr ""
 "Se disabiliti questa opzione, tutte le funzioni relative al pagamento "
 "saranno disabilitate. Se vuoi elaborare/accettare il pagamento utilizzando "
@@ -6753,9 +6764,9 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1970
 msgid ""
-"If you disable this then all the payment related functions will be disabled."
-"If you want to process / accept payment using fluent forms.You should enable "
-"this."
+"If you disable this then all the payment related functions will be "
+"disabled.If you want to process / accept payment using fluent forms.You "
+"should enable this."
 msgstr ""
 "Se disabiliti questa opzione, tutte le funzioni relative ai pagamenti "
 "saranno disabilitate. Se vuoi elaborare/accettare pagamenti utilizzando "
@@ -6814,8 +6825,8 @@ msgid ""
 "left"
 msgstr ""
 "Se si abilita questa opzione, a ogni modifica del passaggio i dati del "
-"passaggio corrente verranno mantenuti in un modulo di passaggio<br /> I tuoi "
-"utenti possono riprendere il modulo da dove lo avevano lasciato"
+"passaggio corrente verranno mantenuti in un modulo di passaggio<br /> I tuoi"
+" utenti possono riprendere il modulo da dove lo avevano lasciato"
 
 #: app/Services/FormBuilder/ElementCustomization.php:266
 msgid ""
@@ -6863,8 +6874,8 @@ msgstr ""
 
 #: app/Views/admin/docs/index.php:213
 msgid ""
-"If you need any feature on Fluent Forms, then please request a feature to us "
-"with your requirement."
+"If you need any feature on Fluent Forms, then please request a feature to us"
+" with your requirement."
 msgstr ""
 "Se hai bisogno di una funzionalità di Fluent Forms, richiedila specificando "
 "le tue esigenze."
@@ -6969,7 +6980,8 @@ msgid ""
 "payments, you must configure your Stripe webhooks. Visit your "
 msgstr ""
 "Per far sì che Stripe funzioni completamente per i pagamenti in "
-"abbonamento/ricorrenti, devi configurare i tuoi webhook Stripe. Visita il tuo"
+"abbonamento/ricorrenti, devi configurare i tuoi webhook Stripe. Visita il "
+"tuo"
 
 #. translators: 1: opening link tag, 2: closing link tag
 #: app/Modules/Registerer/TranslationString.php:2101
@@ -6996,8 +7008,8 @@ msgid ""
 "In order to function completely for subscription/recurring payments, you "
 "must configure your PayPal IPN."
 msgstr ""
-"Per poter funzionare correttamente con i pagamenti in abbonamento/ricorrenti,"
-" devi configurare il tuo IPN PayPal."
+"Per poter funzionare correttamente con i pagamenti in "
+"abbonamento/ricorrenti, devi configurare il tuo IPN PayPal."
 
 #: app/Modules/Registerer/TranslationString.php:1143
 msgid "In Stock"
@@ -7162,7 +7174,8 @@ msgstr "Notifica e-mail di errore di integrazione"
 #: app/Modules/Registerer/TranslationString.php:1186
 msgid "Integration Failure Email Notification is available in the pro version"
 msgstr ""
-"La notifica e-mail di errore di integrazione è disponibile nella versione pro"
+"La notifica e-mail di errore di integrazione è disponibile nella versione "
+"pro"
 
 #: app/Modules/Registerer/TranslationString.php:1763
 msgid "Integration Feed Name"
@@ -7349,20 +7362,17 @@ msgid ""
 "It is not recommended to change the name attribute, as this will break "
 "conditional logic and integration field mappings. If you proceed, you will "
 "need to recreate these mappings with the updated value. Additionally, the "
-"connection with submission values will be lost, meaning existing submissions "
-"containing this field will no longer be displayed."
+"connection with submission values will be lost, meaning existing submissions"
+" containing this field will no longer be displayed."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1025
-msgid ""
-"It will only be visible in the email if \"From Email\" value is available"
+msgid "It will only be visible in the email if \"From Email\" value is available"
 msgstr "Sarà visibile nell'email solo se è disponibile il valore \"Da email\""
 
 #: app/Modules/Registerer/TranslationString.php:545
-msgid ""
-"It will only be visible in the email if \\\"From Email\\\" value is available"
-msgstr ""
-"Sarà visibile nell'email solo se è disponibile il valore \\\"Da email\\\""
+msgid "It will only be visible in the email if \\\"From Email\\\" value is available"
+msgstr "Sarà visibile nell'email solo se è disponibile il valore \\\"Da email\\\""
 
 #: app/Modules/Registerer/TranslationString.php:1862
 #, fuzzy
@@ -7979,8 +7989,8 @@ msgstr "Logo"
 
 #: app/Modules/Registerer/TranslationString.php:1647
 msgid ""
-"Looks like you are using older version of fluent forms pro. Please update to "
-"latest version"
+"Looks like you are using older version of fluent forms pro. Please update to"
+" latest version"
 msgstr ""
 "Sembra che tu stia utilizzando una vecchia versione di Fluent Forms Pro. "
 "Aggiorna alla versione più recente"
@@ -8044,8 +8054,8 @@ msgstr "Il feed di Mailchimp non è riuscito a consegnare il feed"
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:483
 msgid "Mailchimp feed has been successfully initialed and pushed data"
 msgstr ""
-"Il feed di Mailchimp è stato inizializzato correttamente e i dati sono stati "
-"inviati"
+"Il feed di Mailchimp è stato inizializzato correttamente e i dati sono stati"
+" inviati"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:194
 msgid "Mailchimp Field"
@@ -8060,16 +8070,16 @@ msgid ""
 "Mailchimp is a marketing platform for small businesses. Send beautiful "
 "emails, connect your e-commerce store, advertise, and build your brand. Use "
 "Fluent Forms to collect customer information and automatically add it to "
-"your Mailchimp campaign list. If you don't have a Mailchimp account, you can "
-"<a href=\"https://mailchimp.com/\" target=\"_blank\">sign up for one here."
-"</a>"
+"your Mailchimp campaign list. If you don't have a Mailchimp account, you can"
+" <a href=\"https://mailchimp.com/\" target=\"_blank\">sign up for one "
+"here.</a>"
 msgstr ""
 "Mailchimp è una piattaforma di marketing per piccole aziende. Invia email "
 "bellissime, collega il tuo negozio di e-commerce, fai pubblicità e "
 "costruisci il tuo marchio. Utilizza Fluent Forms per raccogliere "
 "informazioni sui clienti e aggiungerle automaticamente all&#39;elenco delle "
-"campagne Mailchimp. Se non hai un account Mailchimp, puoi <a href=\"https:"
-"//mailchimp.com/\" target=\"_blank\">registrarti qui.</a>"
+"campagne Mailchimp. Se non hai un account Mailchimp, puoi <a "
+"href=\"https://mailchimp.com/\" target=\"_blank\">registrarti qui.</a>"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:136
 msgid ""
@@ -8344,7 +8354,8 @@ msgstr "Numero massimo di Inserimenti"
 #: app/Modules/Registerer/TranslationString.php:1863
 msgid ""
 "Maximum execution time error, due to lot's of entries. Maybe fail importing "
-"some of entries. Please increase server maximum executing time and try again."
+"some of entries. Please increase server maximum executing time and try "
+"again."
 msgstr ""
 "Errore di tempo massimo di esecuzione, dovuto a molte inserimenti. Potrebbe "
 "non essere possibile importarne alcuni. Aumentare il tempo massimo di "
@@ -8507,9 +8518,9 @@ msgid ""
 "Migrate other plugins forms into Fluent Forms with ease. Please note that "
 "previously imported forms and entries will be reset and updated again."
 msgstr ""
-"Migra facilmente altri moduli di plugin in Fluent Forms. Nota che i moduli e "
-"gli inserimenti importati in precedenza verranno reimpostati e aggiornati di "
-"nuovo."
+"Migra facilmente altri moduli di plugin in Fluent Forms. Nota che i moduli e"
+" gli inserimenti importati in precedenza verranno reimpostati e aggiornati "
+"di nuovo."
 
 #: app/Modules/Registerer/TranslationString.php:1827
 msgid ""
@@ -8523,8 +8534,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1703
 #: app/Modules/Registerer/TranslationString.php:1880
 msgid ""
-"Migration tools only works if you have any other contact form plugin already "
-"installed along with Fluent Forms."
+"Migration tools only works if you have any other contact form plugin already"
+" installed along with Fluent Forms."
 msgstr ""
 "Gli strumenti di migrazione funzionano solo se hai già installato un altro "
 "plugin per moduli di contatto insieme a Fluent Forms."
@@ -8756,8 +8767,8 @@ msgstr "Punteggio del promotore netto"
 #: app/Modules/Component/Component.php:377
 #: app/Services/Form/FormService.php:444
 msgid ""
-"Net Promoter Score is not available with the free version. Please upgrade to "
-"pro to get all the advanced features."
+"Net Promoter Score is not available with the free version. Please upgrade to"
+" pro to get all the advanced features."
 msgstr ""
 "Net Promoter Score non è disponibile con la versione gratuita. Passa alla "
 "versione pro per ottenere tutte le funzionalità avanzate."
@@ -9049,8 +9060,8 @@ msgid ""
 "No Template found. Please make sure you are using latest version of Fluent "
 "Forms"
 msgstr ""
-"Nessun modello trovato. Assicurati di utilizzare l'ultima versione di Fluent "
-"Forms"
+"Nessun modello trovato. Assicurati di utilizzare l'ultima versione di Fluent"
+" Forms"
 
 #: app/Modules/Payments/PaymentMethods/Stripe/StripeInlineProcessor.php:431
 #, fuzzy
@@ -9696,8 +9707,8 @@ msgstr "Modalità di pagamento"
 
 #: app/Modules/Registerer/TranslationString.php:1993
 msgid ""
-"Payment Module has been disabled currently.No Payments will be processed and "
-"associate functions will be disabled"
+"Payment Module has been disabled currently.No Payments will be processed and"
+" associate functions will be disabled"
 msgstr ""
 "Il modulo di pagamento è stato disabilitato al momento. Nessun pagamento "
 "verrà elaborato e le funzioni associate saranno disabilitate"
@@ -9981,8 +9992,8 @@ msgstr "Campi di posta"
 #: app/Modules/Component/Component.php:342
 #: app/Services/Form/FormService.php:404
 msgid ""
-"Phone Field is not available with the free version. Please upgrade to pro to "
-"get all the advanced features."
+"Phone Field is not available with the free version. Please upgrade to pro to"
+" get all the advanced features."
 msgstr ""
 "Phone Field non è disponibile con la versione gratuita. Passa alla versione "
 "pro per ottenere tutte le funzionalità avanzate."
@@ -10078,7 +10089,8 @@ msgstr "Inserisci una chiave API valida su FluentForms->Impostazioni"
 #: app/Modules/Component/Component.php:271
 #: app/Modules/Registerer/TranslationString.php:1260
 msgid "Please enter a valid API key on FluentForms->Settings->hCaptcha"
-msgstr "Inserisci una chiave API valida su FluentForms->Impostazioni->hCaptcha"
+msgstr ""
+"Inserisci una chiave API valida su FluentForms->Impostazioni->hCaptcha"
 
 #: app/Modules/Component/Component.php:265
 msgid "Please enter a valid API key on FluentForms->Settings->reCaptcha"
@@ -10087,7 +10099,8 @@ msgstr ""
 
 #: app/Modules/Component/Component.php:277
 msgid "Please enter a valid API key on FluentForms->Settings->Turnstile"
-msgstr "Inserisci una chiave API valida su FluentForms->Impostazioni->Tornello"
+msgstr ""
+"Inserisci una chiave API valida su FluentForms->Impostazioni->Tornello"
 
 #: app/Services/Form/FormService.php:325
 msgid "Please enter a valid API key on Global Settings->Security->hCaptcha"
@@ -10106,8 +10119,8 @@ msgid ""
 "Please enter a valid value. The two nearest valid values are {lower_value} "
 "and {upper_value}"
 msgstr ""
-"Inserisci un valore valido. I due valori validi più vicini sono {lower_value}"
-" e {upper_value}"
+"Inserisci un valore valido. I due valori validi più vicini sono "
+"{lower_value} e {upper_value}"
 
 #: app/Services/Integrations/BaseIntegration.php:115
 msgid "Please fix the errors"
@@ -10119,7 +10132,8 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1102
 msgid "Please generate API key and API secret using Cloudflare Turnstile"
-msgstr "Genera la chiave API e il segreto API utilizzando Cloudflare Turnstile"
+msgstr ""
+"Genera la chiave API e il segreto API utilizzando Cloudflare Turnstile"
 
 #: app/Modules/Registerer/TranslationString.php:1037
 msgid "Please generate API key and API secret using hCaptcha"
@@ -10184,11 +10198,11 @@ msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:571
 msgid ""
-"Please provide max number of rows the user can fill up for this repeat field."
-" Keep blank/0 for unlimited numbers"
+"Please provide max number of rows the user can fill up for this repeat "
+"field. Keep blank/0 for unlimited numbers"
 msgstr ""
-"Si prega di fornire il numero massimo di righe che l'utente può riempire per "
-"questo campo di ripetizione. Lasciare vuoto/0 per numeri illimitati"
+"Si prega di fornire il numero massimo di righe che l'utente può riempire per"
+" questo campo di ripetizione. Lasciare vuoto/0 per numeri illimitati"
 
 #: app/Services/FormBuilder/ElementCustomization.php:591
 msgid "Please provide Maximum value"
@@ -10236,19 +10250,19 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1973
 msgid ""
-"Please provide your business name. It will be used to paypal's business name "
-"when redirect to checkout."
+"Please provide your business name. It will be used to paypal's business name"
+" when redirect to checkout."
 msgstr ""
-"Inserisci il nome della tua attività. Sarà utilizzato come nome aziendale di "
-"PayPal quando verrai reindirizzato al checkout."
+"Inserisci il nome della tua attività. Sarà utilizzato come nome aziendale di"
+" PayPal quando verrai reindirizzato al checkout."
 
 #: app/Modules/Registerer/TranslationString.php:1975
 msgid ""
-"Please provide your full business address including street, city, zip, state "
-"and country."
+"Please provide your full business address including street, city, zip, state"
+" and country."
 msgstr ""
-"Inserisci l'indirizzo completo della tua attività, comprensivo di via, città,"
-" codice postale, stato e Paese."
+"Inserisci l'indirizzo completo della tua attività, comprensivo di via, "
+"città, codice postale, stato e Paese."
 
 #: app/Modules/Registerer/TranslationString.php:104
 msgid ""
@@ -10266,7 +10280,8 @@ msgstr "Si prega di leggere la documentazione"
 
 #: app/Views/admin/docs/index.php:153
 msgid ""
-"Please report us and we promise we will fix that as soon as humanly possible."
+"Please report us and we promise we will fix that as soon as humanly "
+"possible."
 msgstr ""
 "Segnalatecelo e vi promettiamo che risolveremo il problema il prima "
 "possibile."
@@ -10308,8 +10323,8 @@ msgid ""
 "Please select the customer address field from your form's address inputs. "
 "It's required for payments in India."
 msgstr ""
-"Seleziona il campo indirizzo cliente dagli input indirizzo del tuo modulo. È "
-"obbligatorio per i pagamenti in India."
+"Seleziona il campo indirizzo cliente dagli input indirizzo del tuo modulo. È"
+" obbligatorio per i pagamenti in India."
 
 #: app/Modules/Registerer/TranslationString.php:649
 msgid ""
@@ -10323,11 +10338,11 @@ msgstr ""
 #, fuzzy
 msgid ""
 "Please select the customer name field from your form inputs. It's an "
-"optional but recommended field. If the user is logged in then this data will "
-"be picked from logged in user."
+"optional but recommended field. If the user is logged in then this data will"
+" be picked from logged in user."
 msgstr ""
-"Seleziona il campo nome cliente dai campi del modulo. È un campo facoltativo "
-"ma consigliato. Se l'utente ha effettuato l'accesso, questi dati verranno "
+"Seleziona il campo nome cliente dai campi del modulo. È un campo facoltativo"
+" ma consigliato. Se l'utente ha effettuato l'accesso, questi dati verranno "
 "prelevati dall'utente registrato."
 
 #: app/Modules/Registerer/TranslationString.php:716
@@ -10397,7 +10412,8 @@ msgstr "Aggiorna Fluent Forms Pro Addon all'ultima versione"
 #: app/Modules/Registerer/TranslationString.php:1761
 msgid "Please upgrade to Fluent Forms PDF to unlock this feature."
 msgstr ""
-"Per sbloccare questa funzionalità, esegui l'aggiornamento a Fluent Forms PDF."
+"Per sbloccare questa funzionalità, esegui l'aggiornamento a Fluent Forms "
+"PDF."
 
 #: app/Modules/Registerer/TranslationString.php:220
 #: app/Modules/Registerer/TranslationString.php:1431
@@ -10408,7 +10424,8 @@ msgstr "Per sbloccare la funzionalità, esegui l'upgrade alla versione PRO."
 #: app/Modules/Registerer/TranslationString.php:1710
 #: app/Modules/Registerer/TranslationString.php:2175
 msgid "Please upgrade to pro to unlock this feature."
-msgstr "Per sbloccare questa funzionalità, esegui l'upgrade alla versione Pro."
+msgstr ""
+"Per sbloccare questa funzionalità, esegui l'upgrade alla versione Pro."
 
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:127
 msgid "Please validate your hCaptcha first and then hit save."
@@ -10526,11 +10543,11 @@ msgstr "Selezione Post/CPT"
 #: app/Modules/Component/Component.php:363
 #: app/Services/Form/FormService.php:428
 msgid ""
-"Post/CPT Selection is not available with the free version. Please upgrade to "
-"pro to get all the advanced features."
+"Post/CPT Selection is not available with the free version. Please upgrade to"
+" pro to get all the advanced features."
 msgstr ""
-"La selezione Post/CPT non è disponibile con la versione gratuita. Passa alla "
-"versione pro per ottenere tutte le funzionalità avanzate."
+"La selezione Post/CPT non è disponibile con la versione gratuita. Passa alla"
+" versione pro per ottenere tutte le funzionalità avanzate."
 
 #: app/Modules/DocumentationModule.php:61
 msgid "Predefined form fields"
@@ -10755,8 +10772,8 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1983
 msgid ""
-"Provide your default currency.You can also change your currency to each form "
-"in form's payment settings"
+"Provide your default currency.You can also change your currency to each form"
+" in form's payment settings"
 msgstr ""
 "Fornisci la tua valuta predefinita. Puoi anche cambiare la valuta per ogni "
 "modulo nelle impostazioni di pagamento del modulo"
@@ -10889,8 +10906,8 @@ msgid ""
 "Range Slider is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
-"Range Slider non è disponibile con la versione gratuita. Passa alla versione "
-"pro per ottenere tutte le funzionalità avanzate."
+"Range Slider non è disponibile con la versione gratuita. Passa alla versione"
+" pro per ottenere tutte le funzionalità avanzate."
 
 #: app/Helpers/Helper.php:801 app/Modules/Component/Component.php:404
 #: app/Services/Form/FormService.php:474
@@ -10912,8 +10929,8 @@ msgid ""
 "Ranking Field is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
-"Repeat Field non è disponibile con la versione gratuita. Passa alla versione "
-"pro per ottenere tutte le funzionalità avanzate."
+"Repeat Field non è disponibile con la versione gratuita. Passa alla versione"
+" pro per ottenere tutte le funzionalità avanzate."
 
 #: app/Modules/Component/Component.php:320
 #: app/Services/Form/FormService.php:379
@@ -10926,8 +10943,8 @@ msgstr "Valutazioni"
 #: app/Modules/Component/Component.php:321
 #: app/Services/Form/FormService.php:380
 msgid ""
-"Ratings is not available with the free version. Please upgrade to pro to get "
-"all the advanced features."
+"Ratings is not available with the free version. Please upgrade to pro to get"
+" all the advanced features."
 msgstr ""
 "Le valutazioni non sono disponibili con la versione gratuita. Passa alla "
 "versione pro per ottenere tutte le funzionalità avanzate."
@@ -11175,8 +11192,8 @@ msgid ""
 "Repeat Field is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
-"Repeat Field non è disponibile con la versione gratuita. Passa alla versione "
-"pro per ottenere tutte le funzionalità avanzate."
+"Repeat Field non è disponibile con la versione gratuita. Passa alla versione"
+" pro per ottenere tutte le funzionalità avanzate."
 
 #: app/Services/FormBuilder/ElementCustomization.php:399
 msgid "Repeat Fields"
@@ -11944,8 +11961,8 @@ msgstr "Seleziona file"
 #: app/Modules/Registerer/TranslationString.php:106
 msgid "Select Font will apply only for landing page UI."
 msgstr ""
-"Seleziona il carattere che verrà applicato solo all'interfaccia utente della "
-"landing page."
+"Seleziona il carattere che verrà applicato solo all'interfaccia utente della"
+" landing page."
 
 #: app/Modules/Registerer/TranslationString.php:1866
 #: app/Modules/Registerer/TranslationString.php:1895
@@ -12115,8 +12132,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1755
 #: app/Modules/Registerer/TranslationString.php:1850
 msgid ""
-"Select the FluentForms exported entries (.json) file. Otherwise, it may fail "
-"to import"
+"Select the FluentForms exported entries (.json) file. Otherwise, it may fail"
+" to import"
 msgstr ""
 "Seleziona il file FluentForms exported entries (.json). In caso contrario, "
 "l'importazione potrebbe non riuscire"
@@ -12145,8 +12162,8 @@ msgstr "Seleziona i moduli che desideri esportare."
 msgid ""
 "Select the forms you would like to export. When you click the download "
 "button below, Fluent Forms will create a JSON file for you to save to your "
-"computer. Once you've saved the downloaded file, you can use the Import tool "
-"to import the forms."
+"computer. Once you've saved the downloaded file, you can use the Import tool"
+" to import the forms."
 msgstr ""
 "Seleziona i moduli che desideri esportare. Quando clicchi sul pulsante di "
 "download qui sotto, Fluent Forms creerà un file JSON da salvare sul tuo "
@@ -12175,8 +12192,8 @@ msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:691
 msgid ""
-"Select the keyboard type to display on mobile devices. This only affects the "
-"keyboard shown, not validation or accepted characters."
+"Select the keyboard type to display on mobile devices. This only affects the"
+" keyboard shown, not validation or accepted characters."
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:739
@@ -12202,8 +12219,8 @@ msgstr "Seleziona la pagina a cui desideri che l'utente sia"
 
 #: app/Modules/Registerer/TranslationString.php:2085
 msgid ""
-"Select the payment mode. For testing purposes you should select Sandbox Mode "
-"otherwise select Live Mode."
+"Select the payment mode. For testing purposes you should select Sandbox Mode"
+" otherwise select Live Mode."
 msgstr ""
 "Seleziona la modalità di pagamento. Per scopi di test dovresti selezionare "
 "Sandbox Mode altrimenti seleziona Live Mode."
@@ -12248,8 +12265,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:2086
 msgid ""
 "Select the PayPal integration method you want to use. Legacy Email "
-"Integration will use a hosted PayPal page. Standard API Key Integration will "
-"display an inline PayPal button."
+"Integration will use a hosted PayPal page. Standard API Key Integration will"
+" display an inline PayPal button."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1760
@@ -12403,7 +12420,8 @@ msgid "Send Email as RAW HTML Format"
 msgstr "Invia e-mail in formato HTML RAW"
 
 #: app/Modules/AddOnModule.php:308
-msgid "Send notification to Telegram channel or group when a form is submitted"
+msgid ""
+"Send notification to Telegram channel or group when a form is submitted"
 msgstr ""
 "Invia una notifica al canale o al gruppo Telegram quando viene inviato un "
 "modulo"
@@ -12526,8 +12544,9 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2065
 msgid ""
-"Set the success message for coupon. You can use {coupon.code}, {coupon."
-"amount}, {total_amount}, {discount_amount} and {remain_amount} smartcodes."
+"Set the success message for coupon. You can use {coupon.code}, "
+"{coupon.amount}, {total_amount}, {discount_amount} and {remain_amount} "
+"smartcodes."
 msgstr ""
 "Imposta il messaggio di successo per il coupon. Puoi usare gli smartcode "
 "{coupon.code}, {coupon.amount}, {total_amount}, {discount_amount} e "
@@ -13027,7 +13046,8 @@ msgstr "Spiacenti! Nessuna integrazione fallita trovata con:"
 
 #: app/Modules/Payments/PaymentHandler.php:482
 msgid ""
-"Sorry! No selected payment method found. Please select a valid payment method"
+"Sorry! No selected payment method found. Please select a valid payment "
+"method"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2093
@@ -13356,7 +13376,8 @@ msgstr "Aggiornamento dello stato non riuscito. Modulo o stato non valido"
 msgid "Step"
 msgstr "Fare un passo"
 
-#. translators: %activeStep% is the current step number, %totalStep% is the total number of steps, %stepTitle% is the step title
+#. translators: %activeStep% is the current step number, %totalStep% is the
+#. total number of steps, %stepTitle% is the step title
 #: app/Modules/Component/Component.php:628
 msgid "Step %activeStep% of %totalStep% - %stepTitle%"
 msgstr "Passaggio %activeStep% di %totalStep% - %stepTitle%"
@@ -14018,12 +14039,14 @@ msgstr "Termini e condizioni"
 msgid "Terms and Conditions"
 msgstr "Termini e Condizioni"
 
-#. translators: 1: Terms title or HTML label, 2: Number of links in the terms text.
+#. translators: 1: Terms title or HTML label, 2: Number of links in the terms
+#. text.
 #: app/Services/FormBuilder/Components/TermsAndConditions.php:70
 msgid ""
 "Terms and Conditions: %1$s Contains %2$d link. Use tab navigation to review."
 msgid_plural ""
-"Terms and Conditions: %1$s Contains %2$d links. Use tab navigation to review."
+"Terms and Conditions: %1$s Contains %2$d links. Use tab navigation to "
+"review."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -14201,8 +14224,8 @@ msgstr ""
 #: app/Modules/Component/Component.php:527
 msgid "The form can be filled in the actual <a href=\"%s\">website url</a>."
 msgstr ""
-"Il modulo può essere compilato inserendo l&#39; <a href=\"%s\">URL effettivo "
-"del sito web</a> ."
+"Il modulo può essere compilato inserendo l&#39; <a href=\"%s\">URL effettivo"
+" del sito web</a> ."
 
 #: app/Services/Form/FormService.php:123 app/Services/Form/FormService.php:158
 #: app/Services/Form/FormService.php:193 app/Services/Form/FormService.php:586
@@ -14279,8 +14302,8 @@ msgstr ""
 #: app/Services/Settings/Validator/Confirmations.php:25
 msgid "The Redirect URL field is required when Confirmation Type is Redirect."
 msgstr ""
-"Il campo URL di reindirizzamento è obbligatorio quando il tipo di conferma è "
-"Reindirizzamento."
+"Il campo URL di reindirizzamento è obbligatorio quando il tipo di conferma è"
+" Reindirizzamento."
 
 #: app/Modules/Form/Settings/Validator/Confirmations.php:54
 #: app/Services/Settings/Validator/Confirmations.php:26
@@ -14331,8 +14354,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1121
 msgid ""
 "These messages will be used as default messages of all form. These messages "
-"will be ignored when field error message set as custom. Use %s shortcode for "
-"automatically resolve the field label."
+"will be ignored when field error message set as custom. Use %s shortcode for"
+" automatically resolve the field label."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2252
@@ -14348,23 +14371,25 @@ msgstr "hanno inviato il modulo."
 msgid "This email has been generated from Fluent Forms at %1$s%2$s%3$s."
 msgstr "Questa e-mail è stata generata da Fluent Forms alle ore %1$s%2$s%3$s."
 
-#. translators: 1: opening anchor tag to site, 2: closing anchor tag, 3: opening anchor tag to settings, 4: closing anchor tag
+#. translators: 1: opening anchor tag to site, 2: closing anchor tag, 3:
+#. opening anchor tag to settings, 4: closing anchor tag
 #: app/Views/email/report/body.php:239
 msgid ""
-"This email has been sent from %1$syour website%2$s via Fluent Forms. You can "
-"disable this email %3$syour website%4$s"
+"This email has been sent from %1$syour website%2$s via Fluent Forms. You can"
+" disable this email %3$syour website%4$s"
 msgstr ""
-"Questa email è stata inviata da %1$sil tuo sito web%2$s tramite Fluent Forms."
-" Puoi disattivare questa email %3$sil tuo sito web%4$s"
+"Questa email è stata inviata da %1$sil tuo sito web%2$s tramite Fluent "
+"Forms. Puoi disattivare questa email %3$sil tuo sito web%4$s"
 
-#. translators: 1: opening anchor tag, 2: closing anchor tag, 3: opening anchor tag, 4: closing anchor tag
+#. translators: 1: opening anchor tag, 2: closing anchor tag, 3: opening
+#. anchor tag, 4: closing anchor tag
 #: app/Views/email/failedIntegration/body.php:216
 msgid ""
-"This email has been sent from %1$syour website%2$s via Fluent Forms. You can "
-"disable this email from %3$shere%4$s"
+"This email has been sent from %1$syour website%2$s via Fluent Forms. You can"
+" disable this email from %3$shere%4$s"
 msgstr ""
-"Questa email è stata inviata da %1$sil tuo sito web%2$s tramite Fluent Forms."
-" Puoi disattivare questa email da %3$shere%4$s"
+"Questa email è stata inviata da %1$sil tuo sito web%2$s tramite Fluent "
+"Forms. Puoi disattivare questa email da %3$shere%4$s"
 
 #. translators: %s is the username
 #: app/Modules/Registerer/TranslationString.php:1626
@@ -14463,8 +14488,8 @@ msgid ""
 "form.Then you can customize for a specific PDF generator feed"
 msgstr ""
 "Queste impostazioni globali saranno impostate come predefinite per il tuo "
-"nuovo feed PDF per qualsiasi modulo. Quindi puoi personalizzarle per un feed "
-"specifico del generatore PDF"
+"nuovo feed PDF per qualsiasi modulo. Quindi puoi personalizzarle per un feed"
+" specifico del generatore PDF"
 
 #: app/Modules/Widgets/OxyFluentFormWidget.php:477
 msgid ""
@@ -14487,8 +14512,8 @@ msgid ""
 "This is a global settings. After configure this, You can enable in form "
 "settings for a specific form."
 msgstr ""
-"Questa è un'impostazione globale. Dopo averla configurata, puoi abilitare le "
-"impostazioni del modulo per un modulo specifico."
+"Questa è un'impostazione globale. Dopo averla configurata, puoi abilitare le"
+" impostazioni del modulo per un modulo specifico."
 
 #: app/Modules/Registerer/TranslationString.php:1065
 #: app/Modules/Registerer/TranslationString.php:1709
@@ -14580,8 +14605,8 @@ msgstr ""
 #: app/Helpers/Traits/GlobalDefaultMessages.php:102
 msgid "This message will be shown if validation fails for maximum file count."
 msgstr ""
-"Questo messaggio verrà visualizzato se la convalida per il conteggio massimo "
-"dei file non riesce."
+"Questo messaggio verrà visualizzato se la convalida per il conteggio massimo"
+" dei file non riesce."
 
 #: app/Helpers/Traits/GlobalDefaultMessages.php:97
 msgid "This message will be shown if validation fails for maximum file size."
@@ -14592,8 +14617,8 @@ msgstr ""
 #: app/Helpers/Traits/GlobalDefaultMessages.php:72
 msgid "This message will be shown if validation fails for maximum value."
 msgstr ""
-"Questo messaggio verrà visualizzato se la convalida non riesce per il valore "
-"massimo."
+"Questo messaggio verrà visualizzato se la convalida non riesce per il valore"
+" massimo."
 
 #: app/Helpers/Traits/GlobalDefaultMessages.php:67
 msgid "This message will be shown if validation fails for minimum value."
@@ -14676,7 +14701,8 @@ msgstr "Sarà visibile come testo del pulsante per caricare il file."
 
 #: app/Modules/Registerer/TranslationString.php:733
 msgid "This will permanently delete the quiz settings. Continue?"
-msgstr "Questo eliminerà definitivamente le impostazioni del quiz. Continuare?"
+msgstr ""
+"Questo eliminerà definitivamente le impostazioni del quiz. Continuare?"
 
 #: app/Modules/Registerer/TranslationString.php:991
 msgid "This will permanently reset the quiz settings. Continue?"
@@ -14758,7 +14784,8 @@ msgstr "A una pagina"
 
 #: app/Modules/Registerer/TranslationString.php:2021
 msgid "to configure them.Please add a webhook endpoint for the URL below."
-msgstr "per configurarli.Aggiungere un endpoint webhook per l'URL sottostante."
+msgstr ""
+"per configurarli.Aggiungere un endpoint webhook per l'URL sottostante."
 
 #: app/Modules/Registerer/TranslationString.php:2092
 msgid "to learn how to setup"
@@ -14768,8 +14795,8 @@ msgstr "per imparare come configurare"
 #: app/Modules/Registerer/TranslationString.php:1090
 msgid "To unlock more features consider %1$supgrading to PRO%2$s."
 msgstr ""
-"Per sbloccare più funzionalità, prendi in considerazione %1$sl'aggiornamento "
-"a PRO%2$s"
+"Per sbloccare più funzionalità, prendi in considerazione %1$sl'aggiornamento"
+" a PRO%2$s"
 
 #: app/Views/admin/docs/index.php:42
 msgid "To unlock more features consider upgrading to PRO"
@@ -14788,8 +14815,8 @@ msgid ""
 "Toggle Admin Top Navigation on or off and Save the Settings. Please reload "
 "the page after changing this option."
 msgstr ""
-"Attiva o disattiva Admin Top Navigation e salva le impostazioni. Ricarica la "
-"pagina dopo aver modificato questa opzione."
+"Attiva o disattiva Admin Top Navigation e salva le impostazioni. Ricarica la"
+" pagina dopo aver modificato questa opzione."
 
 #: app/Modules/Registerer/TranslationString.php:953
 msgid "Toggle Fullscreen"
@@ -14887,9 +14914,8 @@ msgstr "Tempi totali di fatturazione"
 
 #. translators: %d is the number of bills
 #: app/Modules/Registerer/TranslationString.php:1700
-#, fuzzy
 msgid "Total Bills: %d"
-msgstr "Totale fatture"
+msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2164
 msgid "Total Counts"
@@ -15024,7 +15050,8 @@ msgstr "Isole Turks e Caicos"
 
 #: app/Services/FormBuilder/ElementCustomization.php:142
 msgid ""
-"Turn this on to organize dropdown and multiselect options under group labels."
+"Turn this on to organize dropdown and multiselect options under group "
+"labels."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:201
@@ -15158,8 +15185,8 @@ msgstr "Errore sconosciuto"
 #: app/Modules/Registerer/TranslationString.php:965
 msgid "Unlock all type of premium input fields by using this add on"
 msgstr ""
-"Sblocca tutti i tipi di campi di input premium utilizzando questo componente "
-"aggiuntivo"
+"Sblocca tutti i tipi di campi di input premium utilizzando questo componente"
+" aggiuntivo"
 
 #: app/Modules/Registerer/TranslationString.php:215
 msgid "Unlock in Pro"
@@ -15323,7 +15350,8 @@ msgstr "Utilizzo"
 #: app/Modules/Registerer/TranslationString.php:2244
 msgid "Use #confirmation_url# smartcode for double optin confirmation URL"
 msgstr ""
-"Utilizzare lo smartcode #confirmation_url# per l'URL di conferma double optin"
+"Utilizzare lo smartcode #confirmation_url# per l'URL di conferma double "
+"optin"
 
 #: app/Modules/Registerer/TranslationString.php:1264
 msgid "Use a '0' to indicate a numerical character."
@@ -15344,18 +15372,19 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1266
 msgid "Use a upper case 'S' to indicate an alphabetical characters."
-msgstr "Per indicare caratteri alfabetici utilizzare la lettera 'S' maiuscola."
+msgstr ""
+"Per indicare caratteri alfabetici utilizzare la lettera 'S' maiuscola."
 
 #: app/Modules/Registerer/TranslationString.php:223
 msgid ""
-"Use AI to create the initial structure. Please note that there might be some "
-"inaccuracy in the output."
+"Use AI to create the initial structure. Please note that there might be some"
+" inaccuracy in the output."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:222
 msgid ""
-"Use AI to create the initial structure. The response uses ChatGPT, so please "
-"note that there might be some inaccuracy in the output."
+"Use AI to create the initial structure. The response uses ChatGPT, so please"
+" note that there might be some inaccuracy in the output."
 msgstr ""
 "Utilizza AI per creare la struttura iniziale. La risposta utilizza ChatGPT, "
 "quindi tieni presente che potrebbero esserci delle imprecisioni nell'output."
@@ -15371,7 +15400,8 @@ msgstr "Usa l'impostazione predefinita del sistema"
 
 #: app/Modules/Registerer/TranslationString.php:458
 msgid "Use this following shortcode in your Page or Post"
-msgstr "Utilizza il seguente codice abbreviato nella tua pagina o nel tuo post"
+msgstr ""
+"Utilizza il seguente codice abbreviato nella tua pagina o nel tuo post"
 
 #: app/Modules/Registerer/TranslationString.php:551
 msgid "used as the reply to address for the notification email."
@@ -15782,8 +15812,8 @@ msgstr ""
 
 #: app/Views/admin/docs/index.php:193
 msgid ""
-"We need your help to keep developing the plugin. Please review it and spread "
-"the love to keep us motivated."
+"We need your help to keep developing the plugin. Please review it and spread"
+" the love to keep us motivated."
 msgstr ""
 "Abbiamo bisogno del tuo aiuto per continuare a sviluppare il plugin. Per "
 "favore, esaminalo e diffondi l'amore per tenerci motivati."
@@ -15875,12 +15905,13 @@ msgid ""
 "address after map marker drag end"
 msgstr ""
 "Quando la mappa è abilitata, abilitare l'API di geocodifica se si desidera "
-"popolare l'indirizzo dopo la fine del trascinamento del marcatore sulla mappa"
+"popolare l'indirizzo dopo la fine del trascinamento del marcatore sulla "
+"mappa"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:245
 msgid ""
-"When the double opt-in option is enabled, Mailchimp will send a confirmation "
-"email to the user and will only add them to your <br /Mailchimp list upon "
+"When the double opt-in option is enabled, Mailchimp will send a confirmation"
+" email to the user and will only add them to your <br /Mailchimp list upon "
 "confirmation."
 msgstr ""
 "Quando l&#39;opzione di doppia adesione è abilitata, Mailchimp invierà "
@@ -15894,12 +15925,13 @@ msgstr "quando provano a inviare un modulo vuoto."
 msgid ""
 "When this option is enabled, if the subscriber is in an inactive state or "
 "has previously been unsubscribed, they will be re-added to the active list. "
-"Therefore, this option should be used with caution and only when appropriate."
+"Therefore, this option should be used with caution and only when "
+"appropriate."
 msgstr ""
-"Quando questa opzione è abilitata, se l'abbonato è in uno stato inattivo o è "
-"stato precedentemente cancellato, verrà aggiunto di nuovo all'elenco attivo. "
-"Pertanto, questa opzione dovrebbe essere usata con cautela e solo quando "
-"appropriato."
+"Quando questa opzione è abilitata, se l'abbonato è in uno stato inattivo o è"
+" stato precedentemente cancellato, verrà aggiunto di nuovo all'elenco "
+"attivo. Pertanto, questa opzione dovrebbe essere usata con cautela e solo "
+"quando appropriato."
 
 #: app/Modules/Registerer/TranslationString.php:366
 msgid "whether you want to hide or reset the form."
@@ -15939,8 +15971,8 @@ msgstr "Con intestazioni"
 
 #: app/Modules/AddOnModule.php:388
 msgid ""
-"With this module, you can create quizzes and show scores with grades, points,"
-" fractions, or percentages"
+"With this module, you can create quizzes and show scores with grades, "
+"points, fractions, or percentages"
 msgstr ""
 "Con questo modulo puoi creare quiz e mostrare punteggi con voti, punti, "
 "frazioni o percentuali"
@@ -16086,12 +16118,12 @@ msgstr ""
 
 #: app/Views/frameless/show_preview.php:169
 msgid ""
-"You are seeing preview version of Fluent Forms. This form is only accessible "
-"for Admin users. Other users may not access this page. To use this for in a "
-"page please use the following shortcode: "
+"You are seeing preview version of Fluent Forms. This form is only accessible"
+" for Admin users. Other users may not access this page. To use this for in a"
+" page please use the following shortcode: "
 msgstr ""
-"Stai visualizzando la versione di anteprima di Fluent Forms. Questo modulo è "
-"accessibile solo agli utenti Admin. Altri utenti non possono accedere a "
+"Stai visualizzando la versione di anteprima di Fluent Forms. Questo modulo è"
+" accessibile solo agli utenti Admin. Altri utenti non possono accedere a "
 "questa pagina. Per utilizzarlo in una pagina, utilizza il seguente codice "
 "abbreviato:"
 
@@ -16126,7 +16158,8 @@ msgid "You can disable it here."
 msgstr "Puoi disattivarlo qui."
 
 #: app/Modules/Registerer/TranslationString.php:1522
-msgid "You can disable the auto delete option from Settings & Integrations Tab"
+msgid ""
+"You can disable the auto delete option from Settings & Integrations Tab"
 msgstr ""
 "Puoi disattivare l'opzione di eliminazione automatica dalla scheda "
 "Impostazioni e integrazioni"
@@ -16164,9 +16197,9 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:660
 msgid ""
-"You can select which stripe account credential will be used for this form."
-"Select \"Custom Stripe Credential\" for a different stripe account than "
-"global."
+"You can select which stripe account credential will be used for this "
+"form.Select \"Custom Stripe Credential\" for a different stripe account than"
+" global."
 msgstr ""
 "Puoi selezionare le credenziali dell'account Stripe che verranno utilizzate "
 "per questo modulo. Seleziona \"Credenziali Stripe personalizzate\" per un "
@@ -16188,8 +16221,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1305
 msgid ""
 "You can simply give value only the system will convert the label as value. "
-"To include a colon in either the label or value, use the escape sequence \\:,"
-" e.g., LABEL\\:A:VALUE"
+"To include a colon in either the label or value, use the escape sequence "
+"\\:, e.g., LABEL\\:A:VALUE"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1961
@@ -16213,8 +16246,8 @@ msgstr "Puoi scrivere una nota per questo contatto"
 
 #: app/Modules/Registerer/TranslationString.php:602
 msgid ""
-"You can write your custom CSS here for this form.This css will be applied in "
-"this current form only."
+"You can write your custom CSS here for this form.This css will be applied in"
+" this current form only."
 msgstr ""
 "Puoi scrivere qui il tuo CSS personalizzato per questo modulo. Questo CSS "
 "verrà applicato solo al modulo corrente."
@@ -16262,8 +16295,8 @@ msgid ""
 "You don't have any integration module enabled. Please go to integration "
 "modules and enable and configured from 30 + available modules"
 msgstr ""
-"Non hai alcun modulo di integrazione abilitato. Vai a moduli di integrazione "
-"e abilita e configura tra i 30 + moduli disponibili"
+"Non hai alcun modulo di integrazione abilitato. Vai a moduli di integrazione"
+" e abilita e configura tra i 30 + moduli disponibili"
 
 #: app/Modules/Form/Transfer.php:161
 #: app/Services/Transfer/TransferService.php:173
@@ -16301,7 +16334,8 @@ msgstr ""
 "Non hai ancora aggiunto alcun feed di integrazione. Aggiungi una nuova "
 "integrazione per connettere i tuoi strumenti preferiti ai tuoi moduli"
 
-#. translators: 1: CSS selector prefix, 2: dynamic placeholder, 3: form ID placeholder
+#. translators: 1: CSS selector prefix, 2: dynamic placeholder, 3: form ID
+#. placeholder
 #: app/Modules/Registerer/TranslationString.php:604
 msgid ""
 "You may add %1$s as your css selector prefix to target this specific form. "
@@ -16337,7 +16371,8 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:538
 msgid ""
-"You should use SMTP so send attachment via email otherwise, It may go to spam"
+"You should use SMTP so send attachment via email otherwise, It may go to "
+"spam"
 msgstr ""
 "Dovresti usare SMTP per inviare l'allegato via email, altrimenti potrebbe "
 "finire nello spam"
@@ -16396,8 +16431,8 @@ msgstr "Il tuo Cloudflare Turnstile è valido"
 
 #: app/Modules/Registerer/TranslationString.php:308
 msgid ""
-"Your data will be deleted on form submission so no entry data, analytics and "
-"visual reporting will be available for this form"
+"Your data will be deleted on form submission so no entry data, analytics and"
+" visual reporting will be available for this form"
 msgstr ""
 "I tuoi dati verranno eliminati al momento dell'invio del modulo, pertanto "
 "non saranno disponibili dati di iscrizione, analisi e report visivi per "

@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Fluent Forms\n"
@@ -11,9 +12,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: fluentform\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.6.3; wp-6.1.1\n"
-"X-Domain: fluentform\n"
 
 #: app/Modules/Registerer/TranslationString.php:563
 msgid " create one!"
@@ -116,7 +117,8 @@ msgstr "%s nincs telepítve."
 
 #. translators: %s is the payment gateway name
 #: app/Modules/Registerer/TranslationString.php:1694
-msgid "%s payment gateway does not support remote cancellation at this moment."
+msgid ""
+"%s payment gateway does not support remote cancellation at this moment."
 msgstr "%s a fizetési kapu jelenleg nem támogatja a távoli megszakítást."
 
 #. translators: %s is the payment mode (Test/Live)
@@ -160,12 +162,14 @@ msgstr "%s: a bevitt adat megjelenítéséhez"
 msgid "%sIPN URL:%s %s"
 msgstr ""
 
-#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for PayPal IPN link
+#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for
+#. PayPal IPN link
 #: app/Modules/Registerer/TranslationString.php:2010
 msgid "%sPlease read the documentation%s to learn how to setup %sPayPal IPN%s"
 msgstr ""
 
-#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for Stripe IPN link
+#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for
+#. Stripe IPN link
 #: app/Modules/Registerer/TranslationString.php:2116
 msgid "%sPlease read the documentation%s to learn how to setup %sStripe IPN%s"
 msgstr ""
@@ -206,9 +210,9 @@ msgid ""
 "emails consistently reach the inbox."
 msgstr ""
 ", a végső WordPress SMTP bővítmény, ami natívan integrálódik az e-mail "
-"szolgáltatóval, hogy biztosítsa az e-mailek zökkenőmentes kézbesítését. Ez a "
-"bővítmény gyors, biztonságos és megbízható WordPress e-mail kézbesítést tesz "
-"lehetővé, ezáltal az e-mailek biztosan megérkeznek a postaládába."
+"szolgáltatóval, hogy biztosítsa az e-mailek zökkenőmentes kézbesítését. Ez a"
+" bővítmény gyors, biztonságos és megbízható WordPress e-mail kézbesítést "
+"tesz lehetővé, ezáltal az e-mailek biztosan megérkeznek a postaládába."
 
 #: app/Hooks/actions.php:1163
 msgid "-- Select a form --"
@@ -269,8 +273,8 @@ msgstr "40-nél több Integráció"
 #: app/Modules/Payments/PaymentMethods/Stripe/StripeHandler.php:188
 msgid ""
 "<b>Action Required: </b> The payment has been authorized but not captured "
-"yet. Please <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
-"Click here</a> to capture this payment in stripe.com"
+"yet. Please <a target=\"_blank\" rel=\"noopener noreferrer\" "
+"href=\"%s\">Click here</a> to capture this payment in stripe.com"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:663
@@ -312,11 +316,11 @@ msgstr "Egy héttel ezelőtt"
 msgid ""
 "Accept Payment online as part of the Forms submission process. With Fluent "
 "Forms Powerful payment integration, you can easily accept and process "
-"payments in your Fluent Forms via Stripe/PayPal. Payment Module is available "
-"on Pro Version."
+"payments in your Fluent Forms via Stripe/PayPal. Payment Module is available"
+" on Pro Version."
 msgstr ""
-"Online fizetés elfogadása az űrlap feldolgozásának részeként. A Fluent Forms "
-"hatékony fizetés integrációjával könnyedén fogadhatunk és kezelhetünk "
+"Online fizetés elfogadása az űrlap feldolgozásának részeként. A Fluent Forms"
+" hatékony fizetés integrációjával könnyedén fogadhatunk és kezelhetünk "
 "fizetéseket az űrlapunkon a Stripe és a Paypal rendszerén keresztül. A "
 "fizetés modul csak a Pro verzióban érhető el."
 
@@ -387,8 +391,8 @@ msgstr "Action Hook"
 #: app/Modules/Component/Component.php:304
 #: app/Services/Form/FormService.php:364
 msgid ""
-"Action Hook is not available with the free version. Please upgrade to pro to "
-"get all the advanced features."
+"Action Hook is not available with the free version. Please upgrade to pro to"
+" get all the advanced features."
 msgstr ""
 "Az Action Hook nem elérhető az ingyenes változatban. A speciális funkciók "
 "használatához a Pro verzióra van szükség."
@@ -882,8 +886,8 @@ msgid ""
 "All the external CRM / API call logs and you can see and track if there has "
 "any issue with any of your API configuration. (Last 2 months data only)"
 msgstr ""
-"Az összes  külső CRM / API hívás naplója, ahonnan kiderül, ha bármi probléma "
-"van valamelyik API konfigurációval. (Csak az utolsó 2 hónap adatai)"
+"Az összes  külső CRM / API hívás naplója, ahonnan kiderül, ha bármi probléma"
+" van valamelyik API konfigurációval. (Csak az utolsó 2 hónap adatai)"
 
 #: app/Modules/Registerer/TranslationString.php:1797
 msgid ""
@@ -898,13 +902,13 @@ msgstr ""
 msgid "All Types"
 msgstr "Az összes típus"
 
-#. translators: 1: action (create/update), 2: action past tense (created/updated)
+#. translators: 1: action (create/update), 2: action past tense
+#. (created/updated)
 #: app/Modules/Registerer/TranslationString.php:481
 msgid ""
-"Allow guest user to %1$s post. If allowed post can be %2$s with out login in."
+"Allow guest user to %1$s post. If allowed post can be %2$s with out login "
+"in."
 msgstr ""
-"Jogosultság a vendég %s felhasználónak, hogy bejegyzést írhasson. "
-"Bekapcsolás esetén egy bejegyzés létrehozható a kijelentkezés folyamatból is."
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:269
 msgid ""
@@ -970,7 +974,8 @@ msgstr "Engedélyezett képek"
 msgid "Allows notification to be sent to different email "
 msgstr "Engedélyezi, hogy az értesítéseket egy másik email címre küldjük"
 
-#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for recurring payments link
+#. translators: 1-2: HTML tags for documentation link, 3-4: HTML tags for
+#. recurring payments link
 #: app/Modules/Registerer/TranslationString.php:1927
 msgid ""
 "Also %1$splease check the documentation%2$s to learn how to accept "
@@ -1027,13 +1032,14 @@ msgstr ""
 msgid ""
 "An option for developers to add dynamic elements they want. It provides the "
 "chance to add whatever input type you want to add in this form. This way, "
-"you can bind your own functions to render the form to this action hook."
-"You'll be given 1 parameter to play with: $form."
+"you can bind your own functions to render the form to this action "
+"hook.You'll be given 1 parameter to play with: $form."
 msgstr ""
 "Egy opció a fejlesztőknek, amivel dinamikus elemeket adhatunk hozzá. "
-"Lehetővé teszi, hogy bármilyen típusú beviteli mezőt hozzáadjunk az űrlaphoz."
-" Ily módon saját funkcióinkkal összekapcsolva hozhatjuk létre az űrlapot egy "
-"Actionhookban. Egyetlen paramétert ad, amivel játszhatunk: $form."
+"Lehetővé teszi, hogy bármilyen típusú beviteli mezőt hozzáadjunk az "
+"űrlaphoz. Ily módon saját funkcióinkkal összekapcsolva hozhatjuk létre az "
+"űrlapot egy Actionhookban. Egyetlen paramétert ad, amivel játszhatunk: "
+"$form."
 
 #: app/Services/FluentConversational/Classes/Form.php:598
 #: app/Services/FluentConversational/Classes/Form.php:802
@@ -1042,7 +1048,8 @@ msgstr ""
 
 #: app/Services/Report/ReportHelper.php:854
 msgid ""
-"Analytics is disabled. Please enable it to view top performing form by views."
+"Analytics is disabled. Please enable it to view top performing form by "
+"views."
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:24
@@ -1222,8 +1229,8 @@ msgid ""
 "new lead, FluentForms, web source). Commas within a merge tag value will be "
 "created as a single tag."
 msgstr ""
-"Címkék társítása a Mailchimp névjegyekhez. A címkéket vesszővel elválasztott "
-"listán kell megadni. Az összekapcsolási címke értékén belüli vesszővel "
+"Címkék társítása a Mailchimp névjegyekhez. A címkéket vesszővel elválasztott"
+" listán kell megadni. Az összekapcsolási címke értékén belüli vesszővel "
 "egyszerű címke jön létre."
 
 #: app/Services/Manager/ManagerService.php:111
@@ -1452,8 +1459,8 @@ msgstr ""
 #. translators: 1: opening bold tag, 2: closing bold tag, 3: condition type
 #: app/Modules/Registerer/TranslationString.php:390
 msgid ""
-"Based on your selection, submission %1$swill be valid%2$s if %3$s conditions "
-"are met"
+"Based on your selection, submission %1$swill be valid%2$s if %3$s conditions"
+" are met"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1465
@@ -2107,8 +2114,8 @@ msgstr "Bejelölhető rácsmező"
 #: app/Modules/Component/Component.php:328
 #: app/Services/Form/FormService.php:388
 msgid ""
-"Checkable Grid is not available with the free version. Please upgrade to pro "
-"to get all the advanced features."
+"Checkable Grid is not available with the free version. Please upgrade to pro"
+" to get all the advanced features."
 msgstr ""
 "A bejelölhető rács nem elérhető az ingyenes változatban. A speciális "
 "funkciók használatához a Pro verzióra van szükség."
@@ -2170,9 +2177,8 @@ msgstr ""
 
 #. translators: 1: opening link tag, 2: closing link tag
 #: app/Modules/Registerer/TranslationString.php:894
-#, fuzzy
 msgid "Choose a pre - made form template or %1$screate a blank form%2$s"
-msgstr "Egy előre elkészített űrlapsablon kiválasztása az azonnali kezdéshez"
+msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:200
 msgid "Choose a pre-made form template and customize it."
@@ -2252,7 +2258,8 @@ msgid "City"
 msgstr "Város"
 
 #: app/Services/FormBuilder/ElementCustomization.php:437
-msgid "Class for the field wrapper. This can be used to style current element."
+msgid ""
+"Class for the field wrapper. This can be used to style current element."
 msgstr ""
 "A mezőt körül vevő elem osztálya. Ez az aktuális elem stílusának "
 "formázásához használható."
@@ -2298,12 +2305,12 @@ msgstr "CleverReach"
 #: app/Modules/AddOnModule.php:340
 msgid ""
 "CleverReach is web-based email marketing software for managing email "
-"campaigns and contacts. Use Fluent Forms to grow your CleverReach subscriber "
-"list"
+"campaigns and contacts. Use Fluent Forms to grow your CleverReach subscriber"
+" list"
 msgstr ""
 "A CleverReach egy web-alapú e-mail marketing szoftver e-mailes kampányok és "
-"kapcsolatok kezelésére. A Fluent Forms segítségével növelhető a feliratkozók "
-"száma."
+"kapcsolatok kezelésére. A Fluent Forms segítségével növelhető a feliratkozók"
+" száma."
 
 #: app/Modules/Registerer/TranslationString.php:28
 msgid "Click Here to Create Your First Form"
@@ -2570,7 +2577,8 @@ msgstr "Beállítás szükséges!"
 #: app/Modules/Registerer/TranslationString.php:1018
 msgid "Configure email confirmation / double optin for form form submissions."
 msgstr ""
-"megerősítő email / kettős feliratkozás konfigurálása az űrlapok beküldéséhez."
+"megerősítő email / kettős feliratkozás konfigurálása az űrlapok "
+"beküldéséhez."
 
 #: app/Modules/Registerer/TranslationString.php:1414
 msgid "Configure Global Message from: Global settings > Validation Messages"
@@ -2678,8 +2686,8 @@ msgid ""
 "Connect ConvertKit with Fluent Forms and create subscription forms right "
 "into WordPress and grow your list."
 msgstr ""
-"A ConvertKit és a Fluent Forms összekapcsolásával közvetlenül a WordPressben "
-"hozhatunk létre feliratkozási űrlapokat, amivel bővíthetjük a listánkat."
+"A ConvertKit és a Fluent Forms összekapcsolásával közvetlenül a WordPressben"
+" hozhatunk létre feliratkozási űrlapokat, amivel bővíthetjük a listánkat."
 
 #: app/Modules/AddOnModule.php:220
 msgid ""
@@ -2707,8 +2715,8 @@ msgstr ""
 
 #: app/Modules/AddOnModule.php:236
 msgid ""
-"Connect Platform.ly with Fluent Forms and subscribe a contact when a form is "
-"submitted."
+"Connect Platform.ly with Fluent Forms and subscribe a contact when a form is"
+" submitted."
 msgstr ""
 "Platform.ly és a Fluent Forms összekapcsolása, az űrlap beküldése után "
 "feliratkozás létrehozása"
@@ -2826,8 +2834,8 @@ msgstr "Beszélgetés alapú űrlap / lépésenkénti mentés"
 #: app/Modules/Registerer/TranslationString.php:1241
 #: app/Modules/Registerer/TranslationString.php:1450
 msgid ""
-"Conversational Forms currently doesn't support the following fields: You may "
-"also lose data of these fields."
+"Conversational Forms currently doesn't support the following fields: You may"
+" also lose data of these fields."
 msgstr ""
 "A beszélgetés alapú űrlapokhoz jelenleg nem használhatók az alábbi mezők. A "
 "mezők adatai elveszhetnek."
@@ -3014,8 +3022,8 @@ msgid ""
 "Create completely custom \"distraction-free\" form landing pages to boost "
 "conversions"
 msgstr ""
-"Hozzunk létre teljesen egyéni, figyelemelterelés-mentes landoló oldalakat az "
-"űrlapok számára a kommunikáció felturbózására"
+"Hozzunk létre teljesen egyéni, figyelemelterelés-mentes landoló oldalakat az"
+" űrlapok számára a kommunikáció felturbózására"
 
 #: app/Modules/Registerer/TranslationString.php:13
 msgid "Create Conversational Form"
@@ -3048,7 +3056,8 @@ msgstr "Bejegyzés létrehozása vagy frissítése"
 msgid ""
 "Create PDF template feed and you can download the PDFs from each submission"
 msgstr ""
-"PDF sablon feed létrehozása, amivel  a beküldött űrlapok letölthetők PDF-ben."
+"PDF sablon feed létrehozása, amivel  a beküldött űrlapok letölthetők PDF-"
+"ben."
 
 #: app/Modules/AddOnModule.php:132
 msgid ""
@@ -3083,7 +3092,8 @@ msgstr "Létrehozás a ChatGPT használatával"
 
 #: app/Services/FormBuilder/ElementCustomization.php:137
 msgid ""
-"Create visual options for the field and checkmark them for default selection."
+"Create visual options for the field and checkmark them for default "
+"selection."
 msgstr ""
 "Vizuális beállítások megadása a mezőhöz, majd a beállítások megjelölése "
 "alapértelmezettként."
@@ -3588,7 +3598,8 @@ msgstr "Leírás"
 
 #: app/Services/FormBuilder/ElementCustomization.php:207
 msgid "Description will be shown to the user as normal text content."
-msgstr "A leírás a felhasználónak normál szöveges tartalomként fog megjelenni."
+msgstr ""
+"A leírás a felhasználónak normál szöveges tartalomként fog megjelenni."
 
 #: app/Modules/Registerer/TranslationString.php:1883
 msgid "Deselect All"
@@ -3601,15 +3612,16 @@ msgstr "Tervezés"
 
 #: app/Modules/Registerer/TranslationString.php:118
 msgid ""
-"Design customization available on pro only.This is just a preview version.To "
-"use this feature please upgrade to Pro."
+"Design customization available on pro only.This is just a preview version.To"
+" use this feature please upgrade to Pro."
 msgstr ""
 "A testreszabott tervezés csak a pro verzióban érhető el. Ez csak egy "
 "bemutató változat, teljeskörű használatához a pro verzióra van szükség."
 
 #: app/Modules/Registerer/TranslationString.php:119
 msgid "Design Customization is only available on Pro Version of Fluent Forms."
-msgstr "A testreszabott tervezés csak a Fluent Forms pro verziójában érhető el"
+msgstr ""
+"A testreszabott tervezés csak a Fluent Forms pro verziójában érhető el"
 
 #: app/Modules/Registerer/TranslationString.php:320
 msgid "Design Your Button"
@@ -3629,9 +3641,9 @@ msgid ""
 "Determine the position of label title where the user will see this. By "
 "choosing \"Default\", global label placement setting will be applied."
 msgstr ""
-"Meghatározza a címke feliratának helyét, ahol a felhasználó majd látni fogja."
-" Az \"Alapértelmezett\" opció kiválasztásával a globális címke elhelyezési "
-"beállítások lépnek életbe."
+"Meghatározza a címke feliratának helyét, ahol a felhasználó majd látni "
+"fogja. Az \"Alapértelmezett\" opció kiválasztásával a globális címke "
+"elhelyezési beállítások lépnek életbe."
 
 #: app/Modules/Registerer/AdminBar.php:192 boot/app.php:112
 msgid "Developer Docs"
@@ -3719,8 +3731,8 @@ msgstr "kikapcsolva"
 
 #: app/Modules/Payments/PaymentMethods/Stripe/StripeInlineProcessor.php:409
 msgid ""
-"Disabling strict SCA nonce verification is deprecated and will be removed in "
-"a future version."
+"Disabling strict SCA nonce verification is deprecated and will be removed in"
+" a future version."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1921
@@ -3797,8 +3809,8 @@ msgid ""
 "Docs (doc, ppt, pps, xls, mdb, docx, xlsx, pptx, odt, odp, ods, odg, odc, "
 "odb, odf, rtf, txt)"
 msgstr ""
-"Dokumentumok (doc, ppt, pps, xls, mdb, docx, xlsx, pptx, odt, odp, ods, odg, "
-"odc, odb, odf, rtf, txt)"
+"Dokumentumok (doc, ppt, pps, xls, mdb, docx, xlsx, pptx, odt, odp, ods, odg,"
+" odc, odb, odf, rtf, txt)"
 
 #: app/Views/admin/docs/index.php:131
 msgid "Documentation"
@@ -3826,7 +3838,8 @@ msgstr "Adományok"
 
 #: app/Modules/Registerer/TranslationString.php:1991
 msgid "Dot as Thousand and Comma as Decimal ( EG: 12.000,00 )"
-msgstr "Pont az ezres csoportosításhoz és vessző a tizedeshez (Pl. 12.000,00 )"
+msgstr ""
+"Pont az ezres csoportosításhoz és vessző a tizedeshez (Pl. 12.000,00 )"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:244
 #: app/Views/admin/globalSettings/menu.php:251
@@ -4273,8 +4286,8 @@ msgid ""
 "Enable Integration Failure Email Notification to receive email notification "
 "whenever an integration fails to run."
 msgstr ""
-"Értesítő email bekapcsolásával, emailben értesülhetünk ha egy integráció nem "
-"fut megfelelően"
+"Értesítő email bekapcsolásával, emailben értesülhetünk ha egy integráció nem"
+" fut megfelelően"
 
 #: app/Modules/Registerer/TranslationString.php:1185
 #: app/Modules/Registerer/TranslationString.php:2286
@@ -4379,8 +4392,8 @@ msgstr "Feed bekapcsolása"
 msgid ""
 "Enable this feed conditionally. Select to match whether all rules are "
 "required, any rule is sufficient, or use group logic. If the conditions "
-"match, the feed will be run. For groups, if any group's conditions are fully "
-"met, the feed will be run."
+"match, the feed will be run. For groups, if any group's conditions are fully"
+" met, the feed will be run."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1979
@@ -4388,12 +4401,13 @@ msgid ""
 "Enable this only for test purpose, then FluentForm will log IPN and Payment "
 "errors in the log"
 msgstr ""
-"Bekapcsolás csak tesztelés céjából , a FluentForm pedig majd naplózza az IPN "
-"és fizetési hibákat"
+"Bekapcsolás csak tesztelés céjából , a FluentForm pedig majd naplózza az IPN"
+" és fizetési hibákat"
 
 #: app/Modules/Registerer/TranslationString.php:353
 msgid "Enable this to append survey result to the confirmation message"
-msgstr "Bekapcsolásával a kérdőív eredményeit csatoljuk a megerősítő üzenethez"
+msgstr ""
+"Bekapcsolásával a kérdőív eredményeit csatoljuk a megerősítő üzenethez"
 
 #: app/Modules/Registerer/TranslationString.php:2271
 msgid "Enable this to automatically load Captcha in all forms."
@@ -4421,8 +4435,8 @@ msgstr "Egyedi összeg bekapcsolása"
 
 #: app/Modules/Registerer/TranslationString.php:1940
 msgid ""
-"Enable your users to apply coupon / discount code while purchasing something "
-"using Fluent Forms Payment Module.Just activate this module and setup your "
+"Enable your users to apply coupon / discount code while purchasing something"
+" using Fluent Forms Payment Module.Just activate this module and setup your "
 "your coupons."
 msgstr ""
 "Lehetővé teszi, hogy a felhasználók kedvezménykuponokat érvényesítsenek ha "
@@ -4626,8 +4640,8 @@ msgstr "Az értesítési email válaszcímének megadása."
 
 #: app/Modules/Registerer/TranslationString.php:1965
 msgid ""
-"Enter the expiration date for this discount code in the format of yyyy - mm -"
-" dd. For no expiration, leave blank"
+"Enter the expiration date for this discount code in the format of yyyy - mm "
+"- dd. For no expiration, leave blank"
 msgstr ""
 "Az alábbi kedvezménykód lejárati dátumának megadása, Szükséges formátum: "
 "éééé - hh - nn. Ha nem akarunk lejárati dátumot megadni, akkor hagyjuk "
@@ -4643,11 +4657,11 @@ msgstr "Az értesítési emailhez a  feladó nevének megadása."
 
 #: app/Modules/Registerer/TranslationString.php:1963
 msgid ""
-"Enter the start date for this discount code in the format of yyyy - mm - dd. "
-"For no start date, leave blank."
+"Enter the start date for this discount code in the format of yyyy - mm - dd."
+" For no start date, leave blank."
 msgstr ""
-"Az alábbi kedvezménykód kezdési dátumának megadása, Szükséges formátum: éééé "
-"- hh - nn. Ha nem akarunk kezdési dátumot megadni, akkor hagyjuk üresen a "
+"Az alábbi kedvezménykód kezdési dátumának megadása, Szükséges formátum: éééé"
+" - hh - nn. Ha nem akarunk kezdési dátumot megadni, akkor hagyjuk üresen a "
 "mezőt."
 
 #: app/Modules/Registerer/TranslationString.php:754
@@ -4695,8 +4709,8 @@ msgid ""
 "Enter your hCaptcha Secret Key, if you do not have a key you can register "
 "for one at the provided link. hCaptcha is a free service."
 msgstr ""
-"hCaptcha biztonsági kulcs megadása. Amennyiben még nincs, akkor regisztrálni "
-"lehet egyet a megadott linken. A hCaptcha ingyenes szolgáltatás."
+"hCaptcha biztonsági kulcs megadása. Amennyiben még nincs, akkor regisztrálni"
+" lehet egyet a megadott linken. A hCaptcha ingyenes szolgáltatás."
 
 #: app/Modules/Registerer/TranslationString.php:1057
 #: app/Modules/Registerer/TranslationString.php:1060
@@ -4729,8 +4743,8 @@ msgid ""
 "Mailchimp account and go to<br>Profile -> Extras -> Api Keys"
 msgstr ""
 "A Mailchimp API kulcs megadása, amennyiben nincs <br>Bejelentkezés után a "
-"Mailchimp felhasználói fiókban létrehozhatunk egyet.<br>Profile -> Extras -> "
-"Api Keys menüben"
+"Mailchimp felhasználói fiókban létrehozhatunk egyet.<br>Profile -> Extras ->"
+" Api Keys menüben"
 
 #: app/Services/FormBuilder/DefaultElements.php:86
 msgid "Enter Your Middle Name"
@@ -4747,8 +4761,8 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1124
 msgid ""
-"Enter your reCAPTCHA Site Key, if you do not have a key you can register for "
-"one at the provided link. reCAPTCHA is a free service."
+"Enter your reCAPTCHA Site Key, if you do not have a key you can register for"
+" one at the provided link. reCAPTCHA is a free service."
 msgstr ""
 "reCAPTCHA honlapkulcs megadása. Amennyiben még nincs, akkor regisztrálni "
 "lehet egyet a megadott linken. A reCAPTCHA ingyenes szolgáltatás."
@@ -4758,13 +4772,13 @@ msgid ""
 "Enter your Turnstile Secret Key, if you do not have a key you can register "
 "for one at the provided link, Turnstile is a free service."
 msgstr ""
-"A Turnstile biztonsági kulcs megadása, amennyiben nincs, a megadott honlapon "
-"regisztrálhatunk egyet. A Turnstile ingyenes szolgáltatás."
+"A Turnstile biztonsági kulcs megadása, amennyiben nincs, a megadott honlapon"
+" regisztrálhatunk egyet. A Turnstile ingyenes szolgáltatás."
 
 #: app/Modules/Registerer/TranslationString.php:1103
 msgid ""
-"Enter your Turnstile Site Key, if you do not have a key you can register for "
-"one at the provided link Turnstile is a free service."
+"Enter your Turnstile Site Key, if you do not have a key you can register for"
+" one at the provided link Turnstile is a free service."
 msgstr ""
 "A Turnstile honlap kulcs megadása, amennyiben nincs, a megadott honlapon "
 "regisztrálhatunk egyet. A Turnstile ingyenes szolgáltatás."
@@ -5023,7 +5037,8 @@ msgstr "Fade In/Out"
 
 #: app/Modules/Registerer/TranslationString.php:812
 msgid "Fail the submission if conditions met"
-msgstr "A beküldés sikertelen lesz, ha a feltételek megfelelnek az alábbiaknak"
+msgstr ""
+"A beküldés sikertelen lesz, ha a feltételek megfelelnek az alábbiaknak"
 
 #: app/Modules/Registerer/TranslationString.php:938
 msgid "Fail the submission if match"
@@ -5101,7 +5116,8 @@ msgstr "Kiemelt kép"
 
 #: app/Modules/Registerer/TranslationString.php:444
 msgid "Featured Image will be shown in social media share preview "
-msgstr "A kiemelt kép megjelenik a közösségi médiában, megosztási előnézetben "
+msgstr ""
+"A kiemelt kép megjelenik a közösségi médiában, megosztási előnézetben "
 
 #: app/Views/admin/smtp/index.php:59
 msgid "Features of FluentSMTP Plugin"
@@ -5240,8 +5256,8 @@ msgstr "A feed létrehozása folyamatban van, kis türelmet..."
 #: app/Modules/Component/Component.php:290
 #: app/Services/Form/FormService.php:348
 msgid ""
-"File Upload is not available with the free version. Please upgrade to pro to "
-"get all the advanced features."
+"File Upload is not available with the free version. Please upgrade to pro to"
+" get all the advanced features."
 msgstr ""
 "A fájlfeltöltés mező nem érhető el az ingyenes változatban. A speciális "
 "funkciók eléréséhez a Pro változatra van szükség."
@@ -5349,8 +5365,8 @@ msgid ""
 "Fluent Forms Brevo (formerly SendInBlue) Module allows you to create "
 "contacts on your list, so you can grow your email list."
 msgstr ""
-"A Fluent Forms Brevo (korábban SendInBlue)  moduljával kapcsolatok hozhatóak "
-"létre a listánkon, ezáltal bővítve az email listánkat."
+"A Fluent Forms Brevo (korábban SendInBlue)  moduljával kapcsolatok hozhatóak"
+" létre a listánkon, ezáltal bővítve az email listánkat."
 
 #: app/Modules/AddOnModule.php:188
 msgid ""
@@ -5371,11 +5387,11 @@ msgstr "Fluent Forms Alapértelmezett"
 
 #: app/Modules/AddOnModule.php:292
 msgid ""
-"Fluent Forms Drip Module allows you to create contacts on your Drip list, so "
-"you can grow your email list."
+"Fluent Forms Drip Module allows you to create contacts on your Drip list, so"
+" you can grow your email list."
 msgstr ""
-"A Fluent Forms Drip modulja lehetővé teszi, hogy névjegyeket hozzunk létre a "
-"Drip listán, ezzel is bővíthetjük az email listánkat."
+"A Fluent Forms Drip modulja lehetővé teszi, hogy névjegyeket hozzunk létre a"
+" Drip listán, ezzel is bővíthetjük az email listánkat."
 
 #: app/Modules/Registerer/TranslationString.php:1823
 msgid "Fluent Forms export file from your computer."
@@ -5397,8 +5413,8 @@ msgid ""
 "required only if you decide to use the Turnstile field."
 msgstr ""
 "A Fluent Forms képes integrálni a Cloudflare Turnstile ingyenes "
-"szolgáltatást, ami megvédi a honlapokat a spammeléstől és a visszaélésektől. "
-"Ezekre a beállításokra csak a Turnstile mező használatakor van szükség."
+"szolgáltatást, ami megvédi a honlapokat a spammeléstől és a visszaélésektől."
+" Ezekre a beállításokra csak a Turnstile mező használatakor van szükség."
 
 #: app/Modules/Registerer/TranslationString.php:1126
 msgid ""
@@ -5413,8 +5429,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1035
 msgid ""
 "Fluent Forms integrates with hCaptcha, a free service that protects your "
-"website from spam and abuse.Please note, these settings are required only if "
-"you decide to use the hCaptcha field."
+"website from spam and abuse.Please note, these settings are required only if"
+" you decide to use the hCaptcha field."
 msgstr ""
 "A Fluent Forms képes integrálni a hCaptcha ingyenes szolgáltatást, ami "
 "megvédi a honlapokat a spammeléstől és a visszaélésektől. Ezekre a "
@@ -5482,17 +5498,17 @@ msgid ""
 "marketing - you'll get integrations for various purposes. Even if you don't "
 "find your favorite tools, you can integrate them easily with Zapier."
 msgstr ""
-"A Fluent Forms Pro számtalan integrált megoldással emeli magasabb szintre az "
-"űrlapunkat. Online fizetéstől kvízek készítéséig, SMS értesítésektől az "
+"A Fluent Forms Pro számtalan integrált megoldással emeli magasabb szintre az"
+" űrlapunkat. Online fizetéstől kvízek készítéséig, SMS értesítésektől az "
 "email marketingig. - Különböző integrációk a legkülönbözőbb helyzetekre. De "
-"ha így sem találnánk a kedvenc eszközeinket, a Zapier integrációval még azon "
-"is segítenek."
+"ha így sem találnánk a kedvenc eszközeinket, a Zapier integrációval még azon"
+" is segítenek."
 
 #: boot/app.php:20
 #, fuzzy
 msgid ""
-"Fluent Forms Pro is not compatible with this version of Fluent Forms. Please "
-"update Fluent Forms Pro to version "
+"Fluent Forms Pro is not compatible with this version of Fluent Forms. Please"
+" update Fluent Forms Pro to version "
 msgstr ""
 "Úgy tűnik, hogy a fluent forms pro egy régebbi verziója van használatban. A "
 "legújabb verzióra való frissítés szükséges."
@@ -5529,21 +5545,17 @@ msgstr "Fluent Form"
 
 #. translators: 1: opening link tag, 2: closing link tag
 #: app/Modules/Registerer/TranslationString.php:2059
-#, fuzzy
 msgid ""
-"FluentForms uses the pages below for handling the display of payment history "
-"and payment receipt. Please select the pages and add the instructed "
+"FluentForms uses the pages below for handling the display of payment history"
+" and payment receipt. Please select the pages and add the instructed "
 "shortcodes accordingly. %1$sPlease read the documentation%2$s for advanced "
 "shortcode usage."
 msgstr ""
-"A FluentForms az alábbi oldalakat használja a fizetési előzmények és a "
-"fizetési bizonylat megjelenítésére. Válasszuk ki az oldalakat és ennek "
-"megfelelően adjuk hozzá a shortcode-okat."
 
 #: app/Modules/Registerer/TranslationString.php:1923
 msgid ""
-"FluentForms uses the pages below for handling the display of payment history "
-"and payment receipt.Please select the pages and add the instructed "
+"FluentForms uses the pages below for handling the display of payment history"
+" and payment receipt.Please select the pages and add the instructed "
 "shortcodes accordingly."
 msgstr ""
 "A FluentForms az alábbi oldalakat használja a fizetési előzmények és a "
@@ -5608,8 +5620,8 @@ msgid ""
 msgstr ""
 "A jobb email kézbesítési hatékonyság érdekében a FluentSMTP bővítményt "
 "ajánljuk, ami teljesen ingyenes és nyílt forráskódú. A FluentSMTP "
-"összekapcsolódik az email szolgáltatóval, hogy biztosítsa az emailek, köztük "
-"az űrlap értesítő levelek megérkezését."
+"összekapcsolódik az email szolgáltatóval, hogy biztosítsa az emailek, köztük"
+" az űrlap értesítő levelek megérkezését."
 
 #: app/Views/admin/smtp/index.php:41
 msgid ""
@@ -5617,8 +5629,8 @@ msgid ""
 "will help you manage all your WordPress website emails, including FluentCRM "
 "emails. "
 msgstr ""
-"A FluentCRM felhasználók számára készítettünk egy jól optimizált SMTP/Amazon "
-"SES bővítményt. Segít kezelni az összes wordPress honlapos emailt köztük "
+"A FluentCRM felhasználók számára készítettünk egy jól optimizált SMTP/Amazon"
+" SES bővítményt. Segít kezelni az összes wordPress honlapos emailt köztük "
 "természetesen a FluentCRM leveleit is. "
 
 #: app/Modules/Registerer/TranslationString.php:1167
@@ -5987,8 +5999,8 @@ msgstr ""
 msgid ""
 "Generate PDF from Fluent Forms Submissions and Send via Email or Download"
 msgstr ""
-"PDF létrehozása a beküldött űrlapokból. Létrehozhatunk PDF sablonokat,amiket "
-"azután le lehet tölteni vagy el is lehet küldeni emailben."
+"PDF létrehozása a beküldött űrlapokból. Létrehozhatunk PDF sablonokat,amiket"
+" azután le lehet tölteni vagy el is lehet küldeni emailben."
 
 #: app/Views/admin/addons/pdf_promo.php:9
 #: app/Views/admin/addons/pdf_promo.php:16
@@ -5996,8 +6008,8 @@ msgid ""
 "Generate PDF from your form submissions. You can create PDF templates and "
 "download / send via email too."
 msgstr ""
-"PDF létrehozása a beküldött űrlapokból. Létrehozhatunk PDF sablonokat,amiket "
-"azután le lehet tölteni vagy el is lehet küldeni emailben."
+"PDF létrehozása a beküldött űrlapokból. Létrehozhatunk PDF sablonokat,amiket"
+" azután le lehet tölteni vagy el is lehet küldeni emailben."
 
 #: app/Modules/Registerer/TranslationString.php:2276
 msgid "GEO API Token"
@@ -6088,8 +6100,8 @@ msgstr "Link beszerzése vagy megosztás a közösségi oldalakon"
 #: app/Modules/AddOnModule.php:276
 msgid ""
 "GetGist is Easy to use all-in-one software for live chat, email marketing "
-"automation, forms, knowledge base, and more for a complete 360° view of your "
-"contacts."
+"automation, forms, knowledge base, and more for a complete 360° view of your"
+" contacts."
 msgstr ""
 "A GetGist könnyen használható, minden az egyben szoftver élő chatelésre, "
 "automatizált email marketingre, űrlapokhoz, tudásbázisokhoz, és még sok "
@@ -6678,9 +6690,9 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1494
 msgid ""
-"If Terms and Conditions checkbox is hidden (appears unchecked), please avoid "
-"marking this field as required. This ensures your forms will submit properly "
-"without any issues."
+"If Terms and Conditions checkbox is hidden (appears unchecked), please avoid"
+" marking this field as required. This ensures your forms will submit "
+"properly without any issues."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2254
@@ -6717,9 +6729,9 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2081
 msgid ""
-"If you disable this then all the payment related functions will be disabled. "
-"If you want to process/accept payment using fluent forms. You should enable "
-"this."
+"If you disable this then all the payment related functions will be disabled."
+" If you want to process/accept payment using fluent forms. You should enable"
+" this."
 msgstr ""
 "Kikapcsolás esetén minden fizetéssel összefüggő funkció ki lesz kapcsolva. "
 "Ha a Fluent forms használatával szeretnénk fizetéseket elfogadni és "
@@ -6727,9 +6739,9 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1970
 msgid ""
-"If you disable this then all the payment related functions will be disabled."
-"If you want to process / accept payment using fluent forms.You should enable "
-"this."
+"If you disable this then all the payment related functions will be "
+"disabled.If you want to process / accept payment using fluent forms.You "
+"should enable this."
 msgstr ""
 "Kikapcsolás esetén minden fizetéssel összefüggő funkció ki lesz kapcsolva. "
 "Ha a Fluent forms használatával szeretnénk fizetéseket elfogadni és "
@@ -6765,8 +6777,8 @@ msgid ""
 "If you enable this then Fluent Forms will verify the form submission with "
 "Akismet. It will save you from spam form submission."
 msgstr ""
-"Bekapcsolás esetén a fluent forms az Akismet rendszerével ellenőrzi az űrlap "
-"beküldéseket. Ezzel elkerülhető a spam jellegű beküldés."
+"Bekapcsolás esetén a fluent forms az Akismet rendszerével ellenőrzi az űrlap"
+" beküldéseket. Ezzel elkerülhető a spam jellegű beküldés."
 
 #: app/Services/FormBuilder/ElementCustomization.php:271
 msgid ""
@@ -6829,13 +6841,13 @@ msgid ""
 "If you make it unique then it will validate as unique from previous "
 "submissions of this form"
 msgstr ""
-"Ha egyedinek állítjuk be,akkor az űrlap korábbi beküldéseinél is végrehajtja "
-"az egyedi mező érvényesítését"
+"Ha egyedinek állítjuk be,akkor az űrlap korábbi beküldéseinél is végrehajtja"
+" az egyedi mező érvényesítését"
 
 #: app/Views/admin/docs/index.php:213
 msgid ""
-"If you need any feature on Fluent Forms, then please request a feature to us "
-"with your requirement."
+"If you need any feature on Fluent Forms, then please request a feature to us"
+" with your requirement."
 msgstr ""
 "A Fluent forms funkcióival kapcsolatos igényekkel meg lehet keresni  a "
 "fejlesztőket."
@@ -6944,15 +6956,12 @@ msgstr ""
 
 #. translators: 1: opening link tag, 2: closing link tag
 #: app/Modules/Registerer/TranslationString.php:2101
-#, fuzzy
 msgid ""
 "In order for Stripe to function completely for subscription/recurring "
 "payments, you must configure your Stripe webhooks. Visit your %1$saccount "
 "dashboard%2$s to configure them. Please add a webhook endpoint for the URL "
 "below."
 msgstr ""
-"Ahhoz, hogy a Stripe megfelelően kezelje az ismétlődő fizetéseket, be kell "
-"állítani a Stripe Webhookot. Irány a "
 
 #: app/Modules/Registerer/TranslationString.php:2006
 msgid ""
@@ -7316,21 +7325,21 @@ msgid ""
 "It is not recommended to change the name attribute, as this will break "
 "conditional logic and integration field mappings. If you proceed, you will "
 "need to recreate these mappings with the updated value. Additionally, the "
-"connection with submission values will be lost, meaning existing submissions "
-"containing this field will no longer be displayed."
+"connection with submission values will be lost, meaning existing submissions"
+" containing this field will no longer be displayed."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1025
-msgid ""
-"It will only be visible in the email if \"From Email\" value is available"
+msgid "It will only be visible in the email if \"From Email\" value is available"
 msgstr ""
-"Csak akkor jelenik meg az emailben, ha a \"Feladó email\" érték meg van adva."
+"Csak akkor jelenik meg az emailben, ha a \"Feladó email\" érték meg van "
+"adva."
 
 #: app/Modules/Registerer/TranslationString.php:545
-msgid ""
-"It will only be visible in the email if \\\"From Email\\\" value is available"
+msgid "It will only be visible in the email if \\\"From Email\\\" value is available"
 msgstr ""
-"Csak akkor jelenik meg az emailben, ha a \"Feladó email\" érték meg van adva."
+"Csak akkor jelenik meg az emailben, ha a \"Feladó email\" érték meg van "
+"adva."
 
 #: app/Modules/Registerer/TranslationString.php:1862
 #, fuzzy
@@ -7380,9 +7389,8 @@ msgstr "3. elem"
 
 #. translators: %s is the submission status name
 #: app/Hooks/Ajax.php:180
-#, fuzzy
 msgid "Item has been marked as %s"
-msgstr "A bejegyzést kedvencnek jelöltük"
+msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1080
 msgid "Item Name"
@@ -7952,8 +7960,8 @@ msgstr "Logó"
 
 #: app/Modules/Registerer/TranslationString.php:1647
 msgid ""
-"Looks like you are using older version of fluent forms pro. Please update to "
-"latest version"
+"Looks like you are using older version of fluent forms pro. Please update to"
+" latest version"
 msgstr ""
 "Úgy tűnik, hogy a fluent forms pro egy régebbi verziója van használatban. A "
 "legújabb verzióra való frissítés szükséges."
@@ -8032,16 +8040,17 @@ msgid ""
 "Mailchimp is a marketing platform for small businesses. Send beautiful "
 "emails, connect your e-commerce store, advertise, and build your brand. Use "
 "Fluent Forms to collect customer information and automatically add it to "
-"your Mailchimp campaign list. If you don't have a Mailchimp account, you can "
-"<a href=\"https://mailchimp.com/\" target=\"_blank\">sign up for one here."
-"</a>"
+"your Mailchimp campaign list. If you don't have a Mailchimp account, you can"
+" <a href=\"https://mailchimp.com/\" target=\"_blank\">sign up for one "
+"here.</a>"
 msgstr ""
 "A Mailchimp egy marketing platform kisvállalkozások számára. Alkalmas "
-"gyönyörű emailek küldésére, e-commerce store összekapcsolására, reklámozásra,"
-" és márkaépítésre. A Fluent Forms segítségével gyűjtött felhasználói "
-"információkat képes automatikusan hozzáadni a Mailchimp kampány listájához. "
-"Ha még nincs Mailchimp fiókunk, akkor <a href=\"https://mailchimp.com/\" "
-"target=\"_blank\">Itt létrehozhatunk egyet.</a>"
+"gyönyörű emailek küldésére, e-commerce store összekapcsolására, "
+"reklámozásra, és márkaépítésre. A Fluent Forms segítségével gyűjtött "
+"felhasználói információkat képes automatikusan hozzáadni a Mailchimp kampány"
+" listájához. Ha még nincs Mailchimp fiókunk, akkor <a "
+"href=\"https://mailchimp.com/\" target=\"_blank\">Itt létrehozhatunk "
+"egyet.</a>"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:136
 msgid ""
@@ -8314,7 +8323,8 @@ msgstr "Bejegyzések maximális száma"
 #: app/Modules/Registerer/TranslationString.php:1863
 msgid ""
 "Maximum execution time error, due to lot's of entries. Maybe fail importing "
-"some of entries. Please increase server maximum executing time and try again."
+"some of entries. Please increase server maximum executing time and try "
+"again."
 msgstr ""
 "Maximális végrehajtási idő hiba, a sok bejegyzés miatt. Lehet, hogy néhány "
 "bejegyzés importálása sikertelen. A szerver maximális végrehajtási idejének "
@@ -8477,8 +8487,8 @@ msgid ""
 "previously imported forms and entries will be reset and updated again."
 msgstr ""
 "Más bővítmények űrlapjainak áthozása a Fluent Forms rendszerébe könnyedén. "
-"Azért arra figyeljünk oda, hogy ilyenkor a korábban már importált űrlapok és "
-"bejegyzések vissza lesznek állítva és ismételten frissülni fognak."
+"Azért arra figyeljünk oda, hogy ilyenkor a korábban már importált űrlapok és"
+" bejegyzések vissza lesznek állítva és ismételten frissülni fognak."
 
 #: app/Modules/Registerer/TranslationString.php:1827
 msgid ""
@@ -8486,14 +8496,14 @@ msgid ""
 "previously imported forms and entries will be reset and updated again."
 msgstr ""
 "Más bővítmények űrlapjainak áthozása a Fluent Forms rendszerébe könnyedén. "
-"Azért arra figyeljünk oda, hogy ilyenkor a korábban már importált űrlapok és "
-"bejegyzések vissza lesznek állítva és ismételten frissülni fognak."
+"Azért arra figyeljünk oda, hogy ilyenkor a korábban már importált űrlapok és"
+" bejegyzések vissza lesznek állítva és ismételten frissülni fognak."
 
 #: app/Modules/Registerer/TranslationString.php:1703
 #: app/Modules/Registerer/TranslationString.php:1880
 msgid ""
-"Migration tools only works if you have any other contact form plugin already "
-"installed along with Fluent Forms."
+"Migration tools only works if you have any other contact form plugin already"
+" installed along with Fluent Forms."
 msgstr ""
 "A migrációs eszközök csak abban az esetben működnek, ha bármely más contact "
 "form bővítmény telepítve van a Fluent Forms-szal együtt."
@@ -8725,11 +8735,11 @@ msgstr "Nettó Promóter Pontszám"
 #: app/Modules/Component/Component.php:377
 #: app/Services/Form/FormService.php:444
 msgid ""
-"Net Promoter Score is not available with the free version. Please upgrade to "
-"pro to get all the advanced features."
+"Net Promoter Score is not available with the free version. Please upgrade to"
+" pro to get all the advanced features."
 msgstr ""
-"A Nettó Promóter Pontszám nem érhető el az ingyenes változatban. A speciális "
-"funkciók használatához a Pro verzióra van szükség."
+"A Nettó Promóter Pontszám nem érhető el az ingyenes változatban. A speciális"
+" funkciók használatához a Pro verzióra van szükség."
 
 #: app/Modules/Registerer/TranslationString.php:2209
 msgid "Net Revenue"
@@ -8917,9 +8927,8 @@ msgstr "Nem találtunk bejegyzéseket."
 
 #. translators: %s: error message
 #: app/Services/Submission/SubmissionService.php:180
-#, fuzzy
 msgid "No Entry found. Error: %s"
-msgstr "Nem találtunk bejegyzéseket."
+msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2177
 msgid "No form data available for the selected period"
@@ -9664,8 +9673,8 @@ msgstr "Fizetésmód"
 
 #: app/Modules/Registerer/TranslationString.php:1993
 msgid ""
-"Payment Module has been disabled currently.No Payments will be processed and "
-"associate functions will be disabled"
+"Payment Module has been disabled currently.No Payments will be processed and"
+" associate functions will be disabled"
 msgstr ""
 "A fizetés modul jelenleg ki van kapcsolva. Nem dolgozunk fel kifizetéseket, "
 "ill. a kapcsolódó funkciók sem működnek."
@@ -9947,8 +9956,8 @@ msgstr "Bejegyzés mezők"
 #: app/Modules/Component/Component.php:342
 #: app/Services/Form/FormService.php:404
 msgid ""
-"Phone Field is not available with the free version. Please upgrade to pro to "
-"get all the advanced features."
+"Phone Field is not available with the free version. Please upgrade to pro to"
+" get all the advanced features."
 msgstr ""
 "A telefonszám mező nem elérhető az ingyenes változatban. A speciális "
 "funkciók használatához a pro verzió szükséges."
@@ -10033,8 +10042,8 @@ msgid ""
 "Please enable this if you enable users to manage their own subscriptions "
 "like cancel an active subscription."
 msgstr ""
-"Bekapcsolása szükséges, ha a felhasználóknak meg akarjuk engedni, hogy saját "
-"maguk kezeljék az előfizetéseiket. Pl. hogy lemondjanak egy aktív "
+"Bekapcsolása szükséges, ha a felhasználóknak meg akarjuk engedni, hogy saját"
+" maguk kezeljék az előfizetéseiket. Pl. hogy lemondjanak egy aktív "
 "előfizetést."
 
 #: app/Modules/Registerer/TranslationString.php:1259
@@ -10152,8 +10161,8 @@ msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:571
 msgid ""
-"Please provide max number of rows the user can fill up for this repeat field."
-" Keep blank/0 for unlimited numbers"
+"Please provide max number of rows the user can fill up for this repeat "
+"field. Keep blank/0 for unlimited numbers"
 msgstr ""
 "Az ismétlődő mező feltölthető sorainak max. számának kiválasztása. Ha nincs "
 "limit, akkor üresen kell hagyni, vagy 0 értéket kell megadni."
@@ -10204,16 +10213,16 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1973
 msgid ""
-"Please provide your business name. It will be used to paypal's business name "
-"when redirect to checkout."
+"Please provide your business name. It will be used to paypal's business name"
+" when redirect to checkout."
 msgstr ""
 "Adjuk meg a cég nevét, a PayPal is ezt fogja használni cégnévként, miután "
 "átirányítjuk a fizetéshez."
 
 #: app/Modules/Registerer/TranslationString.php:1975
 msgid ""
-"Please provide your full business address including street, city, zip, state "
-"and country."
+"Please provide your full business address including street, city, zip, state"
+" and country."
 msgstr ""
 "Adjuk meg a cég teljes címét beleértve utca, város, irányítószám, "
 "állam/megye és ország."
@@ -10234,7 +10243,8 @@ msgstr "Javasoljuk a dokumentáció elolvasását"
 
 #: app/Views/admin/docs/index.php:153
 msgid ""
-"Please report us and we promise we will fix that as soon as humanly possible."
+"Please report us and we promise we will fix that as soon as humanly "
+"possible."
 msgstr ""
 "A tudomásunkra kel hozni, és akkor olyan gyorsan kijavítjuk, ahogy az "
 "emberileg csak lehetséges."
@@ -10291,8 +10301,8 @@ msgstr ""
 #, fuzzy
 msgid ""
 "Please select the customer name field from your form inputs. It's an "
-"optional but recommended field. If the user is logged in then this data will "
-"be picked from logged in user."
+"optional but recommended field. If the user is logged in then this data will"
+" be picked from logged in user."
 msgstr ""
 "Válasszuk ki a felhasználó név mezőjét az űrlappal bevitt adatokból. Ez egy "
 "nem kötelező mező, de ajánlott. Ha a felhasználó be van jelentkezve, akkor "
@@ -10317,11 +10327,13 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:768
 #: app/Modules/Registerer/TranslationString.php:1203
 msgid "Please select what will be happened once a submission marked as spam"
-msgstr "Válasszuk ki, hogy mi történjen, ha egy beküldés spam megjelölést kap."
+msgstr ""
+"Válasszuk ki, hogy mi történjen, ha egy beküldés spam megjelölést kap."
 
 #: app/Modules/Registerer/TranslationString.php:540
 msgid "Please Select when the email will be sent for Payment Forms"
-msgstr "Válasszuk ki, hogy az email mikor legyen elküldve a fizetés űrlapokhoz"
+msgstr ""
+"Válasszuk ki, hogy az email mikor legyen elküldve a fizetés űrlapokhoz"
 
 #: app/Modules/Registerer/TranslationString.php:1053
 msgid "Please select which reCAPTCHA version you would like to use"
@@ -10492,8 +10504,8 @@ msgstr "Bejegyzés/CPT kiválasztása"
 #: app/Modules/Component/Component.php:363
 #: app/Services/Form/FormService.php:428
 msgid ""
-"Post/CPT Selection is not available with the free version. Please upgrade to "
-"pro to get all the advanced features."
+"Post/CPT Selection is not available with the free version. Please upgrade to"
+" pro to get all the advanced features."
 msgstr ""
 "A Bejegyzés/CPT kiválasztása nem érhető el az ingyenes változatban. A "
 "speciális funkciók használatához a Pro verzióra van szükség."
@@ -10520,9 +10532,8 @@ msgstr ""
 
 #. translators: 1: opening emphasis tag, 2: closing emphasis tag
 #: app/Modules/Registerer/TranslationString.php:868
-#, fuzzy
 msgid "Press %1$sEnter ↵%2$s"
-msgstr "Pl. Nyomjunk Entert"
+msgstr ""
 
 #: app/Modules/Component/Component.php:660
 msgid "Press to select"
@@ -10699,8 +10710,8 @@ msgstr "Fájl URL megadása"
 msgid ""
 "Provide Input Prefix Label. It will show in the input field as prefix label"
 msgstr ""
-"Adjuk meg a bemeneti előtag címkéjét. A bemeneti mezőben előtagcímkeként fog "
-"megjelenni"
+"Adjuk meg a bemeneti előtag címkéjét. A bemeneti mezőben előtagcímkeként fog"
+" megjelenni"
 
 #: app/Services/FormBuilder/ElementCustomization.php:611
 #, fuzzy
@@ -10708,8 +10719,8 @@ msgid ""
 "Provide Input Suffix Label or Icon or SVG. It will show in the input field "
 "as suffix label"
 msgstr ""
-"Adjuk meg a bemeneti utótag címkéjét. A bemeneti mezőben utótagcímkeként fog "
-"megjelenni"
+"Adjuk meg a bemeneti utótag címkéjét. A bemeneti mezőben utótagcímkeként fog"
+" megjelenni"
 
 #: app/Modules/Registerer/TranslationString.php:684
 #, fuzzy
@@ -10717,16 +10728,16 @@ msgid ""
 "Provide the statement descriptor. If you keep it empty then your form name "
 "will be set. (Contains between 5 and 22 characters)"
 msgstr ""
-"Statement descriptor megadása. Ha üresen hagyjuk, akkor az űrlap nevét fogja "
-"használni a rendszer. (hosszúsága min. 5, max. 22 karakter lehet)"
+"Statement descriptor megadása. Ha üresen hagyjuk, akkor az űrlap nevét fogja"
+" használni a rendszer. (hosszúsága min. 5, max. 22 karakter lehet)"
 
 #: app/Modules/Registerer/TranslationString.php:1983
 msgid ""
-"Provide your default currency.You can also change your currency to each form "
-"in form's payment settings"
+"Provide your default currency.You can also change your currency to each form"
+" in form's payment settings"
 msgstr ""
-"Az alapértelmezett pénznem kiválasztása. Egy űrlapon ettől eltérő beállítást "
-"is meg lehet adni a fizetési beállításokban."
+"Az alapértelmezett pénznem kiválasztása. Egy űrlapon ettől eltérő beállítást"
+" is meg lehet adni a fizetési beállításokban."
 
 #: app/Modules/Registerer/TranslationString.php:971
 msgid "public"
@@ -10893,11 +10904,11 @@ msgstr "Értékelések"
 #: app/Modules/Component/Component.php:321
 #: app/Services/Form/FormService.php:380
 msgid ""
-"Ratings is not available with the free version. Please upgrade to pro to get "
-"all the advanced features."
+"Ratings is not available with the free version. Please upgrade to pro to get"
+" all the advanced features."
 msgstr ""
-"Az értékelések nem érhetőek el az ingyenes változatban. A speciális funkciók "
-"használatához a pro verzióra van szükség."
+"Az értékelések nem érhetőek el az ingyenes változatban. A speciális funkciók"
+" használatához a pro verzióra van szükség."
 
 #: app/Helpers/Helper.php:201 app/Modules/Registerer/TranslationString.php:43
 #: app/Modules/Registerer/TranslationString.php:2139
@@ -11898,10 +11909,8 @@ msgstr "Exportálni kívánt mezők kiválasztása"
 
 #. translators: 1: opening link tag, 2: closing link tag
 #: app/Modules/Registerer/TranslationString.php:414
-#, fuzzy
 msgid "Select Fields is a pro feature. Please %1$sUpgrade to Pro.%2$s"
 msgstr ""
-"Ez a funkció csak a pro verzióban használható. Frissítsünk a Pro változatra?"
 
 #: app/Modules/Registerer/TranslationString.php:1754
 #: app/Modules/Registerer/TranslationString.php:1821
@@ -12078,8 +12087,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1755
 #: app/Modules/Registerer/TranslationString.php:1850
 msgid ""
-"Select the FluentForms exported entries (.json) file. Otherwise, it may fail "
-"to import"
+"Select the FluentForms exported entries (.json) file. Otherwise, it may fail"
+" to import"
 msgstr ""
 "Válasszuk ki a FluentForms exportált bejegyzések (.json) fájlját. Ellenkező "
 "esetben nem fog sikerülni az importálás"
@@ -12109,8 +12118,8 @@ msgstr "Exportálni kívánt űrlapok kiválasztása"
 msgid ""
 "Select the forms you would like to export. When you click the download "
 "button below, Fluent Forms will create a JSON file for you to save to your "
-"computer. Once you've saved the downloaded file, you can use the Import tool "
-"to import the forms."
+"computer. Once you've saved the downloaded file, you can use the Import tool"
+" to import the forms."
 msgstr ""
 "Exportálni kívánt űrlapok kiválasztása. A letöltés gomb megnyomása után a "
 "fluent forms létrehoz egy JSON fájlt, amit el lehet menteni a számítógépre. "
@@ -12137,8 +12146,8 @@ msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:691
 msgid ""
-"Select the keyboard type to display on mobile devices. This only affects the "
-"keyboard shown, not validation or accepted characters."
+"Select the keyboard type to display on mobile devices. This only affects the"
+" keyboard shown, not validation or accepted characters."
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:739
@@ -12164,8 +12173,8 @@ msgstr "Válasszuk ki azt az oldalt, ahová a felhasználót "
 
 #: app/Modules/Registerer/TranslationString.php:2085
 msgid ""
-"Select the payment mode. For testing purposes you should select Sandbox Mode "
-"otherwise select Live Mode."
+"Select the payment mode. For testing purposes you should select Sandbox Mode"
+" otherwise select Live Mode."
 msgstr ""
 "Fizetésmód kiválasztása. Teszteléshez a Sandbox mód ajánlott, míg normál "
 "használathoz az éles mód."
@@ -12210,8 +12219,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:2086
 msgid ""
 "Select the PayPal integration method you want to use. Legacy Email "
-"Integration will use a hosted PayPal page. Standard API Key Integration will "
-"display an inline PayPal button."
+"Integration will use a hosted PayPal page. Standard API Key Integration will"
+" display an inline PayPal button."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1760
@@ -12293,8 +12302,8 @@ msgstr ""
 msgid ""
 "Select with headers if any headers should be sent with the webhook request."
 msgstr ""
-"Jelöljük be a fejléccel együtt opciót, amennyiben a webhook kéréshez szükség "
-"van a fejlécek elküldésére is."
+"Jelöljük be a fejléccel együtt opciót, amennyiben a webhook kéréshez szükség"
+" van a fejlécek elküldésére is."
 
 #: app/Modules/Registerer/TranslationString.php:1461
 #: app/Modules/Registerer/TranslationString.php:1860
@@ -12362,7 +12371,8 @@ msgid "Send Email as RAW HTML Format"
 msgstr "Email küldése RAW HTML formátumban"
 
 #: app/Modules/AddOnModule.php:308
-msgid "Send notification to Telegram channel or group when a form is submitted"
+msgid ""
+"Send notification to Telegram channel or group when a form is submitted"
 msgstr ""
 "Értesítés küldése egy Telegram csatornára vagy csoportnak egy űrlap "
 "beküldése után"
@@ -12482,8 +12492,9 @@ msgstr "kép beállítása a beviteli mezőhöz"
 
 #: app/Modules/Registerer/TranslationString.php:2065
 msgid ""
-"Set the success message for coupon. You can use {coupon.code}, {coupon."
-"amount}, {total_amount}, {discount_amount} and {remain_amount} smartcodes."
+"Set the success message for coupon. You can use {coupon.code}, "
+"{coupon.amount}, {total_amount}, {discount_amount} and {remain_amount} "
+"smartcodes."
 msgstr ""
 "A kupon sikeres érvényesítése esetén megjelenő üzenet beállítása. Az alábbi "
 "rövidkódok használhatók: {coupon.code}, {coupon.amount}, {total_amount}, "
@@ -12593,13 +12604,10 @@ msgid "Share Your Form"
 msgstr "Űrlap megosztása"
 
 #: app/Modules/Registerer/TranslationString.php:155
-#, fuzzy
 msgid ""
 "Share your form by unique URL or copy and paste the %1$sshortcode%2$s to "
 "embed in your page and post"
 msgstr ""
-"Osszuk meg az űrlapot egyedi URL segítségével, vagy másoljunk és illesszünk "
-"be shortcode-ot a weboldalra vagy bejegyzésbe történő beágyazáshoz"
 
 #: app/Modules/Registerer/TranslationString.php:453
 msgid ""
@@ -12794,9 +12802,8 @@ msgstr ""
 #. translators: %s is the plan name
 #: app/Modules/Payments/PaymentMethods/Stripe/StripeInlineProcessor.php:124
 #: app/Modules/Payments/PaymentMethods/Stripe/StripeProcessor.php:122
-#, fuzzy
 msgid "Signup fee for %s"
-msgstr "Regisztrációs díj"
+msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:279
 msgid "Simple Text"
@@ -12976,8 +12983,8 @@ msgid ""
 "Sorry! No entries found. All your entries will be shown here once you start "
 "getting form submissions"
 msgstr ""
-"Sajnáljuk, de nem találtunk egyetlen bejegyzést sem. Az összes bejegyzés itt "
-"fog megjelenni, amint elkezdenek beérkezni a kitöltött űrlapok. "
+"Sajnáljuk, de nem találtunk egyetlen bejegyzést sem. Az összes bejegyzés itt"
+" fog megjelenni, amint elkezdenek beérkezni a kitöltött űrlapok. "
 
 #: app/Services/Integrations/GlobalIntegrationService.php:34
 msgid "Sorry! No integration failed found with: "
@@ -12985,7 +12992,8 @@ msgstr "Sajnáljuk, nincs integráció a következővel: "
 
 #: app/Modules/Payments/PaymentHandler.php:482
 msgid ""
-"Sorry! No selected payment method found. Please select a valid payment method"
+"Sorry! No selected payment method found. Please select a valid payment "
+"method"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2093
@@ -13314,7 +13322,8 @@ msgstr "Az állapot frissítése nem sikerült. Nem érvényes modul vagy állap
 msgid "Step"
 msgstr "lépés"
 
-#. translators: %activeStep% is the current step number, %totalStep% is the total number of steps, %stepTitle% is the step title
+#. translators: %activeStep% is the current step number, %totalStep% is the
+#. total number of steps, %stepTitle% is the step title
 #: app/Modules/Component/Component.php:628
 msgid "Step %activeStep% of %totalStep% - %stepTitle%"
 msgstr "%activeStep% per %totalStep% - %stepTitle% lépés"
@@ -13977,12 +13986,14 @@ msgstr "Felhasználási feltételek"
 msgid "Terms and Conditions"
 msgstr "Felhasználási feltételek"
 
-#. translators: 1: Terms title or HTML label, 2: Number of links in the terms text.
+#. translators: 1: Terms title or HTML label, 2: Number of links in the terms
+#. text.
 #: app/Services/FormBuilder/Components/TermsAndConditions.php:70
 msgid ""
 "Terms and Conditions: %1$s Contains %2$d link. Use tab navigation to review."
 msgid_plural ""
-"Terms and Conditions: %1$s Contains %2$d links. Use tab navigation to review."
+"Terms and Conditions: %1$s Contains %2$d links. Use tab navigation to "
+"review."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -14099,8 +14110,8 @@ msgid ""
 "Thank you for purchasing Fluent Forms Pro Add On! Please enter your license "
 "key below."
 msgstr ""
-"Köszönjük a fluent Forms Pro bővítmény megvásárlását. A licenc kulcs lentebb "
-"adható meg."
+"Köszönjük a fluent Forms Pro bővítmény megvásárlását. A licenc kulcs lentebb"
+" adható meg."
 
 #: app/Models/Form.php:144 app/Modules/Registerer/TranslationString.php:815
 msgid "Thank you for your message. We will get in touch with you shortly"
@@ -14259,9 +14270,8 @@ msgstr "A kiválasztott sablon nem található."
 
 #. translators: %s is the submission status
 #: app/Http/Controllers/SubmissionController.php:66
-#, fuzzy
 msgid "The submission has been marked as %s"
-msgstr "A bejegyzést kedvencnek jelöltük"
+msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1107
 msgid "Theme"
@@ -14288,8 +14298,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1121
 msgid ""
 "These messages will be used as default messages of all form. These messages "
-"will be ignored when field error message set as custom. Use %s shortcode for "
-"automatically resolve the field label."
+"will be ignored when field error message set as custom. Use %s shortcode for"
+" automatically resolve the field label."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2252
@@ -14305,20 +14315,22 @@ msgstr "beküldték az űrlapot."
 msgid "This email has been generated from Fluent Forms at %1$s%2$s%3$s."
 msgstr "Ezt az üzenetet a Fluent Formsbóll hozták létre ekkor: %1$s%2$s%3$s."
 
-#. translators: 1: opening anchor tag to site, 2: closing anchor tag, 3: opening anchor tag to settings, 4: closing anchor tag
+#. translators: 1: opening anchor tag to site, 2: closing anchor tag, 3:
+#. opening anchor tag to settings, 4: closing anchor tag
 #: app/Views/email/report/body.php:239
 msgid ""
-"This email has been sent from %1$syour website%2$s via Fluent Forms. You can "
-"disable this email %3$syour website%4$s"
+"This email has been sent from %1$syour website%2$s via Fluent Forms. You can"
+" disable this email %3$syour website%4$s"
 msgstr ""
 "Ez az email %1$syour website%2$s weboldalról érkezett a Fluent Forms "
 "segítségével. Az email kikapcsolható itt: %3$syour website%4$s"
 
-#. translators: 1: opening anchor tag, 2: closing anchor tag, 3: opening anchor tag, 4: closing anchor tag
+#. translators: 1: opening anchor tag, 2: closing anchor tag, 3: opening
+#. anchor tag, 4: closing anchor tag
 #: app/Views/email/failedIntegration/body.php:216
 msgid ""
-"This email has been sent from %1$syour website%2$s via Fluent Forms. You can "
-"disable this email from %3$shere%4$s"
+"This email has been sent from %1$syour website%2$s via Fluent Forms. You can"
+" disable this email from %3$shere%4$s"
 msgstr ""
 "Ez az email a %1$syour website%2$s weboldalról érkezett a Fluent Forms "
 "segítségével. Az email kikapcsolható itt: this email from %3$shere%4$s"
@@ -14409,7 +14421,8 @@ msgstr "A mező értékének egyedinek kell lennie."
 
 #: app/Modules/Registerer/TranslationString.php:902
 msgid "This form required pro add-on of fluentform. Please install pro add-on"
-msgstr "Ez az űrlap csak a fluent forms bővítmény Pro verziójában használható."
+msgstr ""
+"Ez az űrlap csak a fluent forms bővítmény Pro verziójában használható."
 
 #: app/Modules/Registerer/TranslationString.php:1047
 msgid ""
@@ -14470,8 +14483,8 @@ msgid ""
 "This is the field placeholder, the user will see this if the input field is "
 "empty."
 msgstr ""
-"Ez a mező helykitöltő, amit a felhasználó akkor fog látni, amikor a beviteli "
-"mező még üres."
+"Ez a mező helykitöltő, amit a felhasználó akkor fog látni, amikor a beviteli"
+" mező még üres."
 
 #: app/Services/FormBuilder/ElementCustomization.php:47
 msgid "This is the field title the user will see when filling out the form."
@@ -14688,7 +14701,8 @@ msgstr "egy oldalra"
 #: app/Modules/Registerer/TranslationString.php:2021
 msgid "to configure them.Please add a webhook endpoint for the URL below."
 msgstr ""
-"A konfiguráláshoz hozzá kell adni egy webhook végpontot az alábbi URL címhez."
+"A konfiguráláshoz hozzá kell adni egy webhook végpontot az alábbi URL "
+"címhez."
 
 #: app/Modules/Registerer/TranslationString.php:2092
 msgid "to learn how to setup"
@@ -14696,11 +14710,8 @@ msgstr "A beállítás megtanulásához"
 
 #. translators: 1: opening link tag, 2: closing link tag
 #: app/Modules/Registerer/TranslationString.php:1090
-#, fuzzy
 msgid "To unlock more features consider %1$supgrading to PRO%2$s."
 msgstr ""
-"A további funkciók feloldásához megfontolásra ajánlott a PRO verzióra való "
-"frissítés"
 
 #: app/Views/admin/docs/index.php:42
 msgid "To unlock more features consider upgrading to PRO"
@@ -14719,8 +14730,8 @@ msgid ""
 "Toggle Admin Top Navigation on or off and Save the Settings. Please reload "
 "the page after changing this option."
 msgstr ""
-"Admin felső navigáció be- és kikapcsolása, ill. a beállítás elmentése. Az új "
-"beállítás életbe lépéséhez újra be kell tölteni az oldalt."
+"Admin felső navigáció be- és kikapcsolása, ill. a beállítás elmentése. Az új"
+" beállítás életbe lépéséhez újra be kell tölteni az oldalt."
 
 #: app/Modules/Registerer/TranslationString.php:953
 msgid "Toggle Fullscreen"
@@ -14818,9 +14829,8 @@ msgstr "Teljes számlázási idő"
 
 #. translators: %d is the number of bills
 #: app/Modules/Registerer/TranslationString.php:1700
-#, fuzzy
 msgid "Total Bills: %d"
-msgstr "Számlák összesen"
+msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:2164
 msgid "Total Counts"
@@ -14955,7 +14965,8 @@ msgstr "Turks- és Caicos-szigetek"
 
 #: app/Services/FormBuilder/ElementCustomization.php:142
 msgid ""
-"Turn this on to organize dropdown and multiselect options under group labels."
+"Turn this on to organize dropdown and multiselect options under group "
+"labels."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:201
@@ -15277,14 +15288,14 @@ msgstr "Nagybetűs 'S' használata egy betű jelzésére."
 
 #: app/Modules/Registerer/TranslationString.php:223
 msgid ""
-"Use AI to create the initial structure. Please note that there might be some "
-"inaccuracy in the output."
+"Use AI to create the initial structure. Please note that there might be some"
+" inaccuracy in the output."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:222
 msgid ""
-"Use AI to create the initial structure. The response uses ChatGPT, so please "
-"note that there might be some inaccuracy in the output."
+"Use AI to create the initial structure. The response uses ChatGPT, so please"
+" note that there might be some inaccuracy in the output."
 msgstr ""
 "ChatGPT igénybe vétele a kezdeti struktúra létrehozásához. Azért tartsuk "
 "észben, hogy az MI jelenlegi fejlettségi szintjén még előfordulhatnak "
@@ -15711,11 +15722,11 @@ msgstr ""
 
 #: app/Views/admin/docs/index.php:193
 msgid ""
-"We need your help to keep developing the plugin. Please review it and spread "
-"the love to keep us motivated."
+"We need your help to keep developing the plugin. Please review it and spread"
+" the love to keep us motivated."
 msgstr ""
-"Szükségünk van segítségre, hogy továbbra is fejleszthessük a bővítményt. Egy "
-"vélemény írásával és a kedvelés kifejezésével lehet minket motiválni."
+"Szükségünk van segítségre, hogy továbbra is fejleszthessük a bővítményt. Egy"
+" vélemény írásával és a kedvelés kifejezésével lehet minket motiválni."
 
 #: app/Modules/Registerer/TranslationString.php:566
 msgid "WebHook Feed Name"
@@ -15803,13 +15814,13 @@ msgid ""
 "When map is enabled Please enable Geocoding API if you want to populate "
 "address after map marker drag end"
 msgstr ""
-"Ha a térkép be van kapcsolva, akkor kapcsoljuk be a Geocoding API-t is, ha a "
-"térképjelölő húzása után a címet fel akarjuk tölteni"
+"Ha a térkép be van kapcsolva, akkor kapcsoljuk be a Geocoding API-t is, ha a"
+" térképjelölő húzása után a címet fel akarjuk tölteni"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:245
 msgid ""
-"When the double opt-in option is enabled, Mailchimp will send a confirmation "
-"email to the user and will only add them to your <br /Mailchimp list upon "
+"When the double opt-in option is enabled, Mailchimp will send a confirmation"
+" email to the user and will only add them to your <br /Mailchimp list upon "
 "confirmation."
 msgstr ""
 "Ha a kettős feliratkozás opció be van kapcsolva, a Mailchimp megerősítő "
@@ -15824,7 +15835,8 @@ msgstr "amikor egy üres űrlapot próbálnak meg beküldeni."
 msgid ""
 "When this option is enabled, if the subscriber is in an inactive state or "
 "has previously been unsubscribed, they will be re-added to the active list. "
-"Therefore, this option should be used with caution and only when appropriate."
+"Therefore, this option should be used with caution and only when "
+"appropriate."
 msgstr ""
 "Az opció bekapcsolása esetén, ha a feliratkozó inaktív állapotban van, vagy "
 "korábban már leiratkozott, újra hozzá lesz adva az aktív listához. Ennél "
@@ -15869,8 +15881,8 @@ msgstr "Fejléccel rendelkezik"
 
 #: app/Modules/AddOnModule.php:388
 msgid ""
-"With this module, you can create quizzes and show scores with grades, points,"
-" fractions, or percentages"
+"With this module, you can create quizzes and show scores with grades, "
+"points, fractions, or percentages"
 msgstr ""
 "Ezzel a modullal kvízeket lehet létrehozni. A pontszámok megjeleníthetők "
 "osztályzatokkal, pontokkal, törtekkel vagy százalékokkal is."
@@ -16015,14 +16027,14 @@ msgstr ""
 
 #: app/Views/frameless/show_preview.php:169
 msgid ""
-"You are seeing preview version of Fluent Forms. This form is only accessible "
-"for Admin users. Other users may not access this page. To use this for in a "
-"page please use the following shortcode: "
+"You are seeing preview version of Fluent Forms. This form is only accessible"
+" for Admin users. Other users may not access this page. To use this for in a"
+" page please use the following shortcode: "
 msgstr ""
 "Ez a Fluent Forms bemutatóverziója. Ez az űrlap csak adminisztrátorok "
 "számára hozzáférhető. A többi felhasználó valószínűleg nem férhet hozzá "
-"ehhez az oldalhoz. Ahhoz, hogy ez az űrlap megjelenhessen egy weboldalon, az "
-"alábbi shortcode használata javasolt:"
+"ehhez az oldalhoz. Ahhoz, hogy ez az űrlap megjelenhessen egy weboldalon, az"
+" alábbi shortcode használata javasolt:"
 
 #: app/Modules/Registerer/TranslationString.php:219
 #: app/Modules/Registerer/TranslationString.php:956
@@ -16054,7 +16066,8 @@ msgid "You can disable it here."
 msgstr "Itt kikapcsolható."
 
 #: app/Modules/Registerer/TranslationString.php:1522
-msgid "You can disable the auto delete option from Settings & Integrations Tab"
+msgid ""
+"You can disable the auto delete option from Settings & Integrations Tab"
 msgstr ""
 "Az automatikus törlés opció kikapcsolható  a Beállítások & Integrációk fülön"
 
@@ -16091,13 +16104,13 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:660
 msgid ""
-"You can select which stripe account credential will be used for this form."
-"Select \"Custom Stripe Credential\" for a different stripe account than "
-"global."
+"You can select which stripe account credential will be used for this "
+"form.Select \"Custom Stripe Credential\" for a different stripe account than"
+" global."
 msgstr ""
 "Kiválaszthatjuk, hogy  melyik Stripe fiók belépési adatait használjuk ezen "
-"az űrlapon. Válasszuk az \"Egyedi Stripe belépési adatok\" opciót a globális "
-"beállítástól eltérő Stripe fiók használatához."
+"az űrlapon. Válasszuk az \"Egyedi Stripe belépési adatok\" opciót a globális"
+" beállítástól eltérő Stripe fiók használatához."
 
 #: app/Modules/Registerer/TranslationString.php:700
 msgid ""
@@ -16115,8 +16128,8 @@ msgstr ""
 #: app/Modules/Registerer/TranslationString.php:1305
 msgid ""
 "You can simply give value only the system will convert the label as value. "
-"To include a colon in either the label or value, use the escape sequence \\:,"
-" e.g., LABEL\\:A:VALUE"
+"To include a colon in either the label or value, use the escape sequence "
+"\\:, e.g., LABEL\\:A:VALUE"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1961
@@ -16138,8 +16151,8 @@ msgstr "Megjegyzést adhatunk hozzá ehhez a névjegyhez"
 
 #: app/Modules/Registerer/TranslationString.php:602
 msgid ""
-"You can write your custom CSS here for this form.This css will be applied in "
-"this current form only."
+"You can write your custom CSS here for this form.This css will be applied in"
+" this current form only."
 msgstr ""
 "Itt saját CSS írható ehhez az űrlaphoz. Ez a css csak erre az űrlapra lesz "
 "alkalmazva."
@@ -16227,7 +16240,8 @@ msgstr ""
 "Egyetlen integrációs feed sincs hozzáadva. Új integráció hozzáadásával "
 "összekapcsolhatjuk kedvenc eszközeinket az űrlapokkal."
 
-#. translators: 1: CSS selector prefix, 2: dynamic placeholder, 3: form ID placeholder
+#. translators: 1: CSS selector prefix, 2: dynamic placeholder, 3: form ID
+#. placeholder
 #: app/Modules/Registerer/TranslationString.php:604
 msgid ""
 "You may add %1$s as your css selector prefix to target this specific form. "
@@ -16259,7 +16273,8 @@ msgstr "unfiltered_html jogosultságra van szükség egyedi CSS & JS mentéséhe
 
 #: app/Modules/Registerer/TranslationString.php:538
 msgid ""
-"You should use SMTP so send attachment via email otherwise, It may go to spam"
+"You should use SMTP so send attachment via email otherwise, It may go to "
+"spam"
 msgstr ""
 "SMTP használata ajánlott, máskülönben a csatolmánnyal rendelkező emailek "
 "könnyen a spam mappában találhatják magukat"
@@ -16317,11 +16332,11 @@ msgstr "A Cloudflare Turnstile érvényes"
 
 #: app/Modules/Registerer/TranslationString.php:308
 msgid ""
-"Your data will be deleted on form submission so no entry data, analytics and "
-"visual reporting will be available for this form"
+"Your data will be deleted on form submission so no entry data, analytics and"
+" visual reporting will be available for this form"
 msgstr ""
-"Az adatok törlődni fognak az űrlap beküldésekor, így az űrlaphoz nem lesznek "
-"elérhetőek a bejegyzések adatai, az analízis és a vizuális jelentés sem."
+"Az adatok törlődni fognak az űrlap beküldésekor, így az űrlaphoz nem lesznek"
+" elérhetőek a bejegyzések adatai, az analízis és a vizuális jelentés sem."
 
 #: app/Modules/Component/Component.php:1533
 #: app/Services/FluentConversational/Classes/Form.php:1010
@@ -16491,8 +16506,8 @@ msgid ""
 "Zoho CRM is an online Sales CRM software that manages your sales, marketing "
 "and support in one CRM platform."
 msgstr ""
-"A Zoho CRM egy online értékesítő CRM szoftver, amely egyetlen CRM platformon "
-"képes menedzselni az értékesítést, a marketinget és a    terméktámogatást."
+"A Zoho CRM egy online értékesítő CRM szoftver, amely egyetlen CRM platformon"
+" képes menedzselni az értékesítést, a marketinget és a    terméktámogatást."
 
 #: app/Modules/Payments/PaymentHelper.php:955
 msgid ""
