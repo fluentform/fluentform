@@ -17,7 +17,7 @@
                 }"
             >
                 <div class="ff-ranking-preview__item-main">
-                    <span class="ff-ranking-preview__index">{{ index + 1 }}</span>
+                    <span v-if="showPositionSerial" class="ff-ranking-preview__index">{{ index + 1 }}</span>
                     <span
                         v-if="item.settings.enable_image_input && option.image"
                         class="ff-ranking-preview__image"
@@ -63,13 +63,30 @@ export default {
         isGrid() {
             return this.item.settings.ranking_display_type === 'grid';
         },
+        showPositionSerial() {
+            return this.item.settings.show_position_serial !== 'no';
+        },
         previewStyle() {
-            return {
+            const style = {
                 '--ff-ranking-preview-columns': this.item.settings.ranking_grid_columns || 3
             };
+            const accent = (this.item.settings.accent_color || '').trim();
+            // Mirror the server-side isSafeColorValue() check so the
+            // builder preview only renders values the public field
+            // will accept -- avoids contract drift where the editor
+            // shows a color the respondent never sees.
+            if (accent && this.isSafeColorValue(accent)) {
+                style['--ff-ranking-accent'] = accent;
+            }
+            return style;
         },
         previewOptions() {
             return (this.item.settings.advanced_options || []).slice(0, 5);
+        }
+    },
+    methods: {
+        isSafeColorValue(value) {
+            return /^(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\([0-9.,\s%]+\)|hsla?\([0-9.,\s%]+\))$/.test(value);
         }
     }
 }
