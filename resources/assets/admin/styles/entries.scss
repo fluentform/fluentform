@@ -954,19 +954,19 @@ ul.entry_item_list {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 12px;
-    border: 1px solid #e4e7ed;
-    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid #dadbdd;
+    border-radius: 7px;
     background: #fff;
   }
 
   &__position {
-    flex: 0 0 28px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #1a7efb;
-    color: #fff;
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    background: #f5f7fa;
+    color: #303133;
     font-size: 13px;
     font-weight: 700;
     display: inline-flex;
