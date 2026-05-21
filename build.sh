@@ -36,6 +36,8 @@ copy_and_compress() {
           --exclude="resources/img" \
           --exclude="*.map" \
           --exclude="mix-manifest.json" \
+          --exclude=".code-review-graph" \
+          --exclude="openspec" \
           "$source_path" "$destination_dir/"
         echo "Copied: $item"
       else

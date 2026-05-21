@@ -22,4 +22,6 @@ jsconfig.json
 composer.lock
 assets/report.html
 .claude/
+.code-review-graph/
+openspec/
 builds/*
