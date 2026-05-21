@@ -482,7 +482,7 @@
                                         :class="'ff_badge_'+scope.row.payment_status"
                                         v-if="scope.row.payment_status"
                                     >
-                                        {{ scope.row.payment_status }}
+                                        {{ payment_statuses[scope.row.payment_status] || scope.row.payment_status }}
                                     </span>
                                 </template>
                             </el-table-column>
