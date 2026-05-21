@@ -71,13 +71,22 @@ export default {
                 '--ff-ranking-preview-columns': this.item.settings.ranking_grid_columns || 3
             };
             const accent = (this.item.settings.accent_color || '').trim();
-            if (accent) {
+            // Mirror the server-side isSafeColorValue() check so the
+            // builder preview only renders values the public field
+            // will accept -- avoids contract drift where the editor
+            // shows a color the respondent never sees.
+            if (accent && this.isSafeColorValue(accent)) {
                 style['--ff-ranking-accent'] = accent;
             }
             return style;
         },
         previewOptions() {
             return (this.item.settings.advanced_options || []).slice(0, 5);
+        }
+    },
+    methods: {
+        isSafeColorValue(value) {
+            return /^(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\([0-9.,\s%]+\)|hsla?\([0-9.,\s%]+\))$/.test(value);
         }
     }
 }
