@@ -326,6 +326,8 @@ class Converter
                 $question['rankingDisplayType'] = ArrayHelper::get($field, 'settings.ranking_display_type', 'list');
                 $question['rankingGridColumns'] = ArrayHelper::get($field, 'settings.ranking_grid_columns', '3');
                 $question['showResetIcon'] = ArrayHelper::get($field, 'settings.show_reset_icon', 'no') === 'yes';
+                $question['showPositionSerial'] = ArrayHelper::get($field, 'settings.show_position_serial', 'yes');
+                $question['accentColor'] = ArrayHelper::get($field, 'settings.accent_color', '');
             } elseif ('custom_html' === $field['element']) {
                 $question['content'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'settings.html_codes', ''), $form);
             } elseif ('section_break' === $field['element']) {
