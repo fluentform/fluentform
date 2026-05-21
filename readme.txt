@@ -438,7 +438,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.2.3 (Date: May 20, 2026) =
+= 6.2.3 (Date: May 21, 2026) =
 - Adds option group support for Dropdown and Multi-select fields
 - Adds pinned column support in the entries table
 - Adds new icon presets, SVG icon support, and active/inactive color options for the Ratings field
