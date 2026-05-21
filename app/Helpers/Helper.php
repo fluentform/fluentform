@@ -1114,6 +1114,16 @@ class Helper
         return $url;
     }
 
+    // Unconditional upload-denylist; runs even when allowed_file_types is empty.
+    public static function dangerousUploadExtensions()
+    {
+        return apply_filters('fluentform/upload_extension_denylist', [
+            'php', 'phtml', 'phar', 'php3', 'php4', 'php5', 'php7', 'php8',
+            'pht', 'phps', 'phtm', 'pgif', 'shtml', 'inc',
+            'htaccess', 'htpasswd',
+        ]);
+    }
+
     public static function arrayFilterRecursive($arrayItems)
     {
         foreach ($arrayItems as $key => $item) {
