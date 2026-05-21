@@ -954,19 +954,20 @@ ul.entry_item_list {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 12px;
-    border: 1px solid #e4e7ed;
-    border-radius: 8px;
-    background: #fff;
+    padding: 4px 0;
+    background: transparent;
   }
 
   &__position {
-    flex: 0 0 28px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #1a7efb;
-    color: #fff;
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    background: #f5f7fa;
+    // No explicit color: inherits the surrounding table cell colour
+    // (#606266 from Element UI's `.el-table .cell`) so the badge digit
+    // matches the adjacent label and the rest of the table.
+    // Bold weight differentiates the badge, not a darker hue.
     font-size: 13px;
     font-weight: 700;
     display: inline-flex;
@@ -994,8 +995,6 @@ ul.entry_item_list {
 
   &__label {
     min-width: 0;
-    color: #2f3a4c;
-    font-weight: 500;
     line-height: 1.5;
     word-break: break-word;
   }
@@ -1012,6 +1011,9 @@ ul.entry_item_list {
       min-height: 100%;
       position: relative;
       padding: 14px;
+      border: 1px solid #dadbdd;
+      border-radius: 7px;
+      background: #fff;
     }
 
     .ff-ranking-response__position {
