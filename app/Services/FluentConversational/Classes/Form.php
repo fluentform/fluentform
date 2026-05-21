@@ -457,6 +457,8 @@ class Form
 
         $jsScripts = [];
 
+        $pluginUrl = plugins_url() . '/fluentform';
+
         foreach ($wp_scripts->queue as $script) {
 
             if (!isset($wp_scripts->registered[$script])) {
@@ -466,7 +468,7 @@ class Form
             $item = $wp_scripts->registered[$script];
             $src = $wp_scripts->registered[$script]->src;
 
-            if (!$this->shouldPrintConversationalAsset($src)) {
+            if (false === !strpos($src, $pluginUrl)) {
                 continue;
             }
 
@@ -502,6 +504,8 @@ class Form
 
         $cssStyles = [];
 
+        $pluginUrl = plugins_url() . '/fluentform';
+
         foreach ($wp_styles->queue as $style) {
 
             if (!isset($wp_styles->registered[$style])) {
@@ -511,7 +515,7 @@ class Form
             $item = $wp_styles->registered[$style];
             $src = $wp_styles->registered[$style]->src;
 
-            if (!$this->shouldPrintConversationalAsset($src)) {
+            if (false === !strpos($src, $pluginUrl)) {
                 continue;
             }
 
@@ -541,29 +545,6 @@ class Form
         }
 
         return $cssStyles;
-    }
-
-    private function shouldPrintConversationalAsset($src)
-    {
-        if (!$src) {
-            return false;
-        }
-
-        $pluginUrls = [
-            untrailingslashit(plugins_url() . '/fluentform'),
-        ];
-
-        if (defined('FLUENTFORMPRO_DIR_URL')) {
-            $pluginUrls[] = untrailingslashit(FLUENTFORMPRO_DIR_URL);
-        }
-
-        foreach ($pluginUrls as $pluginUrl) {
-            if (strpos($src, $pluginUrl) !== false) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function renderShortcode($form)
