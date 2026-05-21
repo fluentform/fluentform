@@ -552,10 +552,11 @@ class Form
         $formId = $form->id;
         $fileUploadSettings = apply_filters('fluentform/file_upload_settings_for_js', [], $form);
 
+        $form = Converter::convert($form);
+
         $this->enqueueScripts();
         do_action('fluentform/conversational_enqueue_assets', $form, $fileUploadSettings);
 
-        $form = Converter::convert($form);
         $submitCss = $this->getSubmitBttnStyle($form);
         $metaSettings = $this->getMetaSettings($formId);
         $designSettings = $this->getDesignSettings($formId);
@@ -746,10 +747,10 @@ class Form
         $form = wpFluentForm()->applyFilters('fluentform/rendering_form', $form);
         $fileUploadSettings = apply_filters('fluentform/file_upload_settings_for_js', [], $form);
 
+        $form = Converter::convert($form);
+
         $this->enqueueScripts();
         do_action('fluentform/conversational_enqueue_assets', $form, $fileUploadSettings);
-
-        $form = Converter::convert($form);
 
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
