@@ -158,13 +158,18 @@ class Form
                 'key_hint_text'        => 'Key',
                 'key_hint_tooltip'     => 'Press the key to select',
                 'choose_file'          => '<b>Choose file</b> or <b>drag here</b>',
-                'limit'                => 'Size limit: '
+                'limit'                => 'Size limit: ',
+                'ranking_reset'        => 'Reset order'
             ],
         ];
 
         if ($settings && !isset($settings['i18n']['key_hint_text'])) {
             $settings['i18n']['key_hint_text'] = $defaults['i18n']['key_hint_text'];
             $settings['i18n']['key_hint_tooltip'] = $defaults['i18n']['key_hint_tooltip'];
+        }
+
+        if ($settings && !isset($settings['i18n']['ranking_reset'])) {
+            $settings['i18n']['ranking_reset'] = $defaults['i18n']['ranking_reset'];
         }
 
         if (!$settings || empty($settings['title'])) {
