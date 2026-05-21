@@ -954,10 +954,8 @@ ul.entry_item_list {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 8px 12px;
-    border: 1px solid #dadbdd;
-    border-radius: 7px;
-    background: #fff;
+    padding: 4px 0;
+    background: transparent;
   }
 
   &__position {
@@ -994,7 +992,7 @@ ul.entry_item_list {
 
   &__label {
     min-width: 0;
-    color: #2f3a4c;
+    color: #303133;
     font-weight: 500;
     line-height: 1.5;
     word-break: break-word;
@@ -1012,6 +1010,9 @@ ul.entry_item_list {
       min-height: 100%;
       position: relative;
       padding: 14px;
+      border: 1px solid #dadbdd;
+      border-radius: 7px;
+      background: #fff;
     }
 
     .ff-ranking-response__position {
