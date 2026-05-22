@@ -438,7 +438,7 @@ class SettingsService
 
         $service = '\FluentFormPro\classes\SharePage\FormPrettyUrlService';
         $slug = sanitize_text_field(Arr::get($prettyUrl, 'slug', ''));
-        $enabled = (bool) Arr::get($prettyUrl, 'enabled', false);
+        $enabled = Arr::isTrue($prettyUrl, 'enabled');
         $savedSlug = $service::saveSlug($formId, $slug, $enabled);
 
         return [
