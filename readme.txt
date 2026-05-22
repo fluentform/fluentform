@@ -445,7 +445,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds search to the form switcher in entries
 - Improves keyboard navigation in the entries table
 - Improves accessibility for fixed columns and action buttons in entries
-- Updates DOMPurify, PostCSS, and the Babel transform helper to address security vulnerabilities (CVE-2026-44728)
 - Fixes conditional logic settings not showing for custom fields in the editor
 - Fixes conditional logic not-equal check when the target field has no value
 - Fixes Name field layout when a sub-field has no label
