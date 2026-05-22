@@ -429,13 +429,27 @@ class AddOnModule
     {
         $plugins = [
             'fluent-cart' => [
-                'title'       => __('FluentCart A New Era of eCommerce', 'fluentform'),
-                'description' => __('It is a performance-first, self-hosted eCommerce platform for WordPres', 'fluentform'),
+                'title'       => __('FluentCart', 'fluentform'),
+                'description' => __('A performance-first, self-hosted eCommerce platform for WordPress', 'fluentform'),
                 'logo'        => 'fcart.svg',
                 'slug'        => 'fluent-cart/fluent-cart.php',
                 'basename'    => 'fluent-cart',
                 'badge_type'  => 'official',
                 'wporg_url'   => 'https://wordpress.org/plugins/fluent-cart/',
+                'setup_url'   => admin_url('admin.php?page=fluent-cart'),
+                'setup_label' => __('Dashboard', 'fluentform'),
+            ],
+            'fluent-smtp' => [
+                'title'       => __('FluentSMTP', 'fluentform'),
+                'description' => __('The Ultimate Free SMTP Plugin for WordPress. Safely send emails via Amazon SES, Mailgun, SendGrid, Outlook, Gmail, and more.',
+                    'fluentform'),
+                'logo'        => 'fluent-smtp.svg',
+                'slug'        => 'fluent-smtp/fluent-smtp.php',
+                'basename'    => 'fluent-smtp',
+                'badge_type'  => 'official',
+                'wporg_url'   => 'https://wordpress.org/plugins/fluent-smtp/',
+                'setup_url'   => admin_url('options-general.php?page=fluent-mail#/connections'),
+                'setup_label' => __('Configure', 'fluentform'),
             ],
             'multilingual-forms-fluent-forms-wpml' => [
                 'title'       => __('Multilingual Forms for Fluent Forms (WPML)', 'fluentform'),
@@ -465,15 +479,19 @@ class AddOnModule
                 'basename'    => 'fluentforms-pdf',
                 'badge_type'  => 'official',
                 'wporg_url'   => 'https://wordpress.org/plugins/fluentforms-pdf/',
+                'setup_url'   => admin_url('admin.php?page=fluent_forms_add_ons&sub_page=fluentform_pdf'),
+                'setup_label' => __('Configure', 'fluentform'),
             ],
             'fluent-community'                     => [
-                'title'       => __('Fluent Community', 'fluentform'),
-                'description' => __('Build Your Own Community & Membership Site with Fluent Community', 'fluentform'),
+                'title'       => __('FluentCommunity', 'fluentform'),
+                'description' => __('Build Your Own Community & Membership Site with FluentCommunity', 'fluentform'),
                 'logo'        => 'fluent-community.svg',
                 'slug'        => 'fluent-community/fluent-community.php',
                 'basename'    => 'fluent-community',
                 'badge_type'  => 'official',
                 'wporg_url'   => 'https://wordpress.org/plugins/fluent-community/',
+                'setup_url'   => admin_url('admin.php?page=fluent-community'),
+                'setup_label' => __('Dashboard', 'fluentform'),
             ],
             'fluent-support'                       => [
                 'title'       => __('Fluent Support', 'fluentform'),
@@ -483,6 +501,8 @@ class AddOnModule
                 'basename'    => 'fluent-support',
                 'badge_type'  => 'official',
                 'wporg_url'   => 'https://wordpress.org/plugins/fluent-support/',
+                'setup_url'   => admin_url('admin.php?page=fluent-support'),
+                'setup_label' => __('Dashboard', 'fluentform'),
             ],
             'wp-social-reviews'                    => [
                 'title'       => __('WP Social Ninja', 'fluentform'),
@@ -493,6 +513,8 @@ class AddOnModule
                 'basename'    => 'wp-social-reviews',
                 'badge_type'  => 'official',
                 'wporg_url'   => 'https://wordpress.org/plugins/wp-social-reviews/',
+                'setup_url'   => admin_url('admin.php?page=wpsocialninja.php'),
+                'setup_label' => __('Dashboard', 'fluentform'),
             ],
             'fluent-crm'                           => [
                 'title'       => __('FluentCRM', 'fluentform'),
@@ -502,6 +524,8 @@ class AddOnModule
                 'basename'    => 'fluent-crm',
                 'badge_type'  => 'official',
                 'wporg_url'   => 'https://wordpress.org/plugins/fluent-crm/',
+                'setup_url'   => admin_url('admin.php?page=fluentcrm-admin'),
+                'setup_label' => __('Dashboard', 'fluentform'),
             ],
         ];
 

@@ -37,6 +37,37 @@ Key rules:
 - ACL system uses custom capabilities: `fluentform_full_access`, `fluentform_forms_manager`, `fluentform_entries_viewer`, `fluentform_settings_manager`, `fluentform_view_reports`
 - Permission checks via `Acl::hasPermission($permission)` and `Acl::verifyRequest()`
 
+### ⚠ IDOR Rule: Always read resource IDs from the URL route parameter in policies
+
+`WP_REST_Request::get_params()` merges all sources with this priority: **JSON body > POST > query string > URL placeholder**. So `$request->get('form_id')` can be overridden by a JSON body value even when `{form_id}` is in the URL. The controller uses route binding and always gets the URL value. This mismatch lets an attacker authorize against their own resource while the controller acts on a victim's.
+
+**Always resolve resource IDs in policies like this:**
+
+```php
+use FluentForm\Framework\Support\Arr;
+
+private function resolveFormId(Request $request)
+{
+    $route  = $request->route();
+    $formId = $route ? Arr::get($route->getParameter(), 'form_id') : null;
+    // $route->getParameter() delegates to get_url_params() — body cannot shadow it
+
+    if (!$formId) {
+        $formId = $request->get('form_id'); // fallback for routes with no URL placeholder
+    }
+
+    return $formId ? intval($formId) : null;
+}
+```
+
+**Never do this in a policy when the route has a URL placeholder:**
+```php
+// ✗ WRONG — body can shadow the URL param, causing policy/controller mismatch
+$formId = $request->get('form_id');
+```
+
+All existing policies follow the safe pattern. Do not regress it.
+
 ## Service Pattern
 
 **Location:** `app/Services/` (25+ subdirectories)

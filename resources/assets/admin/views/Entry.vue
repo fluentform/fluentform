@@ -64,7 +64,7 @@
                                             <div
                                                 v-for="(label, label_index) in labels"
                                                 :key="label_index"
-                                                v-show="show_empty == 'yes' || entry.user_inputs[label_index]"
+                                                v-show="show_empty == 'yes' || hasEntryValue(label_index)"
                                                 class="wpf_each_entry"
                                             >
 
@@ -73,7 +73,7 @@
                                                 </div>
 
                                                 <template v-if="formFields[label_index]['element'] == 'input_email'">
-                                                    <div v-show="entry.user_inputs[label_index]" class="wpf_entry_value">
+                                                    <div v-show="hasEntryValue(label_index)" class="wpf_entry_value">
                                                         <a :href="'mailto:'+entry.user_inputs[label_index]">{{
                                                             entry.user_inputs[label_index] }}</a>
                                                     </div>
@@ -87,7 +87,7 @@
                                                 </template>
                                                 <template
                                                     v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
-                                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
+                                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'], original_data[label_index])"></div>
                                                 </template>
                                                 <template v-else>
                                                     <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
@@ -387,15 +387,16 @@
                         );
                     })
                     .then(() => {
-                        this.getEntryResources();
-						const statusUpdate = window.fluent_form_entries_vars.update_status;
-						if (
-							statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
-							statusUpdate !== this.entry.status
-						) {
-							this.handleStatusChange(statusUpdate);
-							this.getEntryResources();
-						}
+                        const statusUpdate = window.fluent_form_entries_vars.update_status;
+                        if (
+                            statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
+                            statusUpdate !== this.entry.status
+                        ) {
+                            return this.handleStatusChange(statusUpdate)
+                                .then(() => this.getEntryResources());
+                        }
+
+                        return this.getEntryResources();
                     })
                     .catch(error => {
                         this.$fail(error.message);
@@ -423,7 +424,7 @@
 
                 const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', this.entry_id);
 
-                FluentFormsGlobal.$rest.post(url, data)
+                return FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.entry.status = status;
                         this.$success(response.message);
@@ -449,7 +450,12 @@
             explodeFileUrls(value, chunkSize = 4) {
                 return value ? _ff.chunk(value.split(', '), chunkSize) : [];
             },
-            maybeExtractCommaArrayInfo(dataValue, field) {
+            maybeExtractCommaArrayInfo(dataValue, field, rawValue = null) {
+
+                const groupedHtml = this.renderGroupedEntryValue(field, rawValue, dataValue);
+                if (groupedHtml) {
+                    return groupedHtml;
+                }
 
                 if (typeof dataValue == 'string' && field.element == 'input_checkbox') {
                     return dataValue;
@@ -480,7 +486,7 @@
                     let advancedOptions = field.settings.advanced_options;
                     if(advancedOptions) {
                         options = {};
-                        each(advancedOptions, (optionItem) => {
+                        each(this.flattenAdvancedOptions(advancedOptions), (optionItem) => {
                             options[optionItem.value] = optionItem.label;
                         });
                     }
@@ -503,8 +509,202 @@
                 itemHtml += '</ul>';
                 return itemHtml;
             },
+            renderGroupedEntryValue(field, rawValue, fallbackValue) {
+                if (!this.hasGroupedAdvancedOptions(field)) {
+                    return '';
+                }
+
+                const selectedValues = this.normalizeEntryValues(rawValue, fallbackValue, field);
+
+                if (!selectedValues.length) {
+                    return '';
+                }
+
+                let groupsHtml = '';
+                let matchedStandaloneOptions = [];
+                let matchedGroupedValues = [];
+                let matchedStandaloneValues = [];
+
+                each(field.settings.advanced_options || [], optionItem => {
+                    if (!optionItem) {
+                        return;
+                    }
+
+                    if (optionItem.type !== 'group' || !Array.isArray(optionItem.options)) {
+                        if (selectedValues.includes(String(optionItem.value))) {
+                            matchedStandaloneOptions.push(optionItem.label || optionItem.value);
+                            matchedStandaloneValues.push(String(optionItem.value));
+                        }
+
+                        return;
+                    }
+
+                    let matchedOptions = [];
+
+                    each(optionItem.options, option => {
+                        if (!option) {
+                            return;
+                        }
+
+                        if (selectedValues.includes(String(option.value))) {
+                            matchedOptions.push(option.label || option.value);
+                            matchedGroupedValues.push(String(option.value));
+                        }
+                    });
+
+                    if (!matchedOptions.length) {
+                        return;
+                    }
+
+                    let matchedHtml = '';
+                    if (matchedOptions.length === 1) {
+                        matchedHtml = `<div class="wpf_entry_group_value">${this.escapeEntryHtml(matchedOptions[0])}</div>`;
+                    } else {
+                        matchedHtml = '<ul class="entry_item_list">';
+                        each(matchedOptions, optionLabel => {
+                            matchedHtml += `<li>${this.escapeEntryHtml(optionLabel)}</li>`;
+                        });
+                        matchedHtml += '</ul>';
+                    }
+
+                    groupsHtml += `
+                        <div class="entry_item_group">
+                            <div class="entry_item_group__label">${this.escapeEntryHtml(optionItem.label || 'Group')}</div>
+                            ${matchedHtml}
+                        </div>
+                    `;
+                });
+
+                const unmatchedStandaloneValues = selectedValues.filter(value => {
+                    if (matchedGroupedValues.includes(value)) {
+                        return false;
+                    }
+
+                    return !matchedStandaloneValues.includes(value);
+                });
+
+                each(unmatchedStandaloneValues, value => {
+                    matchedStandaloneOptions.push(value);
+                });
+
+                let standaloneHtml = '';
+
+                if (matchedStandaloneOptions.length === 1) {
+                    standaloneHtml = `<div class="wpf_entry_group_value">${this.escapeEntryHtml(matchedStandaloneOptions[0])}</div>`;
+                } else if (matchedStandaloneOptions.length > 1) {
+                    standaloneHtml = '<ul class="entry_item_list">';
+                    each(matchedStandaloneOptions, optionLabel => {
+                        standaloneHtml += `<li>${this.escapeEntryHtml(optionLabel)}</li>`;
+                    });
+                    standaloneHtml += '</ul>';
+                }
+
+                if (!groupsHtml && !standaloneHtml) {
+                    return '';
+                }
+
+                return `<div class="wpf_entry_grouped_response">${standaloneHtml}${groupsHtml}</div>`;
+            },
+            normalizeEntryValues(rawValue, fallbackValue, field) {
+                let values = [];
+
+                if (Array.isArray(rawValue)) {
+                    values = rawValue;
+                } else if (typeof rawValue === 'string' && rawValue) {
+                    if (field.element === 'select' && field.attributes && !field.attributes.multiple) {
+                        values = [rawValue];
+                    } else {
+                        values = rawValue.split(',');
+                    }
+                } else if (Array.isArray(fallbackValue)) {
+                    values = fallbackValue;
+                } else if (typeof fallbackValue === 'string' && fallbackValue) {
+                    if (field.element === 'select' && field.attributes && !field.attributes.multiple) {
+                        values = [fallbackValue];
+                    } else {
+                        values = fallbackValue.split(',');
+                    }
+                }
+
+                return values
+                    .map(value => String(value).trim())
+                    .filter(Boolean);
+            },
+            hasGroupedAdvancedOptions(field) {
+                const advancedOptions = field && field.settings && field.settings.advanced_options;
+
+                return Array.isArray(advancedOptions) && advancedOptions.some(option => {
+                    return option && option.type === 'group' && Array.isArray(option.options);
+                });
+            },
+            escapeEntryHtml(value) {
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            },
+            hasEntryValue(fieldKey) {
+                const formattedValue = this.entry.user_inputs[fieldKey];
+                const rawValue = this.original_data[fieldKey];
+                const field = this.formFields[fieldKey] && this.formFields[fieldKey].raw;
+
+                if (field && field.element === 'input_ranking') {
+                    return this.hasRankingEntryValue(rawValue, formattedValue);
+                }
+
+                return !!formattedValue;
+            },
+            hasRankingEntryValue(rawValue, formattedValue) {
+                if (Array.isArray(rawValue)) {
+                    return rawValue.length > 0;
+                }
+
+                if (typeof rawValue === 'string') {
+                    const trimmedRawValue = rawValue.trim();
+
+                    if (trimmedRawValue === '[]') {
+                        return false;
+                    }
+
+                    try {
+                        const parsedRawValue = JSON.parse(trimmedRawValue);
+
+                        if (Array.isArray(parsedRawValue)) {
+                            return parsedRawValue.length > 0;
+                        }
+                    } catch (e) {
+                        // Ignore invalid JSON and fall back to formatted value.
+                    }
+                }
+
+                if (Array.isArray(formattedValue)) {
+                    return formattedValue.length > 0;
+                }
+
+                if (typeof formattedValue === 'string') {
+                    return formattedValue.trim() !== '' && formattedValue.trim() !== '[]';
+                }
+
+                return !!formattedValue;
+            },
             dataType(data) {
                 return typeof data;
+            },
+            flattenAdvancedOptions(items) {
+                let options = [];
+
+                each(items, item => {
+                    if (item && item.type === 'group' && Array.isArray(item.options)) {
+                        options = options.concat(this.flattenAdvancedOptions(item.options));
+                        return;
+                    }
+
+                    options.push(item);
+                });
+
+                return options;
             },
             prettifyJson(entry) {
                 let data = {

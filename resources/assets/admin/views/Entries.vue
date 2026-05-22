@@ -20,7 +20,7 @@
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item command="csv">{{ $t('Export as %s', 'CSV') }}</el-dropdown-item>
-                                <el-dropdown-item command="xlsx">{{ $t('Export as %s', 'Excel (xlsv)') }}</el-dropdown-item>
+                                <el-dropdown-item command="xlsx">{{ $t('Export as %s', 'Excel (xlsx)') }}</el-dropdown-item>
                                 <el-dropdown-item command="ods">{{ $t('Export as %s', 'ODS') }}</el-dropdown-item>
                                 <el-dropdown-item command="json">{{ $t('Export as %s', 'JSON Data') }}</el-dropdown-item>
                             </el-dropdown-menu>
@@ -28,7 +28,9 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <el-dropdown
+                            ref="formSwitcherDropdown"
                             @command="handleSwitchForm"
+                            @visible-change="handleFormSwitcherVisible"
                             class="current_form_name"
                             trigger="click"
                         >
@@ -36,14 +38,36 @@
                                 {{ current_form_title }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
-                            <el-dropdown-menu slot="dropdown" style="max-height:300px; overflow-y:scroll;">
+                            <el-dropdown-menu
+                                slot="dropdown"
+                                class="ff_form_switcher_menu"
+                                @keydown.native.capture="handleFormSwitcherMenuKeydown"
+                            >
+                                <li class="ff_form_switcher_search" @click.stop>
+                                    <el-input
+                                        v-model="formSearch"
+                                        ref="formSwitcherSearch"
+                                        size="small"
+                                        :placeholder="$t('Search forms...')"
+                                        prefix-icon="el-icon-search"
+                                        clearable
+                                    />
+                                </li>
                                 <el-dropdown-item
-                                        v-for="form in forms"
+                                        v-for="form in filteredForms"
                                         :key="'form_switch_'+form.id"
                                         :command="form.id"
                                         :disabled="form.id == form_id"
                                 >{{ form.title }}
                                 </el-dropdown-item>
+                                <li
+                                    v-if="!filteredForms.length"
+                                    class="ff_form_switcher_empty"
+                                    role="status"
+                                    aria-live="polite"
+                                >
+                                    {{ $t('No matching forms') }}
+                                </li>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
@@ -145,11 +169,18 @@
             <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
-                        <label for="search_bar">
-                           <b> {{ $t('Advanced Filter') }}</b>
-                        </label>
-                        <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
-
+                        <el-button
+                            :type="advanced_filter_active ? 'primary' : 'default'"
+                            :plain="!advanced_filter_active"
+                            icon="el-icon-s-operation"
+                            @click="advanced_filter_active = !advanced_filter_active"
+                            :title="$t('Toggle advanced filter panel')">
+                            {{ advanced_filter_active ? $t('Hide Filters') : $t('Advanced Filter') }}
+                            <el-badge
+                                v-if="hasAppliedFilters"
+                                :value="appliedFilterGroupCount"
+                                class="ff_advanced_filter_badge" />
+                        </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
                         <label for="search_bar" class="screen-reader-text">
@@ -173,6 +204,34 @@
                             </el-button>
                             <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown"
                                 style="max-height:300px; overflow-y:scroll;">
+                                <el-dropdown-item key="pin_column_row" class="ff_pin_column_item">
+                                    <div class="ff_pin_column_row" @click.stop>
+                                        <span class="ff_pin_column_label">{{ $t('Pin column:') }}</span>
+                                        <el-select
+                                            v-model="pinnedColumn"
+                                            size="small"
+                                            class="ff_pin_column_select"
+                                            @change="handlePinnedColumnChange"
+                                        >
+                                            <el-option :label="$t('None')" value="none"></el-option>
+                                            <el-option :label="$t('Entry #')" value="id"></el-option>
+                                            <el-option
+                                                v-for="column in formattedColumn"
+                                                :key="'pin_'+column.field"
+                                                :label="column.label"
+                                                :value="column.field"
+                                            ></el-option>
+                                            <el-option :label="$t('Entry Status')" value="status"></el-option>
+                                            <template v-if="has_payment">
+                                                <el-option :label="$t('Amount')" value="payment_total"></el-option>
+                                                <el-option :label="$t('Payment Status')" value="payment_status"></el-option>
+                                                <el-option :label="$t('Payment Method')" value="payment_method"></el-option>
+                                            </template>
+                                            <el-option :label="$t('Submitted at')" value="created_at"></el-option>
+                                        </el-select>
+                                    </div>
+                                </el-dropdown-item>
+                                <el-dropdown-item divided disabled class="ff_pin_column_divider"></el-dropdown-item>
                                 <el-dropdown-item v-for="(column, column_name) in columns" :key="column_name">
                                     <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"
                                                  v-model="visibleColumns">
@@ -260,29 +319,48 @@
 					    <h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>
 					    <p class="text">{{ $t('Upgrade to get access to all the advanced features.') }}</p>
 				    </div>
-				    <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+				    <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--primary el-button--small">
 					    {{ $t('Upgrade to Pro') }}
 				    </a>
 			    </notice>
 	    </template>
 
+        <applied-filter-summary
+            :filters="advanced_filter"
+            @clear-group="clearFilterGroup" />
+
         <div style="min-height: 300px;" class="entries_table">
             <div class="ff_table">
                 <el-skeleton :loading="loading" animated :rows="6">
                     <el-table
+                        ref="entriesTable"
                          :size="isCompact? 'mini':''"
                         :data="entries"
                         :stripe="true"
-                        :class="{'compact': isCompact}"
+                        :class="['ff_entries_table', {'compact': isCompact}]"
+                        highlight-current-row
                         @sort-change="handleTableSort"
                         @selection-change="handleSelectionChange"
+                        @row-click="handleRowClick"
+                        @keydown.native.capture="handleTableKeydown"
+                        @focusin.native="handleRowFocusIn"
                     >
 
-                        <el-table-column type="selection" width="30"></el-table-column>
-                        <el-table-column label="#" sortable="custom" prop="id" width="100px" :class-name="idShortByClassName">
+                        <el-table-column type="selection" width="30" :fixed="pinnedColumn !== 'none' ? 'left' : false"></el-table-column>
+                        <el-table-column label="#" sortable="custom" prop="id" width="100px" :fixed="pinnedColumn === 'id' ? 'left' : false" :class-name="idShortByClassName">
                             <template slot-scope="scope">
                                 <div class="has_hover_item">
-                                    <router-link :to="{
+                                    <span
+                                        class="ff_entry_status_dot"
+                                        :class="'ff_entry_status_dot--' + (scope.row.status || 'unknown')"
+                                        tabindex="-1"
+                                        role="img"
+                                        :title="getStatusName(scope.row.status)"
+                                        :aria-label="$t('Status') + ': ' + getStatusName(scope.row.status)"
+                                    ></span>
+                                    <router-link
+                                        tabindex="-1"
+                                        :to="{
                                             name: 'form-entry',
                                             params: {
                                                 form_id: scope.row.form_id,
@@ -299,22 +377,26 @@
                                     </router-link>
                                     <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
                                         <span v-if="scope.row.is_favourite != '0'"
+                                            tabindex="-1"
                                             @click="changeFavorite(scope.row.id, scope.$index, 0)"
                                             :title="$t('Remove from Favorites')"
                                             class="icon-favorite el-icon-star-on action_button"
                                         />
                                         <span v-else
+                                            tabindex="-1"
                                             @click="changeFavorite(scope.row.id, scope.$index, 1)"
                                             :title="$t('Mark as Favorites')"
                                             class="icon-favorite el-icon-star-off action_button"
                                         />
 
                                         <span v-if="scope.row.status == 'read'"
+                                            tabindex="-1"
                                             @click="changeStatus(scope.row.id, scope.$index, 'unread')"
                                             :title="$t('Mark as Unread')"
                                             class="icon-status el-icon-circle-check action_button"
                                         />
                                         <span v-else
+                                            tabindex="-1"
                                             @click="changeStatus(scope.row.id, scope.$index, 'read')"
                                             :title="$t('Mark as Read')"
                                             class="icon-status el-icon-finished action_button"
@@ -322,7 +404,8 @@
                                     </div>
 
                                     <div class="inline_actions inline_item" v-else>
-                                            <span @click="restoreEntry(scope.row.id, scope.$index)"
+                                            <span tabindex="-1"
+                                                @click="restoreEntry(scope.row.id, scope.$index)"
                                                 class="el-icon-circle-check action_button">{{ $t('Restore') }}</span>
                                     </div>
                                 </div>
@@ -335,6 +418,7 @@
                                 min-width="200"
                                 sortable="custom"
                                 :prop="'user_inputs_column_field-' + column.field"
+                                :fixed="pinnedColumn === column.field ? 'left' : false"
                                 :key="index">
                             <template slot-scope="scope">
                                 <el-popover
@@ -344,7 +428,6 @@
                                     trigger="hover"
                                     :open-delay="150"
                                     :popper-options="entryCellPopoverOptions"
-                                    :width="420"
                                 >
                                     <div
                                         class="ff_entry_table_popover_content"
@@ -370,7 +453,8 @@
                                 :label="$t('Entry Status')"
                                 sortable
                                 prop="status"
-                                width="120px">
+                                width="120px"
+                                :fixed="pinnedColumn === 'status' ? 'left' : false">
                             <template slot-scope="scope">
                                 {{ getStatusName(scope.row.status) }}
                             </template>
@@ -381,7 +465,8 @@
                                     :label="$t('Amount')"
                                     sortable="custom"
                                     prop="payment_total"
-                                    min-width="120px">
+                                    min-width="120px"
+                                    :fixed="pinnedColumn === 'payment_total' ? 'left' : false">
                                 <template slot-scope="scope">
                                     <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
                                 </template>
@@ -390,13 +475,14 @@
                                     :label="$t('Payment Status')"
                                     sortable
                                     prop="payment_status"
-                                    min-width="140px">
+                                    min-width="140px"
+                                    :fixed="pinnedColumn === 'payment_status' ? 'left' : false">
                                 <template slot-scope="scope">
                                     <span class="ff_badge"
                                         :class="'ff_badge_'+scope.row.payment_status"
                                         v-if="scope.row.payment_status"
                                     >
-                                        {{ scope.row.payment_status }}
+                                        {{ payment_statuses[scope.row.payment_status] || scope.row.payment_status }}
                                     </span>
                                 </template>
                             </el-table-column>
@@ -404,7 +490,8 @@
                                     :label="$t('Payment Method')"
                                     sortable
                                     prop="payment_method"
-                                    min-width="140px">
+                                    min-width="140px"
+                                    :fixed="pinnedColumn === 'payment_method' ? 'left' : false">
                                 <template slot-scope="scope">
                                     <span class="ff_badge" v-if="scope.row.payment_method"
                                         :class="`ff_badge_${
@@ -423,7 +510,8 @@
                                 :label="$t('Submitted at')"
                                 sortable
                                 prop="created_at"
-                                :width="dateColWidth">
+                                :width="dateColWidth"
+                                :fixed="pinnedColumn === 'created_at' ? 'left' : false">
                             <template slot-scope="scope">
                                 <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
@@ -438,6 +526,7 @@
 
                         <el-table-column
                                 fixed="right"
+                                column-key="actions"
                                 :label="$t('Actions')"
                                 :width="115"
                                 align="center"
@@ -445,21 +534,23 @@
                             <template slot-scope="scope">
                                 <btn-group size="sm">
                                     <btn-group-item>
-                                        <router-link :to="{
-                                            name: 'form-entry',
-                                            params: {
-                                                form_id: scope.row.form_id,
-                                                entry_id: scope.row.id
-                                            },
-                                            query: {
-                                                sort_by: sort_by,
-                                                current_page: paginate.current_page,
-                                                pos: scope.$index,
-                                                type: entry_type
-                                            }
-                                        }">
+                                        <router-link
+                                            :aria-label="$t('View entry')"
+                                            :to="{
+                                                name: 'form-entry',
+                                                params: {
+                                                    form_id: scope.row.form_id,
+                                                    entry_id: scope.row.id
+                                                },
+                                                query: {
+                                                    sort_by: sort_by,
+                                                    current_page: paginate.current_page,
+                                                    pos: scope.$index,
+                                                    type: entry_type
+                                                }
+                                            }">
                                             <span class="el-button el-button--primary el-button--mini el-button--icon">
-                                                <i class="ff-icon ff-icon-eye-filled"></i>
+                                                <i class="ff-icon ff-icon-eye-filled" aria-hidden="true"></i>
                                             </span>
                                         </router-link>
                                     </btn-group-item>
@@ -472,6 +563,7 @@
                                                 size="mini"
                                                 type="danger"
                                                 icon="ff-icon ff-icon-trash"
+                                                :aria-label="$t('Delete entry')"
                                             />
                                         </confirm>
                                     </btn-group-item>
@@ -578,6 +670,7 @@
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
     import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
     import AdvancedSearch from "@/admin/views/_AdvancedSearch";
+    import AppliedFilterSummary from "@/admin/views/_AppliedFilterSummary";
     import Notice from '@/admin/components/Notice/Notice.vue'
 
     export default {
@@ -585,6 +678,7 @@
         props: ['form_id', 'has_pdf'],
         components: {
             AdvancedSearch,
+            AppliedFilterSummary,
             Confirm,
             EmailResend,
             ColumnDragAndDrop,
@@ -600,6 +694,9 @@
                 if (!this.search_string.length) {
                     this.getData();
                 }
+            },
+            entries() {
+                this.applyRowTabindex();
             },
             radioOption() {
                 const start = new Date();
@@ -643,6 +740,8 @@
                 columns: [],
                 bulkAction: '',
 	            idShortByClassName: '',
+                pinnedColumn: 'id',
+                formSearch: '',
                 paginate: {
                     total: 0,
                     current_page: parseInt(this.$route.query.page) || 1,
@@ -720,11 +819,24 @@
                 showImportEntriesModal: false,
                 app: window.fluent_forms_global_var,
                 advanced_filter_active : false,
-                advanced_filter : {},
-                exportWithNotes : false
+                advanced_filter : [[]],
+                exportWithNotes : false,
+                _isSwitchingForm: false
             }
         },
         computed: {
+            // Filter the form switcher list against the search box. Matches
+            // form title or form id (so users can paste an id and jump).
+            filteredForms() {
+                const list = Array.isArray(this.forms) ? this.forms : [];
+                const q = (this.formSearch || '').trim().toLowerCase();
+                if (!q) return list;
+                return list.filter((form) => {
+                    const title = (form && form.title) ? String(form.title).toLowerCase() : '';
+                    const id = (form && form.id !== undefined) ? String(form.id) : '';
+                    return title.indexOf(q) !== -1 || id.indexOf(q) !== -1;
+                });
+            },
             /**
              * Compute bulk action options
              * @return {Array}
@@ -779,6 +891,29 @@
                     selectedEntries.push(element.id);
                 });
                 return selectedEntries;
+            },
+
+            /**
+             * Whether any advanced filters are currently applied. Used for
+             * the chip summary, the count badge on the Advanced Filter
+             * toggle, and to gate sending the filter to the server. The
+             * panel's visibility (advanced_filter_active) is intentionally
+             * NOT part of this check — once a filter is applied to the
+             * query, hiding the editing panel must not silently make the
+             * indicators disappear, otherwise admins can be looking at
+             * filtered data while believing it's unfiltered.
+             */
+            hasAppliedFilters() {
+                if (!Array.isArray(this.advanced_filter)) return false;
+                return this.advanced_filter.some(group => Array.isArray(group) && group.length > 0);
+            },
+
+            /**
+             * Number of populated filter groups, used for the badge count.
+             */
+            appliedFilterGroupCount() {
+                if (!Array.isArray(this.advanced_filter)) return 0;
+                return this.advanced_filter.filter(group => Array.isArray(group) && group.length > 0).length;
             },
 
             /**
@@ -876,6 +1011,31 @@
                 this.advanced_filter = query
                 this.getData();
             },
+
+            /**
+             * Remove a single filter group by index and re-run search
+             * @param {Number} groupIndex
+             */
+            clearFilterGroup(groupIndex) {
+                if (!Array.isArray(this.advanced_filter)) return;
+                const updatedFilters = this.advanced_filter.filter((_, idx) => idx !== groupIndex);
+
+                if (updatedFilters.length === 0) {
+                    this.clearAllAdvancedFilters();
+                    return;
+                }
+
+                this.advanced_filter = updatedFilters;
+                this.getData();
+            },
+
+            /**
+             * Clear all advanced filters and re-run search
+             */
+            clearAllAdvancedFilters() {
+                this.advanced_filter = [[]];
+                this.getData();
+            },
             getData() {
                 let data = {
                     form_id: this.form_id,
@@ -894,9 +1054,15 @@
 	            if (this.basicFilter) {
 		            this.basicFilter = false;
 	            }
-	            if (this.advanced_filter_active) {
+                // Send the advanced filter whenever it has data, regardless
+                // of whether the editing panel is currently visible. Gating
+                // by advanced_filter_active would let the user collapse the
+                // panel and silently get unfiltered results back from the
+                // server while the chips and badge still claim a filter is
+                // applied.
+                if (this.hasAppliedFilters) {
                     data.advanced_filter = this.advanced_filter;
-	            }
+                }
 
                 this.loading = true;
 
@@ -915,6 +1081,7 @@
                     .finally(() => {
                         this.getVisibleColumns();
                         this.loading = false;
+                        this.applyRowTabindex();
                     });
             },
             handleTableSort(column) {
@@ -961,6 +1128,249 @@
             },
             handleSelectionChange(val) {
                 this.entrySelections = val;
+            },
+            applyRowTabindex() {
+                if (typeof document === 'undefined') return;
+                this.$nextTick(() => {
+                    const tableEl = this.getEntriesTableElement();
+                    const mainBody = this.getMainTableBodyWrapper();
+                    if (!tableEl || !mainBody) return;
+
+                    tableEl.querySelectorAll('.el-table__fixed tr.el-table__row, .el-table__fixed-right tr.el-table__row').forEach((row) => {
+                        row.removeAttribute('tabindex');
+                    });
+                    tableEl.querySelectorAll('.ff_entry_status_dot, .inline_actions .action_button, .ff_entry_table_cell, .ff_entry_table_cell__content, .el-tooltip, .el-popover__reference').forEach((node) => {
+                        node.setAttribute('tabindex', '-1');
+                    });
+                    // Strip tabindex from every focusable inside any row clone
+                    // (fixed-left, fixed-right, main body's selection cell and
+                    // is-hidden duplicates) so the row itself is the only tab
+                    // stop. Keyboard model: Tab moves between rows, ArrowUp/Down
+                    // navigates rows, Space toggles selection, Enter opens entry.
+                    tableEl.querySelectorAll([
+                        '.el-table__fixed input',
+                        '.el-table__fixed a[href]',
+                        '.el-table__fixed button',
+                        '.el-table__fixed-right input',
+                        '.el-table__fixed-right a[href]',
+                        '.el-table__fixed-right button',
+                        '.el-table__body-wrapper td.el-table-column--selection input',
+                        '.el-table__body-wrapper td.is-hidden input',
+                        '.el-table__body-wrapper td.is-hidden a[href]',
+                        '.el-table__body-wrapper td.is-hidden button'
+                    ].join(', ')).forEach((node) => {
+                        node.setAttribute('tabindex', '-1');
+                    });
+
+                    const rows = this.getMainTableRows();
+                    rows.forEach((row, index) => {
+                        if (this.entries[index] && this.entries[index].id !== undefined) {
+                            row.setAttribute('data-entry-id', this.entries[index].id);
+                        }
+                        row.setAttribute('tabindex', '0');
+                    });
+                });
+            },
+            getEntriesTableElement() {
+                const tableEl = this.$refs.entriesTable && this.$refs.entriesTable.$el;
+                return tableEl || null;
+            },
+            getMainTableBodyWrapper() {
+                const tableEl = this.getEntriesTableElement();
+                if (!tableEl) return null;
+                const wrappers = Array.from(tableEl.querySelectorAll('.el-table__body-wrapper'));
+                return wrappers.find((wrapper) => {
+                    return !wrapper.closest('.el-table__fixed') && !wrapper.closest('.el-table__fixed-right');
+                }) || null;
+            },
+            getMainTableRows() {
+                const mainBody = this.getMainTableBodyWrapper();
+                return mainBody ? Array.from(mainBody.querySelectorAll('tbody tr.el-table__row')) : [];
+            },
+            getEntryIndexFromRow(tr) {
+                if (!tr) return -1;
+                const entryId = tr.getAttribute('data-entry-id');
+                if (entryId !== null) {
+                    return this.entries.findIndex((entry) => String(entry.id) === String(entryId));
+                }
+                const rows = Array.from(tr.parentElement ? tr.parentElement.querySelectorAll('tr.el-table__row') : []);
+                return rows.indexOf(tr);
+            },
+            handleRowFocusIn(event) {
+                const target = event.target;
+                if (!target || !target.closest) return;
+                const tr = target.closest('tr.el-table__row');
+                if (!tr || !tr.parentElement) return;
+                const index = this.getEntryIndexFromRow(tr);
+                if (index < 0 || !this.entries[index]) return;
+                const tableInstance = this.$refs.entriesTable;
+                if (tableInstance && typeof tableInstance.setCurrentRow === 'function') {
+                    tableInstance.setCurrentRow(this.entries[index]);
+                }
+            },
+            handleTableKeydown(event) {
+                const isArrow = event.key === 'ArrowDown' || event.key === 'ArrowUp';
+                const isEnter = event.key === 'Enter';
+                const isSpace = event.key === ' ' || event.key === 'Spacebar';
+                if (!isArrow && !isEnter && !isSpace) return;
+
+                const target = event.target;
+                if (!target || !target.closest) return;
+
+                const tr = target.matches && target.matches('tr.el-table__row') ? target : null;
+                if (!tr || !tr.parentElement) return;
+                if (tr.closest('.el-table__fixed') || tr.closest('.el-table__fixed-right')) return;
+
+                const rowIndex = this.getEntryIndexFromRow(tr);
+                if (rowIndex < 0) return;
+
+                if (isEnter) {
+                    if (!this.entries[rowIndex]) return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    this.handleRowClick(this.entries[rowIndex], null, event);
+                    return;
+                }
+
+                if (isSpace) {
+                    const tableInstance = this.$refs.entriesTable;
+                    if (!this.entries[rowIndex] || !tableInstance || typeof tableInstance.toggleRowSelection !== 'function') return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    if (!event.repeat) {
+                        tableInstance.toggleRowSelection(this.entries[rowIndex]);
+                    }
+                    return;
+                }
+
+                const nextRowIndex = event.key === 'ArrowDown'
+                    ? Math.min(rowIndex + 1, this.entries.length - 1)
+                    : Math.max(rowIndex - 1, 0);
+                if (nextRowIndex === rowIndex) return;
+                const rows = this.getMainTableRows();
+                const nextEntry = this.entries[nextRowIndex];
+                const nextRow = nextEntry
+                    ? (rows.find((row) => row.getAttribute('data-entry-id') === String(nextEntry.id)) || rows[nextRowIndex])
+                    : null;
+                if (!nextRow) return;
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                nextRow.focus();
+            },
+            handleFormSwitcherVisible(isOpen) {
+                if (isOpen) {
+                    this.$nextTick(() => {
+                        const ref = this.$refs.formSwitcherSearch;
+                        if (ref && typeof ref.focus === 'function') ref.focus();
+                    });
+                } else {
+                    if (this._isSwitchingForm) return;
+                    this.formSearch = '';
+                }
+            },
+            getFormSwitcherMenu() {
+                const dropdown = this.$refs.formSwitcherDropdown;
+                if (dropdown && dropdown.popperElm) return dropdown.popperElm;
+                return null;
+            },
+            focusFormSwitcherTarget(target) {
+                if (!target || typeof target.focus !== 'function') return;
+                window.setTimeout(() => {
+                    target.focus();
+                }, 0);
+            },
+            handleFormSwitcherMenuKeydown(event) {
+                if (!['ArrowDown', 'ArrowUp', 'Enter'].includes(event.key)) return;
+                const menu = this.getFormSwitcherMenu();
+                if (!menu) return;
+
+                const items = Array.from(menu.querySelectorAll('.el-dropdown-menu__item:not(.is-disabled)'));
+                const inputRef = this.$refs.formSwitcherSearch;
+                const inputEl = (inputRef && inputRef.$el) ? inputRef.$el.querySelector('input') : null;
+                const focused = document.activeElement;
+                const isOnInput = !!(inputEl && focused === inputEl);
+                const currentItemIndex = items.indexOf(focused);
+
+                if (event.key === 'ArrowDown') {
+                    if (!items.length) return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    const nextIndex = isOnInput || currentItemIndex < 0
+                        ? 0
+                        : Math.min(currentItemIndex + 1, items.length - 1);
+                    this.focusFormSwitcherTarget(items[nextIndex]);
+                    return;
+                }
+                if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    if (currentItemIndex <= 0) {
+                        this.focusFormSwitcherTarget(inputEl);
+                    } else {
+                        this.focusFormSwitcherTarget(items[currentItemIndex - 1]);
+                    }
+                    return;
+                }
+                if (event.key === 'Enter') {
+                    if (currentItemIndex >= 0) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+                        items[currentItemIndex].click();
+                    } else if (isOnInput) {
+                        const target = (this.filteredForms || []).find((f) => f && f.id != this.form_id);
+                        if (target) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            this.handleSwitchForm(target.id);
+                        }
+                    }
+                }
+            },
+            loadPinnedColumn() {
+                if (!this.form_id) return;
+                try {
+                    const saved = localStorage.getItem('ff_entries_pinned_col_' + this.form_id);
+                    if (saved !== null) this.pinnedColumn = saved;
+                } catch (e) {
+                    // localStorage unavailable (private mode, quota); ignore.
+                }
+            },
+            handlePinnedColumnChange(val) {
+                if (!this.form_id) return;
+                try {
+                    localStorage.setItem('ff_entries_pinned_col_' + this.form_id, val);
+                } catch (e) {
+                    // localStorage unavailable; the choice still applies for this session.
+                }
+                this.applyRowTabindex();
+            },
+            handleRowClick(row, column, event) {
+                const selection = typeof window !== 'undefined' ? window.getSelection() : null;
+                if (selection && selection.toString().length > 0) {
+                    return;
+                }
+
+                if (column && (column.type === 'selection' || column.columnKey === 'actions')) {
+                    return;
+                }
+
+                if (event && event.target && event.target.closest(
+                    'a, button, input, label, .el-checkbox, .action_button, .el-popover, .el-dropdown, .ff_entry_table_popover_content'
+                )) {
+                    return;
+                }
+                this.$router.push({
+                    name: 'form-entry',
+                    params: {
+                        form_id: row.form_id,
+                        entry_id: row.id,
+                    },
+                    query: {
+                        sort_by: this.sort_by,
+                        current_page: this.paginate.current_page,
+                        type: this.entry_type,
+                    },
+                });
             },
             removeEntry(entryId, index) {
                 let action = 'post';
@@ -1128,7 +1538,13 @@
                     });
             },
             handleSwitchForm(formId) {
-                window.location.href = window.fluent_form_entries_vars.entries_url_base + formId;
+                this._isSwitchingForm = true;
+                const menu = this.getFormSwitcherMenu();
+                if (menu) {
+                    menu.style.visibility = 'hidden';
+                    menu.style.pointerEvents = 'none';
+                }
+                window.location.assign(window.fluent_form_entries_vars.entries_url_base + formId);
             },
             closeInputSelection(){
                 this.input_selection_visibility  = false;
@@ -1181,7 +1597,7 @@
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
                 }
-				if (this.advanced_filter_active) {
+				if (this.hasAppliedFilters) {
 					data.advanced_filter = this.advanced_filter;
 				}
 	            location.href = ajaxurl + '?' + jQuery.param(data);
@@ -1331,6 +1747,8 @@
             this.fieldsToExport = Object.keys(this.input_labels)
             this.shortcodesToExport = this.getDefaultShortcodesToExport()
             this.loadLastExportFields();
+            this.loadPinnedColumn();
+            this.applyRowTabindex();
         },
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');

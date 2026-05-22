@@ -28,7 +28,7 @@
                                     subscription.quantity > 1 ? `<span>x ${subscription.quantity}</span>` : '',
                                     `<span class='ff_badge ff_badge_${subscription.status}'>
                                         <i class='${getPaymentStatusIcon(subscription.status)}'></i>
-                                        ${subscription.status }
+                                        ${$t(subscription.status)}
                                     </span>`,
                                     parseInt(subscription.initial_amount) ?
                                     `<span>& Signup Fee: <em>${formatMoney(subscription.initial_amount)}</em></span>` : ''
@@ -97,7 +97,7 @@
                                 </span>
 
                                 <span class="ff_pay_status_badge ff_pay_status_active">
-                                    {{ payment.status }}
+                                    {{ $t(payment.status) }}
                                 </span>
                             </td>
 

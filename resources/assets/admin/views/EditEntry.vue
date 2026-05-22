@@ -33,7 +33,7 @@
                 <h6 class="title">{{$t('This is a Pro Feature')}}</h6> 
                 <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
             </div>
-            <a target="_blank" :href="upgrade_url" class="el-button el-button--danger el-button--small">
+            <a target="_blank" :href="upgrade_url" class="el-button el-button--primary el-button--small">
                 {{$t('Upgrade to Pro')}}
             </a>
         </notice>
@@ -49,6 +49,7 @@
     import SelectField from './EntryEditor/SelectField';
     import RadioField from './EntryEditor/RadioField';
     import CheckboxField from './EntryEditor/CheckboxField';
+    import RankingField from './EntryEditor/RankingField';
     import TermsField from './EntryEditor/TermsField';
     import RepeatField from './EntryEditor/RepeatField';
     import MultiFile from './EntryEditor/MultiFile';
@@ -64,6 +65,7 @@
             SelectField,
             RadioField,
             CheckboxField,
+            RankingField,
             TermsField,
             RepeatField,
             MultiFile,
@@ -203,6 +205,14 @@
                             field: field
                         }
                         break;
+                    case 'input_ranking':
+                        field.raw.options = this.extractOptions(field.raw);
+                        return {
+                            component: 'ranking-field',
+                            type: 'ranking',
+                            field: field
+                        }
+                        break;
                     case 'terms_and_condition':
                     case 'gdpr_agreement':
                         return {
@@ -238,12 +248,26 @@
                 let options = element.options;
                 if(!options) {
                     let formattedOptions = {};
-                    each(element.settings.advanced_options, (optionItem) => {
+                    each(this.flattenAdvancedOptions(element.settings.advanced_options || []), (optionItem) => {
                         formattedOptions[optionItem.value] = optionItem.label;
                     });
                     return formattedOptions;
                 }
                 return options;
+            },
+            flattenAdvancedOptions(options) {
+                let flattened = [];
+
+                each(options, option => {
+                    if (option && option.type === 'group' && Array.isArray(option.options)) {
+                        flattened = flattened.concat(this.flattenAdvancedOptions(option.options));
+                        return;
+                    }
+
+                    flattened.push(option);
+                });
+
+                return flattened;
             }
         }
     }

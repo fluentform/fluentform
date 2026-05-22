@@ -11,6 +11,7 @@ use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
+use FluentForm\App\Services\Form\Fields;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -365,7 +366,7 @@ class Menu
             wp_enqueue_style('fluentform_settings_global');
         } elseif ('fluent_forms_add_ons' == $page) {
             wp_enqueue_style('fluentform-add-ons');
-        } elseif ('fluent_forms_docs' == $page || 'fluent_forms_smtp' == $page) {
+        } elseif ('fluent_forms_docs' == $page) {
             wp_enqueue_style('fluentform_doc_style');
         }
     }
@@ -537,16 +538,6 @@ class Menu
                 $fromRole ? $settingsCapability : 'fluentform_settings_manager',
                 'fluent_forms_transfer',
                 [$this, 'renderTransfer']
-            );
-
-            // Register FluentSMTP Sub Menu.
-            add_submenu_page(
-                'fluent_forms',
-                __('SMTP', 'fluentform'),
-                __('SMTP', 'fluentform'),
-                $fromRole ? $settingsCapability : 'fluentform_settings_manager',
-                'fluent_forms_smtp',
-                [$this, 'renderSmtpPromo']
             );
 
             // Register Add-Ons
@@ -791,7 +782,9 @@ class Menu
             'ace_path_url'         => fluentformMix('libs/ace'),
             'is_conversion_form'   => Helper::isConversionForm($form_id),
             'has_fluent_smtp'      => defined('FLUENTMAIL'),
-            'fluent_smtp_url'      => admin_url('admin.php?page=fluent_forms_smtp'),
+            'fluent_smtp_url'      => defined('FLUENTMAIL')
+                ? admin_url('options-general.php?page=fluent-mail#/connections')
+                : admin_url('admin.php?page=fluent_forms_add_ons&sub_page=suggested_plugins'),
             'form_settings_str'    => TranslationString::getSettingsI18n(),
             'integrationsResource' => [
                 'asset_url'   => fluentformMix('img/integrations.png'),
@@ -973,6 +966,16 @@ class Menu
                     }
                 }
 
+                if (!empty($formFields['stepsWrapper']['stepStart'])) {
+                    $stepStart = $formFields['stepsWrapper']['stepStart'];
+
+                    $formFields['stepsWrapper']['stepStart'] = apply_filters(
+                        'fluentform/editor_init_element_' . $stepStart['element'],
+                        $stepStart,
+                        $form
+                    );
+                }
+
                 $formFields['fields'] = array_values($formFields['fields']);
                 $formFields = json_encode($formFields, true);
             }
@@ -1020,6 +1023,7 @@ class Menu
             'countries'                      => getFluentFormCountryList(),
             'element_customization_settings' => fluentformLoadFile('Services/FormBuilder/ElementCustomization.php'),
             'validation_rule_settings'       => fluentformLoadFile('Services/FormBuilder/ValidationRuleSettings.php'),
+            'supported_conditional_fields'   => (new Fields())->supportedConditionalFields(),
             'conversational_form_fields'     => array_keys(Converter::fieldTypes()),
             'form_editor_str'                => TranslationString::getEditorI18n(),
             'element_search_tags'            => $searchTags,
@@ -1184,7 +1188,7 @@ class Menu
         if (Helper::isConversionForm($formId)) {
             $shortcode = '[fluentform type="conversational" id="' . $formId . '"]';
         }
-        echo '<button title="Click to Copy" class="ff_shortcode_btn ff_shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
+        echo '<button title="' . esc_attr__('Click to Copy', 'fluentform') . '" class="ff_shortcode_btn ff_shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
         return;
     }
 
@@ -1196,7 +1200,6 @@ class Menu
             'fluent_forms_settings',
             'fluent_forms_add_ons',
             'fluent_forms_docs',
-            'fluent_forms_smtp',
         ];
 
         $page = sanitize_text_field($this->app->request->get('page'));
@@ -1245,20 +1248,6 @@ class Menu
         );
 
         do_action('fluentform/render_payment_entries');
-    }
-
-    public function renderSmtpPromo()
-    {
-        wp_enqueue_script('fluentform_admin_notice', fluentformMix('js/admin_notices.js'), [
-            'jquery',
-        ], FLUENTFORM_VERSION, true);
-
-        $this->app->view->render('admin.smtp.index', [
-            'logo'         => fluentformMix('img/fluentsmtp.svg'),
-            'banner_image' => fluentformMix('img/fluentsmtp-banner.png'),
-            'is_installed' => defined('FLUENTMAIL'),
-            'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
-        ]);
     }
 
     public function renderReports()

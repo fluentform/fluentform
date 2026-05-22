@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## Domain glossary
+
+Read `CONTEXT.md` before working on domain logic. Use the canonical terms defined there; avoid the listed aliases. The glossary is the single source of truth for what each domain term means in this codebase.
+
 ## Build Commands
 
 ```bash
@@ -47,10 +51,80 @@ When working on a specific area, read the relevant skill file for detailed patte
 
 | Topic | File | When to read |
 |-------|------|-------------|
-| Architecture | `.claude/skills/architecture.md` | Understanding project structure, models, routes, stores, modules |
+| **Agent Architecture** | `AGENTS.md` | **AI agents:** Complete code structure, models, APIs, flows. Read first before making changes. |
+| Architecture Details | `.claude/skills/architecture.md` | Understanding project structure, models, routes, stores, modules |
 | Coding patterns | `.claude/skills/coding-patterns.md` | Writing new code — controller, handler, Vue component, API patterns |
 | Bug fixes | `.claude/skills/workflow-bugfix.md` | Fixing bugs or security vulnerabilities |
 | Forms | `.claude/skills/workflow-forms.md` | Form builder, fields, rendering, submissions, entries |
 | Integrations | `.claude/skills/workflow-integrations.md` | Notifications, integrations, webhooks, conditional logic |
 | Payments | `.claude/skills/workflow-payments.md` | Payment processing, Stripe, transactions, subscriptions |
 | Conversational | `.claude/skills/workflow-conversational.md` | Conversational form mode, design editor, share pages |
+
+## Plan Mode
+
+Do **not** enter plan mode for small tasks. Plan mode is reserved for
+non-trivial implementation work (multi-file refactors, new features
+spanning several modules, architectural changes). For the following,
+execute directly:
+
+- Single-file edits.
+- Git operations (stage / commit / push / stash) on already-understood
+  diffs.
+- Doc tweaks (README, CLAUDE.md, ADRs, in-line comments).
+- One- or two-line bug fixes.
+- Renames, typo fixes, formatting.
+- Continuing iteration on a change that was already discussed in the
+  current conversation.
+
+When in doubt about whether a task qualifies as small, prefer
+executing — a brief inline summary of intent is enough.
+
+## Pre-Commit Validation Process
+
+See **`PRECOMMIT-WORKFLOW.md`** for the complete pre-commit review workflow required for all PRs.
+
+Quick steps:
+1. Run unit tests: `node --test tests/js/*.test.js`
+2. Create validation checklist: `openspec/changes/migrate-form-submission-to-vanilla-js/PR-N-VALIDATION-CHECKLIST.md`
+3. Fix all HIGH priority issues
+4. Document MEDIUM/LOW issues with rationale
+5. Commit checklist file and push branch
+
+<!-- code-review-graph MCP tools -->
+## MCP Tools: code-review-graph
+
+**IMPORTANT: This project has a knowledge graph. ALWAYS use the
+code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
+the codebase.** The graph is faster, cheaper (fewer tokens), and gives
+you structural context (callers, dependents, test coverage) that file
+scanning cannot.
+
+### When to use graph tools FIRST
+
+- **Exploring code**: `semantic_search_nodes` or `query_graph` instead of Grep
+- **Understanding impact**: `get_impact_radius` instead of manually tracing imports
+- **Code review**: `detect_changes` + `get_review_context` instead of reading entire files
+- **Finding relationships**: `query_graph` with callers_of/callees_of/imports_of/tests_for
+- **Architecture questions**: `get_architecture_overview` + `list_communities`
+
+Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
+
+### Key Tools
+
+| Tool | Use when |
+| ------ | ---------- |
+| `detect_changes` | Reviewing code changes — gives risk-scored analysis |
+| `get_review_context` | Need source snippets for review — token-efficient |
+| `get_impact_radius` | Understanding blast radius of a change |
+| `get_affected_flows` | Finding which execution paths are impacted |
+| `query_graph` | Tracing callers, callees, imports, tests, dependencies |
+| `semantic_search_nodes` | Finding functions/classes by name or keyword |
+| `get_architecture_overview` | Understanding high-level codebase structure |
+| `refactor_tool` | Planning renames, finding dead code |
+
+### Workflow
+
+1. The graph auto-updates on file changes (via hooks).
+2. Use `detect_changes` for code review.
+3. Use `get_affected_flows` to understand impact.
+4. Use `query_graph` pattern="tests_for" to check coverage.

@@ -38,13 +38,19 @@ const formConditional = function ($, $theForm, form) {
 
                         $.each(conditionGroup.rules, function (index, condition) {
                             let el = getElement(condition.field);
-                            watchableFields[el.prop('name')] = el;
+                            let watchName = el.prop('name') || el.attr('data-name');
+                            if (watchName) {
+                                watchableFields[watchName] = el;
+                            }
                         });
                     });
                 }else{
                     $.each(field.conditions, function (index, condition) {
                         let el = getElement(condition.field);
-                        watchableFields[el.prop('name')] = el;
+                        let watchName = el.prop('name') || el.attr('data-name');
+                        if (watchName) {
+                            watchableFields[watchName] = el;
+                        }
                     });
                 }
 
@@ -163,6 +169,10 @@ const formConditional = function ($, $theForm, form) {
                             file_urls += $(this).data('src');
                         });
                     data[name] = file_urls;
+                } else if (type == 'ranking' || el.hasClass('ff-ranking-field')) {
+                    data[name] = el.find('input[data-ranking-input="1"]:enabled').map((index, item) => {
+                        return $(item).val();
+                    }).get().filter(Boolean);
                 } else {
                     data[name] = el.val();
                 }

@@ -13,7 +13,7 @@ Skill files provide deep codebase knowledge to Claude Code. They are auto-loaded
 | `workflow-integrations.md` | Working on notifications, integrations, webhooks, conditional logic |
 | `workflow-payments.md` | Working on payment processing, Stripe, transactions, subscriptions |
 | `workflow-conversational.md` | Working on conversational form mode, design editor, share pages |
-| `workflow-pr.md` | Committing code, pushing branches, creating pull requests |
+| `commit-push-pr/` | Committing code, pushing branches, creating pull requests |
 | `workflow-release.md` | Preparing releases — version bumps, build, changelog, pre-release checks |
 
 ## Documentation Hierarchy

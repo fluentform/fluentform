@@ -1,5 +1,5 @@
 <template>
-    <el-form-item v-if="isSingleInventoryStockField">
+    <el-form-item v-if="shouldShowNumberField">
         <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
         <el-input v-model="model" type="number"></el-input>
     </el-form-item>
@@ -10,7 +10,7 @@ import elLabel from '../../includes/el-label.vue'
 
 export default {
     name: 'inputText',
-    props: ['listItem', 'editItem', 'value'],
+    props: ['listItem', 'editItem', 'value', 'prop'],
     components: {
         elLabel
     },
@@ -32,6 +32,18 @@ export default {
             const isSinglePaymentField = this.editItem?.element === 'multi_payment_component' && this.editItem?.attributes?.type === 'single';
 
             return !(isInventoryInput && isSinglePaymentField);
+        },
+        // @todo remove this special handling after adding proper chained dependency support to editor settings
+        shouldShowNumberField() {
+            if (!this.isSingleInventoryStockField) {
+                return false;
+            }
+
+            if (this.prop !== 'crop_width' && this.prop !== 'crop_height') {
+                return true;
+            }
+
+            return this.editItem?.settings?.enable_crop === 'yes' && this.editItem?.settings?.crop_mode === 'dimensions';
         }
     }
 }

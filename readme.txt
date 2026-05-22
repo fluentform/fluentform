@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 6.2.2
+Stable tag: 6.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -437,6 +437,35 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.2.3 (Date: May 21, 2026) =
+- Adds option group support for Dropdown and Multi-select fields
+- Adds pinned column support in the entries table
+- Adds new icon presets, SVG icon support, and active/inactive color options for the Ratings field
+- Adds search to the form switcher in entries
+- Improves keyboard navigation in the entries table
+- Improves accessibility for fixed columns and action buttons in entries
+- Fixes conditional logic settings not showing for custom fields in the editor
+- Fixes conditional logic not-equal check when the target field has no value
+- Fixes Name field layout when a sub-field has no label
+- Fixes text and list formatting differences between the editor and preview
+- Fixes AI form builder losing field hints for non-English prompts
+- Fixes missing submission date in Excel exports
+- Fixes garbled export filenames for forms with non-Latin titles
+- Fixes form import breaking confirmation and notification settings
+- Fixes the Find feature missing forms inside page builder popups
+- Fixes entries not sorting by actual submission date
+- Fixes form import corrupting custom CSS and JavaScript code
+- Fixes visual artifacts in the collapsed form settings sidebar
+- Fixes Global Settings sidebar collapse toggle not working on desktop
+- Fixes the Excel export option incorrectly labeled as xlsv
+- Fixes entry Next and Previous navigation breaking on sites that use a custom database table prefix
+- Fixes fatal error when a Textarea field receives an array value during submission processing
+- Fixes multi-word Google Fonts not loading in conversational forms
+- Fixes textdomain_just_in_time notice on WordPress 6.7 and later, including WP Staging staging environments
+- Fixes several strings that could not be translated on non-English admin sites
+- Fixes the Entries page label showing garbled text on German-language sites
+- Fixes confirmation redirect URL losing query-string values with encoded characters
 
 = 6.2.2 (Date: April 23, 2026) =
 - Adds subscription field support in payment calculations

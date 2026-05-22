@@ -97,6 +97,36 @@
     .ff_card{
       margin-bottom: 24px;
     }
+
+    .ffc_qr_share_card {
+      .ffc_qr_code_preview {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        margin: 8px 0 16px;
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+        background: $--color-white;
+
+        svg {
+          display: block;
+          width: 180px;
+          height: 180px;
+        }
+      }
+
+      .ffc_qr_actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+
+        .el-button + .el-button {
+          margin-left: 0;
+        }
+      }
+    }
   }
 }
 

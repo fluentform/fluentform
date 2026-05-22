@@ -45,21 +45,6 @@ class FormPolicy extends Policy
         return Acl::hasPermission('fluentform_forms_manager', $this->resolveFormId($request));
     }
 
-    public function find(Request $request)
-    {
-        return Acl::hasPermission('fluentform_forms_manager', $request->get('form_id'));
-    }
-
-    public function delete(Request $request)
-    {
-        return Acl::hasPermission('fluentform_forms_manager', $request->get('form_id'));
-    }
-
-    public function integrationListComponent(Request $request)
-    {
-        return Acl::hasPermission('fluentform_forms_manager', $request->get('form_id'));
-    }
-
     public function updateModuleStatus(Request $request)
     {
         return Acl::hasPermission('fluentform_settings_manager', $this->resolveFormId($request));
