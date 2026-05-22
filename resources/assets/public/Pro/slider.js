@@ -854,17 +854,38 @@ class FluentFormSlider {
                 // Update progress bar and titles after animation completes
                 self.stepProgressBarHandle({activeStep: self.activeStep, totalSteps});
 
-                // Show submit button on last step
-                if (formSteps.last().hasClass('active')) {
-                    self.$theForm.find('button[type="submit"]').css('visibility', 'visible');
+                const $submitBtn = self.$theForm.find('button[type="submit"]');
+                let submitStepIdx = -1;
+                if ($submitBtn.length) {
+                    const submitEl = $submitBtn[0];
+                    formSteps.each(function (i) {
+                        if (this.contains(submitEl)) {
+                            submitStepIdx = i;
+                            return false; // break
+                        }
+                    });
+                }
+                const activeStepIdx = formSteps.index(self.$theForm.find('.fluentform-step.active'));
+                let isOnLastStep = submitStepIdx >= 0 && activeStepIdx >= submitStepIdx;
+                
+                if (!isOnLastStep && isTabsNavigation) {
+                    const tabCount = self.$theForm.find('.ff-step-titles--clickable li').length;
+                    if (tabCount > 0 && activeStepIdx >= tabCount - 1) {
+                        isOnLastStep = true;
+                    }
+                }
+                if (isOnLastStep) {
+                    $submitBtn.css('visibility', 'visible');
                 } else {
-                    self.$theForm.find('button[type="submit"]').css('visibility', 'hidden');
+                    $submitBtn.css('visibility', 'hidden');
                 }
 
                 // Step skipping logic
                 if (!window.ff_disable_auto_step) {
                     let $activeStepDom = self.$theForm.find('.fluentform-step.active');
-                    let childDomCounts = self.$theForm.find('.fluentform-step.active > div').length - 1;
+                    // Subtract the step-nav row from the content-child count when it exists
+                    const stepNavCount = self.$theForm.find('.fluentform-step.active > .step-nav').length;
+                    let childDomCounts = self.$theForm.find('.fluentform-step.active > div').length - stepNavCount;
                     let hiddenDomCounts = self.$theForm.find('.fluentform-step.active > .ff_excluded').length;
 
                     if (self.$theForm.find('.fluentform-step.active > .ff-t-container').length) {
