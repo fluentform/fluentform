@@ -112,13 +112,18 @@ class AdminBar
             $title = __('Fluent Forms', 'fluentform');
         }
 
-        $allowForms = FormManagerService::getUserAllowedFormsScope();
-        $hasUnreadSubmissions = wpFluent()->table('fluentform_submissions')
-            ->where('status', 'unread')
-            ->when(false !== $allowForms, function ($q) use ($allowForms){
-                return $q->whereIn('form_id', $allowForms ?: [0]);
-            })
-            ->count();
+        $cacheKey = 'fluentform_unread_count_u_' . get_current_user_id();
+        $hasUnreadSubmissions = get_transient($cacheKey);
+        if (false === $hasUnreadSubmissions) {
+            $allowForms = FormManagerService::getUserAllowedFormsScope();
+            $hasUnreadSubmissions = wpFluent()->table('fluentform_submissions')
+                ->where('status', 'unread')
+                ->when(false !== $allowForms, function ($q) use ($allowForms){
+                    return $q->whereIn('form_id', $allowForms ?: [0]);
+                })
+                ->count();
+            set_transient($cacheKey, (int) $hasUnreadSubmissions, MINUTE_IN_SECONDS);
+        }
 
         $entriesDropdownTitle = __('Entries', 'fluentform');
         if ($hasUnreadSubmissions > 0) {

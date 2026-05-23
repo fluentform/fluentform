@@ -466,13 +466,18 @@ class Menu
             $entriesTitle = __('Entries', 'fluentform');
 
             if (Helper::isFluentAdminPage()) {
-                $allowForms = FormManagerService::getUserAllowedFormsScope();
-                $entriesCount = wpFluent()->table('fluentform_submissions')
-                    ->where('status', 'unread')
-                    ->when(false !== $allowForms, function ($q) use ($allowForms){
-                        return $q->whereIn('form_id', $allowForms ?: [0]);
-                    })
-                    ->count();
+                $cacheKey = 'fluentform_unread_count_u_' . get_current_user_id();
+                $entriesCount = get_transient($cacheKey);
+                if (false === $entriesCount) {
+                    $allowForms = FormManagerService::getUserAllowedFormsScope();
+                    $entriesCount = wpFluent()->table('fluentform_submissions')
+                        ->where('status', 'unread')
+                        ->when(false !== $allowForms, function ($q) use ($allowForms){
+                            return $q->whereIn('form_id', $allowForms ?: [0]);
+                        })
+                        ->count();
+                    set_transient($cacheKey, (int) $entriesCount, MINUTE_IN_SECONDS);
+                }
 
                 if ($entriesCount) {
                     $entriesTitle .= ' <span class="ff_unread_count" style="background: #197efb;color: white;border-radius: 8px;padding: 1px 8px;">' . $entriesCount . '</span>';

@@ -1136,6 +1136,7 @@ add_action('init', function () {
 new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();
 
 add_action('enqueue_block_editor_assets', function () {
+    global $post;
 
     wp_enqueue_script(
         'fluentform-gutenberg-block',
@@ -1151,30 +1152,25 @@ add_action('enqueue_block_editor_assets', function () {
         FLUENTFORM_VERSION
     );
 
-
-    $forms = wpFluent()->table('fluentform_forms')
-        ->select(['id', 'title'])
-        ->orderBy('id', 'DESC')
-        ->get()
-        ->toArray();
+    $forms = get_transient('fluentform_block_editor_forms');
+    if (false === $forms) {
+        $forms = wpFluent()->table('fluentform_forms')
+            ->select(['id', 'title'])
+            ->orderBy('id', 'DESC')
+            ->get()
+            ->toArray();
+        set_transient('fluentform_block_editor_forms', $forms, 5 * MINUTE_IN_SECONDS);
+    }
 
     array_unshift($forms, (object) [
         'id'    => '',
         'title' => __('-- Select a form --', 'fluentform'),
     ]);
 
-    $presets = [
-        [
-            'label' => __('Default (Form Styler)', 'fluentform'),
-            'value' => '',
-        ],
-        [
-            'label' => __('Inherit Theme Style', 'fluentform'),
-            'value' => 'ffs_inherit_theme'
-        ],
-    ];
-
-    $presets = apply_filters('fluentform/block_editor_style_presets', $presets);
+    $presets = apply_filters('fluentform/block_editor_style_presets', [
+        ['label' => __('Default (Form Styler)', 'fluentform'), 'value' => ''],
+        ['label' => __('Inherit Theme Style', 'fluentform'), 'value' => 'ffs_inherit_theme'],
+    ]);
 
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
         'logo'                    => fluentFormMix('img/fluent_icon.svg'),
@@ -1185,51 +1181,48 @@ add_action('enqueue_block_editor_assets', function () {
         'rest'                    => Helper::getRestInfo()
     ]);
 
-    wp_enqueue_style(
-        'fluentform-gutenberg-block',
-        fluentFormMix('css/fluent_gutenblock.css'),
-        ['wp-edit-blocks'],
-        FLUENTFORM_VERSION
-    );
-    $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
-    $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
+    $needsPublicCss = is_a($post, 'WP_Post')
+        && (has_block('fluentfom/guten-block', $post) || has_shortcode($post->post_content, 'fluentform'));
 
-    if (is_rtl()) {
-        $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public-rtl.css');
-        $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
+    if (!apply_filters('fluentform/load_block_editor_public_css', $needsPublicCss, $post)) {
+        return;
     }
 
-    wp_enqueue_style(
-        'fluent-form-styles',
-        $fluentFormPublicCss,
-        [],
-        FLUENTFORM_VERSION
-    );
+    $fluentFormPublicCss = is_rtl()
+        ? fluentFormMix('css/fluent-forms-public-rtl.css')
+        : fluentFormMix('css/fluent-forms-public.css');
 
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking post ID in admin context
-    $post_id = isset($_GET['post']) ? (int)$_GET['post'] : 0;
+    wp_enqueue_style('fluent-form-styles', $fluentFormPublicCss, [], FLUENTFORM_VERSION);
+
+    $post_id = $post ? $post->ID : 0;
     $loadPublicStyle = apply_filters_deprecated(
         'fluentform_load_default_public',
-        [
-            true,
-            (object)[],
-            $post_id
-        ],
+        [true, (object)[], $post_id],
         FLUENTFORM_FRAMEWORK_UPGRADE,
         'fluentform/load_default_public',
         'Use fluentform/load_default_public instead of fluentform_load_default_public.'
     );
 
     if (apply_filters('fluentform/load_default_public', $loadPublicStyle, (object)[], $post_id)) {
-        wp_enqueue_style(
-            'fluentform-public-default',
-            $fluentFormPublicDefaultCss,
-            [],
-            FLUENTFORM_VERSION
-        );
+        $fluentFormPublicDefaultCss = is_rtl()
+            ? fluentFormMix('css/fluentform-public-default-rtl.css')
+            : fluentFormMix('css/fluentform-public-default.css');
+        wp_enqueue_style('fluentform-public-default', $fluentFormPublicDefaultCss, [], FLUENTFORM_VERSION);
     }
 });
 
+$fluentFormBlockEditorFormsCacheBuster = function () {
+    delete_transient('fluentform_block_editor_forms');
+};
+foreach ([
+    'fluentform/inserted_new_form',
+    'fluentform/form_duplicated',
+    'fluentform/form_imported',
+    'fluentform/after_form_delete',
+    'fluentform/before_updating_form',
+] as $fluentFormBlockEditorCacheHook) {
+    add_action($fluentFormBlockEditorCacheHook, $fluentFormBlockEditorFormsCacheBuster);
+}
 
 if (function_exists('register_block_type')) {
     add_action('init', function () {
