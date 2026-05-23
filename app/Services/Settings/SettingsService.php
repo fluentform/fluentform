@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\Settings;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\FormMeta;
+use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Services\FluentConversational\Classes\Form as FluentConversational;
 
@@ -438,7 +439,7 @@ class SettingsService
 
         $service = '\FluentFormPro\classes\SharePage\FormPrettyUrlService';
         $slug = sanitize_text_field(Arr::get($prettyUrl, 'slug', ''));
-        $enabled = (bool) Arr::get($prettyUrl, 'enabled', false);
+        $enabled = ArrayHelper::isTrue($prettyUrl, 'enabled');
         $savedSlug = $service::saveSlug($formId, $slug, $enabled);
 
         return [
