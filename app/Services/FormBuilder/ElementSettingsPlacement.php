@@ -449,6 +449,7 @@ return [
             'tabs_show_progress_bar',
             'step_animation',
             'step_titles',
+            'step_validation_mode',
             'disable_auto_focus',
             'enable_auto_slider',
             'enable_step_data_persistency',

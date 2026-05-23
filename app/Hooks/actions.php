@@ -238,6 +238,10 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             $item['settings']['tabs_show_progress_bar'] = 'no';
         }
 
+        if (!isset($item['settings']['step_validation_mode'])) {
+            $item['settings']['step_validation_mode'] = 'each_step';
+        }
+
         return $item;
     });
 

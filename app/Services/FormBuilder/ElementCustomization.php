@@ -308,6 +308,21 @@ $fluentformElementCustomizationSettings = [
             ],
         ],
     ],
+    'step_validation_mode' => [
+        'template'  => 'radio',
+        'label'     => __('Validation', 'fluentform'),
+        'help_text' => __('Choose whether each step is validated as the user advances, or whether all validation is deferred to final form submit. On submit-only mode, an invalid field will jump the user back to the step containing it.', 'fluentform'),
+        'options'   => [
+            [
+                'value' => 'each_step',
+                'label' => __('Validate Each Step', 'fluentform'),
+            ],
+            [
+                'value' => 'on_submit',
+                'label' => __('Validate on Form Submit', 'fluentform'),
+            ],
+        ],
+    ],
     'progress_layout' => [
         'template'  => 'radioButton',
         'label'     => __('Tab Position', 'fluentform'),

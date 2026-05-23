@@ -31,6 +31,11 @@ class FluentFormSlider {
         if (this.stepPersistency) {
             this.stepResume = this.$theForm.find('.ff-step-container').attr('data-enable_step_page_resume') === 'yes';
         }
+
+        this.stepValidationMode = this.$theForm
+            .find('.ff-step-container')
+            .attr('data-step_validation_mode') || 'each_step';
+        this.submitOnlyValidation = this.stepValidationMode === 'on_submit';
     }
 
     /**
@@ -52,6 +57,50 @@ class FluentFormSlider {
         this.removePrevFromFirstStep();
         this.initStepSlider();
         this.maybeAutoSlider();
+        this.registerSubmitFailureJump();
+    }
+
+    registerSubmitFailureJump() {
+        if (!this.submitOnlyValidation) return;
+        const self = this;
+        const $ = this.$;
+
+        const attemptJump = (attemptsLeft) => {
+            const formSteps = self.$theForm.find('.fluentform-step');
+            if (!formSteps.length) return;
+
+            let firstInvalidIdx = -1;
+            formSteps.each(function (i) {
+                const $step = $(this);
+                // Skip fields the conditional-logic engine has marked excluded.
+                const $firstError = $step.find('.ff-el-is-error').not('.ff_excluded .ff-el-is-error').first();
+                if ($firstError.length) {
+                    firstInvalidIdx = i;
+                    return false; // break
+                }
+            });
+
+            if (firstInvalidIdx === -1) {
+                if (attemptsLeft > 0) setTimeout(() => attemptJump(attemptsLeft - 1), 150);
+                return;
+            }
+            const activeIdx = formSteps.index(self.$theForm.find('.fluentform-step.active'));
+            if (firstInvalidIdx === activeIdx) return; // already on the right step
+
+            const animDuration = self.fluentFormVars.stepAnimationDuration;
+            self.updateSlider(firstInvalidIdx, animDuration, true)
+                .then(() => {
+                    const $firstError = self.$theForm.find('.fluentform-step.active .ff-el-is-error').first();
+                    if ($firstError.length && $firstError[0].scrollIntoView) {
+                        $firstError[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                })
+                .catch(err => console.error('Error jumping to invalid step:', err));
+        };
+
+        this.$theForm.on('fluentform_validation_failed fluentform_submission_failed', function () {
+            setTimeout(() => attemptJump(4), 100);
+        });
     }
 
     /**
@@ -501,8 +550,9 @@ class FluentFormSlider {
                     return;
                 }
 
-                if (targetStep > currentActiveStep) {
+                if (targetStep > currentActiveStep && !self.submitOnlyValidation) {
                     // Validate only the intermediate steps when navigating forward.
+                    // Skipped entirely in on_submit mode — tab clicks free-nav.
                     $.each(formSteps, (index, steps) => {
                         if (index < targetStep) {
                             const elements = $(steps).find(':input').not(':button').filter(function (i, el) {
@@ -676,19 +726,23 @@ class FluentFormSlider {
             let formInstance = self.getFormInstance();
 
             if (btn === 'next') {
-                try {
-                    const elements = current.find(':input').not(':button').filter(function (i, el) {
-                        return !$(el).closest('.has-conditions').hasClass('ff_excluded');
-                    });
-                    elements.length && formInstance.validate(elements);
+                if (self.submitOnlyValidation) {
                     self.activeStep++;
-                } catch (e) {
-                    if (!(e instanceof window.ffValidationError)) {
-                        throw e;
+                } else {
+                    try {
+                        const elements = current.find(':input').not(':button').filter(function (i, el) {
+                            return !$(el).closest('.has-conditions').hasClass('ff_excluded');
+                        });
+                        elements.length && formInstance.validate(elements);
+                        self.activeStep++;
+                    } catch (e) {
+                        if (!(e instanceof window.ffValidationError)) {
+                            throw e;
+                        }
+                        formInstance.showErrorMessages(e.messages);
+                        formInstance.scrollToFirstError(350);
+                        return;
                     }
-                    formInstance.showErrorMessages(e.messages);
-                    formInstance.scrollToFirstError(350);
-                    return;
                 }
                 self.$theForm.trigger('ff_to_next_page', self.activeStep);
 
