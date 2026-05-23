@@ -84,7 +84,7 @@ class TestCase extends PHPUnit_Framework_TestCase
 			);
 		}
 
-		return Form::query()->create([
+		$form = Form::query()->create([
 			'title'       => $name,
 			'status'      => 'published',
 			'has_payment' => 0,
@@ -93,6 +93,52 @@ class TestCase extends PHPUnit_Framework_TestCase
 			'conditions'  => '',
 			'appearance_settings' => '',
 		]);
+
+		// Mirror production: Updater::store / Form::update inspect the
+		// parsed fields and set forms.has_payment from
+		// FormFieldsParser::hasPaymentFields. Without this, payment fixtures
+		// would persist with has_payment=0 and tests would silently bypass
+		// payment-gated branches in production code paths.
+		if ($this->fixtureHasPaymentField($json)) {
+			Form::query()->where('id', $form->id)->update(['has_payment' => 1]);
+			$form->has_payment = 1;
+		}
+
+		return $form;
+	}
+
+	/**
+	 * Scan a fixture's form_fields JSON for any payment-input element.
+	 *
+	 * We can't rely on FormFieldsParser::hasPaymentFields() in tests because
+	 * payment components only register their element keys with the
+	 * `fluentform/form_input_types` filter when PaymentHandler->init() runs
+	 * AND `isEnabled()` returns true — and the test DB starts with the
+	 * payment module disabled. A direct JSON scan is deterministic and
+	 * doesn't depend on which modules happen to be wired in the test env.
+	 *
+	 * Element list is sourced from app/Services/Parser/Form.php
+	 * (hasPaymentFields). Keep in sync if production adds a new payment field.
+	 */
+	private function fixtureHasPaymentField($json)
+	{
+		$paymentElements = [
+			'custom_payment_component',
+			'multi_payment_component',
+			'payment_method',
+			'item_quantity_component',
+			'payment_coupon',
+			'subscription_payment_component',
+		];
+
+		foreach ($paymentElements as $element) {
+			if (strpos($json, '"element":"' . $element . '"') !== false
+				|| strpos($json, '"element": "' . $element . '"') !== false) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

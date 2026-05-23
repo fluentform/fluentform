@@ -90,4 +90,23 @@ class TestHarnessHelpersAnchor extends TestCase
         $this->assertSame(200, wp_remote_retrieve_response_code($response));
         $this->assertSame('{"pong":true}', wp_remote_retrieve_body($response));
     }
+
+    /**
+     * Production `Updater::store` / `Form::update` sets has_payment from
+     * FormFieldsParser::hasPaymentFields — the loader must mirror that
+     * so tests using payment-form.json exercise payment-gated branches
+     * (`forms.has_payment = 1`) that production code reads.
+     */
+    public function test_loadFormFixture_auto_detects_has_payment_for_payment_fixture()
+    {
+        $payment = $this->loadFormFixture('payment-form');
+        $this->assertSame(1, (int) $payment->has_payment,
+            'payment-form fixture contains custom_payment_component → has_payment must persist as 1'
+        );
+
+        $plain = $this->loadFormFixture('conditional-logic');
+        $this->assertSame(0, (int) $plain->has_payment,
+            'conditional-logic fixture has no payment fields → has_payment must persist as 0'
+        );
+    }
 }
