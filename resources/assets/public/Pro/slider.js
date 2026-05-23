@@ -854,17 +854,38 @@ class FluentFormSlider {
                 // Update progress bar and titles after animation completes
                 self.stepProgressBarHandle({activeStep: self.activeStep, totalSteps});
 
-                // Show submit button on last step
-                if (formSteps.last().hasClass('active')) {
-                    self.$theForm.find('button[type="submit"]').css('visibility', 'visible');
-                } else {
-                    self.$theForm.find('button[type="submit"]').css('visibility', 'hidden');
+                // Exclude the save-progress button (also type=submit when rendered as image)
+                // so its DOM position doesn't shadow the real submit when locating its step.
+                const $submitBtn = self.$theForm.find('button[type="submit"]').not('.ff-btn-save-progress');
+                let submitStepIdx = -1;
+                if ($submitBtn.length) {
+                    const submitEl = $submitBtn[0];
+                    formSteps.each(function (i) {
+                        if (this.contains(submitEl)) {
+                            submitStepIdx = i;
+                            return false;
+                        }
+                    });
                 }
+                const activeStepIdx = formSteps.index(self.$theForm.find('.fluentform-step.active'));
+                let isOnLastStep = submitStepIdx >= 0 && activeStepIdx >= submitStepIdx;
+
+                if (!isOnLastStep && isTabsNavigation) {
+                    // Tabs mode has no synthetic trailing "submit step" — the highest
+                    // clickable tab points at the step holding submit. Treat that as last.
+                    const tabCount = self.$theForm.find('.ff-step-titles--clickable li').length;
+                    if (tabCount > 0 && activeStepIdx >= tabCount - 1) {
+                        isOnLastStep = true;
+                    }
+                }
+                $submitBtn.css('visibility', isOnLastStep ? 'visible' : 'hidden');
 
                 // Step skipping logic
                 if (!window.ff_disable_auto_step) {
                     let $activeStepDom = self.$theForm.find('.fluentform-step.active');
-                    let childDomCounts = self.$theForm.find('.fluentform-step.active > div').length - 1;
+                    // Subtract the step-nav row when present (it isn't always rendered).
+                    const stepNavCount = self.$theForm.find('.fluentform-step.active > .step-nav').length;
+                    let childDomCounts = self.$theForm.find('.fluentform-step.active > div').length - stepNavCount;
                     let hiddenDomCounts = self.$theForm.find('.fluentform-step.active > .ff_excluded').length;
 
                     if (self.$theForm.find('.fluentform-step.active > .ff-t-container').length) {
