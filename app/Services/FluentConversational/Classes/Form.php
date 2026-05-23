@@ -690,7 +690,7 @@ class Form
         return fluentFormGetRandomPhoto();
     }
 
-    private function renderFormHtml($formId, $providedKey = '')
+    public function renderFormHtml($formId, $providedKey = '')
     {
         $form = wpFluent()->table('fluentform_forms')->find($formId);
 
