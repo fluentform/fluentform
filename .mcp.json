@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "code-review-graph": {
+      "command": "/Users/lukmannakib/.local/pipx/venvs/code-review-graph/bin/python",
+      "args": [
+        "-m",
+        "code_review_graph",
+        "serve"
+      ],
+      "cwd": "/Volumes/Projects/work/forms/wp-content/plugins/fluentform",
+      "type": "stdio"
+    }
+  }
+}
