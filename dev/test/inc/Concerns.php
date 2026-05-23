@@ -24,6 +24,52 @@ trait Concerns
 		return new Response($response);
 	}
 
+	/**
+	 * Mirrors the production client: PUT / PATCH / DELETE are sent as POST
+	 * with the X-HTTP-Method-Override header, which WP_REST_Server
+	 * understands. Tests should use these helpers so the request flow
+	 * matches what the admin REST client actually issues.
+	 */
+	public function put($uri, $params = [])
+	{
+		return $this->dispatchWithOverride('PUT', $uri, $params);
+	}
+
+	public function patch($uri, $params = [])
+	{
+		return $this->dispatchWithOverride('PATCH', $uri, $params);
+	}
+
+	public function delete($uri, $params = [])
+	{
+		return $this->dispatchWithOverride('DELETE', $uri, $params);
+	}
+
+	/**
+	 * The production admin REST client sends PUT/PATCH/DELETE as POST with
+	 * an X-HTTP-Method-Override header so firewalls don't block them.
+	 * WP_REST_Server::serve_request() translates that header back to the
+	 * real method at the HTTP boundary. In tests we go through dispatch()
+	 * directly, which doesn't read the header — so we set the method
+	 * explicitly so WP_REST_Server dispatches to the route registered for
+	 * THAT method (DELETE routes hit @delete, not @update).
+	 *
+	 * Note: FluentForm currently registers no PUT/PATCH routes (only POST +
+	 * DELETE + GET). put()/patch() helpers are forward-compatible; against
+	 * today's routes they correctly produce 404 because no PUT route is
+	 * registered. Use post() for "update" intent against FluentForm endpoints.
+	 */
+	protected function dispatchWithOverride($method, $uri, $params = [])
+	{
+		$request = $this->createRequest('POST', $uri, $params);
+		$request->set_header('X-HTTP-Method-Override', strtoupper($method));
+		$request->set_method(strtoupper($method));
+
+		$response = $this->server->dispatch($request);
+
+		return new Response($response);
+	}
+
 	public function createRequest($method, $uri, $params = [])
     {
     	do_action('rest_api_init');
