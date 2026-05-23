@@ -30,6 +30,21 @@ class TestCouponModelAnchor extends TestCase
     }
 
     /**
+     * Drop the Pro-owned coupons table at class teardown. free's
+     * RefreshDatabase::tearDownAfterClass only drops tables in
+     * TestDBMigrator::getMigrations() (free's 8 tables) — Pro-owned tables
+     * must drop themselves so the schema doesn't leak into later test
+     * classes that run in the same phpunit invocation.
+     */
+    public static function tearDownAfterClass() : void
+    {
+        global $wpdb;
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}fluentform_coupons");
+
+        parent::tearDownAfterClass();
+    }
+
+    /**
      * Per-test truncate of the Pro-owned coupons table. free's
      * RefreshDatabase only truncates tables in TestDBMigrator::getMigrations()
      * (free's 8 tables) — Pro-owned tables must clean themselves between
