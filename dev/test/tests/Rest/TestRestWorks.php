@@ -14,14 +14,30 @@ use WP_REST_Response;
  */
 class TestRestWorks extends TestCase
 {
+    /**
+     * Track the rest_api_init callback this test installs so tearDown
+     * can remove it. Leaving the closure on the global rest_api_init
+     * action would cause every subsequent test's setUp() to re-register
+     * the route (each setUp re-fires do_action('rest_api_init') against
+     * a fresh WP_REST_Server), polluting later tests' route tables.
+     */
+    private $restInitCallback;
+
+    public function tearDown() : void
+    {
+        if ($this->restInitCallback) {
+            remove_action('rest_api_init', $this->restInitCallback);
+            $this->restInitCallback = null;
+        }
+        parent::tearDown();
+    }
+
     public function test_rest_works()
     {
-        // Hook into the NEXT rest_api_init pass so the route lands on
-        // the WP_REST_Server instance that Concerns::get() dispatches to.
         $route = trim($this->getRestNamespace(), '/');
         list($ns, $ver) = explode('/', $route);
 
-        add_action('rest_api_init', function () use ($ns, $ver) {
+        $this->restInitCallback = function () use ($ns, $ver) {
             register_rest_route("{$ns}/{$ver}", '/test-rest-works', [
                 'methods'  => 'GET',
                 'callback' => function () {
@@ -29,12 +45,32 @@ class TestRestWorks extends TestCase
                 },
                 'permission_callback' => '__return_true',
             ]);
-        });
+        };
+        add_action('rest_api_init', $this->restInitCallback);
 
         // Concerns::createRequest() re-fires rest_api_init before dispatching,
         // so the route registered above will land on the server in time.
         $response = $this->get('test-rest-works');
 
         $this->assertTrue($response->isOkay());
+    }
+
+    /**
+     * Regression guard: prove the previous test's rest_api_init callback
+     * was removed in tearDown. If the leak returns, this test's setUp()
+     * would re-fire rest_api_init, the leaked closure would re-register
+     * test-rest-works on the fresh server, and the route would show up
+     * in the route table.
+     */
+    public function test_rest_works_callback_does_not_leak_to_next_test()
+    {
+        $namespace = $this->getRestNamespace();
+        $routes = $this->server->get_routes();
+
+        $this->assertArrayNotHasKey(
+            $namespace . 'test-rest-works',
+            $routes,
+            'Previous test leaked its rest_api_init closure — route persists across tests'
+        );
     }
 }
