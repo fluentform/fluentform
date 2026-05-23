@@ -30,7 +30,7 @@ trait RefreshDatabase
 
 	private function migrator()
 	{
-		return ($this->getNamespace().'\Database\DBMigrator');
+		return TestDBMigrator::class;
 	}
 
 	private function schema()

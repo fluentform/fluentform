@@ -4,9 +4,7 @@
  * Refreshes all the tables by deleting the tables and re-running the migrations.
  */
 return function($pluginDir, $args) {
-	$composer = json_decode(file_get_contents($pluginDir.'/composer.json'), true);
-	$ns = $composer['extra']['wpfluent']['namespace']['current'];
-	$dbMigratorClass = $ns.'\\Database\\DBMigrator';
+	$dbMigratorClass = \Dev\Test\Inc\TestDBMigrator::class;
 	if ($result = $dbMigratorClass::getMigrations()) {
 		$db = $GLOBALS['wpdb'];
 		$output = new \Symfony\Component\Console\Output\ConsoleOutput;
@@ -18,7 +16,7 @@ return function($pluginDir, $args) {
 			}
 		}
 
-		if ($result = $dbMigratorClass::run()) {
+		if ($result = $dbMigratorClass::migrateUp()) {
 			foreach ($result as $key => $value) {
         		$output->writeln('<comment>'.$value.'.</comment>');
         	}
