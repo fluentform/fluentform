@@ -2,24 +2,19 @@
 
 namespace Dev\Test\Tests;
 
-use Dev\Test\Inc\App;
 use Dev\Test\Inc\TestCase;
-use Dev\Test\Inc\UsersAndPostsSeeder;
-// use PluginNamespace\App\Models\User;
 
+/**
+ * Pure smoke test — proves the harness boots, TestCase setUp() runs, and
+ * RefreshDatabase migrates without erroring. Does NOT depend on
+ * UsersAndPostsSeeder, which relies on UserFactory::$model being set to a
+ * concrete User model — FluentForm doesn't ship one (factories/UserFactory.php
+ * keeps the $model property commented out as a stub for downstream plugins).
+ */
 class TestSample extends TestCase
 {
-	use UsersAndPostsSeeder;
-
-	public function setUp(): void
-	{
-		parent::setUp();
-		$this->seedUsersAndPosts();
-	}
-
-	public function test_works()
-	{
-		$this->assertTrue(true);
-		// $this->assertCount(10, User::get());
-	}
+    public function test_harness_boots()
+    {
+        $this->assertTrue(true);
+    }
 }

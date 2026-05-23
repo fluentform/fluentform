@@ -18,6 +18,78 @@ you did everything correctly then you should be able to write and run tests.
 
 - To check, run `./wpf test` from the root of your plugin directory.
 
+# Test Helpers Reference
+
+The PHPUnit harness provides these helpers on the base `TestCase` (via the `Concerns` trait and `TestCase` methods). Use them instead of hand-rolling `$_POST`, raw `$wpdb` writes, or `register_rest_route` boilerplate.
+
+## REST request helpers (Concerns)
+
+| Method | Purpose |
+|---|---|
+| `$this->get($uri, $params = [])` | GET against `/fluentform/v1/{uri}` |
+| `$this->post($uri, $params = [])` | POST |
+| `$this->put($uri, $params = [])` | POST + `X-HTTP-Method-Override: PUT` + correct dispatch method |
+| `$this->patch($uri, $params = [])` | Same as `put` for PATCH |
+| `$this->delete($uri, $params = [])` | Same for DELETE — routes to `@delete` handler, not `@update` |
+| `$this->submitForm($formId, array $data)` | Drive `/form-submit` endpoint as if frontend AJAX submitted |
+| `$this->login(int $userId)` / `$this->logout()` | Set / reset WP current user |
+| `$this->impersonateAsRole(string $cap)` | Create fresh subscriber + add cap + login. Returns user ID. |
+| `$this->mockHttp(string $needle, array $response)` | Intercept any `wp_remote_*` whose URL contains `$needle` |
+
+## Response asserts (Response)
+
+```php
+$this->get('forms')
+    ->assertStatus(200)
+    ->assertJsonPath('forms.data.0.id', 5)
+    ->assertJsonHas('forms.total')
+    ->assertJsonMissing('error');
+```
+
+Other accessors: `->getStatus()`, `->getData()`, `->getJson()`, `->isOkay()`, `->isForbidden()`.
+
+## Fixture loader (TestCase)
+
+```php
+$form = $this->loadFormFixture('single-field');
+$form = $this->loadFormFixture('multi-step-with-conditions');
+$form = $this->loadFormFixture('payment-form');
+$form = $this->loadFormFixture('conditional-logic');
+```
+
+Reads `dev/test/fixtures/forms/<name>.json` and creates a published Form. See `dev/test/fixtures/README.md` for fixture authoring rules (privacy, no real PII).
+
+## Model helpers (TestCase)
+
+| Method | Purpose |
+|---|---|
+| `$this->setFormMeta($formId, $key, $value)` | Insert `fluentform_form_meta` row; auto-encodes arrays/objects to JSON |
+| `$this->loadSubmissionFixture($formId, array $response)` | Insert Submission + per-field EntryDetails rows; returns Submission model |
+
+## Suite-scoped migrations (RefreshDatabase)
+
+`setUpBeforeClass()` migrates once per class; `setUp()` truncates between tests. Pro-owned tables (e.g. `fluentform_coupons`) must self-truncate — see `dev/test/tests/Pro/TestCouponModelAnchor.php` for the pattern.
+
+## Cross-plugin testing — `FLUENTFORM_PRO_TEST=1`
+
+When `FLUENTFORM_PRO_TEST=1` is set, bootstrap.php additionally loads `../fluentformpro/fluentformpro.php` so Pro tests under `dev/test/tests/Pro/` can run. Pro test classes that need it should gate themselves on the sentinel constant:
+
+```php
+public static function setUpBeforeClass() : void
+{
+    if (!defined('FLUENTFORM_PRO_TEST_LOADED')) {
+        self::markTestSkipped('Pro not loaded (set FLUENTFORM_PRO_TEST=1)');
+    }
+    parent::setUpBeforeClass();
+}
+```
+
+Run with the flag:
+
+```bash
+FLUENTFORM_PRO_TEST=1 php dev/vendor/bin/phpunit -c dev/phpunit.xml.dist
+```
+
 # QA Tooling:
 
 - Run `cd dev && composer run phpcs` to scan plugin PHP compatibility.
