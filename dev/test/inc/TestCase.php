@@ -15,11 +15,9 @@ class TestCase extends PHPUnit_Framework_TestCase
 	}
 
 	protected $plugin = null;
-	
-	protected $router = null;
-	
+
 	protected $server = null;
-	
+
 	protected $factory = null;
 
 	public function setUp() : void
@@ -28,9 +26,7 @@ class TestCase extends PHPUnit_Framework_TestCase
 
         $this->server = $wp_rest_server = new WP_REST_Server;
 
-        $this->plugin = include realpath(__DIR__ . '/../../../fluentform.php');
-        
-        $this->router = $this->plugin->router;
+        $this->plugin = wpFluentForm();
 
         $this->factory = new Factory;
 
