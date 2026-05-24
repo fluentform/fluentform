@@ -18,9 +18,6 @@
                         <tab-item :class="{active : active_tab == 'meta'}" @click="active_tab = 'meta'">
                             <a href="#" class="ff_tab_link" @click.prevent>{{ $t('Meta') }}</a>
                         </tab-item>
-                        <tab-item :class="{active : active_tab == 'access'}" @click="active_tab = 'access'">
-                            <a href="#" class="ff_tab_link" @click.prevent>{{ $t('Access') }}</a>
-                        </tab-item>
                         <tab-item :class="{active : active_tab == 'share'}" @click="active_tab = 'share'">
                             <a href="#" class="ff_tab_link" @click.prevent>{{ $t('Share') }}</a>
                         </tab-item>
@@ -30,9 +27,6 @@
                     <design-elements :has_pro="has_pro" :fonts="fonts" v-if="active_tab == 'design'" :design_settings="design_settings"/>
                     <div v-else-if="active_tab == 'meta'">
                         <p>{{ $t('Set your social sharing meta texts and form messages here') }}</p>
-                    </div>
-                    <div v-else-if="active_tab == 'access'">
-                        <p>{{ $t('Control who can access this conversational form and when submissions are accepted.') }}</p>
                     </div>
                     <div v-else-if="active_tab == 'share'">
                         <p
@@ -78,7 +72,7 @@
                             </el-form-item>
                         </el-form>
                     </div>
-                    <div v-if="!settings_error && ((active_tab == 'design' && has_pro) || active_tab == 'meta' || active_tab == 'access' || (active_tab == 'share' && has_pro_share_page))" class="ffc_design_submit">
+                    <div v-if="!settings_error && ((active_tab == 'design' && has_pro) || active_tab == 'meta' || (active_tab == 'share' && has_pro_share_page))" class="ffc_design_submit">
                         <el-tooltip placement="top" popper-class="ff_tooltip_wrap">
                             <div slot="content">
                                 {{ saveShortcutTooltip }}
@@ -95,7 +89,6 @@
                                 :design_settings="design_settings"
                                 :form_id="form_id"/>
                 <meta-setting-view v-else-if="active_tab == 'meta'" :meta_settings="meta_settings"/>
-                <access-setting-view v-else-if="active_tab == 'access'" :form-settings="form_settings" :has-pro="has_pro"/>
                 <sharing-view
                     v-else-if="active_tab == 'share'"
                     :form_id="form_id"
@@ -114,7 +107,6 @@ import DesignPreview from './DesignPreview';
 import DesignElements from './DesignElements';
 import MetaSettingView from './MetaSettings';
 import SharingView from './SharingView';
-import AccessSettingView from './AccessSettings';
 import Tab from '@/admin/components/Tab/Tab.vue';
 import TabItem from '@/admin/components/Tab/TabItem.vue';
 import Card from '@/admin/components/Card/Card.vue';
@@ -128,7 +120,6 @@ export default {
         DesignElements,
         MetaSettingView,
         SharingView,
-        AccessSettingView,
         Tab,
         TabItem,
         Card,
@@ -266,7 +257,6 @@ export default {
 
             return (this.active_tab === 'design' && this.has_pro)
                 || this.active_tab === 'meta'
-                || this.active_tab === 'access'
                 || (this.active_tab === 'share' && this.has_pro_share_page);
         },
         normalizeFormSettings(settings) {
