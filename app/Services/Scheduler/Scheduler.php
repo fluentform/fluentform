@@ -230,15 +230,16 @@ class Scheduler
         \FluentForm\App\Models\Scheduler::where('created_at', '<', $deleteTo)
             ->delete();
 
-        // Clean temp uploads older than 2 days
+        // Clean temp uploads older than the configured threshold (default 48 hours)
         if (defined('FLUENTFORM_UPLOAD_DIR')) {
             $tempDir = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/temp/';
             if (is_dir($tempDir)) {
                 $files = glob($tempDir . '*');
                 if (!empty($files)) {
-                    $twoDaysAgo = time() - 172800;
+                    $maxFileAge = apply_filters('fluentform/temp_file_delete_time', 2 * DAY_IN_SECONDS);
+                    $cutoffTime = time() - $maxFileAge;
                     foreach ($files as $file) {
-                        if (is_file($file) && basename($file) !== 'index.php' && filemtime($file) < $twoDaysAgo) {
+                        if (is_file($file) && basename($file) !== 'index.php' && filemtime($file) < $cutoffTime) {
                             wp_delete_file($file);
                         }
                     }
