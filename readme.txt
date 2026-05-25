@@ -439,9 +439,10 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 6.2.4 (Date: May 25, 2026) =
-- Fixes conversational form pretty URLs rendering inside the landing-page wrapper instead of as a standalone page
-- Fixes Pretty URL toggle not persisting when disabled and removes the Access tab from the Conversational Design page
+- Fixes conversational form pretty URLs rendering to render as standalone page
+- Fixes Pretty URL toggle not persisting when disabled
 - Fixes multi-step form submit visibility and step-skip logic
+- Adds a notice when the Fluent Forms REST endpoints are unreachable so the empty form and entry lists after an upgrade are easier to diagnose
 
 = 6.2.3 (Date: May 21, 2026) =
 - Adds option group support for Dropdown and Multi-select fields

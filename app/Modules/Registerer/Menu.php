@@ -323,6 +323,8 @@ class Menu
             $globalVars['fluent_forms_admin_nonce'] = wp_create_nonce('fluent_forms_admin_nonce');
         }
 
+        $globalVars['i18n_rest_404'] = __('Fluent Forms REST endpoints are unreachable on this site. This sometimes happens after a plugin update — try reloading the page, clearing your site cache, or asking your host to clear PHP OpCache. If the issue persists, check whether a security plugin is blocking REST requests.', 'fluentform');
+
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', $globalVars);
 
         $page = sanitize_text_field($this->app->request->get('page'));
