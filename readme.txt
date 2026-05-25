@@ -439,7 +439,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 6.2.4 (Date: May 25, 2026) =
-- Fixes conversational form pretty URLs rendering 
+- Fixes conversational form pretty URLs rendering
 - Fixes Pretty URL toggle not persisting when disabled
 - Fixes multi-step form submit visibility and step-skip logic
 - Adds a notice when the Fluent Forms REST endpoints are unreachable so the empty form and entry lists after an upgrade are easier to diagnose

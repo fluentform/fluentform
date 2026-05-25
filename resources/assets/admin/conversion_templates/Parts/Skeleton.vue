@@ -32,7 +32,7 @@
                         <p
                             v-html="
                                 $t(
-                                    'Share your form by unique URL or copy and paste the %1$sshortcode%2$s to embed in your page and post',
+                                    'Share your form by unique URL (Pro) or copy and paste the %1$sshortcode%2$s to embed in your page and post',
                                     '<em>',
                                     '</em>'
                                 )
