@@ -166,7 +166,10 @@ class ShortCodeParser
             }
 
             if ($isUrl) {
-                $value = rawurlencode($value);
+                // Don't encode values that are already complete URLs like {wp.site_url}
+                if (!preg_match('#^https?://#i', (string) $value)) {
+                    $value = rawurlencode($value);
+                }
             } else if ($htmlSanitized) {
                 $value = fluentform_sanitize_html($value);
             }
