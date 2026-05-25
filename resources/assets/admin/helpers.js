@@ -207,8 +207,8 @@ export function _$t(string, ...args) {
     // Prepare the arguments, excluding the first one (the string itself)
      args = Array.prototype.slice.call(args, 1);
 
-    // Regular expression to match %s, %d, or %1s, %2s, etc.
-    const regex = /%(\d*)s|%d/g;
+    // Regular expression to match %s, %d, or %1s, %1$s, %2$s, etc.
+    const regex = /%(\d*)\$?s|%d/g;
 
     // Replace function to handle each match found by the regex
     let argIndex = 0; // Keep track of the argument index for non-numbered placeholders
