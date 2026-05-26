@@ -9,7 +9,7 @@ use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class ConditionAssesor
 {
-    public static function evaluate(&$field, &$inputs, $form = null)
+    public static function evaluate(&$field, &$inputs, $form = null, $treatMissingAsEmpty = true)
     {
         $status = Arr::get($field, 'conditionals.status');
         if (!$status) {
@@ -20,22 +20,22 @@ class ConditionAssesor
 
         // Handle group conditions
         if ($type === 'group' && $conditionGroups = Arr::get($field, 'conditionals.condition_groups')) {
-            return self::evaluateGroupConditions($conditionGroups, $inputs, $form);
+            return self::evaluateGroupConditions($conditionGroups, $inputs, $form, $treatMissingAsEmpty);
         }
 
         // Handle 'any', 'all' conditions
         if ($type !== 'group' && $conditions = Arr::get($field, 'conditionals.conditions')) {
-            return self::evaluateConditions($conditions, $inputs, $type, $form);
+            return self::evaluateConditions($conditions, $inputs, $type, $form, $treatMissingAsEmpty);
         }
         return true;
     }
 
-    private static function evaluateGroupConditions($conditionGroups, &$inputs, $form = null)
+    private static function evaluateGroupConditions($conditionGroups, &$inputs, $form = null, $treatMissingAsEmpty = true)
     {
         $hasGroupConditionsMet = true;
         foreach ($conditionGroups as $group) {
             if ($conditions = Arr::get($group, 'rules')) {
-                $hasGroupConditionsMet = self::evaluateConditions($conditions, $inputs, 'all', $form);
+                $hasGroupConditionsMet = self::evaluateConditions($conditions, $inputs, 'all', $form, $treatMissingAsEmpty);
                 if ($hasGroupConditionsMet) {
                     return true;
                 }
@@ -44,7 +44,7 @@ class ConditionAssesor
         return $hasGroupConditionsMet;
     }
 
-    private static function evaluateConditions($conditions, &$inputs, $type, $form = null)
+    private static function evaluateConditions($conditions, &$inputs, $type, $form = null, $treatMissingAsEmpty = true)
     {
         $hasConditionMet = true;
 
@@ -53,7 +53,7 @@ class ConditionAssesor
                 continue;
             }
 
-            $hasConditionMet = static::assess($condition, $inputs, $form);
+            $hasConditionMet = static::assess($condition, $inputs, $form, $treatMissingAsEmpty);
 
             if ($hasConditionMet && $type == 'any') {
                 return true;
@@ -67,19 +67,26 @@ class ConditionAssesor
         return $hasConditionMet;
     }
 
-    public static function assess(&$conditional, &$inputs, $form = null)
+    // Default treats a missing field as an empty string so admin-configured
+    // gating ("send email if X != ''") and [ff_if] templates check intent
+    // naturally. Form field visibility (Parser/Extractor) and server-side
+    // validation (AdvancedFormValidation) pass false to keep JS parity.
+    public static function assess(&$conditional, &$inputs, $form = null, $treatMissingAsEmpty = true)
     {
         if ($conditional['field']) {
             $accessor = rtrim(str_replace(['[', ']', '*'], ['.'], $conditional['field']), '.');
 
-            if (!Arr::has($inputs, $accessor)) {
-                // A missing field is "not equal" to any value, matching JS behavior
+            $isMissing = !Arr::has($inputs, $accessor);
+
+            if ($isMissing && !$treatMissingAsEmpty) {
+                // JS parity: missing field is "not equal" to any value.
                 if ($conditional['operator'] === '!=') {
                     return true;
                 }
                 return false;
             }
-            $inputValue = Arr::get($inputs, $accessor);
+
+            $inputValue = $isMissing ? '' : Arr::get($inputs, $accessor);
 
             if ($numericFormatter = Arr::get($conditional, 'numeric_formatter')) {
                 $inputValue = Helper::getNumericValue($inputValue, $numericFormatter);
