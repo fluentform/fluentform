@@ -310,6 +310,23 @@ class Helper
         }
     }
 
+    /**
+     * Resolve an entry's column => value map regardless of whether the entry is
+     * a stdClass DB row (columns are real properties) or a WPFluent Model
+     * (columns live in an internal attribute bag reached via __get).
+     *
+     * @param object|array $entry
+     * @return array
+     */
+    public static function getEntryColumns($entry)
+    {
+        if (is_object($entry) && method_exists($entry, 'getAttributes')) {
+            return $entry->getAttributes();
+        }
+
+        return (array) $entry;
+    }
+
     public static function getSubmissionMeta($submissionId, $metaKey, $default = false)
     {
         return SubmissionMeta::retrieve($metaKey, $submissionId, $default);
