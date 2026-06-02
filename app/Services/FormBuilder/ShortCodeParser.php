@@ -368,7 +368,9 @@ class ShortCodeParser
             return '';
         }
 
-        if (property_exists($entry, $key)) {
+        $columns = Helper::getEntryColumns($entry);
+
+        if (array_key_exists($key, $columns)) {
             if ('total_paid' == $key || 'payment_total' == $key) {
                 return round($entry->{$key} / 100, 2);
             }
