@@ -20,10 +20,83 @@ you did everything correctly then you should be able to write and run tests.
 
 # QA Tooling:
 
-- Run `cd dev && composer run phpcs` to scan plugin PHP compatibility.
-- Run `cd dev && composer run phpstan` to run the WordPress-aware static analysis baseline.
+All QA scripts live in `dev/composer.json`, so run them from the `dev/` directory
+(from the plugin root use `composer --working-dir=dev <script>`).
+
+- `cd dev && composer phpstan` — static analysis over `../app` against the baseline.
+- `cd dev && composer phpcs -- ../app/Path/File.php` — Fluent WordPress Standard on a file (or `-- ../app` for the whole plugin).
+- `cd dev && composer gate` — runs **both** PHPStan and PHPCS in one go.
 
 **Note** You may run the `./setup.sh` multiple times if you need to.
+
+# Quality Gate (pre-push hook)
+
+Every `git push` runs PHPStan + PHPCS locally **before** the refs leave your
+machine. If a check fails, the push is rejected. This is a **local** gate — it
+runs on your machine, not in CI.
+
+## One-time setup (per clone)
+
+```bash
+cd dev && composer install            # builds dev/vendor (phpstan, phpcs, wpcs)
+cd ..
+cp dev/hooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+```
+
+Requires **PHP 8.x**, **Composer**, and **Node** (the runner is `dev/quality-gate.mjs`).
+Verify it's active: `ls -l .git/hooks/pre-push` (must be executable).
+
+## What runs, and what blocks
+
+| Check | Scans | Blocks the push on |
+|-------|-------|--------------------|
+| **PHPStan** (`dev/phpstan.neon`, level 2) | all of `../app` vs the baseline | **new** type errors only — the 1,827 pre-existing errors are frozen in `dev/phpstan-baseline.neon` |
+| **PHPCS** (`.phpcs.xml`, Fluent Standard) | only the **changed `app/` files** | style/security **errors** (unescaped output, unsanitized input, tabs, etc.) |
+
+- **Warnings are shown but do not block** (e.g. missing nonce, debug functions). Errors block.
+- PHPStan needs the whole codebase for type resolution, so it scans all of `app/`; the baseline is what keeps it from failing on legacy code. PHPCS is per-file, so it only lints what you changed (legacy improves as it's touched).
+
+## Running it manually
+
+```bash
+cd dev && composer gate                              # both checks, full app/
+GATE_PHP_FILES="app/Http/Controllers/LogController.php" composer gate   # scope PHPCS to specific files
+```
+
+## Auto-fixing style
+
+`composer phpcs` only reports. To auto-fix the `[x]`-marked rules:
+
+```bash
+cd dev && vendor/bin/phpcbf --standard=../.phpcs.xml ../app/Path/File.php
+git diff ../app/Path/File.php        # always review what it rewrote
+```
+
+## The PHPStan baseline
+
+`dev/phpstan-baseline.neon` freezes the errors that existed when the gate was set
+up; only new errors fail. As files are cleaned, the baseline shrinks. **Never add
+new errors to the baseline to make a push green — fix the code instead.** To
+regenerate after a real cleanup:
+
+```bash
+cd dev && composer phpstan -- --generate-baseline=phpstan-baseline.neon
+```
+
+## Raising the PHPStan level
+
+Edit `level: 2` in `dev/phpstan.neon` (range `0`–`9`, or `max`). After raising,
+run `composer phpstan`, then either fix the new errors or re-generate the baseline.
+Raise one level at a time so the team isn't flooded.
+
+## Emergency bypass
+
+```bash
+git push --no-verify
+```
+
+Use only when you've read the errors and decided they're acceptable for this push
+(e.g. a rebased branch where the diff includes upstream commits). Note why in the PR.
 
 # If anything goes wrong:
 
