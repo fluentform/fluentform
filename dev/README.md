@@ -92,10 +92,73 @@ FLUENTFORM_PRO_TEST=1 php dev/vendor/bin/phpunit -c dev/phpunit.xml.dist
 
 # QA Tooling:
 
-- Run `cd dev && composer run phpcs` to scan plugin PHP compatibility.
-- Run `cd dev && composer run phpstan` to run the WordPress-aware static analysis baseline.
+All QA scripts live in `dev/composer.json`, so run them from `dev/` (from the
+plugin root use `composer --working-dir=dev <script>`).
+
+- `cd dev && composer phpstan` — static analysis over `../app` against the baseline.
+- `cd dev && composer phpcs -- ../app/Path/File.php` — Fluent WordPress Standard on a file (or `-- ../app` for the whole plugin).
+- `cd dev && composer gate` — runs **both** PHPStan and PHPCS in one go.
 
 **Note** You may run the `./setup.sh` multiple times if you need to.
+
+# PR Gate (pre-push hook)
+
+Every `git push` runs PHPStan + PHPCS locally **before** the refs leave your
+machine; a failing check rejects the push. This is a **local** gate, not CI.
+
+## One-time setup (per clone)
+
+```bash
+cd dev && composer install            # build dev/vendor (phpstan, phpcs, wpcs)
+cd ..
+cp dev/hooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+```
+
+Requires **PHP 8.x**, **Composer**, and **Node**. Verify: `ls -l .git/hooks/pre-push` (must be executable).
+
+## What blocks vs warns
+
+- **PHPStan** scans all of `../app` but only **new** errors fail — the pre-existing errors are frozen in `dev/phpstan-baseline.neon`.
+- **PHPCS** lints only the **changed `app/` files**; **errors block, warnings are shown but don't block**.
+
+## Run it manually
+
+```bash
+cd dev && composer gate                                              # both checks
+GATE_PHP_FILES="app/Http/Controllers/LogController.php" composer gate  # scope PHPCS to files
+```
+
+## Auto-fix style
+
+```bash
+cd dev && vendor/bin/phpcbf --standard=../.phpcs.xml ../app/Path/File.php
+git diff ../app/Path/File.php        # always review what it rewrote
+```
+
+## The baseline (ratchet)
+
+`dev/phpstan-baseline.neon` freezes the errors that existed when the gate was set
+up; only new errors fail. **Never add new errors to the baseline to go green — fix
+the code.** Regenerate after a real cleanup:
+
+```bash
+cd dev && composer phpstan -- --generate-baseline=phpstan-baseline.neon
+```
+
+## Raise the PHPStan level
+
+Edit `level: 2` in `dev/phpstan.neon` (range `0`–`9`, or `max`). After raising, run
+`composer phpstan`, then fix the new errors or re-generate the baseline. Raise one
+level at a time.
+
+## Emergency bypass
+
+```bash
+git push --no-verify
+```
+
+Use only when you've read the errors and decided they're acceptable for this push
+(e.g. a rebased branch whose diff includes upstream commits). Note why in the PR.
 
 # If anything goes wrong:
 
