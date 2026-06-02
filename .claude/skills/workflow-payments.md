@@ -120,17 +120,56 @@ fluentform/payment_submission_data                      # Filter submission data
 fluentform/payment_field_{element}_pricing_options      # Filter pricing options
 ```
 
-## How Pro Extends Payments
+## Free vs Pro: Which Files Actually Run at Runtime
+
+**The most common source of payment bug confusion. Read before editing any payment file.**
+
+### PHP — PaymentAction.php
+
+Both plugins have a `PaymentAction.php` with nearly identical code but different namespaces:
+
+| File | Namespace | Runtime? |
+|------|-----------|---------|
+| `fluentform/app/Modules/Payments/Classes/PaymentAction.php` | `FluentForm\App\Modules\Payments\Classes` | Always |
+| `fluentformpro/src/Payments/Classes/PaymentAction.php` | `FluentFormPro\Payments\Classes` | Legacy only (`initOld`) |
+
+**Why free's runs exclusively:** Pro's `PaymentHandler::init()` calls `initNew()` when free is compatible (current versions). `initNew()` does **not** register `maybeHandlePayment` on `fluentform/before_insert_payment_form` — it only boots gateways, Coupon, and the script enqueue hook. Pro's `maybeHandlePayment` (and its `PaymentAction`) is only registered in `initOld()`, which runs when free is too old (< `FLUENTFORM_MINIMUM_CORE_VERSION`). In current installations, only free's `PaymentAction` ever executes.
+
+**How free's PaymentAction calls pro classes:** It guards every pro dependency explicitly:
+```php
+} else if ($element == 'payment_coupon' && Helper::hasPro()) { // coupon field
+if ($couponCodes && class_exists('FluentFormPro\Payments\Classes\CouponModel')) { // coupon model
+```
+
+**Rule: fix payment PHP bugs in `fluentform/app/Modules/Payments/Classes/PaymentAction.php`. The pro copy is dead code for current installs.**
+
+---
+
+### JS — payment_handler.js
+
+| File | Status |
+|------|--------|
+| `fluentform/resources/assets/public/payment_handler.js` | Base class (`export class Payment_handler`) — edit here for all JS payment bugs |
+| `fluentformpro/src/assets/public/payment_handler_pro.js` | Runtime entry point — `extends Payment_handler` via `import`, inherits fixes automatically |
+| `fluentformpro/src/assets/public/payment_handler.js` | Legacy standalone — only loaded by `initOld()` for free < 6.0.4, do not edit |
+
+**Runtime loading:** Free's `PaymentHandler.php` enqueues `fluentformpro/public/js/payment_handler_pro.js` when pro is installed and compatible. That compiled bundle imports and extends the free base class. Fix in the free file; pro bundle picks it up on next webpack build of both plugins.
+
+**Rule: fix payment JS bugs in `fluentform/resources/assets/public/payment_handler.js`. Pro's `payment_handler_pro.js` inherits the fix via `super.init()`.**
+
+---
+
+### How Pro Extends Payments
 
 The free plugin provides the payment framework (tables, components, base processors, Stripe). FluentForm Pro (`fluentformpro`) adds:
 
 - **9 additional gateways**: PayPal, Mollie, Square, AuthorizeNet, Paddle, Paystack, RazorPay, Offline + enhanced Stripe
-- **Coupon system**: `CouponController.php`, `CouponModel.php` in pro
+- **Coupon system**: `CouponController.php`, `CouponModel.php` in pro — called by free's `PaymentAction` via `class_exists()` guard
 - **Transaction shortcodes**: Extended display options
 - **Payment entries admin**: Full payment management UI
 - **Subscription lifecycle**: Advanced subscription management
 
-Pro hooks into `fluentform/process_payment_{method}` to register additional processors.
+Pro hooks into `fluentform/process_payment_{method}` to register additional processors. Free's `PaymentAction` dispatches the action; pro's processors handle it.
 
 ## Common Pitfalls
 

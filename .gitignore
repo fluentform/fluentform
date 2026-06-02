@@ -26,6 +26,5 @@ builds/*
 # Added by code-review-graph
 .code-review-graph/
 .mcp.json
-
 /dev/vendor
 .phpstan-last-run.log

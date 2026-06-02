@@ -56,6 +56,95 @@ class Helper
         return $input;
     }
 
+    public static function isOptionGroup($option)
+    {
+        return is_array($option)
+            && ArrayHelper::get($option, 'type') === 'group'
+            && is_array(ArrayHelper::get($option, 'options'));
+    }
+
+    public static function sanitizeAdvancedOptions($options, $depth = 0)
+    {
+        if (!is_array($options)) {
+            return [];
+        }
+
+        $sanitized = [];
+
+        foreach ($options as $option) {
+            if (!is_array($option)) {
+                continue;
+            }
+
+            if (self::isOptionGroup($option)) {
+                $groupOptions = self::sanitizeAdvancedOptions(
+                    ArrayHelper::get($option, 'options', []),
+                    $depth + 1
+                );
+
+                if ($depth > 0) {
+                    $sanitized = array_merge($sanitized, $groupOptions);
+                    continue;
+                }
+
+                $sanitized[] = [
+                    'type'    => 'group',
+                    'label'   => wp_kses_post(ArrayHelper::get($option, 'label', '')),
+                    'options' => $groupOptions,
+                ];
+                continue;
+            }
+
+            $sanitized[] = [
+                'label'      => wp_kses_post(ArrayHelper::get($option, 'label', '')),
+                'value'      => sanitize_text_field(ArrayHelper::get($option, 'value', '')),
+                'image'      => sanitize_url(ArrayHelper::get($option, 'image', '')),
+                'calc_value' => sanitize_text_field(ArrayHelper::get($option, 'calc_value', '')),
+                'disabled'   => ArrayHelper::isTrue($option, 'disabled'),
+            ];
+        }
+
+        return $sanitized;
+    }
+
+    public static function flattenAdvancedOptions($options)
+    {
+        if (!is_array($options)) {
+            return [];
+        }
+
+        $flattened = [];
+
+        foreach ($options as $option) {
+            if (self::isOptionGroup($option)) {
+                $flattened = array_merge(
+                    $flattened,
+                    self::flattenAdvancedOptions(ArrayHelper::get($option, 'options', []))
+                );
+                continue;
+            }
+
+            if (!is_array($option)) {
+                continue;
+            }
+
+            $flattened[] = $option;
+        }
+
+        return $flattened;
+    }
+
+    public static function advancedOptionsValueLabelMap($options)
+    {
+        $formatted = [];
+
+        foreach (self::flattenAdvancedOptions($options) as $option) {
+            $formatted[ArrayHelper::get($option, 'value')] = ArrayHelper::get($option, 'label');
+        }
+
+        return $formatted;
+    }
+
     public static function makeMenuUrl($page = 'fluent_forms_settings', $component = null)
     {
         $baseUrl = admin_url('admin.php?page=' . $page);
@@ -221,6 +310,23 @@ class Helper
         }
     }
 
+    /**
+     * Resolve an entry's column => value map regardless of whether the entry is
+     * a stdClass DB row (columns are real properties) or a WPFluent Model
+     * (columns live in an internal attribute bag reached via __get).
+     *
+     * @param object|array $entry
+     * @return array
+     */
+    public static function getEntryColumns($entry)
+    {
+        if (is_object($entry) && method_exists($entry, 'getAttributes')) {
+            return $entry->getAttributes();
+        }
+
+        return (array) $entry;
+    }
+
     public static function getSubmissionMeta($submissionId, $metaKey, $default = false)
     {
         return SubmissionMeta::retrieve($metaKey, $submissionId, $default);
@@ -305,7 +411,6 @@ class Helper
             'fluent_forms_add_ons',
             'fluent_forms_docs',
             'fluent_forms_payment_entries',
-            'fluent_forms_smtp',
             'fluent_forms_reports'
         ];
 
@@ -618,6 +723,25 @@ class Helper
         return array_diff_assoc($inputNames, $uniqueNames);
     }
 
+    public static function getRankingFieldsWithDuplicateOptionValues($fields)
+    {
+        if (is_string($fields)) {
+            $fields = json_decode($fields, true);
+        }
+
+        if (!is_array($fields)) {
+            return [];
+        }
+
+        $items = ArrayHelper::get($fields, 'fields', []);
+
+        if (!is_array($items)) {
+            return [];
+        }
+
+        return static::collectRankingFieldsWithDuplicateOptionValues($items);
+    }
+
     protected static function getFieldNamesStatuses($fields)
     {
         $names = [];
@@ -637,6 +761,64 @@ class Helper
         }
 
         return $names;
+    }
+
+    protected static function collectRankingFieldsWithDuplicateOptionValues($fields)
+    {
+        $duplicates = [];
+
+        foreach ($fields as $field) {
+            if ('container' === ArrayHelper::get($field, 'element')) {
+                $columns = ArrayHelper::get($field, 'columns', []);
+                foreach ($columns as $column) {
+                    $columnFields = ArrayHelper::get($column, 'fields', []);
+                    $duplicates = array_merge(
+                        $duplicates,
+                        static::collectRankingFieldsWithDuplicateOptionValues($columnFields)
+                    );
+                }
+                continue;
+            }
+
+            if (!empty($field['fields']) && is_array($field['fields'])) {
+                $duplicates = array_merge(
+                    $duplicates,
+                    static::collectRankingFieldsWithDuplicateOptionValues($field['fields'])
+                );
+                continue;
+            }
+
+            if ('input_ranking' !== ArrayHelper::get($field, 'element')) {
+                continue;
+            }
+
+            $formattedOptions = ArrayHelper::get($field, 'settings.advanced_options', []);
+            if (!$formattedOptions) {
+                $formattedOptions = [];
+                foreach (ArrayHelper::get($field, 'options', []) as $value => $label) {
+                    $formattedOptions[] = [
+                        'label' => $label,
+                        'value' => $value,
+                    ];
+                }
+            }
+
+            $optionValues = array_values(array_filter(array_map(
+                'sanitize_text_field',
+                array_column(static::flattenAdvancedOptions($formattedOptions), 'value')
+            ), function ($value) {
+                return $value !== '';
+            }));
+
+            if (count($optionValues) !== count(array_unique($optionValues))) {
+                $duplicates[] = ArrayHelper::get($field, 'settings.admin_field_label')
+                    ?: ArrayHelper::get($field, 'settings.label')
+                    ?: ArrayHelper::get($field, 'attributes.name')
+                    ?: __('Ranking Field', 'fluentform');
+            }
+        }
+
+        return $duplicates;
     }
 
     public static function isConversionForm($formId)
@@ -1023,14 +1205,23 @@ class Helper
                 $options = ['on'];
             } elseif ('terms_and_condition' == $fieldType) {
                 $options = ['on', 'off'];
-            } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
+            } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox', 'input_ranking'])) {
                 if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
                 }
-                $options = array_column(
-                    ArrayHelper::get($rawField, 'settings.advanced_options', []),
-                    'value'
-                );
+                $formattedOptions = ArrayHelper::get($rawField, 'settings.advanced_options', []);
+                if (!$formattedOptions) {
+                    $formattedOptions = [];
+                    foreach (ArrayHelper::get($rawField, 'options', []) as $value => $label) {
+                        $formattedOptions[] = [
+                            'label' => $label,
+                            'value' => $value,
+                        ];
+                    }
+                    // @todo : Update all reference in form templates
+                }
+
+                $options = array_column(self::flattenAdvancedOptions($formattedOptions), 'value');
                 
                 // Add field-specific __ff_other__ to options if "Other" option is enabled
                 if (in_array($fieldType, ['input_checkbox', 'input_radio']) &&
@@ -1059,6 +1250,32 @@ class Helper
 
             $isValid = true;
             switch ($fieldType) {
+                case 'input_ranking':
+                    $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
+                    if ($skipValidationInputsWithOptions) {
+                        break;
+                    }
+
+                    if (!is_array($inputValue)) {
+                        $isValid = false;
+                        break;
+                    }
+
+                    $filteredValues = array_values(array_filter(array_map('sanitize_text_field', $inputValue), function ($value) {
+                        return $value !== '';
+                    }));
+
+                    $normalizedOptions = array_values(array_filter(array_map('sanitize_text_field', $options), function ($value) {
+                        return $value !== '';
+                    }));
+
+                    sort($filteredValues);
+                    sort($normalizedOptions);
+
+                    $isValid = count($inputValue) === count($options)
+                        && count($filteredValues) === count(array_unique($filteredValues))
+                        && $filteredValues === $normalizedOptions;
+                    break;
                 case 'input_radio':
                 case 'select':
                 case 'net_promoter_score':

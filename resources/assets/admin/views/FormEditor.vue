@@ -484,6 +484,7 @@
     import editorInserter from '../components/includes/editor-inserter.vue';
     import FormHistory from "@/admin/views/FormHistory";
     import UndoRedo from "@/admin/views/Editor/UndoRedo.js";
+    import { getKeyboardSaveShortcutLabel, isKeyboardSaveShortcut } from "@/admin/helpers";
 
     export default {
     name: 'FormEditor',
@@ -746,7 +747,7 @@
                 // Cancel any pending autosave when manual save starts
                 this.cancelAutosave();
             } else {
-                saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>');
+                saveBtn.html(this.getSaveButtonHtml());
             }
             this.undoRedoManager.clear();
         },
@@ -1170,12 +1171,15 @@
          * Inject save form button to navigation
          * Initiate click and save event
          **/
+        getSaveButtonHtml() {
+            return '<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ' + getKeyboardSaveShortcutLabel() + '</span>';
+        },
         initSaveBtn() {
             const self = this;
             var saveButton = jQuery('<button />', {
                 id: 'saveFormData',
                 class: 'el-button el-button--primary ff-keyboard-shortcut-tooltip',
-                html: '<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>'
+                html: this.getSaveButtonHtml()
             });
             saveButton.on('click', function () {
                 const $this = jQuery(this);
@@ -1311,7 +1315,7 @@
             return isCaptchaExists;
         },
         initKeyboardSave(e) {
-            if ((window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) && e.key === 's') {
+            if (isKeyboardSaveShortcut(e)) {
                 e.preventDefault();
                 this.save_form();
             }

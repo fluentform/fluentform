@@ -37,13 +37,25 @@ return function ($file) {
         ($app->make(ActivationHandler::class))->handle($network_wide);
     });
 
-    add_action('wp_insert_site', function ($blog) use ($app) {
-        if (is_plugin_active_for_network('fluentform/fluentform.php')) {
-            switch_to_blog($blog->blog_id);
-            ($app->make(ActivationHandler::class))->handle(false);
-            restore_current_blog();
+    $initializeNewSite = function ($blogId) use ($app) {
+        if (!is_plugin_active_for_network('fluentform/fluentform.php')) {
+            return;
         }
-    });
+
+        switch_to_blog($blogId);
+        ($app->make(ActivationHandler::class))->handle(false);
+        restore_current_blog();
+    };
+
+    if (function_exists('wp_initialize_site')) {
+        add_action('wp_initialize_site', function ($newSite) use ($initializeNewSite) {
+            $initializeNewSite($newSite->id);
+        }, 20, 1);
+    } else {
+        add_action('wpmu_new_blog', function ($blogId) use ($initializeNewSite) {
+            $initializeNewSite($blogId);
+        }, 10, 1);
+    }
 
     register_deactivation_hook($file, function () use ($app) {
         ($app->make(DeactivationHandler::class))->handle();
@@ -85,10 +97,12 @@ return function ($file) {
     (new FluentConversational)->boot();
     (new FormsMigrator())->boot();
     
-    /* Plugin Meta Links */
-    
-    add_filter('plugin_row_meta', 'fluentform_plugin_row_meta', 10, 2);
-    
+    /* Plugin Meta Links — registered on init to avoid early textdomain loading (WP 6.7+) */
+
+    add_action('init', function () {
+        add_filter('plugin_row_meta', 'fluentform_plugin_row_meta', 10, 2);
+    });
+
     function fluentform_plugin_row_meta($links, $file)
     {
         if ('fluentform/fluentform.php' == $file) {

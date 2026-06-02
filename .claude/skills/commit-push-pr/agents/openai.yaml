@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit → Push → PR"
+  short_description: "Sync, stage, commit, push, and open a PR with a concise why-first description"
+  default_prompt: "Use $commit-push-pr to sync my feature branch with origin/dev, stage my changes, commit with a sentence-case subject using a readme.txt-style prefix (Fix:/Add:/Improve:/Update:/Remove:/Security:/Docs:/Chore:/Release:/Hotfix:), push the branch, and open a PR against dev. If I shared a ticket/task link or ID, include it in the commit body trailer (Fixes/Refs/Closes) and the PR body. No Claude/AI co-author."

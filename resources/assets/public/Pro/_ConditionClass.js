@@ -131,6 +131,16 @@ class ConditionApp {
             this.elementCache[item.field] = $el;
         }
 
+        if (item.operator == 'list_match' || item.operator == 'list_not_match') {
+            const expectedValues = this.parseRankingConditionValue(item.value);
+            const currentValues = Array.isArray(val) ? val.map(String) : [];
+            const isMatch = expectedValues.length > 0 &&
+                currentValues.length === expectedValues.length &&
+                currentValues.every((value, index) => value === expectedValues[index]);
+
+            return item.operator == 'list_match' ? isMatch : !isMatch;
+        }
+
         if (item.operator == '=') {
 
             //when condition value is empty
@@ -179,6 +189,23 @@ class ConditionApp {
             return  globalRegex.test(val);
         }
         return false;
+    }
+
+    parseRankingConditionValue(value) {
+        if (!value) {
+            return [];
+        }
+
+        try {
+            const parsed = JSON.parse(value);
+            if (!Array.isArray(parsed)) {
+                return [];
+            }
+
+            return parsed.map(String).filter(Boolean);
+        } catch (e) {
+            return [];
+        }
     }
 
     stringToRegex(regex) {

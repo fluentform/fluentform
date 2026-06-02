@@ -131,7 +131,9 @@ class Extractor
         foreach ($fields as $field) {
             $field['conditionals'] = Arr::get($field, 'settings.conditional_logics', []);
 
-            $matched = ConditionAssesor::evaluate($field, $formData);
+            // Form field visibility must match the JS evaluator on the client,
+            // so missing fields use JS parity (missing != X returns true).
+            $matched = ConditionAssesor::evaluate($field, $formData, null, false);
 
             if (!$matched) {
                 continue;
@@ -257,10 +259,12 @@ class Extractor
     protected function setOptions()
     {
         if (in_array('options', $this->with)) {
-            $options = Arr::get($this->field, 'options', []);
+                $options = Arr::get($this->field, 'options', []);
 
-            if(!$options) {
-                $newOptions = Arr::get($this->field, 'settings.advanced_options', []);
+                if(!$options) {
+                    $newOptions = \FluentForm\App\Helpers\Helper::flattenAdvancedOptions(
+                        Arr::get($this->field, 'settings.advanced_options', [])
+                    );
 
                 if(
                     !$newOptions

@@ -96,6 +96,63 @@ export const handleSidebarActiveLink = ($link, init = false, firstLoad = false) 
     }
 }
 
+export const isKeyboardSaveShortcut = (event) => {
+    if (!event) {
+        return false;
+    }
+
+    const key = (event.key || '').toLowerCase();
+    const isSaveKey = key === 's' || event.keyCode === 83;
+    if (!isSaveKey || event.altKey || event.shiftKey) {
+        return false;
+    }
+
+    const platform = window.navigator && window.navigator.platform ? window.navigator.platform : '';
+    const isMac = /Mac|iPhone|iPad|iPod/.test(platform);
+
+    return isMac ? event.metaKey : event.ctrlKey;
+}
+
+export const getKeyboardSaveShortcutLabel = () => {
+    const platform = window.navigator && window.navigator.platform ? window.navigator.platform : '';
+    const isMac = /Mac|iPhone|iPad|iPod/.test(platform);
+
+    return isMac ? '⌘S' : 'Ctrl+S';
+}
+
+export const bindKeyboardSaveShortcut = (handler, options = {}) => {
+    const target = options.target || document;
+    const enabled = options.enabled || (() => true);
+    const ignoreRepeat = options.ignoreRepeat !== false;
+    const preventDefaultWhenDisabled = !!options.preventDefaultWhenDisabled;
+
+    const listener = (event) => {
+        if (!isKeyboardSaveShortcut(event) || event.defaultPrevented) {
+            return;
+        }
+
+        const canHandle = typeof handler === 'function' && enabled(event);
+        if (!canHandle) {
+            if (preventDefaultWhenDisabled) {
+                event.preventDefault();
+            }
+            return;
+        }
+
+        event.preventDefault();
+
+        if (ignoreRepeat && event.repeat) {
+            return;
+        }
+
+        handler(event);
+    };
+
+    target.addEventListener('keydown', listener);
+
+    return () => target.removeEventListener('keydown', listener);
+}
+
 
 /**
  * Converts a date to human-readable relative time or wp default date string - based on global settings.
@@ -150,8 +207,8 @@ export function _$t(string, ...args) {
     // Prepare the arguments, excluding the first one (the string itself)
      args = Array.prototype.slice.call(args, 1);
 
-    // Regular expression to match %s, %d, or %1s, %2s, etc.
-    const regex = /%(\d*)s|%d/g;
+    // Regular expression to match %s, %d, or %1s, %1$s, %2$s, etc.
+    const regex = /%(\d*)\$?s|%d/g;
 
     // Replace function to handle each match found by the regex
     let argIndex = 0; // Keep track of the argument index for non-numbered placeholders
@@ -168,4 +225,3 @@ export function _$t(string, ...args) {
 
     return string;
 }
-

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8f0e7e9a1d864c69c9201ffba635815",
+    "content-hash": "ca031c8ad8b8f396ff71dc18fc6b19f8",
     "packages": [
         {
             "name": "openspout/openspout",
@@ -97,16 +97,16 @@
         },
         {
             "name": "wpfluent/framework",
-            "version": "2.11.15",
+            "version": "2.11.19",
             "source": {
                 "type": "git",
                 "url": "git@github.com:wpfluent/framework2x.git",
-                "reference": "efe9e25769376cde6da00d23842e3aa4cb30199d"
+                "reference": "0e3ae150e85d48f2bb489d8fdf000133b448c7dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wpfluent/framework2x/zipball/efe9e25769376cde6da00d23842e3aa4cb30199d",
-                "reference": "efe9e25769376cde6da00d23842e3aa4cb30199d",
+                "url": "https://api.github.com/repos/wpfluent/framework2x/zipball/0e3ae150e85d48f2bb489d8fdf000133b448c7dd",
+                "reference": "0e3ae150e85d48f2bb489d8fdf000133b448c7dd",
                 "shasum": ""
             },
             "require": {
@@ -134,19 +134,23 @@
                 }
             ],
             "description": "A lightweight rest api based framework to build WordPress plugins.",
-            "time": "2026-03-19T06:03:58+00:00"
+            "support": {
+                "source": "https://github.com/wpfluent/framework2x/tree/2.11.19",
+                "issues": "https://github.com/wpfluent/framework2x/issues"
+            },
+            "time": "2026-05-07T17:16:12+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": {},
-    "platform-dev": {},
+    "platform": [],
+    "platform-dev": [],
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

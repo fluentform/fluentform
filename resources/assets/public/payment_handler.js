@@ -593,6 +593,7 @@ export class Payment_handler {
         $paymentSummary.find('.ffbs_first_interval_total').html(this.getFormattedPrice(paymentValue + signupFee));
 
         this.calculatePayments();
+        this.$form.trigger('do_calculation');
     }
 
     initStripeElement() {
