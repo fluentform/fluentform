@@ -10,12 +10,15 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "phpcompatibility/php-compatibility": "^9.0",
         "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "wp-coding-standards/wpcs": "^3.1",
         "squizlabs/php_codesniffer": "^3.7",
         "phpstan/phpstan": "^1.11",
         "szepeviktor/phpstan-wordpress": "^1.3"
     },
     "autoload": {
-        "psr-4": {},
+        "psr-4": {
+            "FluentFormDev\\PHPStan\\": "phpstan/"
+        },
         "classmap": [
             "cli", "factories", "test"
         ]
@@ -32,8 +35,9 @@
         }
     },
     "scripts": {
-        "phpcs": "php -d error_reporting=8191 vendor/bin/phpcs -p",
-        "phpstan": "phpstan analyse ../app --configuration=phpstan.neon --memory-limit=2G --autoload-file=vendor/autoload.php"
+        "phpcs": "phpcs -p --runtime-set ignore_warnings_on_exit 1 --standard=../.phpcs.xml",
+        "phpstan": "phpstan analyse ../app --configuration=phpstan.neon --memory-limit=2G --autoload-file=vendor/autoload.php",
+        "gate": "node quality-gate.mjs --php"
     },
     "require": {}
 }

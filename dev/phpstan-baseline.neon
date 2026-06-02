@@ -1,0 +1,3113 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Api/Entry.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 2
+			path: ../app/Api/Form.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 4
+			path: ../app/Api/FormProperties.php
+
+		-
+			message: "#^Call to method getComposer\\(\\) on an unknown class Composer\\\\Script\\\\Event\\.$#"
+			count: 1
+			path: ../app/ComposerScript.php
+
+		-
+			message: "#^Parameter \\$event of method FluentForm\\\\App\\\\ComposerScript\\:\\:postInstall\\(\\) has invalid type Composer\\\\Script\\\\Event\\.$#"
+			count: 1
+			path: ../app/ComposerScript.php
+
+		-
+			message: "#^Parameter \\$event of method FluentForm\\\\App\\\\ComposerScript\\:\\:postUpdate\\(\\) has invalid type Composer\\\\Script\\\\Event\\.$#"
+			count: 1
+			path: ../app/ComposerScript.php
+
+		-
+			message: "#^Constant FLUENTFORMPRO_VERSION not found\\.$#"
+			count: 2
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 8
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Constant FLUENTFORM_MINIMUM_PRO_VERSION not found\\.$#"
+			count: 2
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Constant FLUENTFORM_UPLOAD_DIR not found\\.$#"
+			count: 1
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Function fluentFormSanitizer not found\\.$#"
+			count: 2
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 2
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Unsafe access to private property FluentForm\\\\App\\\\Helpers\\\\Helper\\:\\:\\$globalDefaultMessages through static\\:\\:\\.$#"
+			count: 6
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Helpers\\\\Helper\\:\\:getConversionUrl\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Helpers\\\\Helper\\:\\:setGlobalDefaultMessages\\(\\) through static\\:\\:\\.$#"
+			count: 3
+			path: ../app/Helpers/Helper.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Helpers/IntegrationManagerHelper.php
+
+		-
+			message: "#^Function fluentform_mb_strpos not found\\.$#"
+			count: 1
+			path: ../app/Helpers/Str.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$app\\.$#"
+			count: 1
+			path: ../app/Hooks/Ajax.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 3
+			path: ../app/Hooks/Ajax.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 2
+			path: ../app/Hooks/Ajax.php
+
+		-
+			message: "#^Variable \\$app might not be defined\\.$#"
+			count: 30
+			path: ../app/Hooks/Ajax.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Hooks/Handlers/ActivationHandler.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 7
+			path: ../app/Hooks/Handlers/GlobalNotificationHandler.php
+
+		-
+			message: "#^Function as_enqueue_async_action not found\\.$#"
+			count: 1
+			path: ../app/Hooks/Handlers/GlobalNotificationHandler.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Hooks/Handlers/GlobalNotificationHandler.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$app\\.$#"
+			count: 2
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$form\\.$#"
+			count: 1
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Call to static method add_command\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 1
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Constant FLUENTFORM_DIR_PATH not found\\.$#"
+			count: 1
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 6
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 10
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 15
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 6
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 3
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Variable \\$app might not be defined\\.$#"
+			count: 51
+			path: ../app/Hooks/actions.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 2
+			path: ../app/Hooks/filters.php
+
+		-
+			message: "#^Variable \\$app might not be defined\\.$#"
+			count: 20
+			path: ../app/Hooks/filters.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 2
+			path: ../app/Http/Controllers/AdminNoticeController.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 3
+			path: ../app/Http/Controllers/AdminNoticeController.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/AdminNoticeController.php
+
+		-
+			message: "#^Function fluentFormEditorShortCodes not found\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/FormController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/FormController.php
+
+		-
+			message: "#^Method FluentForm\\\\Framework\\\\Http\\\\Controller\\:\\:sendSuccess\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 6
+			path: ../app/Http/Controllers/FormController.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/FormIntegrationController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/FormIntegrationController.php
+
+		-
+			message: "#^Method FluentForm\\\\Framework\\\\Http\\\\Controller\\:\\:sendSuccess\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/FormIntegrationController.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/GlobalIntegrationController.php
+
+		-
+			message: "#^Method FluentForm\\\\Framework\\\\Http\\\\Controller\\:\\:sendSuccess\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/GlobalIntegrationController.php
+
+		-
+			message: "#^Callback expects 1 parameter, \\$accepted_args is set to 2\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/IntegrationManagerController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 3
+			path: ../app/Http/Controllers/LogController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 3
+			path: ../app/Http/Controllers/ManagersController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/ReportController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 2
+			path: ../app/Http/Controllers/RolesController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 3
+			path: ../app/Http/Controllers/SubmissionController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 2
+			path: ../app/Http/Controllers/SubmissionLogController.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/SubmissionNoteController.php
+
+		-
+			message: "#^Cannot access property \\$download_link on array\\|object\\.$#"
+			count: 1
+			path: ../app/Http/Controllers/SuggestedPluginsController.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 3
+			path: ../app/Http/Controllers/SuggestedPluginsController.php
+
+		-
+			message: "#^Call to an undefined method FluentForm\\\\Framework\\\\Http\\\\Request\\\\Request\\:\\:route\\(\\)\\.$#"
+			count: 1
+			path: ../app/Http/Policies/FormPolicy.php
+
+		-
+			message: "#^Call to an undefined method FluentForm\\\\Framework\\\\Http\\\\Request\\\\Request\\:\\:route\\(\\)\\.$#"
+			count: 1
+			path: ../app/Http/Policies/ReportPolicy.php
+
+		-
+			message: "#^Function wp_kses invoked with 1 parameter, 2\\-3 required\\.$#"
+			count: 1
+			path: ../app/Http/Requests/UserRequest.php
+
+		-
+			message: "#^Variable \\$router might not be defined\\.$#"
+			count: 14
+			path: ../app/Http/Routes/api.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Models/Entry.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Models/Entry.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Models/Form.php
+
+		-
+			message: "#^Function fluentFormGetRandomPhoto not found\\.$#"
+			count: 4
+			path: ../app/Models/Form.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 73
+			path: ../app/Models/Form.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Models/Model.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Models/Submission.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Models/Submission.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Modules/Acl/Acl.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Acl/Acl.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Modules/AddOnModule.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 39
+			path: ../app/Modules/AddOnModule.php
+
+		-
+			message: "#^Function fluentform_upgrade_url not found\\.$#"
+			count: 1
+			path: ../app/Modules/AddOnModule.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 4
+			path: ../app/Modules/AddOnModule.php
+
+		-
+			message: "#^Call to method buildForm\\(\\) on an unknown class FluentFormPro\\\\classes\\\\Chat\\\\ChatFormBuilder\\.$#"
+			count: 1
+			path: ../app/Modules/Ai/AiFormBuilder.php
+
+		-
+			message: "#^Function fluentFormSanitizer not found\\.$#"
+			count: 1
+			path: ../app/Modules/Ai/AiFormBuilder.php
+
+		-
+			message: "#^Function fluentformLoadFile not found\\.$#"
+			count: 1
+			path: ../app/Modules/Ai/AiFormBuilder.php
+
+		-
+			message: "#^Function fluentformSanitizeCSS not found\\.$#"
+			count: 1
+			path: ../app/Modules/Ai/AiFormBuilder.php
+
+		-
+			message: "#^Instantiated class FluentFormPro\\\\classes\\\\Chat\\\\ChatFormBuilder not found\\.$#"
+			count: 1
+			path: ../app/Modules/Ai/AiFormBuilder.php
+
+		-
+			message: "#^Call to static method error\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 3
+			path: ../app/Modules/CLI/Commands.php
+
+		-
+			message: "#^Call to static method getInstance\\(\\) on an unknown class FluentFormAddOnChecker\\.$#"
+			count: 1
+			path: ../app/Modules/CLI/Commands.php
+
+		-
+			message: "#^Call to static method line\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 11
+			path: ../app/Modules/CLI/Commands.php
+
+		-
+			message: "#^Call to static method success\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 1
+			path: ../app/Modules/CLI/Commands.php
+
+		-
+			message: "#^Function WP_CLI\\\\Utils\\\\format_items not found\\.$#"
+			count: 1
+			path: ../app/Modules/CLI/Commands.php
+
+		-
+			message: "#^Function WP_CLI\\\\Utils\\\\get_flag_value not found\\.$#"
+			count: 1
+			path: ../app/Modules/CLI/Commands.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$dafault$#"
+			count: 3
+			path: ../app/Modules/Component/BaseComponent.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$data$#"
+			count: 1
+			path: ../app/Modules/Component/BaseComponent.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$placemenSettings$#"
+			count: 1
+			path: ../app/Modules/Component/BaseComponent.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$fields\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$form_fields\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Call to an undefined method FluentForm\\\\App\\\\Services\\\\Submission\\\\SubmissionService\\:\\:findBySerialID\\(\\)\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Call to static method formatMoney\\(\\) on an unknown class FluentFormPro\\\\Payments\\\\PaymentHelper\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Call to static method getFormCurrency\\(\\) on an unknown class FluentFormPro\\\\Payments\\\\PaymentHelper\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 16
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 7
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Function fluentFormEditorShortCodes not found\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Function fluentFormGetAllEditorShortCodes not found\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 11
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 9
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 11
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^PHPDoc tag @throws with type Exception\\|FluentForm\\\\Framework\\\\Exception\\\\UnResolveableEntityException is not subtype of Throwable$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$app\\)\\: Unexpected token \"\\$app\", expected type at offset 74$#"
+			count: 1
+			path: ../app/Modules/Component/Component.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 3
+			path: ../app/Modules/DashboardWidgetModule.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/DocumentationModule.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 2
+			path: ../app/Modules/DocumentationModule.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/DocumentationModule.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/EditorButtonModule.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Modules/EditorButtonModule.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 2
+			path: ../app/Modules/EditorButtonModule.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Modules/EditorButtonModule.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/EditorButtonModule.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 2
+			path: ../app/Modules/Entries/EntryQuery.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Entries/EntryQuery.php
+
+		-
+			message: "#^Call to an undefined static method FluentForm\\\\App\\\\Modules\\\\Form\\\\FormFieldsParser\\:\\:getAddressFields\\(\\)\\.$#"
+			count: 1
+			path: ../app/Modules/Entries/EntryViewRenderer.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/Entries/EntryViewRenderer.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 1
+			path: ../app/Modules/Entries/EntryViewRenderer.php
+
+		-
+			message: "#^Function fluentform_upgrade_url not found\\.$#"
+			count: 1
+			path: ../app/Modules/Entries/EntryViewRenderer.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 1
+			path: ../app/Modules/Entries/EntryViewRenderer.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 3
+			path: ../app/Modules/Entries/EntryViewRenderer.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Entries/EntryViewRenderer.php
+
+		-
+			message: "#^Call to static method get_api_key\\(\\) on an unknown class Akismet\\.$#"
+			count: 1
+			path: ../app/Modules/Form/AkismetHandler.php
+
+		-
+			message: "#^Call to static method http_post\\(\\) on an unknown class Akismet\\.$#"
+			count: 1
+			path: ../app/Modules/Form/AkismetHandler.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/AkismetHandler.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/AkismetHandler.php
+
+		-
+			message: "#^Access to property \\$server_url on an unknown class Cleantalk\\\\Antispam\\\\Cleantalk\\.$#"
+			count: 2
+			path: ../app/Modules/Form/CleanTalkHandler.php
+
+		-
+			message: "#^Call to method isAllowMessage\\(\\) on an unknown class Cleantalk\\\\Antispam\\\\Cleantalk\\.$#"
+			count: 1
+			path: ../app/Modules/Form/CleanTalkHandler.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 2
+			path: ../app/Modules/Form/CleanTalkHandler.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 3
+			path: ../app/Modules/Form/CleanTalkHandler.php
+
+		-
+			message: "#^Instantiated class Cleantalk\\\\Antispam\\\\Cleantalk not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/CleanTalkHandler.php
+
+		-
+			message: "#^Instantiated class Cleantalk\\\\Antispam\\\\CleantalkRequest not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/CleanTalkHandler.php
+
+		-
+			message: "#^Variable \\$stylerStyles in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: ../app/Modules/Form/DefaultStyleApplicator.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 5
+			path: ../app/Modules/Form/Form.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Form.php
+
+		-
+			message: "#^Function fluentformCanUnfilteredHTML not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Form.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Form.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 21
+			path: ../app/Modules/Form/Form.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/FormDataParser.php
+
+		-
+			message: "#^Function fluentImplodeRecursive not found\\.$#"
+			count: 4
+			path: ../app/Modules/Form/FormDataParser.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Modules/Form/FormDataParser.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/FormFieldsParser.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 24
+			path: ../app/Modules/Form/FormHandler.php
+
+		-
+			message: "#^Function fluentFormSanitizer not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/FormHandler.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/FormHandler.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 6
+			path: ../app/Modules/Form/FormHandler.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/FormHandler.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Inputs.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Inputs.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Inputs.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 3
+			path: ../app/Modules/Form/Settings/EntryColumnViewSettings.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/EntryColumnViewSettings.php
+
+		-
+			message: "#^Function fluentformCanUnfilteredHTML not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/FormCssJs.php
+
+		-
+			message: "#^Function fluentformSanitizeCSS not found\\.$#"
+			count: 4
+			path: ../app/Modules/Form/Settings/FormCssJs.php
+
+		-
+			message: "#^Function fluentform_kses_js not found\\.$#"
+			count: 2
+			path: ../app/Modules/Form/Settings/FormCssJs.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 6
+			path: ../app/Modules/Form/Settings/FormCssJs.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/FormCssJs.php
+
+		-
+			message: "#^Call to method find\\(\\) on an unknown class WpFluent\\\\QueryBuilder\\\\QueryBuilderHandler\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/FormSettings.php
+
+		-
+			message: "#^Call to method insertGetId\\(\\) on an unknown class WpFluent\\\\QueryBuilder\\\\QueryBuilderHandler\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/FormSettings.php
+
+		-
+			message: "#^Call to method where\\(\\) on an unknown class WpFluent\\\\QueryBuilder\\\\QueryBuilderHandler\\.$#"
+			count: 3
+			path: ../app/Modules/Form/Settings/FormSettings.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Modules/Form/Settings/FormSettings.php
+
+		-
+			message: "#^Function fluentformCanUnfilteredHTML not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/FormSettings.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/FormSettings.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/FormSettings.php
+
+		-
+			message: "#^Property FluentForm\\\\App\\\\Modules\\\\Form\\\\Settings\\\\FormSettings\\:\\:\\$settingsQuery has unknown class WpFluent\\\\QueryBuilder\\\\QueryBuilderHandler as its type\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/FormSettings.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/Validator/Confirmations.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/Validator/MailChimps.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/Validator/Notifications.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Settings/Validator/Pdfs.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/Form/Transfer.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 5
+			path: ../app/Modules/Form/Transfer.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Modules/Logger/DataLogger.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 23
+			path: ../app/Modules/Logger/DataLogger.php
+
+		-
+			message: "#^Call to an undefined static method FluentForm\\\\App\\\\Modules\\\\Form\\\\FormFieldsParser\\:\\:getAddressFields\\(\\)\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/AjaxEndpoints.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/AjaxEndpoints.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/AjaxEndpoints.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 5
+			path: ../app/Modules/Payments/AjaxEndpoints.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/AjaxEndpoints.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 8
+			path: ../app/Modules/Payments/AjaxEndpoints.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 6
+			path: ../app/Modules/Payments/Classes/PaymentAction.php
+
+		-
+			message: "#^Variable \\$coupon might not be defined\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/Classes/PaymentAction.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/Classes/PaymentEntries.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/Classes/PaymentEntries.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/Classes/PaymentEntries.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/Classes/PaymentEntries.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/Classes/PaymentEntries.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/Classes/PaymentManagement.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/Classes/PaymentManagement.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 7
+			path: ../app/Modules/Payments/Classes/PaymentReceipt.php
+
+		-
+			message: "#^Callback expects 1 parameter, \\$accepted_args is set to 2\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/Components/CustomPaymentComponent.php
+
+		-
+			message: "#^Result of method FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\Text\\:\\:compile\\(\\) \\(void\\) is used\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/Components/CustomPaymentComponent.php
+
+		-
+			message: "#^Result of method FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\Text\\:\\:compile\\(\\) \\(void\\) is used\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/Components/ItemQuantity.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 5
+			path: ../app/Modules/Payments/Components/MultiPaymentComponent.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/Components/MultiPaymentComponent.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 10
+			path: ../app/Modules/Payments/Components/PaymentMethods.php
+
+		-
+			message: "#^Result of method FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\CustomHtml\\:\\:compile\\(\\) \\(void\\) is used\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/Components/PaymentSummaryComponent.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Modules/Payments/Components/Subscription.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Modules/Payments/Orders/OrderData.php
+
+		-
+			message: "#^Constant FLUENTFORMPRO_DIR_URL not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentHandler.php
+
+		-
+			message: "#^Constant FLUENTFORMPRO_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentHandler.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 6
+			path: ../app/Modules/Payments/PaymentHandler.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 4
+			path: ../app/Modules/Payments/PaymentHandler.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/PaymentHandler.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/PaymentHandler.php
+
+		-
+			message: "#^Constant FLUENTFORM_DIR_PATH not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentHelper.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 9
+			path: ../app/Modules/Payments/PaymentHelper.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentHelper.php
+
+		-
+			message: "#^Call to an undefined method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\BaseProcessor\\:\\:getPaymentMode\\(\\)\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/BaseProcessor.php
+
+		-
+			message: "#^Constant FLUENTFORM_DIR_PATH not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/BaseProcessor.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 13
+			path: ../app/Modules/Payments/PaymentMethods/BaseProcessor.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/BaseProcessor.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/BaseProcessor.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/BaseProcessor.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\Account\\:\\:errorHandler\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Account.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/ApiRequest.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/ApiRequest.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$secret_key$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/ApiRequest.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/CheckoutSession.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Customer.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\Customer\\:\\:errorHandler\\(\\) through static\\:\\:\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Customer.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\Customer\\:\\:processResponse\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Customer.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Invoice.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\Invoice\\:\\:errorHandler\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Invoice.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\Invoice\\:\\:processResponse\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Invoice.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 6
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Plan.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\Plan\\:\\:errorHandler\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Plan.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\Plan\\:\\:processResponse\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/Plan.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/SCA.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\SCA\\:\\:errorHandler\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/SCA.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\API\\\\SCA\\:\\:processResponse\\(\\) through static\\:\\:\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/SCA.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/API/StripeListener.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/ConnectConfig.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/PaymentManager.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeHandler.php
+
+		-
+			message: "#^Call to method get_error_message\\(\\) on an unknown class FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\WP_Error\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeInlineProcessor.php
+
+		-
+			message: "#^Method FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\StripeInlineProcessor\\:\\:validateScaRequest\\(\\) has invalid return type FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\WP_Error\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeInlineProcessor.php
+
+		-
+			message: "#^is_wp_error\\(array\\|FluentForm\\\\App\\\\Modules\\\\Payments\\\\PaymentMethods\\\\Stripe\\\\WP_Error\\) will always evaluate to false\\.$#"
+			count: 2
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeInlineProcessor.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$customer_email\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeProcessor.php
+
+		-
+			message: "#^Cannot unset offset 'submit_type' on array\\{cancel_url\\: string, success_url\\: string, locale\\: 'auto', billing_address_collection\\: 'auto'\\|'required', client_reference_id\\: mixed, customer_email\\: mixed, metadata\\: array\\{submission_id\\: mixed, form_id\\: mixed, transaction_id\\: mixed\\}, shipping_address_collection\\?\\: array\\{allowed_countries\\: mixed\\}, \\.\\.\\.\\}\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeProcessor.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeProcessor.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeProcessor.php
+
+		-
+			message: "#^Variable \\$metaData might not be defined\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeProcessor.php
+
+		-
+			message: "#^Constant FLUENTFORM_DIR_PATH not found\\.$#"
+			count: 1
+			path: ../app/Modules/Payments/TransactionShortcodes.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Modules/Payments/TransactionShortcodes.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/TransactionShortcodes.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 11
+			path: ../app/Modules/Payments/TransactionShortcodes.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 3
+			path: ../app/Modules/Payments/TransactionShortcodes.php
+
+		-
+			message: "#^Call to method is_main_query\\(\\) on an unknown class FluentForm\\\\App\\\\Modules\\\\WP_Query\\.$#"
+			count: 1
+			path: ../app/Modules/ProcessExteriorModule.php
+
+		-
+			message: "#^Call to method set\\(\\) on an unknown class FluentForm\\\\App\\\\Modules\\\\WP_Query\\.$#"
+			count: 1
+			path: ../app/Modules/ProcessExteriorModule.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Modules/ProcessExteriorModule.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 1
+			path: ../app/Modules/ProcessExteriorModule.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 2
+			path: ../app/Modules/ProcessExteriorModule.php
+
+		-
+			message: "#^Parameter \\$query of method FluentForm\\\\App\\\\Modules\\\\ProcessExteriorModule\\:\\:pre_get_posts\\(\\) has invalid type FluentForm\\\\App\\\\Modules\\\\WP_Query\\.$#"
+			count: 1
+			path: ../app/Modules/ProcessExteriorModule.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Modules/ReCaptcha/ReCaptcha.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Modules/Registerer/AdminBar.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Modules/Registerer/AdminBar.php
+
+		-
+			message: "#^Access to an undefined property FluentForm\\\\Framework\\\\Foundation\\\\Application\\:\\:\\$view\\.$#"
+			count: 11
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Constant FLUENTFORMPRO_VERSION not found\\.$#"
+			count: 4
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 17
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 25
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 31
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Function fluentformLoadFile not found\\.$#"
+			count: 4
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 16
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Function fluentform_integrations_url not found\\.$#"
+			count: 1
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Function fluentform_upgrade_url not found\\.$#"
+			count: 4
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 2
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 9
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$addOn$#"
+			count: 1
+			path: ../app/Modules/Registerer/Menu.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Registerer\\\\MigrationNotice\\:\\:getActiveCompatiblePlugins\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Modules/Registerer/MigrationNotice.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Registerer\\\\MigrationNotice\\:\\:getMessage\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Modules/Registerer/MigrationNotice.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Registerer\\\\MigrationNotice\\:\\:hasActiveCompatiblePlugins\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Modules/Registerer/MigrationNotice.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Modules\\\\Registerer\\\\ReviewQuery\\:\\:getMessage\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Modules/Registerer/ReviewQuery.php
+
+		-
+			message: "#^Array has 2 duplicate keys with value 'Action' \\('Action', 'Action'\\)\\.$#"
+			count: 1
+			path: ../app/Modules/Registerer/TranslationString.php
+
+		-
+			message: "#^Array has 2 duplicate keys with value 'Conversational Forms currently doesn\\\\'t support the following fields\\: You may also lose data of these fields\\.' \\('Conversational Forms currently doesn\\\\'t support the following fields\\: You may also lose data of these fields\\.', \"Conversational Forms currently doesn't support the following fields\\: You may also lose data of these fields\\.\"\\)\\.$#"
+			count: 1
+			path: ../app/Modules/Registerer/TranslationString.php
+
+		-
+			message: "#^Access to an undefined property FluentForm\\\\Framework\\\\Foundation\\\\Application\\:\\:\\$view\\.$#"
+			count: 1
+			path: ../app/Modules/Renderer/GlobalSettings/Settings.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 1
+			path: ../app/Modules/Renderer/GlobalSettings/Settings.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 1
+			path: ../app/Modules/Report/ReportHandler.php
+
+		-
+			message: "#^Cannot access property \\$download_link on array\\|object\\.$#"
+			count: 1
+			path: ../app/Modules/Track/SetupModule.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Modules/Track/TrackModule.php
+
+		-
+			message: "#^Constant WP_MEMORY_LIMIT not found\\.$#"
+			count: 1
+			path: ../app/Modules/Track/TrackModule.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 6
+			path: ../app/Modules/Track/TrackModule.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Analytics/AnalyticsService.php
+
+		-
+			message: "#^Function fluentformSanitizeCSS not found\\.$#"
+			count: 1
+			path: ../app/Services/Blocks/GutenbergBlock.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Browser/Browser.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$form\\.$#"
+			count: 1
+			path: ../app/Services/ConditionAssesor.php
+
+		-
+			message: "#^Function fluentImplodeRecursive not found\\.$#"
+			count: 1
+			path: ../app/Services/ConditionAssesor.php
+
+		-
+			message: "#^Call to static method get\\(\\) on an unknown class FluentFormPro\\\\classes\\\\DraftSubmissionsManager\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Call to static method migrate\\(\\) on an unknown class FluentFormPro\\\\classes\\\\DraftSubmissionsManager\\.$#"
+			count: 1
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Constant FLUENTFORMPRO_DIR_URL not found\\.$#"
+			count: 5
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Constant FLUENTFORMPRO_VERSION not found\\.$#"
+			count: 3
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 6
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Constant FLUENTFORM_SIGNATURE_URL not found\\.$#"
+			count: 3
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Constant FLUENTFORM_SIGNATURE_VERSION not found\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 5
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Function fluentFormGetRandomPhoto not found\\.$#"
+			count: 1
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Services\\\\FluentConversational\\\\Classes\\\\Converter\\\\Converter\\:\\:buildBaseQuestion\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Services\\\\FluentConversational\\\\Classes\\\\Converter\\\\Converter\\:\\:getSaveAndResumeData\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Services\\\\FluentConversational\\\\Classes\\\\Converter\\\\Converter\\:\\:hasFormula\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Services\\\\FluentConversational\\\\Classes\\\\Converter\\\\Converter\\:\\:hasSaveAndResume\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Services\\\\FluentConversational\\\\Classes\\\\Converter\\\\Converter\\:\\:maybeAddOtherOption\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Converter/Converter.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Services/FluentConversational/Classes/Elements/WelcomeScreen.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Elements/WelcomeScreen.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/FluentConversational/Classes/Elements/WelcomeScreen.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$extra\\.$#"
+			count: 1
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$ver\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 5
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Constant FLUENT_CONVERSATIONAL_FORM_DIR_URL not found\\.$#"
+			count: 4
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Function fluentFormGetRandomPhoto not found\\.$#"
+			count: 2
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 5
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 5
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 6
+			path: ../app/Services/FluentConversational/Classes/Form.php
+
+		-
+			message: "#^Constant FLUENTFORM_UPLOAD_DIR not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/Duplicator.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/Fields.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/Fields.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 10
+			path: ../app/Services/Form/FormService.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/FormService.php
+
+		-
+			message: "#^Function fluentFormGetAllEditorShortCodes not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/FormService.php
+
+		-
+			message: "#^Function fluentformGetPages not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/FormService.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 10
+			path: ../app/Services/Form/FormService.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 13
+			path: ../app/Services/Form/FormValidationService.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 8
+			path: ../app/Services/Form/FormValidationService.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/FormValidationService.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/FormValidationService.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 12
+			path: ../app/Services/Form/SubmissionHandlerService.php
+
+		-
+			message: "#^Function fluentFormSanitizer not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/SubmissionHandlerService.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/Form/SubmissionHandlerService.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/Updater.php
+
+		-
+			message: "#^Function fluentformCanUnfilteredHTML not found\\.$#"
+			count: 1
+			path: ../app/Services/Form/Updater.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/Form/Updater.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Services/FormBuilder/Components/Address.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Address.php
+
+		-
+			message: "#^Constructor of class FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\BaseComponent has an unused parameter \\$key\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/BaseComponent.php
+
+		-
+			message: "#^Constructor of class FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\BaseComponent has an unused parameter \\$position\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/BaseComponent.php
+
+		-
+			message: "#^Constructor of class FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\BaseComponent has an unused parameter \\$tags\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/BaseComponent.php
+
+		-
+			message: "#^Constructor of class FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\BaseComponent has an unused parameter \\$title\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/BaseComponent.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 5
+			path: ../app/Services/FormBuilder/Components/BaseComponent.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/BaseComponent.php
+
+		-
+			message: "#^Method FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\BaseComponent\\:\\:getLabelHelpMessage\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/BaseComponent.php
+
+		-
+			message: "#^Method FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\Components\\\\BaseComponent\\:\\:makeElementId\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/BaseComponent.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Checkable.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Checkable.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Container.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/CustomHtml.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/CustomHtml.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Services/FormBuilder/Components/CustomSubmitButton.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/CustomSubmitButton.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/DateTime.php
+
+		-
+			message: "#^Function fluentform_kses_js not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/DateTime.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Hcaptcha.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Hcaptcha.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Hcaptcha.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Name.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Rating.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Rating.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Recaptcha.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Recaptcha.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Recaptcha.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/SectionBreak.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/SectionBreak.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Select.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$options$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Select.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/SelectCountry.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/SelectCountry.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/SelectCountry.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Services/FormBuilder/Components/SubmitButton.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/SubmitButton.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/TabularGrid.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 4
+			path: ../app/Services/FormBuilder/Components/TabularGrid.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/TermsAndConditions.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/TermsAndConditions.php
+
+		-
+			message: "#^Comparison operation \"\\=\\=\" between 0 and 0\\|0\\.0\\|''\\|'0'\\|array\\{\\}\\|false\\|null results in an error\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Text.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Services/FormBuilder/Components/Text.php
+
+		-
+			message: "#^Function fluentformMix not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Text.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Text.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/TextArea.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/TextArea.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/Components/Turnstile.php
+
+		-
+			message: "#^Constant FLUENTFORM_VERSION not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Turnstile.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Components/Turnstile.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/CountryNames.php
+
+		-
+			message: "#^Array has 2 duplicate keys with value 'randomize_options' \\('randomize_options', 'randomize_options'\\)\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/DefaultElements.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/EditorShortCode.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/EditorShortCode.php
+
+		-
+			message: "#^Function fluentFormEditorShortCodes not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/EditorShortcodeParser.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/EditorShortcodeParser.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 5
+			path: ../app/Services/FormBuilder/EditorShortcodeParser.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$form$#"
+			count: 2
+			path: ../app/Services/FormBuilder/EditorShortcodeParser.php
+
+		-
+			message: "#^Unsafe access to private property FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\EditorShortcodeParser\\:\\:\\$dynamicShortcodes through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/EditorShortcodeParser.php
+
+		-
+			message: "#^Unsafe access to private property FluentForm\\\\App\\\\Services\\\\FormBuilder\\\\EditorShortcodeParser\\:\\:\\$handlers through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/EditorShortcodeParser.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/ElementCustomization.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 13
+			path: ../app/Services/FormBuilder/FormBuilder.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 11
+			path: ../app/Services/FormBuilder/Notifications/EmailNotification.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 3
+			path: ../app/Services/FormBuilder/Notifications/EmailNotification.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$app\\)\\: Unexpected token \"\\$app\", expected type at offset 74$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Notifications/EmailNotification.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Notifications/EmailNotificationActions.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 3
+			path: ../app/Services/FormBuilder/Notifications/EmailNotificationActions.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/Notifications/EmailNotificationActions.php
+
+		-
+			message: "#^Access to an undefined property WP_Post\\:\\:\\$permalink\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/ShortCodeParser.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$form_id\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/ShortCodeParser.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 10
+			path: ../app/Services/FormBuilder/ShortCodeParser.php
+
+		-
+			message: "#^Function fluentImplodeRecursive not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/ShortCodeParser.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/FormBuilder/ShortCodeParser.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 3
+			path: ../app/Services/FormBuilder/ShortCodeParser.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 3
+			path: ../app/Services/FormBuilder/ShortCodeParser.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/FormBuilder/ValidationRuleSettings.php
+
+		-
+			message: "#^Function fluentFormSanitizer not found\\.$#"
+			count: 1
+			path: ../app/Services/GlobalSettings/GlobalSettingsHelper.php
+
+		-
+			message: "#^Function fluentformSanitizeCSS not found\\.$#"
+			count: 1
+			path: ../app/Services/GlobalSettings/GlobalSettingsHelper.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/GlobalSettings/GlobalSettingsService.php
+
+		-
+			message: "#^Function fluentValidator not found\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/BaseIntegration.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 5
+			path: ../app/Services/Integrations/BaseIntegration.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 9
+			path: ../app/Services/Integrations/FormIntegrationService.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/Integrations/GlobalIntegrationService.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 7
+			path: ../app/Services/Integrations/GlobalNotificationManager.php
+
+		-
+			message: "#^Call to method getAll\\(\\) on an unknown class Requests_Utility_CaseInsensitiveDictionary\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/MailChimp/MailChimp.php
+
+		-
+			message: "#^Parameter \\$wp_headers of method FluentForm\\\\App\\\\Services\\\\Integrations\\\\MailChimp\\\\MailChimp\\:\\:convertWpHeadersToArray\\(\\) has invalid type Requests_Utility_CaseInsensitiveDictionary\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/MailChimp/MailChimp.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Services/Integrations/MailChimp/MailChimpIntegration.php
+
+		-
+			message: "#^Function fluentFormMix not found\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/MailChimp/MailChimpIntegration.php
+
+		-
+			message: "#^Function fluentformCanUnfilteredHTML not found\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/MailChimp/MailChimpIntegration.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/MailChimp/MailChimpIntegration.php
+
+		-
+			message: "#^is_wp_error\\(array\\) will always evaluate to false\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/MailChimp/MailChimpIntegration.php
+
+		-
+			message: "#^is_wp_error\\(array\\|false\\) will always evaluate to false\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/MailChimp/MailChimpIntegration.php
+
+		-
+			message: "#^is_wp_error\\(array\\|true\\) will always evaluate to false\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/MailChimp/MailChimpIntegration.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/Integrations/Slack/Slack.php
+
+		-
+			message: "#^Function fluentFormApi not found\\.$#"
+			count: 1
+			path: ../app/Services/Integrations/Slack/SlackNotificationActions.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Services/Logger/Logger.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 4
+			path: ../app/Services/Migrator/Bootstrap.php
+
+		-
+			message: "#^Call to an undefined method FluentForm\\\\App\\\\Services\\\\Migrator\\\\Classes\\\\BaseMigrator\\:\\:getEntries\\(\\)\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/BaseMigrator.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/BaseMigrator.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 14
+			path: ../app/Services/Migrator/Classes/BaseMigrator.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 5
+			path: ../app/Services/Migrator/Classes/BaseMigrator.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$refs$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/BaseMigrator.php
+
+		-
+			message: "#^Call to method get_total\\(\\) on an unknown class Caldera_Forms_Entry_Entries\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Call to static method get_entries\\(\\) on an unknown class Caldera_Forms_Admin\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Call to static method get_entry\\(\\) on an unknown class Caldera_Forms\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Call to static method get_fields\\(\\) on an unknown class Caldera_Forms_Forms\\.$#"
+			count: 2
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Call to static method get_form\\(\\) on an unknown class Caldera_Forms\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Call to static method get_form\\(\\) on an unknown class Caldera_Forms_Forms\\.$#"
+			count: 3
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Call to static method get_forms\\(\\) on an unknown class Caldera_Forms_Forms\\.$#"
+			count: 2
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Instantiated class Caldera_Forms_Entry_Entries not found\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Variable \\$refactoredFormula might not be defined\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/CalderaMigrator.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/ContactForm7Migrator.php
+
+		-
+			message: "#^Call to static method count_entries\\(\\) on an unknown class GFAPI\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/GravityFormsMigrator.php
+
+		-
+			message: "#^Call to static method get_entries\\(\\) on an unknown class GFAPI\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/GravityFormsMigrator.php
+
+		-
+			message: "#^Call to static method get_field\\(\\) on an unknown class GFFormsModel\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/GravityFormsMigrator.php
+
+		-
+			message: "#^Call to static method get_form\\(\\) on an unknown class GFAPI\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/GravityFormsMigrator.php
+
+		-
+			message: "#^Call to static method get_forms\\(\\) on an unknown class GFAPI\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/GravityFormsMigrator.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/GravityFormsMigrator.php
+
+		-
+			message: "#^Method FluentForm\\\\App\\\\Services\\\\Migrator\\\\Classes\\\\GravityFormsMigrator\\:\\:getFileSize\\(\\) has invalid return type FluentForm\\\\App\\\\Services\\\\Migrator\\\\Classes\\\\filesize\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/GravityFormsMigrator.php
+
+		-
+			message: "#^Call to method getFormsData\\(\\) on an unknown class NF_Database_FormsController\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/NinjaFormsMigrator.php
+
+		-
+			message: "#^Function Ninja_Forms not found\\.$#"
+			count: 6
+			path: ../app/Services/Migrator/Classes/NinjaFormsMigrator.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/NinjaFormsMigrator.php
+
+		-
+			message: "#^Instantiated class NF_Database_FormsController not found\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/NinjaFormsMigrator.php
+
+		-
+			message: "#^Static method FluentForm\\\\Framework\\\\Helpers\\\\ArrayHelper\\:\\:isTrue\\(\\) invoked with 3 parameters, 2 required\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/NinjaFormsMigrator.php
+
+		-
+			message: "#^Variable \\$field might not be defined\\.$#"
+			count: 3
+			path: ../app/Services/Migrator/Classes/NinjaFormsMigrator.php
+
+		-
+			message: "#^Call to static method decrypt\\(\\) on an unknown class WPForms\\\\Helpers\\\\Crypto\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/WpFormsMigrator.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Migrator/Classes/WpFormsMigrator.php
+
+		-
+			message: "#^Function wpforms not found\\.$#"
+			count: 3
+			path: ../app/Services/Migrator/Classes/WpFormsMigrator.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$attributeName$#"
+			count: 1
+			path: ../app/Services/Parser/Extractor.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$field$#"
+			count: 1
+			path: ../app/Services/Parser/Extractor.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Services/Parser/Form.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(array\\)\\: Unexpected token \"\\\\n     \", expected variable at offset 235$#"
+			count: 1
+			path: ../app/Services/Parser/Form.php
+
+		-
+			message: "#^Function collect not found\\.$#"
+			count: 1
+			path: ../app/Services/Report/ReportHelper.php
+
+		-
+			message: "#^Function getFluentFormCountryList not found\\.$#"
+			count: 1
+			path: ../app/Services/Report/ReportHelper.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 10
+			path: ../app/Services/Report/ReportHelper.php
+
+		-
+			message: "#^Unsafe access to private property FluentForm\\\\App\\\\Services\\\\Report\\\\ReportHelper\\:\\:\\$indexEnsured through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Services/Report/ReportHelper.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Services\\\\Report\\\\ReportHelper\\:\\:ensureEntryDetailsIndex\\(\\) through static\\:\\:\\.$#"
+			count: 1
+			path: ../app/Services/Report/ReportHelper.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Services\\\\Report\\\\ReportHelper\\:\\:getCounts\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Services/Report/ReportHelper.php
+
+		-
+			message: "#^Unsafe call to private method FluentForm\\\\App\\\\Services\\\\Report\\\\ReportHelper\\:\\:getEntryCounts\\(\\) through static\\:\\:\\.$#"
+			count: 2
+			path: ../app/Services/Report/ReportHelper.php
+
+		-
+			message: "#^Variable \\$report might not be defined\\.$#"
+			count: 1
+			path: ../app/Services/Report/ReportHelper.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 5
+			path: ../app/Services/Scheduler/Scheduler.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 2
+			path: ../app/Services/Scheduler/Scheduler.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Scheduler/Scheduler.php
+
+		-
+			message: "#^Function fluentformCanUnfilteredHTML not found\\.$#"
+			count: 1
+			path: ../app/Services/Settings/Customizer.php
+
+		-
+			message: "#^Function fluentformSanitizeCSS not found\\.$#"
+			count: 1
+			path: ../app/Services/Settings/Customizer.php
+
+		-
+			message: "#^Function fluentform_kses_js not found\\.$#"
+			count: 1
+			path: ../app/Services/Settings/Customizer.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Services/Settings/SettingsService.php
+
+		-
+			message: "#^Function fluentFormSanitizer not found\\.$#"
+			count: 1
+			path: ../app/Services/Settings/SettingsService.php
+
+		-
+			message: "#^Function fluentformCanUnfilteredHTML not found\\.$#"
+			count: 1
+			path: ../app/Services/Settings/SettingsService.php
+
+		-
+			message: "#^Function fluentform_backend_sanitizer not found\\.$#"
+			count: 1
+			path: ../app/Services/Settings/SettingsService.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 1
+			path: ../app/Services/Settings/Validator/Validate.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$created_at\\.$#"
+			count: 1
+			path: ../app/Services/Submission/SubmissionPrint.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Services/Submission/SubmissionPrint.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 9
+			path: ../app/Services/Submission/SubmissionService.php
+
+		-
+			message: "#^Constant FLUENTFORM_UPLOAD_DIR not found\\.$#"
+			count: 2
+			path: ../app/Services/Submission/SubmissionService.php
+
+		-
+			message: "#^Function fluentFormSanitizer not found\\.$#"
+			count: 1
+			path: ../app/Services/Submission/SubmissionService.php
+
+		-
+			message: """
+				#^PHPDoc tag @param has invalid value \\(array\\{
+				    formId\\?\\: int,         // Optional when using uidHash
+				    serialNumber\\?\\: int,   // Required if using formId without uidHash
+				    uidHash\\?\\: string,     // Can be used with or without formId
+				    isHtml\\?\\: bool
+				\\} \\$params Either \\(formId \\+ serialNumber\\) OR uidHash required\\)\\: Unexpected token "//", expected type at offset 58$#
+			"""
+			count: 1
+			path: ../app/Services/Submission/SubmissionService.php
+
+		-
+			message: "#^Constant FLUENTFORM_DIR_PATH not found\\.$#"
+			count: 1
+			path: ../app/Services/Transfer/TransferService.php
+
+		-
+			message: "#^Function fluentFormSanitizer not found\\.$#"
+			count: 3
+			path: ../app/Services/Transfer/TransferService.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 1
+			path: ../app/Services/Transfer/TransferService.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$data\\.$#"
+			count: 1
+			path: ../app/Services/WPAsync/FluentFormAsyncRequest.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$id\\.$#"
+			count: 2
+			path: ../app/Services/WPAsync/FluentFormAsyncRequest.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$origin_id\\.$#"
+			count: 3
+			path: ../app/Services/WPAsync/FluentFormAsyncRequest.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$retry_count\\.$#"
+			count: 1
+			path: ../app/Services/WPAsync/FluentFormAsyncRequest.php
+
+		-
+			message: "#^Function wpFluent not found\\.$#"
+			count: 11
+			path: ../app/Services/WPAsync/FluentFormAsyncRequest.php
+
+		-
+			message: "#^Function wpFluentForm not found\\.$#"
+			count: 3
+			path: ../app/Services/WPAsync/FluentFormAsyncRequest.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/admin/addons/index.php
+
+		-
+			message: "#^Variable \\$base_url might not be defined\\.$#"
+			count: 2
+			path: ../app/Views/admin/addons/index.php
+
+		-
+			message: "#^Variable \\$current_menu_item might not be defined\\.$#"
+			count: 8
+			path: ../app/Views/admin/addons/index.php
+
+		-
+			message: "#^Variable \\$hasPro might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/addons/index.php
+
+		-
+			message: "#^Variable \\$menus might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/addons/index.php
+
+		-
+			message: "#^Variable \\$install_url might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/addons/pdf_promo.php
+
+		-
+			message: "#^Variable \\$is_installed might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/addons/pdf_promo.php
+
+		-
+			message: "#^Variable \\$public_url might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/addons/pdf_promo.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Views/admin/all_entries.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 4
+			path: ../app/Views/admin/all_forms.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Views/admin/docs/index.php
+
+		-
+			message: "#^Variable \\$public_url might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/docs/index.php
+
+		-
+			message: "#^Variable \\$user_guides might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/docs/index.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/admin/form/editor.php
+
+		-
+			message: "#^Variable \\$form_id might not be defined\\.$#"
+			count: 3
+			path: ../app/Views/admin/form/entries.php
+
+		-
+			message: "#^Variable \\$has_pdf might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/form/entries.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 5
+			path: ../app/Views/admin/form/form_wrapper.php
+
+		-
+			message: "#^Variable \\$form might not be defined\\.$#"
+			count: 3
+			path: ../app/Views/admin/form/form_wrapper.php
+
+		-
+			message: "#^Variable \\$form_id might not be defined\\.$#"
+			count: 10
+			path: ../app/Views/admin/form/form_wrapper.php
+
+		-
+			message: "#^Variable \\$menu_items might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/form/form_wrapper.php
+
+		-
+			message: "#^Variable \\$route might not be defined\\.$#"
+			count: 18
+			path: ../app/Views/admin/form/form_wrapper.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/admin/form/settings.php
+
+		-
+			message: "#^Variable \\$form_id might not be defined\\.$#"
+			count: 4
+			path: ../app/Views/admin/form/settings.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Views/admin/form/settings_wrapper.php
+
+		-
+			message: "#^Variable \\$current_sub_route might not be defined\\.$#"
+			count: 5
+			path: ../app/Views/admin/form/settings_wrapper.php
+
+		-
+			message: "#^Variable \\$form_id might not be defined\\.$#"
+			count: 3
+			path: ../app/Views/admin/form/settings_wrapper.php
+
+		-
+			message: "#^Variable \\$has_double_opt_in might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/form/settings_wrapper.php
+
+		-
+			message: "#^Variable \\$settings_menus might not be defined\\.$#"
+			count: 2
+			path: ../app/Views/admin/form/settings_wrapper.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Views/admin/globalSettings/menu.php
+
+		-
+			message: "#^Variable \\$components might not be defined\\.$#"
+			count: 7
+			path: ../app/Views/admin/globalSettings/menu.php
+
+		-
+			message: "#^Variable \\$currentComponent might not be defined\\.$#"
+			count: 9
+			path: ../app/Views/admin/globalSettings/menu.php
+
+		-
+			message: "#^Variable \\$customLinks might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/globalSettings/menu.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/admin/globalSettings/settings.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Views/admin/global_menu.php
+
+		-
+			message: "#^Function fluentform_upgrade_url not found\\.$#"
+			count: 1
+			path: ../app/Views/admin/global_menu.php
+
+		-
+			message: "#^Variable \\$key might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/global_menu.php
+
+		-
+			message: "#^Variable \\$logo might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/global_menu.php
+
+		-
+			message: "#^Variable \\$show_payment might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/global_menu.php
+
+		-
+			message: "#^Variable \\$show_payment_entries might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/global_menu.php
+
+		-
+			message: "#^Variable \\$plugin might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/menu.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/admin/no_permission.php
+
+		-
+			message: "#^Variable \\$logo_url might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/notices/info.php
+
+		-
+			message: "#^Variable \\$notice might not be defined\\.$#"
+			count: 5
+			path: ../app/Views/admin/notices/info.php
+
+		-
+			message: "#^Variable \\$show_hide_nag might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/notices/info.php
+
+		-
+			message: "#^Variable \\$show_logo might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/notices/info.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Views/admin/smtp/index.php
+
+		-
+			message: "#^Variable \\$banner_image might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/smtp/index.php
+
+		-
+			message: "#^Variable \\$is_installed might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/smtp/index.php
+
+		-
+			message: "#^Variable \\$logo might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/smtp/index.php
+
+		-
+			message: "#^Variable \\$setup_url might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/admin/smtp/index.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 5
+			path: ../app/Views/admin/tools/index.php
+
+		-
+			message: "#^PHPDoc tag @var contains unknown class Failed\\.$#"
+			count: 1
+			path: ../app/Views/email/failedIntegration/body.php
+
+		-
+			message: "#^Variable \\$failed_feeds might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/email/failedIntegration/body.php
+
+		-
+			message: "#^Variable \\$first_item_time might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/email/failedIntegration/body.php
+
+		-
+			message: "#^Variable \\$last_item_time might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/email/failedIntegration/body.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/email/report/body.php
+
+		-
+			message: "#^Variable \\$days might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/email/report/body.php
+
+		-
+			message: "#^Variable \\$payments might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/email/report/body.php
+
+		-
+			message: "#^Variable \\$submissions might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/email/report/body.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/email/template/footer.php
+
+		-
+			message: "#^Variable \\$footerText might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/email/template/footer.php
+
+		-
+			message: "#^Variable \\$form might not be defined\\.$#"
+			count: 4
+			path: ../app/Views/email/template/footer.php
+
+		-
+			message: "#^Variable \\$notification might not be defined\\.$#"
+			count: 4
+			path: ../app/Views/email/template/footer.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 3
+			path: ../app/Views/email/template/header.php
+
+		-
+			message: "#^Variable \\$form might not be defined\\.$#"
+			count: 4
+			path: ../app/Views/email/template/header.php
+
+		-
+			message: "#^Variable \\$notification might not be defined\\.$#"
+			count: 4
+			path: ../app/Views/email/template/header.php
+
+		-
+			message: "#^Variable \\$form might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/frameless/frameless_page_view.php
+
+		-
+			message: "#^Variable \\$message might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/frameless/frameless_page_view.php
+
+		-
+			message: "#^Variable \\$status might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/frameless/frameless_page_view.php
+
+		-
+			message: "#^Variable \\$title might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/frameless/frameless_page_view.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/frameless/show_preview.php
+
+		-
+			message: "#^Function fluentform_upgrade_url not found\\.$#"
+			count: 2
+			path: ../app/Views/frameless/show_preview.php
+
+		-
+			message: "#^Variable \\$form might not be defined\\.$#"
+			count: 2
+			path: ../app/Views/frameless/show_preview.php
+
+		-
+			message: "#^Variable \\$form_id might not be defined\\.$#"
+			count: 9
+			path: ../app/Views/frameless/show_preview.php
+
+		-
+			message: "#^Variable \\$design might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form-inline.php
+
+		-
+			message: "#^Variable \\$form_id might not be defined\\.$#"
+			count: 3
+			path: ../app/Views/public/conversational-form-inline.php
+
+		-
+			message: "#^Variable \\$generated_css might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form-inline.php
+
+		-
+			message: "#^Variable \\$global_var_name might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form-inline.php
+
+		-
+			message: "#^Variable \\$instance_id might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form-inline.php
+
+		-
+			message: "#^Variable \\$submit_css might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form-inline.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 2
+			path: ../app/Views/public/conversational-form.php
+
+		-
+			message: "#^Function fluentformSanitizeCSS not found\\.$#"
+			count: 2
+			path: ../app/Views/public/conversational-form.php
+
+		-
+			message: "#^Variable \\$design might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form.php
+
+		-
+			message: "#^Variable \\$form might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form.php
+
+		-
+			message: "#^Variable \\$form_id might not be defined\\.$#"
+			count: 4
+			path: ../app/Views/public/conversational-form.php
+
+		-
+			message: "#^Variable \\$generated_css might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form.php
+
+		-
+			message: "#^Variable \\$meta might not be defined\\.$#"
+			count: 5
+			path: ../app/Views/public/conversational-form.php
+
+		-
+			message: "#^Variable \\$submit_css might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/public/conversational-form.php
+
+		-
+			message: "#^Variable \\$form might not be defined\\.$#"
+			count: 2
+			path: ../app/Views/public/preview_form.php
+
+		-
+			message: "#^Variable \\$transaction might not be defined\\.$#"
+			count: 12
+			path: ../app/Views/receipt/customer_details.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/header.php
+
+		-
+			message: "#^Variable \\$header_content might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/header.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 7
+			path: ../app/Views/receipt/order_items_table.php
+
+		-
+			message: "#^Variable \\$discount_items might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/order_items_table.php
+
+		-
+			message: "#^Variable \\$items might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/order_items_table.php
+
+		-
+			message: "#^Variable \\$orderTotal might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/order_items_table.php
+
+		-
+			message: "#^Variable \\$subTotal might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/order_items_table.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/payment_info.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/payment_info.php
+
+		-
+			message: "#^Variable \\$submission might not be defined\\.$#"
+			count: 8
+			path: ../app/Views/receipt/payment_info.php
+
+		-
+			message: "#^Variable \\$totalPaid might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/payment_info.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/payment_info_list.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/payment_info_list.php
+
+		-
+			message: "#^Variable \\$orderTotal might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/payment_info_list.php
+
+		-
+			message: "#^Variable \\$submission might not be defined\\.$#"
+			count: 6
+			path: ../app/Views/receipt/payment_info_list.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/subscriptions_table.php
+
+		-
+			message: "#^Variable \\$submission might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/subscriptions_table.php
+
+		-
+			message: "#^Variable \\$subscriptions might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/subscriptions_table.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/transaction_info.php
+
+		-
+			message: "#^Variable \\$transaction might not be defined\\.$#"
+			count: 6
+			path: ../app/Views/receipt/transaction_info.php
+
+		-
+			message: "#^Constant FLUENTFORM_FRAMEWORK_UPGRADE not found\\.$#"
+			count: 6
+			path: ../app/Views/receipt/transactions_table.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/transactions_table.php
+
+		-
+			message: "#^Variable \\$config might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/transactions_table.php
+
+		-
+			message: "#^Variable \\$transactions might not be defined\\.$#"
+			count: 5
+			path: ../app/Views/receipt/transactions_table.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 1
+			path: ../app/Views/receipt/user_subscription_payments.php
+
+		-
+			message: "#^Variable \\$config might not be defined\\.$#"
+			count: 2
+			path: ../app/Views/receipt/user_subscription_payments.php
+
+		-
+			message: "#^Variable \\$transactions might not be defined\\.$#"
+			count: 1
+			path: ../app/Views/receipt/user_subscription_payments.php
+
+		-
+			message: "#^Function fluentform_sanitize_html not found\\.$#"
+			count: 4
+			path: ../app/Views/receipt/user_subscriptions_table.php
