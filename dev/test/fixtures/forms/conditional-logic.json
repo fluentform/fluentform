@@ -1,0 +1,64 @@
+{
+    "fields": [
+        {
+            "index": 0,
+            "element": "input_radio",
+            "attributes": {
+                "type": "radio",
+                "name": "show_details",
+                "value": "",
+                "options": [
+                    {"label": "Yes", "value": "yes", "calc_value": ""},
+                    {"label": "No",  "value": "no",  "calc_value": ""}
+                ]
+            },
+            "settings": {
+                "container_class": "",
+                "label": "Show extra details?",
+                "validation_rules": {
+                    "required": {"value": true, "global": true, "message": "Required", "global_message": "Required"}
+                },
+                "conditional_logics": []
+            },
+            "editor_options": {"title": "Radio"},
+            "uniqElKey": "fixture-cond-radio"
+        },
+        {
+            "index": 1,
+            "element": "input_text",
+            "attributes": {
+                "type": "text",
+                "name": "extra_details",
+                "value": "",
+                "placeholder": "Tell us more"
+            },
+            "settings": {
+                "container_class": "",
+                "label": "Extra details",
+                "validation_rules": {
+                    "required": {"value": false, "global": true, "message": "Required", "global_message": "Required"}
+                },
+                "conditional_logics": {
+                    "type": "any",
+                    "status": true,
+                    "conditions": [
+                        {"field": "show_details", "operator": "=", "value": "yes"}
+                    ]
+                }
+            },
+            "editor_options": {"title": "Text"},
+            "uniqElKey": "fixture-cond-text"
+        }
+    ],
+    "submitButton": {
+        "uniqElKey": "fixture-cond-submit",
+        "element": "button",
+        "attributes": {"type": "submit", "class": ""},
+        "settings": {
+            "container_class": "",
+            "button_ui": {"type": "default", "text": "Submit", "img_url": ""},
+            "conditional_logics": []
+        },
+        "editor_options": {"title": "Submit Button"}
+    }
+}

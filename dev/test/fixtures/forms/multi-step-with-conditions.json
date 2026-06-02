@@ -1,0 +1,120 @@
+{
+    "fields": [
+        {
+            "index": 0,
+            "element": "form_step",
+            "attributes": {
+                "class": "ff-step-body",
+                "name": "form_step"
+            },
+            "settings": {
+                "progress_indicator": "steps",
+                "step_titles": [
+                    {"label": "Personal", "id": "step-1"},
+                    {"label": "Choice",   "id": "step-2"},
+                    {"label": "Submit",   "id": "step-3"}
+                ],
+                "disable_auto_focus": "no",
+                "enable_auto_slider": "no",
+                "enable_step_data_persistency": "no",
+                "enable_step_page_resume": "no",
+                "step_validation_mode": "each_step"
+            },
+            "editor_options": {
+                "title": "Form Step"
+            },
+            "stepsWrapper": {
+                "stepStart": {
+                    "element": "step_start",
+                    "settings": {
+                        "progress_indicator": "steps",
+                        "step_titles": [
+                            {"label": "Personal", "id": "step-1"},
+                            {"label": "Choice",   "id": "step-2"},
+                            {"label": "Submit",   "id": "step-3"}
+                        ],
+                        "step_validation_mode": "each_step"
+                    }
+                },
+                "stepEnd": {
+                    "element": "step_end",
+                    "settings": {
+                        "prev_btn": {"type": "default", "text": "Previous"},
+                        "next_btn": {"type": "default", "text": "Next"}
+                    }
+                }
+            },
+            "uniqElKey": "fixture-multistep-form-step"
+        },
+        {
+            "index": 1,
+            "element": "input_text",
+            "attributes": {
+                "type": "text",
+                "name": "full_name",
+                "value": ""
+            },
+            "settings": {
+                "label": "Full Name",
+                "validation_rules": {
+                    "required": {"value": true, "global": true, "message": "Required"}
+                },
+                "conditional_logics": []
+            },
+            "uniqElKey": "fixture-multistep-fullname"
+        },
+        {
+            "index": 2,
+            "element": "section_break",
+            "attributes": {"name": "section_break_choice"},
+            "settings": {"label": "Choice Step"},
+            "uniqElKey": "fixture-multistep-break"
+        },
+        {
+            "index": 3,
+            "element": "input_radio",
+            "attributes": {
+                "type": "radio",
+                "name": "show_extra",
+                "value": "",
+                "options": [
+                    {"label": "Yes", "value": "yes", "calc_value": ""},
+                    {"label": "No",  "value": "no",  "calc_value": ""}
+                ]
+            },
+            "settings": {
+                "label": "Show extra field?",
+                "validation_rules": {
+                    "required": {"value": true, "global": true, "message": "Required"}
+                }
+            },
+            "uniqElKey": "fixture-multistep-show-extra"
+        },
+        {
+            "index": 4,
+            "element": "custom_html",
+            "attributes": {"name": "custom_html_conditional"},
+            "settings": {
+                "label": "Conditional custom HTML",
+                "html_codes": "<p>This block only renders when 'Show extra' is yes.</p>",
+                "conditional_logics": {
+                    "type": "any",
+                    "status": true,
+                    "conditions": [
+                        {"field": "show_extra", "operator": "=", "value": "yes"}
+                    ]
+                }
+            },
+            "uniqElKey": "fixture-multistep-conditional-html"
+        }
+    ],
+    "submitButton": {
+        "uniqElKey": "fixture-multistep-submit",
+        "element": "button",
+        "attributes": {"type": "submit"},
+        "settings": {
+            "button_ui": {"type": "default", "text": "Submit"},
+            "container_class": ""
+        }
+    }
+}
