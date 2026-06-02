@@ -1,0 +1,44 @@
+parameters:
+    level: 2
+    scanDirectories:
+        - ../vendor
+
+    bootstrapFiles:
+        - ../vendor/autoload.php
+
+    excludePaths:
+        - ../app/Modules/Widgets
+        - ../app/Services/Libraries/action-scheduler
+
+    ignoreErrors:
+        - '#Unsafe usage of new static\(\)#'
+
+services:
+    -
+        class: FluentFormDev\PHPStan\ModelPropertyExtension
+        tags:
+            - phpstan.broker.propertiesClassReflectionExtension
+
+    -
+        class: FluentFormDev\PHPStan\AppFacadeExtension
+        tags:
+            - phpstan.broker.methodsClassReflectionExtension
+
+    -
+        class: FluentFormDev\PHPStan\ModelMethodExtension
+        tags:
+            - phpstan.broker.methodsClassReflectionExtension
+
+    -
+        class: FluentFormDev\PHPStan\RequestGuardMethodExtension
+        tags:
+            - phpstan.broker.methodsClassReflectionExtension
+
+    -
+        class: FluentFormDev\PHPStan\DatabaseManagerExtension
+        tags:
+            - phpstan.broker.methodsClassReflectionExtension
+
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+    - phpstan-baseline.neon

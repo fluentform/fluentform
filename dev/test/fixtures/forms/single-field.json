@@ -1,0 +1,65 @@
+{
+    "fields": [
+        {
+            "index": 0,
+            "element": "input_text",
+            "attributes": {
+                "type": "text",
+                "name": "first_name",
+                "value": "",
+                "id": "",
+                "class": "",
+                "placeholder": "First name"
+            },
+            "settings": {
+                "container_class": "",
+                "label": "First Name",
+                "label_placement": "",
+                "help_message": "",
+                "admin_field_label": "First Name",
+                "validation_rules": {
+                    "required": {
+                        "value": true,
+                        "global": true,
+                        "message": "This field is required",
+                        "global_message": "This field is required"
+                    }
+                },
+                "conditional_logics": []
+            },
+            "editor_options": {
+                "title": "Single Line Text",
+                "icon_class": "ff-edit-text",
+                "template": "inputText"
+            },
+            "uniqElKey": "fixture-single-field-first-name"
+        }
+    ],
+    "submitButton": {
+        "uniqElKey": "fixture-single-field-submit",
+        "element": "button",
+        "attributes": {
+            "type": "submit",
+            "class": ""
+        },
+        "settings": {
+            "container_class": "",
+            "help_message": "",
+            "button_style": "default",
+            "button_size": "md",
+            "color": "#ffffff",
+            "background_color": "#409EFF",
+            "button_ui": {
+                "type": "default",
+                "text": "Submit",
+                "img_url": ""
+            },
+            "normal_styles": [],
+            "hover_styles": [],
+            "conditional_logics": []
+        },
+        "editor_options": {
+            "title": "Submit Button"
+        }
+    }
+}

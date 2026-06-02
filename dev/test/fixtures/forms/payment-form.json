@@ -1,0 +1,87 @@
+{
+    "fields": [
+        {
+            "index": 0,
+            "element": "input_email",
+            "attributes": {
+                "type": "email",
+                "name": "email",
+                "value": "",
+                "placeholder": "user@example.com"
+            },
+            "settings": {
+                "label": "Email",
+                "validation_rules": {
+                    "required": {"value": true, "global": true, "message": "Required"},
+                    "email":    {"value": true, "global": true, "message": "Invalid email"}
+                },
+                "conditional_logics": []
+            },
+            "editor_options": {"title": "Email"},
+            "uniqElKey": "fixture-pay-email"
+        },
+        {
+            "index": 1,
+            "element": "custom_payment_component",
+            "attributes": {
+                "name": "payment_item",
+                "value": "",
+                "type": "single",
+                "data-calc_value": ""
+            },
+            "settings": {
+                "container_class": "",
+                "label": "Payment Item",
+                "price_label": "Test Product",
+                "payment_methods": ["stripe"],
+                "price": "10.00",
+                "is_purchasable": true,
+                "validation_rules": {
+                    "required": {"value": true, "global": true, "message": "Required"}
+                },
+                "conditional_logics": []
+            },
+            "editor_options": {"title": "Payment Item"},
+            "uniqElKey": "fixture-pay-item"
+        },
+        {
+            "index": 2,
+            "element": "payment_summary_component",
+            "attributes": {"name": "payment_summary"},
+            "settings": {
+                "container_class": "",
+                "label": "Order Summary",
+                "cart_empty_text": "Cart is empty",
+                "conditional_logics": []
+            },
+            "editor_options": {"title": "Payment Summary"},
+            "uniqElKey": "fixture-pay-summary"
+        },
+        {
+            "index": 3,
+            "element": "payment_method",
+            "attributes": {"name": "payment_method"},
+            "settings": {
+                "container_class": "",
+                "label": "Payment Method",
+                "validation_rules": {
+                    "required": {"value": true, "global": true, "message": "Required"}
+                },
+                "conditional_logics": []
+            },
+            "editor_options": {"title": "Payment Method"},
+            "uniqElKey": "fixture-pay-method"
+        }
+    ],
+    "submitButton": {
+        "uniqElKey": "fixture-pay-submit",
+        "element": "button",
+        "attributes": {"type": "submit", "class": ""},
+        "settings": {
+            "container_class": "",
+            "button_ui": {"type": "default", "text": "Pay Now", "img_url": ""},
+            "conditional_logics": []
+        },
+        "editor_options": {"title": "Submit Button"}
+    }
+}

@@ -1,0 +1,108 @@
+# ./wpf
+
+This is a cli toolkit for helping the development process with many handy features. To know more about this tool, just run `./wpf` from your plugin's root directory and check the available commands that you may use to ease your development process.
+
+# But, at first!
+
+- Run `chmod 700 ./wpf` to grant the permission and then `./wpf init` to install the dependencies.
+
+If you've done everything right then, you may run `./wpf` to check the list of available commands.
+
+# Test Setup:
+
+- Run `chmod 700 ./test/setup.sh` to grant the necessary permission to run.
+- Run `./test/setup.sh dbname dbuser dbpass dbhost` to setup the test suite.
+
+The `dbname` will be used to create the database for testing, so provide your `mysql` username and password in the place of `dbuser` and `dbpass` and use `localhost` for the `dbhost`. Once you complete setting up the test environment, find ther `./stubs/Models/Model.php` and rename the `WPFluent` using the correct namespace of your project from `\WPFluent\App\Models\Model`. If
+you did everything correctly then you should be able to write and run tests.
+
+- To check, run `./wpf test` from the root of your plugin directory.
+
+# Test Helpers Reference
+
+The PHPUnit harness provides these helpers on the base `TestCase` (via the `Concerns` trait and `TestCase` methods). Use them instead of hand-rolling `$_POST`, raw `$wpdb` writes, or `register_rest_route` boilerplate.
+
+## REST request helpers (Concerns)
+
+| Method | Purpose |
+|---|---|
+| `$this->get($uri, $params = [])` | GET against `/fluentform/v1/{uri}` |
+| `$this->post($uri, $params = [])` | POST |
+| `$this->put($uri, $params = [])` | POST + `X-HTTP-Method-Override: PUT` + correct dispatch method |
+| `$this->patch($uri, $params = [])` | Same as `put` for PATCH |
+| `$this->delete($uri, $params = [])` | Same for DELETE — routes to `@delete` handler, not `@update` |
+| `$this->submitForm($formId, array $data)` | Drive `/form-submit` endpoint as if frontend AJAX submitted |
+| `$this->login(int $userId)` / `$this->logout()` | Set / reset WP current user |
+| `$this->impersonateAsRole(string $cap)` | Create fresh subscriber + add cap + login. Returns user ID. |
+| `$this->mockHttp(string $needle, array $response)` | Intercept any `wp_remote_*` whose URL contains `$needle` |
+
+## Response asserts (Response)
+
+```php
+$this->get('forms')
+    ->assertStatus(200)
+    ->assertJsonPath('forms.data.0.id', 5)
+    ->assertJsonHas('forms.total')
+    ->assertJsonMissing('error');
+```
+
+Other accessors: `->getStatus()`, `->getData()`, `->getJson()`, `->isOkay()`, `->isForbidden()`.
+
+## Fixture loader (TestCase)
+
+```php
+$form = $this->loadFormFixture('single-field');
+$form = $this->loadFormFixture('multi-step-with-conditions');
+$form = $this->loadFormFixture('payment-form');
+$form = $this->loadFormFixture('conditional-logic');
+```
+
+Reads `dev/test/fixtures/forms/<name>.json` and creates a published Form. See `dev/test/fixtures/README.md` for fixture authoring rules (privacy, no real PII).
+
+## Model helpers (TestCase)
+
+| Method | Purpose |
+|---|---|
+| `$this->setFormMeta($formId, $key, $value)` | Insert `fluentform_form_meta` row; auto-encodes arrays/objects to JSON |
+| `$this->loadSubmissionFixture($formId, array $response)` | Insert Submission + per-field EntryDetails rows; returns Submission model |
+
+## Suite-scoped migrations (RefreshDatabase)
+
+`setUpBeforeClass()` migrates once per class; `setUp()` truncates between tests. Pro-owned tables (e.g. `fluentform_coupons`) must self-truncate — see `dev/test/tests/Pro/TestCouponModelAnchor.php` for the pattern.
+
+## Cross-plugin testing — `FLUENTFORM_PRO_TEST=1`
+
+When `FLUENTFORM_PRO_TEST=1` is set, bootstrap.php additionally loads `../fluentformpro/fluentformpro.php` so Pro tests under `dev/test/tests/Pro/` can run. Pro test classes that need it should gate themselves on the sentinel constant:
+
+```php
+public static function setUpBeforeClass() : void
+{
+    if (!defined('FLUENTFORM_PRO_TEST_LOADED')) {
+        self::markTestSkipped('Pro not loaded (set FLUENTFORM_PRO_TEST=1)');
+    }
+    parent::setUpBeforeClass();
+}
+```
+
+Run with the flag:
+
+```bash
+FLUENTFORM_PRO_TEST=1 php dev/vendor/bin/phpunit -c dev/phpunit.xml.dist
+```
+
+# QA Tooling:
+
+- Run `cd dev && composer run phpcs` to scan plugin PHP compatibility.
+- Run `cd dev && composer run phpstan` to run the WordPress-aware static analysis baseline.
+
+**Note** You may run the `./setup.sh` multiple times if you need to.
+
+# If anything goes wrong:
+
+- `cd /var/folders/hl/9mtnq0xx42n17zs18wwpfwv80000gn/T`
+- `rm -rf wordpress`
+- `rm -rf wordpress-tests-lib`
+- run the `setup.sh` again.
+- run `phpunit` again.
+
+**Note:** The path is dynamic so it could be a little bit different. In that case adjust the path from the error message displayed on the console which will mention the location using something similar to this kind of path.

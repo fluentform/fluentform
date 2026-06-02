@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#
+# pre-push hook: detects what changed and delegates to dev/quality-gate.mjs.
+#
+# Install once:
+#   cp dev/hooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+#
+# Skip in an emergency (document why):
+#   git push --no-verify
+#
+
+# Augment PATH so IDE-launched git finds Homebrew binaries the same as terminal.
+export PATH="/opt/homebrew/bin:/usr/local/bin:${PATH}"
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+DEV_DIR="${REPO_ROOT}/dev"
+
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+if [ ! -d "${DEV_DIR}/vendor" ]; then
+    echo -e "${YELLOW}[pre-push] dev/vendor not found — run: cd dev && composer install${NC}"
+    exit 1
+fi
+
+# ── Collect changed files across all pushed refs ──────────────────────────────
+ALL_CHANGED=""
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+    # Branch deletion — nothing to check.
+    if [ "${local_sha}" = "0000000000000000000000000000000000000000" ]; then
+        continue
+    fi
+
+    if [ "${remote_sha}" = "0000000000000000000000000000000000000000" ]; then
+        # New branch — diff against merge-base with dev, then master.
+        BASE=$(git merge-base "${local_sha}" dev 2>/dev/null \
+            || git merge-base "${local_sha}" master 2>/dev/null \
+            || git rev-parse "${local_sha}^" 2>/dev/null)
+    else
+        BASE="${remote_sha}"
+    fi
+
+    if [ -n "${BASE}" ]; then
+        ALL_CHANGED="${ALL_CHANGED}"$'\n'"$(git diff --name-only "${BASE}" "${local_sha}" 2>/dev/null)"
+    fi
+done
+
+# Deduplicate and strip blanks.
+ALL_CHANGED=$(printf '%s' "${ALL_CHANGED}" | sort -u | grep -v '^$')
+
+if [ -z "${ALL_CHANGED}" ]; then
+    echo "[pre-push] No changed files detected — skipping all checks."
+    exit 0
+fi
+
+# ── Build quality-gate flags from what changed ────────────────────────────────
+FLAGS=""
+
+echo "${ALL_CHANGED}" | grep -qE '^app/.*\.php$'                   && FLAGS="${FLAGS} --php"
+echo "${ALL_CHANGED}" | grep -qE '^resources/admin/.*\.(vue|js)$'  && FLAGS="${FLAGS} --admin"
+echo "${ALL_CHANGED}" | grep -qE '^resources/public/.*\.(vue|js)$' && FLAGS="${FLAGS} --public"
+
+if [ -z "${FLAGS}" ]; then
+    echo "[pre-push] No PHP or Vue/JS files changed — skipping all checks."
+    exit 0
+fi
+
+# ── Delegate to quality-gate.mjs ─────────────────────────────────────────────
+# Pass the changed PHP files so PHPCS lints only those (full Fluent standard on
+# legacy would block every push; PHPStan uses a baseline instead).
+GATE_PHP_FILES=$(printf '%s\n' "${ALL_CHANGED}" | grep -E '^app/.*\.php$' || true)
+export GATE_PHP_FILES
+
+# shellcheck disable=SC2086
+node "${DEV_DIR}/quality-gate.mjs" ${FLAGS}
+EXIT=$?
+
+if [ "${EXIT}" -ne 0 ]; then
+    echo ""
+    echo "To bypass in an emergency: git push --no-verify"
+    exit 1
+fi
+
+# ── Chain global hook ─────────────────────────────────────────────────────────
+GLOBAL_HOOKS=$(git config core.globalHooksPath 2>/dev/null || true)
+if [ -n "${GLOBAL_HOOKS}" ] && [ -x "${GLOBAL_HOOKS}/pre-push" ]; then
+    exec "${GLOBAL_HOOKS}/pre-push" "$@"
+fi
+
+exit 0

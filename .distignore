@@ -25,3 +25,5 @@ assets/report.html
 .code-review-graph/
 openspec/
 builds/*
+dev
+wpf

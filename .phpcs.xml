@@ -3,7 +3,6 @@
     <description>WordPress Coding Standard that we use in Fluent Team.</description>
         <rule ref="WordPress">
             <exclude name="WordPress.Files.FileName"/>
-            <exclude name="WordPress.PHP.DisallowShortTernary"/>
             <exclude name="WordPress.WhiteSpace.OperatorSpacing"/>
             <exclude name="WordPress.WP.EnqueuedResourceParameters"/>
             <exclude name="WordPress.Arrays.ArrayDeclarationSpacing"/>
@@ -22,6 +21,9 @@
             <exclude name="Generic.Classes.OpeningBraceSameLine"/>
             <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
             <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+            <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+            <exclude name="NormalizedArrays.Arrays.ArrayBraceSpacing"/>
+            <exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
             <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
             <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing"/>
             <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
