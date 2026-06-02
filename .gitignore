@@ -22,3 +22,10 @@ vendor/composer/autoload_static.php
 vendor/composer/autoload_real.php
 vendor/composer/autoload_classmap.php
 builds/*
+.claude/settings.local.json
+# Added by code-review-graph
+.code-review-graph/
+.mcp.json
+
+/dev/vendor
+.phpstan-last-run.log

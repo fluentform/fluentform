@@ -3,7 +3,6 @@
     <description>WordPress Coding Standard that we use in Fluent Team.</description>
         <rule ref="WordPress">
             <exclude name="WordPress.Files.FileName"/>
-            <exclude name="WordPress.PHP.DisallowShortTernary"/>
             <exclude name="WordPress.WhiteSpace.OperatorSpacing"/>
             <exclude name="WordPress.WP.EnqueuedResourceParameters"/>
             <exclude name="WordPress.Arrays.ArrayDeclarationSpacing"/>
