@@ -21,6 +21,9 @@
             <exclude name="Generic.Classes.OpeningBraceSameLine"/>
             <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
             <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+            <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+            <exclude name="NormalizedArrays.Arrays.ArrayBraceSpacing"/>
+            <exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
             <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
             <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing"/>
             <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>

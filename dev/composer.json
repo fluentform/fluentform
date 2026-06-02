@@ -35,8 +35,9 @@
         }
     },
     "scripts": {
-        "phpcs": "phpcs -p -n --standard=../.phpcs.xml",
-        "phpstan": "phpstan analyse ../app --configuration=phpstan.neon --memory-limit=2G --autoload-file=vendor/autoload.php"
+        "phpcs": "phpcs -p --runtime-set ignore_warnings_on_exit 1 --standard=../.phpcs.xml",
+        "phpstan": "phpstan analyse ../app --configuration=phpstan.neon --memory-limit=2G --autoload-file=vendor/autoload.php",
+        "gate": "node quality-gate.mjs --php"
     },
     "require": {}
 }

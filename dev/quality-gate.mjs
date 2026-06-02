@@ -102,6 +102,19 @@ function printFailure({ label, output }) {
     }
 }
 
+// ── Print warnings for a passing check (non-blocking) ─────────────────────────
+function printWarnings({ label, output }) {
+    const body = label === 'PHPStan' ? cleanPhpStan(output) : output.trim();
+    if (!/WARNING/.test(body)) return;
+
+    console.log(`\n${hr}`);
+    console.log(`${c.bold} ⚠ ${label} — warnings (not blocking)${c.reset}`);
+    console.log(hr);
+    for (const line of body.split('\n')) {
+        if (/WARNING|FILE:/.test(line)) console.log(`  ${line}`);
+    }
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 console.log(`\n${c.bold}  FluentForm Quality Gate${c.reset}`);
 console.log(`${hr}\n`);
@@ -133,6 +146,7 @@ const failures = results.filter(r => !r.ok);
 const passed   = results.length - failures.length;
 
 for (const f of failures) printFailure(f);
+for (const r of results.filter(r => r.ok)) printWarnings(r);
 
 console.log(`\n${hr}`);
 if (failures.length === 0) {
