@@ -55,14 +55,6 @@ export class Payment_handler {
         });
         this.calculatePayments();
         this.$form.find('.ff_payment_item,.ff_quantity_item').on('change', (event) => {
-            if (event.target.min && +event.target.value < +event.target.min) {
-                event.target.value = event.target.min;
-            }
-
-            if (event.target.max && +event.target.value > +event.target.max) {
-                event.target.value = event.target.max;
-            }
-
             this.calculatePayments();
 
             this.mayBeToggleSubscriptionRelatedThings(event);
