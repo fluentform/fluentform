@@ -1130,6 +1130,20 @@ class Helper
         return $url;
     }
 
+    // Hard floor of upload extensions never accepted; filter is additive only.
+    public static function dangerousUploadExtensions()
+    {
+        $floor = [
+            'php', 'phtml', 'phar', 'php3', 'php4', 'php5', 'php7', 'php8',
+            'pht', 'phps', 'phtm', 'pgif', 'shtml', 'inc',
+            'htaccess', 'htpasswd',
+        ];
+
+        $filtered = (array) apply_filters('fluentform/upload_extension_denylist', $floor);
+
+        return array_values(array_unique(array_merge($floor, $filtered)));
+    }
+
     public static function arrayFilterRecursive($arrayItems)
     {
         foreach ($arrayItems as $key => $item) {
