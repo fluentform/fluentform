@@ -254,9 +254,17 @@ class Acl
             return false;
         }
 
-        foreach ($capabilities as $capability) {
-            if ($user->has_cap($capability)) {
-                return $capability;
+        foreach ($capabilities as $roleOrCap => $value) {
+            if (is_array($value)) {
+                // Nested format: { role: { cap: true, ... } }
+                foreach ($value as $cap => $enabled) {
+                    if ($enabled && is_string($cap) && $user->has_cap($cap)) {
+                        return $cap;
+                    }
+                }
+            } elseif (is_string($value) && $user->has_cap($value)) {
+                // Flat format: [ 'cap1', 'cap2' ]
+                return $value;
             }
         }
 
