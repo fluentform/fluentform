@@ -4,6 +4,7 @@
             <!--Different form settings section-->
             <template v-if="app_ready">
                 <layout
+                    ref="layout"
                     :email_report="email_report"
                     :integration_failure_notification="integration_failure_notification"
                     :data="formSettings"
@@ -65,6 +66,11 @@
             }
         },
         methods: {
+            expandSection(sectionId) {
+                if (sectionId === '#default-style-template' && this.$refs.layout && this.$refs.layout.$refs.defaultStyleTemplateSection && typeof this.$refs.layout.$refs.defaultStyleTemplateSection.expandCard === 'function') {
+                    this.$refs.layout.$refs.defaultStyleTemplateSection.expandCard();
+                }
+            },
             fetch() {
                 this.loading = true;
                 const url = FluentFormsGlobal.$rest.route('getGlobalSettings');

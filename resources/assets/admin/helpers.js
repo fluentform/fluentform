@@ -54,6 +54,42 @@ export const scrollTop = (scrollTop = 0, milliSecond = 300, selector = 'html, bo
     jQuery(selector).animate({ scrollTop }, milliSecond).promise()
 );
 
+/**
+ * Scroll settings form to a section and optionally run a callback (e.g. expand card).
+ * @param {jQuery} $link - The clicked .ff-page-scroll link
+ * @param {string} containerSelector - Scroll container (e.g. '.ff_global_settings_option' or '.ff_settings_form')
+ * @param {Object} options - { getTargetId: ($link) => string, afterScroll: (targetId) => void, titleText: string, highlightClass: string, highlightTimeout: number, menuHeightSelector: string }
+ */
+export const scrollToSettingsSection = ($link, containerSelector, options = {}) => {
+    const getTargetId = options.getTargetId || (($l) => $l.attr('data-section-id') || $l[0].hash || '');
+    const rawId = getTargetId($link);
+    const targetId = rawId && rawId.charAt(0) !== '#' ? '#' + rawId : rawId;
+    const highlightClass = options.highlightClass || 'highlight-border';
+    const highlightTimeout = options.highlightTimeout != null ? options.highlightTimeout : 500;
+    const menuHeightSelector = options.menuHeightSelector || '.ff_header';
+
+    if (!targetId) return;
+
+    jQuery(targetId).addClass(highlightClass);
+
+    const $container = jQuery(containerSelector);
+    if (!$container.length) return;
+
+    const menuHeight = jQuery(menuHeightSelector).first().outerHeight() || 0;
+    const wpAdminBarHeight = jQuery('#wpadminbar').outerHeight() || 0;
+    const top = jQuery(targetId).offset().top + $container.scrollTop() - (wpAdminBarHeight + menuHeight + $container.position().top);
+
+    scrollTop(top, 'fast', containerSelector).then(() => {
+        if (targetId) {
+            setTimeout(() => {
+                jQuery(targetId).removeClass(highlightClass);
+            }, highlightTimeout);
+        }
+        if (options.afterScroll) options.afterScroll(targetId);
+        if (options.titleText) jQuery('head title').text(options.titleText + ' - Fluent Forms');
+    });
+};
+
 export const handleSidebarActiveLink = ($link, init = false, firstLoad = false) => {
     //make current link active and others deactivate
     $link.addClass('active').siblings().removeClass('active');
