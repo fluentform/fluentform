@@ -62,6 +62,7 @@ mix
     .js('resources/assets/admin/Reports/reports.js', `assets/js/reports.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `assets/js/conversational_design.js`)
     .js('resources/assets/elementor/fluent-forms-elementor-widget.js', `assets/js/fluent-forms-elementor-widget.js`)
+    .js('resources/assets/admin/fluent-cart/main.js', `assets/js/fluent-cart/fluent-cart-fluent-form-connection.js`)
     .vue({
         version: 2,
         extractStyles: true
@@ -174,4 +175,3 @@ mix
     .copyDirectory('resources/img', 'assets/img')
     // .copyDirectory('guten_block/public', 'assets/js')
     .copy('index.php', 'assets/index.php');
-
