@@ -161,6 +161,7 @@ class MailChimpIntegration extends IntegrationManagerController
             'doubleOptIn'            => false,
             'resubscribe'            => false,
             'note'                   => '',
+            'feed_trigger_event'     => 'payment_success',
         ];
 
         return $settings;
@@ -168,7 +169,7 @@ class MailChimpIntegration extends IntegrationManagerController
 
     public function getSettingsFields($settings, $formId)
     {
-        return [
+        $fields = [
             'fields' => [
                 [
                     'key'         => 'name',
@@ -280,6 +281,25 @@ class MailChimpIntegration extends IntegrationManagerController
             'button_require_list' => true,
             'integration_title'   => __('Mailchimp', 'fluentform'),
         ];
+
+        $form = wpFluent()->table('fluentform_forms')->where('id', $formId)->first();
+        $hasPayment = $form && $form->has_payment;
+
+        if ($hasPayment) {
+            $fields['fields'][] = [
+                'require_list' => true,
+                'key'          => 'feed_trigger_event',
+                'label'        => __('Send Integration', 'fluentform'),
+                'tips'         => __('Please Select when the integration will be sent for Payment Forms', 'fluentform'),
+                'component'    => 'radio_choice',
+                'options'      => [
+                    'payment_success'     => __('After Payment Success', 'fluentform'),
+                    'payment_form_submit' => __('After Form Submit', 'fluentform'),
+                ],
+            ];
+        }
+
+        return $fields;
     }
 
     public function prepareIntegrationFeed($setting, $feed, $formId)
@@ -468,6 +488,7 @@ class MailChimpIntegration extends IntegrationManagerController
             'doubleOptIn'            => 'rest_sanitize_boolean',
             'resubscribe'            => 'rest_sanitize_boolean',
             'note'                   => 'sanitize_text_field',
+            'feed_trigger_event'     => 'sanitize_text_field',
         ];
         return fluentform_backend_sanitizer($integration, $sanitizeMap);
     }
