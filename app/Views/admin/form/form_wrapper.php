@@ -23,14 +23,13 @@ defined('ABSPATH') or die;
 	<div class="form_internal_menu">
         <?php
         if ( is_array($menu_items) && count($menu_items) < 5){
-            if (isset($_SERVER['HTTP_REFERER'])): ?>
+            ?>
                 <div class="ff_menu_back">
-                    <?php // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitize_url() handles unslashing ?>
-                    <a class="ff_menu_link" href="<?php echo esc_url(sanitize_url($_SERVER['HTTP_REFERER'])) ;?>">
+                    <a class="ff_menu_link" href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms')); ?>" onclick="try { if (document.referrer && new URL(document.referrer).origin === window.location.origin) { window.history.back(); return false; } } catch(e) {}">
                         <span class="el-icon-arrow-left"></span>
                     </a>
                 </div>
-            <?php endif;
+            <?php
         }
         ?>
         <div title="<?php echo esc_html($form->title); ?>" class="ff_form_name" id="js-ff-nav-title">
