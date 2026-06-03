@@ -49,6 +49,8 @@ class SubmissionHandlerService
         }
         $insertId = $this->insertSubmission($insertData, $formDataRaw, $formId);
 
+        $this->logCaptchaWarnings($insertId);
+
         return $this->processSubmissionData($insertId, $this->formData, $this->form);
     }
 
@@ -596,6 +598,46 @@ class SubmissionHandlerService
         Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $formId);
 
         return $insertId;
+    }
+
+    private function logCaptchaWarnings($insertId)
+    {
+        try {
+            $warnings = $this->validationService->getCaptchaWarnings();
+
+            if (empty($warnings)) {
+                return;
+            }
+
+            foreach ($warnings as $warning) {
+                $statusLabel = 'config_error' === $warning['status']
+                    ? __('Configuration Error', 'fluentform')
+                    : __('Network Error', 'fluentform');
+
+                do_action('fluentform/log_data', [
+                    'parent_source_id' => $this->form->id,
+                    'source_type'      => 'submission_item',
+                    'source_id'        => $insertId,
+                    'component'        => $warning['type'],
+                    'status'           => 'error',
+                    'title'            => sprintf(
+                        __('%s verification skipped (%s)', 'fluentform'),
+                        $warning['type'],
+                        $statusLabel
+                    ),
+                    'description'      => sprintf(
+                        __('Submission was allowed through because %s verification failed due to a %s, not spam detection. Error codes: %s. Please check your %s configuration in Fluent Forms global settings.', 'fluentform'),
+                        $warning['type'],
+                        strtolower($statusLabel),
+                        implode(', ', $warning['error_codes']),
+                        $warning['type']
+                    ),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+            error_log('FluentForm: Failed to log captcha warning for submission ' . $insertId . ': ' . $e->getMessage());
+        }
     }
 
     private function processSpamSubmission($insertId, $type)

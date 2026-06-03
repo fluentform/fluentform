@@ -32,6 +32,16 @@ class Turnstile extends BaseComponent
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $turnstile = get_option('_fluentform_turnstile_details');
+
+        // One-time migration: convert legacy invisible flag to appearance
+        if (is_array($turnstile) && isset($turnstile['invisible'])) {
+            if ('yes' === $turnstile['invisible']) {
+                $turnstile['appearance'] = 'interaction-only';
+            }
+            unset($turnstile['invisible']);
+            update_option('_fluentform_turnstile_details', $turnstile, 'no');
+        }
+
         $siteKey = ArrayHelper::get($turnstile, 'siteKey');
 
         if (! $siteKey) {
@@ -53,7 +63,7 @@ class Turnstile extends BaseComponent
 
             wp_enqueue_script(
                 'turnstile',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit', // phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile requires loading from their CDN for CAPTCHA functionality
+                $apiUrl, // phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile requires loading from their CDN for CAPTCHA functionality
                 [],
                 FLUENTFORM_VERSION,
                 true
@@ -65,11 +75,10 @@ class Turnstile extends BaseComponent
 
         $appearance = esc_attr(ArrayHelper::get($turnstile, 'appearance', 'always'));
 
-        if ('yes' == ArrayHelper::get($turnstile, 'invisible')) {
-            $appearance = 'interaction-only';
-        }
+        $size = esc_attr(ArrayHelper::get($turnstile, 'size', 'normal'));
 
         $turnstileBlock = "<div
+		data-size='" . $size . "'
 		data-sitekey='" . esc_attr($siteKey) . "'
 		data-theme='" . esc_attr(ArrayHelper::get($turnstile, 'theme', 'auto')) . "'
 		id='fluentform-turnstile-{$form->id}-{$form->instance_index}'

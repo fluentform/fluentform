@@ -21,6 +21,7 @@ class FormValidationService
     protected $app;
     protected $form;
     protected $formData;
+    protected $captchaWarnings = [];
 
     public function __construct()
     {
@@ -45,6 +46,8 @@ class FormValidationService
      */
     public function validateSubmission(&$fields, &$formData)
     {
+        $this->captchaWarnings = [];
+
         do_action('fluentform/before_form_validation', $fields, $formData);
 
         $this->preventMaliciousAttacks();
@@ -569,14 +572,29 @@ class FormValidationService
         
         if (!$disableReCaptcha && (FormFieldsParser::hasElement($this->form, 'recaptcha') || $autoInclude)) {
             $keys = get_option('_fluentform_reCaptcha_details');
+
+            if (!is_array($keys) || empty($keys['secretKey'])) {
+                $this->captchaWarnings[] = [
+                    'type'        => 'reCAPTCHA',
+                    'status'      => 'config_error',
+                    'error_codes' => ['missing_settings'],
+                    'message'     => __('reCAPTCHA secret key not configured.', 'fluentform'),
+                ];
+                return;
+            }
+
             $token = Arr::get($this->formData, 'g-recaptcha-response');
             $version = 'v2_visible';
             if (!empty($keys['api_version'])) {
                 $version = $keys['api_version'];
             }
-            $isValid = ReCaptcha::validate($token, $keys['secretKey'], $version);
-            
-            if (!$isValid) {
+            $result = ReCaptcha::verify($token, $keys['secretKey'], $version);
+
+            if ('valid' === $result['status']) {
+                return;
+            }
+
+            if ('spam' === $result['status']) {
                 // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
                 throw new ValidationException('', 422, null, [
                     'errors' => [
@@ -586,6 +604,14 @@ class FormValidationService
                     ],
                 ]);
             }
+
+            // config_error or network_error — allow submission, log warning
+            $this->captchaWarnings[] = [
+                'type'        => 'reCAPTCHA',
+                'status'      => $result['status'],
+                'error_codes' => $result['error_codes'],
+                'message'     => $result['message'],
+            ];
         }
     }
 
@@ -615,10 +641,25 @@ class FormValidationService
         FormFieldsParser::resetData();
         if (!$disableHCaptcha && (FormFieldsParser::hasElement($this->form, 'hcaptcha') || $autoInclude)) {
             $keys = get_option('_fluentform_hCaptcha_details');
+
+            if (!is_array($keys) || empty($keys['secretKey'])) {
+                $this->captchaWarnings[] = [
+                    'type'        => 'hCaptcha',
+                    'status'      => 'config_error',
+                    'error_codes' => ['missing_settings'],
+                    'message'     => __('hCaptcha secret key not configured.', 'fluentform'),
+                ];
+                return;
+            }
+
             $token = Arr::get($this->formData, 'h-captcha-response');
-            $isValid = HCaptcha::validate($token, $keys['secretKey']);
-            
-            if (!$isValid) {
+            $result = HCaptcha::verify($token, $keys['secretKey']);
+
+            if ('valid' === $result['status']) {
+                return;
+            }
+
+            if ('spam' === $result['status']) {
                 throw new ValidationException('', 422, null, [
                     'errors' => [
                         'h-captcha-response' => [
@@ -627,6 +668,14 @@ class FormValidationService
                     ],
                 ]);
             }
+
+            // config_error or network_error — allow submission, log warning
+            $this->captchaWarnings[] = [
+                'type'        => 'hCaptcha',
+                'status'      => $result['status'],
+                'error_codes' => $result['error_codes'],
+                'message'     => $result['message'],
+            ];
         }
     }
 
@@ -656,11 +705,25 @@ class FormValidationService
         
         if (!$disableTurnsTile && (FormFieldsParser::hasElement($this->form, 'turnstile') || $autoInclude)) {
             $keys = get_option('_fluentform_turnstile_details');
+
+            if (!is_array($keys) || empty($keys['secretKey'])) {
+                $this->captchaWarnings[] = [
+                    'type'        => 'Turnstile',
+                    'status'      => 'config_error',
+                    'error_codes' => ['missing_settings'],
+                    'message'     => __('Turnstile secret key not configured.', 'fluentform'),
+                ];
+                return;
+            }
+
             $token = Arr::get($this->formData, 'cf-turnstile-response');
-            
-            $isValid = Turnstile::validate($token, $keys['secretKey']);
-            
-            if (!$isValid) {
+            $result = Turnstile::verify($token, $keys['secretKey']);
+
+            if ('valid' === $result['status']) {
+                return;
+            }
+
+            if ('spam' === $result['status']) {
                 throw new ValidationException('', 422, null, [
                     'errors' => [
                         'cf-turnstile-response' => [
@@ -669,6 +732,14 @@ class FormValidationService
                     ],
                 ]);
             }
+
+            // config_error or network_error — allow submission, log warning
+            $this->captchaWarnings[] = [
+                'type'        => 'Turnstile',
+                'status'      => $result['status'],
+                'error_codes' => $result['error_codes'],
+                'message'     => $result['message'],
+            ];
         }
     }
 
@@ -911,5 +982,17 @@ class FormValidationService
         }
 
         return true; // Skip validation for non-selected captcha types
+    }
+
+    /**
+     * Get captcha warnings collected during validation.
+     * These are non-blocking issues (config errors, network failures)
+     * that should be logged after submission insertion.
+     *
+     * @return array
+     */
+    public function getCaptchaWarnings()
+    {
+        return $this->captchaWarnings;
     }
 }
