@@ -183,40 +183,43 @@ class FormHandler
         $returnData = $this->getReturnData($insertId, $form, $formData);
 
         $error = '';
+        $shouldRunActions = apply_filters('fluentform/should_run_form_actions', true, $insertId, $form);
         try {
 
-            /*
-             * We will keep this old hook for backward compatability.
-             */
-            do_action('fluentform_submission_inserted', $insertId, $formData, $form);
+            if ($shouldRunActions) {
+                /*
+                 * We will keep this old hook for backward compatability.
+                 */
+                do_action('fluentform_submission_inserted', $insertId, $formData, $form);
 
-            do_action(
-                'fluentform/submission_inserted',
-                $insertId,
-                $formData,
-                $form
-            );
-
-            Helper::setSubmissionMeta($insertId, 'is_form_action_fired', 'yes');
-
-            do_action_deprecated(
-                'fluentform_submission_inserted_' . $form->type . '_form',
-                [
+                do_action(
+                    'fluentform/submission_inserted',
                     $insertId,
                     $formData,
                     $form
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/submission_inserted',
-                'Use fluentform/submission_inserted_' . $form->type . '_form' . ' instead of fluentform_submission_inserted_' . $form->type . '_form'
-            );
+                );
 
-            do_action(
-                'fluentform/submission_inserted_' . $form->type . '_form',
-                $insertId,
-                $formData,
-                $form
-            );
+                Helper::setSubmissionMeta($insertId, 'is_form_action_fired', 'yes');
+
+                do_action_deprecated(
+                    'fluentform_submission_inserted_' . $form->type . '_form',
+                    [
+                        $insertId,
+                        $formData,
+                        $form
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/submission_inserted',
+                    'Use fluentform/submission_inserted_' . $form->type . '_form' . ' instead of fluentform_submission_inserted_' . $form->type . '_form'
+                );
+
+                do_action(
+                    'fluentform/submission_inserted_' . $form->type . '_form',
+                    $insertId,
+                    $formData,
+                    $form
+                );
+            }
 
         } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
