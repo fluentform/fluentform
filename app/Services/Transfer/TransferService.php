@@ -61,6 +61,57 @@ class TransferService
         }
     }
 
+    /**
+     * Rewrite a notification's pdf_attachments through an oldFeedId => newFeedId map.
+     * Ids absent from the map are dropped (the feed was not imported).
+     */
+    public static function remapNotificationPdfFeeds($notificationValue, array $pdfFeedMap)
+    {
+        if (!$pdfFeedMap || !is_string($notificationValue) || '' === $notificationValue) {
+            return $notificationValue;
+        }
+
+        $decoded = json_decode($notificationValue);
+        if (!is_object($decoded) || empty($decoded->pdf_attachments) || !is_array($decoded->pdf_attachments)) {
+            return $notificationValue;
+        }
+
+        $remapped = [];
+        foreach ($decoded->pdf_attachments as $attachment) {
+            $oldId = (int) $attachment;
+            if (isset($pdfFeedMap[$oldId])) {
+                $remapped[] = (string) $pdfFeedMap[$oldId];
+            }
+        }
+        $decoded->pdf_attachments = $remapped;
+
+        $encoded = wp_json_encode($decoded);
+        return $encoded ?: $notificationValue;
+    }
+
+    /**
+     * Insert the form's `_pdf_feeds` rows and return the oldFeedId => newFeedId map.
+     */
+    protected static function importPdfFeeds($formItem, $formId)
+    {
+        $pdfFeedMap = [];
+        foreach (Arr::get($formItem, 'metas', []) as $metaData) {
+            if ('_pdf_feeds' !== Arr::get($metaData, 'meta_key')) {
+                continue;
+            }
+            $newFeedId = FormMeta::insertGetId([
+                'form_id'  => $formId,
+                'meta_key' => '_pdf_feeds',
+                'value'    => static::sanitizeImportedMetaValue('_pdf_feeds', Arr::get($metaData, 'value')),
+            ]);
+            $oldFeedId = Arr::get($metaData, 'id');
+            if ($oldFeedId) {
+                $pdfFeedMap[(int) $oldFeedId] = $newFeedId;
+            }
+        }
+        return $pdfFeedMap;
+    }
+
     public static function exportForms($formIds)
     {
         $result = Form::with(['formMeta'])
@@ -133,13 +184,22 @@ class TransferService
                     ];
 
                     if (isset($formItem['metas'])) {
+                        // Feeds first so notifications can be remapped to their new ids.
+                        $pdfFeedMap = static::importPdfFeeds($formItem, $formId);
+
                         foreach ($formItem['metas'] as $metaData) {
                             $metaKey = sanitize_text_field(Arr::get($metaData, 'meta_key'));
+                            if ('_pdf_feeds' === $metaKey) {
+                                continue;
+                            }
                             $metaValue = Arr::get($metaData, 'value');
                             if ("ffc_form_settings_generated_css" == $metaKey || "ffc_form_settings_meta" == $metaKey) {
                                 $metaValue = str_replace('ff_conv_app_' . Arr::get($formItem, 'id'), 'ff_conv_app_' . $formId, $metaValue);
                             }
                             $metaValue = static::sanitizeImportedMetaValue($metaKey, $metaValue);
+                            if ('notifications' === $metaKey) {
+                                $metaValue = static::remapNotificationPdfFeeds($metaValue, $pdfFeedMap);
+                            }
                             $settings = [
                                 'form_id'  => $formId,
                                 'meta_key' => $metaKey,
