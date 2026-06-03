@@ -53,6 +53,13 @@ class Extractor
     protected $attribute;
 
     /**
+     * Flat map of fieldName => conditional_logics, used to cascade visibility.
+     *
+     * @var array
+     */
+    protected $allConditionals = [];
+
+    /**
      * Extractor constructor.
      *
      * @param array $fields
@@ -115,9 +122,38 @@ class Extractor
      */
     public function extractEssentials($formData)
     {
+        $this->allConditionals = $this->buildConditionalMap($this->fields);
+
         $this->looperEssential($formData, $this->fields);
 
         return $this->result;
+    }
+
+    /**
+     * Flat map of fieldName => conditional_logics for the whole form (including
+     * fields in containers), used to cascade controller visibility.
+     */
+    protected function buildConditionalMap($fields, &$map = [])
+    {
+        foreach ($fields as $field) {
+            $name = Arr::get($field, 'attributes.data-name');
+            if (!$name) {
+                $name = Arr::get($field, 'attributes.name');
+            }
+
+            $conditionals = Arr::get($field, 'settings.conditional_logics', []);
+            if ($name && Arr::get($conditionals, 'status')) {
+                $map[$name] = $conditionals;
+            }
+
+            if (Arr::get($field, 'element') === 'container') {
+                foreach (Arr::get($field, 'columns', []) as $column) {
+                    $this->buildConditionalMap(Arr::get($column, 'fields', []), $map);
+                }
+            }
+        }
+
+        return $map;
     }
 
     /**
@@ -131,9 +167,17 @@ class Extractor
         foreach ($fields as $field) {
             $field['conditionals'] = Arr::get($field, 'settings.conditional_logics', []);
 
-            // Form field visibility must match the JS evaluator on the client,
-            // so missing fields use JS parity (missing != X returns true).
-            $matched = ConditionAssesor::evaluate($field, $formData, null, false);
+            // Cascade visibility so it matches the client JS evaluator.
+            $fieldName = Arr::get($field, 'attributes.data-name');
+            if (!$fieldName) {
+                $fieldName = Arr::get($field, 'attributes.name');
+            }
+
+            if ($fieldName) {
+                $matched = ConditionAssesor::isConditionallyVisible($fieldName, $this->allConditionals, $formData);
+            } else {
+                $matched = ConditionAssesor::evaluate($field, $formData, null, false);
+            }
 
             if (!$matched) {
                 continue;

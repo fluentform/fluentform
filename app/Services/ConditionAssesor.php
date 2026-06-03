@@ -30,6 +30,77 @@ class ConditionAssesor
         return true;
     }
 
+    /**
+     * Cascade-aware field visibility, mirroring the client evaluator
+     * (Pro/_ConditionClass.js): a field is visible only when its own condition
+     * matches AND every conditional controller it references is itself visible.
+     * A hidden controller hides its dependents; a visible-but-empty controller
+     * keeps them. Used by the validation path; assess() is left untouched.
+     */
+    public static function isConditionallyVisible($fieldName, $allConditionals, &$inputs, $form = null, $visited = [])
+    {
+        $conditionals = Arr::get($allConditionals, $fieldName);
+
+        if (!$conditionals || !Arr::get($conditionals, 'status')) {
+            return true;
+        }
+
+        if (in_array($fieldName, $visited, true)) {
+            return false;
+        }
+        $visited[] = $fieldName;
+
+        $type = Arr::get($conditionals, 'type', 'any');
+
+        if ($type === 'group') {
+            foreach (Arr::get($conditionals, 'condition_groups', []) as $group) {
+                $rules = Arr::get($group, 'rules', []);
+                if ($rules && self::assessRulesWithCascade($rules, 'all', $allConditionals, $inputs, $form, $visited)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        $conditions = Arr::get($conditionals, 'conditions', []);
+        if (!$conditions) {
+            return true;
+        }
+
+        return self::assessRulesWithCascade($conditions, $type, $allConditionals, $inputs, $form, $visited);
+    }
+
+    private static function assessRulesWithCascade($conditions, $type, $allConditionals, &$inputs, $form, $visited)
+    {
+        foreach ($conditions as $condition) {
+            if (!Arr::get($condition, 'field') || !Arr::get($condition, 'operator')) {
+                continue;
+            }
+
+            // Treat a missing controller as empty so a visible-but-untouched
+            // control still matches "!= value".
+            $met = static::assess($condition, $inputs, $form, true);
+
+            // A matched condition only counts if its controller is itself visible.
+            if ($met) {
+                $controller = Arr::get($condition, 'field');
+                if (isset($allConditionals[$controller])) {
+                    $met = self::isConditionallyVisible($controller, $allConditionals, $inputs, $form, $visited);
+                }
+            }
+
+            if ($type === 'any') {
+                if ($met) {
+                    return true;
+                }
+            } elseif (!$met) {
+                return false;
+            }
+        }
+
+        return $type !== 'any';
+    }
+
     private static function evaluateGroupConditions($conditionGroups, &$inputs, $form = null, $treatMissingAsEmpty = true)
     {
         $hasGroupConditionsMet = true;
