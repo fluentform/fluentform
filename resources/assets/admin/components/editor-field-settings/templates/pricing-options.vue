@@ -26,7 +26,7 @@
                     :label="$t('Payment Amount')"
                     :helpText="$t('Please Provide the payment amount. Max 2 decimal point is excepted')"
                 />
-                <el-input type="text" v-model="editItem.attributes.value" />
+                <el-input type="number" min="0" step="any" v-model="editItem.attributes.value" />
             </el-form-item>
 
             <el-form-item>
