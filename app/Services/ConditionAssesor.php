@@ -37,7 +37,7 @@ class ConditionAssesor
      * A hidden controller hides its dependents; a visible-but-empty controller
      * keeps them. Used by the validation path; assess() is left untouched.
      */
-    public static function isConditionallyVisible($fieldName, $allConditionals, &$inputs, $form = null, $visited = [])
+    public static function isConditionallyVisible($fieldName, $allConditionals, &$inputs, $form = null, $visited = [], $arrayControllers = [])
     {
         $conditionals = Arr::get($allConditionals, $fieldName);
 
@@ -55,7 +55,7 @@ class ConditionAssesor
         if ($type === 'group') {
             foreach (Arr::get($conditionals, 'condition_groups', []) as $group) {
                 $rules = Arr::get($group, 'rules', []);
-                if ($rules && self::assessRulesWithCascade($rules, 'all', $allConditionals, $inputs, $form, $visited)) {
+                if ($rules && self::assessRulesWithCascade($rules, 'all', $allConditionals, $inputs, $form, $visited, $arrayControllers)) {
                     return true;
                 }
             }
@@ -67,25 +67,23 @@ class ConditionAssesor
             return true;
         }
 
-        return self::assessRulesWithCascade($conditions, $type, $allConditionals, $inputs, $form, $visited);
+        return self::assessRulesWithCascade($conditions, $type, $allConditionals, $inputs, $form, $visited, $arrayControllers);
     }
 
-    private static function assessRulesWithCascade($conditions, $type, $allConditionals, &$inputs, $form, $visited)
+    private static function assessRulesWithCascade($conditions, $type, $allConditionals, &$inputs, $form, $visited, $arrayControllers = [])
     {
         foreach ($conditions as $condition) {
             if (!Arr::get($condition, 'field') || !Arr::get($condition, 'operator')) {
                 continue;
             }
 
-            // Treat a missing controller as empty so a visible-but-untouched
-            // control still matches "!= value".
-            $met = static::assess($condition, $inputs, $form, true);
+            $met = self::assessWithClientParity($condition, $inputs, $form, $arrayControllers);
 
             // A matched condition only counts if its controller is itself visible.
             if ($met) {
                 $controller = Arr::get($condition, 'field');
                 if (isset($allConditionals[$controller])) {
-                    $met = self::isConditionallyVisible($controller, $allConditionals, $inputs, $form, $visited);
+                    $met = self::isConditionallyVisible($controller, $allConditionals, $inputs, $form, $visited, $arrayControllers);
                 }
             }
 
@@ -99,6 +97,45 @@ class ConditionAssesor
         }
 
         return $type !== 'any';
+    }
+
+    /**
+     * Per-condition check mirroring the client evaluator's value coercion
+     * (_ConditionClass.js getItemEvaluateValue): an empty or missing SCALAR
+     * controller coerces to null on the client, which only satisfies "= ''"
+     * and regex checks — every other operator (including "!=") is false.
+     * An unselected ARRAY controller (checkbox/multiselect) is [] on the
+     * client, so "!="/"doNotContains" stay true. Non-empty values delegate
+     * to the unchanged assess().
+     */
+    private static function assessWithClientParity($condition, &$inputs, $form, $arrayControllers)
+    {
+        $field = Arr::get($condition, 'field');
+        $accessor = rtrim(str_replace(['[', ']', '*'], ['.'], $field), '.');
+        $isMissing = !Arr::has($inputs, $accessor);
+        $value = $isMissing ? null : Arr::get($inputs, $accessor);
+
+        if ($isMissing && isset($arrayControllers[$field])) {
+            $operator = Arr::get($condition, 'operator');
+            return '!=' === $operator || 'doNotContains' === $operator;
+        }
+
+        if (!is_null($value) && '' !== $value) {
+            return static::assess($condition, $inputs, $form, true);
+        }
+
+        $operator = Arr::get($condition, 'operator');
+        $conditionValue = Arr::get($condition, 'value');
+
+        if ('=' === $operator) {
+            return '' === $conditionValue;
+        }
+
+        if ('test_regex' === $operator) {
+            return (bool) @preg_match('/' . $conditionValue . '/', '');
+        }
+
+        return false;
     }
 
     private static function evaluateGroupConditions($conditionGroups, &$inputs, $form = null, $treatMissingAsEmpty = true)

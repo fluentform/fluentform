@@ -3,11 +3,14 @@
  * Exhaustive proof for the visibility cascade across operators and types.
  *
  * Two invariants:
- *  (A) Operator transparency: when the referenced controller has NO conditional
- *      logic (always visible), isConditionallyVisible() returns the SAME result
- *      as the flat evaluate() for EVERY operator and input. This proves the
- *      cascade does not change any operator's semantics — it delegates to the
- *      unchanged assess().
+ *  (A) Client parity: when the referenced controller has NO conditional logic,
+ *      isConditionallyVisible() matches the client evaluator
+ *      (_ConditionClass.js). For NON-EMPTY controller values that is the same
+ *      result as the flat evaluate() (operators delegate to the unchanged
+ *      assess()). For EMPTY/MISSING scalar values the client coerces to null,
+ *      which only satisfies "= ''" and regex — every other operator is false
+ *      (so "!=" dependents of an empty controller are hidden, like the
+ *      browser hides them).
  *  (B) Cascade: when the controller IS hidden by its own conditional, the
  *      dependent is hidden — for any / all / group, regardless of operator.
  *
@@ -25,6 +28,32 @@ use FluentForm\App\Services\ConditionAssesor;
 function vis($name, $map, $inputs) { return ConditionAssesor::isConditionallyVisible($name, $map, $inputs); }
 function flat($conditional, $inputs) { $f = ['conditionals' => $conditional]; return ConditionAssesor::evaluate($f, $inputs); }
 
+/* Client-parity oracle: what _ConditionClass.js getItemEvaluateValue returns
+ * for an empty/missing scalar controller (val coerced to null). */
+function clientEmptyExpected($op, $val) {
+    if ($op === '=') return $val === '';
+    if ($op === 'test_regex') return (bool) @preg_match('/' . $val . '/', '');
+    return false;
+}
+function clientParityMet($cond, $inputs) {
+    $v = array_key_exists($cond['field'], $inputs) ? $inputs[$cond['field']] : null;
+    if (is_null($v) || $v === '') return clientEmptyExpected($cond['operator'], $cond['value']);
+    $f = ['conditionals' => ['status' => true, 'type' => 'any', 'conditions' => [$cond]]];
+    return ConditionAssesor::evaluate($f, $inputs);
+}
+function expectedVis($dep, $inputs) {
+    if (($dep['type'] ?? 'any') === 'group') {
+        foreach ($dep['condition_groups'] as $g) {
+            $all = true;
+            foreach ($g['rules'] as $rule) { if (!clientParityMet($rule, $inputs)) { $all = false; break; } }
+            if ($all) return true;
+        }
+        return false;
+    }
+    $results = array_map(function ($c) use ($inputs) { return clientParityMet($c, $inputs); }, $dep['conditions']);
+    return $dep['type'] === 'any' ? in_array(true, $results, true) : !in_array(false, $results, true);
+}
+
 $operators = [
     ['=', '5'], ['!=', '5'], ['>', '5'], ['<', '5'], ['>=', '5'], ['<=', '5'],
     ['contains', 'ell'], ['doNotContains', 'ell'], ['startsWith', 'he'], ['endsWith', 'lo'],
@@ -41,8 +70,11 @@ foreach ($operators as $pair) {
         $dep = ['status' => true, 'type' => 'any', 'conditions' => [['field' => 'ctrl', 'operator' => $op, 'value' => $val]]];
         $map = ['dep' => $dep];
         $a = vis('dep', $map, $inputs);
-        $b = flat($dep, $inputs);
-        check($a === $b, "transparency op=$op val='$val' ctrl=" . var_export($cv, true) . " cascade=" . var_export($a, true) . " flat=" . var_export($b, true));
+        $b = expectedVis($dep, $inputs);
+        check($a === $b, "client-parity op=$op val='$val' ctrl=" . var_export($cv, true) . " cascade=" . var_export($a, true) . " expected=" . var_export($b, true));
+        if ($cv !== null && $cv !== '') {
+            check($a === flat($dep, $inputs), "transparency (non-empty) op=$op val='$val' ctrl=" . var_export($cv, true));
+        }
     }
 }
 
@@ -57,7 +89,7 @@ foreach ([['=', '5'], ['!=', '5'], ['>', '5'], ['contains', 'x']] as $pair) {
                 ['field' => 'c2', 'operator' => '=', 'value' => '5'],
             ]];
             $map = ['dep' => $dep];
-            check(vis('dep', $map, $inputs) === flat($dep, $inputs), "transparency type=$type op=$op ctrl=" . var_export($cv, true));
+            check(vis('dep', $map, $inputs) === expectedVis($dep, $inputs), "client-parity type=$type op=$op ctrl=" . var_export($cv, true));
         }
     }
 }
@@ -70,7 +102,7 @@ foreach ($controllerValues as $cv) {
         ['rules' => [['field' => 'ctrl', 'operator' => '!=', 'value' => '']]],
     ]];
     $map = ['dep' => $dep];
-    check(vis('dep', $map, $inputs) === flat($dep, $inputs), "transparency group ctrl=" . var_export($cv, true));
+    check(vis('dep', $map, $inputs) === expectedVis($dep, $inputs), "client-parity group ctrl=" . var_export($cv, true));
 }
 
 /* (B) controller HIDDEN by its own conditional => dependent hidden, every operator */

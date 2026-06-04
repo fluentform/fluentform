@@ -60,6 +60,13 @@ class Extractor
     protected $allConditionals = [];
 
     /**
+     * Flat map of fieldName => true for fields submitting array values.
+     *
+     * @var array
+     */
+    protected $arrayControllers = [];
+
+    /**
      * Extractor constructor.
      *
      * @param array $fields
@@ -123,10 +130,46 @@ class Extractor
     public function extractEssentials($formData)
     {
         $this->allConditionals = $this->buildConditionalMap($this->fields);
+        $this->arrayControllers = $this->buildArrayControllerMap($this->fields);
 
         $this->looperEssential($formData, $this->fields);
 
         return $this->result;
+    }
+
+    /**
+     * Names of fields that submit array values (checkbox groups, multiselects).
+     * When unselected they are absent from the submission, and the client
+     * evaluator sees [] (which satisfies "!="), unlike empty scalar fields
+     * which coerce to null (which does not).
+     */
+    protected function buildArrayControllerMap($fields, &$map = [])
+    {
+        foreach ($fields as $field) {
+            if (Arr::get($field, 'element') === 'container') {
+                foreach (Arr::get($field, 'columns', []) as $column) {
+                    $this->buildArrayControllerMap(Arr::get($column, 'fields', []), $map);
+                }
+                continue;
+            }
+
+            $name = Arr::get($field, 'attributes.data-name');
+            if (!$name) {
+                $name = Arr::get($field, 'attributes.name');
+            }
+            if (!$name) {
+                continue;
+            }
+
+            $element = Arr::get($field, 'element');
+            $isMultiple = Arr::get($field, 'attributes.multiple');
+
+            if ($isMultiple || in_array($element, ['input_checkbox', 'multi_select'])) {
+                $map[$name] = true;
+            }
+        }
+
+        return $map;
     }
 
     /**
@@ -174,7 +217,7 @@ class Extractor
             }
 
             if ($fieldName) {
-                $matched = ConditionAssesor::isConditionallyVisible($fieldName, $this->allConditionals, $formData);
+                $matched = ConditionAssesor::isConditionallyVisible($fieldName, $this->allConditionals, $formData, null, [], $this->arrayControllers);
             } else {
                 $matched = ConditionAssesor::evaluate($field, $formData, null, false);
             }

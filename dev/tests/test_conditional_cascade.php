@@ -7,8 +7,11 @@
  * absent from a submission:
  *   - a HIDDEN controller -> the dependent is hidden too (so a chained-hidden
  *     required field is not wrongly required); and
- *   - a VISIBLE-but-empty controller (e.g. an untouched select) -> the
- *     dependent is kept (because "" != X is true, matching the frontend).
+ *   - an empty SCALAR controller (text/select/hidden/radio) -> the dependent is
+ *     hidden too, because the client coerces ''/missing to null and null fails
+ *     every operator except "= ''" and regex; while
+ *   - an unselected ARRAY controller (checkbox/multiselect) -> the dependent is
+ *     kept, because [] != value is true on the client (#814 preserved).
  *
  * assess() is untouched, so notification/confirmation/ff_if gating is unchanged.
  *
@@ -34,13 +37,47 @@ check($vis('dependent',$mapHidden,['toggle'=>'no']) === false, 'dependent HIDDEN
 check($vis('dependent',$mapHidden,['toggle'=>'yes','gate'=>'yes']) === true, 'dependent visible when controller visible and gate != no');
 check($vis('dependent',$mapHidden,['toggle'=>'yes','gate'=>'no']) === false, 'dependent hidden when gate = no');
 
-/* Visible-but-empty controller: a non-conditional control left untouched keeps its dependents. */
+/* Empty SCALAR controller, browser parity (_ConditionClass.js coerces ''/missing
+ * to null, and null fails every operator except "= ''" and regex), so the
+ * browser hides "!=" dependents of an empty text/select/hidden/radio control. */
 $mapVisible = [
     'dependent' => ['status'=>true,'type'=>'all','conditions'=>[['field'=>'choice','operator'=>'!=','value'=>'Option 1']]],
 ];
-check($vis('dependent',$mapVisible,[]) === true, 'dependent KEPT when a visible controller (choice) is empty/untouched');
+check($vis('dependent',$mapVisible,['choice'=>'']) === false, 'dependent HIDDEN when scalar controller is present but empty (browser parity)');
+check($vis('dependent',$mapVisible,[]) === false, 'dependent HIDDEN when scalar controller is missing (unselected radio, browser parity)');
 check($vis('dependent',$mapVisible,['choice'=>'Option 1']) === false, 'dependent hidden when choice = Option 1');
+check($vis('dependent',$mapVisible,['choice'=>'Option 2']) === true, 'dependent visible when choice has a non-matching value');
 check($vis('choice',$mapVisible,['x'=>'y']) === true, 'non-conditional field always visible');
+
+/* Form 483 reproduction: hidden input controller submitted as "" must hide its
+ * "!=" dependents exactly like the browser did. */
+$map483 = [
+    'Abstellort' => ['status'=>true,'type'=>'any','conditions'=>[['field'=>'KdKlasse','operator'=>'!=','value'=>'3']]],
+];
+check($vis('Abstellort',$map483,['KdKlasse'=>'']) === false, 'form 483: required dependent hidden when hidden-input controller is empty');
+check($vis('Abstellort',$map483,['KdKlasse'=>'1']) === true, 'form 483: dependent visible when controller is 1 (!= 3)');
+check($vis('Abstellort',$map483,['KdKlasse'=>'3']) === false, 'form 483: dependent hidden when controller is 3');
+
+/* Empty "=" still matches like the browser: "= ''" is satisfied by an empty controller. */
+$mapEq = [
+    'dependent' => ['status'=>true,'type'=>'any','conditions'=>[['field'=>'choice','operator'=>'=','value'=>'']]],
+];
+check($vis('dependent',$mapEq,['choice'=>'']) === true, 'dependent visible when "= empty" matches an empty controller');
+check($vis('dependent',$mapEq,['choice'=>'x']) === false, 'dependent hidden when "= empty" sees a value');
+
+/* Empty ARRAY controller (unselected checkbox/multiselect, the #814 case): the
+ * browser keeps "!=" dependents because [] != value is true. The server is told
+ * which controllers are array-typed via the arrayControllers argument. */
+$arrayControllers = ['boxes' => true];
+$mapArray = [
+    'dependent' => ['status'=>true,'type'=>'all','conditions'=>[['field'=>'boxes','operator'=>'!=','value'=>'Option 1']]],
+];
+$emptyIn = [];
+check(ConditionAssesor::isConditionallyVisible('dependent',$mapArray,$emptyIn,null,[],$arrayControllers) === true, 'dependent KEPT when an array controller (checkbox/multiselect) is unselected (#814 preserved)');
+$pickedIn = ['boxes'=>['Option 1']];
+check(ConditionAssesor::isConditionallyVisible('dependent',$mapArray,$pickedIn,null,[],$arrayControllers) === false, 'dependent hidden when the array controller picked the matching value');
+$otherIn = ['boxes'=>['Option 2']];
+check(ConditionAssesor::isConditionallyVisible('dependent',$mapArray,$otherIn,null,[],$arrayControllers) === true, 'dependent visible when the array controller picked another value');
 
 /* Circular dependency must resolve to hidden without looping. */
 $circ = [

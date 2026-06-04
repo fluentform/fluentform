@@ -26,6 +26,7 @@ class ArrayHelper
     }
     public static function flatten($array)
     {
-        $r = []; array_walk_recursive((array) $array, function ($i) use (&$r) { $r[] = $i; }); return $r;
+        $array = (array) $array;
+        $r = []; array_walk_recursive($array, function ($i) use (&$r) { $r[] = $i; }); return $r;
     }
 }
