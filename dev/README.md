@@ -109,17 +109,47 @@ machine; a failing check rejects the push. This is a **local** gate, not CI.
 ## One-time setup (per clone)
 
 ```bash
-cd dev && composer install            # build dev/vendor (phpstan, phpcs, wpcs)
-cd ..
-cp dev/hooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+bash dev/setup.sh
 ```
 
-Requires **PHP 8.x**, **Composer**, and **Node**. Verify: `ls -l .git/hooks/pre-push` (must be executable).
+Picks a **PHP 8.1+** binary, installs `dev/vendor` (phpstan, phpcs, wpcs) under it, and installs
+the pre-push hook (`.git/hooks/pre-push` → `dev/hooks/pre-push`). Idempotent — re-run anytime.
+
+Manual equivalent, if you prefer:
+```bash
+cd dev && composer install            # build dev/vendor (phpstan, phpcs, wpcs)
+cd ..
+ln -sf ../../dev/hooks/pre-push .git/hooks/pre-push && chmod +x dev/hooks/pre-push
+```
+
+Requires **PHP 8.1+** (the *tools* need it — your served site can stay on any PHP version),
+**Composer**, and **Node**. The default macOS `php` is often 7.4; the hook prepends
+`/opt/homebrew/bin` to `PATH` so it finds a Homebrew PHP 8.x automatically. For **manual** runs,
+ensure your shell `php` is 8.1+ (e.g. `export PATH="/opt/homebrew/opt/php@8.3/bin:$PATH"`).
+Verify the hook: `ls -l .git/hooks/pre-push` (must be executable).
 
 ## What blocks vs warns
 
 - **PHPStan** scans all of `../app` but only **new** errors fail — the pre-existing errors are frozen in `dev/phpstan-baseline.neon`.
 - **PHPCS** lints only the **changed `app/` files**; **errors block, warnings are shown but don't block**.
+
+## Scope & exclusions
+
+Both tools skip the same **unimportant** parts of the plugin — templates, CLI tooling, run-once
+migrations, and bundled third-party libraries. Keep the two lists in sync:
+
+- `dev/phpstan.neon` → `excludePaths`: `app/Modules/Widgets`, `app/Services/Libraries`, `app/Views`,
+  `app/Modules/CLI`, `database/Migrations`.
+- `.phpcs.xml` → `<exclude-pattern>` mirrors the same paths.
+
+PHPStan also `scanFiles` `../boot/globals.php` + `../fluentform.php` (parse-only) so the plugin's
+runtime-loaded global helpers (`wpFluentForm`, `fluentform_sanitize_html`, `fluentformSanitizeCSS`,
+…) and constants are known — real undefined-symbol checks keep working instead of being baselined.
+
+> **ESLint (not yet wired — "QG-03").** The runner references `dev/eslint-check.mjs` for
+> `resources/admin` (Vue 2) and `resources/public` (jQuery), but it is not implemented, so JS/Vue
+> changes are **not** linted yet (the gate prints "ESLint skipped"). Wiring it needs ESLint +
+> `eslint-plugin-vue` + a Vue 2 parser, an error-level ruleset, and changed-file scoping. Dedicated change.
 
 ## Run it manually
 
@@ -137,9 +167,15 @@ git diff ../app/Path/File.php        # always review what it rewrote
 
 ## The baseline (ratchet)
 
-`dev/phpstan-baseline.neon` freezes the errors that existed when the gate was set
-up; only new errors fail. **Never add new errors to the baseline to go green — fix
-the code.** Regenerate after a real cleanup:
+`dev/phpstan-baseline.neon` is a **curated** freeze of the errors that existed when the gate was
+set up; only new errors fail. **Never add new errors to the baseline to go green — fix the code.**
+
+- Do **not** blanket-regenerate the baseline — it discards the curation. `reportUnmatchedIgnoredErrors: false`
+  in `dev/phpstan.neon` lets it tolerate later code drift (entries that no longer match are ignored).
+- For a *benign* analyzer limitation on new code (framework magic method, `self`-call via `static::`,
+  etc.), add a narrowly-scoped `ignoreErrors` entry (message + path) in `dev/phpstan.neon` rather than
+  mutating the baseline. See the existing examples there.
+- Only regenerate after a genuine, broad cleanup:
 
 ```bash
 cd dev && composer phpstan -- --generate-baseline=phpstan-baseline.neon
