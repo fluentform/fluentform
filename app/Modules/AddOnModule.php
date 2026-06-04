@@ -27,11 +27,11 @@ class AddOnModule
     public function render()
     {
         $extraMenus = [];
-    
+
         $extraMenus = apply_filters_deprecated(
             'fluentform_addons_extra_menu',
             [
-                $extraMenus
+                $extraMenus,
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/addons_extra_menu',
@@ -65,11 +65,11 @@ class AddOnModule
     public function showFluentAddOns()
     {
         wp_enqueue_script('fluentform-modules');
-    
+
         $addOns = apply_filters_deprecated(
             'fluentform_global_addons',
             [
-                []
+                [],
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/global_addons',
@@ -98,7 +98,7 @@ class AddOnModule
 
         wpFluentForm('view')->render('admin.addons.list', []);
     }
-    
+
     public function getPremiumAddOns()
     {
         $purchaseUrl = fluentform_upgrade_url();
@@ -587,7 +587,7 @@ class AddOnModule
     {
         // Check if plugin file exists
         $pluginFile = WP_PLUGIN_DIR . '/' . $pluginSlug;
-        
+
         if (!file_exists($pluginFile)) {
             return 'not_installed';
         }
