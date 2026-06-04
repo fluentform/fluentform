@@ -314,7 +314,7 @@ export default function ($, $theForm, calculationMessages = {}) {
     function getSelectFieldValue(name, forPaymentField = false) {
         let value = 0;
         if (forPaymentField) {
-            return $theForm.find('select[name=' + name + '] option:selected').data('payment_value');
+            return $theForm.find('select[name=' + name + '] option:selected').attr('data-payment_value');
         }
         value = getDataCalcValue('select[data-name=' + name + '] option:selected');
         $theForm.find('select[data-name=' + name + ']').attr('data-calc_value', value);
