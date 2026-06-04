@@ -1197,6 +1197,7 @@ class Helper
             $fieldType = ArrayHelper::get($rawField, 'element');
             $rawField = apply_filters('fluentform/rendering_field_data_' . $fieldType, $rawField, $form);
             $options = [];
+            $otherPrefix = '';
             if ("net_promoter_score" === $fieldType) {
                 $options = array_flip(ArrayHelper::get($rawField, 'options', []));
             } elseif ('ratings' == $fieldType) {
@@ -1222,12 +1223,13 @@ class Helper
                 }
 
                 $options = array_column(self::flattenAdvancedOptions($formattedOptions), 'value');
-                
+
                 // Add field-specific __ff_other__ to options if "Other" option is enabled
                 if (in_array($fieldType, ['input_checkbox', 'input_radio']) &&
                     ArrayHelper::get($rawField, 'settings.enable_other_option') === 'yes') {
                     $fieldName = sanitize_key(str_replace(['[', ']'], '', ArrayHelper::get($rawField, 'attributes.name', '')));
                     $options[] = '__ff_other_' . $fieldName . '__';
+                    $otherPrefix = static::getOtherOptionValuePrefix($rawField);
                 }
             } elseif ("dynamic_field" == $fieldType) {
                 $dynamicFetchValue = 'yes' == ArrayHelper::get($rawField, 'settings.dynamic_fetch');
@@ -1291,18 +1293,19 @@ class Helper
                         break;
                     }
                     if (is_array($inputValue)) {
-                        // Handle field-specific "Other" options for checkboxes
-                        $filteredValues = array_filter($inputValue, function($value) {
-                            // Skip field-specific other values and processed other values
+                        // Skip "Other" values — raw, localized or legacy English prefix
+                        $filteredValues = array_filter($inputValue, function($value) use ($otherPrefix) {
                             return !preg_match('/^__ff_other_.*__$/', $value) &&
-                                   !preg_match('/^Other:\s/', $value);
+                                   !preg_match('/^Other:\s/', $value) &&
+                                   !($otherPrefix && 0 === strpos($value, $otherPrefix));
                         });
                         $isValid = array_diff($filteredValues, $options);
                         $isValid = empty($isValid);
                     } else {
-                        // Handle field-specific "Other" option for single values
+                        // Accept "Other" values — raw, localized or legacy English prefix
                         if (preg_match('/^__ff_other_.*__$/', $inputValue) ||
-                            preg_match('/^Other:\s/', $inputValue)) {
+                            preg_match('/^Other:\s/', $inputValue) ||
+                            ($otherPrefix && 0 === strpos($inputValue, $otherPrefix))) {
                             $isValid = true;
                         } else {
                             $isValid = in_array($inputValue, $options);
@@ -1368,6 +1371,32 @@ class Helper
             }
         }
         return $error;
+    }
+
+    /**
+     * Prefix used to store a checkable field's "Other" option value,
+     * built from the field's own (translated) label. Pass $form to run
+     * the field through the rendering filter (translation plugins) first.
+     *
+     * @param array $rawField
+     * @param object|null $form
+     * @return string
+     */
+    public static function getOtherOptionValuePrefix($rawField, $form = null)
+    {
+        $fieldType = ArrayHelper::get($rawField, 'element');
+        if ($form && $fieldType) {
+            $rawField = apply_filters('fluentform/rendering_field_data_' . $fieldType, $rawField, $form);
+        }
+
+        $label = trim((string) ArrayHelper::get($rawField, 'settings.other_option_label'));
+
+        if ('' === $label) {
+            $label = __('Other', 'fluentform');
+        }
+
+        // Avoid "::" when the label already ends with a colon
+        return ':' === substr($label, -1) ? $label . ' ' : $label . ': ';
     }
 
     public static function getWhiteListedFields($formId)

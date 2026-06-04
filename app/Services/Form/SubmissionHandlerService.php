@@ -79,6 +79,9 @@ class SubmissionHandlerService
             // Process "Other" options for checkboxes and radio fields
             if (strpos($name, '__ff_other_input__') !== false && !empty($input)) {
                 $fieldName = str_replace('__ff_other_input__', '', $name);
+                // Store with the field's own (translated) "Other" label as prefix
+                $rawField = Arr::get(FormFieldsParser::getInputs($this->form, ['raw']), $fieldName . '.raw', []);
+                $otherPrefix = Helper::getOtherOptionValuePrefix($rawField, $this->form);
 
                 // Handle checkbox fields (array values)
                 if (isset($formDataRaw[$fieldName]) && is_array($formDataRaw[$fieldName])) {
@@ -90,12 +93,12 @@ class SubmissionHandlerService
                     $key = array_search($otherValue, $selectedValues);
 
                     if ($key !== false) {
-                        $selectedValues[$key] = 'Other: ' . sanitize_text_field($input);
+                        $selectedValues[$key] = $otherPrefix . sanitize_text_field($input);
                         $formDataRaw[$fieldName] = $selectedValues;
                     }
                 } // Handle radio fields (single value)
                 elseif (isset($formDataRaw[$fieldName]) && $formDataRaw[$fieldName] === '__ff_other_' . $fieldName . '__') {
-                    $formDataRaw[$fieldName] = 'Other: ' . sanitize_text_field($input);
+                    $formDataRaw[$fieldName] = $otherPrefix . sanitize_text_field($input);
                 }
 
                 unset($formDataRaw[$name]);

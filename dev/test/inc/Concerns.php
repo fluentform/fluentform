@@ -3,6 +3,9 @@
 namespace Dev\Test\Inc;
 
 use InvalidArgumentException;
+use FluentForm\App\Models\FormMeta;
+use FluentForm\App\Models\Submission;
+use FluentForm\App\Services\Form\SubmissionHandlerService;
 
 trait Concerns
 {
@@ -146,6 +149,54 @@ trait Concerns
 			'form_id' => (int) $formId,
 			'data'    => http_build_query($data),
 		]);
+	}
+
+	/**
+	 * Drive an anonymous (public) submission through
+	 * SubmissionHandlerService and return the stored Submission model.
+	 *
+	 * Counterpart of submitForm(): the REST route above is policy-gated
+	 * (needs a logged-in fluentform_entries_viewer), while the public
+	 * frontend submits via admin-ajax, which is a thin wrapper around this
+	 * service call. Use this to test what a visitor's submission stores.
+	 *
+	 * Seeds a minimal formSettings (confirmation) when the form has none,
+	 * since getReturnData() reads it after insert. Inserted rows are wiped
+	 * by RefreshDatabase before the next test.
+	 *
+	 * @param \FluentForm\App\Models\Form $form
+	 * @param array $data Form data as the browser would post it.
+	 * @return \FluentForm\App\Models\Submission
+	 */
+	public function submitFormDirectly($form, array $data)
+	{
+		$hasSettings = FormMeta::query()
+			->where('form_id', (int) $form->id)
+			->where('meta_key', 'formSettings')
+			->first();
+
+		if (!$hasSettings) {
+			$this->setFormMeta($form->id, 'formSettings', [
+				'confirmation' => [
+					'redirectTo'           => 'samePage',
+					'messageToShow'        => 'Thank you',
+					'samePageFormBehavior' => 'hide_form',
+				],
+			]);
+		}
+
+		(new SubmissionHandlerService)->handleSubmission($data, $form->id);
+
+		$submission = Submission::query()
+			->where('form_id', (int) $form->id)
+			->orderBy('id', 'DESC')
+			->first();
+
+		if (!$submission) {
+			throw new \RuntimeException('submitFormDirectly: no submission was stored');
+		}
+
+		return $submission;
 	}
 
 	/**
