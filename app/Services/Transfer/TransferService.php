@@ -63,11 +63,12 @@ class TransferService
 
     /**
      * Rewrite a notification's pdf_attachments through an oldFeedId => newFeedId map.
-     * Ids absent from the map are dropped (the feed was not imported).
+     * Ids absent from the map are dropped (the feed was not imported); a stale id
+     * would otherwise resolve to an unrelated form's meta row on the target site.
      */
     public static function remapNotificationPdfFeeds($notificationValue, array $pdfFeedMap)
     {
-        if (!$pdfFeedMap || !is_string($notificationValue) || '' === $notificationValue) {
+        if (!is_string($notificationValue) || '' === $notificationValue) {
             return $notificationValue;
         }
 
