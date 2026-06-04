@@ -57,7 +57,7 @@ class GlobalSearchService
                 ]
             ],
             [
-                "title" => 'Global Settings > Security > rCaptcha',
+                "title" => 'Global Settings > Security > reCaptcha',
                 "icon"  => '',
                 "path"  => '?page=fluent_forms_settings#re_captcha',
                 "tags"  => ['global', 'security', 'recaptcha']
@@ -175,10 +175,10 @@ class GlobalSearchService
                     "tags"  => ['global integrations', 'campaign monitor']
                 ],
                 [
-                    "title" => 'Global Settings > Configure Integration -> Constatant Contact',
+                    "title" => 'Global Settings > Configure Integration -> Constant Contact',
                     "icon"  => '',
                     "path"  => '?page=fluent_forms_settings#general-constatantcontact-settings',
-                    "tags"  => ['global integrations', 'constatantcontact', 'constatant contact']
+                    "tags"  => ['global integrations', 'constatantcontact', 'constant contact']
                 ],
                 [
                     "title" => 'Global Settings > Configure Integration -> ConvertKit',
@@ -227,12 +227,6 @@ class GlobalSearchService
                     "icon"  => '',
                     "path"  => '?page=fluent_forms_settings#general-mailerlite-settings',
                     "tags"  => ['global integrations', 'mailerlite']
-                ],
-                [
-                    "title" => 'Global Settings > Configure Integration -> MooSend',
-                    "icon"  => '',
-                    "path"  => '?page=fluent_forms_settings#general-moosend-settings',
-                    "tags"  => ['global integrations', 'moosend']
                 ],
                 [
                     "title" => 'Global Settings > Configure Integration -> Twilio',
@@ -347,6 +341,30 @@ class GlobalSearchService
                     "icon"  => '',
                     "path"  => '?page=fluent_forms_settings#general-insightly-settings',
                     "tags"  => ['global integrations', 'insightly']
+                ],
+                [
+                    "title" => 'Global Settings > Configure Integration -> Notion',
+                    "icon"  => '',
+                    "path"  => '?page=fluent_forms_settings#general-notion-settings',
+                    "tags"  => ['global integrations', 'notion']
+                ],
+                [
+                    "title" => 'Global Settings > Configure Integration -> Airtable v2',
+                    "icon"  => '',
+                    "path"  => '?page=fluent_forms_settings#general-airtable_v2-settings',
+                    "tags"  => ['global integrations', 'airtable']
+                ],
+                [
+                    "title" => 'Global Settings > Configure Integration -> Constant Contact V3',
+                    "icon"  => '',
+                    "path"  => '?page=fluent_forms_settings#general-constatantcontactv3-settings',
+                    "tags"  => ['global integrations', 'constantcontactv3', 'constant contact']
+                ],
+                [
+                    "title" => 'Global Settings > Configure Integration -> OpenAI',
+                    "icon"  => '',
+                    "path"  => '?page=fluent_forms_settings#general-openai-settings',
+                    "tags"  => ['global integrations', 'openai', 'chatgpt', 'ai']
                 ]
             ]);
         }
