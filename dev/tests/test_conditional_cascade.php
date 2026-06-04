@@ -79,6 +79,59 @@ check(ConditionAssesor::isConditionallyVisible('dependent',$mapArray,$pickedIn,n
 $otherIn = ['boxes'=>['Option 2']];
 check(ConditionAssesor::isConditionallyVisible('dependent',$mapArray,$otherIn,null,[],$arrayControllers) === true, 'dependent visible when the array controller picked another value');
 
+/* Container conditions: the client attaches container_condition to every field
+ * inside a conditional container (FormBuilder::extractConditionalLogic) and the
+ * evaluator ANDs it in (_ConditionClass.js). A controller inside a hidden
+ * container must hide its outside dependents. */
+$mapContainer = [
+    // controller has NO own logic; it sits in a container shown when mode = b
+    'inner_ctrl' => ['conditions'=>[], 'status'=>false, 'type'=>'any',
+        'container_condition'=>['status'=>true,'type'=>'any','conditions'=>[['field'=>'mode','operator'=>'=','value'=>'b']]]],
+    'dependent'  => ['status'=>true,'type'=>'any','conditions'=>[['field'=>'inner_ctrl','operator'=>'=','value'=>'']]],
+];
+$inContainerHidden = ['mode'=>'a'];
+check(ConditionAssesor::isConditionallyVisible('inner_ctrl',$mapContainer,$inContainerHidden) === false, 'container: field with no own logic hidden when its container is hidden');
+check(ConditionAssesor::isConditionallyVisible('dependent',$mapContainer,$inContainerHidden) === false, 'container: "= empty" dependent hidden when controller container is hidden');
+$inContainerShown = ['mode'=>'b'];
+check(ConditionAssesor::isConditionallyVisible('inner_ctrl',$mapContainer,$inContainerShown) === true, 'container: field visible when container condition passes');
+check(ConditionAssesor::isConditionallyVisible('dependent',$mapContainer,$inContainerShown) === true, 'container: "= empty" dependent visible when container shown and controller empty');
+
+/* Checkbox controller inside a hidden container: without container awareness the
+ * array rule ([] satisfies !=) would wrongly keep the dependent. */
+$mapBoxInContainer = [
+    'boxes'     => ['conditions'=>[], 'status'=>false, 'type'=>'any',
+        'container_condition'=>['status'=>true,'type'=>'any','conditions'=>[['field'=>'mode','operator'=>'=','value'=>'b']]]],
+    'dependent' => ['status'=>true,'type'=>'any','conditions'=>[['field'=>'boxes','operator'=>'!=','value'=>'X']]],
+];
+$inBox = ['mode'=>'a'];
+check(ConditionAssesor::isConditionallyVisible('dependent',$mapBoxInContainer,$inBox,null,[],['boxes'=>true]) === false, 'container: "!=" dependent of an unselected checkbox hidden when the checkbox container is hidden');
+$inBox2 = ['mode'=>'b'];
+check(ConditionAssesor::isConditionallyVisible('dependent',$mapBoxInContainer,$inBox2,null,[],['boxes'=>true]) === true, 'container: "!=" dependent kept when checkbox container is visible and checkbox unselected (#814)');
+
+/* Own condition AND container condition must BOTH pass. */
+$mapBoth = [
+    'field' => ['status'=>true,'type'=>'any','conditions'=>[['field'=>'toggle','operator'=>'=','value'=>'on']],
+        'container_condition'=>['status'=>true,'type'=>'any','conditions'=>[['field'=>'mode','operator'=>'=','value'=>'b']]]],
+];
+$bothIn = ['toggle'=>'on','mode'=>'b'];
+check(ConditionAssesor::isConditionallyVisible('field',$mapBoth,$bothIn) === true, 'container: own + container both pass -> visible');
+$ownOnly = ['toggle'=>'on','mode'=>'a'];
+check(ConditionAssesor::isConditionallyVisible('field',$mapBoth,$ownOnly) === false, 'container: own passes, container fails -> hidden');
+$contOnly = ['toggle'=>'off','mode'=>'b'];
+check(ConditionAssesor::isConditionallyVisible('field',$mapBoth,$contOnly) === false, 'container: own fails, container passes -> hidden');
+
+/* Chained THROUGH a container: container condition references a field that is
+ * itself conditionally hidden -> container hidden -> inner field hidden. */
+$mapChainCont = [
+    'gate' => ['status'=>true,'type'=>'any','conditions'=>[['field'=>'toggle','operator'=>'=','value'=>'on']]],
+    'inner' => ['conditions'=>[], 'status'=>false, 'type'=>'any',
+        'container_condition'=>['status'=>true,'type'=>'any','conditions'=>[['field'=>'gate','operator'=>'=','value'=>'go']]]],
+    'dependent' => ['status'=>true,'type'=>'any','conditions'=>[['field'=>'inner','operator'=>'=','value'=>'']]],
+];
+$chainIn = ['toggle'=>'off','gate'=>'go'];
+check(ConditionAssesor::isConditionallyVisible('inner',$mapChainCont,$chainIn) === false, 'container chain: container controller itself hidden -> inner hidden (forged gate value ignored)');
+check(ConditionAssesor::isConditionallyVisible('dependent',$mapChainCont,$chainIn) === false, 'container chain: dependent of inner hidden too');
+
 /* Circular dependency must resolve to hidden without looping. */
 $circ = [
     'a'=>['status'=>true,'type'=>'any','conditions'=>[['field'=>'b','operator'=>'!=','value'=>'x']]],

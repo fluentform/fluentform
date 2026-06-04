@@ -163,8 +163,12 @@ class Extractor
 
             $element = Arr::get($field, 'element');
             $isMultiple = Arr::get($field, 'attributes.multiple');
+            // The client treats every checkbox-type input as an array
+            // (form-conditionals.js getFormData), including checkbox-style
+            // payment components — not just the input_checkbox element.
+            $isCheckbox = Arr::get($field, 'attributes.type') === 'checkbox';
 
-            if ($isMultiple || in_array($element, ['input_checkbox', 'multi_select'])) {
+            if ($isMultiple || $isCheckbox || in_array($element, ['input_checkbox', 'multi_select', 'ranking'])) {
                 $map[$name] = true;
             }
         }
@@ -174,25 +178,48 @@ class Extractor
 
     /**
      * Flat map of fieldName => conditional_logics for the whole form (including
-     * fields in containers), used to cascade controller visibility.
+     * fields in containers), used to cascade controller visibility. Mirrors
+     * FormBuilder::extractConditionalLogic: fields inside a conditional
+     * container carry that container's condition as container_condition, the
+     * same structure the client evaluator receives.
      */
-    protected function buildConditionalMap($fields, &$map = [])
+    protected function buildConditionalMap($fields, &$map = [], $containerConditions = null)
     {
         foreach ($fields as $field) {
+            if (Arr::get($field, 'element') === 'container') {
+                $conditionals = Arr::get($field, 'settings.conditional_logics', []);
+                $ownContainer = null;
+                if (Arr::get($conditionals, 'status') && Arr::get($conditionals, 'conditions')) {
+                    $ownContainer = $conditionals;
+                }
+                foreach (Arr::get($field, 'columns', []) as $column) {
+                    $this->buildConditionalMap(Arr::get($column, 'fields', []), $map, $ownContainer);
+                }
+                continue;
+            }
+
             $name = Arr::get($field, 'attributes.data-name');
             if (!$name) {
                 $name = Arr::get($field, 'attributes.name');
             }
+            if (!$name) {
+                continue;
+            }
 
             $conditionals = Arr::get($field, 'settings.conditional_logics', []);
-            if ($name && Arr::get($conditionals, 'status')) {
+            if (Arr::get($conditionals, 'status')) {
                 $map[$name] = $conditionals;
             }
 
-            if (Arr::get($field, 'element') === 'container') {
-                foreach (Arr::get($field, 'columns', []) as $column) {
-                    $this->buildConditionalMap(Arr::get($column, 'fields', []), $map);
+            if ($containerConditions) {
+                if (!isset($map[$name])) {
+                    $map[$name] = [
+                        'conditions' => [],
+                        'status'     => false,
+                        'type'       => 'any',
+                    ];
                 }
+                $map[$name]['container_condition'] = $containerConditions;
             }
         }
 
@@ -219,7 +246,10 @@ class Extractor
             if ($fieldName) {
                 $matched = ConditionAssesor::isConditionallyVisible($fieldName, $this->allConditionals, $formData, null, [], $this->arrayControllers);
             } else {
-                $matched = ConditionAssesor::evaluate($field, $formData, null, false);
+                // Containers usually carry no name; cascade their own
+                // conditionals directly so an empty/hidden controller hides
+                // the whole container like the browser does.
+                $matched = ConditionAssesor::conditionalsPassWithCascade($field['conditionals'], $this->allConditionals, $formData, null, [], $this->arrayControllers);
             }
 
             if (!$matched) {

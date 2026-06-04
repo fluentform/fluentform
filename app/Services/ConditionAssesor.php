@@ -41,7 +41,7 @@ class ConditionAssesor
     {
         $conditionals = Arr::get($allConditionals, $fieldName);
 
-        if (!$conditionals || !Arr::get($conditionals, 'status')) {
+        if (!$conditionals) {
             return true;
         }
 
@@ -50,24 +50,44 @@ class ConditionAssesor
         }
         $visited[] = $fieldName;
 
-        $type = Arr::get($conditionals, 'type', 'any');
+        return self::conditionalsPassWithCascade($conditionals, $allConditionals, $inputs, $form, $visited, $arrayControllers);
+    }
 
-        if ($type === 'group') {
-            foreach (Arr::get($conditionals, 'condition_groups', []) as $group) {
-                $rules = Arr::get($group, 'rules', []);
-                if ($rules && self::assessRulesWithCascade($rules, 'all', $allConditionals, $inputs, $form, $visited, $arrayControllers)) {
-                    return true;
+    /**
+     * A field is visible when its own conditions pass AND its container's
+     * condition passes — the same AND the client applies via
+     * container_condition (_ConditionClass.js evaluate()).
+     */
+    public static function conditionalsPassWithCascade($conditionals, $allConditionals, &$inputs, $form = null, $visited = [], $arrayControllers = [])
+    {
+        $own = true;
+
+        if (Arr::get($conditionals, 'status')) {
+            $type = Arr::get($conditionals, 'type', 'any');
+
+            if ($type === 'group') {
+                $own = false;
+                foreach (Arr::get($conditionals, 'condition_groups', []) as $group) {
+                    $rules = Arr::get($group, 'rules', []);
+                    if ($rules && self::assessRulesWithCascade($rules, 'all', $allConditionals, $inputs, $form, $visited, $arrayControllers)) {
+                        $own = true;
+                        break;
+                    }
                 }
+            } elseif ($conditions = Arr::get($conditionals, 'conditions', [])) {
+                $own = self::assessRulesWithCascade($conditions, $type, $allConditionals, $inputs, $form, $visited, $arrayControllers);
             }
+        }
+
+        if (!$own) {
             return false;
         }
 
-        $conditions = Arr::get($conditionals, 'conditions', []);
-        if (!$conditions) {
-            return true;
+        if ($containerCondition = Arr::get($conditionals, 'container_condition')) {
+            return self::conditionalsPassWithCascade($containerCondition, $allConditionals, $inputs, $form, $visited, $arrayControllers);
         }
 
-        return self::assessRulesWithCascade($conditions, $type, $allConditionals, $inputs, $form, $visited, $arrayControllers);
+        return true;
     }
 
     private static function assessRulesWithCascade($conditions, $type, $allConditionals, &$inputs, $form, $visited, $arrayControllers = [])
