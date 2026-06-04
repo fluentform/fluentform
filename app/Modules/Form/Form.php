@@ -769,18 +769,8 @@ class Form
      */
     private function notificationWithPdfMap($extras, $pdfFeedMap)
     {
-        foreach ($extras['notifications'] as $key => $notification) {
-            $notificationValue = json_decode($notification->value);
-            $pdf_attachments = [];
-            if (isset($notificationValue->pdf_attachments) && count($notificationValue->pdf_attachments)) {
-                foreach ($notificationValue->pdf_attachments as $attachment) {
-                    $pdf_attachments[] = json_encode($pdfFeedMap[$attachment]);
-                }
-            }
-            $notificationValue->pdf_attachments = $pdf_attachments;
-            $notification->value = json_encode($notificationValue);
-
-            $extras['notifications'][$key] = $notification;
+        foreach ($extras['notifications'] as $notification) {
+            $notification->value = \FluentForm\App\Services\Transfer\TransferService::remapNotificationPdfFeeds($notification->value, $pdfFeedMap);
         }
         return $extras;
     }
