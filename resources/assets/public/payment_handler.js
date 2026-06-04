@@ -82,6 +82,7 @@ export class Payment_handler {
     // Payment Calculations
     calculatePayments() {
         let form = this.$form;
+        this.clearHiddenCouponFields();
         let items = this.getPaymentItems();
 
         var totalAmount = 0;
@@ -446,6 +447,18 @@ export class Payment_handler {
         return Object.values(this.appliedCoupons);
     }
 
+    clearHiddenCouponFields() {
+        const $wrapper = this.$form.find('.ff_coupon_wrapper');
+        if (!$wrapper.length || !Object.keys(this.appliedCoupons).length) {
+            return;
+        }
+        if ($wrapper.closest('.has-conditions.ff_excluded').length) {
+            $wrapper.find('.ff_coupon_responses').empty();
+            this.appliedCoupons = {};
+            this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+        }
+    }
+
     initDiscountCode() {
         let couponCodes = this.$form.find('.ff_coupon_wrapper');
         if (!couponCodes.length) {
@@ -465,6 +478,8 @@ export class Payment_handler {
                 }
                 $input.attr('disabled', true);
                 let inputName = $input.attr('name');
+
+                this.clearHiddenCouponFields();
 
                 jQuery.post(window.fluentFormVars.ajaxUrl, {
                     action: 'fluentform_apply_coupon',
