@@ -3,6 +3,9 @@ parameters:
     scanDirectories:
         - ../vendor
 
+    scanFiles:
+        - ../boot/globals.php
+
     bootstrapFiles:
         - ../vendor/autoload.php
 
