@@ -205,3 +205,11 @@ Use only when you've read the errors and decided they're acceptable for this pus
 - run `phpunit` again.
 
 **Note:** The path is dynamic so it could be a little bit different. In that case adjust the path from the error message displayed on the console which will mention the location using something similar to this kind of path.
+
+# PR descriptions
+
+PR bodies follow the shared merge-gate template (why-first summary, Key changes
+anchors, How to test, 10-item Merge checklist, Changes & review routing with
+external-review triggers). Generate them with the `/pr-descriptor` skill —
+checklist boxes are checked only with evidence (test output, gate runs), never
+on faith. Routing ⚠ categories require a named external reviewer.
