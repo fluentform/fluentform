@@ -297,6 +297,10 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
                 $element['settings']['values_visible'] = false;
             }
 
+            if ('select' == $upgradeElement && !isset($element['settings']['enable_option_groups'])) {
+                $element['settings']['enable_option_groups'] = 'no';
+            }
+
       
 
             return $element;

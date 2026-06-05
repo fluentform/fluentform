@@ -319,23 +319,7 @@ function fluentFormPrintUnescapedInternalString($string)
 
 function fluentform_options_sanitize($options)
 {
-    $maps = [
-        'label'      => 'wp_kses_post',
-        'value'      => 'sanitize_text_field',
-        'image'      => 'sanitize_url',
-        'calc_value' => 'sanitize_text_field',
-    ];
-
-    $mapKeys = array_keys($maps);
-
-    foreach ($options as $optionIndex => $option) {
-        $attributes = array_filter(ArrayHelper::only($option, $mapKeys));
-        foreach ($attributes as $key => $value) {
-            $options[$optionIndex][$key] = call_user_func($maps[$key], $value);
-        }
-    }
-
-    return $options;
+    return \FluentForm\App\Helpers\Helper::sanitizeAdvancedOptions($options);
 }
 
 function fluentform_iframe_srcdoc_sanitize($value)

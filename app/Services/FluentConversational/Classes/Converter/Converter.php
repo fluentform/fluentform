@@ -1216,10 +1216,20 @@ class Converter
     private static function getAdvancedOptions($field, $form)
     {
         $options = ArrayHelper::get($field, 'settings.advanced_options', []);
-        
+
         foreach ($options as &$option) {
+            if (\FluentForm\App\Helpers\Helper::isOptionGroup($option)) {
+                foreach ($option['options'] as &$groupOption) {
+                    $groupOption['label'] = self::getComponent()->replaceEditorSmartCodes($groupOption['label'], $form);
+                }
+                unset($groupOption);
+                $option['label'] = self::getComponent()->replaceEditorSmartCodes($option['label'], $form);
+                continue;
+            }
+
             $option['label'] = self::getComponent()->replaceEditorSmartCodes($option['label'], $form);
         }
+        unset($option);
         
         if ($options && 'yes' == ArrayHelper::get($field, 'settings.randomize_options')) {
             shuffle($options);

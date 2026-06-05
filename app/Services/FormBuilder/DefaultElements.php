@@ -848,6 +848,7 @@ $fluentformDefaultElements = [
                 'calc_value_status'  => false,
                 'enable_image_input' => false,
                 'values_visible'     => false,
+                'enable_option_groups' => 'no',
                 'enable_select_2'    => 'no',
                 'validation_rules'   => [
                     'required' => [
@@ -1017,6 +1018,7 @@ $fluentformDefaultElements = [
                 ],
                 'calc_value_status'  => false,
                 'enable_image_input' => false,
+                'enable_option_groups' => 'no',
                 'randomize_options'  => 'no',
                 'validation_rules'   => [
                     'required' => [

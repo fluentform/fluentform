@@ -213,10 +213,9 @@ foreach ($fluentformElements as $fluentformElement) {
 
         if ($response && ($isHtml || defined('FLUENTFORM_RENDERING_ENTRIES')) && in_array($element, ['select', 'input_radio']) && !is_array($response)) {
             if (!isset($field['options'])) {
-                $field['options'] = [];
-                foreach (\FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
-                    $field['options'][$option['value']] = $option['label'];
-                }
+                $field['options'] = \FluentForm\App\Helpers\Helper::advancedOptionsValueLabelMap(
+                    \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', [])
+                );
             }
             if (isset($field['options'][$response])) {
                 return $field['options'][$response];
