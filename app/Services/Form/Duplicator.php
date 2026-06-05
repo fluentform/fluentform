@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Form;
 
 use FluentForm\App\Models\Form;
+use FluentForm\App\Services\Transfer\TransferService;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class Duplicator
@@ -17,7 +18,7 @@ class Duplicator
 
                 continue;
             }
-            if ("ffc_form_settings_generated_css" == $meta->meta_key || "ffc_form_settings_meta" == $meta->meta_key) {
+            if ('ffc_form_settings_generated_css' == $meta->meta_key || 'ffc_form_settings_meta' == $meta->meta_key) {
                 $meta->value = str_replace('ff_conv_app_' . $existingForm->id, 'ff_conv_app_' . $form->id, $meta->value);
             }
 
@@ -53,8 +54,8 @@ class Duplicator
             $fields = Arr::get($formFields, 'fields', []);
             foreach ($fields as $field) {
                 if (
-                    "chained_select" === $field['element'] &&
-                    "file" === Arr::get($field, 'settings.data_source.type', '') &&
+                    'chained_select' === $field['element'] &&
+                    'file' === Arr::get($field, 'settings.data_source.type', '') &&
                     $metaKey = Arr::get($field, 'settings.data_source.meta_key', '')
                 ) {
                     // duplicate csv file for chained select field, if uploaded.
@@ -102,20 +103,8 @@ class Duplicator
      */
     private function notificationWithPdfMap($formMeta, $pdfFeedMap)
     {
-        foreach ($formMeta['notifications'] as $key => $notification) {
-            $notificationValue = json_decode($notification->value);
-            $pdf_attachments = [];
-            $hasPdfAttachments = isset($notificationValue->pdf_attachments) && count($notificationValue->pdf_attachments);
-
-            if ($hasPdfAttachments) {
-                foreach ($notificationValue->pdf_attachments as $attachment) {
-                    $pdf_attachments[] = json_encode($pdfFeedMap[$attachment]);
-                }
-            }
-            $notificationValue->pdf_attachments = $pdf_attachments;
-            $notification->value = json_encode($notificationValue);
-
-            $formMeta['notifications'][$key] = $notification;
+        foreach ($formMeta['notifications'] as $notification) {
+            $notification->value = TransferService::remapNotificationPdfFeeds($notification->value, $pdfFeedMap);
         }
 
         return $formMeta;

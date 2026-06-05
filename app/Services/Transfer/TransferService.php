@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\Transfer;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || die;
 
 use Exception;
 use FluentForm\App\Helpers\Helper;
@@ -26,11 +26,11 @@ class TransferService
             return $metaValue;
         }
 
-        if ($metaKey === '_custom_form_css') {
+        if ('_custom_form_css' === $metaKey) {
             return fluentformSanitizeCSS($metaValue);
         }
 
-        if ($metaKey === '_custom_form_js') {
+        if ('_custom_form_js' === $metaKey) {
             return fluentform_kses_js($metaValue);
         }
 
@@ -38,7 +38,7 @@ class TransferService
         if (is_array($decoded) || is_object($decoded)) {
             self::sanitizeJsonNode($decoded);
             $encoded = wp_json_encode($decoded);
-            return $encoded ?: $metaValue;
+            return $encoded ? $encoded : $metaValue;
         }
 
         return wp_kses_post($metaValue);
@@ -63,11 +63,12 @@ class TransferService
 
     /**
      * Rewrite a notification's pdf_attachments through an oldFeedId => newFeedId map.
-     * Ids absent from the map are dropped (the feed was not imported).
+     * Ids absent from the map are dropped (the feed was not imported); a stale id
+     * would otherwise resolve to an unrelated form's meta row on the target site.
      */
     public static function remapNotificationPdfFeeds($notificationValue, array $pdfFeedMap)
     {
-        if (!$pdfFeedMap || !is_string($notificationValue) || '' === $notificationValue) {
+        if (!is_string($notificationValue) || '' === $notificationValue) {
             return $notificationValue;
         }
 
@@ -86,7 +87,7 @@ class TransferService
         $decoded->pdf_attachments = $remapped;
 
         $encoded = wp_json_encode($decoded);
-        return $encoded ?: $notificationValue;
+        return $encoded ? $encoded : $notificationValue;
     }
 
     /**
@@ -121,14 +122,14 @@ class TransferService
         foreach ($result as $item) {
             $form = json_decode($item);
             $formMetaFiltered = array_filter($form->form_meta, function ($item) {
-                return ($item->meta_key !== '_total_views');
+                return ('_total_views' !== $item->meta_key);
             });
             $form->metas = $formMetaFiltered;
             $form->form_fields = json_decode($form->form_fields);
             $forms[] = $form;
         }
-    
-        $fileName = 'fluentform-export-forms-' . count($forms) . '-' . date('d-m-Y') . '.json';
+
+        $fileName = 'fluentform-export-forms-' . count($forms) . '-' . date('d-m-Y') . '.json'; // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date -- export filename uses site-local date
 
         header('Content-disposition: attachment; filename=' . $fileName);
 
@@ -140,6 +141,8 @@ class TransferService
     }
 
     /**
+     * Import forms from an uploaded JSON export file.
+     *
      * @param File $file The uploaded JSON file
      * @param bool $applyDefaultStyle Whether to apply default style settings to imported forms
      * @throws Exception
@@ -161,7 +164,7 @@ class TransferService
                     }
                     $formTitle = sanitize_text_field(Arr::get($formItem, 'title'));
                     $form = [
-                        'title'       => $formTitle ?: 'Blank Form',
+                        'title'       => $formTitle ? $formTitle : 'Blank Form',
                         'form_fields' => $formFields,
                         'status'      => sanitize_text_field(Arr::get($formItem, 'status', 'published')),
                         'has_payment' => sanitize_text_field(Arr::get($formItem, 'has_payment', 0)),
@@ -193,7 +196,7 @@ class TransferService
                                 continue;
                             }
                             $metaValue = Arr::get($metaData, 'value');
-                            if ("ffc_form_settings_generated_css" == $metaKey || "ffc_form_settings_meta" == $metaKey) {
+                            if ('ffc_form_settings_generated_css' == $metaKey || 'ffc_form_settings_meta' == $metaKey) {
                                 $metaValue = str_replace('ff_conv_app_' . Arr::get($formItem, 'id'), 'ff_conv_app_' . $formId, $metaValue);
                             }
                             $metaValue = static::sanitizeImportedMetaValue($metaKey, $metaValue);
@@ -265,14 +268,14 @@ class TransferService
         }
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
-        $selectedLabels = Arr::get($args,'fields_to_export');
+        $selectedLabels = Arr::get($args, 'fields_to_export');
         if (is_string($selectedLabels) && Helper::isJson($selectedLabels)) {
             $selectedLabels = \json_decode($selectedLabels, true);
         }
         $selectedLabels = fluentFormSanitizer($selectedLabels);
-    
+
         $withNotes = isset($args['with_notes']);
-       
+
         //filter out unselected fields
         if (!empty($selectedLabels)) {
             foreach ($inputLabels as $key => $value) {
@@ -281,7 +284,7 @@ class TransferService
                 }
             }
         }
-        
+
         $submissions = self::getSubmissions($args);
         $submissions = FormDataParser::parseFormEntries($submissions, $form, $formInputs);
         $parsedShortCodes = [];
@@ -292,7 +295,9 @@ class TransferService
         // Preload notes for all submissions in a single query to avoid N+1
         $notesMap = [];
         if ($withNotes && count($submissions)) {
-            $submissionIds = array_map(function ($s) { return is_object($s) ? $s->id : $s['id']; }, $submissions->toArray());
+            $submissionIds = array_map(function ($s) {
+                return is_object($s) ? $s->id : $s['id'];
+            }, $submissions->toArray());
             $allNotes = SubmissionMeta::whereIn('response_id', $submissionIds)
                 ->where('meta_key', '_notes')
                 ->get();
@@ -304,18 +309,18 @@ class TransferService
         foreach ($submissions as $submission) {
 
             $submission->response = json_decode($submission->response, true);
-         
+
             $temp = [];
             foreach ($inputLabels as $field => $label) {
-                
+
                 //format tabular grid data for CSV/XLSV/ODS export
-                if (isset($formInputs[$field]['element']) && "tabular_grid" === $formInputs[$field]['element']) {
+                if (isset($formInputs[$field]['element']) && 'tabular_grid' === $formInputs[$field]['element']) {
                     $gridRawData = Arr::get($submission->response, $field);
                     $content = Helper::getTabularGridFormatValue($gridRawData, Arr::get($formInputs, $field), ' | ');
-                } elseif (isset($formInputs[$field]['element']) && "subscription_payment_component" === $formInputs[$field]['element']) {
+                } elseif (isset($formInputs[$field]['element']) && 'subscription_payment_component' === $formInputs[$field]['element']) {
                     //resolve plane name for subscription field
                     $planIndex = Arr::get($submission->user_inputs, $field);
-                    $planLabel = Arr::get($formInputs,  "{$field}.raw.settings.subscription_options.{$planIndex}.name");
+                    $planLabel = Arr::get($formInputs, "{$field}.raw.settings.subscription_options.{$planIndex}.name");
                     if ($planLabel) {
                         $content = $planLabel;
                     } else {
@@ -323,13 +328,13 @@ class TransferService
                     }
                 } else {
                     $content = self::getFieldExportContent($submission, $field);
-                    if (Arr::get($formInputs, $field . '.element') === "input_number" && is_numeric($content)) {
+                    if (Arr::get($formInputs, $field . '.element') === 'input_number' && is_numeric($content)) {
                         $content = $content + 0;
                     }
                 }
                 $temp[] = Helper::sanitizeForCSV($content);
             }
-    
+
             if (!empty($selectedShortcodes)) {
                 $regularShortcodes = self::getRegularExportShortcodes($selectedShortcodes, $legacyShortcodeHeaders);
 
@@ -357,7 +362,7 @@ class TransferService
             if ($withNotes) {
                 $noteValues = isset($notesMap[$submission->id]) ? $notesMap[$submission->id] : [];
                 if (!empty($noteValues)) {
-                    $temp[] = implode(", ", $noteValues);
+                    $temp[] = implode(', ', $noteValues);
                 }
             }
 
@@ -373,15 +378,15 @@ class TransferService
             $parsedShortCodes,
             $legacyShortcodeHeaders
         );
-        
+
         $inputLabels = array_merge($inputLabels, $extraLabels);
-        if($withNotes){
-            $inputLabels[] = __('Notes','fluentform');
+        if ($withNotes) {
+            $inputLabels[] = __('Notes', 'fluentform');
         }
         $inputLabels = apply_filters('fluentform/export_entry_metadata_labels', $inputLabels, $form, $args);
 
         $data = array_merge([array_values($inputLabels)], $exportData);
-        
+
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
         $fileName = self::getReadableExportFileName($form->title);
         self::downloadOfficeDoc($data, $type, $fileName);
@@ -558,7 +563,7 @@ class TransferService
             $sanitizedTitle = 'export';
         }
 
-        return $sanitizedTitle . '-' . date('Y-m-d');
+        return $sanitizedTitle . '-' . date('Y-m-d'); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date -- export filename uses site-local date
     }
 
     private static function sendDownloadHeaders($contentType, $fileName)
@@ -585,7 +590,7 @@ class TransferService
             ];
             if (!in_array($tableName, $allowedTables, true)) {
                 wp_send_json([
-                    'message' => __('Invalid table name for export.', 'fluentform')
+                    'message' => __('Invalid table name for export.', 'fluentform'),
                 ], 422);
             }
             $query = wpFluent()->table($tableName)
@@ -602,7 +607,7 @@ class TransferService
                 });
             }
         } else {
-            $query = (new Submission)->customQuery($args);
+            $query = (new Submission())->customQuery($args);
         }
 
         $entries = fluentFormSanitizer(Arr::get($args, 'entries', []));
@@ -629,7 +634,7 @@ class TransferService
         }, $data);
         // Load Composer autoloader for OpenSpout
         require_once FLUENTFORM_DIR_PATH . '/vendor/autoload.php';
-        $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
+        $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type; // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date -- export filename uses site-local date
 
         // Create writer based on type
         switch (strtolower($type)) {
@@ -678,5 +683,4 @@ class TransferService
             return \OpenSpout\Writer\Common\Creator\WriterEntityFactory::createRow($cells);
         }, $data);
     }
-
 }

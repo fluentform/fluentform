@@ -45,6 +45,8 @@ class Form
 
     protected $hasPayment = 0;
     /**
+     * Query builder for the forms table.
+     *
      * @var \FluentForm\Framework\Database\Query\Builder
      */
     protected $model = null;
@@ -130,12 +132,12 @@ class Form
             }
         } else {
             // add default form settings now
-            $defaultSettings = $this->defaultSettings ?: $this->getFormsDefaultSettings($formId);
-    
+            $defaultSettings = $this->defaultSettings ? $this->defaultSettings : $this->getFormsDefaultSettings($formId);
+
             $defaultSettings = apply_filters_deprecated(
                 'fluentform_create_default_settings',
                 [
-                    $defaultSettings
+                    $defaultSettings,
                 ],
                 FLUENTFORM_FRAMEWORK_UPGRADE,
                 'fluentform/create_default_settings',
@@ -165,7 +167,7 @@ class Form
             'fluentform_inserted_new_form',
             [
                 $formId,
-                $insertData
+                $insertData,
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/inserted_new_form',
@@ -226,7 +228,7 @@ class Form
                 'helpMessagePlacement'  => 'with_label',
                 'errorMessagePlacement' => 'inline',
                 'cssClassName'          => '',
-                'asteriskPlacement'     => 'asterisk-right'
+                'asteriskPlacement'     => 'asterisk-right',
             ],
             'delete_entry_on_submission' => 'no',
         ];
@@ -363,7 +365,7 @@ class Form
                 'fluentform_form_fields_update',
                 [
                     $formFields,
-                    $formId
+                    $formId,
                 ],
                 FLUENTFORM_FRAMEWORK_UPGRADE,
                 'fluentform/form_fields_update',
@@ -561,7 +563,7 @@ class Form
             try {
                 \FluentForm\App\Models\OrderItem::where('form_id', $formId)->delete();
                 \FluentForm\App\Models\Transaction::where('form_id', $formId)->delete();
-            } catch (\Exception $exception) {
+            } catch (\Exception $exception) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- payment tables may not exist when the payment module was never enabled
             }
         }
 
@@ -612,7 +614,7 @@ class Form
                 $extras[$meta->meta_key][] = $meta;
                 continue;
             }
-            if ("ffc_form_settings_generated_css" == $meta->meta_key || "ffc_form_settings_meta" == $meta->meta_key) {
+            if ('ffc_form_settings_generated_css' == $meta->meta_key || 'ffc_form_settings_meta' == $meta->meta_key) {
                 $meta->value = str_replace('ff_conv_app_' . $formId, 'ff_conv_app_' . $newFormId, $meta->value);
             }
             $metaData = [
@@ -640,7 +642,7 @@ class Form
         do_action_deprecated(
             'flentform_form_duplicated',
             [
-                $newFormId
+                $newFormId,
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/form_duplicated',
@@ -676,6 +678,7 @@ class Form
                 $duplicateRankingFields = implode(', ', array_unique($duplicateRankingFields));
                 wp_send_json([
                     'title' => sprintf(
+                        /* translators: %s: comma-separated list of ranking field labels with duplicate option values */
                         __('Ranking field %s has duplicate option values. Please make each option value unique.', 'fluentform'),
                         $duplicateRankingFields
                     ),
@@ -721,7 +724,7 @@ class Form
             'message' => __('Form has been successfully converted.', 'fluentform'),
         ], 200);
     }
-    
+
     private function getAdminPermalink($route, $form)
     {
         $baseUrl = admin_url('admin.php?page=fluent_forms');
@@ -733,7 +736,7 @@ class Form
         $baseUrl = admin_url('admin.php?page=fluent_forms');
         return $baseUrl . '&form_id=' . $form->id . '&route=settings&sub_route=form_settings#basic_settings';
     }
-    
+
 
     /**
      * Map pdf feed ID to replace with duplicated PDF feed ID when duplicating form
@@ -769,46 +772,36 @@ class Form
      */
     private function notificationWithPdfMap($extras, $pdfFeedMap)
     {
-        foreach ($extras['notifications'] as $key => $notification) {
-            $notificationValue = json_decode($notification->value);
-            $pdf_attachments = [];
-            if (isset($notificationValue->pdf_attachments) && count($notificationValue->pdf_attachments)) {
-                foreach ($notificationValue->pdf_attachments as $attachment) {
-                    $pdf_attachments[] = json_encode($pdfFeedMap[$attachment]);
-                }
-            }
-            $notificationValue->pdf_attachments = $pdf_attachments;
-            $notification->value = json_encode($notificationValue);
-
-            $extras['notifications'][$key] = $notification;
+        foreach ($extras['notifications'] as $notification) {
+            $notification->value = \FluentForm\App\Services\Transfer\TransferService::remapNotificationPdfFeeds($notification->value, $pdfFeedMap);
         }
         return $extras;
     }
-    
+
     public function findFormLocations()
     {
         $formId = intval($this->request->get('form_id'));
-    
+
         $excluded = ['attachment'];
         $post_types = get_post_types(['show_in_menu' => true], 'objects', 'or');
         $postTypes = [];
-        foreach($post_types as $post_type) {
+        foreach ($post_types as $post_type) {
             $postTypeName = $post_type->name;
             if (in_array($postTypeName, $excluded)) {
                 continue;
             }
             $postTypes[] = $postTypeName;
         }
-    
+
         $params = array(
             'post_type'      => $postTypes,
-            'posts_per_page' => -1
+            'posts_per_page' => -1,
         );
-    
+
         $params = apply_filters_deprecated(
             'fluentform_find_shortcode_params',
             [
-                $params
+                $params,
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/find_shortcode_params',
@@ -819,17 +812,17 @@ class Form
 
         $formLocations = [];
         $posts = get_posts($params);
-        foreach($posts as $post) {
-        
+        foreach ($posts as $post) {
+
             $formIds = self::getShortCodeIds($post->post_content);
-            if(!empty($formIds) && in_array($formId,$formIds)) {
-    
+            if (!empty($formIds) && in_array($formId, $formIds)) {
+
                 $postType = get_post_type_object($post->post_type);
                 $formLocations[] = [
                     'id'        => $post->ID,
                     'name'      => $postType->labels->singular_name,
                     'title'     => (empty($post->post_title) ? $post->ID : $post->post_title),
-                    'edit_link' => sprintf("%spost.php?post=%s&action=edit", admin_url(), $post->ID),
+                    'edit_link' => sprintf('%spost.php?post=%s&action=edit', admin_url(), $post->ID),
                 ];
             }
         }
@@ -838,15 +831,14 @@ class Form
             'status'    => !empty($formLocations),
         ];
         wp_send_json($data, 200);
-    
     }
-    
+
     public static function getShortCodeIds($content)
     {
         $ids = [];
         $tag = 'fluentform';
         $selector = 'id';
-        
+
         if (function_exists('parse_blocks')) {
             $parsedBlocks = parse_blocks($content);
             foreach ($parsedBlocks as $block) {
@@ -861,7 +853,7 @@ class Form
         }
 
         $hasShortCode = has_shortcode($content, $tag);
-        if(!$hasShortCode){
+        if (!$hasShortCode) {
             return $ids;
         }
 
@@ -869,14 +861,13 @@ class Form
         if (empty($matches)) {
             return $ids;
         }
-        
-        
+
         foreach ($matches as $shortcode) {
             if (count($shortcode) >= 2 && $tag === $shortcode[2]) {
                 $parsedCode = str_replace(['[', ']', '&#91;', '&#93;'], '', $shortcode[0]);
-                
+
                 $result = shortcode_parse_atts($parsedCode);
-                
+
                 if (!empty($result[$selector])) {
                     $ids[] = $result[$selector];
                 }

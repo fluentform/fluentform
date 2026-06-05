@@ -86,10 +86,11 @@ $notif = json_encode(['pdf_attachments' => []]);
 $out = TransferService::remapNotificationPdfFeeds($notif, [3084 => 10458]);
 assertSame([], attachmentsOf($out), 'empty attachments stays empty');
 
-// 6) Empty map returns the value untouched (nothing to remap).
+// 6) Empty map drops stale ids — a kept id would resolve to an unrelated
+//    form's meta row on the target site.
 $notif = json_encode(['pdf_attachments' => ['3084']]);
 $out = TransferService::remapNotificationPdfFeeds($notif, []);
-assertSame($notif, $out, 'empty map -> value unchanged');
+assertSame([], attachmentsOf($out), 'empty map -> stale attachments dropped');
 
 // 7) Numeric-string vs int key parity (export ids may be ints, attachments strings).
 $notif = json_encode(['pdf_attachments' => ['3084']]);
