@@ -518,7 +518,8 @@ class PaymentAction
         foreach ($pricingOptions as $priceOption) {
             $label = sanitize_text_field($priceOption['label']);
             $value = sanitize_text_field($priceOption['value']);
-            if ($label == $key || $value == $key) {
+            // Strict string comparison: a loose == treats numeric-string labels
+            if ((string) $label === (string) $key || (string) $value === (string) $key) {
                 $selectedOption = $priceOption;
             }
         }
