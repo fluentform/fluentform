@@ -75,6 +75,10 @@ add_action('init', function () {
     new \FluentForm\App\Modules\Form\DefaultStyleApplicator();
 }, 9);
 
+$app->addAction('fluentform/loaded', function () {
+    (new \FluentForm\App\Services\Compliance\ComplianceService())->register();
+});
+
 // From Backend.php
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();

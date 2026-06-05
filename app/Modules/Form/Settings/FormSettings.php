@@ -140,6 +140,8 @@ class FormSettings
             'errorMessagePlacement'           => 'sanitize_text_field',
             'asteriskPlacement'               => 'sanitize_text_field',
             'delete_entry_on_submission'      => 'sanitize_text_field',
+            'delete_after_x_days'             => 'sanitize_text_field',
+            'auto_delete_days'                => 'intval',
             'id'                              => 'intval',
             'showLabel'                       => 'rest_sanitize_boolean',
             'showCount'                       => 'rest_sanitize_boolean',
@@ -170,7 +172,7 @@ class FormSettings
         $deleteDaysCount = ArrayHelper::get($formSettings, 'auto_delete_days');
         $deleteOnSubmission = ArrayHelper::get($formSettings, 'delete_entry_on_submission');
 
-        if ('yes' != $deleteOnSubmission && $deleteDaysCount && 'yes' == $deleteAfterXDaysStatus) {
+        if ('yes' != $deleteOnSubmission && $deleteDaysCount && in_array($deleteAfterXDaysStatus, ['yes', '1', 1, true], true)) {
             // We have to set meta values
             $form->updateMeta($formId, 'auto_delete_days', intval($deleteDaysCount));
         } else {

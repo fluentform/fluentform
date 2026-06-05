@@ -350,6 +350,7 @@ class NinjaFormsMigrator extends BaseMigrator
                             'delete_after_x_days' => true,
                             'auto_delete_days'    => $actionData['subs_expire_time'],
                         ];
+                        $formMeta['auto_delete_days'] = intval($actionData['subs_expire_time']);
                     }
                 } elseif ($actionData['type'] == 'redirect') {
                     $formMeta['formSettings']['confirmation'] = [
