@@ -128,6 +128,7 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import wpEditor from '@/common/_wp_editor';
+import { dependencyPasses } from '@/admin/dependency';
 
 
 export default {
@@ -218,38 +219,7 @@ export default {
                 });
         },
         dependancyPass(inputItem, settings) {
-            if (inputItem.dependency) {
-                let status = true;
-                let continueLoop = true;
-                inputItem.dependency.forEach((item) => {
-                    if (!continueLoop){
-                        return;
-                    }
-                    let optionItem = item.depends_on;
-                    let dependencyVal = settings[optionItem];
-
-                    if (!this.compare(item.value, item.operator, dependencyVal)) {
-                        status = false;
-                        continueLoop = false;
-                    } else {
-                        status = true;
-                    }
-                });
-
-                return status;
-
-            }
-            return true;
-        },
-        compare(operand1, operator, operand2) {
-            switch(operator) {
-                case '==':
-                    return operand1 == operand2
-                    break;
-                case '!=':
-                    return operand1 != operand2
-                    break;
-            }
+            return dependencyPasses(inputItem.dependency, settings);
         },
         disconnect(data) {
             this.integration = data;
