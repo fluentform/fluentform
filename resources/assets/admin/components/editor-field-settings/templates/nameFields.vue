@@ -7,7 +7,12 @@
 
             <el-checkbox v-model="field.settings.visible"  :disabled="field.settings.disabled === true" >{{ field.settings.label }}</el-checkbox>
 
-            <fieldOptionSettings class="address-field-option__settings" :field="field"  v-if="field.settings.disabled != true" ></fieldOptionSettings>
+            <fieldOptionSettings
+                class="address-field-option__settings"
+                :field="field"
+                :floating-label-enabled="editItem.settings.enable_floating_label === 'yes'"
+                v-if="field.settings.disabled != true"
+            ></fieldOptionSettings>
         </div>
     </div>
 </template>

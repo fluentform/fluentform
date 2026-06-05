@@ -40,6 +40,7 @@
                             <fieldOptionSettings
                                 class="address-field-option__settings"
                                 :field="editItem.fields[field.value]"
+                                :floating-label-enabled="editItem.settings.enable_floating_label === 'yes'"
                             />
                         </template>
 
@@ -60,7 +61,11 @@
 
                             <div class="form-group">
                                 <div class="el-form-item">
-                                    <radio-button :listItem="{label: $t('Label Placement'), options: labelPlacementOptions}" v-model="editItem.fields.country.settings.label_placement" />
+                                    <radio-button
+                                        v-if="editItem.settings.enable_floating_label !== 'yes'"
+                                        :listItem="{label: $t('Label Placement'), options: labelPlacementOptions}"
+                                        v-model="editItem.fields.country.settings.label_placement"
+                                    />
                                 </div>
                             </div>
 

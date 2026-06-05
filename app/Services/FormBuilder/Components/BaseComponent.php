@@ -151,6 +151,30 @@ class BaseComponent
     {
         return 'ff-el-group ';
     }
+
+    protected function isFloatingLabelEnabled($data)
+    {
+        return 'yes' === ArrayHelper::get($data, 'settings.enable_floating_label')
+            && !empty(ArrayHelper::get($data, 'settings.label'));
+    }
+
+    protected function getFloatingLabelStyle($data)
+    {
+        $style = ArrayHelper::get($data, 'settings.floating_label_style', 'inline');
+
+        return in_array($style, ['inline', 'outlined'], true) ? $style : 'inline';
+    }
+
+    protected function hasFloatingLabelPlaceholder($data)
+    {
+        $placeholder = ArrayHelper::get($data, 'attributes.placeholder');
+
+        if (!$placeholder) {
+            $placeholder = ArrayHelper::get($data, 'settings.placeholder');
+        }
+
+        return (string) $placeholder !== '';
+    }
     
     /**
      * Get required class for form element wrapper
@@ -220,7 +244,13 @@ class BaseComponent
         
         $labelPlacement = ArrayHelper::get($data, 'settings.label_placement');
         
+        $isFloatingLabelEnabled = $this->isFloatingLabelEnabled($data);
+        $floatingLabelStyle = $this->getFloatingLabelStyle($data);
+
         $labelPlacementClass = $labelPlacement ? 'ff-el-form-' . $labelPlacement . ' ' : '';
+        if ($isFloatingLabelEnabled) {
+            $labelPlacementClass = '';
+        }
         
         $validationRules = ArrayHelper::get($data, 'settings.validation_rules');
         
@@ -238,6 +268,13 @@ class BaseComponent
             $hasConditions .
             ArrayHelper::get($data, 'settings.container_class')
         );
+
+        if ($isFloatingLabelEnabled) {
+            $formGroupClass .= ' ff-el-form-floating ff-el-form-floating-' . $floatingLabelStyle;
+            if ($this->hasFloatingLabelPlaceholder($data)) {
+                $formGroupClass .= ' ff-el-has-placeholder';
+            }
+        }
         
         $labelHelpText = $inputHelpText = '';
 

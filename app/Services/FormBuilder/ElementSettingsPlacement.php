@@ -18,6 +18,8 @@ return [
         'general' => [
             'admin_field_label',
             'name_fields',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
         ],
         'advanced' => [
@@ -29,6 +31,8 @@ return [
     'input_email' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'placeholder',
@@ -50,6 +54,8 @@ return [
     'input_text' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'placeholder',
@@ -79,6 +85,8 @@ return [
     'textarea' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'placeholder',
@@ -102,6 +110,8 @@ return [
         'general' => [
             'label',
             'admin_field_label',
+            'enable_floating_label',
+            'floating_label_style',
             'address_fields',
         ],
         'advanced' => [
@@ -113,6 +123,8 @@ return [
     'select_country' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'enable_select_2',
@@ -131,6 +143,8 @@ return [
     'input_number' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'placeholder',
@@ -154,6 +168,8 @@ return [
     'select' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'placeholder',
@@ -213,6 +229,8 @@ return [
     'input_url' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'placeholder',
@@ -232,6 +250,8 @@ return [
     'input_password' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'placeholder',
@@ -251,6 +271,8 @@ return [
     'input_date' => [
         'general' => [
             'label',
+            'enable_floating_label',
+            'floating_label_style',
             'label_placement',
             'admin_field_label',
             'placeholder',

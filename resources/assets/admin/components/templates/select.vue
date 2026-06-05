@@ -2,7 +2,7 @@
     <withLabel :item="item">
         <div class="ff_with_arrow">
             <select class="select el-input__inner">
-                <option>{{defaultVal || item.settings.placeholder}}</option>
+                <option>{{ defaultVal || placeholder }}</option>
             </select>
         </div>
     </withLabel>
@@ -15,7 +15,7 @@ import find from 'lodash/find';
 export default {
     name: 'customSelect',
     props: ['item'],
-    computed :{
+    computed: {
         defaultVal() {
             let option = find(this.flattenedOptions, { value: this.item.attributes.value });
 
@@ -23,6 +23,9 @@ export default {
         },
         flattenedOptions() {
             return this.flattenOptions(this.item.settings.advanced_options || []);
+        },
+        placeholder() {
+            return this.item.settings.placeholder;
         }
     },
     methods: {

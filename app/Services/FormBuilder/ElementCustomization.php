@@ -77,6 +77,31 @@ $fluentformElementCustomizationSettings = [
             ],
         ],
     ],
+    'enable_floating_label' => [
+        'template'  => 'inputSwitch',
+        'label'     => __('Enable Floating Label', 'fluentform'),
+        'help_text' => __('Display the label inside the field and float it on focus or when the field has a value.', 'fluentform'),
+    ],
+    'floating_label_style' => [
+        'template'  => 'radioButton',
+        'label'     => __('Floating Label Style', 'fluentform'),
+        'help_text' => __('Select how the floating label should be displayed for this field.', 'fluentform'),
+        'dependency' => [
+            'depends_on' => 'settings/enable_floating_label',
+            'operator'   => '==',
+            'value'      => 'yes',
+        ],
+        'options'   => [
+            [
+                'value' => 'inline',
+                'label' => __('Inline', 'fluentform'),
+            ],
+            [
+                'value' => 'outlined',
+                'label' => __('Outlined', 'fluentform'),
+            ],
+        ],
+    ],
     'button_style' => [
         'template'  => 'selectBtnStyle',
         'label'     => __('Button Style', 'fluentform'),

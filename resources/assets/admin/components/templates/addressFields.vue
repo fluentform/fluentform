@@ -1,11 +1,11 @@
 <template>
-<div>
+<div :class="wrapperClasses">
     <label v-if="item.settings.label" class="label-block" :class="item.settings.required ? 'is-required' : ''" v-html="item.settings.label"></label>
 
     <el-row :gutter="20">
         <template v-for="(field, i) in getOrerderFields">
             <el-col :key="i" :md="is_conversion_form ? 24 : 12" v-if="getField(field).settings.visible"  class="address-field-wrapper">
-                <component :is="guessElTemplate(getField(field))" :item="getField(field)"></component>
+                <component :is="guessElTemplate(getField(field))" :item="getPreviewField(getField(field))"></component>
             </el-col>
         </template>
     </el-row>
@@ -31,12 +31,30 @@ export default {
                 return this.item.fields[field.value];
             }
             return  field;
+        },
+        getPreviewField(field) {
+            return {
+                ...field,
+                settings: {
+                    ...field.settings,
+                    enable_floating_label: this.item.settings.enable_floating_label || 'no',
+                    floating_label_style: this.item.settings.floating_label_style || 'inline'
+                }
+            };
         }
        
     },
     computed: {
         getOrerderFields(){
             return this.item.settings.field_order ? this.item.settings.field_order : this.item.fields;
+        },
+        wrapperClasses() {
+            return {
+                'ff-composite-preview': true,
+                'ff-composite-floating-outlined': this.item.settings.label &&
+                    this.item.settings.enable_floating_label === 'yes' &&
+                    this.item.settings.floating_label_style === 'outlined'
+            };
         }
     }
 }

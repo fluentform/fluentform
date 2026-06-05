@@ -1,4 +1,10 @@
 .fluentform {
+  .ff-composite-floating-outlined {
+    > .ff-el-input--content {
+      margin-top: 10px;
+    }
+  }
+
   .hidden_field {
     display: none !important;
   }
@@ -186,6 +192,11 @@
 
     .ff_hide_label .ff-el-input--label {
       display: none;
+    }
+
+    .ff_hide_label .ff-el-form-floating > .ff-el-input--label {
+      display: block;
+      visibility: visible;
     }
 
     .field-value {

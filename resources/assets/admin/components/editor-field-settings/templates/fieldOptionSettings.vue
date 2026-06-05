@@ -3,7 +3,7 @@
         <el-form labelPosition="top" class="el-form-nested">
             <inputText v-if="childFields.indexOf('label') != -1" :listItem="{type: 'text', label: $t('Label')}" v-model="field.settings.label"></inputText>
 
-            <radioButton v-if="childFields.indexOf('label_placement') != -1" :listItem="{label: $t('Label Placement'), options: labelPlacementOptions}" v-model="field.settings.label_placement"></radioButton>
+            <radioButton v-if="childFields.indexOf('label_placement') != -1 && !floatingLabelEnabled" :listItem="{label: $t('Label Placement'), options: labelPlacementOptions}" v-model="field.settings.label_placement"></radioButton>
 
             <inputDefaultValue v-if="childFields.indexOf('value') != -1" v-model="field.attributes.value" :listItem="{label: 'Default'}" :editItem="field"></inputDefaultValue>
 
@@ -55,6 +55,10 @@ export default {
         field: {
             type: Object
         },
+        floatingLabelEnabled: {
+            type: Boolean,
+            default: false
+        },
         childFields: {
             default() {
                 return [
@@ -89,4 +93,3 @@ export default {
     },
 }
 </script>
-
