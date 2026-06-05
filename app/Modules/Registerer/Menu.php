@@ -881,6 +881,10 @@ class Menu
 
         $form = wpFluent()->table('fluentform_forms')->find($formId);
 
+        if (!$form) {
+            return;
+        }
+
         do_action_deprecated(
             'fluentform_loading_editor_assets',
             [
