@@ -5,6 +5,7 @@ namespace FluentForm\App\Modules\MCP\Tools;
 defined('ABSPATH') or die;
 
 use FluentForm\App\Models\Form;
+use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Form\FormService;
@@ -156,13 +157,10 @@ class FormTools
     public static function listForms($params = [])
     {
         $paging = MCPHelper::pagination($params, 15);
-        $scope  = PermissionGate::formScope();
 
         $query = Form::query()->orderBy('id', strtoupper(isset($params['sort_by']) && 'ASC' === strtoupper($params['sort_by']) ? 'ASC' : 'DESC'));
 
-        if ($scope !== false) {
-            $query->whereIn('id', $scope ?: [0]);
-        }
+        FormAccess::applyScope($query, 'id');
         if (!empty($params['search'])) {
             $query->where('title', 'LIKE', '%' . sanitize_text_field($params['search']) . '%');
         }
@@ -180,7 +178,7 @@ class FormTools
                 'title'      => $form->title,
                 'status'     => $form->status,
                 'type'       => $form->type,
-                'entries'    => self::entryCount($form->id),
+                'entries'    => FormAccess::entryCount($form->id),
                 'created_at' => MCPHelper::toIso8601($form->created_at),
             ];
         }
@@ -198,19 +196,11 @@ class FormTools
 
     public static function getForm($params = [])
     {
-        $formId = isset($params['form_id']) ? (int) $params['form_id'] : 0;
-        if (!$formId) {
-            return MCPHelper::error('missing_identifier', __('form_id is required.', 'fluentform'), ['fields' => ['form_id']]);
+        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        if (is_wp_error($form)) {
+            return $form;
         }
-
-        if (!PermissionGate::canAccessForm($formId)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this form.', 'fluentform'), ['required_perm' => 'fluentform_forms_manager']);
-        }
-
-        $form = Form::query()->find($formId);
-        if (!$form) {
-            return MCPHelper::error('not_found', __('No form found for the given form_id.', 'fluentform'));
-        }
+        $formId = (int) $form->id;
 
         $fields = [];
         try {
@@ -241,23 +231,11 @@ class FormTools
                 'title'      => $form->title,
                 'status'     => $form->status,
                 'type'       => $form->type,
-                'entries'    => self::entryCount($form->id),
+                'entries'    => FormAccess::entryCount($form->id),
                 'created_at' => MCPHelper::toIso8601($form->created_at),
                 'updated_at' => MCPHelper::toIso8601($form->updated_at),
                 'fields'     => $fields,
             ]
         );
-    }
-
-    private static function entryCount($formId)
-    {
-        try {
-            return (int) \FluentForm\App\Models\Submission::query()
-                ->where('form_id', $formId)
-                ->where('status', '!=', 'trashed')
-                ->count();
-        } catch (\Throwable $e) {
-            return null;
-        }
     }
 }

@@ -5,8 +5,8 @@ namespace FluentForm\App\Modules\MCP\Tools;
 defined('ABSPATH') or die;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 
@@ -62,18 +62,31 @@ class ReportTools
 
     public static function getFormStats($params = [])
     {
-        $formId = isset($params['form_id']) ? (int) $params['form_id'] : 0;
-        $guard  = self::guard($formId);
-        if (is_wp_error($guard)) {
-            return $guard;
+        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        if (is_wp_error($form)) {
+            return $form;
         }
-        $form = $guard;
+        $formId = (int) $form->id;
 
         $counts = (new Submission())->countByGroup($formId);
         $views  = (int) Helper::getFormMeta($formId, '_total_views', 0);
         $all    = isset($counts['all']) ? (int) $counts['all'] : 0;
 
         $conversion = $views > 0 ? round(($all / $views) * 100, 2) : null;
+
+        $data = [
+            'form_id'             => $formId,
+            'counts'              => $counts,
+            'total_views'         => $views,
+            'conversion_rate_pct' => $conversion,
+        ];
+
+        // Entries can exceed tracked views (e.g. a form embedded in a template
+        // with view tracking off), which pushes the rate past 100% — flag it
+        // rather than emit a bogus number the agent would read as real.
+        if ($conversion !== null && $all > $views) {
+            $data['views_note'] = __('Entries exceed tracked views, so the conversion rate is unreliable — view tracking may be disabled or unavailable for this form.', 'fluentform');
+        }
 
         return MCPHelper::envelope(
             sprintf(
@@ -83,22 +96,17 @@ class ReportTools
                 $all,
                 $views
             ),
-            [
-                'form_id'             => $formId,
-                'counts'              => $counts,
-                'total_views'         => $views,
-                'conversion_rate_pct' => $conversion,
-            ]
+            $data
         );
     }
 
     public static function getTrend($params = [])
     {
-        $formId = isset($params['form_id']) ? (int) $params['form_id'] : 0;
-        $guard  = self::guard($formId);
-        if (is_wp_error($guard)) {
-            return $guard;
+        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        if (is_wp_error($form)) {
+            return $form;
         }
+        $formId = (int) $form->id;
 
         $to   = !empty($params['date_to']) ? sanitize_text_field($params['date_to']) : gmdate('Y-m-d', current_time('timestamp'));
         $from = !empty($params['date_from']) ? sanitize_text_field($params['date_from']) : gmdate('Y-m-d', strtotime('-30 days', strtotime($to)));
@@ -139,23 +147,4 @@ class ReportTools
         );
     }
 
-    /**
-     * Resolve + access-check a form. Returns the Form model or a WP_Error.
-     *
-     * @return \FluentForm\App\Models\Form|\WP_Error
-     */
-    private static function guard($formId)
-    {
-        if (!$formId) {
-            return MCPHelper::error('missing_identifier', __('form_id is required.', 'fluentform'), ['fields' => ['form_id']]);
-        }
-        if (!PermissionGate::canAccessForm($formId)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this form.', 'fluentform'));
-        }
-        $form = Form::query()->find($formId);
-        if (!$form) {
-            return MCPHelper::error('not_found', __('No form found for the given form_id.', 'fluentform'));
-        }
-        return $form;
-    }
 }

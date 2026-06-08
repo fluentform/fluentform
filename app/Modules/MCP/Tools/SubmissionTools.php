@@ -4,8 +4,8 @@ namespace FluentForm\App\Modules\MCP\Tools;
 
 defined('ABSPATH') or die;
 
-use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Form\FormService;
@@ -108,18 +108,11 @@ class SubmissionTools
 
     public static function listSubmissions($params = [])
     {
-        $formId = isset($params['form_id']) ? (int) $params['form_id'] : 0;
-        if (!$formId) {
-            return MCPHelper::error('missing_identifier', __('form_id is required.', 'fluentform'), ['fields' => ['form_id']]);
+        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        if (is_wp_error($form)) {
+            return $form;
         }
-        if (!PermissionGate::canAccessForm($formId)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this form.', 'fluentform'));
-        }
-
-        $form = Form::query()->find($formId);
-        if (!$form) {
-            return MCPHelper::error('not_found', __('No form found for the given form_id.', 'fluentform'));
-        }
+        $formId = (int) $form->id;
 
         $paging = MCPHelper::pagination($params, 15);
 
@@ -141,11 +134,8 @@ class SubmissionTools
         $query = $model->customQuery($attributes);
 
         // Defense in depth: customQuery does not apply the user's form scope, so
-        // re-assert it here even though form_id was already access-checked above.
-        $scope = PermissionGate::formScope();
-        if ($scope !== false) {
-            $query->whereIn('fluentform_submissions.form_id', $scope ?: [0]);
-        }
+        // re-assert it even though form_id was already access-checked above.
+        FormAccess::applyScope($query, 'fluentform_submissions.form_id');
 
         $paginator = $query->paginate($paging['per_page'], ['*'], 'page', $paging['page']);
         $total     = MCPHelper::paginatorTotal($paginator);
@@ -178,19 +168,11 @@ class SubmissionTools
 
     public static function getSubmission($params = [])
     {
-        $entryId = isset($params['entry_id']) ? (int) $params['entry_id'] : 0;
-        if (!$entryId) {
-            return MCPHelper::error('missing_identifier', __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
+        $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
+        if (is_wp_error($submission)) {
+            return $submission;
         }
-
-        $submission = Submission::query()->find($entryId);
-        if (!$submission) {
-            return MCPHelper::error('not_found', __('No entry found for the given entry_id.', 'fluentform'));
-        }
-
-        if (!PermissionGate::canAccessForm($submission->form_id)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this entry\'s form.', 'fluentform'));
-        }
+        $entryId = (int) $submission->id;
 
         $labels = self::formLabels($submission->form_id);
         $values = self::labeledValues($submission->response, $labels);
@@ -225,23 +207,16 @@ class SubmissionTools
 
     public static function updateStatus($params = [])
     {
-        $entryId = isset($params['entry_id']) ? (int) $params['entry_id'] : 0;
-        $status  = isset($params['status']) ? sanitize_text_field($params['status']) : '';
-
-        if (!$entryId) {
-            return MCPHelper::error('missing_identifier', __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
-        }
+        $status = isset($params['status']) ? sanitize_text_field($params['status']) : '';
         if (!in_array($status, ['unread', 'read', 'spam', 'trashed'], true)) {
             return MCPHelper::error('invalid_param', __('status must be one of: unread, read, spam, trashed.', 'fluentform'), ['fields' => ['status']]);
         }
 
-        $submission = Submission::query()->find($entryId);
-        if (!$submission) {
-            return MCPHelper::error('not_found', __('No entry found for the given entry_id.', 'fluentform'));
+        $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
+        if (is_wp_error($submission)) {
+            return $submission;
         }
-        if (!PermissionGate::canAccessForm($submission->form_id)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this entry\'s form.', 'fluentform'));
-        }
+        $entryId = (int) $submission->id;
 
         $service = new SubmissionService();
         $service->updateStatus(['entry_id' => $entryId, 'status' => $status]);
@@ -259,23 +234,16 @@ class SubmissionTools
 
     public static function addNote($params = [])
     {
-        $entryId = isset($params['entry_id']) ? (int) $params['entry_id'] : 0;
         $content = isset($params['content']) ? trim((string) $params['content']) : '';
-
-        if (!$entryId) {
-            return MCPHelper::error('missing_identifier', __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
-        }
         if ('' === $content) {
             return MCPHelper::error('missing_param', __('content is required.', 'fluentform'), ['fields' => ['content']]);
         }
 
-        $submission = Submission::query()->find($entryId);
-        if (!$submission) {
-            return MCPHelper::error('not_found', __('No entry found for the given entry_id.', 'fluentform'));
+        $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
+        if (is_wp_error($submission)) {
+            return $submission;
         }
-        if (!PermissionGate::canAccessForm($submission->form_id)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this entry\'s form.', 'fluentform'));
-        }
+        $entryId = (int) $submission->id;
 
         $service = new SubmissionService();
         $result  = $service->storeNote($entryId, [
@@ -313,6 +281,9 @@ class SubmissionTools
         $data = self::decodeResponse($response);
         $out  = [];
         foreach ($data as $key => $value) {
+            if (FormAccess::isInternalKey($key)) {
+                continue;
+            }
             $out[] = [
                 'key'   => $key,
                 'label' => isset($labels[$key]) ? $labels[$key] : $key,
@@ -327,6 +298,9 @@ class SubmissionTools
         $data  = self::decodeResponse($response);
         $parts = [];
         foreach ($data as $key => $value) {
+            if (FormAccess::isInternalKey($key)) {
+                continue;
+            }
             $flat = self::flattenValue($value);
             if ('' === $flat || null === $flat) {
                 continue;

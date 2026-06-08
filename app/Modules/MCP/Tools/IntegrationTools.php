@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\MCP\Tools;
 
 defined('ABSPATH') or die;
 
+use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Integrations\FormIntegrationService;
@@ -44,18 +45,22 @@ class IntegrationTools
 
     public static function listIntegrations($params = [])
     {
-        $formId = isset($params['form_id']) ? (int) $params['form_id'] : 0;
-        if (!$formId) {
-            return MCPHelper::error('missing_identifier', __('form_id is required.', 'fluentform'), ['fields' => ['form_id']]);
+        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        if (is_wp_error($form)) {
+            return $form;
         }
-        if (!PermissionGate::canAccessForm($formId)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this form.', 'fluentform'));
-        }
+        $formId = (int) $form->id;
 
-        $feeds = (new FormIntegrationService())->get($formId);
+        // FormIntegrationService::get() returns ['feeds' => [...], ...]; the
+        // configured feeds live under the 'feeds' key, not at the top level.
+        $result = (new FormIntegrationService())->get($formId);
+        $feeds  = (isset($result['feeds']) && is_array($result['feeds'])) ? $result['feeds'] : [];
 
         $rows = [];
-        foreach ((array) $feeds as $feed) {
+        foreach ($feeds as $feed) {
+            if (!is_array($feed)) {
+                continue;
+            }
             $rows[] = [
                 'id'       => isset($feed['id']) ? (int) $feed['id'] : null,
                 'name'     => isset($feed['name']) ? $feed['name'] : null,

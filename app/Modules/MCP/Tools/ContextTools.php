@@ -7,6 +7,7 @@ defined('ABSPATH') or die;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 
@@ -91,8 +92,7 @@ class ContextTools
             'timezone'   => wp_timezone_string(),
         ];
 
-        $canForms   = PermissionGate::can('fluentform_forms_manager') || PermissionGate::can('fluentform_dashboard_access');
-        $canEntries = PermissionGate::can('fluentform_entries_viewer');
+        $canForms = PermissionGate::can('fluentform_forms_manager') || PermissionGate::can('fluentform_dashboard_access');
 
         return MCPHelper::envelope(
             self::summary(),
@@ -126,12 +126,8 @@ class ContextTools
      */
     private static function accessibleForms()
     {
-        $scope = PermissionGate::formScope();
-
         $query = Form::query()->select(['id', 'title', 'status', 'type'])->orderBy('id', 'DESC');
-        if ($scope !== false) {
-            $query->whereIn('id', $scope ?: [0]);
-        }
+        FormAccess::applyScope($query, 'id');
 
         $forms = $query->limit(50)->get();
 
@@ -150,36 +146,22 @@ class ContextTools
 
     private static function buildStats()
     {
-        $scope = PermissionGate::formScope();
-
         return [
-            'forms_total'           => self::safeCount(function () use ($scope) {
-                $q = Form::query();
-                if ($scope !== false) {
-                    $q->whereIn('id', $scope ?: [0]);
-                }
-                return $q->count();
+            'forms_total'          => self::safeCount(function () {
+                return FormAccess::applyScope(Form::query(), 'id')->count();
             }),
-            'submissions_total'     => self::safeCount(function () use ($scope) {
-                return self::scopedSubmissions($scope)->where('status', '!=', 'trashed')->count();
+            'submissions_total'    => self::safeCount(function () {
+                return FormAccess::applyScope(Submission::query(), 'form_id')
+                    ->where('status', '!=', 'trashed')->count();
             }),
-            'submissions_last_30d'  => self::safeCount(function () use ($scope) {
+            'submissions_last_30d' => self::safeCount(function () {
                 $since = gmdate('Y-m-d H:i:s', strtotime('-30 days', current_time('timestamp')));
-                return self::scopedSubmissions($scope)
+                return FormAccess::applyScope(Submission::query(), 'form_id')
                     ->where('status', '!=', 'trashed')
                     ->where('created_at', '>=', $since)
                     ->count();
             }),
         ];
-    }
-
-    private static function scopedSubmissions($scope)
-    {
-        $q = Submission::query();
-        if ($scope !== false) {
-            $q->whereIn('form_id', $scope ?: [0]);
-        }
-        return $q;
     }
 
     private static function safeCount(callable $fn)

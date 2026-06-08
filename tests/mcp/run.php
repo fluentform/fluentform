@@ -12,6 +12,7 @@
 
 require __DIR__ . '/bootstrap.php';
 
+use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Modules\MCP\Tools\ContextTools;
@@ -119,6 +120,15 @@ eq(PermissionGate::isEnabled(), false, 'switch unchanged when unauthorized');
 $GLOBALS['__mcp_test_can'] = true;
 ok(in_array('fluentform_entries_viewer', PermissionGate::readRoleCaps(), true), 'readRoleCaps includes entries viewer');
 ok(!empty(PermissionGate::readRoleCaps()), 'readRoleCaps non-empty');
+
+echo "FormAccess::isInternalKey\n";
+ok(FormAccess::isInternalKey('_wp_http_referer'), 'underscore key is internal');
+ok(FormAccess::isInternalKey('__fluent_form_embded_post_id'), 'double-underscore key is internal');
+ok(FormAccess::isInternalKey('_fluentform_12_fluentformnonce'), 'nonce key is internal');
+ok(FormAccess::isInternalKey('g-recaptcha-response'), 'captcha token is internal');
+ok(!FormAccess::isInternalKey('email'), 'plain field is not internal');
+ok(!FormAccess::isInternalKey('first_name'), 'named field is not internal');
+ok(!FormAccess::isInternalKey(''), 'empty string is not internal');
 
 echo "Tool definitions integrity\n";
 $defs = array_merge(
