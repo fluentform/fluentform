@@ -212,7 +212,11 @@
                     form_id: this.form.id,
                 })
                     .then(response => {
-                        this.settings = response.data.settings;
+                        const settings = response.data.settings;
+                        if (Array.isArray(settings.saved_quiz_fields)) {
+                            settings.saved_quiz_fields = Object.assign({}, settings.saved_quiz_fields);
+                        }
+                        this.settings = settings;
                         this.quizFields = response.data.quiz_fields;
                         this.settingsFields = response.data.settings_fields;
                     })
