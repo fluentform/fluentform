@@ -438,6 +438,9 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 6.2.5 Unreleased (Date: TBD) =
+- Fixes "Other" option values saving with an English "Other:" prefix instead of the field's translated label
+
 = 6.2.4 (Date: May 25, 2026) =
 - Fixes conversational form pretty URLs rendering
 - Fixes Pretty URL toggle not persisting when disabled

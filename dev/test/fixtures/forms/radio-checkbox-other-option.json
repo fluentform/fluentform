@@ -1,0 +1,142 @@
+{
+    "fields": [
+        {
+            "index": 0,
+            "element": "input_checkbox",
+            "attributes": {
+                "type": "checkbox",
+                "name": "checkbox",
+                "value": []
+            },
+            "settings": {
+                "dynamic_default_value": "",
+                "container_class": "",
+                "label": "Travaux souhaités",
+                "admin_field_label": "",
+                "label_placement": "",
+                "display_type": "",
+                "help_message": "",
+                "advanced_options": [
+                    {
+                        "label": "Item 1",
+                        "value": "Item 1",
+                        "calc_value": "",
+                        "image": ""
+                    },
+                    {
+                        "label": "Item 2",
+                        "value": "Item 2",
+                        "calc_value": "",
+                        "image": ""
+                    }
+                ],
+                "calc_value_status": false,
+                "enable_image_input": false,
+                "values_visible": false,
+                "randomize_options": "no",
+                "enable_other_option": "yes",
+                "other_option_label": "Autre (préciser)",
+                "other_option_placeholder": "Veuillez préciser...",
+                "validation_rules": {
+                    "required": {
+                        "value": false,
+                        "message": "This field is required",
+                        "global_message": "This field is required",
+                        "global": true
+                    }
+                },
+                "conditional_logics": [],
+                "layout_class": ""
+            },
+            "editor_options": {
+                "title": "Checkbox",
+                "icon_class": "ff-edit-checkbox-1",
+                "template": "inputCheckable"
+            },
+            "uniqElKey": "fixture-other-option-checkbox"
+        },
+        {
+            "index": 1,
+            "element": "input_radio",
+            "attributes": {
+                "type": "radio",
+                "name": "input_radio",
+                "value": ""
+            },
+            "settings": {
+                "dynamic_default_value": "",
+                "container_class": "",
+                "label": "Type de projet",
+                "admin_field_label": "",
+                "label_placement": "",
+                "display_type": "",
+                "help_message": "",
+                "randomize_options": "no",
+                "advanced_options": [
+                    {
+                        "label": "Yes",
+                        "value": "yes",
+                        "calc_value": "",
+                        "image": ""
+                    },
+                    {
+                        "label": "No",
+                        "value": "no",
+                        "calc_value": "",
+                        "image": ""
+                    }
+                ],
+                "calc_value_status": false,
+                "enable_image_input": false,
+                "values_visible": false,
+                "enable_other_option": "yes",
+                "other_option_label": "Autre (préciser)",
+                "other_option_placeholder": "Veuillez préciser...",
+                "validation_rules": {
+                    "required": {
+                        "value": false,
+                        "message": "This field is required",
+                        "global_message": "This field is required",
+                        "global": true
+                    }
+                },
+                "conditional_logics": [],
+                "layout_class": ""
+            },
+            "editor_options": {
+                "title": "Radio Field",
+                "icon_class": "ff-edit-radio",
+                "element": "input-radio",
+                "template": "inputCheckable"
+            },
+            "uniqElKey": "fixture-other-option-radio"
+        }
+    ],
+    "submitButton": {
+        "uniqElKey": "fixture-other-option-submit",
+        "element": "button",
+        "attributes": {
+            "type": "submit",
+            "class": ""
+        },
+        "settings": {
+            "container_class": "",
+            "help_message": "",
+            "button_style": "default",
+            "button_size": "md",
+            "color": "#ffffff",
+            "background_color": "#409EFF",
+            "button_ui": {
+                "type": "default",
+                "text": "Submit",
+                "img_url": ""
+            },
+            "normal_styles": [],
+            "hover_styles": [],
+            "conditional_logics": []
+        },
+        "editor_options": {
+            "title": "Submit Button"
+        }
+    }
+}
