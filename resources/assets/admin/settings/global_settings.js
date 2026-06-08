@@ -12,6 +12,7 @@ import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
 import ManagersSettings from './ManagersSettings.vue';
 import InventoryManager from './InventoryManager.vue';
+import McpSettings from './McpSettings.vue';
 import PaymentSettings from './Payments/App.vue';
 
 
@@ -56,6 +57,7 @@ import {
     DatePicker,
     RadioButton,
     Popconfirm,
+    Alert,
     MessageBox
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
@@ -96,6 +98,7 @@ Vue.use(TabPane);
 Vue.use(DatePicker);
 Vue.use(RadioButton);
 Vue.use(Popconfirm);
+Vue.use(Alert);
 
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
@@ -139,6 +142,7 @@ const components = {
     'double_optin_settings': DoubleOptinSettings,
     managers: ManagersSettings,
     inventory_manager: InventoryManager,
+    mcp_settings: McpSettings,
     custom_component: CustomComponent,
     license: License
 };

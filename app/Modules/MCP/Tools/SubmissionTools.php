@@ -1,0 +1,359 @@
+<?php
+
+namespace FluentForm\App\Modules\MCP\Tools;
+
+defined('ABSPATH') or die;
+
+use FluentForm\App\Models\Form;
+use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\MCP\Support\MCPHelper;
+use FluentForm\App\Modules\MCP\Support\PermissionGate;
+use FluentForm\App\Services\Form\FormService;
+use FluentForm\App\Services\Submission\SubmissionService;
+
+/**
+ * Submission (entry) tools.
+ *
+ * Read: list-submissions (compact rows, requires form_id) and get-submission
+ * (one entry, fields labeled). Write: update-submission-status and
+ * add-submission-note — reversible, so they ship without a dry-run guard and
+ * rely on the manage-entries permission.
+ *
+ * SECURITY: every tool resolves the entry's real form_id from the DB and checks
+ * it against the user's form scope before returning or mutating — a "specific
+ * forms" manager can never reach an entry on a form outside their assignment by
+ * passing its id (IDOR-safe).
+ */
+class SubmissionTools
+{
+    public static function definitions()
+    {
+        return [
+            'fluentform/list-submissions' => [
+                'label'       => __('List Submissions', 'fluentform'),
+                'description' => __('List and filter entries for one form (form_id required). Compact rows: id, serial, status, favorite, date, and a short value preview. Filter by status, search text, and date range; sort by date. Use get-submission for the full labeled entry.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'form_id'      => ['type' => 'integer', 'description' => 'Required. The form whose entries to list.'],
+                        'status'       => ['type' => 'string', 'enum' => ['unread', 'read', 'spam', 'trashed', 'favorites'], 'description' => 'favorites returns favorited entries regardless of read state.'],
+                        'search'       => ['type' => 'string', 'description' => 'Matches entry id, response text, status, or date.'],
+                        'date_from'    => ['type' => 'string', 'description' => 'YYYY-MM-DD (site timezone).'],
+                        'date_to'      => ['type' => 'string', 'description' => 'YYYY-MM-DD (site timezone).'],
+                        'sort_by'      => ['type' => 'string', 'enum' => ['ASC', 'DESC'], 'default' => 'DESC'],
+                        'page'         => ['type' => 'integer', 'default' => 1],
+                        'per_page'     => ['type' => 'integer', 'default' => 15, 'description' => 'Max 100.'],
+                    ],
+                    'required' => ['form_id'],
+                ],
+                'execute_callback'    => [self::class, 'listSubmissions'],
+                'permission_callback' => function () {
+                    return PermissionGate::can('fluentform_entries_viewer');
+                },
+                'annotations' => ['readonly' => true],
+            ],
+
+            'fluentform/get-submission' => [
+                'label'       => __('Get Submission', 'fluentform'),
+                'description' => __('Full detail for one entry by id: status, serial, dates, the submitting user, and every field as a label/value pair. The form_id is resolved from the entry itself, then checked against your form access.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'entry_id' => ['type' => 'integer', 'description' => 'The submission id (from list-submissions).'],
+                    ],
+                    'required' => ['entry_id'],
+                ],
+                'execute_callback'    => [self::class, 'getSubmission'],
+                'permission_callback' => function () {
+                    return PermissionGate::can('fluentform_entries_viewer');
+                },
+                'annotations' => ['readonly' => true],
+            ],
+
+            'fluentform/update-submission-status' => [
+                'label'       => __('Update Submission Status', 'fluentform'),
+                'description' => __('Set one entry\'s status (unread, read, spam, trashed). trashed soft-deletes the entry; it can be restored by setting another status. Acts on a single entry by id.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'entry_id' => ['type' => 'integer'],
+                        'status'   => ['type' => 'string', 'enum' => ['unread', 'read', 'spam', 'trashed']],
+                    ],
+                    'required' => ['entry_id', 'status'],
+                ],
+                'execute_callback'    => [self::class, 'updateStatus'],
+                'permission_callback' => function () {
+                    return PermissionGate::can('fluentform_manage_entries');
+                },
+            ],
+
+            'fluentform/add-submission-note' => [
+                'label'       => __('Add Submission Note', 'fluentform'),
+                'description' => __('Add an internal staff note to one entry (not visible to the submitter). Acts on a single entry by id.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'entry_id' => ['type' => 'integer'],
+                        'content'  => ['type' => 'string', 'description' => 'Note text (plain text or simple HTML).'],
+                    ],
+                    'required' => ['entry_id', 'content'],
+                ],
+                'execute_callback'    => [self::class, 'addNote'],
+                'permission_callback' => function () {
+                    return PermissionGate::can('fluentform_manage_entries');
+                },
+            ],
+        ];
+    }
+
+    public static function listSubmissions($params = [])
+    {
+        $formId = isset($params['form_id']) ? (int) $params['form_id'] : 0;
+        if (!$formId) {
+            return MCPHelper::error('missing_identifier', __('form_id is required.', 'fluentform'), ['fields' => ['form_id']]);
+        }
+        if (!PermissionGate::canAccessForm($formId)) {
+            return MCPHelper::error('forbidden', __('You do not have access to this form.', 'fluentform'));
+        }
+
+        $form = Form::query()->find($formId);
+        if (!$form) {
+            return MCPHelper::error('not_found', __('No form found for the given form_id.', 'fluentform'));
+        }
+
+        $paging = MCPHelper::pagination($params, 15);
+
+        $attributes = [
+            'form_id'    => $formId,
+            'entry_type' => !empty($params['status']) ? sanitize_text_field($params['status']) : '',
+            'search'     => !empty($params['search']) ? sanitize_text_field($params['search']) : '',
+            'sort_by'    => (isset($params['sort_by']) && 'ASC' === strtoupper($params['sort_by'])) ? 'ASC' : 'DESC',
+        ];
+
+        if (!empty($params['date_from']) && !empty($params['date_to'])) {
+            $attributes['date_range'] = [
+                sanitize_text_field($params['date_from']),
+                sanitize_text_field($params['date_to']),
+            ];
+        }
+
+        $model = new Submission();
+        $query = $model->customQuery($attributes);
+
+        // Defense in depth: customQuery does not apply the user's form scope, so
+        // re-assert it here even though form_id was already access-checked above.
+        $scope = PermissionGate::formScope();
+        if ($scope !== false) {
+            $query->whereIn('fluentform_submissions.form_id', $scope ?: [0]);
+        }
+
+        $paginator = $query->paginate($paging['per_page'], ['*'], 'page', $paging['page']);
+        $total     = MCPHelper::paginatorTotal($paginator);
+
+        $labels = self::formLabels($formId);
+
+        $rows = [];
+        foreach (MCPHelper::paginatorItems($paginator) as $submission) {
+            $rows[] = [
+                'id'           => (int) $submission->id,
+                'serial'       => isset($submission->serial_number) ? (int) $submission->serial_number : null,
+                'status'       => $submission->status,
+                'is_favorite'  => (bool) $submission->is_favourite,
+                'created_at'   => MCPHelper::toIso8601($submission->created_at),
+                'preview'      => self::valuePreview($submission->response, $labels),
+            ];
+        }
+
+        return MCPHelper::envelope(
+            sprintf(
+                /* translators: 1: entry count, 2: form title */
+                _n('%1$d entry found on "%2$s".', '%1$d entries found on "%2$s".', $total, 'fluentform'),
+                $total,
+                $form->title
+            ),
+            ['submissions' => $rows],
+            MCPHelper::pagingMeta($paginator)
+        );
+    }
+
+    public static function getSubmission($params = [])
+    {
+        $entryId = isset($params['entry_id']) ? (int) $params['entry_id'] : 0;
+        if (!$entryId) {
+            return MCPHelper::error('missing_identifier', __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
+        }
+
+        $submission = Submission::query()->find($entryId);
+        if (!$submission) {
+            return MCPHelper::error('not_found', __('No entry found for the given entry_id.', 'fluentform'));
+        }
+
+        if (!PermissionGate::canAccessForm($submission->form_id)) {
+            return MCPHelper::error('forbidden', __('You do not have access to this entry\'s form.', 'fluentform'));
+        }
+
+        $labels = self::formLabels($submission->form_id);
+        $values = self::labeledValues($submission->response, $labels);
+
+        $user = null;
+        if ($submission->user_id) {
+            $wpUser = get_user_by('ID', $submission->user_id);
+            if ($wpUser) {
+                $user = ['id' => (int) $wpUser->ID, 'name' => $wpUser->display_name, 'email' => $wpUser->user_email];
+            }
+        }
+
+        return MCPHelper::envelope(
+            sprintf(
+                /* translators: %d: entry id */
+                __('Entry #%d loaded.', 'fluentform'),
+                $entryId
+            ),
+            [
+                'id'          => (int) $submission->id,
+                'form_id'     => (int) $submission->form_id,
+                'serial'      => isset($submission->serial_number) ? (int) $submission->serial_number : null,
+                'status'      => $submission->status,
+                'is_favorite' => (bool) $submission->is_favourite,
+                'created_at'  => MCPHelper::toIso8601($submission->created_at),
+                'updated_at'  => MCPHelper::toIso8601($submission->updated_at),
+                'user'        => $user,
+                'fields'      => $values,
+            ]
+        );
+    }
+
+    public static function updateStatus($params = [])
+    {
+        $entryId = isset($params['entry_id']) ? (int) $params['entry_id'] : 0;
+        $status  = isset($params['status']) ? sanitize_text_field($params['status']) : '';
+
+        if (!$entryId) {
+            return MCPHelper::error('missing_identifier', __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
+        }
+        if (!in_array($status, ['unread', 'read', 'spam', 'trashed'], true)) {
+            return MCPHelper::error('invalid_param', __('status must be one of: unread, read, spam, trashed.', 'fluentform'), ['fields' => ['status']]);
+        }
+
+        $submission = Submission::query()->find($entryId);
+        if (!$submission) {
+            return MCPHelper::error('not_found', __('No entry found for the given entry_id.', 'fluentform'));
+        }
+        if (!PermissionGate::canAccessForm($submission->form_id)) {
+            return MCPHelper::error('forbidden', __('You do not have access to this entry\'s form.', 'fluentform'));
+        }
+
+        $service = new SubmissionService();
+        $service->updateStatus(['entry_id' => $entryId, 'status' => $status]);
+
+        return MCPHelper::envelope(
+            sprintf(
+                /* translators: 1: entry id, 2: new status */
+                __('Entry #%1$d marked as %2$s.', 'fluentform'),
+                $entryId,
+                $status
+            ),
+            ['id' => $entryId, 'status' => $status]
+        );
+    }
+
+    public static function addNote($params = [])
+    {
+        $entryId = isset($params['entry_id']) ? (int) $params['entry_id'] : 0;
+        $content = isset($params['content']) ? trim((string) $params['content']) : '';
+
+        if (!$entryId) {
+            return MCPHelper::error('missing_identifier', __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
+        }
+        if ('' === $content) {
+            return MCPHelper::error('missing_param', __('content is required.', 'fluentform'), ['fields' => ['content']]);
+        }
+
+        $submission = Submission::query()->find($entryId);
+        if (!$submission) {
+            return MCPHelper::error('not_found', __('No entry found for the given entry_id.', 'fluentform'));
+        }
+        if (!PermissionGate::canAccessForm($submission->form_id)) {
+            return MCPHelper::error('forbidden', __('You do not have access to this entry\'s form.', 'fluentform'));
+        }
+
+        $service = new SubmissionService();
+        $result  = $service->storeNote($entryId, [
+            'form_id' => (int) $submission->form_id,
+            'note'    => ['content' => wp_kses_post($content), 'status' => ''],
+        ]);
+
+        return MCPHelper::envelope(
+            __('Note added.', 'fluentform'),
+            ['id' => $entryId, 'note_id' => isset($result['insert_id']) ? (int) $result['insert_id'] : null]
+        );
+    }
+
+    private static function formLabels($formId)
+    {
+        try {
+            $schema = (new FormService())->getInputsAndLabels($formId);
+            return isset($schema['labels']) ? $schema['labels'] : [];
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    private static function decodeResponse($response)
+    {
+        if (is_array($response)) {
+            return $response;
+        }
+        $decoded = json_decode((string) $response, true);
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    private static function labeledValues($response, $labels)
+    {
+        $data = self::decodeResponse($response);
+        $out  = [];
+        foreach ($data as $key => $value) {
+            $out[] = [
+                'key'   => $key,
+                'label' => isset($labels[$key]) ? $labels[$key] : $key,
+                'value' => self::flattenValue($value),
+            ];
+        }
+        return $out;
+    }
+
+    private static function valuePreview($response, $labels, $max = 3)
+    {
+        $data  = self::decodeResponse($response);
+        $parts = [];
+        foreach ($data as $key => $value) {
+            $flat = self::flattenValue($value);
+            if ('' === $flat || null === $flat) {
+                continue;
+            }
+            $label   = isset($labels[$key]) ? $labels[$key] : $key;
+            $parts[] = $label . ': ' . MCPHelper::preview($flat, 60);
+            if (count($parts) >= $max) {
+                break;
+            }
+        }
+        return implode(' | ', $parts);
+    }
+
+    private static function flattenValue($value)
+    {
+        if (is_array($value)) {
+            $flat = [];
+            array_walk_recursive($value, function ($item) use (&$flat) {
+                if (is_scalar($item) && '' !== $item) {
+                    $flat[] = $item;
+                }
+            });
+            return implode(', ', $flat);
+        }
+        if (is_scalar($value)) {
+            return (string) $value;
+        }
+        return '';
+    }
+}

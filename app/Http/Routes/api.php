@@ -118,6 +118,15 @@ $router->prefix('global-settings')->withPolicy('GlobalSettingsPolicy')->group(fu
     $router->post('/', 'GlobalSettingsController@store');
 });
 /*
+* MCP (Model Context Protocol) Settings
+*/
+$router->prefix('mcp')->withPolicy('GlobalSettingsPolicy')->group(function ($router) {
+    $router->get('status', 'McpSettingsController@status');
+    $router->post('toggle', 'McpSettingsController@toggle');
+    $router->post('install-adapter', 'McpSettingsController@installAdapter');
+    $router->get('config-snippets', 'McpSettingsController@getConfigSnippets');
+});
+/*
 * Permission Roles
 */
 $router->prefix('roles')->withPolicy('RoleManagerPolicy')->group(function ($router) {
