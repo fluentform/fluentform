@@ -175,7 +175,7 @@ class Checkable extends BaseComponent
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
     
-        $data = apply_filters_deprecated(
+        $html = apply_filters_deprecated(
             'fluentform_rendering_field_html_' . $elementName,
             [
                 $html,
