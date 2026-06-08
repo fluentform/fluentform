@@ -58,7 +58,99 @@ class FormTools
                 },
                 'annotations' => ['readonly' => true],
             ],
+
+            'fluentform/create-form' => [
+                'label'       => __('Create Form', 'fluentform'),
+                'description' => __('Create a new form from a title and a list of fields. Each field needs a type (text, email, textarea, name, phone, number, url, dropdown, checkbox, radio, date) and a label. Omit fields to create a basic contact form (name, email, message). Returns the new form id and editor URL.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'title'  => ['type' => 'string', 'description' => 'The form title.'],
+                        'fields' => [
+                            'type'        => 'array',
+                            'description' => 'Fields to add, in order. Omit for a basic contact form.',
+                            'items'       => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    'type'  => ['type' => 'string', 'description' => 'Field type, e.g. text, email, textarea, name, phone, number, url, dropdown, checkbox, radio, date.'],
+                                    'label' => ['type' => 'string', 'description' => 'Field label shown to the user.'],
+                                ],
+                                'required' => ['type'],
+                            ],
+                        ],
+                        'is_conversational' => ['type' => 'boolean', 'description' => 'Create as a conversational form. Default false.'],
+                    ],
+                    'required' => ['title'],
+                ],
+                'execute_callback'    => [self::class, 'createForm'],
+                'permission_callback' => function () {
+                    return PermissionGate::can('fluentform_forms_manager');
+                },
+            ],
         ];
+    }
+
+    public static function createForm($params = [])
+    {
+        $title = isset($params['title']) ? sanitize_text_field($params['title']) : '';
+        if ('' === $title) {
+            return MCPHelper::error('missing_param', __('title is required.', 'fluentform'), ['fields' => ['title']]);
+        }
+
+        $specFields = [];
+        $fieldsIn   = (isset($params['fields']) && is_array($params['fields'])) ? $params['fields'] : [];
+        foreach ($fieldsIn as $field) {
+            if (!is_array($field)) {
+                continue;
+            }
+            $type = isset($field['type']) ? sanitize_text_field($field['type']) : '';
+            if ('' === $type) {
+                continue;
+            }
+            $label    = isset($field['label']) ? sanitize_text_field($field['label']) : '';
+            $settings = [];
+            if ('' !== $label) {
+                $settings['label']             = $label;
+                $settings['admin_field_label'] = $label;
+            }
+            $specFields[] = ['type' => $type, 'settings' => $settings];
+        }
+
+        // No usable fields supplied -> sensible default so the form is never empty.
+        if (!$specFields) {
+            $specFields = [
+                ['type' => 'name', 'settings' => ['label' => __('Name', 'fluentform')]],
+                ['type' => 'email', 'settings' => ['label' => __('Email', 'fluentform')]],
+                ['type' => 'textarea', 'settings' => ['label' => __('Message', 'fluentform')]],
+            ];
+        }
+
+        try {
+            $builder = new \FluentForm\App\Modules\Ai\AiFormBuilder();
+            $form    = $builder->createFromSpec([
+                'title'             => $title,
+                'fields'            => $specFields,
+                'is_conversational' => !empty($params['is_conversational']),
+            ]);
+        } catch (\Throwable $e) {
+            return MCPHelper::error('create_failed', $e->getMessage(), ['retryable' => false]);
+        }
+
+        return MCPHelper::envelope(
+            sprintf(
+                /* translators: 1: form title, 2: form id */
+                __('Form "%1$s" created (#%2$d).', 'fluentform'),
+                $form->title,
+                (int) $form->id
+            ),
+            [
+                'id'       => (int) $form->id,
+                'title'    => $form->title,
+                'status'   => $form->status,
+                'fields'   => count($specFields),
+                'edit_url' => admin_url('admin.php?page=fluent_forms&form_id=' . (int) $form->id . '&route=editor'),
+            ]
+        );
     }
 
     public static function listForms($params = [])

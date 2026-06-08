@@ -133,6 +133,7 @@ $expectedTools = [
     'fluentform/get-forms-context',
     'fluentform/list-forms',
     'fluentform/get-form',
+    'fluentform/create-form',
     'fluentform/list-submissions',
     'fluentform/get-submission',
     'fluentform/update-submission-status',
@@ -175,7 +176,7 @@ foreach ($readTools as $name) {
 }
 
 // Write tools must NOT be annotated readonly.
-foreach (['fluentform/update-submission-status', 'fluentform/add-submission-note'] as $name) {
+foreach (['fluentform/create-form', 'fluentform/update-submission-status', 'fluentform/add-submission-note'] as $name) {
     ok(empty($defs[$name]['annotations']['readonly']), "{$name} not annotated readonly (it writes)");
 }
 

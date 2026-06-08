@@ -47,6 +47,21 @@ class AiFormBuilder extends FormService
     }
 
     /**
+     * Create a form from a simple field spec, reusing the AI builder's field
+     * mapping + save pipeline. Used by the MCP create-form tool.
+     *
+     * @param array $form { title: string, fields: array, is_conversational?: bool }
+     * @return Form
+     * @throws Exception
+     */
+    public function createFromSpec(array $form)
+    {
+        Acl::verify('fluentform_forms_manager');
+
+        return $this->prepareAndSaveForm($form);
+    }
+
+    /**
      * @param array $form
      * @return Form|\FluentForm\Framework\Database\Query\Builder
      * @throws Exception

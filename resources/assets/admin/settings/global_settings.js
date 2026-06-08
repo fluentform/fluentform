@@ -58,6 +58,8 @@ import {
     RadioButton,
     Popconfirm,
     Alert,
+    Collapse,
+    CollapseItem,
     MessageBox
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
@@ -99,6 +101,8 @@ Vue.use(DatePicker);
 Vue.use(RadioButton);
 Vue.use(Popconfirm);
 Vue.use(Alert);
+Vue.use(Collapse);
+Vue.use(CollapseItem);
 
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;

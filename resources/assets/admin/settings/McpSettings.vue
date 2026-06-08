@@ -27,6 +27,26 @@
                     </el-form-item>
                 </el-form>
 
+                <el-collapse v-if="status.mcp_enabled && tools.length" class="ff_mcp_tools">
+                    <el-collapse-item name="tools">
+                        <template slot="title">
+                            <span class="ff_mcp_tools_title">{{ $t('Available tools') }} ({{ tools.length }})</span>
+                        </template>
+                        <div v-for="(groupTools, groupName) in groupedTools" :key="groupName" class="ff_mcp_tool_group">
+                            <div class="ff_mcp_tool_group_title">{{ groupName }}</div>
+                            <div v-for="tool in groupTools" :key="tool.name" class="ff_mcp_tool_row">
+                                <div class="ff_mcp_tool_head">
+                                    <span class="ff_mcp_tool_label">{{ tool.label }}</span>
+                                    <el-tag size="mini" :type="tool.write ? 'warning' : 'info'">
+                                        {{ tool.write ? $t('Write') : $t('Read') }}
+                                    </el-tag>
+                                </div>
+                                <div class="ff_mcp_tool_desc">{{ tool.description }}</div>
+                            </div>
+                        </div>
+                    </el-collapse-item>
+                </el-collapse>
+
                 <el-alert
                     v-if="status.mcp_enabled && !status.adapter_available"
                     type="warning"
@@ -105,6 +125,7 @@ export default {
                 tools_count: 0,
                 app_passwords_url: ''
             },
+            tools: [],
             snippets: {},
             clientLabels: {
                 'claude-code': 'Claude Code',
@@ -115,6 +136,19 @@ export default {
             }
         };
     },
+    computed: {
+        groupedTools() {
+            const groups = {};
+            this.tools.forEach(tool => {
+                const key = tool.group || 'General';
+                if (!groups[key]) {
+                    groups[key] = [];
+                }
+                groups[key].push(tool);
+            });
+            return groups;
+        }
+    },
     methods: {
         clientLabel(key) {
             return this.clientLabels[key] || key;
@@ -124,6 +158,7 @@ export default {
             FluentFormsGlobal.$rest.get('mcp/status')
                 .then(response => {
                     this.status = response;
+                    this.tools = response.tools || [];
                     if (response.mcp_enabled && response.adapter_available) {
                         this.fetchSnippets();
                     }
@@ -188,3 +223,46 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.ff_mcp_tools {
+    margin: 4px 0 20px;
+    border-top: none;
+}
+.ff_mcp_tools_title {
+    font-weight: 600;
+}
+.ff_mcp_tool_group {
+    margin-bottom: 14px;
+}
+.ff_mcp_tool_group_title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #7a8194;
+    margin: 6px 0;
+}
+.ff_mcp_tool_row {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f1f5;
+}
+.ff_mcp_tool_row:last-child {
+    border-bottom: none;
+}
+.ff_mcp_tool_head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ff_mcp_tool_label {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+.ff_mcp_tool_desc {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+</style>
