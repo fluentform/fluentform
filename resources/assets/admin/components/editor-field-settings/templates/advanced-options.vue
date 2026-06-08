@@ -38,7 +38,7 @@
         >
             <vddl-draggable
                 v-for="(group, groupIndex) in groupedOptions"
-                :key="group.id || `group-${groupIndex}`"
+                :key="group.id"
                 :draggable="group"
                 :index="groupIndex"
                 :wrapper="editItem.settings.advanced_options"
@@ -90,7 +90,7 @@
                         <div class="ff_option_group__rows">
                             <div
                                 v-for="(option, optionIndex) in group.options"
-                                :key="`group-${groupIndex}-option-${optionIndex}`"
+                                :key="option.id"
                                 class="ff_option_group__row"
                             >
                                 <div v-if="!isRankingField" class="checkbox ff_option_group__default">
@@ -156,7 +156,7 @@
                 :moved="handleMoved"
                 class="optionsToRender"
                 v-for="(option, index) in editItem.settings.advanced_options"
-                :key="option.id || index"
+                :key="option.id"
                 :draggable="option"
                 :index="index"
                 :wrapper="editItem.settings.advanced_options"
@@ -276,6 +276,9 @@
     import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
     import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
+    let optionUniqueId = Date.now();
+    const nextOptionId = () => ++optionUniqueId;
+
     export default {
         name: 'advanced-options',
         props: {
@@ -362,7 +365,7 @@
         methods: {
             handleDrop(data) {
                 const { index, list, item } = data;
-                item.id = new Date().getTime();
+                item.id = nextOptionId();
                 list.splice(index, 0, item);
             },
             handleMoved(item) {
@@ -414,6 +417,7 @@
                     }
                     if (label && value) {
                         values.push({
+                            id: nextOptionId(),
                             label: label,
                             value: value,
                             calc_value: '',
@@ -504,6 +508,7 @@
                 const optionLabel = `Option ${optionNumber}`;
 
                 return {
+                    id: nextOptionId(),
                     label: optionLabel,
                     value: optionLabel,
                     calc_value: '',
@@ -524,6 +529,7 @@
                 }
 
                 return {
+                    id: nextOptionId(),
                     type: 'group',
                     label: `Group ${groupNumber}`,
                     is_open: true,
@@ -561,6 +567,24 @@
             hasGroupedOptions(options) {
                 return (options || []).some(option => option && option.type === 'group' && Array.isArray(option.options));
             },
+            // Vue list keys are option.id — every option/group needs a unique
+            // truthy id. Legacy saves carry index-based ids (0 is falsy) and
+            // duplicates, which break keyed reconciliation (duplicate-key
+            // warnings on add, drag reorder misbehaving).
+            ensureUniqueIds(options, seen = new Set()) {
+                each(options || [], item => {
+                    if (!item) {
+                        return;
+                    }
+                    if (!item.id || seen.has(String(item.id))) {
+                        this.$set(item, 'id', nextOptionId());
+                    }
+                    seen.add(String(item.id));
+                    if (item.type === 'group' && Array.isArray(item.options)) {
+                        this.ensureUniqueIds(item.options, seen);
+                    }
+                });
+            },
             handleGroupingModeChange(value) {
                 this.$set(this.editItem.settings, 'enable_option_groups', value ? 'yes' : 'no');
 
@@ -581,6 +605,7 @@
                     );
                 }
 
+                this.ensureUniqueIds(this.editItem.settings.advanced_options);
                 this.createOptionsToRender();
             },
             addGroup(index = null) {
@@ -660,12 +685,8 @@
     },
         mounted() {
             this.normalizeGroupingState();
+            this.ensureUniqueIds(this.editItem.settings.advanced_options);
             this.createOptionsToRender();
-            (this.editItem.settings.advanced_options || []).forEach((item, i) => {
-                if (!item.id) {
-                    item.id = i;
-                }
-            });
         }
     }
 </script>
