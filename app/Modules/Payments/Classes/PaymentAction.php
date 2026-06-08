@@ -156,8 +156,7 @@ class PaymentAction
         }
 
         $conditionFeed = ['conditionals' => $conditionSettings];
-        // false: treat a missing field with JS parity, matching frontend visibility.
-        return ConditionAssesor::evaluate($conditionFeed, $this->data, null, false);
+        return ConditionAssesor::evaluate($conditionFeed, $this->data);
     }
 
     /**
