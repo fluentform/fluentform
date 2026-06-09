@@ -318,8 +318,23 @@ class Submission extends Model
         $this->where('id', $id)->update($data);
     }
 
-    public static function remove($submissionIds)
+    public static function remove($submissionIds, $formId = null)
     {
+        // Fail-closed scope guard: $formId scopes every delete to its owning form;
+        // a missing scope throws rather than ever deleting unscoped.
+        if (empty($formId)) {
+            throw new \InvalidArgumentException('Submission::remove() requires a form id to scope the deletion.');
+        }
+
+        $submissionIds = static::where('form_id', $formId)
+            ->whereIn('id', (array) $submissionIds)
+            ->pluck('id')
+            ->all();
+
+        if (!$submissionIds) {
+            return;
+        }
+
         static::whereIn('id', $submissionIds)->delete();
 
         SubmissionMeta::whereIn('response_id', $submissionIds)->delete();
