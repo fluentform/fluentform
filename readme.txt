@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 6.2.4
+Stable tag: 6.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -437,6 +437,19 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.2.5 (Date: June 09, 2026) =
+- Improved the authorization scope for entry deletion so bulk and single deletes stay within the authorized request
+- Adds missing integrations to the addons list and global search
+- Fixes a conditional logic for empty fields could evaluate incorrectly restoring the v6.2.2 behavior
+- Fixes quiz question scores being lost on save when the settings start empty
+- Fixes a fatal error when opening the editor for a deleted form
+- Fixes duplicate field keys and broken drag-and-drop reorder in the editor advanced options
+- Fixes coupon not clearing when conditional logic hides the coupon field
+- Fixes overly long entry export URLs
+- Fixes full-URL smartcodes being double-encoded by the shortcode parser
+- Fixes submission and payment smartcodes not resolving on email/notification resend
+- Fixes scheduler temporary-file cleanup to honor the temp_file_delete_time filter
 
 = 6.2.4 (Date: May 25, 2026) =
 - Fixes conversational form pretty URLs rendering
