@@ -49,7 +49,10 @@ class StripeInline extends BaseFieldManager
 
             // Passed to the frontend so the Element shows the same methods as the PMC,
             // scoped to the connected account the inline request will run under.
-            $pmcId = StripeSettings::getModernPmcId($form->id, StripeSettings::modernConnectedAccountId($form));
+            // Cache-only: rendering must never trigger a remote Stripe call. The PMC
+            // is provisioned at settings-save (platform) or at submission time
+            // (connected/custom); until then the Element falls back to card-only.
+            $pmcId = StripeSettings::getCachedModernPmcId($form->id, StripeSettings::modernConnectedAccountId($form));
             $pmcAttr = $pmcId ? ' data-ff_stripe_pmc="' . esc_attr($pmcId) . '"' : '';
 
             $markup = '<div class="ff_stripe_payment_element_wrapper ff_pay_inline ff_pay_inline_stripe"' . $pmcAttr . ' style="display: ' . $display . '">';

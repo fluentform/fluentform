@@ -919,6 +919,14 @@ export class Payment_handler {
                 } else {
                     dfd.resolve();
                 }
+            }).catch((err) => {
+                // A rejected submit promise (transient Stripe.js/network/runtime
+                // failure) must still settle the Deferred, or the form stays stuck
+                // submitting with no recoverable error for the user.
+                that.toggleModernPaymentElementError(
+                    err && err.message ? err : { message: that.$t('Payment could not be processed. Please try again.') }
+                );
+                dfd.reject();
             });
             return dfd.promise();
         });

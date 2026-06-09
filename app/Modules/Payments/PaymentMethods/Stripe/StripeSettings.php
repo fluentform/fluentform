@@ -193,6 +193,27 @@ class StripeSettings
     }
 
     /**
+     * Cache-only PMC id lookup for the public render path: returns an
+     * already-provisioned Payment Method Configuration id, or null. Never makes a
+     * remote Stripe call, so rendering a form cannot block on Stripe. Provisioning
+     * happens at settings-save (platform account) or at submission time
+     * (connected/custom accounts), where latency is expected.
+     *
+     * @param int|false   $formId
+     * @param string|null $accountId
+     * @return string|null
+     */
+    public static function getCachedModernPmcId($formId = false, $accountId = null)
+    {
+        $secretKey = self::getSecretKey($formId);
+        if (!$secretKey) {
+            return null;
+        }
+        $cached = get_option(\FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::pmcCacheKey($secretKey, $accountId));
+        return $cached ? apply_filters('fluentform/stripe_modern_pmc_id', $cached, $formId) : null;
+    }
+
+    /**
      * The modern Stripe Connect account id for a form, or null when the
      * fluentform/stripe_modern_connected_account filter supplies none. Single
      * source of truth shared by the processors and inline component.
