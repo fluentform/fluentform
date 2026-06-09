@@ -963,6 +963,13 @@ export class Payment_handler {
                 payment_intent_id: data.payment_intent_id,
                 _ff_stripe_nonce: data._ff_stripe_nonce || '',
             });
+        }).catch((err) => {
+            // A rejected confirm promise (transient Stripe.js/network failure) must
+            // surface a recoverable error and release the submission progress, or the
+            // form is left stuck after the customer entered card details.
+            this.toggleModernPaymentElementError(
+                err && err.message ? err : { message: this.$t('Payment could not be completed. Please try again.') }
+            );
         });
     }
 

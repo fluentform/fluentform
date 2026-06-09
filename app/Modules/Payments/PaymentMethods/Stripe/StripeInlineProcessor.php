@@ -198,7 +198,12 @@ class StripeInlineProcessor extends StripeProcessor
             wp_send_json(['errors' => $validation->get_error_message()], 423);
         }
 
-        $intent = SCA::retrievePaymentIntent($paymentIntentId, ['expand' => ['charges']], $submission->form_id);
+        // The PaymentIntent was created under the modern connected account (when one
+        // is set), so retrieve it with the same Stripe-Account context or it 404s.
+        $accountId = $this->getModernConnectedAccountId($this->form);
+        $intent = $this->withModernAccountHeader($accountId, function () use ($paymentIntentId, $submission) {
+            return SCA::retrievePaymentIntent($paymentIntentId, ['expand' => ['charges']], $submission->form_id);
+        });
         if (is_wp_error($intent)) {
             $this->handlePaymentChargeError($intent->get_error_message(), $submission, $transaction, false, 'payment_intent');
         }
