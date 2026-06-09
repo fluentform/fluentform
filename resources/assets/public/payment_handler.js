@@ -1,5 +1,6 @@
 import formatPrice from "./formatPrice";
 import { _$t } from "@/admin/helpers";
+import { modernStripeAmount, modernRequiresStripe } from "./modernStripeAmount.mjs";
 export class Payment_handler {
     constructor($form, instance) {
         let formId = instance.settings.id;
@@ -851,16 +852,20 @@ export class Payment_handler {
         }
         const mode = this.$form.find('.ff_subscription_item').length ? 'subscription' : 'payment';
 
-        let amount = Math.round((this.totalAmount || 0) * 100);
-        // $0-now trials still need a card for future billing — use the recurring amount.
-        if (mode === 'subscription' && amount <= 0) {
-            amount = this.getSubscriptionRecurringAmount();
+        // $0-now trials still need a card for future billing — modernStripeAmount
+        // falls back to the recurring amount for those.
+        const amount = modernStripeAmount((this.totalAmount || 0) * 100, mode, this.getSubscriptionRecurringAmount());
+
+        if (!modernRequiresStripe(amount)) {
+            // No payable amount now (e.g. a one-time checkout fully discounted to 0):
+            // tear down any mounted Element so the validator skips Stripe and the
+            // customer isn't forced to enter card details for a free order. The next
+            // recalculation that yields a payable amount re-mounts it.
+            this.teardownModernPaymentElement();
+            return;
         }
 
         if (!this.modernElements) {
-            if (amount <= 0) {
-                return; // wait until there is a payable amount
-            }
             const elementsOptions = {
                 mode: mode,
                 amount: amount,
@@ -877,9 +882,24 @@ export class Payment_handler {
             this.modernElements = this.stripe.elements(elementsOptions);
             this.modernPaymentElement = this.modernElements.create('payment');
             this.modernPaymentElement.mount('#' + elementId);
-        } else if (amount > 0) {
+        } else {
             this.modernElements.update({ amount: amount, mode: mode });
         }
+    }
+
+    /**
+     * Unmount and forget the modern Payment Element. The inline validator skips
+     * Stripe whenever this.modernElements is null, so this both stops a free order
+     * from requiring a card and lets maybeMountModernPaymentElement() re-mount when
+     * a payable amount returns.
+     */
+    teardownModernPaymentElement() {
+        if (this.modernPaymentElement) {
+            this.modernPaymentElement.unmount();
+            this.modernPaymentElement = null;
+        }
+        this.modernElements = null;
+        this.toggleModernPaymentElementError();
     }
 
     registerModernInlineValidator() {
