@@ -140,7 +140,7 @@ class StripeInlineProcessor extends StripeProcessor
             $base['application_fee_amount'] = (int) ($transaction->payment_total * 0.019);
         }
 
-        $pmcId = StripeSettings::getModernPmcId($form->id);
+        $pmcId = StripeSettings::getModernPmcId($form->id, $accountId);
         if ($pmcId) {
             $base['payment_method_configuration'] = $pmcId;
         } else {
@@ -237,7 +237,7 @@ class StripeInlineProcessor extends StripeProcessor
     protected function modernInlinePaymentSettings($form)
     {
         $settings = ['save_default_payment_method' => 'on_subscription'];
-        $pmcId = StripeSettings::getModernPmcId($form->id);
+        $pmcId = StripeSettings::getModernPmcId($form->id, $this->getModernConnectedAccountId($form));
         if ($pmcId) {
             $settings['payment_method_configuration'] = $pmcId;
         } else {
@@ -405,26 +405,15 @@ class StripeInlineProcessor extends StripeProcessor
         // The subscription was created under the modern connected account (when the
         // fluentform/stripe_modern_connected_account filter supplies one), so the
         // retrieval must carry the same Stripe-Account context or the lookup 404s.
-        // Inject it via the legacy header filter to preserve the legacy API version
-        // (which exposes latest_invoice.payment_intent in the shape the recorder reads).
+        // The legacy ApiRequest path is kept so latest_invoice.payment_intent stays
+        // in the shape the recorder reads.
         $accountId = $this->getModernConnectedAccountId($this->form);
-        $accountHeaderFilter = null;
-        if ($accountId) {
-            $accountHeaderFilter = function ($headers) use ($accountId) {
-                $headers['Stripe-Account'] = $accountId;
-                return $headers;
-            };
-            add_filter('fluentform/stripe_request_headers', $accountHeaderFilter);
-        }
-
-        $subscription = ApiRequest::request(
-            ['expand' => ['latest_invoice.payment_intent']],
-            'subscriptions/' . $vendorSubscriptionId
-        );
-
-        if ($accountHeaderFilter) {
-            remove_filter('fluentform/stripe_request_headers', $accountHeaderFilter);
-        }
+        $subscription = $this->withModernAccountHeader($accountId, function () use ($vendorSubscriptionId) {
+            return ApiRequest::request(
+                ['expand' => ['latest_invoice.payment_intent']],
+                'subscriptions/' . $vendorSubscriptionId
+            );
+        });
 
         if (is_wp_error($subscription)) {
             $this->handlePaymentChargeError($subscription->get_error_message(), $submission, $transaction, false, 'payment_intent');

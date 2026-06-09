@@ -187,6 +187,35 @@ class ModernCheckout
     }
 
     /**
+     * Option key for the cached Payment Method Configuration id, scoped to the
+     * secret key and (when present) the connected account, so a platform-scoped
+     * PMC is never attached to a request executed under a Stripe-Account. A null
+     * account keeps the legacy key so already-cached platform PMC ids survive.
+     *
+     * @param string      $secretKey
+     * @param string|null $accountId
+     * @return string
+     */
+    public static function pmcCacheKey($secretKey, $accountId = null)
+    {
+        $base = $accountId ? ($secretKey . '|' . $accountId) : $secretKey;
+        return 'ff_stripe_modern_pmc_' . substr(md5($base), 0, 16);
+    }
+
+    /**
+     * Negative-cache (transient) key matching pmcCacheKey()'s scoping.
+     *
+     * @param string      $secretKey
+     * @param string|null $accountId
+     * @return string
+     */
+    public static function pmcFailKey($secretKey, $accountId = null)
+    {
+        $base = $accountId ? ($secretKey . '|' . $accountId) : $secretKey;
+        return 'ff_stripe_modern_pmc_fail_' . substr(md5($base), 0, 16);
+    }
+
+    /**
      * Build a modern recurring line item from a FluentForm subscription row.
      *
      * @param array  $priceData  currency, unit_amount, product name

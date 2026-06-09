@@ -91,5 +91,20 @@ check($k1 !== $kConnected, 'cache key varies by connected account (no cross-acco
 $kOtherKey = ModernCheckout::productCacheKey('sk_test_xyz', null, 'Monthly Plan');
 check($k1 !== $kOtherKey, 'cache key varies by secret key');
 
+// --- 4. PMC cache keys scoped to connected account (review fix: connected-account PMC) ---
+$pmc1 = ModernCheckout::pmcCacheKey('sk_test_abc', null);
+check(strpos($pmc1, 'ff_stripe_modern_pmc_') === 0, 'pmc cache key is namespaced');
+// Back-compat: the platform (no connected account) key must equal the legacy format
+// so already-cached platform PMC ids are not orphaned by this change.
+check($pmc1 === 'ff_stripe_modern_pmc_' . substr(md5('sk_test_abc'), 0, 16), 'platform pmc key matches legacy format');
+$pmcConnected = ModernCheckout::pmcCacheKey('sk_test_abc', 'acct_123');
+check($pmc1 !== $pmcConnected, 'pmc cache key varies by connected account');
+$pmcOtherAcct = ModernCheckout::pmcCacheKey('sk_test_abc', 'acct_999');
+check($pmcConnected !== $pmcOtherAcct, 'pmc cache key varies between connected accounts');
+
+$fail1 = ModernCheckout::pmcFailKey('sk_test_abc', null);
+check($fail1 === 'ff_stripe_modern_pmc_fail_' . substr(md5('sk_test_abc'), 0, 16), 'platform pmc fail key matches legacy format');
+check(ModernCheckout::pmcFailKey('sk_test_abc', 'acct_123') !== $fail1, 'pmc fail key varies by connected account');
+
 echo "\nPassed: {$results['pass']}, Failed: {$results['fail']}\n";
 exit($results['fail'] === 0 ? 0 : 1);

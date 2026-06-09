@@ -346,7 +346,34 @@ class StripeProcessor extends BaseProcessor
      */
     protected function getModernConnectedAccountId($form)
     {
-        return apply_filters('fluentform/stripe_modern_connected_account', null, $form);
+        return StripeSettings::modernConnectedAccountId($form);
+    }
+
+    /**
+     * Run $callback with a temporary Stripe-Account header on the legacy ApiRequest
+     * path, so modern connected-account resources (Checkout sessions, subscriptions)
+     * are retrieved under the same account they were created with. No-op when
+     * $accountId is empty, so legacy and platform flows are unaffected.
+     *
+     * @param string|null $accountId
+     * @param callable    $callback
+     * @return mixed
+     */
+    protected function withModernAccountHeader($accountId, callable $callback)
+    {
+        if (!$accountId) {
+            return $callback();
+        }
+        $filter = function ($headers) use ($accountId) {
+            $headers['Stripe-Account'] = $accountId;
+            return $headers;
+        };
+        add_filter('fluentform/stripe_request_headers', $filter);
+        try {
+            return $callback();
+        } finally {
+            remove_filter('fluentform/stripe_request_headers', $filter);
+        }
     }
 
     /**
@@ -609,12 +636,17 @@ class StripeProcessor extends BaseProcessor
                 $returnData = $this->getReturnData();
             } else {
                 $sessionId = $this->getMetaData('stripe_session_id');
-                $session = CheckoutSession::retrieve($sessionId, [
-                    'expand' => [
-                        'subscription.latest_invoice.payment_intent',
-                        'payment_intent'
-                    ]
-                ], $submission->form_id);
+                // A modern hosted session created under a connected account must be
+                // retrieved with the same Stripe-Account context or Stripe won't find it.
+                $accountId = $this->getModernConnectedAccountId($this->getForm());
+                $session = $this->withModernAccountHeader($accountId, function () use ($sessionId, $submission) {
+                    return CheckoutSession::retrieve($sessionId, [
+                        'expand' => [
+                            'subscription.latest_invoice.payment_intent',
+                            'payment_intent'
+                        ]
+                    ], $submission->form_id);
+                });
 
                 if ($session && !is_wp_error($session) && $session->customer) {
                     $transactionHash = sanitize_text_field($data['transaction_hash']);

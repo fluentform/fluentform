@@ -62,7 +62,7 @@ class StripeSettings
         if (self::useModernCheckout()) {
             $secretKey = self::getSecretKey();
             if ($secretKey) {
-                delete_transient('ff_stripe_modern_pmc_fail_' . substr(md5($secretKey), 0, 16));
+                delete_transient(\FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::pmcFailKey($secretKey));
             }
             self::getModernPmcId();
         }
@@ -159,15 +159,16 @@ class StripeSettings
      * @param int|false $formId
      * @return string|null
      */
-    public static function getModernPmcId($formId = false)
+    public static function getModernPmcId($formId = false, $accountId = null)
     {
         $secretKey = self::getSecretKey($formId);
         if (!$secretKey) {
             return null;
         }
 
-        $hash = substr(md5($secretKey), 0, 16);
-        $cacheKey = 'ff_stripe_modern_pmc_' . $hash;
+        // Scope the PMC to the connected account it will be used under, so a
+        // platform-scoped PMC id is never attached to a Stripe-Account request.
+        $cacheKey = \FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::pmcCacheKey($secretKey, $accountId);
 
         $cached = get_option($cacheKey);
         if ($cached) {
@@ -175,12 +176,12 @@ class StripeSettings
         }
 
         // A recent failure short-circuits the API call (cleared on settings-save).
-        $failKey = 'ff_stripe_modern_pmc_fail_' . $hash;
+        $failKey = \FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::pmcFailKey($secretKey, $accountId);
         if (get_transient($failKey)) {
             return null;
         }
 
-        $pmc = \FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::createPaymentMethodConfiguration($secretKey);
+        $pmc = \FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::createPaymentMethodConfiguration($secretKey, $accountId);
         if (is_wp_error($pmc) || empty($pmc->id)) {
             set_transient($failKey, 1, 5 * MINUTE_IN_SECONDS);
             return null;
@@ -189,6 +190,19 @@ class StripeSettings
         update_option($cacheKey, $pmc->id, false);
 
         return apply_filters('fluentform/stripe_modern_pmc_id', $pmc->id, $formId);
+    }
+
+    /**
+     * The modern Stripe Connect account id for a form, or null when the
+     * fluentform/stripe_modern_connected_account filter supplies none. Single
+     * source of truth shared by the processors and inline component.
+     *
+     * @param object $form
+     * @return string|null
+     */
+    public static function modernConnectedAccountId($form)
+    {
+        return apply_filters('fluentform/stripe_modern_connected_account', null, $form);
     }
 
     /**
