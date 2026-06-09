@@ -866,6 +866,16 @@ export class Payment_handler {
         }
 
         if (!this.modernElements) {
+            // Don't mount into a hidden wrapper: when Stripe isn't the selected
+            // payment method its wrapper is display:none, and Stripe Elements mounted
+            // into a hidden container render mis-sized. The payment-method switch
+            // calls this again once the wrapper is shown, so mounting is deferred
+            // until then. (Checked on the wrapper's own display so an outer hidden
+            // container — e.g. a default-Stripe form — is not affected.)
+            const $wrapper = this.$form.find('.ff_stripe_payment_element_wrapper');
+            if ($wrapper.length && $wrapper.css('display') === 'none') {
+                return;
+            }
             const elementsOptions = {
                 mode: mode,
                 amount: amount,
@@ -873,7 +883,7 @@ export class Payment_handler {
             };
             // A PMC is the only reliable way to hide Link in the Element; fall
             // back to card-only types when unavailable.
-            const pmc = this.$form.find('.ff_stripe_payment_element_wrapper').attr('data-ff_stripe_pmc');
+            const pmc = $wrapper.attr('data-ff_stripe_pmc');
             if (pmc) {
                 elementsOptions.paymentMethodConfiguration = pmc;
             } else {
