@@ -23,13 +23,16 @@ class StripeSettings
             'provider'             => 'api_keys',
             'test_account_id'      => '',
             'live_account_id'      => '',
-            'is_encrypted'         => 'no'
+            'is_encrypted'         => 'no',
+            'connection_mode'      => 'legacy'
         ];
 
         $settings = get_option('fluentform_payment_settings_stripe', []);
 
         if (!$settings) {
+            // Fresh installs default to modern; existing connections stay on legacy until opt-in.
             $defaults['provider'] = 'connect';
+            $defaults['connection_mode'] = 'modern';
         }
 
         $settings = wp_parse_args($settings, $defaults);
@@ -52,6 +55,18 @@ class StripeSettings
 
         $settings = self::encryptKeys($settings);
         update_option('fluentform_payment_settings_stripe', $settings);
+
+        // Pre-provision the PMC at save time so render is a cache hit (keeps the
+        // external call off the public render path). Clear the negative-cache so
+        // an explicit save always retries.
+        if (self::useModernCheckout()) {
+            $secretKey = self::getSecretKey();
+            if ($secretKey) {
+                delete_transient('ff_stripe_modern_pmc_fail_' . substr(md5($secretKey), 0, 16));
+            }
+            self::getModernPmcId();
+        }
+
         return self::getSettings();
     }
 
@@ -82,6 +97,98 @@ class StripeSettings
         $settings['is_encrypted'] = 'yes';
 
         return $settings;
+    }
+
+    /**
+     * Whether the modern Stripe flow should handle this payment. Requires
+     * connection_mode 'modern' AND either a per-form custom account (BYO keys) or
+     * global Stripe Connect. Raw global API keys are excluded — they cannot carry
+     * the platform fee, so modern is Connect-only at the global level.
+     *
+     * @param int|false $formId
+     * @return bool
+     */
+    public static function useModernCheckout($formId = false)
+    {
+        $settings = self::getSettings(false);
+
+        if (ArrayHelper::get($settings, 'connection_mode') !== 'modern') {
+            return apply_filters('fluentform/stripe_use_modern_checkout', false, $formId);
+        }
+
+        if ($formId && self::isCustomFormAccount($formId)) {
+            $hasKey = (bool) self::getSecretKey($formId);
+            return apply_filters('fluentform/stripe_use_modern_checkout', $hasKey, $formId);
+        }
+
+        if (ArrayHelper::get($settings, 'provider') !== 'connect') {
+            return apply_filters('fluentform/stripe_use_modern_checkout', false, $formId);
+        }
+
+        $mode = ArrayHelper::get($settings, 'payment_mode', 'test');
+        $accountId = ArrayHelper::get($settings, $mode . '_account_id');
+        $secretKey = ArrayHelper::get($settings, $mode . '_secret_key');
+
+        $ready = !empty($accountId) && !empty($secretKey);
+
+        return apply_filters('fluentform/stripe_use_modern_checkout', $ready, $formId);
+    }
+
+    /**
+     * Whether the given form overrides the global connection with its own custom
+     * Stripe account (BYO API keys). Such forms do not carry the platform fee.
+     *
+     * @param int|false $formId
+     * @return bool
+     */
+    public static function isCustomFormAccount($formId = false)
+    {
+        if (!$formId) {
+            return false;
+        }
+        $formPaymentSettings = PaymentHelper::getFormSettings($formId, 'admin');
+        return ArrayHelper::get($formPaymentSettings, 'stripe_account_type') == 'custom';
+    }
+
+    /**
+     * The cached Payment Method Configuration id (card + wallets only) for the
+     * modern inline Element. Pre-provisioned at settings-save; negative-cached on
+     * failure so an outage cannot hit Stripe on every render. Null when
+     * unavailable (caller falls back to card-only payment_method_types).
+     *
+     * @param int|false $formId
+     * @return string|null
+     */
+    public static function getModernPmcId($formId = false)
+    {
+        $secretKey = self::getSecretKey($formId);
+        if (!$secretKey) {
+            return null;
+        }
+
+        $hash = substr(md5($secretKey), 0, 16);
+        $cacheKey = 'ff_stripe_modern_pmc_' . $hash;
+
+        $cached = get_option($cacheKey);
+        if ($cached) {
+            return apply_filters('fluentform/stripe_modern_pmc_id', $cached, $formId);
+        }
+
+        // A recent failure short-circuits the API call (cleared on settings-save).
+        $failKey = 'ff_stripe_modern_pmc_fail_' . $hash;
+        if (get_transient($failKey)) {
+            return null;
+        }
+
+        $pmc = \FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::createPaymentMethodConfiguration($secretKey);
+        if (is_wp_error($pmc) || empty($pmc->id)) {
+            set_transient($failKey, 1, 5 * MINUTE_IN_SECONDS);
+            return null;
+        }
+
+        update_option($cacheKey, $pmc->id, false);
+
+        return apply_filters('fluentform/stripe_modern_pmc_id', $pmc->id, $formId);
     }
 
     public static function getSecretKey($formId = false)

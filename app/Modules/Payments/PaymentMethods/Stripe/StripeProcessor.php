@@ -14,6 +14,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Modules\Payments\PaymentMethods\BaseProcessor;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\CheckoutSession;
+use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\Plan;
 
 class StripeProcessor extends BaseProcessor
@@ -47,6 +48,12 @@ class StripeProcessor extends BaseProcessor
 
     public function handleCheckoutSession($transaction, $submission, $form, $methodSettings)
     {
+        if (StripeSettings::useModernCheckout($form->id)) {
+            if ($transaction->transaction_type == 'subscription') {
+                return $this->handleModernSubscriptionSession($transaction, $submission, $form, $methodSettings);
+            }
+            return $this->handleModernCheckoutSession($transaction, $submission, $form, $methodSettings);
+        }
 
         $formSettings = PaymentHelper::getFormSettings($form->id);
 
@@ -227,6 +234,262 @@ class StripeProcessor extends BaseProcessor
         ], 200);
     }
 
+    /**
+     * Modern hosted Checkout for one-time payments (price_data line_items,
+     * session->url redirect).
+     */
+    public function handleModernCheckoutSession($transaction, $submission, $form, $methodSettings)
+    {
+        $formSettings = PaymentHelper::getFormSettings($form->id);
+
+        $successArgs = [
+            'fluentform_payment' => $submission->id,
+            'payment_method'     => $this->method,
+            'transaction_hash'   => $transaction->transaction_hash,
+            'type'               => 'success'
+        ];
+        $successUrl = add_query_arg($successArgs, site_url('index.php'));
+
+        $cancelUrl = $submission->source_url;
+        if (!wp_http_validate_url($cancelUrl)) {
+            $cancelUrl = site_url($cancelUrl);
+        }
+
+        $base = [
+            'cancel_url'                 => wp_sanitize_redirect($cancelUrl),
+            'success_url'                => wp_sanitize_redirect($successUrl),
+            'locale'                     => 'auto',
+            'billing_address_collection' => 'auto',
+            'client_reference_id'        => $submission->id,
+            'customer_email'             => $transaction->payer_email,
+            'submit_type'                => 'auto',
+            'metadata'                   => [
+                'submission_id'  => $submission->id,
+                'form_id'        => $form->id,
+                'transaction_id' => $transaction ? $transaction->id : ''
+            ],
+        ];
+
+        if (ArrayHelper::get($methodSettings, 'settings.require_billing_info.value') == 'yes') {
+            $base['billing_address_collection'] = 'required';
+        }
+
+        if (ArrayHelper::get($methodSettings, 'settings.require_shipping_info.value') == 'yes') {
+            $base['shipping_address_collection'] = [
+                'allowed_countries' => StripeSettings::supportedShippingCountries()
+            ];
+        }
+
+        $base['payment_intent_data'] = $this->getPaymentIntentData($transaction, $submission, $form);
+
+        $receiptEmail = PaymentHelper::getCustomerEmail($submission, $form);
+        if ($receiptEmail) {
+            $base['customer_email'] = $receiptEmail;
+            if (ArrayHelper::get($formSettings, 'disable_stripe_payment_receipt') != 'yes') {
+                $base['payment_intent_data']['receipt_email'] = $receiptEmail;
+            }
+        }
+
+        if ($formSettings['transaction_type'] == 'donation') {
+            $base['submit_type'] = 'donate';
+        }
+
+        // Platform fee only on the global Connect account, not a form's own (BYO) account.
+        if (!Helper::hasPro() && !StripeSettings::isCustomFormAccount($form->id)) {
+            $base['payment_intent_data']['application_fee_amount'] = (int) ($transaction->payment_total * 0.019);
+        }
+
+        $modernItems = ModernCheckout::toModernLineItems($this->getFormattedItems($submission->currency));
+        $checkoutArgs = ModernCheckout::buildOneTimeArgs($base, $modernItems);
+
+        $checkoutArgs = apply_filters('fluentform/stripe_modern_checkout_args', $checkoutArgs, $submission, $transaction, $form);
+
+        $session = ModernCheckout::createSession(
+            $checkoutArgs,
+            StripeSettings::getSecretKey($form->id),
+            $this->getModernConnectedAccountId($form)
+        );
+
+        if (is_wp_error($session)) {
+            $errorMessage = __('Stripe Error: ', 'fluentform') . $session->get_error_message();
+            wp_send_json([
+                'errors' => apply_filters('fluentform/payment_error_message', $errorMessage, $submission, $this->form)
+            ], 423);
+        }
+
+        $this->setMetaData('stripe_session_id', $session->id);
+
+        do_action('fluentform/log_data', [
+            'parent_source_id' => $submission->form_id,
+            'source_type'      => 'submission_item',
+            'source_id'        => $submission->id,
+            'component'        => 'Payment',
+            'status'           => 'info',
+            'title'            => __('Redirect to Stripe', 'fluentform'),
+            'description'      => __('User redirect to Stripe Checkout (modern) for completing the payment', 'fluentform')
+        ]);
+
+        wp_send_json_success([
+            'nextAction'  => 'payment',
+            'actionName'  => 'stripeRedirectToUrl',
+            'redirect_url' => $session->url,
+            'sessionId'   => $session->id,
+            'message'     => __('You are being redirected to stripe.com to complete the purchase...', 'fluentform'),
+            'result'      => [
+                'insert_id' => $submission->id
+            ]
+        ], 200);
+    }
+
+    /**
+     * Connected account id for modern Connect (standard keys -> null).
+     */
+    protected function getModernConnectedAccountId($form)
+    {
+        return apply_filters('fluentform/stripe_modern_connected_account', null, $form);
+    }
+
+    /**
+     * Shared base args (URLs, metadata, customer email) for the modern handlers.
+     */
+    protected function modernSessionBase($transaction, $submission, $form)
+    {
+        $successArgs = [
+            'fluentform_payment' => $submission->id,
+            'payment_method'     => $this->method,
+            'transaction_hash'   => $transaction->transaction_hash,
+            'type'               => 'success'
+        ];
+        $successUrl = add_query_arg($successArgs, site_url('index.php'));
+
+        $cancelUrl = $submission->source_url;
+        if (!wp_http_validate_url($cancelUrl)) {
+            $cancelUrl = site_url($cancelUrl);
+        }
+
+        $email = PaymentHelper::getCustomerEmail($submission, $form);
+
+        return [
+            'cancel_url'          => wp_sanitize_redirect($cancelUrl),
+            'success_url'         => wp_sanitize_redirect($successUrl),
+            'locale'              => 'auto',
+            'client_reference_id' => $submission->id,
+            'customer_email'      => $email ?: $transaction->payer_email,
+            'metadata'            => [
+                'submission_id'  => $submission->id,
+                'form_id'        => $form->id,
+                'transaction_id' => $transaction ? $transaction->id : ''
+            ],
+        ];
+    }
+
+    /**
+     * Build the modern subscription components (recurring line items, one-time
+     * items incl. signup fee, subscription_data) from the FluentForm
+     * subscription row. Shared by the hosted and inline modern handlers.
+     *
+     * @return array{recurring: array, oneTime: array, subscriptionData: array}
+     */
+    protected function modernSubscriptionComponents($transaction, $submission, $form)
+    {
+        $subscriptions = $this->getSubscriptions();
+        $subscription = $subscriptions[0];
+
+        $currency = $transaction->currency;
+        $recurringAmount = $subscription->recurring_amount;
+        if (PaymentHelper::isZeroDecimal($currency)) {
+            $recurringAmount = intval($recurringAmount / 100);
+        }
+
+        $recurring = [
+            ModernCheckout::recurringLineItem(
+                [
+                    'currency'    => $currency,
+                    'unit_amount' => $recurringAmount,
+                    'name'        => $subscription->plan_name,
+                ],
+                $subscription->billing_interval,
+                1,
+                $subscription->quantity ? $subscription->quantity : 1
+            )
+        ];
+
+        $oneTime = ModernCheckout::toModernLineItems($this->getFormattedItems($currency));
+        if ($subscription->initial_amount) {
+            $signup = $subscription->initial_amount;
+            if (PaymentHelper::isZeroDecimal($currency)) {
+                $signup = intval($signup / 100);
+            }
+            $oneTime[] = [
+                'price_data' => [
+                    'currency'     => $currency,
+                    'unit_amount'  => (int) $signup,
+                    /* translators: %s is the plan name */
+                    'product_data' => ['name' => sprintf(__('Signup fee for %s', 'fluentform'), $subscription->plan_name)],
+                ],
+                'quantity' => 1,
+            ];
+        }
+
+        $subscriptionData = ['metadata' => $this->getIntentMetaData($submission, $form, $transaction)];
+        if ($subscription->trial_days) {
+            $subscriptionData['trial_period_days'] = (int) $subscription->trial_days;
+        }
+        if (!Helper::hasPro() && !StripeSettings::isCustomFormAccount($form->id)) {
+            $subscriptionData['application_fee_percent'] = 1.9;
+        }
+
+        return [
+            'recurring'        => $recurring,
+            'oneTime'          => $oneTime,
+            'subscriptionData' => $subscriptionData,
+        ];
+    }
+
+    public function handleModernSubscriptionSession($transaction, $submission, $form, $methodSettings)
+    {
+        $parts = $this->modernSubscriptionComponents($transaction, $submission, $form);
+
+        $base = $this->modernSessionBase($transaction, $submission, $form);
+
+        $base['billing_address_collection'] = 'auto';
+        if (ArrayHelper::get($methodSettings, 'settings.require_billing_info.value') == 'yes') {
+            $base['billing_address_collection'] = 'required';
+        }
+        if (ArrayHelper::get($methodSettings, 'settings.require_shipping_info.value') == 'yes') {
+            $base['shipping_address_collection'] = [
+                'allowed_countries' => StripeSettings::supportedShippingCountries()
+            ];
+        }
+
+        $args = ModernCheckout::buildSubscriptionArgs($base, $parts['recurring'], $parts['oneTime'], $parts['subscriptionData']);
+        $args = apply_filters('fluentform/stripe_modern_subscription_args', $args, $submission, $transaction, $form);
+
+        $session = ModernCheckout::createSession(
+            $args,
+            StripeSettings::getSecretKey($form->id),
+            $this->getModernConnectedAccountId($form)
+        );
+
+        if (is_wp_error($session)) {
+            $errorMessage = __('Stripe Error: ', 'fluentform') . $session->get_error_message();
+            wp_send_json([
+                'errors' => apply_filters('fluentform/payment_error_message', $errorMessage, $submission, $this->form)
+            ], 423);
+        }
+
+        $this->setMetaData('stripe_session_id', $session->id);
+
+        wp_send_json_success([
+            'nextAction'   => 'payment',
+            'actionName'   => 'stripeRedirectToUrl',
+            'redirect_url' => $session->url,
+            'sessionId'    => $session->id,
+            'message'      => __('You are being redirected to stripe.com to complete the purchase...', 'fluentform'),
+            'result'       => ['insert_id' => $submission->id]
+        ], 200);
+    }
+
     protected function getPaymentIntentData($transaction, $submission, $form)
     {
         $data = [
@@ -398,6 +661,17 @@ class StripeProcessor extends BaseProcessor
         $invoice = empty($session->subscription->latest_invoice) ? $session : $session->subscription->latest_invoice;
 
         $paymentStatus = $this->getIntentSuccessName($invoice->payment_intent);
+
+        // A $0 trial invoice is 'paid' but has no payment_intent; treat it as paid
+        // so the status is not blanked.
+        if (
+            !$paymentStatus
+            && $transaction->transaction_type == 'subscription'
+            && isset($invoice->status)
+            && $invoice->status === 'paid'
+        ) {
+            $paymentStatus = 'paid';
+        }
 
         $this->changeSubmissionPaymentStatus($paymentStatus);
 

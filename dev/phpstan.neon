@@ -43,6 +43,13 @@ parameters:
             message: '#^Result of method FluentForm\\Framework\\View\\View::render\(\) \(void\) is used\.$#'
             path: ../app/Modules/Registerer/Menu.php
 
+        # Modern Stripe inline flow: the raw REST API returns dynamic objects, so
+        # property access on them is a benign analyzer limitation on code added
+        # after the baseline.
+        -
+            message: '#^Access to an undefined property object::\$id\.$#'
+            path: ../app/Modules/Payments/PaymentMethods/Stripe/StripeInlineProcessor.php
+
 services:
     -
         class: FluentFormDev\PHPStan\ModelPropertyExtension

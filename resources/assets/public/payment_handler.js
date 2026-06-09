@@ -25,6 +25,7 @@ export class Payment_handler {
     init() {
         this.boot();
         this.initStripeElement();
+        this.initStripeModernPaymentElement();
     }
 
     $t(stringKey) {
@@ -126,6 +127,9 @@ export class Payment_handler {
 
         form.find('.ff_order_total').html(this.getFormattedPrice(this.totalAmount));
         form.data('payment_total', this.totalAmount);
+        if (this.formIsModernInline) {
+            this.maybeMountModernPaymentElement();
+        }
         const hidePaymentSummary = !Object.keys(items).length;
         this.hasPaymentItems = hidePaymentSummary;
 
@@ -443,6 +447,10 @@ export class Payment_handler {
         window.location.href = data.redirect_url;
     }
 
+    stripeRedirectToUrl(data) {
+        window.location.href = data.redirect_url;
+    }
+
     getDiscounts() {
         return Object.values(this.appliedCoupons);
     }
@@ -751,7 +759,11 @@ export class Payment_handler {
                 jQuery(event.target).closest('.ff-el-input--content').find('.ff_pay_inline').css({ display: 'none' });
 
                 if (this.paymentMethod === 'stripe') {
-                    jQuery(event.target).closest('.ff-el-input--content').find('.stripe-inline-wrapper').css({ display: 'block' });
+                    jQuery(event.target).closest('.ff-el-input--content').find('.ff_pay_inline_stripe').css({ display: 'block' });
+                    // Mount now for fixed-amount subscription forms that never recalc.
+                    if (this.formIsModernInline) {
+                        this.maybeMountModernPaymentElement();
+                    }
                 }
 
                 if (this.paymentMethod === 'square') {
@@ -801,6 +813,142 @@ export class Payment_handler {
                 }
             }
         });
+    }
+
+    initStripeModernPaymentElement() {
+        if (!this.$form.hasClass('ff_has_stripe_modern_inline')) {
+            return;
+        }
+        this.formIsModernInline = true;
+        this.modernElements = null;
+        this.modernPaymentElement = null;
+
+        if (!this.ensureStripeIsInitialized()) {
+            return;
+        }
+
+        this.maybeMountModernPaymentElement();
+        this.registerModernInlineValidator();
+    }
+
+    getModernStripeCurrency() {
+        const settings = this.formPaymentConfig.currency_settings || {};
+        return (settings.currency || 'USD').toLowerCase();
+    }
+
+    getSubscriptionRecurringAmount() {
+        const $items = this.$form.find('.ff_subscription_item');
+        const $selected = $items.filter((i, e) => e.checked);
+        const $use = $selected.length ? $selected.first() : $items.first();
+        const value = parseFloat($use.attr('data-subscription_amount') || $use.attr('data-payment_value') || 0);
+        return value > 0 ? Math.round(value * 100) : 0;
+    }
+
+    maybeMountModernPaymentElement() {
+        const elementId = this.$form.find('.ff_stripe_payment_element').attr('id');
+        if (!elementId || !this.ensureStripeIsInitialized()) {
+            return;
+        }
+        const mode = this.$form.find('.ff_subscription_item').length ? 'subscription' : 'payment';
+
+        let amount = Math.round((this.totalAmount || 0) * 100);
+        // $0-now trials still need a card for future billing — use the recurring amount.
+        if (mode === 'subscription' && amount <= 0) {
+            amount = this.getSubscriptionRecurringAmount();
+        }
+
+        if (!this.modernElements) {
+            if (amount <= 0) {
+                return; // wait until there is a payable amount
+            }
+            const elementsOptions = {
+                mode: mode,
+                amount: amount,
+                currency: this.getModernStripeCurrency(),
+            };
+            // A PMC is the only reliable way to hide Link in the Element; fall
+            // back to card-only types when unavailable.
+            const pmc = this.$form.find('.ff_stripe_payment_element_wrapper').attr('data-ff_stripe_pmc');
+            if (pmc) {
+                elementsOptions.paymentMethodConfiguration = pmc;
+            } else {
+                elementsOptions.paymentMethodTypes = ['card'];
+            }
+            this.modernElements = this.stripe.elements(elementsOptions);
+            this.modernPaymentElement = this.modernElements.create('payment');
+            this.modernPaymentElement.mount('#' + elementId);
+        } else if (amount > 0) {
+            this.modernElements.update({ amount: amount, mode: mode });
+        }
+    }
+
+    registerModernInlineValidator() {
+        const that = this;
+        this.formInstance.addGlobalValidator('stripeModernInline', function ($theForm, formData) {
+            if (that.paymentMethod !== 'stripe' || !that.modernElements) {
+                return;
+            }
+            if (jQuery('.ff_stripe_payment_element', $theForm).closest('.ff_excluded').length) {
+                return;
+            }
+            const dfd = jQuery.Deferred();
+            that.modernElements.submit().then(({ error }) => {
+                if (error) {
+                    that.toggleModernPaymentElementError(error);
+                    dfd.reject();
+                } else {
+                    dfd.resolve();
+                }
+            });
+            return dfd.promise();
+        });
+    }
+
+    stripeConfirmPaymentElement(data) {
+        if (!this.ensureStripeIsInitialized() || !this.modernElements) {
+            this.toggleModernPaymentElementError({ message: this.$t('Payment form is not ready. Please reload and try again.') });
+            return;
+        }
+        const finalizeAction = data.finalize_action || 'fluentform_modern_inline_confirm';
+        const confirmOptions = {
+            elements: this.modernElements,
+            clientSecret: data.client_secret,
+            confirmParams: {
+                return_url: window.location.href,
+            },
+            redirect: 'if_required',
+        };
+        // $0/trial subscriptions confirm a SetupIntent; everything else a PaymentIntent.
+        const confirmPromise = data.confirm_type === 'setup'
+            ? this.stripe.confirmSetup(confirmOptions)
+            : this.stripe.confirmPayment(confirmOptions);
+
+        confirmPromise.then((result) => {
+            if (result.error) {
+                this.toggleModernPaymentElementError(result.error);
+                return;
+            }
+            this.handleStripePaymentConfirm({
+                action: finalizeAction,
+                form_id: this.formId,
+                submission_id: data.submission_id,
+                payment_intent_id: data.payment_intent_id,
+                _ff_stripe_nonce: data._ff_stripe_nonce || '',
+            });
+        });
+    }
+
+    toggleModernPaymentElementError(error) {
+        const $errorDiv = this.$form.find('.ff_card-errors');
+        if (error && error.message) {
+            $errorDiv.html(error.message);
+            this.formInstance.hideFormSubmissionProgress(this.$form);
+        } else {
+            $errorDiv.html('');
+        }
+        setTimeout(() => {
+            this.maybeRemoveSubmitError();
+        }, 500);
     }
 
     toggleStripeInlineCardError(error) {
