@@ -28,3 +28,7 @@ builds/*
 .mcp.json
 /dev/vendor
 .phpstan-last-run.log
+
+# PHPUnit run artifacts
+.phpunit.result.cache
+dev/tests/_output/
