@@ -191,6 +191,39 @@ class StripeSettings
         return apply_filters('fluentform/stripe_modern_pmc_id', $pmc->id, $formId);
     }
 
+    /**
+     * Resolve a Stripe product id for a modern inline subscription line, reusing a
+     * cached id per secret-key + connected account + product name so we create one
+     * product per plan instead of one per checkout (avoids extra latency and
+     * unbounded duplicate Stripe Products). Mirrors the PMC option-cache pattern.
+     *
+     * @param string      $name      product/plan name
+     * @param string      $secretKey
+     * @param string|null $accountId connected (Stripe-Account) id, if any
+     * @return string|\WP_Error      product id, or WP_Error on creation failure
+     */
+    public static function getModernProductId($name, $secretKey, $accountId = null)
+    {
+        $cacheKey = \FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::productCacheKey($secretKey, $accountId, $name);
+
+        $cached = get_option($cacheKey);
+        if ($cached) {
+            return apply_filters('fluentform/stripe_modern_product_id', $cached, $name, $accountId);
+        }
+
+        $product = \FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout::createProduct($name, $secretKey, $accountId);
+        if (is_wp_error($product)) {
+            return $product;
+        }
+        if (empty($product->id)) {
+            return new \WP_Error('stripe_modern_error', __('Could not create the Stripe product for the subscription.', 'fluentform'));
+        }
+
+        update_option($cacheKey, $product->id, false);
+
+        return apply_filters('fluentform/stripe_modern_product_id', $product->id, $name, $accountId);
+    }
+
     public static function getSecretKey($formId = false)
     {
         if ($formId) {

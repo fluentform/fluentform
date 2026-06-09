@@ -123,6 +123,70 @@ class ModernCheckout
     }
 
     /**
+     * Map a recurring line item (modernSubscriptionComponents shape, with inline
+     * product_data) to the raw Subscriptions API item shape, which requires a
+     * resolved product id instead of inline product_data.
+     *
+     * @param array  $recurringItem recurringLineItem() output
+     * @param string $productId     a resolved/cached Stripe product id
+     * @return array
+     */
+    public static function inlineSubscriptionItem(array $recurringItem, $productId)
+    {
+        $priceData = $recurringItem['price_data'];
+        return [
+            'price_data' => [
+                'currency'    => $priceData['currency'],
+                'unit_amount' => (int) $priceData['unit_amount'],
+                'product'     => $productId,
+                'recurring'   => $priceData['recurring'],
+            ],
+            'quantity' => isset($recurringItem['quantity']) ? (int) $recurringItem['quantity'] : 1,
+        ];
+    }
+
+    /**
+     * Map a one-time item (signup fee / one-time order item) to a Subscriptions
+     * API `add_invoice_items` entry, so the first invoice charges it alongside
+     * the recurring price — matching the hosted Checkout Session, which merges
+     * one-time items as line_items. Keeps Stripe's first invoice in sync with the
+     * locally recorded amount.
+     *
+     * @param array  $oneTimeItem toModernLineItems()/signup shape
+     * @param string $productId   a resolved/cached Stripe product id
+     * @return array
+     */
+    public static function inlineAddInvoiceItem(array $oneTimeItem, $productId)
+    {
+        $priceData = $oneTimeItem['price_data'];
+        return [
+            'price_data' => [
+                'currency'    => $priceData['currency'],
+                'unit_amount' => (int) $priceData['unit_amount'],
+                'product'     => $productId,
+            ],
+            'quantity' => isset($oneTimeItem['quantity']) ? (int) $oneTimeItem['quantity'] : 1,
+        ];
+    }
+
+    /**
+     * Stable option key for caching a Stripe product id per secret-key + connected
+     * account + product name, so inline subscriptions reuse a product instead of
+     * creating one per checkout. Scoped by account so a connected account never
+     * reuses a platform product (which would 404 under Stripe-Account).
+     *
+     * @param string      $secretKey
+     * @param string|null $accountId
+     * @param string      $name
+     * @return string
+     */
+    public static function productCacheKey($secretKey, $accountId, $name)
+    {
+        $hash = md5($secretKey . '|' . (string) $accountId . '|' . $name);
+        return 'ff_stripe_modern_product_' . $hash;
+    }
+
+    /**
      * Build a modern recurring line item from a FluentForm subscription row.
      *
      * @param array  $priceData  currency, unit_amount, product name

@@ -266,22 +266,27 @@ class StripeInlineProcessor extends StripeProcessor
             $this->handlePaymentChargeError($customer->get_error_message(), $submission, $transaction, false, 'customer');
         }
 
-        // Subscription price_data needs a product id (no inline product_data).
+        // Subscription price_data needs a product id (no inline product_data); the
+        // product is cached per plan/account so we don't create one per checkout.
         $items = [];
         foreach ($parts['recurring'] as $recItem) {
-            $product = ModernCheckout::createProduct($recItem['price_data']['product_data']['name'], $secretKey, $accountId);
-            if (is_wp_error($product)) {
-                $this->handlePaymentChargeError($product->get_error_message(), $submission, $transaction, false, 'payment_intent');
+            $productId = StripeSettings::getModernProductId($recItem['price_data']['product_data']['name'], $secretKey, $accountId);
+            if (is_wp_error($productId)) {
+                $this->handlePaymentChargeError($productId->get_error_message(), $submission, $transaction, false, 'payment_intent');
             }
-            $items[] = [
-                'price_data' => [
-                    'currency'    => $recItem['price_data']['currency'],
-                    'unit_amount' => $recItem['price_data']['unit_amount'],
-                    'product'     => $product->id,
-                    'recurring'   => $recItem['price_data']['recurring'],
-                ],
-                'quantity' => $recItem['quantity'],
-            ];
+            $items[] = ModernCheckout::inlineSubscriptionItem($recItem, $productId);
+        }
+
+        // One-time items (signup fee / one-time order items) ride the first invoice
+        // via add_invoice_items so Stripe's first charge matches the recorded amount
+        // (the hosted Checkout Session merges them as line_items in subscription mode).
+        $addInvoiceItems = [];
+        foreach ($parts['oneTime'] as $oneTimeItem) {
+            $productId = StripeSettings::getModernProductId($oneTimeItem['price_data']['product_data']['name'], $secretKey, $accountId);
+            if (is_wp_error($productId)) {
+                $this->handlePaymentChargeError($productId->get_error_message(), $submission, $transaction, false, 'payment_intent');
+            }
+            $addInvoiceItems[] = ModernCheckout::inlineAddInvoiceItem($oneTimeItem, $productId);
         }
 
         $localSubscriptions = $this->getSubscriptions();
@@ -295,6 +300,9 @@ class StripeInlineProcessor extends StripeProcessor
             'expand'           => ['latest_invoice.confirmation_secret', 'latest_invoice.payment_intent', 'pending_setup_intent'],
             'metadata'         => ArrayHelper::get($parts['subscriptionData'], 'metadata', []),
         ];
+        if ($addInvoiceItems) {
+            $subArgs['add_invoice_items'] = $addInvoiceItems;
+        }
         if (isset($parts['subscriptionData']['trial_period_days'])) {
             $subArgs['trial_period_days'] = $parts['subscriptionData']['trial_period_days'];
         }
@@ -393,10 +401,30 @@ class StripeInlineProcessor extends StripeProcessor
         // latest_invoice.payment_intent is present in the shape the recorder reads.
         $vendorSubscriptionId = $this->getMetaData('stripe_subscription_id');
         ApiRequest::set_secret_key(StripeSettings::getSecretKey($submission->form_id));
+
+        // The subscription was created under the modern connected account (when the
+        // fluentform/stripe_modern_connected_account filter supplies one), so the
+        // retrieval must carry the same Stripe-Account context or the lookup 404s.
+        // Inject it via the legacy header filter to preserve the legacy API version
+        // (which exposes latest_invoice.payment_intent in the shape the recorder reads).
+        $accountId = $this->getModernConnectedAccountId($this->form);
+        $accountHeaderFilter = null;
+        if ($accountId) {
+            $accountHeaderFilter = function ($headers) use ($accountId) {
+                $headers['Stripe-Account'] = $accountId;
+                return $headers;
+            };
+            add_filter('fluentform/stripe_request_headers', $accountHeaderFilter);
+        }
+
         $subscription = ApiRequest::request(
             ['expand' => ['latest_invoice.payment_intent']],
             'subscriptions/' . $vendorSubscriptionId
         );
+
+        if ($accountHeaderFilter) {
+            remove_filter('fluentform/stripe_request_headers', $accountHeaderFilter);
+        }
 
         if (is_wp_error($subscription)) {
             $this->handlePaymentChargeError($subscription->get_error_message(), $submission, $transaction, false, 'payment_intent');
