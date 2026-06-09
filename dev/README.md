@@ -8,7 +8,125 @@ This is a cli toolkit for helping the development process with many handy featur
 
 If you've done everything right then, you may run `./wpf` to check the list of available commands.
 
-# Test Setup:
+# Tests — Codeception (wp-browser)
+
+FluentForm's tests run on [Codeception](https://codeception.com/) + [wp-browser](https://github.com/lucatume/wp-browser) (`WPLoader`). This is the **single, canonical** test stack. The legacy PHPUnit harness under `dev/test/` is **dormant** — kept one release as a fallback, then removed. Codeception runs on PHPUnit under the hood, so unit-shaped tests look the same; you also gain Functional (REST/permission) and Acceptance (real-browser) suites.
+
+Everything lives in its own Composer workspace under `dev/wp-browser/`:
+
+```
+dev/wp-browser/
+├── codeception.yml              # namespace Tests\Support; coverage include/exclude
+├── composer.json                # lucatume/wp-browser ^4.5
+└── tests/
+    ├── .env / .env.example      # SANDBOX config (gitignored .env)
+    ├── Integration.suite.yml    # WPLoader — model/service/policy tests (*Test.php)
+    ├── Functional.suite.yml     # WPLoader + Asserts + REST helper module — *Cest.php
+    ├── Acceptance.suite.yml     # WPWebDriver + WPDb — real-browser *Cest.php
+    ├── Integration/  Functional/  Acceptance/   # tests, one folder per module
+    └── Support/                 # base cases, factories, REST helper, DB guard
+```
+
+## ⚠️ Sandbox database — never your live site
+
+`WPLoader` **installs WordPress into the configured database and drops/recreates its tables on every run.** Point it only at a throwaway DB.
+
+1. Create a dedicated, empty database and a MySQL user scoped to it (this user physically cannot reach your site DB):
+   ```sql
+   CREATE DATABASE fluentform_tests CHARACTER SET utf8mb4;
+   CREATE USER 'ff_test'@'localhost' IDENTIFIED BY '<pw>';
+   GRANT ALL PRIVILEGES ON fluentform_tests.* TO 'ff_test'@'localhost';  -- test DB ONLY
+   FLUSH PRIVILEGES;
+   ```
+2. `cp dev/wp-browser/tests/.env.example dev/wp-browser/tests/.env` and fill in your WordPress path + the sandbox DB. Use a **distinct table prefix** (e.g. `fftest_`), never `wp_`.
+
+> **The scoped MySQL user (step 1) is the hard guarantee — not optional.** WPLoader connects and runs the WP installer *during its own initialization, before any in-suite guard or bootstrap*. So a `GRANT` limited to the test DB is the one layer that physically cannot be out-ordered: even a wrong `.env` can't reach your site DB. Never run the tests as `root` or with a user that can see the live database.
+
+**Guard layering (defense-in-depth):**
+1. **Scoped DB user** — the backstop that holds regardless of timing (above).
+2. **`./wpf` pre-flight** — `./wpf test`/`coverage` validate `.env` (DB name has a `test` token, prefix isn't `wp_`) **before** spawning Codeception, so WPLoader never even starts on a bad config.
+3. **`Support/GuardAgainstProductionDb`** — runs from each suite bootstrap as a final check (and cross-checks the live `$wpdb` connection). Note this fires *after* WPLoader has booted, so it's defense-in-depth, not the primary gate — which is why layers 1–2 exist.
+
+⚠️ Running `vendor/bin/codecept` **directly** (bypassing `./wpf`) skips the pre-flight: WPLoader connects before the bootstrap guard can fail closed. On a raw run the **scoped user is your only pre-connect protection** — so keep it scoped. Prefer `./wpf` for everyday runs.
+
+## Setup
+
+```bash
+cd dev/wp-browser && composer install   # one-time
+vendor/bin/codecept build               # generates actor classes (re-run after suite edits)
+```
+
+## Running
+
+Run from the **plugin root** (the `./wpf` launcher lives there):
+
+```bash
+./wpf test                 # Integration + Functional, then open the summary UI.
+                           #   Auto-measures coverage when a PCOV/Xdebug driver is found;
+                           #   no driver → runs fast and the coverage card shows "not measured".
+./wpf test --fast          # Skip coverage even if a driver exists (fastest inner loop).
+./wpf test Integration     # one suite only
+./wpf test Acceptance      # real-browser suite — needs chromedriver + a served site
+./wpf coverage             # force coverage; warns if no driver is installed
+./wpf coverage:status      # regenerate dev/COVERAGE-STATUS.md from the last coverage run
+./wpf test:ui              # re-open the last summary dashboard without re-running
+```
+
+### Narrowing a run
+
+Anything after the suite name is passed straight through to `codecept run`. **Test-file paths are relative to `dev/wp-browser/`** (where Codeception runs), even though you invoke `./wpf` from the plugin root:
+
+```bash
+# one file
+./wpf test Integration tests/Integration/Submission/PublicSubmissionTest.php
+# one method  (file path + ':' + method)
+./wpf test Integration tests/Integration/Form/FormModelTest.php:test_factory_persists_a_published_form
+# by name fragment (matches the 3 XSS data sets)
+./wpf test Integration --filter xss
+# verbose (per-step) and stop on first failure
+./wpf test Integration -v --fail-fast
+```
+
+Or call Codeception directly for full control:
+
+```bash
+cd dev/wp-browser && vendor/bin/codecept run Functional -v
+```
+
+> WPLoader suites can't share a process (two boots collide on WordPress's global `$table_prefix`), so `./wpf test` with no suite runs each suite in a **separate** `codecept` process. Pass a single suite name to stay in one process.
+
+## Test-summary UI & coverage
+
+`./wpf test` writes a polished summary **dashboard** at `dev/wp-browser/tests/_output/index.html` — a pass/fail status hero, per-suite cards (passed/failed/errors/skipped, assertions, timing, parsed from JUnit XML), a collapsible **"What was tested"** list of every test case (✓/✕ + timing), and a **coverage** card showing the real percentage + a colored bar (or an honest "not measured" until a driver is present). Links into each suite's full Codeception HTML report and the line-by-line coverage report. Dark-mode aware. Opens automatically. `./wpf coverage` additionally produces `tests/_output/coverage/index.html` (line-by-line, color-coded) and a Clover `coverage.xml`; `./wpf coverage:status` rolls that into a per-module dashboard at `dev/COVERAGE-STATUS.md`.
+
+**Coverage needs a driver** — **PCOV** (recommended: ~5–10× faster than Xdebug at coverage) or **Xdebug**. Herd's PHP ships neither and you can't build extensions against it, so install a homebrew PHP of the same minor version and add PCOV:
+
+```bash
+brew install php@8.3
+CPPFLAGS="-I/opt/homebrew/opt/pcre2/include" /opt/homebrew/opt/php@8.3/bin/pecl install pcov
+```
+
+`./wpf coverage` auto-detects a driver-capable PHP (checks `WPF_COVERAGE_PHP`, then `/opt/homebrew/opt/php@8.3`, then the current PHP), runs the suites under it with `pcov.directory` pointed at the plugin root, and **merges** each suite's coverage into one report (`dev/cli/commands/merge-coverage.php`). Set `WPF_COVERAGE_PHP=/path/to/php` to force a specific binary. Without any driver, tests still pass and the dashboard shows "not measured".
+
+> **Coverage measures your branch, not the installed release.** Point `FLUENTFORM_PLUGIN` in `.env` at this checkout's `fluentform.php` (absolute path) so WPLoader loads the worktree — otherwise you'd be covering whatever copy is in `wp-content/plugins/`.
+
+## Writing tests — where things go
+
+| Kind | Suite | Base / actor | File |
+|---|---|---|---|
+| Model / service / policy logic | Integration | `extends WPTestCase` (or `RestTestCase` for REST) | `*Test.php` |
+| REST CRUD, permission matrices | Functional | `$I` (FunctionalTester) | `*Cest.php` |
+| Public form in a real browser | Acceptance | `$I` (AcceptanceTester) | `*Cest.php` |
+
+Shared helpers (`Support/`): `RestTestCase` and the Functional module both expose `get/post/put/patch/delete/submitForm` against `/fluentform/v1/` plus `loginAsAdmin/logout/impersonateAsRole` (one implementation in `Support/Concerns/InteractsWithFluentForm`). For the **real public submission path** (a logged-out visitor → `wp_ajax_nopriv_fluentform_submit`) use `submitPublicForm($formId, $fields)`, which captures the `wp_send_json` response. `DatabaseTestCase` has schema inspectors; `WpDieCapture` captures `wp_send_json`/`wp_die`; `MailCatcher` reads outbound email (`MailCatcher::clear()` then `MailCatcher::sent()`). Factories live in `Support/Factory/` — `FormFactory` (seeds `formSettings` meta so submissions don't warn), `SubmissionFactory`.
+
+> **Multi-request state:** the trait resets the WPFluent Router's cached route params and rebinds a fresh framework Request before each dispatch — Codeception runs many requests per process and the Router would otherwise leak the first request's `{id}` into the next. Don't remove `resetFluentState()`. **Add a new entity as a new factory file; never edit a shared one** so parallel contributors don't conflict. Tests for a module go under `tests/<Suite>/<Module>/` — one folder per module, so two people never touch the same file.
+
+# Legacy PHPUnit harness (dormant)
+
+The original PHPUnit harness below remains for one release as a fallback. Run it directly with `php dev/vendor/bin/phpunit -c dev/phpunit.xml.dist` (or `./wpf phpunit`). New tests should be written as Codeception suites, not here.
+
+## Test Setup (PHPUnit)
 
 - Run `chmod 700 ./test/setup.sh` to grant the necessary permission to run.
 - Run `./test/setup.sh dbname dbuser dbpass dbhost` to setup the test suite.
@@ -16,7 +134,7 @@ If you've done everything right then, you may run `./wpf` to check the list of a
 The `dbname` will be used to create the database for testing, so provide your `mysql` username and password in the place of `dbuser` and `dbpass` and use `localhost` for the `dbhost`. Once you complete setting up the test environment, find ther `./stubs/Models/Model.php` and rename the `WPFluent` using the correct namespace of your project from `\WPFluent\App\Models\Model`. If
 you did everything correctly then you should be able to write and run tests.
 
-- To check, run `./wpf test` from the root of your plugin directory.
+- To check, run `./wpf phpunit` from the root of your plugin directory.
 
 # Test Helpers Reference
 

@@ -2,7 +2,9 @@
 
 Each wave is one PR (or one PR group). The `test-infrastructure` capability spec is intentionally deferred until Wave 1 confirms the layout.
 
-Approach: **PR #873's PHPUnit scaffold first** (Waves 0–1), then **AI-assisted PHPUnit coverage module-by-module** (Waves 2A–2E), then **Codeception layer mirroring `fluent-cart-x/dev/wp-browser/`** (Wave 3) for the suites where Codeception's REST + permission helpers genuinely beat raw PHPUnit. PHPUnit and Codeception co-exist — they don't replace each other.
+Approach (updated): **Codeception (`dev/wp-browser/`) is the single test stack**, mirroring `fluent-cart-x`. Wave 1 lands the scaffold (DONE). Waves 2A–2E fill **module-by-module Cests/Tests**, one module = one folder = one owner so contributors never touch the same file. Wave 3 retires the legacy PHPUnit harness. The earlier "PHPUnit core + Codeception later" plan is superseded — the Integration suite already covers the PHPUnit-shaped tests (wp-browser runs on PHPUnit).
+
+**Claiming work:** put your name in the **Owner** column of a module row below before starting. One module per row → one folder under `tests/<Suite>/<Module>/` → no merge conflicts. Factories are additive (a new entity = a new file under `Support/Factory/`), never edits to a shared one.
 
 Source for module list: [app/Modules/](../../../app/Modules), [app/Http/Controllers/](../../../app/Http/Controllers), [app/Services/](../../../app/Services), [app/Http/Policies/](../../../app/Http/Policies).
 
@@ -21,21 +23,26 @@ PR: [fluentform#873](https://github.com/fluentform/fluentform/pull/873).
 - [x] `database/DBMigrator.php` reverted to one-method (`run()`) — no dev-only or destructive code in production. (`faae0796`)
 - [ ] Confirm post-merge layout: `dev/composer.json`, `dev/phpunit.xml.dist`, `dev/test/inc/bootstrap.php`, `wpf` at plugin root, `.distignore` excludes `dev/` from packaged builds. (Pending PR #873 merge.)
 
-## Wave 1 — Inventory + graph wiring
+## Wave 1 — Codeception scaffold + sandbox + coverage  ✅ DONE
 
-- [ ] Add `.mcp.json` at plugin root referencing `code-review-graph` and the existing `.code-review-graph/graph.db`.
-- [ ] Verify CLAUDE.md's MCP tool block matches the `setup-code-review-graph` skill template.
-- [ ] Smoke `./wpf test` with the empty / scaffolded suite — must be green before Wave 2.
-- [ ] Run `write-php-test . discover`. Commit:
-  - [ ] `.test-writer-results/setup-audit.txt`
-  - [ ] `.test-writer-results/test-brief.md`
-- [ ] Cross-reference the inventory with `query_graph` (uncovered nodes ranked by callee + dependent count). Save as `target-shortlist.md` in this change directory.
+- [x] `dev/wp-browser/` workspace: `composer.json` (`lucatume/wp-browser ^4.5`), `codeception.yml` with coverage include/exclude.
+- [x] Suites: `Integration` + `Functional` (WPLoader, +Asserts +REST helper) + `Acceptance` (WPWebDriver + WPDb).
+- [x] Support layer: `RestTestCase`, `DatabaseTestCase`, `WpDieCapture`, `Helper/Functional`, `Concerns/InteractsWithFluentForm`, actors.
+- [x] **Sandbox-DB guard** `GuardAgainstProductionDb` — fail-closed on non-test DB name / `wp_` prefix / mismatched live connection. Bootstraps call it + `DBMigrator::run()`.
+- [x] Factories `FormFactory`, `SubmissionFactory`.
+- [x] Ported smoke tests (`SampleTest`, `Database/TablesExistTest`, `Form/FormModelTest`) + examples (`FormsRestCest`, `PublicFormSubmissionCest`).
+- [x] `./wpf` rewired: `test`, `coverage`, `coverage:status`, `test:ui` → Codeception; `phpunit` → dormant harness. Per-suite separate processes.
+- [x] Test-summary UI (`tests/_output/index.html`) + `dev/cli/commands/coverage-status.php` → `dev/COVERAGE-STATUS.md`.
+- [x] Verified locally: Integration 5/5, Functional 2/2 green against a sandbox DB. (Acceptance + coverage need chromedriver / a coverage driver respectively.)
+- [ ] Add `.mcp.json` at plugin root referencing `code-review-graph` + the existing `.code-review-graph/graph.db`; verify CLAUDE.md's MCP block matches the `setup-code-review-graph` template.
 
 ---
 
-# Wave 2 — Module-by-module PHPUnit coverage
+# Wave 2 — Module-by-module Codeception coverage
 
-Each sub-wave (2A–2E) is one PR. Within a sub-wave, write factories first, then iterate file-by-file with `write-php-test . <ClassName>`, review the generated test + caveats, then run the per-wave audit. **Run the full audit (security + optimization + traceability) at the end of every sub-wave** — the writer's `--quality-gate` only checks test quality, not security of the code under test.
+Each sub-wave (2A–2E) is one PR. Tests go under `tests/Integration/<Module>/` (model/service/policy logic, `*Test.php`) or `tests/Functional/<Module>/` (REST + permission flows, `*Cest.php`). Write any needed factory first (new file in `Support/Factory/`), then iterate file-by-file, then run the per-wave audit. **Run the full audit (security + optimization + traceability) at the end of every sub-wave.**
+
+**Owner column:** each module line is one unit of work in one folder. Add `— @you` to claim it; that's how parallel contributors stay conflict-free. Regenerate `dev/COVERAGE-STATUS.md` (`./wpf coverage:status`) at the end of each sub-wave.
 
 ## Wave 2A — Foundation (factories + models + migrations + policies + coverage dashboard)
 
@@ -70,12 +77,13 @@ Everything else depends on these. Land first, no exceptions.
 
 Anything that runs without admin auth.
 
-- [ ] **[app/Modules/Form/](../../../app/Modules/Form)** rendering + submission:
+- [~] **[app/Modules/Form/](../../../app/Modules/Form)** rendering + submission — _started (@scaffold): `tests/Integration/Submission/PublicSubmissionTest.php`_:
+  - [x] AJAX submit happy path (real `wp_ajax_nopriv_fluentform_submit` via `submitPublicForm`) — stores Submission + EntryDetails.
+  - [x] Validation failure path — `{errors:{field:[...]}}` at status 423.
+  - [x] XSS payloads (`<script>`, `<img onerror>`, `<svg onload>`) sanitized before storage (`@dataProvider`).
   - [ ] Shortcode renders expected HTML structure.
-  - [ ] AJAX submit happy path (`fluentform_submit`) — stores Submission + EntryDetails.
-  - [ ] Validation failure path — error response shape stable.
   - [ ] Redirect URL resolution (incl. dynamic shortcodes).
-- [ ] **[app/Modules/SubmissionHandler/](../../../app/Modules/SubmissionHandler)** — handler pipeline, conditional skip, exception path.
+- [~] **[app/Modules/SubmissionHandler/](../../../app/Modules/SubmissionHandler)** — handler pipeline covered for happy/validation/XSS; remaining: conditional skip, spam path, exception path.
 - [ ] **[app/Modules/Component/](../../../app/Modules/Component)** — one test class per field type. Each covers: render, sanitize, validate, store, error message. Use `@dataProvider` for input variants.
 - [ ] **[app/Modules/HCaptcha/](../../../app/Modules/HCaptcha)**, **[app/Modules/ReCaptcha/](../../../app/Modules/ReCaptcha)**, **[app/Modules/Turnstile/](../../../app/Modules/Turnstile)**:
   - [ ] enabled / disabled, success, network failure (mock HTTP), key missing.
@@ -136,65 +144,27 @@ Bugs here annoy form owners but don't leak data publicly.
 
 ---
 
-# Wave 3 — Codeception layer (mirror cart-x's `dev/wp-browser/`)
+# Wave 3 — Retire the legacy PHPUnit harness
 
-Triggers only after Wave 2 is green. Codeception **co-exists** with PHPUnit — it doesn't replace it. PHPUnit stays for unit-shaped tests (models, services, formatters). Codeception is added where its helpers materially win.
+Triggers after Wave 2 coverage has moved to Codeception and `dev/test/` has been dormant for one release.
 
-Reference: [fluent-cart-x/dev/wp-browser/](../../../../fluent-cart-x/dev/wp-browser) — 218 cests across `Integration/` + `Functional/`, with `DatabaseTestCase`, `IntegrationsTestCase`, `RestTestCase`, `WpDieCapture`, factories under `Support/Factory/`.
-
-## Wave 3A — Codeception scaffold
-
-- [ ] Create `dev/wp-browser/composer.json` requiring `lucatume/wp-browser ^4.5`. Run `composer install` from `dev/wp-browser/`.
-- [ ] Create `dev/wp-browser/codeception.yml` mirroring cart-x: `namespace: Tests\Support`, paths set to `tests/`, `actor_suffix: Tester`.
-- [ ] Create suite configs:
-  - [ ] `dev/wp-browser/tests/Integration.suite.yml` — `WPLoader` module, loads plugin via `loadPluginsBeforeWordPress`.
-  - [ ] `dev/wp-browser/tests/Functional.suite.yml` — `WPDb` + `WPFilesystem` + `REST`.
-- [ ] Create support classes mirroring cart-x:
-  - [ ] `tests/Support/DatabaseTestCase.php` — `extends WPTestCase`, runs `TestDBMigrator::migrateUp` in `setUp`.
-  - [ ] `tests/Support/RestTestCase.php` — REST envelope helpers (`getAs`, `postAs`, `assertOk`, `assertForbidden`).
-  - [ ] `tests/Support/IntegrationsTestCase.php` — sets up provider stubs.
-  - [ ] `tests/Support/WpDieCapture.php` — captures `wp_die` for negative path tests.
-  - [ ] `tests/Support/Factory/FormFactory.php`, `SubmissionFactory.php` — ports of the PHPUnit factories.
-  - [ ] `tests/Support/IntegrationTester.php`, `FunctionalTester.php` — codecept build output.
-- [ ] Update `.distignore`: also exclude `dev/wp-browser/` from packaged builds.
-- [ ] Extend `./wpf coverage:status` to include Codeception coverage when present.
-
-## Wave 3B — Port high-value REST + permission suites
-
-Only port suites that genuinely benefit from Codeception. Skip pure unit tests.
-
-- [ ] **Permissions cests** (mirroring cart-x's `tests/Functional/Permissions/`):
-  - [ ] `FormsPermissionsCest.php` — every Form REST route × every role × allow/deny.
-  - [ ] `SubmissionsPermissionsCest.php`
-  - [ ] `IntegrationsPermissionsCest.php`
-  - [ ] `SettingsPermissionsCest.php`
-- [ ] **Integration cests** (mirroring `tests/Integration/Http/`, `tests/Integration/Services/`):
-  - [ ] `FormControllerCest.php` — full CRUD lifecycle in one cest (create → list → update → duplicate → delete).
-  - [ ] `SubmissionControllerCest.php` — list + filter + entry detail + delete.
-  - [ ] `PaymentFlowCest.php` — submission → payment intent → success / refund.
-  - [ ] `WebhookIntegrationCest.php` — outbound dispatch, retry on 5xx.
-- [ ] **Listener cests** (mirroring `tests/Integration/Listeners/`):
-  - [ ] Submission lifecycle event listeners (notification fired, integration fired, log written).
-
-## Wave 3C — CI alignment
-
-- [ ] PHPUnit and Codeception both run in the precommit / CI sequence:
-  - `./wpf test` (PHPUnit) → `dev/wp-browser/vendor/bin/codecept run` (Codeception).
-- [ ] Decide migration policy: any PHPUnit test that maps cleanly to a Codeception cest and reduces flakiness gets migrated; the rest stays. Do not migrate for migration's sake.
-- [ ] Update `test-infrastructure` spec.md (created here) with the dual-stack contract: when to use PHPUnit, when to use Codeception, where each lives, plus the "destructive plumbing lives only in dev/" invariant.
+- [ ] Confirm no remaining unique coverage lives only in `dev/test/tests/` (port anything still valuable into a Cest/Test first).
+- [ ] Delete `dev/test/`, `dev/test/setup.sh`, `dev/phpunit.xml.dist`; drop the `test` classmap entry from `dev/composer.json`.
+- [ ] Remove the `./wpf phpunit` branch and its WP-test-lib install path from `dev/cli/wpf.php` / `init.php`.
+- [ ] Update `.distignore` if needed (`dev` is already excluded wholesale, so `dev/wp-browser/` is too — verify).
+- [ ] Write `test-infrastructure` spec.md: the single-stack contract (suite model, sandbox-DB guard, one-module-one-folder, additive factories, coverage commands) + the "destructive plumbing lives only in dev/" invariant.
 
 ---
 
 ## Out of scope for this change
 
-- GitHub Actions CI workflow. Track separately once Waves 2 + 3 are green locally.
-- JS / Vue / E2E testing stack (Vitest, Playwright). Separate change.
+- GitHub Actions CI workflow. Track separately once Wave 2 is green locally.
+- JS / Vue / E2E testing stack (Vitest, Playwright). Separate change. (Acceptance/WPWebDriver browser tests are in-scope here for PHP-rendered forms.)
 - Free ↔ pro contract surface tests with `fluentformpro`. Separate change once the pro plugin's surface is mapped.
-- PHPStan / PHPCS adoption. Track as a sibling change `adopt-static-analysis` that can run in parallel with Wave 2.
+- PHPStan / PHPCS adoption. Sibling change `adopt-static-analysis`, runnable in parallel.
 
 ## Cross-references
 
-- Writer tool: [`/Volumes/Projects/Tools/fluent-test-writer-php`](../../../../../../../Tools/fluent-test-writer-php)
-- Cart-x PHPUnit (legacy reference): [`fluent-cart-x/dev/`](../../../../fluent-cart-x/dev)
-- Cart-x Codeception (Wave 3 reference): [`fluent-cart-x/dev/wp-browser/`](../../../../fluent-cart-x/dev/wp-browser)
-- Blocking PR: [fluentform#873](https://github.com/fluentform/fluentform/pull/873) (`acfd918c` + `faae0796` already pushed)
+- Codeception reference: [`fluent-cart-x/dev/wp-browser/`](../../../../fluent-cart-x/dev/wp-browser) — the canonical WPFluent wp-browser layout this scaffold mirrors.
+- Cart-x dev tooling: [`fluent-cart-x/dev/`](../../../../fluent-cart-x/dev)
+- Originating PR: [fluentform#873](https://github.com/fluentform/fluentform/pull/873) (`acfd918c` + `faae0796`).

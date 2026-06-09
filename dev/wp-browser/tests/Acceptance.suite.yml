@@ -1,0 +1,39 @@
+actor: AcceptanceTester
+bootstrap: _bootstrap.php
+modules:
+  enabled:
+    - lucatume\WPBrowser\Module\WPWebDriver
+    - lucatume\WPBrowser\Module\WPDb
+    - lucatume\WPBrowser\Module\WPFilesystem
+  config:
+    lucatume\WPBrowser\Module\WPWebDriver:
+      url: '%WORDPRESS_URL%'
+      adminUsername: '%WP_ADMIN_USER%'
+      adminPassword: '%WP_ADMIN_PASSWORD%'
+      adminPath: '/wp-admin'
+      browser: chrome
+      host: '%CHROMEDRIVER_HOST%'
+      port: '%CHROMEDRIVER_PORT%'
+      path: '/'
+      window_size: 1280x1024
+      capabilities:
+        "goog:chromeOptions":
+          args:
+            - "--headless"
+            - "--disable-gpu"
+            - "--no-sandbox"
+            - "--disable-dev-shm-usage"
+    lucatume\WPBrowser\Module\WPDb:
+      dbName: '%TEST_DB_NAME%'
+      dbHost: '%TEST_DB_HOST%'
+      dbUser: '%TEST_DB_USER%'
+      dbPassword: '%TEST_DB_PASSWORD%'
+      dsn: 'mysql:host=%TEST_DB_HOST%;dbname=%TEST_DB_NAME%'
+      user: '%TEST_DB_USER%'
+      password: '%TEST_DB_PASSWORD%'
+      url: '%WORDPRESS_URL%'
+      tablePrefix: '%TEST_TABLE_PREFIX%'
+      populate: false
+      cleanup: false
+    lucatume\WPBrowser\Module\WPFilesystem:
+      wpRootFolder: '%WORDPRESS_ROOT_DIR%'

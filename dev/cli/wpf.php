@@ -4,7 +4,7 @@ $args = array_slice($argvals, 1);
 $command = isset($args[0]) ? $args[0] : null;
 $isMakeCommand = is_string($command) && strpos($command, 'make:') === 0;
 
-if (!defined('ABSPATH') && $command && !$isMakeCommand && !in_array($command, ['init', 'test'], true)) {
+if (!defined('ABSPATH') && $command && !$isMakeCommand && !in_array($command, ['init', 'test', 'phpunit', 'codecept', 'coverage', 'coverage:status', 'test:ui'], true)) {
 	require_once $cwd."/../../../wp-load.php";
 }
 
@@ -40,7 +40,11 @@ if ($args) {
 	} elseif (($arg = reset($args)) === 'logoff') {
 		exec("pkill -f 'logmon'");
 		echo "Log monitor stopped.\n";
-	} elseif (($arg = reset($args)) === 'test') {
+	} elseif (($arg = reset($args)) === 'coverage:status') {
+		return (require $cwd.'/dev/cli/commands/coverage-status.php')($cwd);
+	} elseif (in_array(($arg = reset($args)), ['test', 'codecept', 'coverage', 'test:ui'], true)) {
+		return (require $cwd.'/dev/cli/commands/codecept.php')($cwd, $args);
+	} elseif (($arg = reset($args)) === 'phpunit') {
 		$tmpDir = sys_get_temp_dir();
 		$init = require $cwd . "/dev/cli/commands/init.php";
 		
