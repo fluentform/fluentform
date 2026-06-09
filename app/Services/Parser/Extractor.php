@@ -131,9 +131,7 @@ class Extractor
         foreach ($fields as $field) {
             $field['conditionals'] = Arr::get($field, 'settings.conditional_logics', []);
 
-            // Form field visibility must match the JS evaluator on the client,
-            // so missing fields use JS parity (missing != X returns true).
-            $matched = ConditionAssesor::evaluate($field, $formData, null, false);
+            $matched = ConditionAssesor::evaluate($field, $formData);
 
             if (!$matched) {
                 continue;
