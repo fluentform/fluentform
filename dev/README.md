@@ -51,16 +51,39 @@ vendor/bin/codecept build               # generates actor classes (re-run after 
 
 ## Running
 
+Run from the **plugin root** (the `./wpf` launcher lives there):
+
 ```bash
 ./wpf test                 # Integration + Functional (each in its own process), then open the summary UI
-./wpf test Integration     # one suite; extra args (filters, a path) pass through
+./wpf test Integration     # one suite only
 ./wpf test Acceptance      # real-browser suite — needs chromedriver + a served site
-./wpf coverage             # same + code coverage (HTML/XML/text)
+./wpf coverage             # same as `test` + code coverage (HTML + Clover XML + dashboard %)
 ./wpf coverage:status      # regenerate dev/COVERAGE-STATUS.md from the last coverage run
-./wpf test:ui              # open the last test-summary report without re-running
+./wpf test:ui              # re-open the last summary dashboard without re-running
 ```
 
-> WPLoader suites can't share a process (two boots collide on WordPress's global `$table_prefix`), so `./wpf test` runs each suite in a **separate** `codecept` process. Run a single suite directly with `cd dev/wp-browser && vendor/bin/codecept run Functional -v`.
+### Narrowing a run
+
+Anything after the suite name is passed straight through to `codecept run`. **Test-file paths are relative to `dev/wp-browser/`** (where Codeception runs), even though you invoke `./wpf` from the plugin root:
+
+```bash
+# one file
+./wpf test Integration tests/Integration/Submission/PublicSubmissionTest.php
+# one method  (file path + ':' + method)
+./wpf test Integration tests/Integration/Form/FormModelTest.php:test_factory_persists_a_published_form
+# by name fragment (matches the 3 XSS data sets)
+./wpf test Integration --filter xss
+# verbose (per-step) and stop on first failure
+./wpf test Integration -v --fail-fast
+```
+
+Or call Codeception directly for full control:
+
+```bash
+cd dev/wp-browser && vendor/bin/codecept run Functional -v
+```
+
+> WPLoader suites can't share a process (two boots collide on WordPress's global `$table_prefix`), so `./wpf test` with no suite runs each suite in a **separate** `codecept` process. Pass a single suite name to stay in one process.
 
 ## Test-summary UI & coverage
 
