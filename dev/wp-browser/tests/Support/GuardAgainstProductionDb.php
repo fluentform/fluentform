@@ -3,14 +3,19 @@
 namespace Tests\Support;
 
 /**
- * Fail-closed guard run from every suite bootstrap before any test touches the
- * database. WPLoader drops and recreates tables on the configured database, so
- * a misconfigured .env pointed at a live site would be catastrophic. This
- * refuses to proceed unless the target looks unmistakably like a sandbox.
+ * Defense-in-depth sandbox check run from each suite bootstrap.
+ *
+ * IMPORTANT: this runs AFTER WPLoader has already booted WordPress (which runs
+ * the WP installer = drops/recreates tables). It therefore can't prevent WPLoader
+ * from touching a misconfigured database — by the time it runs, the connection
+ * has happened. The gates that actually run BEFORE WPLoader are:
+ *   1. the scoped MySQL test user (can't reach the live DB at all), and
+ *   2. the `./wpf` pre-flight (validates .env before spawning codecept).
+ * This class is the final net for raw `vendor/bin/codecept` runs and adds the
+ * live-$wpdb-vs-config cross-check.
  *
  * Codeception loads tests/.env for %PARAM% substitution but not into getenv(),
- * so the values are read straight from the file (the real source of truth). If
- * WordPress is already booted, the live $wpdb connection is cross-checked too.
+ * so values are read straight from the file (the real source of truth).
  */
 class GuardAgainstProductionDb
 {

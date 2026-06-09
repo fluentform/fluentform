@@ -40,7 +40,14 @@ dev/wp-browser/
    ```
 2. `cp dev/wp-browser/tests/.env.example dev/wp-browser/tests/.env` and fill in your WordPress path + the sandbox DB. Use a **distinct table prefix** (e.g. `fftest_`), never `wp_`.
 
-`Support/GuardAgainstProductionDb` is a fail-closed guard run from every bootstrap: it refuses to run unless `TEST_DB_NAME` contains a `test` token, the prefix isn't `wp_`, and (when WP is booted) the live connection matches the configured sandbox.
+> **The scoped MySQL user (step 1) is the hard guarantee — not optional.** WPLoader connects and runs the WP installer *during its own initialization, before any in-suite guard or bootstrap*. So a `GRANT` limited to the test DB is the one layer that physically cannot be out-ordered: even a wrong `.env` can't reach your site DB. Never run the tests as `root` or with a user that can see the live database.
+
+**Guard layering (defense-in-depth):**
+1. **Scoped DB user** — the backstop that holds regardless of timing (above).
+2. **`./wpf` pre-flight** — `./wpf test`/`coverage` validate `.env` (DB name has a `test` token, prefix isn't `wp_`) **before** spawning Codeception, so WPLoader never even starts on a bad config.
+3. **`Support/GuardAgainstProductionDb`** — runs from each suite bootstrap as a final check (and cross-checks the live `$wpdb` connection). Note this fires *after* WPLoader has booted, so it's defense-in-depth, not the primary gate — which is why layers 1–2 exist.
+
+⚠️ Running `vendor/bin/codecept` **directly** (bypassing `./wpf`) skips the pre-flight: WPLoader connects before the bootstrap guard can fail closed. On a raw run the **scoped user is your only pre-connect protection** — so keep it scoped. Prefer `./wpf` for everyday runs.
 
 ## Setup
 

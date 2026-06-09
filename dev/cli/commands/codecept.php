@@ -46,6 +46,13 @@ return function ($cwd, array $args) {
         die("Missing dev/wp-browser/tests/.env\nRun: cp dev/wp-browser/tests/.env.example dev/wp-browser/tests/.env  (then fill in sandbox values)\n");
     }
 
+    // Pre-flight the sandbox check HERE, before codecept (and therefore WPLoader,
+    // which installs WordPress = drops/recreates tables) is ever spawned. The
+    // in-suite GuardAgainstProductionDb runs only after WPLoader has booted, so
+    // this is the gate that actually prevents a misconfigured .env from touching
+    // a live database via `./wpf`.
+    preflightSandbox($env);
+
     // Args after the command (e.g. a suite name or filter) pass through to codecept.
     $passthru = array_slice($args, 1);
 
@@ -147,6 +154,45 @@ return function ($cwd, array $args) {
 
     exit((int) $exit);
 };
+
+/**
+ * Refuse to launch codecept unless tests/.env points at a sandbox. Runs in the
+ * launcher process BEFORE codecept/WPLoader, so it actually prevents WPLoader's
+ * install (which drops/recreates tables) from touching a live database. Mirrors
+ * the in-suite GuardAgainstProductionDb, which only runs post-WPLoader.
+ */
+function preflightSandbox(string $envFile): void
+{
+    $env = [];
+    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#' || strpos($line, '=') === false) {
+            continue;
+        }
+        [$k, $v] = explode('=', $line, 2);
+        $env[trim($k)] = trim($v);
+    }
+
+    $dbName = (string) ($env['TEST_DB_NAME'] ?? '');
+    $prefix = (string) ($env['TEST_TABLE_PREFIX'] ?? '');
+    $reasons = [];
+
+    if ($dbName === '' || stripos($dbName, 'test') === false) {
+        $reasons[] = "TEST_DB_NAME ('{$dbName}') must contain a 'test' token — refusing in case it is a live database.";
+    }
+    if ($prefix === '' || strtolower($prefix) === 'wp_') {
+        $reasons[] = "TEST_TABLE_PREFIX ('{$prefix}') must be a distinct sandbox prefix, never 'wp_'.";
+    }
+
+    if ($reasons) {
+        fwrite(STDERR, "\n[wpf] Refusing to run — dev/wp-browser/tests/.env is not a sandbox:\n");
+        foreach ($reasons as $r) {
+            fwrite(STDERR, "  - {$r}\n");
+        }
+        fwrite(STDERR, "WPLoader would drop/recreate tables on that database. Fix .env (see .env.example).\n\n");
+        exit(1);
+    }
+}
 
 /**
  * Find a PHP binary with a coverage driver (PCOV or Xdebug) loaded. Checks
