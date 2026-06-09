@@ -19,19 +19,21 @@ This change unblocks AI-assisted PHPUnit test authoring via `fluent-test-writer-
 
 ## What Changes
 
-- **Wait for #873 to land** (with `acfd918c` and `faae0796` already on its branch). This change does **not** duplicate that PR's scaffold work. It coordinates around it.
-- **Verify the post-merge layout** matches the writer's `devtools-new` expectation: `dev/composer.json`, `dev/test/inc/bootstrap.php`, `dev/phpunit.xml.dist`, and `wpf` at plugin root. Bring any divergences from `fluent-cart-x`'s shape into line.
-- **Wire `code-review-graph` MCP** for this repo (a `.mcp.json` referring to the existing `.code-review-graph/graph.db`, plus the `setup-code-review-graph` skill's CLAUDE.md block). Without this, target selection falls back to grep.
-- **Run `write-php-test . discover`** as the first writer invocation. Persist `.test-writer-results/setup-audit.txt` and `.test-writer-results/test-brief.md` so the inventory is reviewable before any test is generated.
-- **Module-by-module PHPUnit coverage** in Waves 2A–2E (factories → public-facing → admin → services → cleanup). Each sub-wave is one PR. Per-target loop: `write-php-test . <ClassName>` → review generated test + caveats → commit.
-- **Codeception layer in Wave 3.** After PHPUnit baseline is green, mirror cart-x's `dev/wp-browser/` for high-value REST + permission cests. PHPUnit and Codeception co-exist — they don't replace each other.
-- **Coverage visibility** (added in Wave 2A): a `dev/cli/commands/coverage-status.php` script that joins the writer's inventory + PHPUnit coverage + `code-review-graph` ranking into one markdown dashboard at `dev/COVERAGE-STATUS.md`.
+**Direction (updated):** Codeception (`lucatume/wp-browser`) is the **single** test stack, mirroring `fluent-cart-x`. The legacy PHPUnit harness under `dev/test/` is migrated then retired (dormant one release, then deleted). PHPUnit-shaped tests still exist — they run as the Integration suite, which is PHPUnit under the hood — but there is one harness, one runner, one mental model. The earlier "PHPUnit core, Codeception in Wave 3" plan is superseded.
+
+- **Wave 1 scaffold — DONE in this change.** `dev/wp-browser/` created mirroring cart-x: `composer.json` (`lucatume/wp-browser ^4.5`), `codeception.yml` (with coverage include/exclude), Integration + Functional + Acceptance suites, `Support/` base cases (`RestTestCase`, `DatabaseTestCase`, `WpDieCapture`), the `Functional` REST helper module, `FormFactory`/`SubmissionFactory`, and a fail-closed sandbox-DB guard (`GuardAgainstProductionDb`). The ~9 legacy smoke tests are superseded by ported equivalents (`SampleTest`, `Database/TablesExistTest`, `Form/FormModelTest`) plus example `FormsRestCest` (Functional) and `PublicFormSubmissionCest` (Acceptance).
+- **Sandbox-only by construction.** Tests run against a dedicated throwaway DB + a MySQL user scoped to it, with a distinct table prefix; the guard refuses to run otherwise. The live site DB is unreachable.
+- **`./wpf` rewired.** `./wpf test` runs Integration + Functional (each in its own process — two WPLoader boots can't share one), `./wpf coverage` adds coverage, `./wpf coverage:status` regenerates the dashboard, `./wpf test:ui` opens the summary; `./wpf phpunit` still runs the dormant harness.
+- **Test-summary UI + coverage.** A summary landing page (`tests/_output/index.html`) links each suite's HTML result report; `./wpf coverage` produces an HTML coverage report + Clover XML; `dev/cli/commands/coverage-status.php` rolls it into `dev/COVERAGE-STATUS.md`. Coverage requires PCOV/Xdebug.
+- **Module-by-module Cests** in Waves 2A–2E, one module = one folder = one owner (conflict-free). Each sub-wave is one PR.
+- **Retire PHPUnit harness** in Wave 3 (delete `dev/test/`, `setup.sh`, `dev/phpunit.xml.dist`).
+- **Wire `code-review-graph` MCP** for this repo (`.mcp.json` + CLAUDE.md block) so coverage targeting uses the graph, not grep.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `test-infrastructure` — to be added in Wave 3 once the layout is fully concrete. Will define the contract for how PHP tests are written and run in fluentform: layout (mirrors `fluent-cart-x`), bootstrap contract, test file location and naming, factory placement, the writer's caveat directory (`.claude/skills/testing-phpunit/references/fluentform/`), and the writer's `--quality-gate` / `--full-suite-gate` definitions. Also documents the PHPUnit ↔ Codeception dual-stack contract: when to use each, and the architectural invariant that destructive migration plumbing lives only under `dev/`.
+- `test-infrastructure` — finalized in Wave 3 once the legacy harness is removed. Defines the contract for how tests are written and run in fluentform: the `dev/wp-browser/` layout (mirrors `fluent-cart-x`), the suite model (Integration / Functional / Acceptance), bootstrap + sandbox-DB-guard contract, test file location and naming (one module = one folder), factory placement (additive, one file per entity), and the coverage/dashboard commands. Also records the single-stack decision and the invariant that destructive migration plumbing lives only under `dev/`.
 
 ### Modified Capabilities
 
@@ -41,7 +43,7 @@ None.
 
 - **Affected code:** No production PHP changes. `dev/` is added by #873; this change only confirms its shape and exercises it. `.mcp.json` (new, dev-only). `.test-writer-results/` artifacts are dev-only and may be gitignored. `dev/COVERAGE-STATUS.md` is dev-only.
 - **APIs:** No public APIs change.
-- **Dependencies:** None added by Wave 2. Wave 3 adds `lucatume/wp-browser ^4.5` under `dev/wp-browser/composer.json` (separate from `dev/composer.json`).
+- **Dependencies:** `lucatume/wp-browser ^4.5` under `dev/wp-browser/composer.json` (separate workspace from `dev/composer.json`). Coverage needs PCOV or Xdebug locally. No production dependency changes.
 - **Systems:** None. The writer runs locally; no CI integration is in scope for this change.
 - **Cross-plugin:** None. FluentForm's pro add-on is not touched by this change.
 - **Coordination:** Blocked on #873. Once merged, the first writer run (`discover`) is fast and read-only.

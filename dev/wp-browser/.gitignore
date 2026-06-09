@@ -1,0 +1,5 @@
+/vendor/
+/tests/_wordpress/
+/tests/_output/
+/tests/.env
+/tests/Support/_generated/
