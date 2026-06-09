@@ -61,10 +61,13 @@ vendor/bin/codecept build               # generates actor classes (re-run after 
 Run from the **plugin root** (the `./wpf` launcher lives there):
 
 ```bash
-./wpf test                 # Integration + Functional (each in its own process), then open the summary UI
+./wpf test                 # Integration + Functional, then open the summary UI.
+                           #   Auto-measures coverage when a PCOV/Xdebug driver is found;
+                           #   no driver → runs fast and the coverage card shows "not measured".
+./wpf test --fast          # Skip coverage even if a driver exists (fastest inner loop).
 ./wpf test Integration     # one suite only
 ./wpf test Acceptance      # real-browser suite — needs chromedriver + a served site
-./wpf coverage             # same as `test` + code coverage (HTML + Clover XML + dashboard %)
+./wpf coverage             # force coverage; warns if no driver is installed
 ./wpf coverage:status      # regenerate dev/COVERAGE-STATUS.md from the last coverage run
 ./wpf test:ui              # re-open the last summary dashboard without re-running
 ```

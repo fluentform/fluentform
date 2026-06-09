@@ -56,6 +56,12 @@ return function ($cwd, array $args) {
     // Args after the command (e.g. a suite name or filter) pass through to codecept.
     $passthru = array_slice($args, 1);
 
+    // `--fast` skips the auto-coverage that `./wpf test` does when a driver exists.
+    $fast = in_array('--fast', $passthru, true);
+    $passthru = array_values(array_filter($passthru, function ($a) {
+        return $a !== '--fast';
+    }));
+
     // Default to Integration + Functional when no suite is named. Acceptance is
     // opt-in (needs chromedriver + a served site): ./wpf test Acceptance.
     $hasSuite = false;
@@ -79,27 +85,31 @@ return function ($cwd, array $args) {
     $coverageFlags = [];
     $runner = [escapeshellarg($bin)]; // default: codecept via its own shebang php
     $covPhp = null;
-    if ($command === 'coverage') {
-        // Collect only — per-suite reports overwrite each other, so we merge the
-        // serialized coverage from every suite into one report after the loop.
-        $coverageFlags = ['--coverage'];
-        // Coverage needs a PCOV/Xdebug driver. The default test PHP (e.g. Herd)
-        // often has none, so run codecept under a driver-capable PHP if found.
+
+    // `coverage` always measures; `test` measures automatically WHEN a driver is
+    // available (unless --fast), so the dashboard's coverage card stays current
+    // without a second command. No driver → `test` stays fast and silent.
+    $measure = $command === 'coverage' || ($command === 'test' && !$fast);
+    if ($measure) {
         $covPhp = coveragePhp();
         if ($covPhp) {
-            echo "Coverage driver PHP: {$covPhp}\n";
-            // PCOV only instruments files under pcov.directory; point it at the
-            // plugin root so app/ is collected (Codeception's include filters it).
+            // Collect only — per-suite reports overwrite each other, so we merge
+            // the serialized coverage from every suite after the loop. PCOV only
+            // instruments files under pcov.directory; point it at the plugin root.
+            $coverageFlags = ['--coverage'];
             $runner = [
                 escapeshellarg($covPhp),
                 '-d', 'pcov.enabled=1',
                 '-d', 'pcov.directory=' . escapeshellarg($cwd),
                 escapeshellarg($bin),
             ];
-        } else {
+            $note = $command === 'test' ? ' (auto — ./wpf test --fast to skip)' : '';
+            echo "Coverage: on{$note} — driver {$covPhp}\n";
+        } elseif ($command === 'coverage') {
             echo "WARNING: no PCOV/Xdebug driver found — coverage will be empty.\n";
             echo "Install one (e.g. PCOV for a homebrew php@8.3) or set WPF_COVERAGE_PHP.\n";
         }
+        // `test` with no driver: silently stay fast.
     }
 
     @unlink($out . '/coverage.xml'); // stale guard: don't show a previous run's number
@@ -128,7 +138,7 @@ return function ($cwd, array $args) {
             'stats'  => parseJUnit($out . '/' . $xmlFile),
         ];
         // Snapshot this suite's serialized coverage before the next run overwrites it.
-        if ($command === 'coverage' && is_file($out . '/coverage.serialized')) {
+        if ($covPhp && is_file($out . '/coverage.serialized')) {
             $snap = $out . '/' . strtolower($suite) . '.cov';
             copy($out . '/coverage.serialized', $snap);
             $covSnapshots[] = $snap;
@@ -136,7 +146,7 @@ return function ($cwd, array $args) {
     }
 
     // Merge per-suite coverage into one accurate Clover + HTML report.
-    if ($command === 'coverage' && $covPhp && $covSnapshots) {
+    if ($covPhp && $covSnapshots) {
         $merge = $cwd . '/dev/cli/commands/merge-coverage.php';
         $mergeCmd = implode(' ', array_merge(
             [escapeshellarg($covPhp), '-d', 'pcov.enabled=0', escapeshellarg($merge), escapeshellarg($out)],
