@@ -21,7 +21,7 @@ use FluentForm\App\Modules\MCP\Tools\ContextTools;
  * application password. Even when on, the endpoint stays behind WP auth + a
  * FluentForm role (transport gate) + per-ability permission checks.
  *
- * Booted from app/Hooks/actions.php.
+ * Booted from boot/app.php.
  */
 class MCPInit
 {
