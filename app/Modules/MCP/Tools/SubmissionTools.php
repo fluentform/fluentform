@@ -10,6 +10,7 @@ use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\Mutation;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
+use FluentForm\App\Modules\MCP\Support\WriteGuard;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\App\Services\Submission\SubmissionService;
 
@@ -100,7 +101,7 @@ class SubmissionTools
                     'type'       => 'object',
                     'properties' => [
                         'entry_id' => ['type' => 'integer'],
-                        'content'  => ['type' => 'string', 'description' => 'Note text (plain text or simple HTML).'],
+                        'content'  => ['type' => 'string', 'description' => 'Note text (plain text; HTML tags are stripped).'],
                     ],
                     'required' => ['entry_id', 'content'],
                 ],
@@ -151,10 +152,15 @@ class SubmissionTools
         ];
 
         if (!empty($params['date_from']) && !empty($params['date_to'])) {
-            $attributes['date_range'] = [
-                sanitize_text_field($params['date_from']),
-                sanitize_text_field($params['date_to']),
-            ];
+            $dateFrom = sanitize_text_field($params['date_from']);
+            $dateTo   = sanitize_text_field($params['date_to']);
+            if (!MCPHelper::isYmd($dateFrom) || !MCPHelper::isYmd($dateTo)) {
+                return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from and date_to must be valid dates in YYYY-MM-DD format.', 'fluentform'), ['fields' => ['date_from', 'date_to']]);
+            }
+            if ($dateFrom > $dateTo) {
+                return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from must be on or before date_to.', 'fluentform'), ['fields' => ['date_from', 'date_to']]);
+            }
+            $attributes['date_range'] = [$dateFrom, $dateTo];
         }
 
         $model = new Submission();
@@ -290,6 +296,18 @@ class SubmissionTools
 
     public static function deleteSubmission($params = [])
     {
+        // Replay before resolving: once the entry is deleted, a lost-response
+        // retry could never resolve it again, so the idempotent result would be
+        // unreachable. The replay cache is keyed per user, so no access bypass.
+        $replay = WriteGuard::replay(
+            'fluentform/delete-submission',
+            'submission:' . (isset($params['entry_id']) ? (int) $params['entry_id'] : 0),
+            isset($params['idempotency_key']) ? $params['idempotency_key'] : ''
+        );
+        if (null !== $replay) {
+            return $replay;
+        }
+
         $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
         if (is_wp_error($submission)) {
             return $submission;

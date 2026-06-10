@@ -94,19 +94,39 @@ class WriteGuard
         return true;
     }
 
+    /**
+     * Cached result of an earlier execution with the same idempotency key, or
+     * null. Checked BEFORE confirm-token validation (tokens are single-use, so
+     * a lost-response retry only ever has a consumed token) and before entity
+     * resolution (the entity may no longer exist after a destructive write).
+     */
+    public static function replay($tool, $entityKey, $key)
+    {
+        if (empty($key)) {
+            return null;
+        }
+
+        $cached = get_transient(self::idemKey($tool, $entityKey, $key));
+        if (false === $cached) {
+            return null;
+        }
+
+        return is_array($cached) ? array_merge($cached, ['idempotent_replay' => true]) : $cached;
+    }
+
     public static function idempotent($tool, $entityKey, $key, callable $fn)
     {
         if (empty($key)) {
             return $fn();
         }
 
-        $cacheKey = self::idemKey($tool, $entityKey, $key);
-        $cached   = get_transient($cacheKey);
-        if (false !== $cached) {
-            return is_array($cached) ? array_merge($cached, ['idempotent_replay' => true]) : $cached;
+        $replay = self::replay($tool, $entityKey, $key);
+        if (null !== $replay) {
+            return $replay;
         }
 
         $result = $fn();
+        $cacheKey = self::idemKey($tool, $entityKey, $key);
 
         if (!is_wp_error($result)) {
             set_transient($cacheKey, $result, self::IDEM_TTL);

@@ -100,6 +100,39 @@ class FormAccess
     }
 
     /**
+     * Non-trashed entry counts for many forms in one grouped query, so list
+     * tools never run a COUNT per row. Returns [formId => int] covering every
+     * requested id (0 when absent), or nulls on failure.
+     *
+     * @return array<int, int|null>
+     */
+    public static function entryCounts(array $formIds)
+    {
+        $formIds = array_values(array_unique(array_map('intval', $formIds)));
+        if (!$formIds) {
+            return [];
+        }
+
+        try {
+            $rows = Submission::query()
+                ->whereIn('form_id', $formIds)
+                ->where('status', '!=', 'trashed')
+                ->selectRaw('form_id, COUNT(*) as total')
+                ->groupBy('form_id')
+                ->get();
+
+            $out = array_fill_keys($formIds, 0);
+            foreach ($rows as $row) {
+                $out[(int) $row->form_id] = (int) $row->total;
+            }
+
+            return $out;
+        } catch (\Throwable $e) {
+            return array_fill_keys($formIds, null);
+        }
+    }
+
+    /**
      * True for response keys that are framework internals, not user-entered
      * fields: anything prefixed with "_" (nonces, _wp_http_referer,
      * __fluent_form_embded_post_id) plus a few named captcha tokens.

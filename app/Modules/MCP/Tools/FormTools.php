@@ -180,14 +180,20 @@ class FormTools
         $paginator = $query->paginate($paging['per_page'], ['*'], 'page', $paging['page']);
         $total     = MCPHelper::paginatorTotal($paginator);
 
+        $items  = MCPHelper::paginatorItems($paginator);
+        $counts = FormAccess::entryCounts(array_map(function ($form) {
+            return (int) $form->id;
+        }, is_array($items) ? $items : iterator_to_array($items)));
+
         $rows = [];
-        foreach (MCPHelper::paginatorItems($paginator) as $form) {
+        foreach ($items as $form) {
+            $formId = (int) $form->id;
             $rows[] = [
-                'id'         => (int) $form->id,
+                'id'         => $formId,
                 'title'      => $form->title,
                 'status'     => $form->status,
                 'type'       => $form->type,
-                'entries'    => FormAccess::entryCount($form->id),
+                'entries'    => isset($counts[$formId]) ? $counts[$formId] : null,
                 'created_at' => MCPHelper::toIso8601($form->created_at),
             ];
         }

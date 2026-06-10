@@ -100,6 +100,16 @@ class MCPHelper
         return null;
     }
 
+    /** True for a real calendar date in strict YYYY-MM-DD form. */
+    public static function isYmd($value)
+    {
+        if (!is_string($value) || !preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value, $m)) {
+            return false;
+        }
+
+        return checkdate((int) $m[2], (int) $m[3], (int) $m[1]);
+    }
+
     public static function htmlToText($html)
     {
         if (!$html) {

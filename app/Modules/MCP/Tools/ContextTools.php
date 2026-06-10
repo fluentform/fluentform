@@ -26,6 +26,8 @@ class ContextTools
 
     const CACHE_PREFIX = 'fluentform_mcp_context_';
 
+    const CACHE_VERSION_OPTION = '_fluentform_mcp_context_ver';
+
     // Verified FluentForm domain enums. Hardcoded (filterable) so the agent gets
     // the complete valid set even when a status currently has zero rows.
     const ENUMS = [
@@ -59,7 +61,7 @@ class ContextTools
     public static function getContext($params = [])
     {
         $userId   = get_current_user_id();
-        $cacheKey = self::CACHE_PREFIX . $userId;
+        $cacheKey = self::cacheKey($userId);
 
         $cached = get_transient($cacheKey);
         if (is_array($cached)) {
@@ -70,6 +72,16 @@ class ContextTools
         set_transient($cacheKey, $context, self::CACHE_TTL);
 
         return $context;
+    }
+
+    private static function cacheKey($userId)
+    {
+        return self::CACHE_PREFIX . self::cacheVersion() . '_' . $userId;
+    }
+
+    private static function cacheVersion()
+    {
+        return (int) get_option(self::CACHE_VERSION_OPTION, 0);
     }
 
     private static function buildContext($userId)
@@ -192,17 +204,14 @@ class ContextTools
     }
 
     /**
-     * Clear the cached context for all users. Hooked from MCPInit onto events that
-     * change anything the context payload reports.
+     * Clear the cached context for all users by bumping the version baked into
+     * the cache key. A direct options-table DELETE would silently no-op on
+     * sites with a persistent object cache (transients never hit wp_options
+     * there); the key bump works everywhere, and orphaned entries age out via
+     * the 60s TTL.
      */
     public static function invalidateCache()
     {
-        global $wpdb;
-
-        $like = $wpdb->esc_like('_transient_' . self::CACHE_PREFIX) . '%';
-        $wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like));
-
-        $like = $wpdb->esc_like('_transient_timeout_' . self::CACHE_PREFIX) . '%';
-        $wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like));
+        update_option(self::CACHE_VERSION_OPTION, self::cacheVersion() + 1, false);
     }
 }

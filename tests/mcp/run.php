@@ -91,6 +91,17 @@ $prev = MCPHelper::preview('abcdefghij', 5);
 eq($prev, 'abcde…', 'preview truncates with ellipsis');
 eq(MCPHelper::preview('short', 50), 'short', 'preview leaves short text intact');
 
+echo "MCPHelper::isYmd\n";
+ok(MCPHelper::isYmd('2026-06-10'), 'valid date accepted');
+ok(MCPHelper::isYmd('2024-02-29'), 'leap day accepted');
+ok(!MCPHelper::isYmd('2026-13-01'), 'month 13 rejected');
+ok(!MCPHelper::isYmd('2026-02-30'), 'impossible day rejected');
+ok(!MCPHelper::isYmd('10-06-2026'), 'wrong segment order rejected');
+ok(!MCPHelper::isYmd('2026-6-1'), 'unpadded date rejected');
+ok(!MCPHelper::isYmd('last month'), 'natural language rejected');
+ok(!MCPHelper::isYmd(''), 'empty string rejected');
+ok(!MCPHelper::isYmd(20260610), 'non-string rejected');
+
 echo "MCPHelper paging/paginator helpers\n";
 $meta = MCPHelper::pagingMeta(['current_page' => 2, 'per_page' => 10, 'total' => 25, 'last_page' => 3]);
 eq($meta['page']['pages'], 3, 'pagingMeta total pages from array');
@@ -200,6 +211,29 @@ $noConfirm = Mutation::runGuarded(
 ok($noConfirm instanceof WP_Error, 'execute without confirm_token is refused');
 eq($noConfirm->get_error_code(), ErrorCodes::CONFIRMATION_REQUIRED, 'refusal uses CONFIRMATION_REQUIRED');
 ok($applied === false, 'mutation still not executed without a valid token');
+
+echo "Mutation::runGuarded idempotent replay\n";
+$applyCount = 0;
+$runGuarded = function ($params) use (&$applyCount) {
+    return Mutation::runGuarded(
+        'fluentform/delete-submission',
+        $params,
+        'submission:9',
+        'status:read',
+        function () { return ['entry_id' => 9, 'permanent' => true]; },
+        function () use (&$applyCount) { $applyCount++; return ['ok' => true, 'id' => 9]; }
+    );
+};
+$prevEnvelope = $runGuarded(['entry_id' => 9, 'dry_run' => true]);
+$executed = $runGuarded(['entry_id' => 9, 'confirm_token' => $prevEnvelope['confirm_token'], 'idempotency_key' => 'retry-1']);
+ok(is_array($executed) && !empty($executed['ok']), 'execute succeeds with a valid confirm_token');
+eq($applyCount, 1, 'mutation applied exactly once');
+$retried = $runGuarded(['entry_id' => 9, 'confirm_token' => $prevEnvelope['confirm_token'], 'idempotency_key' => 'retry-1']);
+ok(is_array($retried) && !empty($retried['idempotent_replay']), 'retry with the consumed token replays the cached result');
+eq($applyCount, 1, 'replay does not run the mutation again');
+$otherKey = $runGuarded(['entry_id' => 9, 'confirm_token' => $prevEnvelope['confirm_token'], 'idempotency_key' => 'retry-2']);
+ok($otherKey instanceof WP_Error, 'a different idempotency_key with a consumed token is refused');
+eq($applyCount, 1, 'refused retry does not run the mutation');
 
 echo "Tool definitions integrity\n";
 $defs = array_merge(

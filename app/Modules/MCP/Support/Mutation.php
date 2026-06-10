@@ -62,14 +62,22 @@ class Mutation
             return WriteGuard::preview($tool, $entityKey, $fingerprint, $preview());
         }
 
+        $idemKey = isset($params['idempotency_key']) ? $params['idempotency_key'] : '';
+
+        // Replay before confirm: tokens are single-use, so a lost-response retry
+        // arrives with a consumed token and would otherwise die as "expired".
+        $replay = WriteGuard::replay($tool, $entityKey, $idemKey);
+        if (null !== $replay) {
+            return $replay;
+        }
+
         $token   = isset($params['confirm_token']) ? $params['confirm_token'] : '';
         $confirm = WriteGuard::confirm($tool, $entityKey, $fingerprint, $token);
         if (is_wp_error($confirm)) {
             return $confirm;
         }
 
-        $idemKey = isset($params['idempotency_key']) ? $params['idempotency_key'] : '';
-        $result  = WriteGuard::idempotent($tool, $entityKey, $idemKey, $apply);
+        $result = WriteGuard::idempotent($tool, $entityKey, $idemKey, $apply);
 
         self::audit($tool, self::resolveTarget($target, $result), $params, $result);
 

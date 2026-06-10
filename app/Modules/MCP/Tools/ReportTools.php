@@ -6,6 +6,7 @@ defined('ABSPATH') || exit;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
@@ -110,8 +111,19 @@ class ReportTools
         }
         $formId = (int) $form->id;
 
-        $to   = !empty($params['date_to']) ? sanitize_text_field($params['date_to']) : gmdate('Y-m-d', current_time('timestamp'));
+        $to = !empty($params['date_to']) ? sanitize_text_field($params['date_to']) : gmdate('Y-m-d', current_time('timestamp'));
+        if (!MCPHelper::isYmd($to)) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_to must be a valid date in YYYY-MM-DD format.', 'fluentform'), ['fields' => ['date_to']]);
+        }
+
         $from = !empty($params['date_from']) ? sanitize_text_field($params['date_from']) : gmdate('Y-m-d', strtotime('-30 days', strtotime($to)));
+        if (!MCPHelper::isYmd($from)) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from must be a valid date in YYYY-MM-DD format.', 'fluentform'), ['fields' => ['date_from']]);
+        }
+
+        if ($from > $to) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from must be on or before date_to.', 'fluentform'), ['fields' => ['date_from', 'date_to']]);
+        }
 
         $rows = Submission::query()
             ->where('form_id', $formId)

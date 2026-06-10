@@ -24,6 +24,10 @@ class McpSettingsController extends Controller
     {
         $user = wp_get_current_user();
 
+        // Count the same catalogue the card lists; MCPInit::toolsCount() applies
+        // the Pro ability-names filter and would drift from the visible list.
+        $tools = AbilitiesRegistrar::catalogue();
+
         return $this->sendSuccess([
             'mcp_enabled'          => PermissionGate::isEnabled(),
             'adapter_available'    => MCPInit::adapterAvailable(),
@@ -31,8 +35,8 @@ class McpSettingsController extends Controller
             'can_auto_install'     => (bool) apply_filters('fluent_toolkit/can_auto_install', false),
             'toolkit_download_url' => self::TOOLKIT_DOWNLOAD_URL,
             'endpoint_url'         => MCPInit::getEndpointUrl(),
-            'tools_count'          => MCPInit::toolsCount(),
-            'tools'                => AbilitiesRegistrar::catalogue(),
+            'tools_count'          => count($tools),
+            'tools'                => $tools,
             'app_passwords_url'    => admin_url('profile.php#application-passwords-section'),
             'plugins_url'          => admin_url('plugins.php'),
             'current_user_login'   => ($user && $user->exists()) ? $user->user_login : '',
