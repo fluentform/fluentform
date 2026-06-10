@@ -20,6 +20,8 @@ use FluentForm\App\Modules\MCP\Support\PermissionGate;
  */
 class ReportTools
 {
+    const TREND_MAX_DAYS = 366;
+
     public static function definitions()
     {
         return [
@@ -44,12 +46,12 @@ class ReportTools
             'fluentform/get-submissions-trend' => [
                 'label'       => __('Get Submissions Trend', 'fluentform'),
                 'group'       => __('Reports', 'fluentform'),
-                'description' => __('Daily entry counts for one form over a date window (defaults to the last 30 days). Returns a date→count series for charting submission volume. Requires form_id.', 'fluentform'),
+                'description' => __('Daily entry counts for one form over a date window (defaults to the last 30 days, maximum 366 days). Returns a date→count series for charting submission volume. Requires form_id.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
                     'properties' => [
                         'form_id'   => ['type' => 'integer'],
-                        'date_from' => ['type' => 'string', 'description' => 'YYYY-MM-DD (site timezone). Defaults to 30 days ago.'],
+                        'date_from' => ['type' => 'string', 'description' => 'YYYY-MM-DD (site timezone). Defaults to 30 days ago. The window may span at most 366 days.'],
                         'date_to'   => ['type' => 'string', 'description' => 'YYYY-MM-DD (site timezone). Defaults to today.'],
                     ],
                     'required' => ['form_id'],
@@ -123,6 +125,21 @@ class ReportTools
 
         if ($from > $to) {
             return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from must be on or before date_to.', 'fluentform'), ['fields' => ['date_from', 'date_to']]);
+        }
+
+        // Span clamp: the window bounds the scan and the GROUP BY bucket count,
+        // so it gets a ceiling just like per_page does.
+        $spanDays = (int) (new \DateTime($from))->diff(new \DateTime($to))->days;
+        if ($spanDays > self::TREND_MAX_DAYS) {
+            return MCPHelper::error(
+                ErrorCodes::INVALID_PARAM,
+                sprintf(
+                    /* translators: %d: maximum allowed days in the trend window */
+                    __('The date window may span at most %d days. Narrow date_from/date_to and call again.', 'fluentform'),
+                    self::TREND_MAX_DAYS
+                ),
+                ['fields' => ['date_from', 'date_to'], 'max_days' => self::TREND_MAX_DAYS]
+            );
         }
 
         $rows = Submission::query()
