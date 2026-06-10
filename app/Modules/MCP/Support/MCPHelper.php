@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Support;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 /**
  * Shared formatting + validation utilities for the FluentForm MCP module.
@@ -54,7 +54,7 @@ class MCPHelper
 
         $json = wp_json_encode(['error' => $error]);
 
-        return new \WP_Error($code, $json !== false ? $json : $message, $details);
+        return new \WP_Error($code, false !== $json ? $json : $message, $details);
     }
 
     /**

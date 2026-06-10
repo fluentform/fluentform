@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Tools;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
@@ -169,7 +169,7 @@ class ContextTools
     {
         try {
             $val = $fn();
-            return $val === null ? null : (int) $val;
+            return null === $val ? null : (int) $val;
         } catch (\Throwable $e) {
             return null;
         }

@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Support;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 /**
  * Safety rails for mutating MCP tools. Annotations are UX hints, not safety —
@@ -102,7 +102,7 @@ class WriteGuard
 
         $cacheKey = self::idemKey($tool, $entityKey, $key);
         $cached   = get_transient($cacheKey);
-        if ($cached !== false) {
+        if (false !== $cached) {
             return is_array($cached) ? array_merge($cached, ['idempotent_replay' => true]) : $cached;
         }
 

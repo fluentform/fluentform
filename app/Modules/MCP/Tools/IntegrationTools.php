@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Tools;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
@@ -12,9 +12,9 @@ use FluentForm\App\Services\Integrations\FormIntegrationService;
 /**
  * Integration tools (read).
  *
- * list-integrations reports the integration feeds configured on one form
- * (provider, name, enabled) so an agent can answer "where do this form's entries
- * go?". It reuses FormIntegrationService::get(), the same source the admin
+ * The list-integrations tool reports the integration feeds configured on one
+ * form (provider, name, enabled) so an agent can answer "where do this form's
+ * entries go?". It reuses FormIntegrationService::get(), the same source the admin
  * integrations screen reads, and is form-scoped.
  */
 class IntegrationTools

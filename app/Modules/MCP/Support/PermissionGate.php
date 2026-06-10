@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Support;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Services\Manager\FormManagerService;

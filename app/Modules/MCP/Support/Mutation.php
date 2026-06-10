@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Support;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 /**
  * The single write path for MCP tools. Every mutation an agent performs goes
@@ -101,7 +101,8 @@ class Mutation
             'result'  => $isError ? 'error' : 'success',
         ];
         if ($isError) {
-            $payload['error_code'] = $result->get_error_code() ?: 'error';
+            $code                  = $result->get_error_code();
+            $payload['error_code'] = $code ? $code : 'error';
         }
 
         try {
@@ -116,6 +117,7 @@ class Mutation
             ]);
         } catch (\Throwable $e) {
             // Never let auditing failure surface to the agent.
+            return;
         }
     }
 

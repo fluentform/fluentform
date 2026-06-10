@@ -33,6 +33,10 @@ return function ($file) {
 
     $app = new Application($file);
 
+    // Boot the MCP server (Abilities API tools + endpoint). Self-guards: ships
+    // off, and its Abilities/adapter hooks fire only when those systems exist.
+    \FluentForm\App\Modules\MCP\MCPInit::boot();
+
     register_activation_hook($file, function ($network_wide) use ($app) {
         ($app->make(ActivationHandler::class))->handle($network_wide);
     });

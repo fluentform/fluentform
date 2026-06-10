@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Support;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 /**
  * The closed set of machine-readable error codes the MCP tools return.

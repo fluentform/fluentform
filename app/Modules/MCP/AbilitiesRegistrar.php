@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;

@@ -2,11 +2,12 @@
 
 namespace FluentForm\App\Modules\MCP\Tools;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
+use FluentForm\App\Modules\MCP\Support\FormCreator;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\Mutation;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
@@ -15,8 +16,8 @@ use FluentForm\App\Services\Form\FormService;
 /**
  * Form tools (read).
  *
- * list-forms is the catalogue; get-form loads one form's field schema so the
- * agent knows the exact field keys before reading entries. Both respect the
+ * The list-forms tool is the catalogue; get-form loads one form's field schema
+ * so the agent knows the exact field keys before reading entries. Both respect the
  * user's form scope: a "specific forms" manager never sees a form outside their
  * assignment, even by id.
  */
@@ -133,8 +134,7 @@ class FormTools
 
         return Mutation::run('fluentform/create-form', $params, function () use ($title, $specFields, $params) {
             try {
-                $builder = new \FluentForm\App\Modules\Ai\AiFormBuilder();
-                $form    = $builder->createFromSpec([
+                $form = (new FormCreator())->create([
                     'title'             => $title,
                     'fields'            => $specFields,
                     'is_conversational' => !empty($params['is_conversational']),

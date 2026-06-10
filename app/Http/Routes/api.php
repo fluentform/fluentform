@@ -1,8 +1,10 @@
 <?php
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 /**
+ * REST API route definitions.
+ *
  * @var $router \FluentForm\Framework\Http\Router
  */
 
@@ -67,7 +69,7 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
 
     $router->prefix('{entry_id}')->group(function ($router) {
         $router->get('/', 'SubmissionController@find');
-    
+
         $router->post('status', 'SubmissionController@updateStatus');
         $router->post('is-favorite', 'SubmissionController@toggleIsFavorite');
 
@@ -76,9 +78,9 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
 
         $router->get('notes', 'SubmissionNoteController@get');
         $router->post('notes', 'SubmissionNoteController@store');
-        
-        $router->get('submission-users','SubmissionController@submissionUsers');
-        $router->post('update-submission-user','SubmissionController@updateSubmissionUser');
+
+        $router->get('submission-users', 'SubmissionController@submissionUsers');
+        $router->post('update-submission-user', 'SubmissionController@updateSubmissionUser');
     });
 });
 
@@ -97,7 +99,7 @@ $router->prefix('integrations')->group(function ($router) {
     $router->get('/', 'GlobalIntegrationController@index')->withPolicy('GlobalIntegrationPolicy');
     $router->post('/', 'GlobalIntegrationController@updateIntegration')->withPolicy('GlobalIntegrationPolicy');
     $router->post('update-status', 'GlobalIntegrationController@updateModuleStatus')->withPolicy('GlobalIntegrationPolicy');
-    
+
     /*
     * Form Integrations
     */
@@ -106,7 +108,7 @@ $router->prefix('integrations')->group(function ($router) {
         $router->get('/', 'FormIntegrationController@find');
         $router->post('/', 'FormIntegrationController@update');
         $router->delete('/', 'FormIntegrationController@delete');
-        
+
         $router->get('/integration-list-id', 'FormIntegrationController@integrationListComponent');
     });
 });

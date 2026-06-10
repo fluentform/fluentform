@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Support;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
@@ -79,8 +79,8 @@ class FormAccess
     public static function applyScope($query, $column = 'form_id')
     {
         $scope = PermissionGate::formScope();
-        if ($scope !== false) {
-            $query->whereIn($column, $scope ?: [0]);
+        if (false !== $scope) {
+            $query->whereIn($column, $scope ? $scope : [0]);
         }
 
         return $query;

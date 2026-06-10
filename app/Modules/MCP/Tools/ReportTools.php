@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\MCP\Tools;
 
-defined('ABSPATH') or die;
+defined('ABSPATH') || exit;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Submission;
@@ -13,8 +13,8 @@ use FluentForm\App\Modules\MCP\Support\PermissionGate;
 /**
  * Report tools (read).
  *
- * get-form-stats answers "how is this form doing?" — entry counts by status,
- * total views, and conversion rate. get-submissions-trend gives a daily time
+ * The get-form-stats tool answers "how is this form doing?" — entry counts by
+ * status, total views, and conversion rate. get-submissions-trend gives a daily time
  * series for charting volume over a window. Both are per-form and form-scoped.
  */
 class ReportTools
@@ -86,7 +86,7 @@ class ReportTools
         // Entries can exceed tracked views (e.g. a form embedded in a template
         // with view tracking off), which pushes the rate past 100% — flag it
         // rather than emit a bogus number the agent would read as real.
-        if ($conversion !== null && $all > $views) {
+        if (null !== $conversion && $all > $views) {
             $data['views_note'] = __('Entries exceed tracked views, so the conversion rate is unreliable — view tracking may be disabled or unavailable for this form.', 'fluentform');
         }
 
@@ -148,5 +148,4 @@ class ReportTools
             ]
         );
     }
-
 }

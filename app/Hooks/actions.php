@@ -680,8 +680,6 @@ $fluentformComponent->addFluentformSubmissionInsertedFilter();
 $fluentformComponent->addIsRenderableFilter();
 $fluentformComponent->registerInputSanitizers();
 
-\FluentForm\App\Modules\MCP\MCPInit::boot();
-
 add_action('wp', function () use ($app) {
     // @todo: We will remove the fluentform_pages check from April 2021
     $fluentFormPages = $app->request->get('fluent_forms_pages') || $app->request->get('fluentform_pages');

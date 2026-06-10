@@ -107,7 +107,7 @@ class McpSettingsController extends Controller
         $endpoint = MCPInit::getEndpointUrl();
 
         $localDevParam = $this->request->get('local_dev');
-        $isLocalDev    = ($localDevParam === null || $localDevParam === '')
+        $isLocalDev    = (null === $localDevParam || '' === $localDevParam)
             ? $this->isLocalDev()
             : in_array(strtolower((string) $localDevParam), ['yes', 'true', '1', 'on'], true);
 
