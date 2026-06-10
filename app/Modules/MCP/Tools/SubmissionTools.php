@@ -29,6 +29,8 @@ use FluentForm\App\Services\Submission\SubmissionService;
  */
 class SubmissionTools
 {
+    const BULK_MAX = 200;
+
     public static function definitions()
     {
         return [
@@ -130,6 +132,29 @@ class SubmissionTools
                     return PermissionGate::can('fluentform_manage_entries');
                 },
                 'annotations' => ['destructive' => true],
+            ],
+
+            'fluentform/bulk-update-submissions' => [
+                'label'       => __('Bulk Update Submissions', 'fluentform'),
+                'group'       => __('Entries', 'fluentform'),
+                'description' => __('Apply one action to many entries at once: read, unread, spam, trashed, favorite, unfavorite, or delete_permanently. Pass entry_ids (max 200). Entries outside your form access are skipped. Call once with dry_run:true to preview the in-scope count and get a confirm_token, then call again with the same entry_ids plus confirm_token to execute. delete_permanently is irreversible.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'entry_ids'       => ['type' => 'array', 'items' => ['type' => 'integer'], 'description' => 'Entry ids to act on (max 200).'],
+                        'action'          => ['type' => 'string', 'enum' => ['read', 'unread', 'spam', 'trashed', 'favorite', 'unfavorite', 'delete_permanently']],
+                        'dry_run'         => ['type' => 'boolean', 'description' => 'Preview without changing anything; returns a confirm_token.'],
+                        'confirm_token'   => ['type' => 'string', 'description' => 'The token from the dry_run preview, required to execute.'],
+                        'idempotency_key' => ['type' => 'string', 'description' => 'Optional; a retry with the same key will not act twice.'],
+                    ],
+                    'required' => ['entry_ids', 'action'],
+                ],
+                'execute_callback'    => [self::class, 'bulkUpdate'],
+                'permission_callback' => function () {
+                    return PermissionGate::can('fluentform_manage_entries');
+                },
+                'annotations' => ['destructive' => true],
+                'advanced'    => true,
             ],
         ];
     }
@@ -352,6 +377,121 @@ class SubmissionTools
                 );
             },
             ['form_id' => $formId, 'entry_id' => $entryId]
+        );
+    }
+
+    public static function bulkUpdate($params = [])
+    {
+        $actionMap = [
+            'read'               => 'read',
+            'unread'             => 'unread',
+            'spam'               => 'spam',
+            'trashed'            => 'trashed',
+            'favorite'           => 'other.make_favorite',
+            'unfavorite'         => 'other.unmark_favorite',
+            'delete_permanently' => 'other.delete_permanently',
+        ];
+
+        $action = isset($params['action']) ? sanitize_text_field($params['action']) : '';
+        if (!isset($actionMap[$action])) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('action must be one of: read, unread, spam, trashed, favorite, unfavorite, delete_permanently.', 'fluentform'), ['fields' => ['action']]);
+        }
+
+        $entryIds = isset($params['entry_ids']) ? $params['entry_ids'] : [];
+        if (!is_array($entryIds) || empty($entryIds)) {
+            return MCPHelper::error(ErrorCodes::MISSING_PARAM, __('entry_ids must be a non-empty array of entry ids.', 'fluentform'), ['fields' => ['entry_ids']]);
+        }
+        $entryIds = array_values(array_unique(array_filter(array_map('intval', $entryIds))));
+        if (empty($entryIds)) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('entry_ids must contain valid entry ids.', 'fluentform'), ['fields' => ['entry_ids']]);
+        }
+        if (count($entryIds) > self::BULK_MAX) {
+            return MCPHelper::error(
+                ErrorCodes::LIMIT_EXCEEDED,
+                sprintf(
+                    /* translators: %d: max entries per bulk call */
+                    __('entry_ids exceeds the limit of %d per call; split into smaller batches.', 'fluentform'),
+                    self::BULK_MAX
+                ),
+                ['fields' => ['entry_ids'], 'limit' => self::BULK_MAX]
+            );
+        }
+        sort($entryIds);
+
+        // Resolve all entries in one query, then re-assert the user's form scope
+        // per entry (handleBulkActions trusts its form_id and applies no scope) —
+        // a "specific forms" manager can never act on an entry outside their
+        // assignment by passing its id. Out-of-scope ids are skipped, not refused.
+        $rows = Submission::query()->whereIn('id', $entryIds)->get(['id', 'form_id']);
+
+        $byForm      = [];
+        $accessCache = [];
+        foreach ($rows as $row) {
+            $formId = (int) $row->form_id;
+            if (!array_key_exists($formId, $accessCache)) {
+                $accessCache[$formId] = PermissionGate::canAccessForm($formId);
+            }
+            if ($accessCache[$formId]) {
+                $byForm[$formId][] = (int) $row->id;
+            }
+        }
+
+        $inScope = [];
+        foreach ($byForm as $ids) {
+            $inScope = array_merge($inScope, $ids);
+        }
+        sort($inScope);
+        $skipped = array_values(array_diff($entryIds, $inScope));
+
+        if (empty($inScope)) {
+            return MCPHelper::error(ErrorCodes::FORBIDDEN, __('None of the given entries are within your form access.', 'fluentform'), ['fields' => ['entry_ids']]);
+        }
+
+        $actionType  = $actionMap[$action];
+        $entityKey   = 'bulk:' . $action . ':' . md5(implode(',', $entryIds));
+        $fingerprint = $action . '|n:' . count($inScope) . '|' . md5(implode(',', $inScope));
+        $formIds     = array_keys($byForm);
+
+        return Mutation::runGuarded(
+            'fluentform/bulk-update-submissions',
+            $params,
+            $entityKey,
+            $fingerprint,
+            function () use ($action, $inScope, $skipped, $byForm) {
+                return [
+                    'action'    => $action,
+                    'in_scope'  => count($inScope),
+                    'entry_ids' => $inScope,
+                    'skipped'   => $skipped,
+                    'forms'     => array_map('count', $byForm),
+                ];
+            },
+            function () use ($actionType, $action, $byForm, $inScope, $skipped, $formIds) {
+                $service = new SubmissionService();
+                foreach ($byForm as $formId => $ids) {
+                    $service->handleBulkActions([
+                        'form_id'     => $formId,
+                        'entries'     => $ids,
+                        'action_type' => $actionType,
+                    ]);
+                }
+
+                return MCPHelper::envelope(
+                    sprintf(
+                        /* translators: 1: entry count, 2: action */
+                        _n('%1$d entry updated (%2$s).', '%1$d entries updated (%2$s).', count($inScope), 'fluentform'),
+                        count($inScope),
+                        $action
+                    ),
+                    [
+                        'action'  => $action,
+                        'updated' => count($inScope),
+                        'skipped' => $skipped,
+                        'forms'   => $formIds,
+                    ]
+                );
+            },
+            ['form_id' => (1 === count($formIds) ? $formIds[0] : null)]
         );
     }
 

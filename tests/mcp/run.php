@@ -149,6 +149,10 @@ $codes = ErrorCodes::all();
 ok(count($codes) > 0, 'ErrorCodes::all() is non-empty');
 ok(count($codes) === count(array_unique($codes)), 'error codes are unique');
 ok(count(array_filter($codes, 'is_string')) === count($codes), 'every error code is a string');
+eq(ErrorCodes::LIMIT_EXCEEDED, 'limit_exceeded', 'LIMIT_EXCEEDED constant value');
+eq(ErrorCodes::UNFILTERED_HTML_REQUIRED, 'unfiltered_html_required', 'UNFILTERED_HTML_REQUIRED constant value');
+ok(in_array(ErrorCodes::LIMIT_EXCEEDED, $codes, true), 'ErrorCodes::all() includes LIMIT_EXCEEDED');
+ok(in_array(ErrorCodes::UNFILTERED_HTML_REQUIRED, $codes, true), 'ErrorCodes::all() includes UNFILTERED_HTML_REQUIRED');
 $missing = FormAccess::resolveForm(0);
 ok($missing instanceof WP_Error, 'resolveForm(0) returns WP_Error');
 $mc = json_decode($missing->get_error_message(), true);
@@ -156,8 +160,10 @@ eq($mc['error']['code'], ErrorCodes::MISSING_IDENTIFIER, 'resolveForm(0) uses MI
 ok(in_array($mc['error']['code'], $codes, true), 'returned code is a declared ErrorCode');
 
 echo "AbilitiesRegistrar::catalogue\n";
+$GLOBALS['__mcp_test_options'] = [];
+$GLOBALS['__mcp_test_can'] = true;
 $cat = AbilitiesRegistrar::catalogue();
-eq(count($cat), 12, 'catalogue lists all 12 tools');
+eq(count($cat), 12, 'catalogue lists the 12 default tools (advanced opt-in off)');
 $byName = [];
 foreach ($cat as $row) {
     $byName[$row['name']] = $row;
@@ -254,12 +260,13 @@ $expectedTools = [
     'fluentform/update-submission-status',
     'fluentform/add-submission-note',
     'fluentform/delete-submission',
+    'fluentform/bulk-update-submissions',
     'fluentform/get-form-stats',
     'fluentform/get-submissions-trend',
     'fluentform/list-integrations',
 ];
 
-eq(count($defs), count($expectedTools), 'exactly the expected number of tools registered');
+eq(count($defs), count($expectedTools), 'exactly the expected number of tools registered (raw, pre-gating)');
 
 foreach ($expectedTools as $name) {
     ok(isset($defs[$name]), "tool present: {$name}");
@@ -332,6 +339,40 @@ ok(!isset($rowsPass[0]['payment']), 'mcp_submission_rows degrades to a clean pas
 $submissionToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/SubmissionTools.php');
 ok(false !== strpos($submissionToolsSrc, "apply_filters('fluentform/mcp_submission_data'"), 'getSubmission wires the mcp_submission_data seam');
 ok(false !== strpos($submissionToolsSrc, "apply_filters('fluentform/mcp_submission_rows'"), 'listSubmissions wires the mcp_submission_rows seam');
+
+echo "Advanced tools opt-in gating\n";
+$GLOBALS['__mcp_test_options'] = [];
+$GLOBALS['__mcp_test_can'] = true;
+eq(PermissionGate::isNewToolsEnabled(), false, 'isNewToolsEnabled false by default (advanced ships off)');
+$offDefs = AbilitiesRegistrar::getDefinitions();
+ok(!isset($offDefs['fluentform/bulk-update-submissions']), 'bulk tool absent when opt-in off');
+
+eq(PermissionGate::setNewToolsEnabled(true), true, 'setNewToolsEnabled(true) returns true when authorized');
+eq(PermissionGate::isNewToolsEnabled(), true, 'isNewToolsEnabled true after enable');
+$onDefs = AbilitiesRegistrar::getDefinitions();
+ok(isset($onDefs['fluentform/bulk-update-submissions']), 'bulk tool present when opt-in on');
+eq(count(AbilitiesRegistrar::catalogue()), 13, 'catalogue grows to 13 with advanced opt-in on');
+
+$GLOBALS['__mcp_test_can'] = false;
+eq(PermissionGate::setNewToolsEnabled(false), false, 'setNewToolsEnabled fails closed without manage_options');
+eq(PermissionGate::isNewToolsEnabled(), true, 'advanced opt-in unchanged when unauthorized');
+$GLOBALS['__mcp_test_can'] = true;
+
+echo "bulk-update-submissions definition\n";
+$bulk = $onDefs['fluentform/bulk-update-submissions'];
+ok(!empty($bulk['annotations']['destructive']), 'bulk tool annotated destructive');
+ok(empty($bulk['annotations']['readonly']), 'bulk tool not annotated readonly (it writes)');
+ok(!empty($bulk['advanced']), 'bulk tool flagged advanced');
+$bulkProps = $bulk['input_schema']['properties'];
+ok(isset($bulkProps['entry_ids']) && 'array' === $bulkProps['entry_ids']['type'], 'bulk schema has entry_ids array');
+$bulkActions = $bulkProps['action']['enum'];
+foreach (['read', 'unread', 'spam', 'trashed', 'favorite', 'unfavorite', 'delete_permanently'] as $verb) {
+    ok(in_array($verb, $bulkActions, true), "bulk action enum includes {$verb}");
+}
+ok(isset($bulkProps['dry_run'], $bulkProps['confirm_token'], $bulkProps['idempotency_key']), 'bulk schema exposes the guard params');
+eq($bulk['input_schema']['required'], ['entry_ids', 'action'], 'bulk requires entry_ids and action');
+
+$GLOBALS['__mcp_test_options'] = [];
 
 echo "\n";
 if ($failures) {

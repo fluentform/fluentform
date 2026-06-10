@@ -6,6 +6,7 @@ defined('ABSPATH') || exit;
 
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
+use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Modules\MCP\Tools\ContextTools;
 use FluentForm\App\Modules\MCP\Tools\FormTools;
 use FluentForm\App\Modules\MCP\Tools\SubmissionTools;
@@ -36,6 +37,18 @@ class AbilitiesRegistrar
         ];
     }
 
+    /**
+     * Tool classes that register only when the advanced-tools opt-in is on.
+     * Their whole catalogue slice is withheld until an admin enables the group.
+     */
+    private static function advancedToolClasses()
+    {
+        return [
+            \FluentForm\App\Modules\MCP\Tools\StylingTools::class,
+            \FluentForm\App\Modules\MCP\Tools\ConditionTools::class,
+        ];
+    }
+
     public static function getDefinitions()
     {
         $defs = [];
@@ -43,6 +56,24 @@ class AbilitiesRegistrar
         foreach (self::toolClasses() as $class) {
             if (class_exists($class) && method_exists($class, 'definitions')) {
                 $defs = array_merge($defs, (array) $class::definitions());
+            }
+        }
+
+        $advancedOn = PermissionGate::isNewToolsEnabled();
+
+        if ($advancedOn) {
+            foreach (self::advancedToolClasses() as $class) {
+                if (class_exists($class) && method_exists($class, 'definitions')) {
+                    $defs = array_merge($defs, (array) $class::definitions());
+                }
+            }
+        } else {
+            // Withhold advanced definitions declared inline on always-on classes
+            // (e.g. the bulk tool inside SubmissionTools).
+            foreach ($defs as $name => $def) {
+                if (!empty($def['advanced'])) {
+                    unset($defs[$name]);
+                }
             }
         }
 
