@@ -8,6 +8,7 @@ use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
+use FluentForm\App\Modules\MCP\Support\Mutation;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Form\FormService;
 
@@ -130,32 +131,36 @@ class FormTools
             ];
         }
 
-        try {
-            $builder = new \FluentForm\App\Modules\Ai\AiFormBuilder();
-            $form    = $builder->createFromSpec([
-                'title'             => $title,
-                'fields'            => $specFields,
-                'is_conversational' => !empty($params['is_conversational']),
-            ]);
-        } catch (\Throwable $e) {
-            return MCPHelper::error(ErrorCodes::CREATE_FAILED, $e->getMessage(), ['retryable' => false]);
-        }
+        return Mutation::run('fluentform/create-form', $params, function () use ($title, $specFields, $params) {
+            try {
+                $builder = new \FluentForm\App\Modules\Ai\AiFormBuilder();
+                $form    = $builder->createFromSpec([
+                    'title'             => $title,
+                    'fields'            => $specFields,
+                    'is_conversational' => !empty($params['is_conversational']),
+                ]);
+            } catch (\Throwable $e) {
+                return MCPHelper::error(ErrorCodes::CREATE_FAILED, $e->getMessage(), ['retryable' => false]);
+            }
 
-        return MCPHelper::envelope(
-            sprintf(
-                /* translators: 1: form title, 2: form id */
-                __('Form "%1$s" created (#%2$d).', 'fluentform'),
-                $form->title,
-                (int) $form->id
-            ),
-            [
-                'id'       => (int) $form->id,
-                'title'    => $form->title,
-                'status'   => $form->status,
-                'fields'   => count($specFields),
-                'edit_url' => admin_url('admin.php?page=fluent_forms&form_id=' . (int) $form->id . '&route=editor'),
-            ]
-        );
+            return MCPHelper::envelope(
+                sprintf(
+                    /* translators: 1: form title, 2: form id */
+                    __('Form "%1$s" created (#%2$d).', 'fluentform'),
+                    $form->title,
+                    (int) $form->id
+                ),
+                [
+                    'id'       => (int) $form->id,
+                    'title'    => $form->title,
+                    'status'   => $form->status,
+                    'fields'   => count($specFields),
+                    'edit_url' => admin_url('admin.php?page=fluent_forms&form_id=' . (int) $form->id . '&route=editor'),
+                ]
+            );
+        }, function ($result) {
+            return (is_array($result) && isset($result['data']['id'])) ? ['form_id' => (int) $result['data']['id']] : [];
+        });
     }
 
     public static function listForms($params = [])

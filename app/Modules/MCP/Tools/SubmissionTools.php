@@ -8,6 +8,7 @@ use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
+use FluentForm\App\Modules\MCP\Support\Mutation;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\App\Services\Submission\SubmissionService;
@@ -107,6 +108,27 @@ class SubmissionTools
                 'permission_callback' => function () {
                     return PermissionGate::can('fluentform_manage_entries');
                 },
+            ],
+
+            'fluentform/delete-submission' => [
+                'label'       => __('Delete Submission', 'fluentform'),
+                'group'       => __('Entries', 'fluentform'),
+                'description' => __('Permanently delete one entry and its uploaded files. This is irreversible — to merely hide an entry, prefer update-submission-status with status:trashed. Call once with dry_run:true to preview and get a confirm_token, then call again with the same entry_id plus confirm_token to execute.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'entry_id'        => ['type' => 'integer'],
+                        'dry_run'         => ['type' => 'boolean', 'description' => 'Preview without deleting; returns a confirm_token.'],
+                        'confirm_token'   => ['type' => 'string', 'description' => 'The token from the dry_run preview, required to execute.'],
+                        'idempotency_key' => ['type' => 'string', 'description' => 'Optional; a retry with the same key will not delete twice.'],
+                    ],
+                    'required' => ['entry_id'],
+                ],
+                'execute_callback'    => [self::class, 'deleteSubmission'],
+                'permission_callback' => function () {
+                    return PermissionGate::can('fluentform_manage_entries');
+                },
+                'annotations' => ['destructive' => true],
             ],
         ];
     }
@@ -222,19 +244,21 @@ class SubmissionTools
             return $submission;
         }
         $entryId = (int) $submission->id;
+        $formId  = (int) $submission->form_id;
 
-        $service = new SubmissionService();
-        $service->updateStatus(['entry_id' => $entryId, 'status' => $status]);
+        return Mutation::run('fluentform/update-submission-status', $params, function () use ($entryId, $status) {
+            (new SubmissionService())->updateStatus(['entry_id' => $entryId, 'status' => $status]);
 
-        return MCPHelper::envelope(
-            sprintf(
-                /* translators: 1: entry id, 2: new status */
-                __('Entry #%1$d marked as %2$s.', 'fluentform'),
-                $entryId,
-                $status
-            ),
-            ['id' => $entryId, 'status' => $status]
-        );
+            return MCPHelper::envelope(
+                sprintf(
+                    /* translators: 1: entry id, 2: new status */
+                    __('Entry #%1$d marked as %2$s.', 'fluentform'),
+                    $entryId,
+                    $status
+                ),
+                ['id' => $entryId, 'status' => $status]
+            );
+        }, ['form_id' => $formId, 'entry_id' => $entryId]);
     }
 
     public static function addNote($params = [])
@@ -249,16 +273,58 @@ class SubmissionTools
             return $submission;
         }
         $entryId = (int) $submission->id;
+        $formId  = (int) $submission->form_id;
 
-        $service = new SubmissionService();
-        $result  = $service->storeNote($entryId, [
-            'form_id' => (int) $submission->form_id,
-            'note'    => ['content' => wp_kses_post($content), 'status' => ''],
-        ]);
+        return Mutation::run('fluentform/add-submission-note', $params, function () use ($entryId, $formId, $content) {
+            $result = (new SubmissionService())->storeNote($entryId, [
+                'form_id' => $formId,
+                'note'    => ['content' => wp_kses_post($content), 'status' => ''],
+            ]);
 
-        return MCPHelper::envelope(
-            __('Note added.', 'fluentform'),
-            ['id' => $entryId, 'note_id' => isset($result['insert_id']) ? (int) $result['insert_id'] : null]
+            return MCPHelper::envelope(
+                __('Note added.', 'fluentform'),
+                ['id' => $entryId, 'note_id' => isset($result['insert_id']) ? (int) $result['insert_id'] : null]
+            );
+        }, ['form_id' => $formId, 'entry_id' => $entryId]);
+    }
+
+    public static function deleteSubmission($params = [])
+    {
+        $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
+        if (is_wp_error($submission)) {
+            return $submission;
+        }
+        $entryId = (int) $submission->id;
+        $formId  = (int) $submission->form_id;
+
+        return Mutation::runGuarded(
+            'fluentform/delete-submission',
+            $params,
+            'submission:' . $entryId,
+            'status:' . $submission->status . '|fav:' . (int) $submission->is_favourite,
+            function () use ($entryId, $formId, $submission) {
+                return [
+                    'entry_id'   => $entryId,
+                    'form_id'    => $formId,
+                    'serial'     => isset($submission->serial_number) ? (int) $submission->serial_number : null,
+                    'status'     => $submission->status,
+                    'created_at' => MCPHelper::toIso8601($submission->created_at),
+                    'permanent'  => true,
+                ];
+            },
+            function () use ($entryId, $formId) {
+                (new SubmissionService())->deleteEntries([$entryId], $formId);
+
+                return MCPHelper::envelope(
+                    sprintf(
+                        /* translators: %d: entry id */
+                        __('Entry #%d permanently deleted.', 'fluentform'),
+                        $entryId
+                    ),
+                    ['id' => $entryId, 'deleted' => true]
+                );
+            },
+            ['form_id' => $formId, 'entry_id' => $entryId]
         );
     }
 

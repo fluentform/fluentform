@@ -16,6 +16,7 @@ use FluentForm\App\Modules\MCP\AbilitiesRegistrar;
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
+use FluentForm\App\Modules\MCP\Support\Mutation;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Modules\MCP\Tools\ContextTools;
 use FluentForm\App\Modules\MCP\Tools\FormTools;
@@ -145,7 +146,7 @@ ok(in_array($mc['error']['code'], $codes, true), 'returned code is a declared Er
 
 echo "AbilitiesRegistrar::catalogue\n";
 $cat = AbilitiesRegistrar::catalogue();
-eq(count($cat), 11, 'catalogue lists all 11 tools');
+eq(count($cat), 12, 'catalogue lists all 12 tools');
 $byName = [];
 foreach ($cat as $row) {
     $byName[$row['name']] = $row;
@@ -157,6 +158,48 @@ eq($byName['fluentform/create-form']['group'], 'Forms', 'create-form grouped und
 eq($byName['fluentform/list-forms']['write'], false, 'list-forms is a read tool');
 eq($byName['fluentform/get-submission']['group'], 'Entries', 'get-submission grouped under Entries');
 eq($byName['fluentform/get-forms-context']['group'], 'Discovery', 'context grouped under Discovery');
+
+echo "Mutation::redact\n";
+$redacted = Mutation::redact([
+    'title'           => 'Hello',
+    'confirm_token'   => 'abc.def',
+    'api_key'         => 'sk-123',
+    'nested'          => ['password' => 'p', 'keep' => 'v'],
+    'fluentformnonce' => 'n',
+]);
+eq($redacted['title'], 'Hello', 'redact keeps non-sensitive value');
+eq($redacted['confirm_token'], '[redacted]', 'redact masks confirm_token');
+eq($redacted['api_key'], '[redacted]', 'redact masks api_key');
+eq($redacted['nested']['password'], '[redacted]', 'redact recurses into nested secrets');
+eq($redacted['nested']['keep'], 'v', 'redact keeps nested non-secret');
+eq($redacted['fluentformnonce'], '[redacted]', 'redact masks nonce key');
+
+echo "Mutation::runGuarded dry-run\n";
+$GLOBALS['__mcp_test_can'] = true;
+$applied = false;
+$preview = Mutation::runGuarded(
+    'fluentform/delete-submission',
+    ['entry_id' => 5, 'dry_run' => true],
+    'submission:5',
+    'status:read',
+    function () { return ['entry_id' => 5, 'permanent' => true]; },
+    function () use (&$applied) { $applied = true; return ['ok' => true]; }
+);
+ok(is_array($preview) && !empty($preview['dry_run']), 'dry_run returns a preview envelope');
+ok(!empty($preview['confirm_token']), 'dry_run returns a confirm_token');
+ok($applied === false, 'dry_run does NOT execute the mutation');
+
+$noConfirm = Mutation::runGuarded(
+    'fluentform/delete-submission',
+    ['entry_id' => 5],
+    'submission:5',
+    'status:read',
+    function () { return []; },
+    function () use (&$applied) { $applied = true; return ['ok' => true]; }
+);
+ok($noConfirm instanceof WP_Error, 'execute without confirm_token is refused');
+eq($noConfirm->get_error_code(), ErrorCodes::CONFIRMATION_REQUIRED, 'refusal uses CONFIRMATION_REQUIRED');
+ok($applied === false, 'mutation still not executed without a valid token');
 
 echo "Tool definitions integrity\n";
 $defs = array_merge(
@@ -176,6 +219,7 @@ $expectedTools = [
     'fluentform/get-submission',
     'fluentform/update-submission-status',
     'fluentform/add-submission-note',
+    'fluentform/delete-submission',
     'fluentform/get-form-stats',
     'fluentform/get-submissions-trend',
     'fluentform/list-integrations',
@@ -214,9 +258,12 @@ foreach ($readTools as $name) {
 }
 
 // Write tools must NOT be annotated readonly.
-foreach (['fluentform/create-form', 'fluentform/update-submission-status', 'fluentform/add-submission-note'] as $name) {
+foreach (['fluentform/create-form', 'fluentform/update-submission-status', 'fluentform/add-submission-note', 'fluentform/delete-submission'] as $name) {
     ok(empty($defs[$name]['annotations']['readonly']), "{$name} not annotated readonly (it writes)");
 }
+
+// The one destructive tool must be annotated so clients hard-confirm it.
+ok(!empty($defs['fluentform/delete-submission']['annotations']['destructive']), 'delete-submission annotated destructive');
 
 echo "\n";
 if ($failures) {

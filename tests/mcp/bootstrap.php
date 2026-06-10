@@ -142,10 +142,62 @@ if (!function_exists('current_user_can')) {
     }
 }
 
+$GLOBALS['__mcp_test_transients'] = [];
+
+if (!function_exists('set_transient')) {
+    function set_transient($key, $value, $ttl = 0)
+    {
+        $GLOBALS['__mcp_test_transients'][$key] = $value;
+        return true;
+    }
+}
+
+if (!function_exists('get_transient')) {
+    function get_transient($key)
+    {
+        return array_key_exists($key, $GLOBALS['__mcp_test_transients'])
+            ? $GLOBALS['__mcp_test_transients'][$key]
+            : false;
+    }
+}
+
+if (!function_exists('delete_transient')) {
+    function delete_transient($key)
+    {
+        unset($GLOBALS['__mcp_test_transients'][$key]);
+        return true;
+    }
+}
+
+if (!function_exists('wp_hash')) {
+    function wp_hash($data, $scheme = 'auth')
+    {
+        return md5('ff-test|' . $data);
+    }
+}
+
+if (!function_exists('wp_generate_uuid4')) {
+    function wp_generate_uuid4()
+    {
+        static $n = 0;
+        $n++;
+        return sprintf('uuid-%08d', $n);
+    }
+}
+
+if (!function_exists('get_current_user_id')) {
+    function get_current_user_id()
+    {
+        return 1;
+    }
+}
+
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/ErrorCodes.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/MCPHelper.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/PermissionGate.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/FormAccess.php';
+require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/WriteGuard.php';
+require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/Mutation.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/ContextTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/FormTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/SubmissionTools.php';
