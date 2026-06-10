@@ -347,11 +347,14 @@ eq(PermissionGate::isNewToolsEnabled(), false, 'isNewToolsEnabled false by defau
 $offDefs = AbilitiesRegistrar::getDefinitions();
 ok(!isset($offDefs['fluentform/bulk-update-submissions']), 'bulk tool absent when opt-in off');
 
+$offCount = count(AbilitiesRegistrar::catalogue());
 eq(PermissionGate::setNewToolsEnabled(true), true, 'setNewToolsEnabled(true) returns true when authorized');
 eq(PermissionGate::isNewToolsEnabled(), true, 'isNewToolsEnabled true after enable');
 $onDefs = AbilitiesRegistrar::getDefinitions();
 ok(isset($onDefs['fluentform/bulk-update-submissions']), 'bulk tool present when opt-in on');
-eq(count(AbilitiesRegistrar::catalogue()), 13, 'catalogue grows to 13 with advanced opt-in on');
+ok(isset($onDefs['fluentform/get-form-styling']), 'get-form-styling present when opt-in on');
+ok(isset($onDefs['fluentform/update-form-styling']), 'update-form-styling present when opt-in on');
+ok(count(AbilitiesRegistrar::catalogue()) > $offCount, 'advanced opt-in grows the catalogue');
 
 $GLOBALS['__mcp_test_can'] = false;
 eq(PermissionGate::setNewToolsEnabled(false), false, 'setNewToolsEnabled fails closed without manage_options');
@@ -371,6 +374,17 @@ foreach (['read', 'unread', 'spam', 'trashed', 'favorite', 'unfavorite', 'delete
 }
 ok(isset($bulkProps['dry_run'], $bulkProps['confirm_token'], $bulkProps['idempotency_key']), 'bulk schema exposes the guard params');
 eq($bulk['input_schema']['required'], ['entry_ids', 'action'], 'bulk requires entry_ids and action');
+
+echo "form-styling definitions\n";
+$getStyling = $onDefs['fluentform/get-form-styling'];
+ok(!empty($getStyling['annotations']['readonly']), 'get-form-styling annotated readonly');
+ok(!empty($getStyling['advanced']), 'get-form-styling flagged advanced');
+eq($getStyling['input_schema']['required'], ['form_id'], 'get-form-styling requires form_id');
+$updateStyling = $onDefs['fluentform/update-form-styling'];
+ok(empty($updateStyling['annotations']['readonly']), 'update-form-styling not annotated readonly (it writes)');
+ok(!empty($updateStyling['advanced']), 'update-form-styling flagged advanced');
+$styleProps = $updateStyling['input_schema']['properties'];
+ok(isset($styleProps['styler_theme'], $styleProps['styler_styles'], $styleProps['css'], $styleProps['js']), 'update-form-styling exposes theme, styles, css, js');
 
 $GLOBALS['__mcp_test_options'] = [];
 

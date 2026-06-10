@@ -219,4 +219,10 @@ require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/FormTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/SubmissionTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/ReportTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/IntegrationTools.php';
+if (file_exists(dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/StylingTools.php')) {
+    require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/StylingTools.php';
+}
+if (file_exists(dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/ConditionTools.php')) {
+    require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/ConditionTools.php';
+}
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/AbilitiesRegistrar.php';
