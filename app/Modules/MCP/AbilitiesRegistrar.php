@@ -118,7 +118,7 @@ class AbilitiesRegistrar
                  * Fires when an MCP tool throws. Lets sites log/alert before the
                  * structured error reaches the agent.
                  *
-                 * @since 6.2.3
+                 * @since 6.2.5
                  *
                  * @param array $context { exception: \Throwable, tool: string, params: mixed }
                  */

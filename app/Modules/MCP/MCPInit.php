@@ -54,6 +54,9 @@ class MCPInit
             'fluentform/form_duplicated',
             'fluentform/before_form_deleted',
             'fluentform/after_form_deleted',
+            // Permissions changed — drop the cached context so it can't briefly
+            // advertise stale capabilities/visible-forms after a role change.
+            'fluentform/after_permission_set_assignment',
         ] as $hook) {
             add_action($hook, $invalidate);
         }
@@ -78,7 +81,7 @@ class MCPInit
          * extensions hook this to register their own abilities (payments,
          * advanced reports) under the same `fluentform/` namespace.
          *
-         * @since 6.2.3
+         * @since 6.2.5
          */
         do_action('fluentform/mcp_loaded');
     }
@@ -101,7 +104,7 @@ class MCPInit
          * Filter the ability names exposed by the FluentForm MCP server. Pro and
          * extensions push their ability names here.
          *
-         * @since 6.2.3
+         * @since 6.2.5
          *
          * @param array $abilityNames Fully-qualified ability names.
          */

@@ -6,6 +6,7 @@ defined('ABSPATH') || exit;
 
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Ai\AiFormBuilder;
+use FluentForm\App\Services\Form\FormService;
 
 /**
  * Builds a form from a simple field spec for the create-form MCP tool.
@@ -15,6 +16,15 @@ use FluentForm\App\Modules\Ai\AiFormBuilder;
  */
 class FormCreator extends AiFormBuilder
 {
+    /**
+     * Set up the save pipeline without AiFormBuilder's constructor, which only
+     * adds it to register an admin-ajax handler this REST/MCP path never uses.
+     */
+    public function __construct()
+    {
+        FormService::__construct();
+    }
+
     /**
      * Create a form from a title + field spec.
      *
