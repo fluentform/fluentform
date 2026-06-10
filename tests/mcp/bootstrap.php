@@ -94,9 +94,25 @@ if (!function_exists('wp_strip_all_tags')) {
     }
 }
 
+$GLOBALS['__mcp_test_filters'] = [];
+
+if (!function_exists('add_filter')) {
+    function add_filter($hook, $cb, $priority = 10, $args = 1)
+    {
+        $GLOBALS['__mcp_test_filters'][$hook][] = $cb;
+        return true;
+    }
+}
+
 if (!function_exists('apply_filters')) {
     function apply_filters($hook, $value = null)
     {
+        $extra = array_slice(func_get_args(), 2);
+        if (!empty($GLOBALS['__mcp_test_filters'][$hook])) {
+            foreach ($GLOBALS['__mcp_test_filters'][$hook] as $cb) {
+                $value = call_user_func_array($cb, array_merge([$value], $extra));
+            }
+        }
         return $value;
     }
 }

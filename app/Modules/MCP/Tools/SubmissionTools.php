@@ -175,8 +175,9 @@ class SubmissionTools
 
         $labels = self::formLabels($formId);
 
+        $items = MCPHelper::paginatorItems($paginator);
         $rows = [];
-        foreach (MCPHelper::paginatorItems($paginator) as $submission) {
+        foreach ($items as $submission) {
             $rows[] = [
                 'id'           => (int) $submission->id,
                 'serial'       => isset($submission->serial_number) ? (int) $submission->serial_number : null,
@@ -186,6 +187,9 @@ class SubmissionTools
                 'preview'      => self::valuePreview($submission->response, $labels),
             ];
         }
+
+        // Augmentation seam: $items is passed so Pro can batch-load a per-row `payment` summary (no N+1).
+        $rows = apply_filters('fluentform/mcp_submission_rows', $rows, $items, $formId);
 
         return MCPHelper::envelope(
             sprintf(
@@ -218,23 +222,28 @@ class SubmissionTools
             }
         }
 
+        $data = [
+            'id'          => (int) $submission->id,
+            'form_id'     => (int) $submission->form_id,
+            'serial'      => isset($submission->serial_number) ? (int) $submission->serial_number : null,
+            'status'      => $submission->status,
+            'is_favorite' => (bool) $submission->is_favourite,
+            'created_at'  => MCPHelper::toIso8601($submission->created_at),
+            'updated_at'  => MCPHelper::toIso8601($submission->updated_at),
+            'user'        => $user,
+            'fields'      => $values,
+        ];
+
+        // Augmentation seam: Pro injects a compact `payment` block; the listener owns the payments capability check.
+        $data = apply_filters('fluentform/mcp_submission_data', $data, $submission);
+
         return MCPHelper::envelope(
             sprintf(
                 /* translators: %d: entry id */
                 __('Entry #%d loaded.', 'fluentform'),
                 $entryId
             ),
-            [
-                'id'          => (int) $submission->id,
-                'form_id'     => (int) $submission->form_id,
-                'serial'      => isset($submission->serial_number) ? (int) $submission->serial_number : null,
-                'status'      => $submission->status,
-                'is_favorite' => (bool) $submission->is_favourite,
-                'created_at'  => MCPHelper::toIso8601($submission->created_at),
-                'updated_at'  => MCPHelper::toIso8601($submission->updated_at),
-                'user'        => $user,
-                'fields'      => $values,
-            ]
+            $data
         );
     }
 

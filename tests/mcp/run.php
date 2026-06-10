@@ -299,6 +299,40 @@ foreach (['fluentform/create-form', 'fluentform/update-submission-status', 'flue
 // The one destructive tool must be annotated so clients hard-confirm it.
 ok(!empty($defs['fluentform/delete-submission']['annotations']['destructive']), 'delete-submission annotated destructive');
 
+echo "Submission output augmentation seam\n";
+$GLOBALS['__mcp_test_filters'] = [];
+add_filter('fluentform/mcp_submission_data', function ($data, $submission) {
+    $data['payment'] = ['status' => 'paid', 'total' => '$10.00', 'form_id' => (int) $submission->form_id];
+    return $data;
+}, 10, 2);
+$base = ['id' => 1, 'form_id' => 5, 'fields' => []];
+$augmented = apply_filters('fluentform/mcp_submission_data', $base, (object) ['form_id' => 5]);
+ok(isset($augmented['payment']) && 'paid' === $augmented['payment']['status'], 'mcp_submission_data listener augments the entry payload');
+eq($augmented['payment']['form_id'], 5, 'mcp_submission_data passes the submission context to listeners');
+ok(!isset($base['payment']), 'mcp_submission_data does not mutate the caller payload by reference');
+
+$GLOBALS['__mcp_test_filters'] = [];
+$passthrough = apply_filters('fluentform/mcp_submission_data', $base, (object) ['form_id' => 5]);
+ok(!isset($passthrough['payment']), 'mcp_submission_data degrades to a clean pass-through without a listener');
+
+add_filter('fluentform/mcp_submission_rows', function ($rows, $items, $formId) {
+    foreach ($rows as &$row) {
+        $row['payment'] = ['status' => 'paid'];
+    }
+    unset($row);
+    return $rows;
+}, 10, 3);
+$rows = apply_filters('fluentform/mcp_submission_rows', [['id' => 1], ['id' => 2]], [], 5);
+ok(isset($rows[0]['payment'], $rows[1]['payment']), 'mcp_submission_rows listener augments every row');
+$GLOBALS['__mcp_test_filters'] = [];
+$rowsPass = apply_filters('fluentform/mcp_submission_rows', [['id' => 1]], [], 5);
+ok(!isset($rowsPass[0]['payment']), 'mcp_submission_rows degrades to a clean pass-through without a listener');
+
+// Regression: the production tool methods must actually fire the seams.
+$submissionToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/SubmissionTools.php');
+ok(false !== strpos($submissionToolsSrc, "apply_filters('fluentform/mcp_submission_data'"), 'getSubmission wires the mcp_submission_data seam');
+ok(false !== strpos($submissionToolsSrc, "apply_filters('fluentform/mcp_submission_rows'"), 'listSubmissions wires the mcp_submission_rows seam');
+
 echo "\n";
 if ($failures) {
     echo "FAILED: {$passed}/{$tests} assertions passed, " . count($failures) . " failed.\n";
