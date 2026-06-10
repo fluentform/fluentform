@@ -78,7 +78,7 @@
                 <div v-if="status.mcp_enabled && status.adapter_available" class="ff_mcp_connect">
                     <el-form label-position="top">
                         <el-form-item :label="$t('Endpoint URL')">
-                            <el-input readonly :value="status.endpoint_url">
+                            <el-input readonly :value="status.endpoint_url" class="ff_mcp_endpoint">
                                 <el-button slot="append" @click="copy(status.endpoint_url)">{{ $t('Copy') }}</el-button>
                             </el-input>
                         </el-form-item>
@@ -225,6 +225,34 @@ export default {
 </script>
 
 <style scoped>
+.ff_mcp_endpoint ::v-deep .el-input-group__append {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+}
+.ff_mcp_endpoint ::v-deep .el-input-group__append .el-button {
+    margin: 0;
+    padding: 9px 18px;
+    white-space: nowrap;
+}
+.ff_mcp_snippet {
+    background: #1d2327;
+    color: #e2e4e7;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 0 0 12px;
+    overflow-x: auto;
+    line-height: 1.6;
+    font-size: 12px;
+}
+.ff_mcp_snippet code {
+    display: block;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-family: Consolas, Monaco, 'Courier New', monospace;
+    white-space: pre;
+}
 .ff_mcp_tools {
     margin: 4px 0 20px;
     border-top: none;
