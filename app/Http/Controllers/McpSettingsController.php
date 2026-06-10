@@ -18,6 +18,8 @@ class McpSettingsController extends Controller
 {
     const TOOLKIT_PLUGIN_FILE = 'fluent-toolkit/fluent-toolkit.php';
 
+    const ADAPTER_PLUGIN_FILE = 'mcp-adapter/mcp-adapter.php';
+
     const TOOLKIT_DOWNLOAD_URL = 'https://github.com/WPManageNinja/fluent-toolkit';
 
     public function status()
@@ -31,6 +33,7 @@ class McpSettingsController extends Controller
         return $this->sendSuccess([
             'mcp_enabled'          => PermissionGate::isEnabled(),
             'adapter_available'    => MCPInit::adapterAvailable(),
+            'adapter_installed'    => $this->isToolkitInstalled() || $this->isPluginInstalled(self::ADAPTER_PLUGIN_FILE),
             'toolkit_installed'    => $this->isToolkitInstalled(),
             'can_auto_install'     => (bool) apply_filters('fluent_toolkit/can_auto_install', false),
             'toolkit_download_url' => self::TOOLKIT_DOWNLOAD_URL,
@@ -135,13 +138,18 @@ class McpSettingsController extends Controller
             return true;
         }
 
+        return $this->isPluginInstalled(self::TOOLKIT_PLUGIN_FILE);
+    }
+
+    private function isPluginInstalled($pluginFile)
+    {
         if (!function_exists('get_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 
         $plugins = get_plugins();
 
-        return isset($plugins[self::TOOLKIT_PLUGIN_FILE]);
+        return isset($plugins[$pluginFile]);
     }
 
     private function buildSnippet($client, $endpoint, $isLocalDev)

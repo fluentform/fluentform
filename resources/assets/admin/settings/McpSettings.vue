@@ -55,24 +55,32 @@
                     class="ff_mcp_alert"
                 >
                     <template slot="title">
-                        {{ $t('No MCP adapter detected') }}
+                        {{ status.adapter_installed ? $t('MCP adapter installed but not active') : $t('No MCP adapter detected') }}
                     </template>
-                    <p>
-                        {{ $t('The MCP server needs an adapter (FluentHub / Fluent Toolkit, or the standalone MCP Adapter plugin) on WordPress 6.9+. Install one to expose the endpoint.') }}
-                    </p>
-                    <el-button
-                        size="small"
-                        type="primary"
-                        :loading="installing"
-                        v-if="status.can_auto_install"
-                        @click="installAdapter"
-                    >{{ $t('Install Adapter') }}</el-button>
-                    <a
-                        v-else
-                        :href="status.toolkit_download_url"
-                        target="_blank"
-                        rel="noopener"
-                    >{{ $t('Download the toolkit') }}</a>
+                    <template v-if="status.adapter_installed">
+                        <p>
+                            {{ $t('An MCP adapter (FluentHub / Fluent Toolkit, or the MCP Adapter plugin) is installed but not active. Activate it from the Plugins page, then reload this page.') }}
+                        </p>
+                        <a :href="status.plugins_url">{{ $t('Open Plugins page') }}</a>
+                    </template>
+                    <template v-else>
+                        <p>
+                            {{ $t('The MCP server needs an adapter (FluentHub / Fluent Toolkit, or the standalone MCP Adapter plugin) on WordPress 6.9+. Install one to expose the endpoint.') }}
+                        </p>
+                        <el-button
+                            size="small"
+                            type="primary"
+                            :loading="installing"
+                            v-if="status.can_auto_install"
+                            @click="installAdapter"
+                        >{{ $t('Install Adapter') }}</el-button>
+                        <a
+                            v-else
+                            :href="status.toolkit_download_url"
+                            target="_blank"
+                            rel="noopener"
+                        >{{ $t('Download the toolkit') }}</a>
+                    </template>
                 </el-alert>
 
                 <div v-if="status.mcp_enabled && status.adapter_available" class="ff_mcp_connect">
@@ -119,11 +127,13 @@ export default {
             status: {
                 mcp_enabled: false,
                 adapter_available: false,
+                adapter_installed: false,
                 can_auto_install: false,
                 toolkit_download_url: '',
                 endpoint_url: '',
                 tools_count: 0,
-                app_passwords_url: ''
+                app_passwords_url: '',
+                plugins_url: ''
             },
             tools: [],
             snippets: {},
