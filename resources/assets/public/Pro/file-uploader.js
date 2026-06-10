@@ -615,9 +615,13 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                             class: 'ff-upload-progress-inline-text ff-inline-block'
                         });
 
+                        var ffUploadA11y = window.fluentFormVars && window.fluentFormVars.a11yEnabled;
+                        var progressBarAria = ffUploadA11y
+                            ? ' role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="' + data.files[0].name + '"'
+                            : '';
                         var progressBarInline = $(`
 									<div class="ff-upload-progress-inline ff-el-progress">
-										<div class="ff-el-progress-bar"></div>
+										<div class="ff-el-progress-bar"${progressBarAria}></div>
 									</div>
 								`);
 
@@ -626,12 +630,18 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                             text: data.files[0].name
                         });
 
-                        var removeBtn = $('<span/>', {
+                        var removeBtnAttrs = {
                             'data-href': '#',
                             'data-attachment-id':'',
                             'html': '&times;',
                             'class': 'ff-upload-remove'
-                        });
+                        };
+                        if (ffUploadA11y) {
+                            removeBtnAttrs['role'] = 'button';
+                            removeBtnAttrs['tabindex'] = '0';
+                            removeBtnAttrs['aria-label'] = 'Remove ' + data.files[0].name;
+                        }
+                        var removeBtn = $('<span/>', removeBtnAttrs);
 
                         var fileSize = $('<div>', {
                             class: 'ff-upload-filesize ff-inline-block',
@@ -786,7 +796,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
      * @return {void}
      */
     var registerFileRemove = function () {
-        $form.find('.ff-uploaded-list').on('click', '.ff-upload-remove', function (e) {
+        $form.find('.ff-uploaded-list').on('click keydown', '.ff-upload-remove', function (e) {
+            if (e.type === 'keydown' && e.which !== 13 && e.which !== 32) return;
             e.preventDefault();
             var elFiles,
                 $this = $(this),

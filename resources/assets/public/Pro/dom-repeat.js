@@ -1,3 +1,38 @@
+// Accessibility helper: update aria-label on repeater table rows
+function updateRepeaterRowLabels($table) {
+    var $rows = $table.find('tbody tr');
+    var total = $rows.length;
+    $rows.each(function (i) {
+        jQuery(this).attr('aria-label', 'Row ' + (i + 1) + ' of ' + total);
+    });
+}
+
+// Accessibility helper: update aria-label on repeater container rows
+function updateContainerRowLabels($container) {
+    var $rows = $container.find('.ff_repeater_cont_row');
+    var total = $rows.length;
+    $rows.each(function (i) {
+        jQuery(this).attr('aria-label', 'Row ' + (i + 1) + ' of ' + total);
+    });
+}
+
+// Accessibility helper: announce repeater changes via aria-live
+function announceRepeaterChange($parent, message) {
+    var $announcer = $parent.find('.ff-repeater-sr-announce');
+    if (!$announcer.length) {
+        $announcer = jQuery('<span/>', {
+            class: 'ff-repeater-sr-announce ff-support-sr-only',
+            'aria-live': 'polite',
+            'role': 'status'
+        });
+        $parent.append($announcer);
+    }
+    $announcer.text('');
+    setTimeout(function () {
+        $announcer.text(message);
+    }, 100);
+}
+
 const initRepeatButtons = function ($, $form) {
     var repeat = $form.find('.fluentform .js-repeat'); // this is the old version
     $.each(repeat, (index, repeatItem) => {
@@ -183,6 +218,10 @@ const registerRepeaterHandler = function ($theForm) {
 
         $table.trigger('repeat_change');
 
+        // Update row labels for accessibility
+        if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+            updateRepeaterRowLabels($table);
+        }
 
         if(maxRepeat && existingCount+1 == maxRepeat) {
             $table.addClass('repeat-maxed');
@@ -211,6 +250,14 @@ const registerRepeaterHandler = function ($theForm) {
             });
         });
         $table.trigger('repeat_change');
+
+        // Update row labels for accessibility
+        if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+            updateRepeaterRowLabels($table);
+
+            // Announce row removal
+            announceRepeaterChange($table, 'Row removed.');
+        }
     });
 
     //repeater container
@@ -254,6 +301,11 @@ const registerRepeaterHandler = function ($theForm) {
         $freshCopy.find('.ff-el-form-control')[0].focus();
         $repeaterList.trigger('repeat_change');
 
+        // Update row labels for accessibility
+        if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+            updateContainerRowLabels($repeaterList);
+        }
+
         if(maxRepeat && existingCount+1 == maxRepeat) {
             $repeaterList.addClass('repeat-maxed');
         }
@@ -267,10 +319,16 @@ const registerRepeaterHandler = function ($theForm) {
         if ($repeaterList.find('.ff_repeater_cont_row').length > 1) {
             $row.remove();
             $repeaterList.removeClass('repeat-maxed');
-            
+
             // Trigger name fixing event
             $theForm.trigger('repeater-container-names-update', [$repeaterList]);
             $repeaterList.trigger('repeat_change');
+
+            // Update row labels and announce
+            if (window.fluentFormVars && window.fluentFormVars.a11yEnabled) {
+                updateContainerRowLabels($repeaterList);
+                announceRepeaterChange($repeaterList, 'Row removed.');
+            }
         }
     });
 };

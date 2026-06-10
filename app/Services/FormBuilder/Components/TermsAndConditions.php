@@ -60,7 +60,7 @@ class TermsAndConditions extends BaseComponent
         }
 
         if ($data['settings']['has_checkbox']) {
-            $checkbox = "<span class='ff_tc_checkbox'><input {$atts} value='on' aria-invalid='false' aria-required={$ariaRequired}></span>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
+            $checkbox = "<span class='ff_tc_checkbox'><input {$atts} value='on' aria-invalid='false' aria-required='{$ariaRequired}'></span>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
         }
     
         $link_count = substr_count($data['settings']['tnc_html'], '<a ');

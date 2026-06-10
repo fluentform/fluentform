@@ -149,6 +149,10 @@ class FormBuilder
             $wrapperClasses .= ' ' . $themeStyle . '_wrap';
         }
 
+        if (Helper::isAccessibilityEnabled()) {
+            $wrapperClasses .= ' ff-a11y-enabled';
+        }
+
         $wrapperClasses = apply_filters('fluentform/form_wrapper_classes', $wrapperClasses, $form);
         ob_start();
 
@@ -205,7 +209,8 @@ class FormBuilder
 
         echo "</form><div id='fluentform_" . (int) $form->id . "_errors' class='ff-errors-in-stack ";
 
-        echo esc_attr($extraCssClass) . '_errors ' . esc_attr($instanceCssClass) . "_errors'></div></div>";
+        $errorA11yAttrs = Helper::isAccessibilityEnabled() ? " role='alert' aria-live='assertive' aria-atomic='true'" : "";
+        echo esc_attr($extraCssClass) . '_errors ' . esc_attr($instanceCssClass) . "_errors'" . $errorA11yAttrs . "></div></div>";
 
         do_action_deprecated(
             'fluentform_after_form_render',

@@ -4,6 +4,7 @@ namespace FluentForm\App\Services\FormBuilder\Components;
 
 defined('ABSPATH') or die;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Turnstile extends BaseComponent
@@ -69,11 +70,13 @@ class Turnstile extends BaseComponent
             $appearance = 'interaction-only';
         }
 
+        $captchaAriaLabel = Helper::isAccessibilityEnabled() ? "
+		aria-label='" . esc_attr__('CAPTCHA verification', 'fluentform') . "'" : '';
         $turnstileBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
 		data-theme='" . esc_attr(ArrayHelper::get($turnstile, 'theme', 'auto')) . "'
 		id='fluentform-turnstile-{$form->id}-{$form->instance_index}'
-		class='ff-el-turnstile cf-turnstile'
+		class='ff-el-turnstile cf-turnstile'" . $captchaAriaLabel . "
 		data-appearance='" . $appearance . "'></div>";
 
         $label = '';

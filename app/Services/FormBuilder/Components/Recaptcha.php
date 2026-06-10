@@ -4,6 +4,7 @@ namespace FluentForm\App\Services\FormBuilder\Components;
 
 defined('ABSPATH') or die;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Recaptcha extends BaseComponent
@@ -110,10 +111,12 @@ class Recaptcha extends BaseComponent
             );
         }
 
+        $captchaAriaLabel = Helper::isAccessibilityEnabled() ? "
+		aria-label='" . esc_attr__('CAPTCHA verification', 'fluentform') . "'" : '';
         $recaptchaBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
 		id='fluentform-recaptcha-{$form->id}-{$form->instance_index}'
-		class='ff-el-recaptcha g-recaptcha'
+		class='ff-el-recaptcha g-recaptcha'" . $captchaAriaLabel . "
 		data-callback='fluentFormrecaptchaSuccessCallback'></div>";
 
         $label = '';
