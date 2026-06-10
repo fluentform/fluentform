@@ -7,10 +7,9 @@ defined('ABSPATH') or die;
 /**
  * Safety rails for mutating MCP tools. Annotations are UX hints, not safety —
  * this is where real protection lives for destructive writes (entry deletion,
- * bulk trashing). The initial tool set ships only reversible writes (entry
- * status, notes) which rely on their permission_callback alone, so this guard is
- * unused today; it is the reference for any `destructive => true` ability added
- * later (here or in Pro via fluentform/mcp_loaded).
+ * bulk trashing). delete-submission routes through it today via
+ * Mutation::runGuarded; reversible writes (status, notes, create) use
+ * Mutation::run and rely on their permission_callback alone.
  *
  * Two mechanisms:
  *  1. Dry-run + confirmation token bound to the entity's CURRENT state, so an
@@ -19,8 +18,10 @@ defined('ABSPATH') or die;
  *  2. Idempotency keys, so a retried mutation returns the cached result instead
  *     of running twice.
  *
- * CONTRACT: every ability marked destructive MUST route its mutation through
- * confirm() before mutating and expose `dry_run` + `confirm_token` in its schema.
+ * CONTRACT: every ability marked destructive MUST route through
+ * Mutation::runGuarded (which calls confirm() before mutating) and expose
+ * `dry_run` + `confirm_token` in its schema — here or in Pro via
+ * fluentform/mcp_loaded.
  */
 class WriteGuard
 {

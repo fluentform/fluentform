@@ -65,7 +65,10 @@ class McpSettingsController extends Controller
 
     public function installAdapter()
     {
-        if (!current_user_can('install_plugins')) {
+        // Match the toggle's bar: enabling MCP and installing its adapter are
+        // both admin-only, so require manage_options in addition to the
+        // plugin-install capability.
+        if (!current_user_can('manage_options') || !current_user_can('install_plugins')) {
             return $this->sendError([
                 'message' => __('Sorry, you do not have permission to install plugins.', 'fluentform'),
             ]);
