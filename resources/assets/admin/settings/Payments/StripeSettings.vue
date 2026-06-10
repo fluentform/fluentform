@@ -26,6 +26,43 @@
                         </el-radio-group>
                     </el-form-item>
 
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Checkout Experience') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p style="max-width: 320px;">
+                                        {{ $t('Modern uses the latest Stripe integration (official SDK). Legacy keeps the original integration. Existing sites stay on Legacy until you switch here — your current setup is never changed automatically.') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-radio-group v-model="settings.connection_mode">
+                            <el-radio label="modern">{{ $t('Modern (Recommended)') }}</el-radio>
+                            <el-radio label="legacy">{{ $t('Legacy') }}</el-radio>
+                        </el-radio-group>
+                        <p v-if="settings.connection_mode == 'modern'" class="ff_payment_note text-success" style="margin-top: 6px;">
+                            {{ $t('Using the latest Stripe Checkout integration.') }}
+                        </p>
+                        <p v-else class="ff_payment_note" style="margin-top: 6px;">
+                            {{ $t('Using the legacy Stripe integration. Switch to Modern to use the latest Stripe features.') }}
+                        </p>
+                    </el-form-item>
+
+                    <!-- Modern flow: Stripe Connect only. -->
+                    <template v-if="settings.connection_mode == 'modern'">
+                        <template v-if="settings.payment_mode == 'test'">
+                            <connect-account @reload_settings="getConnectConfig()" :connect_config="connect_config" mode="test" :connect="test_account" />
+                        </template>
+                        <template v-else-if="settings.payment_mode == 'live'">
+                            <connect-account @reload_settings="getConnectConfig()" :connect_config="connect_config" mode="live" :connect="live_account" />
+                        </template>
+                        <error-view field="connect" :errors="errors" />
+                    </template>
+
+                    <!-- Legacy flow: Connect or manual API keys. -->
+                    <template v-else>
                     <template v-if="settings.provider == 'connect'">
                         <template v-if="settings.payment_mode == 'test'">
                             <connect-account  @reload_settings="getConnectConfig()" :connect_config="connect_config" mode="test" :connect="test_account" />
@@ -84,6 +121,7 @@
                             >
                             </p>
                         </div>
+                    </template>
                     </template>
                 </template>
 
@@ -176,6 +214,14 @@ export default {
             test_account: false,
         }
     },
+    watch: {
+        'settings.connection_mode'(mode) {
+            // Modern flow is Stripe Connect only — never raw global API keys.
+            if (mode === 'modern' && this.settings) {
+                this.settings.provider = 'connect';
+            }
+        }
+    },
     methods: {
         saveSettings() {
             this.errors.clear();
@@ -206,6 +252,9 @@ export default {
                 .then(response => {
                     this.connect_config = response.data.connect_config;
                     this.settings = response.data.settings;
+                    if (this.settings && !this.settings.connection_mode) {
+                        this.$set(this.settings, 'connection_mode', 'legacy');
+                    }
                     this.live_account = response.data.live_account;
                     this.test_account = response.data.test_account;
                 })

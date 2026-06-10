@@ -6,9 +6,11 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\SCA;
+use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ApiRequest;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\Plan;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\Invoice;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\Customer;
+use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\ModernCheckout;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
@@ -35,6 +37,12 @@ class StripeInlineProcessor extends StripeProcessor
          */
         add_action('wp_ajax_fluentform_sca_inline_confirm_payment_setup_intents', array($this, 'confirmScaSetupIntentsPayment'));
         add_action('wp_ajax_nopriv_fluentform_sca_inline_confirm_payment_setup_intents', array($this, 'confirmScaSetupIntentsPayment'));
+
+        add_action('wp_ajax_fluentform_modern_inline_confirm', array($this, 'confirmModernInlinePayment'));
+        add_action('wp_ajax_nopriv_fluentform_modern_inline_confirm', array($this, 'confirmModernInlinePayment'));
+
+        add_action('wp_ajax_fluentform_modern_inline_subscription_confirm', array($this, 'confirmModernInlineSubscription'));
+        add_action('wp_ajax_nopriv_fluentform_modern_inline_subscription_confirm', array($this, 'confirmModernInlineSubscription'));
     }
 
     public function handlePaymentAction($submissionId, $submissionData, $form, $methodSettings, $hasSubscriptions, $totalPayable)
@@ -50,6 +58,13 @@ class StripeInlineProcessor extends StripeProcessor
 
         // Create the initial transaction here
         $transaction = $this->createInitialPendingTransaction($submission, $hasSubscriptions);
+
+        if (StripeSettings::useModernCheckout($form->id)) {
+            if ($transaction->transaction_type == 'subscription') {
+                return $this->handleModernInlineSubscriptionSession($transaction, $submission, $form, $methodSettings);
+            }
+            return $this->handleModernInlineSession($transaction, $submission, $form, $methodSettings);
+        }
 
         $paymentMethodId = ArrayHelper::get($submissionData['response'], '__stripe_payment_method_id');
         $customerArgs = $this->customerArguments($paymentMethodId, $submission);
@@ -88,6 +103,329 @@ class StripeInlineProcessor extends StripeProcessor
             }
             $this->handlePaymentIntent($transaction, $submission, $intentArgs);
         }
+    }
+
+    /**
+     * Modern inline one-time payment: create an unconfirmed PaymentIntent and
+     * return its client_secret for the frontend Payment Element to confirm.
+     */
+    public function handleModernInlineSession($transaction, $submission, $form, $methodSettings)
+    {
+        $formSettings = PaymentHelper::getFormSettings($form->id);
+        $paymentSettings = PaymentHelper::getFormSettings($form->id, 'admin');
+
+        $secretKey = StripeSettings::getSecretKey($form->id);
+        $accountId = $this->getModernConnectedAccountId($form);
+
+        $base = [
+            'description'                 => $form->title,
+            'statement_descriptor_suffix' => StripeSettings::getPaymentDescriptor($form),
+            'metadata'                    => $this->getIntentMetaData($submission, $form, $transaction, $paymentSettings),
+        ];
+
+        // Attach a Customer with the form's name/email/address so payer details are recorded.
+        $customerArgs = $this->customerArguments('', $submission);
+        unset($customerArgs['payment_method'], $customerArgs['invoice_settings']);
+        $customer = ModernCheckout::createCustomer($customerArgs, $secretKey, $accountId);
+        if (!is_wp_error($customer)) {
+            $base['customer'] = $customer->id;
+        }
+
+        $receiptEmail = PaymentHelper::getCustomerEmail($submission, $form);
+        if ($receiptEmail && ArrayHelper::get($formSettings, 'disable_stripe_payment_receipt') != 'yes') {
+            $base['receipt_email'] = $receiptEmail;
+        }
+
+        if (!Helper::hasPro() && !StripeSettings::isCustomFormAccount($form->id)) {
+            $base['application_fee_amount'] = (int) ($transaction->payment_total * 0.019);
+        }
+
+        $pmcId = StripeSettings::getModernPmcId($form->id, $accountId);
+        if ($pmcId) {
+            $base['payment_method_configuration'] = $pmcId;
+        } else {
+            $base['payment_method_types'] = ModernCheckout::inlinePaymentMethodTypes();
+        }
+
+        $amount = $transaction->payment_total;
+        if (PaymentHelper::isZeroDecimal($transaction->currency)) {
+            $amount = intval($amount / 100);
+        }
+
+        $args = ModernCheckout::buildPaymentIntentArgs($base, $amount, $transaction->currency);
+        $args = apply_filters('fluentform/stripe_modern_payment_intent_args', $args, $submission, $transaction, $form);
+
+        $intent = ModernCheckout::createPaymentIntent($args, $secretKey, $accountId);
+
+        if (is_wp_error($intent)) {
+            $this->handlePaymentChargeError($intent->get_error_message(), $submission, $transaction, false, 'payment_intent');
+        }
+
+        $this->setMetaData('stripe_payment_intent_id', $intent->id);
+        // Mark the transaction 'intended' so the finalize endpoint accepts it.
+        $this->processScaBeforeVerification($form->id, $submission->id, $transaction->id, $intent->id);
+
+        $nonce = wp_create_nonce('fluentform_sca_confirm_' . $submission->id);
+
+        wp_send_json_success([
+            'nextAction'        => 'payment',
+            'actionName'        => 'stripeConfirmPaymentElement',
+            'client_secret'     => $intent->client_secret,
+            'payment_intent_id' => $intent->id,
+            'publishable_key'   => StripeSettings::getPublishableKey($form->id),
+            'submission_id'     => $submission->id,
+            '_ff_stripe_nonce'  => $nonce,
+            'message'           => __('Confirming your payment. Please wait...', 'fluentform'),
+            'result'            => ['insert_id' => $submission->id]
+        ], 200);
+    }
+
+    /**
+     * Finalize a modern inline payment after the frontend confirms the PaymentIntent.
+     */
+    public function confirmModernInlinePayment()
+    {
+        $submissionId = isset($_REQUEST['submission_id']) ? (int) $_REQUEST['submission_id'] : 0;
+        $paymentIntentId = isset($_REQUEST['payment_intent_id']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id'])) : '';
+
+        $this->setSubmissionId($submissionId);
+        $submission = $this->getSubmission();
+        $this->form = $this->getForm();
+        $transaction = $this->getLastTransaction($submissionId);
+
+        $validation = $this->validateScaRequest($submissionId, $paymentIntentId, $submission, $transaction);
+        if (is_wp_error($validation)) {
+            wp_send_json(['errors' => $validation->get_error_message()], 423);
+        }
+
+        // The PaymentIntent was created under the modern connected account (when one
+        // is set), so retrieve it with the same Stripe-Account context or it 404s.
+        $accountId = $this->getModernConnectedAccountId($this->form);
+        $intent = $this->withModernAccountHeader($accountId, function () use ($paymentIntentId, $submission) {
+            return SCA::retrievePaymentIntent($paymentIntentId, ['expand' => ['charges']], $submission->form_id);
+        });
+        if (is_wp_error($intent)) {
+            $this->handlePaymentChargeError($intent->get_error_message(), $submission, $transaction, false, 'payment_intent');
+        }
+
+        if ($intent->status !== 'succeeded') {
+            $this->handlePaymentChargeError(__('We could not verify your payment. Please try again', 'fluentform'), $submission, $transaction, $intent, 'payment_error');
+        }
+
+        $charge = $intent->charges->data[0];
+
+        // Verify the confirmed amount matches the recorded order total.
+        $confirmedAmount = (int) $intent->amount;
+        if (PaymentHelper::isZeroDecimal($transaction->currency)) {
+            $confirmedAmount = $confirmedAmount * 100;
+        }
+        if ($transaction->payment_total && $confirmedAmount != intval($transaction->payment_total)) {
+            do_action('fluentform/log_data', [
+                'parent_source_id' => $submission->form_id,
+                'source_type'      => 'submission_item',
+                'source_id'        => $submission->id,
+                'component'        => 'Payment',
+                'status'           => 'error',
+                'title'            => __('Stripe Amount Mismatch', 'fluentform'),
+                'description'      => __('Confirmed amount did not match the order total. Payment rejected.', 'fluentform')
+            ]);
+            wp_send_json(['errors' => __('Payment amount verification failed.', 'fluentform')], 423);
+        }
+
+        $this->handlePaymentSuccess($charge, $transaction, $submission);
+    }
+
+    /**
+     * Subscription payment_settings limited to card + wallets (no Link / bank),
+     * via a Payment Method Configuration with a card-only fallback.
+     */
+    protected function modernInlinePaymentSettings($form)
+    {
+        $settings = ['save_default_payment_method' => 'on_subscription'];
+        $pmcId = StripeSettings::getModernPmcId($form->id, $this->getModernConnectedAccountId($form));
+        if ($pmcId) {
+            $settings['payment_method_configuration'] = $pmcId;
+        } else {
+            $settings['payment_method_types'] = ModernCheckout::inlinePaymentMethodTypes();
+        }
+        return $settings;
+    }
+
+    /**
+     * Modern inline subscription: create a default_incomplete subscription and
+     * return the first invoice's PaymentIntent (or SetupIntent for trials) for
+     * the frontend Payment Element to confirm.
+     */
+    public function handleModernInlineSubscriptionSession($transaction, $submission, $form, $methodSettings)
+    {
+        $parts = $this->modernSubscriptionComponents($transaction, $submission, $form);
+        $secretKey = StripeSettings::getSecretKey($form->id);
+        $accountId = $this->getModernConnectedAccountId($form);
+
+        // Element attaches the payment method on confirm; an empty payment_method is rejected.
+        $customerArgs = $this->customerArguments('', $submission);
+        unset($customerArgs['payment_method'], $customerArgs['invoice_settings']);
+
+        $customer = ModernCheckout::createCustomer($customerArgs, $secretKey, $accountId);
+        if (is_wp_error($customer)) {
+            $this->handlePaymentChargeError($customer->get_error_message(), $submission, $transaction, false, 'customer');
+        }
+
+        // Subscription price_data needs a product id (no inline product_data); the
+        // product is cached per plan/account so we don't create one per checkout.
+        $items = [];
+        foreach ($parts['recurring'] as $recItem) {
+            $productId = StripeSettings::getModernProductId($recItem['price_data']['product_data']['name'], $secretKey, $accountId);
+            if (is_wp_error($productId)) {
+                $this->handlePaymentChargeError($productId->get_error_message(), $submission, $transaction, false, 'payment_intent');
+            }
+            $items[] = ModernCheckout::inlineSubscriptionItem($recItem, $productId);
+        }
+
+        // One-time items (signup fee / one-time order items) ride the first invoice
+        // via add_invoice_items so Stripe's first charge matches the recorded amount
+        // (the hosted Checkout Session merges them as line_items in subscription mode).
+        $addInvoiceItems = [];
+        foreach ($parts['oneTime'] as $oneTimeItem) {
+            $productId = StripeSettings::getModernProductId($oneTimeItem['price_data']['product_data']['name'], $secretKey, $accountId);
+            if (is_wp_error($productId)) {
+                $this->handlePaymentChargeError($productId->get_error_message(), $submission, $transaction, false, 'payment_intent');
+            }
+            $addInvoiceItems[] = ModernCheckout::inlineAddInvoiceItem($oneTimeItem, $productId);
+        }
+
+        $localSubscriptions = $this->getSubscriptions();
+        $localSubscription = $localSubscriptions ? $localSubscriptions[0] : null;
+
+        $subArgs = [
+            'customer'         => $customer->id,
+            'items'            => $items,
+            'payment_behavior' => 'default_incomplete',
+            'payment_settings' => $this->modernInlinePaymentSettings($form),
+            'expand'           => ['latest_invoice.confirmation_secret', 'latest_invoice.payment_intent', 'pending_setup_intent'],
+            'metadata'         => ArrayHelper::get($parts['subscriptionData'], 'metadata', []),
+        ];
+        if ($addInvoiceItems) {
+            $subArgs['add_invoice_items'] = $addInvoiceItems;
+        }
+        if (isset($parts['subscriptionData']['trial_period_days'])) {
+            $subArgs['trial_period_days'] = $parts['subscriptionData']['trial_period_days'];
+        }
+        if (isset($parts['subscriptionData']['application_fee_percent'])) {
+            $subArgs['application_fee_percent'] = $parts['subscriptionData']['application_fee_percent'];
+        }
+        // Limited-installment subscriptions (bill_times) must stop billing.
+        if ($localSubscription && ($cancelAt = Plan::getCancelledAtTimestamp($localSubscription))) {
+            $subArgs['cancel_at'] = $cancelAt;
+        }
+        $subArgs = apply_filters('fluentform/stripe_modern_subscription_args', $subArgs, $submission, $transaction, $form);
+
+        $subscription = ModernCheckout::createSubscription($subArgs, $secretKey, $accountId);
+        if (is_wp_error($subscription)) {
+            $this->handlePaymentChargeError($subscription->get_error_message(), $submission, $transaction, false, 'payment_intent');
+        }
+
+        // The confirmable secret moved across API versions: confirmation_secret
+        // (current) -> payment_intent (older) -> pending_setup_intent ($0 trials).
+        $confirmType = 'payment';
+        $clientSecret = '';
+        $intentId = '';
+        $invoice = isset($subscription->latest_invoice) ? $subscription->latest_invoice : null;
+
+        if ($invoice && !empty($invoice->confirmation_secret->client_secret)) {
+            $clientSecret = $invoice->confirmation_secret->client_secret;
+            $confirmType = (ArrayHelper::get((array) $invoice->confirmation_secret, 'type') === 'setup_intent') ? 'setup' : 'payment';
+            $intentId = $this->intentIdFromClientSecret($clientSecret);
+        } elseif ($invoice && !empty($invoice->payment_intent->client_secret)) {
+            $clientSecret = $invoice->payment_intent->client_secret;
+            $intentId = $invoice->payment_intent->id;
+        } elseif (!empty($subscription->pending_setup_intent->client_secret)) {
+            $confirmType = 'setup';
+            $clientSecret = $subscription->pending_setup_intent->client_secret;
+            $intentId = $subscription->pending_setup_intent->id;
+        } else {
+            $this->handlePaymentChargeError(__('Could not initialize the subscription payment. Please try again.', 'fluentform'), $submission, $transaction, false, 'payment_intent');
+        }
+
+        if ($localSubscription) {
+            $this->updateSubscription($localSubscription->id, ['vendor_subscription_id' => $subscription->id]);
+        }
+
+        $this->setMetaData('stripe_payment_intent_id', $intentId);
+        $this->setMetaData('stripe_subscription_id', $subscription->id);
+        $this->processScaBeforeVerification($form->id, $submission->id, $transaction->id, $intentId);
+
+        $nonce = wp_create_nonce('fluentform_sca_confirm_' . $submission->id);
+
+        wp_send_json_success([
+            'nextAction'             => 'payment',
+            'actionName'             => 'stripeConfirmPaymentElement',
+            'confirm_type'           => $confirmType,
+            'finalize_action'        => 'fluentform_modern_inline_subscription_confirm',
+            'client_secret'          => $clientSecret,
+            'payment_intent_id'      => $intentId,
+            'stripe_subscription_id' => $subscription->id,
+            'publishable_key'        => StripeSettings::getPublishableKey($form->id),
+            'submission_id'          => $submission->id,
+            '_ff_stripe_nonce'       => $nonce,
+            'message'                => __('Confirming your subscription. Please wait...', 'fluentform'),
+            'result'                 => ['insert_id' => $submission->id]
+        ], 200);
+    }
+
+    /**
+     * Extract the intent id from a Stripe client_secret
+     * (e.g. "pi_123_secret_abc" -> "pi_123", "seti_123_secret_abc" -> "seti_123").
+     */
+    protected function intentIdFromClientSecret($clientSecret)
+    {
+        $pos = strpos($clientSecret, '_secret');
+        return $pos !== false ? substr($clientSecret, 0, $pos) : $clientSecret;
+    }
+
+    /**
+     * Finalize a modern inline subscription after the frontend confirms the first
+     * invoice / setup intent.
+     */
+    public function confirmModernInlineSubscription()
+    {
+        $submissionId = isset($_REQUEST['submission_id']) ? (int) $_REQUEST['submission_id'] : 0;
+        $intentId = isset($_REQUEST['payment_intent_id']) ? sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id'])) : '';
+
+        $this->setSubmissionId($submissionId);
+        $submission = $this->getSubmission();
+        $this->form = $this->getForm();
+        $transaction = $this->getLastTransaction($submissionId);
+
+        $validation = $this->validateScaRequest($submissionId, $intentId, $submission, $transaction);
+        if (is_wp_error($validation)) {
+            wp_send_json(['errors' => $validation->get_error_message()], 423);
+        }
+
+        // Retrieve with the legacy API version (like SCA::retrievePaymentIntent) so
+        // latest_invoice.payment_intent is present in the shape the recorder reads.
+        $vendorSubscriptionId = $this->getMetaData('stripe_subscription_id');
+        ApiRequest::set_secret_key(StripeSettings::getSecretKey($submission->form_id));
+
+        // The subscription was created under the modern connected account (when the
+        // fluentform/stripe_modern_connected_account filter supplies one), so the
+        // retrieval must carry the same Stripe-Account context or the lookup 404s.
+        // The legacy ApiRequest path is kept so latest_invoice.payment_intent stays
+        // in the shape the recorder reads.
+        $accountId = $this->getModernConnectedAccountId($this->form);
+        $subscription = $this->withModernAccountHeader($accountId, function () use ($vendorSubscriptionId) {
+            return ApiRequest::request(
+                ['expand' => ['latest_invoice.payment_intent']],
+                'subscriptions/' . $vendorSubscriptionId
+            );
+        });
+
+        if (is_wp_error($subscription)) {
+            $this->handlePaymentChargeError($subscription->get_error_message(), $submission, $transaction, false, 'payment_intent');
+        }
+
+        $invoice = $subscription->latest_invoice;
+        $this->handlePaidSubscriptionInvoice($invoice, $submission);
     }
 
     // This is only for Subscription Payment
@@ -256,6 +594,11 @@ class StripeInlineProcessor extends StripeProcessor
         $transaction = $this->getLastTransaction($submission->id);
 
         $paymentStatus = $this->getIntentSuccessName($invoice->payment_intent);
+        // A $0 trial invoice is 'paid' but has no payment_intent; treat it as paid
+        // so the status is not blanked.
+        if (!$paymentStatus && $invoice->status === 'paid') {
+            $paymentStatus = 'paid';
+        }
         $this->processOnetimeSuccess($invoice, $transaction, $paymentStatus);
 
         $this->recalculatePaidTotal();

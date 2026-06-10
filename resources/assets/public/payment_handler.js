@@ -1,5 +1,6 @@
 import formatPrice from "./formatPrice";
 import { _$t } from "@/admin/helpers";
+import { modernStripeAmount, modernRequiresStripe } from "./modernStripeAmount.mjs";
 export class Payment_handler {
     constructor($form, instance) {
         let formId = instance.settings.id;
@@ -25,6 +26,7 @@ export class Payment_handler {
     init() {
         this.boot();
         this.initStripeElement();
+        this.initStripeModernPaymentElement();
     }
 
     $t(stringKey) {
@@ -126,6 +128,9 @@ export class Payment_handler {
 
         form.find('.ff_order_total').html(this.getFormattedPrice(this.totalAmount));
         form.data('payment_total', this.totalAmount);
+        if (this.formIsModernInline) {
+            this.maybeMountModernPaymentElement();
+        }
         const hidePaymentSummary = !Object.keys(items).length;
         this.hasPaymentItems = hidePaymentSummary;
 
@@ -443,6 +448,10 @@ export class Payment_handler {
         window.location.href = data.redirect_url;
     }
 
+    stripeRedirectToUrl(data) {
+        window.location.href = data.redirect_url;
+    }
+
     getDiscounts() {
         return Object.values(this.appliedCoupons);
     }
@@ -751,7 +760,11 @@ export class Payment_handler {
                 jQuery(event.target).closest('.ff-el-input--content').find('.ff_pay_inline').css({ display: 'none' });
 
                 if (this.paymentMethod === 'stripe') {
-                    jQuery(event.target).closest('.ff-el-input--content').find('.stripe-inline-wrapper').css({ display: 'block' });
+                    jQuery(event.target).closest('.ff-el-input--content').find('.ff_pay_inline_stripe').css({ display: 'block' });
+                    // Mount now for fixed-amount subscription forms that never recalc.
+                    if (this.formIsModernInline) {
+                        this.maybeMountModernPaymentElement();
+                    }
                 }
 
                 if (this.paymentMethod === 'square') {
@@ -801,6 +814,186 @@ export class Payment_handler {
                 }
             }
         });
+    }
+
+    initStripeModernPaymentElement() {
+        if (!this.$form.hasClass('ff_has_stripe_modern_inline')) {
+            return;
+        }
+        this.formIsModernInline = true;
+        this.modernElements = null;
+        this.modernPaymentElement = null;
+
+        if (!this.ensureStripeIsInitialized()) {
+            return;
+        }
+
+        this.maybeMountModernPaymentElement();
+        this.registerModernInlineValidator();
+    }
+
+    getModernStripeCurrency() {
+        const settings = this.formPaymentConfig.currency_settings || {};
+        return (settings.currency || 'USD').toLowerCase();
+    }
+
+    getSubscriptionRecurringAmount() {
+        const $items = this.$form.find('.ff_subscription_item');
+        const $selected = $items.filter((i, e) => e.checked);
+        const $use = $selected.length ? $selected.first() : $items.first();
+        const value = parseFloat($use.attr('data-subscription_amount') || $use.attr('data-payment_value') || 0);
+        return value > 0 ? Math.round(value * 100) : 0;
+    }
+
+    maybeMountModernPaymentElement() {
+        const elementId = this.$form.find('.ff_stripe_payment_element').attr('id');
+        if (!elementId || !this.ensureStripeIsInitialized()) {
+            return;
+        }
+        const mode = this.$form.find('.ff_subscription_item').length ? 'subscription' : 'payment';
+
+        // $0-now trials still need a card for future billing — modernStripeAmount
+        // falls back to the recurring amount for those.
+        const amount = modernStripeAmount((this.totalAmount || 0) * 100, mode, this.getSubscriptionRecurringAmount());
+
+        if (!modernRequiresStripe(amount)) {
+            // No payable amount now (e.g. a one-time checkout fully discounted to 0):
+            // tear down any mounted Element so the validator skips Stripe and the
+            // customer isn't forced to enter card details for a free order. The next
+            // recalculation that yields a payable amount re-mounts it.
+            this.teardownModernPaymentElement();
+            return;
+        }
+
+        if (!this.modernElements) {
+            // Don't mount into a hidden wrapper: when Stripe isn't the selected
+            // payment method its wrapper is display:none, and Stripe Elements mounted
+            // into a hidden container render mis-sized. The payment-method switch
+            // calls this again once the wrapper is shown, so mounting is deferred
+            // until then. (Checked on the wrapper's own display so an outer hidden
+            // container — e.g. a default-Stripe form — is not affected.)
+            const $wrapper = this.$form.find('.ff_stripe_payment_element_wrapper');
+            if ($wrapper.length && $wrapper.css('display') === 'none') {
+                return;
+            }
+            const elementsOptions = {
+                mode: mode,
+                amount: amount,
+                currency: this.getModernStripeCurrency(),
+            };
+            // A PMC is the only reliable way to hide Link in the Element; fall
+            // back to card-only types when unavailable.
+            const pmc = $wrapper.attr('data-ff_stripe_pmc');
+            if (pmc) {
+                elementsOptions.paymentMethodConfiguration = pmc;
+            } else {
+                elementsOptions.paymentMethodTypes = ['card'];
+            }
+            this.modernElements = this.stripe.elements(elementsOptions);
+            this.modernPaymentElement = this.modernElements.create('payment');
+            this.modernPaymentElement.mount('#' + elementId);
+        } else {
+            this.modernElements.update({ amount: amount, mode: mode });
+        }
+    }
+
+    /**
+     * Unmount and forget the modern Payment Element. The inline validator skips
+     * Stripe whenever this.modernElements is null, so this both stops a free order
+     * from requiring a card and lets maybeMountModernPaymentElement() re-mount when
+     * a payable amount returns.
+     */
+    teardownModernPaymentElement() {
+        if (this.modernPaymentElement) {
+            this.modernPaymentElement.unmount();
+            this.modernPaymentElement = null;
+        }
+        this.modernElements = null;
+        this.toggleModernPaymentElementError();
+    }
+
+    registerModernInlineValidator() {
+        const that = this;
+        this.formInstance.addGlobalValidator('stripeModernInline', function ($theForm, formData) {
+            if (that.paymentMethod !== 'stripe' || !that.modernElements) {
+                return;
+            }
+            if (jQuery('.ff_stripe_payment_element', $theForm).closest('.ff_excluded').length) {
+                return;
+            }
+            const dfd = jQuery.Deferred();
+            that.modernElements.submit().then(({ error }) => {
+                if (error) {
+                    that.toggleModernPaymentElementError(error);
+                    dfd.reject();
+                } else {
+                    dfd.resolve();
+                }
+            }).catch((err) => {
+                // A rejected submit promise (transient Stripe.js/network/runtime
+                // failure) must still settle the Deferred, or the form stays stuck
+                // submitting with no recoverable error for the user.
+                that.toggleModernPaymentElementError(
+                    err && err.message ? err : { message: that.$t('Payment could not be processed. Please try again.') }
+                );
+                dfd.reject();
+            });
+            return dfd.promise();
+        });
+    }
+
+    stripeConfirmPaymentElement(data) {
+        if (!this.ensureStripeIsInitialized() || !this.modernElements) {
+            this.toggleModernPaymentElementError({ message: this.$t('Payment form is not ready. Please reload and try again.') });
+            return;
+        }
+        const finalizeAction = data.finalize_action || 'fluentform_modern_inline_confirm';
+        const confirmOptions = {
+            elements: this.modernElements,
+            clientSecret: data.client_secret,
+            confirmParams: {
+                return_url: window.location.href,
+            },
+            redirect: 'if_required',
+        };
+        // $0/trial subscriptions confirm a SetupIntent; everything else a PaymentIntent.
+        const confirmPromise = data.confirm_type === 'setup'
+            ? this.stripe.confirmSetup(confirmOptions)
+            : this.stripe.confirmPayment(confirmOptions);
+
+        confirmPromise.then((result) => {
+            if (result.error) {
+                this.toggleModernPaymentElementError(result.error);
+                return;
+            }
+            this.handleStripePaymentConfirm({
+                action: finalizeAction,
+                form_id: this.formId,
+                submission_id: data.submission_id,
+                payment_intent_id: data.payment_intent_id,
+                _ff_stripe_nonce: data._ff_stripe_nonce || '',
+            });
+        }).catch((err) => {
+            // A rejected confirm promise (transient Stripe.js/network failure) must
+            // surface a recoverable error and release the submission progress, or the
+            // form is left stuck after the customer entered card details.
+            this.toggleModernPaymentElementError(
+                err && err.message ? err : { message: this.$t('Payment could not be completed. Please try again.') }
+            );
+        });
+    }
+
+    toggleModernPaymentElementError(error) {
+        const $errorDiv = this.$form.find('.ff_card-errors');
+        if (error && error.message) {
+            $errorDiv.html(error.message);
+            this.formInstance.hideFormSubmissionProgress(this.$form);
+        } else {
+            $errorDiv.html('');
+        }
+        setTimeout(() => {
+            this.maybeRemoveSubmitError();
+        }, 500);
     }
 
     toggleStripeInlineCardError(error) {
