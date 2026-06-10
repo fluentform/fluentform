@@ -55,7 +55,7 @@ class WriteGuard
     {
         if (empty($token)) {
             return MCPHelper::error(
-                'confirmation_required',
+                ErrorCodes::CONFIRMATION_REQUIRED,
                 __('This action changes data. Call again with dry_run:true to preview, then pass the returned confirm_token to execute.', 'fluentform'),
                 ['next_step' => 'set dry_run:true']
             );
@@ -65,7 +65,7 @@ class WriteGuard
 
         if (!is_array($stored) || empty($stored['token'])) {
             return MCPHelper::error(
-                'confirmation_expired',
+                ErrorCodes::CONFIRMATION_EXPIRED,
                 __('Your confirmation has expired. Run a fresh dry_run to preview and get a new confirm_token.', 'fluentform'),
                 ['next_step' => 'set dry_run:true']
             );
@@ -73,7 +73,7 @@ class WriteGuard
 
         if (!hash_equals((string) $stored['token'], (string) $token)) {
             return MCPHelper::error(
-                'confirmation_invalid',
+                ErrorCodes::CONFIRMATION_INVALID,
                 __('The confirm_token does not match. Run a fresh dry_run.', 'fluentform'),
                 ['next_step' => 'set dry_run:true']
             );
@@ -82,7 +82,7 @@ class WriteGuard
         if ((string) $stored['fingerprint'] !== (string) $currentFingerprint) {
             delete_transient(self::confirmKey($tool, $entityKey));
             return MCPHelper::error(
-                'state_changed',
+                ErrorCodes::STATE_CHANGED,
                 __('The record changed since you previewed it. Run a fresh dry_run to see the current state before executing.', 'fluentform'),
                 ['next_step' => 'set dry_run:true']
             );

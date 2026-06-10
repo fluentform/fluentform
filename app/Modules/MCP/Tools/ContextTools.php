@@ -41,6 +41,7 @@ class ContextTools
         return [
             'fluentform/get-forms-context' => [
                 'label'       => __('Get Forms Context', 'fluentform'),
+                'group'       => __('Discovery', 'fluentform'),
                 'description' => __('START HERE — call once per session. Returns who you are and your permissions, the site info, every valid enum value (submission/form statuses), headline counts, a compact list of forms you can access (id, title, status, entries), and usage guidelines. Use this before any other tool so you never guess a status string or a form id.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',

@@ -32,48 +32,12 @@ class McpSettingsController extends Controller
             'toolkit_download_url' => self::TOOLKIT_DOWNLOAD_URL,
             'endpoint_url'         => MCPInit::getEndpointUrl(),
             'tools_count'          => MCPInit::toolsCount(),
-            'tools'                => $this->tools(),
+            'tools'                => AbilitiesRegistrar::catalogue(),
             'app_passwords_url'    => admin_url('profile.php#application-passwords-section'),
             'plugins_url'          => admin_url('plugins.php'),
             'current_user_login'   => ($user && $user->exists()) ? $user->user_login : '',
             'is_local_dev'         => $this->isLocalDev(),
         ]);
-    }
-
-    /**
-     * The catalogue shown on the settings card: each ability with its label,
-     * agent-facing description, a read/write flag (derived from the readonly
-     * annotation), and a UI group. Sourced from the same registrar the server
-     * exposes, so the card can never drift from what an agent actually sees.
-     */
-    private function tools()
-    {
-        $groups = [
-            'fluentform/get-forms-context'        => __('Discovery', 'fluentform'),
-            'fluentform/list-forms'               => __('Forms', 'fluentform'),
-            'fluentform/get-form'                 => __('Forms', 'fluentform'),
-            'fluentform/create-form'              => __('Forms', 'fluentform'),
-            'fluentform/list-submissions'         => __('Entries', 'fluentform'),
-            'fluentform/get-submission'           => __('Entries', 'fluentform'),
-            'fluentform/update-submission-status' => __('Entries', 'fluentform'),
-            'fluentform/add-submission-note'      => __('Entries', 'fluentform'),
-            'fluentform/get-form-stats'           => __('Reports', 'fluentform'),
-            'fluentform/get-submissions-trend'    => __('Reports', 'fluentform'),
-            'fluentform/list-integrations'        => __('Integrations', 'fluentform'),
-        ];
-
-        $tools = [];
-        foreach (AbilitiesRegistrar::getDefinitions() as $name => $def) {
-            $tools[] = [
-                'name'        => $name,
-                'label'       => isset($def['label']) ? $def['label'] : $name,
-                'description' => isset($def['description']) ? $def['description'] : '',
-                'write'       => empty($def['annotations']['readonly']),
-                'group'       => isset($groups[$name]) ? $groups[$name] : __('General', 'fluentform'),
-            ];
-        }
-
-        return $tools;
     }
 
     public function toggle()

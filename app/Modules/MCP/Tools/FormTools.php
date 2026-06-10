@@ -5,6 +5,7 @@ namespace FluentForm\App\Modules\MCP\Tools;
 defined('ABSPATH') or die;
 
 use FluentForm\App\Models\Form;
+use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
@@ -25,6 +26,7 @@ class FormTools
         return [
             'fluentform/list-forms' => [
                 'label'       => __('List Forms', 'fluentform'),
+                'group'       => __('Forms', 'fluentform'),
                 'description' => __('Find and filter forms with compact rows (id, title, status, type, entry count). Use this to discover the form_id you need for list-submissions and get-form-stats.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
@@ -45,6 +47,7 @@ class FormTools
 
             'fluentform/get-form' => [
                 'label'       => __('Get Form', 'fluentform'),
+                'group'       => __('Forms', 'fluentform'),
                 'description' => __('Full detail for one form: status, type, timestamps, and the field schema (each input key, label, and element type) so you know the exact keys that appear in submission responses.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
@@ -62,6 +65,7 @@ class FormTools
 
             'fluentform/create-form' => [
                 'label'       => __('Create Form', 'fluentform'),
+                'group'       => __('Forms', 'fluentform'),
                 'description' => __('Create a new form from a title and a list of fields. Each field needs a type (text, email, textarea, name, phone, number, url, dropdown, checkbox, radio, date) and a label. Omit fields to create a basic contact form (name, email, message). Returns the new form id and editor URL.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
@@ -95,7 +99,7 @@ class FormTools
     {
         $title = isset($params['title']) ? sanitize_text_field($params['title']) : '';
         if ('' === $title) {
-            return MCPHelper::error('missing_param', __('title is required.', 'fluentform'), ['fields' => ['title']]);
+            return MCPHelper::error(ErrorCodes::MISSING_PARAM, __('title is required.', 'fluentform'), ['fields' => ['title']]);
         }
 
         $specFields = [];
@@ -134,7 +138,7 @@ class FormTools
                 'is_conversational' => !empty($params['is_conversational']),
             ]);
         } catch (\Throwable $e) {
-            return MCPHelper::error('create_failed', $e->getMessage(), ['retryable' => false]);
+            return MCPHelper::error(ErrorCodes::CREATE_FAILED, $e->getMessage(), ['retryable' => false]);
         }
 
         return MCPHelper::envelope(

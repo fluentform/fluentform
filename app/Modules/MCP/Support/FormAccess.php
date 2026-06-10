@@ -35,14 +35,14 @@ class FormAccess
     {
         $formId = (int) $formId;
         if (!$formId) {
-            return MCPHelper::error('missing_identifier', __('form_id is required.', 'fluentform'), ['fields' => ['form_id']]);
+            return MCPHelper::error(ErrorCodes::MISSING_IDENTIFIER, __('form_id is required.', 'fluentform'), ['fields' => ['form_id']]);
         }
         if (!PermissionGate::canAccessForm($formId)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this form.', 'fluentform'));
+            return MCPHelper::error(ErrorCodes::FORBIDDEN, __('You do not have access to this form.', 'fluentform'));
         }
         $form = Form::query()->find($formId);
         if (!$form) {
-            return MCPHelper::error('not_found', __('No form found for the given form_id.', 'fluentform'));
+            return MCPHelper::error(ErrorCodes::NOT_FOUND, __('No form found for the given form_id.', 'fluentform'));
         }
 
         return $form;
@@ -58,14 +58,14 @@ class FormAccess
     {
         $entryId = (int) $entryId;
         if (!$entryId) {
-            return MCPHelper::error('missing_identifier', __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
+            return MCPHelper::error(ErrorCodes::MISSING_IDENTIFIER, __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
         }
         $submission = Submission::query()->find($entryId);
         if (!$submission) {
-            return MCPHelper::error('not_found', __('No entry found for the given entry_id.', 'fluentform'));
+            return MCPHelper::error(ErrorCodes::NOT_FOUND, __('No entry found for the given entry_id.', 'fluentform'));
         }
         if (!PermissionGate::canAccessForm($submission->form_id)) {
-            return MCPHelper::error('forbidden', __('You do not have access to this entry\'s form.', 'fluentform'));
+            return MCPHelper::error(ErrorCodes::FORBIDDEN, __('You do not have access to this entry\'s form.', 'fluentform'));
         }
 
         return $submission;

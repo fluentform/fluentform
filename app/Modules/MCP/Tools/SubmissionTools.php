@@ -5,6 +5,7 @@ namespace FluentForm\App\Modules\MCP\Tools;
 defined('ABSPATH') or die;
 
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
@@ -31,6 +32,7 @@ class SubmissionTools
         return [
             'fluentform/list-submissions' => [
                 'label'       => __('List Submissions', 'fluentform'),
+                'group'       => __('Entries', 'fluentform'),
                 'description' => __('List and filter entries for one form (form_id required). Compact rows: id, serial, status, favorite, date, and a short value preview. Filter by status, search text, and date range; sort by date. Use get-submission for the full labeled entry.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
@@ -55,6 +57,7 @@ class SubmissionTools
 
             'fluentform/get-submission' => [
                 'label'       => __('Get Submission', 'fluentform'),
+                'group'       => __('Entries', 'fluentform'),
                 'description' => __('Full detail for one entry by id: status, serial, dates, the submitting user, and every field as a label/value pair. The form_id is resolved from the entry itself, then checked against your form access.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
@@ -72,6 +75,7 @@ class SubmissionTools
 
             'fluentform/update-submission-status' => [
                 'label'       => __('Update Submission Status', 'fluentform'),
+                'group'       => __('Entries', 'fluentform'),
                 'description' => __('Set one entry\'s status (unread, read, spam, trashed). trashed soft-deletes the entry; it can be restored by setting another status. Acts on a single entry by id.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
@@ -89,6 +93,7 @@ class SubmissionTools
 
             'fluentform/add-submission-note' => [
                 'label'       => __('Add Submission Note', 'fluentform'),
+                'group'       => __('Entries', 'fluentform'),
                 'description' => __('Add an internal staff note to one entry (not visible to the submitter). Acts on a single entry by id.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
@@ -209,7 +214,7 @@ class SubmissionTools
     {
         $status = isset($params['status']) ? sanitize_text_field($params['status']) : '';
         if (!in_array($status, ['unread', 'read', 'spam', 'trashed'], true)) {
-            return MCPHelper::error('invalid_param', __('status must be one of: unread, read, spam, trashed.', 'fluentform'), ['fields' => ['status']]);
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('status must be one of: unread, read, spam, trashed.', 'fluentform'), ['fields' => ['status']]);
         }
 
         $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
@@ -236,7 +241,7 @@ class SubmissionTools
     {
         $content = isset($params['content']) ? trim((string) $params['content']) : '';
         if ('' === $content) {
-            return MCPHelper::error('missing_param', __('content is required.', 'fluentform'), ['fields' => ['content']]);
+            return MCPHelper::error(ErrorCodes::MISSING_PARAM, __('content is required.', 'fluentform'), ['fields' => ['content']]);
         }
 
         $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);

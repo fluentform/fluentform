@@ -24,6 +24,7 @@ class IntegrationTools
         return [
             'fluentform/list-integrations' => [
                 'label'       => __('List Integrations', 'fluentform'),
+                'group'       => __('Integrations', 'fluentform'),
                 'description' => __('List the integration feeds configured on one form (provider, name, enabled state) — the notifications and third-party connections that fire when the form is submitted. Requires form_id.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',

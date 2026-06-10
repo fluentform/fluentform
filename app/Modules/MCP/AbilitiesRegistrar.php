@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\MCP;
 
 defined('ABSPATH') or die;
 
+use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Tools\ContextTools;
 use FluentForm\App\Modules\MCP\Tools\FormTools;
@@ -46,6 +47,28 @@ class AbilitiesRegistrar
         }
 
         return $defs;
+    }
+
+    /**
+     * The agent-facing catalogue: each ability's display metadata, projected
+     * from its own definition (group declared inline; read/write derived from
+     * the readonly annotation). The single source the settings card reads, so
+     * the UI can never drift from what the server actually exposes.
+     */
+    public static function catalogue()
+    {
+        $out = [];
+        foreach (self::getDefinitions() as $name => $def) {
+            $out[] = [
+                'name'        => $name,
+                'label'       => isset($def['label']) ? $def['label'] : $name,
+                'description' => isset($def['description']) ? $def['description'] : '',
+                'group'       => isset($def['group']) ? $def['group'] : __('General', 'fluentform'),
+                'write'       => empty($def['annotations']['readonly']),
+            ];
+        }
+
+        return $out;
     }
 
     public static function register()
@@ -116,7 +139,7 @@ class AbilitiesRegistrar
                     $details['trace'] = array_slice(explode("\n", $e->getTraceAsString()), 0, 5);
                 }
 
-                return MCPHelper::error('tool_failed', $e->getMessage(), $details);
+                return MCPHelper::error(ErrorCodes::TOOL_FAILED, $e->getMessage(), $details);
             }
         };
     }

@@ -24,6 +24,7 @@ class ReportTools
         return [
             'fluentform/get-form-stats' => [
                 'label'       => __('Get Form Stats', 'fluentform'),
+                'group'       => __('Reports', 'fluentform'),
                 'description' => __('Headline numbers for one form: entry counts by status (unread, read, spam, trashed, favorites, all), total views, and conversion rate (entries ÷ views). Requires form_id.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
@@ -41,6 +42,7 @@ class ReportTools
 
             'fluentform/get-submissions-trend' => [
                 'label'       => __('Get Submissions Trend', 'fluentform'),
+                'group'       => __('Reports', 'fluentform'),
                 'description' => __('Daily entry counts for one form over a date window (defaults to the last 30 days). Returns a date→count series for charting submission volume. Requires form_id.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',

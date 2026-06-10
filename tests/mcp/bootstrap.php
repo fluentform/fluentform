@@ -142,6 +142,7 @@ if (!function_exists('current_user_can')) {
     }
 }
 
+require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/ErrorCodes.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/MCPHelper.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/PermissionGate.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/FormAccess.php';
@@ -150,3 +151,4 @@ require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/FormTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/SubmissionTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/ReportTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/IntegrationTools.php';
+require_once dirname(__DIR__, 2) . '/app/Modules/MCP/AbilitiesRegistrar.php';

@@ -12,6 +12,8 @@
 
 require __DIR__ . '/bootstrap.php';
 
+use FluentForm\App\Modules\MCP\AbilitiesRegistrar;
+use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
@@ -129,6 +131,32 @@ ok(FormAccess::isInternalKey('g-recaptcha-response'), 'captcha token is internal
 ok(!FormAccess::isInternalKey('email'), 'plain field is not internal');
 ok(!FormAccess::isInternalKey('first_name'), 'named field is not internal');
 ok(!FormAccess::isInternalKey(''), 'empty string is not internal');
+
+echo "ErrorCodes taxonomy\n";
+$codes = ErrorCodes::all();
+ok(count($codes) > 0, 'ErrorCodes::all() is non-empty');
+ok(count($codes) === count(array_unique($codes)), 'error codes are unique');
+ok(count(array_filter($codes, 'is_string')) === count($codes), 'every error code is a string');
+$missing = FormAccess::resolveForm(0);
+ok($missing instanceof WP_Error, 'resolveForm(0) returns WP_Error');
+$mc = json_decode($missing->get_error_message(), true);
+eq($mc['error']['code'], ErrorCodes::MISSING_IDENTIFIER, 'resolveForm(0) uses MISSING_IDENTIFIER');
+ok(in_array($mc['error']['code'], $codes, true), 'returned code is a declared ErrorCode');
+
+echo "AbilitiesRegistrar::catalogue\n";
+$cat = AbilitiesRegistrar::catalogue();
+eq(count($cat), 11, 'catalogue lists all 11 tools');
+$byName = [];
+foreach ($cat as $row) {
+    $byName[$row['name']] = $row;
+    ok(!empty($row['group']), $row['name'] . ' has a group');
+    ok(is_bool($row['write']), $row['name'] . ' write flag is boolean');
+}
+eq($byName['fluentform/create-form']['write'], true, 'create-form is a write tool');
+eq($byName['fluentform/create-form']['group'], 'Forms', 'create-form grouped under Forms');
+eq($byName['fluentform/list-forms']['write'], false, 'list-forms is a read tool');
+eq($byName['fluentform/get-submission']['group'], 'Entries', 'get-submission grouped under Entries');
+eq($byName['fluentform/get-forms-context']['group'], 'Discovery', 'context grouped under Discovery');
 
 echo "Tool definitions integrity\n";
 $defs = array_merge(
