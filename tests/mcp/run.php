@@ -433,6 +433,25 @@ ok(ConditionTools::validateLogics(['status' => true, 'conditions' => [['field' =
 ok(ConditionTools::validateLogics([], $keys) instanceof WP_Error, 'validateLogics rejects empty logics');
 ok(!ConditionTools::hasRules(null) && !ConditionTools::hasRules([]), 'hasRules false for null/empty');
 
+// Lost-update contract: applyToField touches ONLY the targeted field.
+$doc = ['fields' => $sampleFields, 'submitButton' => ['uiElementType' => 'button']];
+$applied = ConditionTools::applyToField($doc, 'nested', $validSimple);
+$appliedConds = ConditionTools::extractConditions($applied['fields']);
+$nestedRow = array_values(array_filter($appliedConds, function ($c) { return 'nested' === $c['key']; }));
+eq($nestedRow[0]['conditional_logics'], $validSimple, 'applyToField sets the targeted field\'s logics');
+$untouched = $applied;
+$untouched['fields'][2]['columns'][0]['fields'][0]['settings']['conditional_logics'] = $doc['fields'][2]['columns'][0]['fields'][0]['settings']['conditional_logics'];
+eq(wp_json_encode($untouched), wp_json_encode($doc), 'applyToField leaves every other byte of the definition untouched');
+$cleared = ConditionTools::applyToField($doc, 'reason', []);
+ok([] === $cleared['fields'][1]['settings']['conditional_logics'], 'applyToField clears with an empty logics array');
+
+// Wiring regression: the mutation must re-read the form INSIDE the closure
+// (a stale pre-validation snapshot written back whole is a lost update).
+$conditionToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/ConditionTools.php');
+$mutationPos = strpos($conditionToolsSrc, "Mutation::run('fluentform/update-field-conditions'");
+$freshReadPos = strpos($conditionToolsSrc, 'Form::query()->find($formId)');
+ok(false !== $mutationPos && false !== $freshReadPos && $freshReadPos > $mutationPos, 'updateConditions re-reads the form inside the mutation closure');
+
 echo "mcp_tool_definitions seam\n";
 $GLOBALS['__mcp_test_options'] = [];
 $GLOBALS['__mcp_test_filters'] = [];

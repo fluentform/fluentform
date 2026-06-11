@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\MCP\Tools;
 
 defined('ABSPATH') || exit;
 
+use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
@@ -116,23 +117,33 @@ class ConditionTools
 
         $logics = $clearing ? [] : fluentFormSanitizer($rawLogics);
 
-        return Mutation::run('fluentform/update-field-conditions', $params, function () use ($formId, $form, $decoded, $fieldKey, $logics, $clearing) {
-            self::walkByRef($decoded['fields'], function (&$field) use ($fieldKey, $logics) {
-                if (isset($field['attributes']['name']) && $field['attributes']['name'] === $fieldKey) {
-                    if (!isset($field['settings']) || !is_array($field['settings'])) {
-                        $field['settings'] = [];
-                    }
-                    $field['settings']['conditional_logics'] = $logics;
-                }
-            });
+        return Mutation::run('fluentform/update-field-conditions', $params, function () use ($formId, $fieldKey, $logics, $clearing) {
+            // Re-read inside the mutation: mutating the snapshot from the
+            // validation phase would write that stale document back whole,
+            // silently dropping any edit that landed in between (lost update).
+            $fresh = Form::query()->find($formId);
+            if (!$fresh) {
+                return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('The form was deleted while this update was in flight.', 'fluentform'));
+            }
+            $decoded = self::decodeFields($fresh);
+            $allKeys = self::fieldKeys($decoded['fields']);
+
+            if (!isset($allKeys[$fieldKey])) {
+                return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('The field was removed while this update was in flight; re-read the form and retry.', 'fluentform'), ['fields' => ['field_key']]);
+            }
+            if (!$clearing && is_wp_error(self::validateLogics($logics, $allKeys))) {
+                return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('A referenced field changed while this update was in flight; re-read the form and retry.', 'fluentform'), ['fields' => ['conditional_logics']]);
+            }
+
+            $decoded = self::applyToField($decoded, $fieldKey, $logics);
 
             // Through the Updater so the form_fields_update filter,
             // before_updating_form action, and field sanitizer all run — same
             // pipeline as the editor, not a raw DB write.
             (new Updater())->update([
                 'form_id'    => $formId,
-                'title'      => $form->title,
-                'status'     => $form->status,
+                'title'      => $fresh->title,
+                'status'     => $fresh->status,
                 'formFields' => wp_json_encode($decoded),
             ]);
 
@@ -143,6 +154,25 @@ class ConditionTools
                 ['form_id' => $formId, 'field_key' => $fieldKey, 'cleared' => $clearing]
             );
         }, ['form_id' => $formId]);
+    }
+
+    /**
+     * Set one field's conditional_logics in a decoded form definition, leaving
+     * every other field untouched. Pure — no IO — so the lost-update contract
+     * ("only the targeted field changes") is unit-testable.
+     */
+    public static function applyToField(array $decoded, $fieldKey, $logics)
+    {
+        self::walkByRef($decoded['fields'], function (&$field) use ($fieldKey, $logics) {
+            if (isset($field['attributes']['name']) && $field['attributes']['name'] === $fieldKey) {
+                if (!isset($field['settings']) || !is_array($field['settings'])) {
+                    $field['settings'] = [];
+                }
+                $field['settings']['conditional_logics'] = $logics;
+            }
+        });
+
+        return $decoded;
     }
 
     /** Conditioned fields as [{ key, label, conditional_logics }], recursing into containers. */
