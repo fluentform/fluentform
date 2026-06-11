@@ -11,11 +11,15 @@ node_modules
 package-lock.json
 package.json
 webpack.mix.js
+vite.config.mjs
 *.map
 mix-manifest.json
 resources/assets
+resources/admin
 resources/img
 guten_block/
+vite/
+config/vite.json
 public/js/*.css
 .prettierrc
 jsconfig.json

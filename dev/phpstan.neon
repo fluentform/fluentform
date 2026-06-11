@@ -42,6 +42,9 @@ parameters:
         -
             message: '#^Result of method FluentForm\\Framework\\View\\View::render\(\) \(void\) is used\.$#'
             path: ../app/Modules/Registerer/Menu.php
+        -
+            message: '#^Constant FLUENTFORM_DIR_PATH not found\.$#'
+            path: ../app/Vite.php
 
 services:
     -
