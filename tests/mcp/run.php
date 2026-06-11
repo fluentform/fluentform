@@ -454,6 +454,16 @@ ok(false !== $mutationPos && false !== $freshReadPos && $freshReadPos > $mutatio
 $lockPos = strpos($conditionToolsSrc, 'FOR UPDATE');
 ok(false !== $lockPos && $lockPos > $mutationPos && $lockPos < $freshReadPos, 'updateConditions row-locks the form before the fresh read (no lost-update window)');
 
+echo "Discovery stats caching\n";
+// Unrestricted-scope counts scan submissions by status only (no usable index);
+// they must come from the shared long-TTL cache, never recomputed per user/60s.
+eq(FluentForm\App\Modules\MCP\Tools\ContextTools::STATS_CACHE_TTL, 900, 'global stats cache TTL is 15 minutes');
+$contextToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/ContextTools.php');
+$scopeCheckPos = strpos($contextToolsSrc, 'false !== PermissionGate::formScope()');
+$statsCachePos = strpos($contextToolsSrc, 'get_transient(self::STATS_CACHE_KEY)');
+ok(false !== $scopeCheckPos && false !== $statsCachePos && $scopeCheckPos < $statsCachePos, 'buildStats serves unrestricted counts from the shared cache (restricted scopes compute fresh)');
+ok(false !== strpos($contextToolsSrc, '!in_array(null, $stats, true)'), 'failed counts are never pinned into the shared stats cache');
+
 echo "mcp_tool_definitions seam\n";
 $GLOBALS['__mcp_test_options'] = [];
 $GLOBALS['__mcp_test_filters'] = [];

@@ -18,7 +18,9 @@ use FluentForm\App\Modules\MCP\Support\PermissionGate;
  * the agent who it is, what it's allowed to do, the entry/form status enums, a
  * compact list of the forms it may access, and headline counts — so it never
  * guesses a status string or a form id. It's cached (60s) per user and
- * invalidated when forms change, because it's called every session.
+ * invalidated when forms change, because it's called every session. The
+ * site-wide headline counts (the expensive piece) sit in their own shared
+ * 15-minute cache.
  */
 class ContextTools
 {
@@ -27,6 +29,13 @@ class ContextTools
     const CACHE_PREFIX = 'fluentform_mcp_context_';
 
     const CACHE_VERSION_OPTION = '_fluentform_mcp_context_ver';
+
+    // Unrestricted-scope headline counts scan submissions by status only (no
+    // form_id filter, so no usable index) — and they are identical for every
+    // unrestricted user, so they get one shared, longer-lived cache.
+    const STATS_CACHE_KEY = 'fluentform_mcp_global_stats';
+
+    const STATS_CACHE_TTL = 900;
 
     // Verified FluentForm domain enums. Hardcoded (filterable) so the agent gets
     // the complete valid set even when a status currently has zero rows.
@@ -158,6 +167,30 @@ class ContextTools
     }
 
     private static function buildStats()
+    {
+        // Restricted scopes add a form_id filter (index-friendly) and differ
+        // per user — compute fresh. Unrestricted counts are full status-only
+        // scans shared by every admin, so serve those from the shared cache.
+        if (false !== PermissionGate::formScope()) {
+            return self::computeStats();
+        }
+
+        $stats = get_transient(self::STATS_CACHE_KEY);
+        if (is_array($stats)) {
+            return $stats;
+        }
+
+        $stats = self::computeStats();
+
+        // A failed count (null) must not be pinned for 15 minutes.
+        if (!in_array(null, $stats, true)) {
+            set_transient(self::STATS_CACHE_KEY, $stats, self::STATS_CACHE_TTL);
+        }
+
+        return $stats;
+    }
+
+    private static function computeStats()
     {
         return [
             'forms_total'          => self::safeCount(function () {
