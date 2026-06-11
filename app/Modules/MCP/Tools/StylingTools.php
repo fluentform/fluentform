@@ -58,6 +58,9 @@ class StylingTools
                         'js'           => ['type' => 'string', 'description' => 'Custom JS (requires unfiltered_html).'],
                     ],
                     'required' => ['form_id'],
+                    // Unknown keys (e.g. styler_styles) must fail loudly, not be
+                    // silently dropped — agents need the signal.
+                    'additionalProperties' => false,
                 ],
                 'execute_callback'    => [self::class, 'updateStyling'],
                 'permission_callback' => function () {

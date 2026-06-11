@@ -390,6 +390,7 @@ ok(!empty($updateStyling['advanced']), 'update-form-styling flagged advanced');
 $styleProps = $updateStyling['input_schema']['properties'];
 ok(isset($styleProps['styler_theme'], $styleProps['css'], $styleProps['js']), 'update-form-styling exposes theme, css, js');
 ok(!isset($styleProps['styler_styles']), 'update-form-styling does NOT accept free-form styler_styles (CSS-injection surface dropped)');
+ok(false === $updateStyling['input_schema']['additionalProperties'], 'update-form-styling rejects unknown keys loudly (no silent drops)');
 
 echo "field-conditions definitions\n";
 ok(isset($onDefs['fluentform/get-field-conditions']), 'get-field-conditions present when opt-in on');
@@ -445,6 +446,16 @@ ok(isset($injected['fluentform/pro-injected']), 'mcp_tool_definitions lets a lis
 eq(count($injected), $baseline + 1, 'mcp_tool_definitions adds exactly the injected tool');
 $GLOBALS['__mcp_test_filters'] = [];
 ok(!isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-injected']), 'definitions unchanged without a listener');
+
+// Filter-injected advanced tools must obey the opt-in like inline ones.
+add_filter('fluentform/mcp_tool_definitions', function ($defs) {
+    $defs['fluentform/pro-advanced'] = ['label' => 'Pro Advanced', 'description' => 'x', 'advanced' => true, 'execute_callback' => function () {}, 'permission_callback' => function () { return true; }];
+    return $defs;
+});
+ok(!isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-advanced']), 'filter-injected advanced tool withheld while opt-in is off');
+PermissionGate::setNewToolsEnabled(true);
+ok(isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-advanced']), 'filter-injected advanced tool registers once opt-in is on');
+$GLOBALS['__mcp_test_filters'] = [];
 
 $GLOBALS['__mcp_test_options'] = [];
 

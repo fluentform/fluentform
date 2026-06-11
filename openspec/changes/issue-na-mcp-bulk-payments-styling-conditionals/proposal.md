@@ -35,7 +35,7 @@ one contract instead of forking.
   per-field) and `fluentform/update-field-conditions` (write via `Mutation::run`, per-field
   granularity). Validates rule shape (`field` + `operator` required), validates referenced
   fields exist on the form, sanitizes recursively with `fluentFormSanitizer`.
-- **Off-by-default gating** — the ~6 new tools ship OFF until an admin opts in through a new
+- **Off-by-default gating** — the 5 new tools ship OFF until an admin opts in through a new
   control on the MCP settings card. They still inherit the master MCP switch and per-ability
   FluentForm permissions on top.
 - **Pro companion (separate `fluentformpro` repo, no new endpoints)** — FluentForm Pro adds ONE
