@@ -23,6 +23,7 @@ use FluentForm\App\Modules\MCP\Tools\FormTools;
 use FluentForm\App\Modules\MCP\Tools\SubmissionTools;
 use FluentForm\App\Modules\MCP\Tools\ReportTools;
 use FluentForm\App\Modules\MCP\Tools\IntegrationTools;
+use FluentForm\App\Modules\MCP\Tools\ConditionTools;
 
 $tests  = 0;
 $passed = 0;
@@ -385,6 +386,40 @@ ok(empty($updateStyling['annotations']['readonly']), 'update-form-styling not an
 ok(!empty($updateStyling['advanced']), 'update-form-styling flagged advanced');
 $styleProps = $updateStyling['input_schema']['properties'];
 ok(isset($styleProps['styler_theme'], $styleProps['styler_styles'], $styleProps['css'], $styleProps['js']), 'update-form-styling exposes theme, styles, css, js');
+
+echo "field-conditions definitions\n";
+ok(isset($onDefs['fluentform/get-field-conditions']), 'get-field-conditions present when opt-in on');
+ok(isset($onDefs['fluentform/update-field-conditions']), 'update-field-conditions present when opt-in on');
+$getCond = $onDefs['fluentform/get-field-conditions'];
+ok(!empty($getCond['annotations']['readonly']), 'get-field-conditions annotated readonly');
+ok(!empty($getCond['advanced']), 'get-field-conditions flagged advanced');
+$updCond = $onDefs['fluentform/update-field-conditions'];
+ok(empty($updCond['annotations']['readonly']), 'update-field-conditions not annotated readonly (it writes)');
+ok(!empty($updCond['advanced']), 'update-field-conditions flagged advanced');
+eq($updCond['input_schema']['required'], ['form_id', 'field_key'], 'update-field-conditions requires form_id + field_key');
+
+echo "ConditionTools field walking + validation\n";
+$sampleFields = [
+    ['attributes' => ['name' => 'email'], 'settings' => ['label' => 'Email']],
+    ['attributes' => ['name' => 'reason'], 'settings' => ['label' => 'Reason', 'conditional_logics' => ['status' => true, 'conditions' => [['field' => 'email', 'operator' => '=', 'value' => 'vip']]]]],
+    ['element' => 'container', 'columns' => [
+        ['fields' => [
+            ['attributes' => ['name' => 'nested'], 'settings' => ['label' => 'Nested', 'conditional_logics' => ['condition_groups' => [['conditions' => [['field' => 'email', 'operator' => '!=', 'value' => '']]]]]]],
+        ]],
+    ]],
+];
+$keys = ConditionTools::fieldKeys($sampleFields);
+ok(isset($keys['email'], $keys['reason'], $keys['nested']), 'fieldKeys finds nested field keys');
+$conds = ConditionTools::extractConditions($sampleFields);
+eq(count($conds), 2, 'extractConditions returns only conditioned fields, recursing into containers');
+$condKeys = array_map(function ($c) { return $c['key']; }, $conds);
+ok(in_array('reason', $condKeys, true), 'extractConditions includes a simple-conditions field');
+ok(in_array('nested', $condKeys, true), 'extractConditions includes a grouped-conditions nested field');
+ok(true === ConditionTools::validateLogics(['conditions' => [['field' => 'email', 'operator' => '=', 'value' => 'vip']]], $keys), 'validateLogics accepts a valid rule');
+ok(ConditionTools::validateLogics(['conditions' => [['operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects a rule missing field');
+ok(ConditionTools::validateLogics(['conditions' => [['field' => 'ghost', 'operator' => '=', 'value' => 'x']]], $keys) instanceof WP_Error, 'validateLogics rejects a rule referencing an unknown field');
+ok(ConditionTools::validateLogics([], $keys) instanceof WP_Error, 'validateLogics rejects empty logics');
+ok(!ConditionTools::hasRules(null) && !ConditionTools::hasRules([]), 'hasRules false for null/empty');
 
 $GLOBALS['__mcp_test_options'] = [];
 
