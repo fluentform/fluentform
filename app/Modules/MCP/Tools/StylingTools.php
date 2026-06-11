@@ -48,15 +48,14 @@ class StylingTools
             'fluentform/update-form-styling' => [
                 'label'       => __('Update Form Styling', 'fluentform'),
                 'group'       => __('Design', 'fluentform'),
-                'description' => __('Update a form\'s styling. styler_theme (preset id) and styler_styles (structured object) are always writable. Custom css/js are written only if you hold the unfiltered_html capability; otherwise the call returns unfiltered_html_required and changes nothing. Pass only the keys you want to change. Requires form_id.', 'fluentform'),
+                'description' => __('Update a form\'s styling. styler_theme (preset id) is always writable. Custom css/js are written only if you hold the unfiltered_html capability; otherwise the call returns unfiltered_html_required and changes nothing. Pass only the keys you want to change. Requires form_id. (Structured styler_styles are read-only via get-form-styling; edit them in the form styler UI.)', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
                     'properties' => [
-                        'form_id'       => ['type' => 'integer', 'description' => 'Required. The form to restyle.'],
-                        'styler_theme'  => ['type' => 'string', 'description' => 'Theme preset id (e.g. ffs_default).'],
-                        'styler_styles' => ['type' => 'object', 'description' => 'Structured styler styles object.'],
-                        'css'           => ['type' => 'string', 'description' => 'Custom CSS (requires unfiltered_html).'],
-                        'js'            => ['type' => 'string', 'description' => 'Custom JS (requires unfiltered_html).'],
+                        'form_id'      => ['type' => 'integer', 'description' => 'Required. The form to restyle.'],
+                        'styler_theme' => ['type' => 'string', 'description' => 'Theme preset id (e.g. ffs_default).'],
+                        'css'          => ['type' => 'string', 'description' => 'Custom CSS (requires unfiltered_html).'],
+                        'js'           => ['type' => 'string', 'description' => 'Custom JS (requires unfiltered_html).'],
                     ],
                     'required' => ['form_id'],
                 ],
@@ -103,13 +102,12 @@ class StylingTools
         }
         $formId = (int) $form->id;
 
-        $hasTheme  = array_key_exists('styler_theme', $params);
-        $hasStyles = array_key_exists('styler_styles', $params);
-        $hasCss    = array_key_exists('css', $params);
-        $hasJs     = array_key_exists('js', $params);
+        $hasTheme = array_key_exists('styler_theme', $params);
+        $hasCss   = array_key_exists('css', $params);
+        $hasJs    = array_key_exists('js', $params);
 
-        if (!$hasTheme && !$hasStyles && !$hasCss && !$hasJs) {
-            return MCPHelper::error(ErrorCodes::MISSING_PARAM, __('Provide at least one of: styler_theme, styler_styles, css, js.', 'fluentform'), ['fields' => ['styler_theme', 'styler_styles', 'css', 'js']]);
+        if (!$hasTheme && !$hasCss && !$hasJs) {
+            return MCPHelper::error(ErrorCodes::MISSING_PARAM, __('Provide at least one of: styler_theme, css, js.', 'fluentform'), ['fields' => ['styler_theme', 'css', 'js']]);
         }
 
         // CSS/JS writes require unfiltered_html — the WP-standard gate the styler
@@ -119,18 +117,12 @@ class StylingTools
             return MCPHelper::error(ErrorCodes::UNFILTERED_HTML_REQUIRED, __('Saving custom CSS or JS requires the unfiltered_html capability.', 'fluentform'), ['fields' => ['css', 'js']]);
         }
 
-        return Mutation::run('fluentform/update-form-styling', $params, function () use ($formId, $form, $params, $hasTheme, $hasStyles, $hasCss, $hasJs) {
+        return Mutation::run('fluentform/update-form-styling', $params, function () use ($formId, $form, $params, $hasTheme, $hasCss, $hasJs) {
             $changed = [];
 
             if ($hasTheme) {
                 Helper::setFormMeta($formId, '_ff_selected_style', sanitize_text_field($params['styler_theme']));
                 $changed[] = 'styler_theme';
-            }
-
-            if ($hasStyles) {
-                $styles = is_array($params['styler_styles']) ? fluentFormSanitizer($params['styler_styles']) : [];
-                Helper::setFormMeta($formId, '_ff_form_styles', $styles);
-                $changed[] = 'styler_styles';
             }
 
             if ($hasCss || $hasJs) {

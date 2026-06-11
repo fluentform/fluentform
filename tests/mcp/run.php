@@ -385,7 +385,8 @@ $updateStyling = $onDefs['fluentform/update-form-styling'];
 ok(empty($updateStyling['annotations']['readonly']), 'update-form-styling not annotated readonly (it writes)');
 ok(!empty($updateStyling['advanced']), 'update-form-styling flagged advanced');
 $styleProps = $updateStyling['input_schema']['properties'];
-ok(isset($styleProps['styler_theme'], $styleProps['styler_styles'], $styleProps['css'], $styleProps['js']), 'update-form-styling exposes theme, styles, css, js');
+ok(isset($styleProps['styler_theme'], $styleProps['css'], $styleProps['js']), 'update-form-styling exposes theme, css, js');
+ok(!isset($styleProps['styler_styles']), 'update-form-styling does NOT accept free-form styler_styles (CSS-injection surface dropped)');
 
 echo "field-conditions definitions\n";
 ok(isset($onDefs['fluentform/get-field-conditions']), 'get-field-conditions present when opt-in on');
