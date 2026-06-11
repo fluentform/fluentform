@@ -11,6 +11,7 @@ use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\Mutation;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Form\Updater;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * Field conditional-logic tools (advanced opt-in).
@@ -164,7 +165,7 @@ class ConditionTools
     public static function applyToField(array $decoded, $fieldKey, $logics)
     {
         self::walkByRef($decoded['fields'], function (&$field) use ($fieldKey, $logics) {
-            if (isset($field['attributes']['name']) && $field['attributes']['name'] === $fieldKey) {
+            if (Arr::get($field, 'attributes.name') === $fieldKey) {
                 if (!isset($field['settings']) || !is_array($field['settings'])) {
                     $field['settings'] = [];
                 }
@@ -180,11 +181,11 @@ class ConditionTools
     {
         $out = [];
         self::walk($fields, function ($field) use (&$out) {
-            $logics = isset($field['settings']['conditional_logics']) ? $field['settings']['conditional_logics'] : null;
+            $logics = Arr::get($field, 'settings.conditional_logics');
             if (self::hasRules($logics)) {
                 $out[] = [
-                    'key'                => isset($field['attributes']['name']) ? $field['attributes']['name'] : null,
-                    'label'              => isset($field['settings']['label']) ? $field['settings']['label'] : null,
+                    'key'                => Arr::get($field, 'attributes.name'),
+                    'label'              => Arr::get($field, 'settings.label'),
                     'conditional_logics' => $logics,
                 ];
             }
@@ -198,8 +199,9 @@ class ConditionTools
     {
         $keys = [];
         self::walk($fields, function ($field) use (&$keys) {
-            if (isset($field['attributes']['name']) && '' !== $field['attributes']['name']) {
-                $keys[$field['attributes']['name']] = true;
+            $name = Arr::get($field, 'attributes.name');
+            if (null !== $name && '' !== $name) {
+                $keys[$name] = true;
             }
         });
 

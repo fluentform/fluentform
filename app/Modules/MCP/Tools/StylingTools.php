@@ -11,6 +11,7 @@ use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\Mutation;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Settings\Customizer;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * Form styling tools (advanced opt-in).
@@ -114,10 +115,10 @@ class StylingTools
             ),
             [
                 'form_id'       => $formId,
-                'styler_theme'  => isset($styling['styler_theme']) ? $styling['styler_theme'] : null,
-                'styler_styles' => isset($styling['styler_styles']) ? $styling['styler_styles'] : null,
-                'css'           => isset($styling['css']) ? $styling['css'] : null,
-                'js'            => isset($styling['js']) ? $styling['js'] : null,
+                'styler_theme'  => Arr::get($styling, 'styler_theme'),
+                'styler_styles' => Arr::get($styling, 'styler_styles'),
+                'css'           => Arr::get($styling, 'css'),
+                'js'            => Arr::get($styling, 'js'),
             ]
         );
     }
@@ -166,8 +167,8 @@ class StylingTools
                 $existing = (new Customizer())->get($formId, ['_custom_form_css', '_custom_form_js']);
                 (new Customizer())->store([
                     'form_id' => $formId,
-                    'css'     => $hasCss ? (string) $params['css'] : (isset($existing['css']) ? $existing['css'] : ''),
-                    'js'      => $hasJs ? (string) $params['js'] : (isset($existing['js']) ? $existing['js'] : ''),
+                    'css'     => $hasCss ? (string) $params['css'] : Arr::get($existing, 'css', ''),
+                    'js'      => $hasJs ? (string) $params['js'] : Arr::get($existing, 'js', ''),
                 ]);
                 if ($hasCss) {
                     $changed[] = 'css';

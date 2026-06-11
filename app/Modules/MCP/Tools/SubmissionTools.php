@@ -13,6 +13,7 @@ use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Modules\MCP\Support\WriteGuard;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\App\Services\Submission\SubmissionService;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * Submission (entry) tools.
@@ -539,7 +540,7 @@ class SubmissionTools
             }
             $out[] = [
                 'key'   => $key,
-                'label' => isset($labels[$key]) ? $labels[$key] : $key,
+                'label' => Arr::get($labels, $key, $key),
                 'value' => self::flattenValue($value),
             ];
         }
@@ -558,7 +559,7 @@ class SubmissionTools
             if ('' === $flat || null === $flat) {
                 continue;
             }
-            $label   = isset($labels[$key]) ? $labels[$key] : $key;
+            $label   = Arr::get($labels, $key, $key);
             $parts[] = $label . ': ' . MCPHelper::preview($flat, 60);
             if (count($parts) >= $max) {
                 break;

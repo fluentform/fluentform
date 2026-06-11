@@ -208,6 +208,11 @@ if (!function_exists('get_current_user_id')) {
     }
 }
 
+// Arr (used by the tool classes) needs MacroableTrait at parse time and
+// Helper::value at call time; Collection is never reached by Arr::get.
+require_once dirname(__DIR__, 2) . '/vendor/wpfluent/framework/src/WPFluent/Support/MacroableTrait.php';
+require_once dirname(__DIR__, 2) . '/vendor/wpfluent/framework/src/WPFluent/Support/Helper.php';
+require_once dirname(__DIR__, 2) . '/vendor/wpfluent/framework/src/WPFluent/Support/Arr.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/ErrorCodes.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/MCPHelper.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/PermissionGate.php';
