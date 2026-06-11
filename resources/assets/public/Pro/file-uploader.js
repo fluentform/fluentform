@@ -1,3 +1,5 @@
+import { guardHostElementorPopup } from './elementor-popup-guard';
+
 export default function ($, $form, form, fluentFormVars, formSelector) {
     /**
      * Get translated upload message
@@ -262,6 +264,10 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                         );
                         return;
                     }
+
+                    // Popups shown before the guard registered (delay-JS
+                    // optimizers) miss the elementor/popup/show patch.
+                    guardHostElementorPopup($form[0]);
 
                     const modalId = `ff-cropper-modal-${form.id}-${Date.now()}`;
                     const modal = document.createElement('div');
