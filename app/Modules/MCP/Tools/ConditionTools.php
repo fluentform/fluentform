@@ -4,12 +4,12 @@ namespace FluentForm\App\Modules\MCP\Tools;
 
 defined('ABSPATH') || exit;
 
-use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\Mutation;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
+use FluentForm\App\Services\Form\Updater;
 
 /**
  * Field conditional-logic tools (advanced opt-in).
@@ -45,7 +45,7 @@ class ConditionTools
             'fluentform/update-field-conditions' => [
                 'label'       => __('Update Field Conditions', 'fluentform'),
                 'group'       => __('Design', 'fluentform'),
-                'description' => __('Set or clear the conditional logic on one field, by field key. Pass conditional_logics to set the rules (each rule needs field + operator, and the referenced field must exist on the form), or omit/empty it to clear them. Only the targeted field changes. Requires form_id and field_key.', 'fluentform'),
+                'description' => __('Set or clear the conditional logic on one field, by field key. The object needs status (boolean; true activates the rules) and type ("any"/"all" with a conditions array of {field, operator, value} rules, or "group" with condition_groups, each holding a rules array). Each rule needs field + operator, and the referenced field must exist on the form. Omit/empty conditional_logics to clear. Only the targeted field changes. Requires form_id and field_key.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
                     'properties' => [
@@ -116,7 +116,7 @@ class ConditionTools
 
         $logics = $clearing ? [] : fluentFormSanitizer($rawLogics);
 
-        return Mutation::run('fluentform/update-field-conditions', $params, function () use ($formId, $decoded, $fieldKey, $logics, $clearing) {
+        return Mutation::run('fluentform/update-field-conditions', $params, function () use ($formId, $form, $decoded, $fieldKey, $logics, $clearing) {
             self::walkByRef($decoded['fields'], function (&$field) use ($fieldKey, $logics) {
                 if (isset($field['attributes']['name']) && $field['attributes']['name'] === $fieldKey) {
                     if (!isset($field['settings']) || !is_array($field['settings'])) {
@@ -126,9 +126,14 @@ class ConditionTools
                 }
             });
 
-            Form::query()->where('id', $formId)->update([
-                'form_fields' => wp_json_encode($decoded),
-                'updated_at'  => current_time('mysql'),
+            // Through the Updater so the form_fields_update filter,
+            // before_updating_form action, and field sanitizer all run — same
+            // pipeline as the editor, not a raw DB write.
+            (new Updater())->update([
+                'form_id'    => $formId,
+                'title'      => $form->title,
+                'status'     => $form->status,
+                'formFields' => wp_json_encode($decoded),
             ]);
 
             return MCPHelper::envelope(
@@ -177,8 +182,12 @@ class ConditionTools
     }
 
     /**
-     * Validate a conditional_logics object: at least one rule, each with a
-     * non-empty field + operator, and every referenced field present on the form.
+     * Validate a conditional_logics object against the shape the runtime
+     * actually evaluates (BaseComponent::hasConditions / ConditionAssesor):
+     * status (boolean) is required — without it the saved rules are inert;
+     * type 'group' reads condition_groups[].rules, any other type reads the
+     * top-level conditions[]. Every rule needs a string field + operator, and
+     * the referenced field must exist on the form.
      *
      * @return true|\WP_Error
      */
@@ -188,14 +197,32 @@ class ConditionTools
             return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('conditional_logics must be an object.', 'fluentform'), ['fields' => ['conditional_logics']]);
         }
 
-        $rules = self::collectRules($logics);
-        if (empty($rules)) {
-            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('conditional_logics must contain at least one rule under conditions or condition_groups.', 'fluentform'), ['fields' => ['conditional_logics']]);
+        if (!isset($logics['status']) || !is_bool($logics['status'])) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('conditional_logics requires a boolean status — without status:true the rules never run.', 'fluentform'), ['fields' => ['conditional_logics']]);
         }
 
-        foreach ($rules as $rule) {
-            if (!is_array($rule) || !isset($rule['field']) || '' === $rule['field'] || !isset($rule['operator']) || '' === $rule['operator']) {
-                return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('Every rule requires a non-empty field and operator.', 'fluentform'), ['fields' => ['conditional_logics']]);
+        $isGroup = isset($logics['type']) && 'group' === $logics['type'];
+
+        if ($isGroup) {
+            if (empty($logics['condition_groups']) || !is_array($logics['condition_groups'])) {
+                return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('type "group" requires a non-empty condition_groups array.', 'fluentform'), ['fields' => ['conditional_logics']]);
+            }
+            foreach ($logics['condition_groups'] as $group) {
+                if (!is_array($group) || empty($group['rules']) || !is_array($group['rules'])) {
+                    return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('Every condition group needs a non-empty rules array (the runtime reads rules, not conditions).', 'fluentform'), ['fields' => ['conditional_logics']]);
+                }
+            }
+        } elseif (empty($logics['conditions']) || !is_array($logics['conditions'])) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('conditional_logics requires a non-empty conditions array (or type "group" with condition_groups).', 'fluentform'), ['fields' => ['conditional_logics']]);
+        }
+
+        foreach (self::collectRules($logics) as $rule) {
+            if (
+                !is_array($rule)
+                || !isset($rule['field']) || !is_string($rule['field']) || '' === $rule['field']
+                || !isset($rule['operator']) || !is_string($rule['operator']) || '' === $rule['operator']
+            ) {
+                return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('Every rule requires a non-empty string field and operator.', 'fluentform'), ['fields' => ['conditional_logics']]);
             }
             if (!isset($allKeys[$rule['field']])) {
                 return MCPHelper::error(
@@ -219,8 +246,8 @@ class ConditionTools
         }
         if (!empty($logics['condition_groups']) && is_array($logics['condition_groups'])) {
             foreach ($logics['condition_groups'] as $group) {
-                if (!empty($group['conditions']) && is_array($group['conditions'])) {
-                    foreach ($group['conditions'] as $rule) {
+                if (!empty($group['rules']) && is_array($group['rules'])) {
+                    foreach ($group['rules'] as $rule) {
                         $rules[] = $rule;
                     }
                 }
