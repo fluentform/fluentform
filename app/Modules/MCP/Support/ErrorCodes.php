@@ -24,6 +24,8 @@ class ErrorCodes
     const CONFIRMATION_EXPIRED  = 'confirmation_expired';
     const CONFIRMATION_INVALID  = 'confirmation_invalid';
     const STATE_CHANGED         = 'state_changed';
+    const LIMIT_EXCEEDED        = 'limit_exceeded';
+    const UNFILTERED_HTML_REQUIRED = 'unfiltered_html_required';
 
     /** Every declared code — used by tests to guard against undeclared codes. */
     public static function all()
@@ -40,6 +42,8 @@ class ErrorCodes
             self::CONFIRMATION_EXPIRED,
             self::CONFIRMATION_INVALID,
             self::STATE_CHANGED,
+            self::LIMIT_EXCEEDED,
+            self::UNFILTERED_HTML_REQUIRED,
         ];
     }
 }

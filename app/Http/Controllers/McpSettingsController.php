@@ -31,7 +31,8 @@ class McpSettingsController extends Controller
         $tools = AbilitiesRegistrar::catalogue();
 
         return $this->sendSuccess([
-            'mcp_enabled'          => PermissionGate::isEnabled(),
+            'mcp_enabled'           => PermissionGate::isEnabled(),
+            'advanced_tools_enabled' => PermissionGate::isNewToolsEnabled(),
             'adapter_available'    => MCPInit::adapterAvailable(),
             'adapter_installed'    => $this->isToolkitInstalled() || $this->isPluginInstalled(self::ADAPTER_PLUGIN_FILE),
             'toolkit_installed'    => $this->isToolkitInstalled(),
@@ -67,6 +68,30 @@ class McpSettingsController extends Controller
             'message'     => $stored
                 ? __('MCP enabled. AI agents with a valid application password can now reach the FluentForm tools.', 'fluentform')
                 : __('MCP disabled. The endpoint will reject requests until re-enabled.', 'fluentform'),
+        ]);
+    }
+
+    public function toggleAdvancedTools()
+    {
+        if (!current_user_can('manage_options')) {
+            return $this->sendError([
+                'message' => __('Sorry, you do not have permission to change the MCP setting.', 'fluentform'),
+            ]);
+        }
+
+        $value   = $this->request->get('advanced_tools_enabled');
+        $enabled = is_string($value) ? in_array(strtolower($value), ['yes', 'true', '1', 'on'], true) : (bool) $value;
+
+        PermissionGate::setNewToolsEnabled($enabled);
+
+        $stored = PermissionGate::isNewToolsEnabled();
+
+        return $this->sendSuccess([
+            'advanced_tools_enabled' => $stored,
+            'tools'                  => AbilitiesRegistrar::catalogue(),
+            'message'                => $stored
+                ? __('Advanced tools enabled (bulk actions, styling, conditional logic).', 'fluentform')
+                : __('Advanced tools disabled.', 'fluentform'),
         ]);
     }
 

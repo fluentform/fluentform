@@ -140,4 +140,35 @@ class PermissionGate
 
         return (bool) $enabled;
     }
+
+    /**
+     * Opt-in for the advanced tool group (bulk, styling, conditional logic). Ships
+     * OFF independently of the master switch, so the default agent surface stays
+     * lean and the heavier write tools register only when an admin enables them.
+     */
+    public static function isNewToolsEnabled()
+    {
+        $settings = get_option(self::OPTION, []);
+
+        return is_array($settings) && isset($settings['new_tools_enabled']) && 'yes' === $settings['new_tools_enabled'];
+    }
+
+    /** Persist the advanced-tools opt-in. Fails closed unless manage_options. */
+    public static function setNewToolsEnabled($enabled)
+    {
+        if (!current_user_can('manage_options')) {
+            return false;
+        }
+
+        $settings = get_option(self::OPTION, []);
+        if (!is_array($settings)) {
+            $settings = [];
+        }
+
+        $settings['new_tools_enabled'] = $enabled ? 'yes' : 'no';
+
+        update_option(self::OPTION, $settings, 'yes');
+
+        return (bool) $enabled;
+    }
 }

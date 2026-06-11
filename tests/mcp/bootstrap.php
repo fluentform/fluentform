@@ -94,9 +94,25 @@ if (!function_exists('wp_strip_all_tags')) {
     }
 }
 
+$GLOBALS['__mcp_test_filters'] = [];
+
+if (!function_exists('add_filter')) {
+    function add_filter($hook, $cb, $priority = 10, $args = 1)
+    {
+        $GLOBALS['__mcp_test_filters'][$hook][] = $cb;
+        return true;
+    }
+}
+
 if (!function_exists('apply_filters')) {
     function apply_filters($hook, $value = null)
     {
+        $extra = array_slice(func_get_args(), 2);
+        if (!empty($GLOBALS['__mcp_test_filters'][$hook])) {
+            foreach ($GLOBALS['__mcp_test_filters'][$hook] as $cb) {
+                $value = call_user_func_array($cb, array_merge([$value], $extra));
+            }
+        }
         return $value;
     }
 }
@@ -192,6 +208,11 @@ if (!function_exists('get_current_user_id')) {
     }
 }
 
+// Arr (used by the tool classes) needs MacroableTrait at parse time and
+// Helper::value at call time; Collection is never reached by Arr::get.
+require_once dirname(__DIR__, 2) . '/vendor/wpfluent/framework/src/WPFluent/Support/MacroableTrait.php';
+require_once dirname(__DIR__, 2) . '/vendor/wpfluent/framework/src/WPFluent/Support/Helper.php';
+require_once dirname(__DIR__, 2) . '/vendor/wpfluent/framework/src/WPFluent/Support/Arr.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/ErrorCodes.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/MCPHelper.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Support/PermissionGate.php';
@@ -203,4 +224,10 @@ require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/FormTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/SubmissionTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/ReportTools.php';
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/IntegrationTools.php';
+if (file_exists(dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/StylingTools.php')) {
+    require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/StylingTools.php';
+}
+if (file_exists(dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/ConditionTools.php')) {
+    require_once dirname(__DIR__, 2) . '/app/Modules/MCP/Tools/ConditionTools.php';
+}
 require_once dirname(__DIR__, 2) . '/app/Modules/MCP/AbilitiesRegistrar.php';

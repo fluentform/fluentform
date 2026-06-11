@@ -8,6 +8,7 @@ use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Integrations\FormIntegrationService;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * Integration tools (read).
@@ -64,8 +65,8 @@ class IntegrationTools
             }
             $rows[] = [
                 'id'       => isset($feed['id']) ? (int) $feed['id'] : null,
-                'name'     => isset($feed['name']) ? $feed['name'] : null,
-                'provider' => isset($feed['provider']) ? $feed['provider'] : null,
+                'name'     => Arr::get($feed, 'name'),
+                'provider' => Arr::get($feed, 'provider'),
                 'enabled'  => !empty($feed['enabled']),
             ];
         }
