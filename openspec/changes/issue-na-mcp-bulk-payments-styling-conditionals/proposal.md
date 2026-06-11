@@ -18,7 +18,7 @@ one contract instead of forking.
   per-entry form scope before acting (IDOR-safe). Wraps `SubmissionService::handleBulkActions()`.
 - **Payment data + Pro seam** — two output-augmentation filters,
   `fluentform/mcp_submission_data` (entry-level, applied in `get-submission`) and
-  `fluentform/mcp_submission_row` (list-level, applied in `list-submissions`), let Pro inject
+  `fluentform/mcp_submission_rows` (list-level, applied in `list-submissions`), let Pro inject
   payment / transactions / subscription blocks. A new `fluentform/mcp_tool_definitions` filter
   lets Pro inject or override tool definitions through one unified seam. Free core surfaces
   any payment fields only when present (isset-guarded) and degrades gracefully without Pro.
@@ -40,7 +40,7 @@ one contract instead of forking.
   FluentForm permissions on top.
 - **Pro companion (separate `fluentformpro` repo, no new endpoints)** — FluentForm Pro adds ONE
   small listener that consumes the free-core `fluentform/mcp_submission_data` and
-  `fluentform/mcp_submission_row` filters to inject a compact `payment` block, reusing the existing
+  `fluentform/mcp_submission_rows` filters to inject a compact `payment` block, reusing the existing
   `OrderData` / `PaymentHelper` services. Pro registers NO new MCP tools, abilities, or endpoints.
   The listener MUST check `fluentform_view_payments` for the entry's form before injecting, because
   the entry-read MCP tools are gated on entry-view permission — not payments — so unguarded
@@ -65,7 +65,7 @@ hooks are preserved.
 - `mcp-field-conditions`: read and write per-field conditional logic with shape and
   field-existence validation.
 - `mcp-pro-extension-seam`: the unified filter contract (`mcp_submission_data`,
-  `mcp_submission_row`, `mcp_tool_definitions`) that lets Pro augment output and tools.
+  `mcp_submission_rows`, `mcp_tool_definitions`) that lets Pro augment output and tools.
 - `mcp-tool-gating`: an admin opt-in that keeps the new tool group off until explicitly enabled.
 - `mcp-pro-payment-provider`: the **Pro-side consumer** (companion change in the `fluentformpro`
   repo) that injects a permission-gated, compact `payment` block through the free-core filters —
@@ -92,12 +92,12 @@ hooks are preserved.
   the new tool group (Vue 2 Options API).
 - **Tests**: `tests/mcp/run.php`.
 - **Filters added** (addon-facing contract): `fluentform/mcp_submission_data`,
-  `fluentform/mcp_submission_row`, `fluentform/mcp_tool_definitions`.
+  `fluentform/mcp_submission_rows`, `fluentform/mcp_tool_definitions`.
 - **Dependencies**: none new. FluentForm Pro is an optional consumer of the new filters.
 - **Cross-repo companion (`fluentformpro`, separate git repo, branch off `dev`)**: one new
   listener class (e.g. `src/Payments/MCP/PaymentDataProvider.php`) wired from
   `fluentformpro.php` → `FluentFormPro::registerHooks()` (or on the `fluentform/mcp_loaded`
-  action). It hooks `fluentform/mcp_submission_data` + `fluentform/mcp_submission_row`, checks
+  action). It hooks `fluentform/mcp_submission_data` + `fluentform/mcp_submission_rows`, checks
   `Acl::hasPermission('fluentform_view_payments', $formId)`, and builds the `payment` block via
   `OrderData::getSummary()` / `getTransactions()` / `getSubscriptionsAndPaymentTotal()` +
   `PaymentHelper::formatMoney()`. No new MCP tools/abilities/endpoints. Ships as a **separate

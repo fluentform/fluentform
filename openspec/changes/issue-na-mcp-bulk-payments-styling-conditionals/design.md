@@ -73,7 +73,7 @@ same number. The tool checks `count(entry_ids) > 200` up front and returns `LIMI
 ### D5 — Output augmentation via post-filters, not inheritance
 
 `get-submission` and `list-submissions` apply `fluentform/mcp_submission_data` and
-`fluentform/mcp_submission_row` to their assembled payloads just before returning. Pro returns an
+`fluentform/mcp_submission_rows` to their assembled payloads just before returning. Pro returns an
 augmented array; absent a listener the payload passes through unchanged. Free core additionally
 surfaces native payment fields only when `isset()` on the submission (e.g. `payment_status`,
 `payment_total`, `currency`) so a payments-enabled site shows basic payment context even without
@@ -126,7 +126,7 @@ permission, not the **payments** capability. Auto-reusing the existing
 `fluentform/submission_order_data` filter (which Pro already implements for the admin entries UI)
 would therefore leak payment data to any MCP user who can read entries but lacks
 `fluentform_view_payments`. So Pro instead attaches a dedicated listener to the MCP-specific
-`fluentform/mcp_submission_data` / `fluentform/mcp_submission_row` filters and, inside it:
+`fluentform/mcp_submission_data` / `fluentform/mcp_submission_rows` filters and, inside it:
 
 1. Resolves the entry's `form_id` from the submission passed by the filter.
 2. Calls `Acl::hasPermission('fluentform_view_payments', $formId)` and returns the payload
@@ -146,7 +146,7 @@ directly so Pro needs no change at all. Rejected on the permission-leak ground a
 the admin order-data shape (order_items, refunds, serialized vendor responses) is too heavy for an
 agent context — the MCP block must be compact and permission-aware.
 
-**List-level N+1 guard**: the `mcp_submission_row` listener must not issue a payment query per row.
+**List-level N+1 guard**: the `mcp_submission_rows` listener must not issue a payment query per row.
 Pro batch-loads payment status for the page's entry ids in one query and maps onto the rows (D10
 scenario), keeping query count independent of page size.
 

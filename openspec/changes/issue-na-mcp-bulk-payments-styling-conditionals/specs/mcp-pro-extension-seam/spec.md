@@ -21,7 +21,7 @@ response when no listener is attached.
 
 ### Requirement: List-level output augmentation filter
 
-The system SHALL apply a `fluentform/mcp_submission_row` filter to each compact row in
+The system SHALL apply a `fluentform/mcp_submission_rows` filter to each compact row in
 `list-submissions` before the rows are returned, so Pro can attach a per-row payment summary.
 The contract MUST be documented above the `apply_filters` call.
 
@@ -30,7 +30,7 @@ The contract MUST be documented above the `apply_filters` call.
 - **THEN** each returned row carries the Pro-supplied summary in addition to the core columns
 
 #### Scenario: Rows are unchanged without a listener
-- **WHEN** no listener is attached to `fluentform/mcp_submission_row`
+- **WHEN** no listener is attached to `fluentform/mcp_submission_rows`
 - **THEN** `list-submissions` returns the standard compact rows unchanged
 
 ### Requirement: Unified tool-definition injection filter

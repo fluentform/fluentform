@@ -9,7 +9,7 @@
 ### Requirement: Pro injects payment context without new MCP endpoints
 
 FluentForm Pro SHALL attach a single listener to the free-core `fluentform/mcp_submission_data`
-filter (entry level) and `fluentform/mcp_submission_row` filter (list level) to add a compact
+filter (entry level) and `fluentform/mcp_submission_rows` filter (list level) to add a compact
 `payment` block to MCP entry output. Pro MUST NOT register new MCP abilities, tools, or server
 endpoints — the existing `fluentform/mcp_loaded` / `fluentform/mcp_ability_names` seams are used
 only for bootstrapping the listener, not for adding a tool catalogue entry.
@@ -60,7 +60,7 @@ serialized vendor payloads MUST NOT be surfaced verbatim.
 
 ### Requirement: List-level payment summary stays lightweight
 
-For `list-submissions`, Pro's `fluentform/mcp_submission_row` listener SHALL add at most a minimal
+For `list-submissions`, Pro's `fluentform/mcp_submission_rows` listener SHALL add at most a minimal
 payment summary per row (e.g. payment status + formatted total) and MUST avoid per-row queries
 that would cause an N+1 across the page. Pro SHOULD batch-load payment status for the page's entry
 ids in one query and map onto the rows.

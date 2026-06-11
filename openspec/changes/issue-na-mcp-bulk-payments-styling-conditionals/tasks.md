@@ -7,7 +7,7 @@
 
 - [ ] 2.1 Apply `fluentform/mcp_tool_definitions` to the merged map in `AbilitiesRegistrar::getDefinitions()`, with a documented contract comment; keep `mcp_loaded` + `mcp_ability_names` untouched
 - [ ] 2.2 Apply `fluentform/mcp_submission_data` to the entry payload in `SubmissionTools::getSubmission()` before return, with a documented contract comment
-- [ ] 2.3 Apply `fluentform/mcp_submission_row` to each row in `SubmissionTools::listSubmissions()` before return, with a documented contract comment
+- [ ] 2.3 Apply `fluentform/mcp_submission_rows` to each row in `SubmissionTools::listSubmissions()` before return, with a documented contract comment
 - [ ] 2.4 Surface native payment fields in `get-submission` only when `isset()` on the submission (graceful without Pro)
 
 ## 3. New-tools gating
@@ -45,7 +45,7 @@
 - [ ] 7.1 In `tests/mcp/run.php`, bump the expected tool count and add the new tools to `$expectedTools` (and to the catalogue-count assertion), accounting for the opt-in being on in the test context
 - [ ] 7.2 Add readonly assertions for `get-form-styling`, `get-field-conditions`; destructive assertion for `bulk-update-submissions`; not-readonly for the write tools
 - [ ] 7.3 Cover the bulk guard: dry_run returns a preview + token without executing; execute without token is refused; over-200 returns `LIMIT_EXCEEDED`; at-200 is accepted
-- [ ] 7.4 Cover the new filters fire and degrade gracefully without a listener (`mcp_submission_data`, `mcp_submission_row`, `mcp_tool_definitions`)
+- [ ] 7.4 Cover the new filters fire and degrade gracefully without a listener (`mcp_submission_data`, `mcp_submission_rows`, `mcp_tool_definitions`)
 - [ ] 7.5 Cover off-by-default gating: new tools absent when opt-in off, present when on; opt-in setter is admin-only / fail-closed
 - [ ] 7.6 Assert `ErrorCodes::all()` includes `LIMIT_EXCEEDED` and `UNFILTERED_HTML_REQUIRED` and remains unique/all-string
 
@@ -66,6 +66,6 @@
 - [ ] 9.2 Wire it from `FluentFormPro::registerHooks()` in `fluentformpro.php` (direct `add_filter`, matching the existing Pro pattern) or on the `fluentform/mcp_loaded` action
 - [ ] 9.3 Implement the `fluentform/mcp_submission_data` listener: resolve `form_id` from the submission, return unchanged unless `Acl::hasPermission('fluentform_view_payments', $formId)`, else inject a compact `payment` block
 - [ ] 9.4 Build the block via `OrderData::getSummary()` / `getTransactions()` / `getSubscriptionsAndPaymentTotal()`, formatting amounts with `PaymentHelper::formatMoney($cents, $currency)`; surface status, formatted total, currency, method, transaction count, subscription status — never raw cents or serialized vendor blobs
-- [ ] 9.5 Implement the `fluentform/mcp_submission_row` listener with a minimal per-row summary; batch-load payment status for the page's entry ids in ONE query (no N+1)
+- [ ] 9.5 Implement the `fluentform/mcp_submission_rows` listener with a minimal per-row summary; batch-load payment status for the page's entry ids in ONE query (no N+1)
 - [ ] 9.6 Fail-closed: any exception or missing capability returns the payload unchanged (never throws into the MCP envelope, never leaks payment data)
 - [ ] 9.7 `php -l` on the new Pro file; manual verification against a paid form (`get-submission` shows the block with payments perm; hidden without it)
