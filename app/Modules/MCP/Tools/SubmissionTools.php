@@ -137,12 +137,12 @@ class SubmissionTools
             'fluentform/bulk-update-submissions' => [
                 'label'       => __('Bulk Update Submissions', 'fluentform'),
                 'group'       => __('Entries', 'fluentform'),
-                'description' => __('Apply one action to many entries at once: read, unread, spam, trashed, favorite, unfavorite, or delete_permanently. Pass entry_ids (max 200). Entries outside your form access are skipped. Call once with dry_run:true to preview the in-scope count and get a confirm_token, then call again with the same entry_ids plus confirm_token to execute. delete_permanently is irreversible.', 'fluentform'),
+                'description' => __('Apply one action to many entries at once: read, unread, trashed, favorite, unfavorite, or delete_permanently. Pass entry_ids (max 200). Entries outside your form access are skipped. Call once with dry_run:true to preview the in-scope count and get a confirm_token, then call again with the same entry_ids plus confirm_token to execute. delete_permanently is irreversible. To mark entries as spam, use update-submission-status per entry.', 'fluentform'),
                 'input_schema' => [
                     'type'       => 'object',
                     'properties' => [
                         'entry_ids'       => ['type' => 'array', 'items' => ['type' => 'integer'], 'description' => 'Entry ids to act on (max 200).'],
-                        'action'          => ['type' => 'string', 'enum' => ['read', 'unread', 'spam', 'trashed', 'favorite', 'unfavorite', 'delete_permanently']],
+                        'action'          => ['type' => 'string', 'enum' => ['read', 'unread', 'trashed', 'favorite', 'unfavorite', 'delete_permanently']],
                         'dry_run'         => ['type' => 'boolean', 'description' => 'Preview without changing anything; returns a confirm_token.'],
                         'confirm_token'   => ['type' => 'string', 'description' => 'The token from the dry_run preview, required to execute.'],
                         'idempotency_key' => ['type' => 'string', 'description' => 'Optional; a retry with the same key will not act twice.'],
@@ -382,10 +382,11 @@ class SubmissionTools
 
     public static function bulkUpdate($params = [])
     {
+        // No 'spam' here: Helper::getEntryStatuses() (which handleBulkActions
+        // switches on) does not include it, so a bulk spam would silently no-op.
         $actionMap = [
             'read'               => 'read',
             'unread'             => 'unread',
-            'spam'               => 'spam',
             'trashed'            => 'trashed',
             'favorite'           => 'other.make_favorite',
             'unfavorite'         => 'other.unmark_favorite',
@@ -394,7 +395,7 @@ class SubmissionTools
 
         $action = isset($params['action']) ? sanitize_text_field($params['action']) : '';
         if (!isset($actionMap[$action])) {
-            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('action must be one of: read, unread, spam, trashed, favorite, unfavorite, delete_permanently.', 'fluentform'), ['fields' => ['action']]);
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('action must be one of: read, unread, trashed, favorite, unfavorite, delete_permanently.', 'fluentform'), ['fields' => ['action']]);
         }
 
         $entryIds = isset($params['entry_ids']) ? $params['entry_ids'] : [];
@@ -417,6 +418,21 @@ class SubmissionTools
             );
         }
         sort($entryIds);
+
+        $entityKey = 'bulk:' . $action . ':' . md5(implode(',', $entryIds));
+
+        // Replay before resolving: after delete_permanently the ids no longer
+        // resolve, so a lost-response retry would find zero rows and fail instead
+        // of returning the cached result (same rationale as deleteSubmission).
+        // The replay cache is keyed per user, so no access bypass.
+        $replay = WriteGuard::replay(
+            'fluentform/bulk-update-submissions',
+            $entityKey,
+            isset($params['idempotency_key']) ? $params['idempotency_key'] : ''
+        );
+        if (null !== $replay) {
+            return $replay;
+        }
 
         // Resolve all entries in one query, then re-assert the user's form scope
         // per entry (handleBulkActions trusts its form_id and applies no scope) —
@@ -448,7 +464,6 @@ class SubmissionTools
         }
 
         $actionType  = $actionMap[$action];
-        $entityKey   = 'bulk:' . $action . ':' . md5(implode(',', $entryIds));
         $fingerprint = $action . '|n:' . count($inScope) . '|' . md5(implode(',', $inScope));
         $formIds     = array_keys($byForm);
 
