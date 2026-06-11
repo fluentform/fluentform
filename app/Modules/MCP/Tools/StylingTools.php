@@ -68,6 +68,31 @@ class StylingTools
         ];
     }
 
+    /**
+     * The structured styles a preset id maps to, from the Pro styler when
+     * available, else the free fallback presets — same source
+     * DefaultStyleApplicator uses. Null when the preset is unknown.
+     */
+    private static function presetStyles($theme)
+    {
+        if (class_exists('\FluentFormPro\classes\FormStyler')) {
+            $presets = (new \FluentFormPro\classes\FormStyler())->getPresets();
+        } else {
+            $presets = [
+                'ffs_default'       => ['style' => '[]'],
+                'ffs_inherit_theme' => ['style' => '{}'],
+            ];
+        }
+
+        if (!isset($presets[$theme]['style'])) {
+            return null;
+        }
+
+        $styles = json_decode($presets[$theme]['style'], true);
+
+        return is_array($styles) ? $styles : null;
+    }
+
     public static function getStyling($params = [])
     {
         $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
@@ -121,7 +146,15 @@ class StylingTools
             $changed = [];
 
             if ($hasTheme) {
-                Helper::setFormMeta($formId, '_ff_selected_style', sanitize_text_field($params['styler_theme']));
+                $theme = sanitize_text_field($params['styler_theme']);
+                Helper::setFormMeta($formId, '_ff_selected_style', $theme);
+                // Mirror DefaultStyleApplicator: apply the preset's structured
+                // styles too, so get-form-styling reads back what will render
+                // instead of the previous theme's stale styles.
+                $presetStyles = self::presetStyles($theme);
+                if (null !== $presetStyles) {
+                    Helper::setFormMeta($formId, '_ff_form_styles', $presetStyles);
+                }
                 $changed[] = 'styler_theme';
             }
 

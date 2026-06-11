@@ -370,9 +370,12 @@ ok(!empty($bulk['advanced']), 'bulk tool flagged advanced');
 $bulkProps = $bulk['input_schema']['properties'];
 ok(isset($bulkProps['entry_ids']) && 'array' === $bulkProps['entry_ids']['type'], 'bulk schema has entry_ids array');
 $bulkActions = $bulkProps['action']['enum'];
-foreach (['read', 'unread', 'spam', 'trashed', 'favorite', 'unfavorite', 'delete_permanently'] as $verb) {
+foreach (['read', 'unread', 'trashed', 'favorite', 'unfavorite', 'delete_permanently'] as $verb) {
     ok(in_array($verb, $bulkActions, true), "bulk action enum includes {$verb}");
 }
+// handleBulkActions has no spam branch (Helper::getEntryStatuses excludes it),
+// so offering it would silently no-op while reporting success.
+ok(!in_array('spam', $bulkActions, true), 'bulk action enum excludes spam (would silently no-op)');
 ok(isset($bulkProps['dry_run'], $bulkProps['confirm_token'], $bulkProps['idempotency_key']), 'bulk schema exposes the guard params');
 eq($bulk['input_schema']['required'], ['entry_ids', 'action'], 'bulk requires entry_ids and action');
 
@@ -405,7 +408,7 @@ $sampleFields = [
     ['attributes' => ['name' => 'reason'], 'settings' => ['label' => 'Reason', 'conditional_logics' => ['status' => true, 'conditions' => [['field' => 'email', 'operator' => '=', 'value' => 'vip']]]]],
     ['element' => 'container', 'columns' => [
         ['fields' => [
-            ['attributes' => ['name' => 'nested'], 'settings' => ['label' => 'Nested', 'conditional_logics' => ['condition_groups' => [['conditions' => [['field' => 'email', 'operator' => '!=', 'value' => '']]]]]]],
+            ['attributes' => ['name' => 'nested'], 'settings' => ['label' => 'Nested', 'conditional_logics' => ['status' => true, 'type' => 'group', 'condition_groups' => [['rules' => [['field' => 'email', 'operator' => '!=', 'value' => '']]]]]]],
         ]],
     ]],
 ];
@@ -416,9 +419,16 @@ eq(count($conds), 2, 'extractConditions returns only conditioned fields, recursi
 $condKeys = array_map(function ($c) { return $c['key']; }, $conds);
 ok(in_array('reason', $condKeys, true), 'extractConditions includes a simple-conditions field');
 ok(in_array('nested', $condKeys, true), 'extractConditions includes a grouped-conditions nested field');
-ok(true === ConditionTools::validateLogics(['conditions' => [['field' => 'email', 'operator' => '=', 'value' => 'vip']]], $keys), 'validateLogics accepts a valid rule');
-ok(ConditionTools::validateLogics(['conditions' => [['operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects a rule missing field');
-ok(ConditionTools::validateLogics(['conditions' => [['field' => 'ghost', 'operator' => '=', 'value' => 'x']]], $keys) instanceof WP_Error, 'validateLogics rejects a rule referencing an unknown field');
+$validSimple = ['status' => true, 'type' => 'any', 'conditions' => [['field' => 'email', 'operator' => '=', 'value' => 'vip']]];
+ok(true === ConditionTools::validateLogics($validSimple, $keys), 'validateLogics accepts a valid simple rule set');
+$validGroup = ['status' => true, 'type' => 'group', 'condition_groups' => [['rules' => [['field' => 'email', 'operator' => '!=', 'value' => '']]]]];
+ok(true === ConditionTools::validateLogics($validGroup, $keys), 'validateLogics accepts editor-shaped condition_groups[].rules');
+ok(ConditionTools::validateLogics(['type' => 'any', 'conditions' => [['field' => 'email', 'operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects missing status (rules would be inert at runtime)');
+ok(ConditionTools::validateLogics(['status' => 'yes', 'conditions' => [['field' => 'email', 'operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects non-boolean status');
+ok(ConditionTools::validateLogics(['status' => true, 'type' => 'group', 'condition_groups' => [['conditions' => [['field' => 'email', 'operator' => '=']]]]], $keys) instanceof WP_Error, 'validateLogics rejects group using conditions key (runtime reads rules)');
+ok(ConditionTools::validateLogics(['status' => true, 'conditions' => [['operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects a rule missing field');
+ok(ConditionTools::validateLogics(['status' => true, 'conditions' => [['field' => ['evil'], 'operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects a non-string field without TypeError');
+ok(ConditionTools::validateLogics(['status' => true, 'conditions' => [['field' => 'ghost', 'operator' => '=', 'value' => 'x']]], $keys) instanceof WP_Error, 'validateLogics rejects a rule referencing an unknown field');
 ok(ConditionTools::validateLogics([], $keys) instanceof WP_Error, 'validateLogics rejects empty logics');
 ok(!ConditionTools::hasRules(null) && !ConditionTools::hasRules([]), 'hasRules false for null/empty');
 
