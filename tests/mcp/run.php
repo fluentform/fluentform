@@ -421,6 +421,20 @@ ok(ConditionTools::validateLogics(['conditions' => [['field' => 'ghost', 'operat
 ok(ConditionTools::validateLogics([], $keys) instanceof WP_Error, 'validateLogics rejects empty logics');
 ok(!ConditionTools::hasRules(null) && !ConditionTools::hasRules([]), 'hasRules false for null/empty');
 
+echo "mcp_tool_definitions seam\n";
+$GLOBALS['__mcp_test_options'] = [];
+$GLOBALS['__mcp_test_filters'] = [];
+$baseline = count(AbilitiesRegistrar::getDefinitions());
+add_filter('fluentform/mcp_tool_definitions', function ($defs) {
+    $defs['fluentform/pro-injected'] = ['label' => 'Pro Injected', 'description' => 'x', 'execute_callback' => function () {}, 'permission_callback' => function () { return true; }];
+    return $defs;
+});
+$injected = AbilitiesRegistrar::getDefinitions();
+ok(isset($injected['fluentform/pro-injected']), 'mcp_tool_definitions lets a listener inject a tool definition');
+eq(count($injected), $baseline + 1, 'mcp_tool_definitions adds exactly the injected tool');
+$GLOBALS['__mcp_test_filters'] = [];
+ok(!isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-injected']), 'definitions unchanged without a listener');
+
 $GLOBALS['__mcp_test_options'] = [];
 
 echo "\n";

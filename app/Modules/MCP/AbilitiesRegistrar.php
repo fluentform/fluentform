@@ -77,7 +77,18 @@ class AbilitiesRegistrar
             }
         }
 
-        return $defs;
+        /**
+         * Filter the full MCP tool-definition map (name => definition). The one
+         * unified seam for FluentForm Pro to inject a new tool or override an
+         * existing definition; must return the map array.
+         *
+         * @since 6.2.5
+         *
+         * @param array $defs Map of ability name to definition.
+         */
+        $filtered = apply_filters('fluentform/mcp_tool_definitions', $defs);
+
+        return is_array($filtered) ? $filtered : $defs;
     }
 
     /**
