@@ -5,8 +5,11 @@ import formConditional from "./Pro/form-conditionals";
 import fileUploader from './Pro/file-uploader';
 import formSlider from './Pro/slider';
 import calculation from './Pro/calculations';
+import { registerElementorPopupGuard } from './Pro/elementor-popup-guard';
 
 (function ($) {
+    registerElementorPopupGuard();
+
     $(document.body).on('fluentform_init', function (e, $theForm, form) {
         const formInstanceSelector = $theForm.attr('data-form_instance');
 
