@@ -119,34 +119,53 @@ class ConditionTools
         $logics = $clearing ? [] : fluentFormSanitizer($rawLogics);
 
         return Mutation::run('fluentform/update-field-conditions', $params, function () use ($formId, $fieldKey, $logics, $clearing) {
-            // Re-read inside the mutation: mutating the snapshot from the
-            // validation phase would write that stale document back whole,
-            // silently dropping any edit that landed in between (lost update).
-            $fresh = Form::query()->find($formId);
-            if (!$fresh) {
-                return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('The form was deleted while this update was in flight.', 'fluentform'));
-            }
-            $decoded = self::decodeFields($fresh);
-            $allKeys = self::fieldKeys($decoded['fields']);
+            global $wpdb;
 
-            if (!isset($allKeys[$fieldKey])) {
-                return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('The field was removed while this update was in flight; re-read the form and retry.', 'fluentform'), ['fields' => ['field_key']]);
-            }
-            if (!$clearing && is_wp_error(self::validateLogics($logics, $allKeys))) {
-                return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('A referenced field changed while this update was in flight; re-read the form and retry.', 'fluentform'), ['fields' => ['conditional_logics']]);
-            }
+            // Serialize against concurrent form saves: lock the form row, then
+            // read-modify-write inside the same transaction so no edit can land
+            // between our read and the Updater write (lost update). FOR UPDATE
+            // is a no-op on engines without row locks, which degrades to the
+            // fresh-read-inside-the-mutation behaviour below.
+            $wpdb->query('START TRANSACTION');
 
-            $decoded = self::applyToField($decoded, $fieldKey, $logics);
+            try {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table from $wpdb->prefix, id is %d-prepared
+                $wpdb->query($wpdb->prepare("SELECT id FROM {$wpdb->prefix}fluentform_forms WHERE id = %d FOR UPDATE", $formId));
 
-            // Through the Updater so the form_fields_update filter,
-            // before_updating_form action, and field sanitizer all run — same
-            // pipeline as the editor, not a raw DB write.
-            (new Updater())->update([
-                'form_id'    => $formId,
-                'title'      => $fresh->title,
-                'status'     => $fresh->status,
-                'formFields' => wp_json_encode($decoded),
-            ]);
+                $fresh = Form::query()->find($formId);
+                if (!$fresh) {
+                    $wpdb->query('ROLLBACK');
+                    return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('The form was deleted while this update was in flight.', 'fluentform'));
+                }
+                $decoded = self::decodeFields($fresh);
+                $allKeys = self::fieldKeys($decoded['fields']);
+
+                if (!isset($allKeys[$fieldKey])) {
+                    $wpdb->query('ROLLBACK');
+                    return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('The field was removed while this update was in flight; re-read the form and retry.', 'fluentform'), ['fields' => ['field_key']]);
+                }
+                if (!$clearing && is_wp_error(self::validateLogics($logics, $allKeys))) {
+                    $wpdb->query('ROLLBACK');
+                    return MCPHelper::error(ErrorCodes::STATE_CHANGED, __('A referenced field changed while this update was in flight; re-read the form and retry.', 'fluentform'), ['fields' => ['conditional_logics']]);
+                }
+
+                $decoded = self::applyToField($decoded, $fieldKey, $logics);
+
+                // Through the Updater so the form_fields_update filter,
+                // before_updating_form action, and field sanitizer all run — same
+                // pipeline as the editor, not a raw DB write.
+                (new Updater())->update([
+                    'form_id'    => $formId,
+                    'title'      => $fresh->title,
+                    'status'     => $fresh->status,
+                    'formFields' => wp_json_encode($decoded),
+                ]);
+
+                $wpdb->query('COMMIT');
+            } catch (\Throwable $e) {
+                $wpdb->query('ROLLBACK');
+                throw $e;
+            }
 
             return MCPHelper::envelope(
                 $clearing

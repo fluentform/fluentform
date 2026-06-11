@@ -451,6 +451,8 @@ $conditionToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/C
 $mutationPos = strpos($conditionToolsSrc, "Mutation::run('fluentform/update-field-conditions'");
 $freshReadPos = strpos($conditionToolsSrc, 'Form::query()->find($formId)');
 ok(false !== $mutationPos && false !== $freshReadPos && $freshReadPos > $mutationPos, 'updateConditions re-reads the form inside the mutation closure');
+$lockPos = strpos($conditionToolsSrc, 'FOR UPDATE');
+ok(false !== $lockPos && $lockPos > $mutationPos && $lockPos < $freshReadPos, 'updateConditions row-locks the form before the fresh read (no lost-update window)');
 
 echo "mcp_tool_definitions seam\n";
 $GLOBALS['__mcp_test_options'] = [];
