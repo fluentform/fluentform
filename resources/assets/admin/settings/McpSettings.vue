@@ -25,6 +25,22 @@
                             {{ status.tools_count }} {{ $t('tools available') }}
                         </span>
                     </el-form-item>
+
+                    <el-form-item v-if="status.mcp_enabled">
+                        <template slot="label">
+                            <span>{{ $t('Enable advanced tools') }}</span>
+                        </template>
+                        <el-switch
+                            v-model="status.advanced_tools_enabled"
+                            :active-value="true"
+                            :inactive-value="false"
+                            @change="toggleAdvancedTools"
+                            :disabled="saving"
+                        />
+                        <span class="ff_mcp_advanced_hint">
+                            {{ $t('Bulk entry actions, form styling, and conditional logic. Off by default.') }}
+                        </span>
+                    </el-form-item>
                 </el-form>
 
                 <el-collapse v-if="status.mcp_enabled && tools.length" class="ff_mcp_tools">
@@ -126,6 +142,7 @@ export default {
             activeClient: 'claude-code',
             status: {
                 mcp_enabled: false,
+                advanced_tools_enabled: false,
                 adapter_available: false,
                 adapter_installed: false,
                 can_auto_install: false,
@@ -200,6 +217,23 @@ export default {
                 .catch(e => {
                     this.status.mcp_enabled = !value;
                     this.$fail((e && e.message) || this.$t('Failed to update the MCP setting.'));
+                })
+                .finally(() => {
+                    this.saving = false;
+                });
+        },
+        toggleAdvancedTools(value) {
+            this.saving = true;
+            FluentFormsGlobal.$rest.post('mcp/toggle-advanced-tools', { advanced_tools_enabled: value ? 'yes' : 'no' })
+                .then(response => {
+                    this.status.advanced_tools_enabled = response.advanced_tools_enabled;
+                    this.tools = response.tools || this.tools;
+                    this.status.tools_count = this.tools.length;
+                    this.$success(response.message);
+                })
+                .catch(e => {
+                    this.status.advanced_tools_enabled = !value;
+                    this.$fail((e && e.message) || this.$t('Failed to update the advanced tools setting.'));
                 })
                 .finally(() => {
                     this.saving = false;
