@@ -260,7 +260,7 @@ class SubmissionTools
             'fields'      => $values,
         ];
 
-        // Augmentation seam: Pro injects a compact `payment` block; the listener owns the payments capability check.
+        // Augmentation seam: the default PaymentDataProvider (or an addon) injects a compact `payment` block; the listener owns the payments capability check.
         $data = apply_filters('fluentform/mcp_submission_data', $data, $submission);
 
         return MCPHelper::envelope(
