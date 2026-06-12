@@ -134,7 +134,14 @@ class FormTools
 
         return Mutation::run('fluentform/create-form', $params, function () use ($title, $specFields, $params) {
             try {
-                $form = (new FormCreator())->create([
+                $creator = new FormCreator();
+
+                // Submission responses are keyed by attributes.name; assign each
+                // field a unique one before saving so repeated field types never
+                // share a storage key (create() re-checks this, idempotently).
+                $specFields = $creator->assignStorageNames($specFields);
+
+                $form = $creator->create([
                     'title'             => $title,
                     'fields'            => $specFields,
                     'is_conversational' => !empty($params['is_conversational']),

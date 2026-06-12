@@ -454,6 +454,18 @@ ok(false !== $mutationPos && false !== $freshReadPos && $freshReadPos > $mutatio
 $lockPos = strpos($conditionToolsSrc, 'FOR UPDATE');
 ok(false !== $lockPos && $lockPos > $mutationPos && $lockPos < $freshReadPos, 'updateConditions row-locks the form before the fresh read (no lost-update window)');
 
+echo "create-form storage-key uniquification\n";
+// Repeated field types must never share a storage key (submission responses
+// are keyed by attributes.name). Names are assigned at the tool boundary and
+// re-checked idempotently inside FormCreator::create().
+$formToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/FormTools.php');
+$assignPos = strpos($formToolsSrc, 'assignStorageNames($specFields)');
+$createPos = strpos($formToolsSrc, '$creator->create(');
+ok(false !== $assignPos && false !== $createPos && $assignPos < $createPos, 'createForm assigns unique storage names before saving');
+$formCreatorSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Support/FormCreator.php');
+ok(false !== strpos($formCreatorSrc, 'public function assignStorageNames'), 'FormCreator exposes assignStorageNames publicly');
+ok(false !== strpos($formCreatorSrc, '$this->assignStorageNames(Arr::get($form'), 'create() re-runs the uniquifier as a safety net');
+
 echo "Discovery stats caching\n";
 // Unrestricted-scope counts scan submissions by status only (no usable index);
 // they must come from the shared long-TTL cache, never recomputed per user/60s.
