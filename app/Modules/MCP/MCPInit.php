@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\MCP;
 
 defined('ABSPATH') || exit;
 
+use FluentForm\App\Modules\MCP\Support\PaymentDataProvider;
 use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Modules\MCP\Tools\ContextTools;
 
@@ -47,6 +48,8 @@ class MCPInit
         add_action('wp_abilities_api_init', [$this, 'registerAbilities']);
 
         add_action('mcp_adapter_init', [$this, 'registerCustomServer']);
+
+        PaymentDataProvider::register();
 
         $invalidate = [ContextTools::class, 'invalidateCache'];
         foreach ([

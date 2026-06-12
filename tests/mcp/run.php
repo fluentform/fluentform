@@ -23,6 +23,7 @@ use FluentForm\App\Modules\MCP\Tools\FormTools;
 use FluentForm\App\Modules\MCP\Tools\SubmissionTools;
 use FluentForm\App\Modules\MCP\Tools\ReportTools;
 use FluentForm\App\Modules\MCP\Tools\IntegrationTools;
+use FluentForm\App\Modules\MCP\Tools\ConditionTools;
 
 $tests  = 0;
 $passed = 0;
@@ -31,9 +32,9 @@ $failures = [];
 function ok($cond, $label)
 {
     global $tests, $passed, $failures;
-    $tests++;
+    ++$tests;
     if ($cond) {
-        $passed++;
+        ++$passed;
     } else {
         $failures[] = $label;
         echo "  ✘ {$label}\n";
@@ -108,12 +109,17 @@ eq($meta['page']['pages'], 3, 'pagingMeta total pages from array');
 eq($meta['page']['has_more'], true, 'pagingMeta has_more true mid-set');
 $lastMeta = MCPHelper::pagingMeta(['current_page' => 3, 'per_page' => 10, 'total' => 25, 'last_page' => 3]);
 eq($lastMeta['page']['has_more'], false, 'pagingMeta has_more false on last page');
-$paginatorObj = new class {
-    public function total() { return 7; }
-    public function items() { return ['a', 'b']; }
-    public function currentPage() { return 1; }
-    public function perPage() { return 2; }
-    public function lastPage() { return 4; }
+$paginatorObj = new class() {
+    public function total() {
+        return 7; }
+    public function items() {
+        return ['a', 'b']; }
+    public function currentPage() {
+        return 1; }
+    public function perPage() {
+        return 2; }
+    public function lastPage() {
+        return 4; }
 };
 eq(MCPHelper::paginatorTotal($paginatorObj), 7, 'paginatorTotal from object');
 eq(MCPHelper::paginatorItems($paginatorObj), ['a', 'b'], 'paginatorItems from object');
@@ -149,15 +155,40 @@ $codes = ErrorCodes::all();
 ok(count($codes) > 0, 'ErrorCodes::all() is non-empty');
 ok(count($codes) === count(array_unique($codes)), 'error codes are unique');
 ok(count(array_filter($codes, 'is_string')) === count($codes), 'every error code is a string');
+eq(ErrorCodes::LIMIT_EXCEEDED, 'limit_exceeded', 'LIMIT_EXCEEDED constant value');
+eq(ErrorCodes::UNFILTERED_HTML_REQUIRED, 'unfiltered_html_required', 'UNFILTERED_HTML_REQUIRED constant value');
+ok(in_array(ErrorCodes::LIMIT_EXCEEDED, $codes, true), 'ErrorCodes::all() includes LIMIT_EXCEEDED');
+ok(in_array(ErrorCodes::UNFILTERED_HTML_REQUIRED, $codes, true), 'ErrorCodes::all() includes UNFILTERED_HTML_REQUIRED');
 $missing = FormAccess::resolveForm(0);
 ok($missing instanceof WP_Error, 'resolveForm(0) returns WP_Error');
 $mc = json_decode($missing->get_error_message(), true);
 eq($mc['error']['code'], ErrorCodes::MISSING_IDENTIFIER, 'resolveForm(0) uses MISSING_IDENTIFIER');
 ok(in_array($mc['error']['code'], $codes, true), 'returned code is a declared ErrorCode');
+$missing = FormAccess::resolveForm([]);
+ok($missing instanceof WP_Error, 'resolveForm(params without form_id) returns WP_Error');
+$mc = json_decode($missing->get_error_message(), true);
+eq($mc['error']['code'], ErrorCodes::MISSING_IDENTIFIER, 'resolveForm(params without form_id) uses MISSING_IDENTIFIER');
+$missing = FormAccess::resolveSubmission([]);
+ok($missing instanceof WP_Error, 'resolveSubmission(params without entry_id) returns WP_Error');
+
+echo "AbilitiesRegistrar::permissionCallback\n";
+eq(AbilitiesRegistrar::permissionCallback([]), null, 'no capability and no callback resolves to null');
+$explicit = function () {
+    return true;
+};
+ok(AbilitiesRegistrar::permissionCallback(['capability' => 'x', 'permission_callback' => $explicit]) === $explicit, 'explicit permission_callback wins over capability');
+ok(AbilitiesRegistrar::permissionCallback(['capability' => 'fluentform_forms_manager']) instanceof Closure, 'string capability wraps into a closure');
+ok(AbilitiesRegistrar::permissionCallback(['capability' => ['a', 'b']]) instanceof Closure, 'capability list wraps into a closure');
+$toolsDir = dirname(__DIR__, 2) . '/app/Modules/MCP/Tools';
+foreach (glob($toolsDir . '/*.php') as $toolFile) {
+    eq(strpos(file_get_contents($toolFile), 'permission_callback'), false, basename($toolFile) . ' declares capabilities, not inline permission closures');
+}
 
 echo "AbilitiesRegistrar::catalogue\n";
+$GLOBALS['__mcp_test_options'] = [];
+$GLOBALS['__mcp_test_can'] = true;
 $cat = AbilitiesRegistrar::catalogue();
-eq(count($cat), 12, 'catalogue lists all 12 tools');
+eq(count($cat), 12, 'catalogue lists the 12 default tools (advanced opt-in off)');
 $byName = [];
 foreach ($cat as $row) {
     $byName[$row['name']] = $row;
@@ -193,8 +224,11 @@ $preview = Mutation::runGuarded(
     ['entry_id' => 5, 'dry_run' => true],
     'submission:5',
     'status:read',
-    function () { return ['entry_id' => 5, 'permanent' => true]; },
-    function () use (&$applied) { $applied = true; return ['ok' => true]; }
+    function () {
+        return ['entry_id' => 5, 'permanent' => true]; },
+    function () use (&$applied) {
+        $applied = true;
+        return ['ok' => true]; }
 );
 ok(is_array($preview) && !empty($preview['dry_run']), 'dry_run returns a preview envelope');
 ok(!empty($preview['confirm_token']), 'dry_run returns a confirm_token');
@@ -205,8 +239,11 @@ $noConfirm = Mutation::runGuarded(
     ['entry_id' => 5],
     'submission:5',
     'status:read',
-    function () { return []; },
-    function () use (&$applied) { $applied = true; return ['ok' => true]; }
+    function () {
+        return []; },
+    function () use (&$applied) {
+        $applied = true;
+        return ['ok' => true]; }
 );
 ok($noConfirm instanceof WP_Error, 'execute without confirm_token is refused');
 eq($noConfirm->get_error_code(), ErrorCodes::CONFIRMATION_REQUIRED, 'refusal uses CONFIRMATION_REQUIRED');
@@ -220,8 +257,11 @@ $runGuarded = function ($params) use (&$applyCount) {
         $params,
         'submission:9',
         'status:read',
-        function () { return ['entry_id' => 9, 'permanent' => true]; },
-        function () use (&$applyCount) { $applyCount++; return ['ok' => true, 'id' => 9]; }
+        function () {
+            return ['entry_id' => 9, 'permanent' => true]; },
+        function () use (&$applyCount) {
+            $applyCount++;
+            return ['ok' => true, 'id' => 9]; }
     );
 };
 $prevEnvelope = $runGuarded(['entry_id' => 9, 'dry_run' => true]);
@@ -254,12 +294,14 @@ $expectedTools = [
     'fluentform/update-submission-status',
     'fluentform/add-submission-note',
     'fluentform/delete-submission',
+    'fluentform/bulk-update-submissions',
     'fluentform/get-form-stats',
     'fluentform/get-submissions-trend',
+    'fluentform/get-payment-summary',
     'fluentform/list-integrations',
 ];
 
-eq(count($defs), count($expectedTools), 'exactly the expected number of tools registered');
+eq(count($defs), count($expectedTools), 'exactly the expected number of tools registered (raw, pre-gating)');
 
 foreach ($expectedTools as $name) {
     ok(isset($defs[$name]), "tool present: {$name}");
@@ -270,7 +312,8 @@ foreach ($defs as $name => $def) {
     ok(!empty($def['label']), "{$name} has label");
     ok(!empty($def['description']), "{$name} has description");
     ok(isset($def['execute_callback']) && is_callable($def['execute_callback']), "{$name} has callable execute_callback");
-    ok(isset($def['permission_callback']) && ($def['permission_callback'] instanceof Closure), "{$name} has permission_callback closure");
+    ok(!empty($def['capability']) && (is_string($def['capability']) || is_array($def['capability'])), "{$name} declares a capability");
+    ok(AbilitiesRegistrar::permissionCallback($def) instanceof Closure, "{$name} capability resolves to a gate closure");
     if (isset($def['input_schema'])) {
         ok(isset($def['input_schema']['type']) && 'object' === $def['input_schema']['type'], "{$name} input_schema is an object");
     }
@@ -285,6 +328,7 @@ $readTools = [
     'fluentform/get-submission',
     'fluentform/get-form-stats',
     'fluentform/get-submissions-trend',
+    'fluentform/get-payment-summary',
     'fluentform/list-integrations',
 ];
 foreach ($readTools as $name) {
@@ -298,6 +342,246 @@ foreach (['fluentform/create-form', 'fluentform/update-submission-status', 'flue
 
 // The one destructive tool must be annotated so clients hard-confirm it.
 ok(!empty($defs['fluentform/delete-submission']['annotations']['destructive']), 'delete-submission annotated destructive');
+
+echo "Submission output augmentation seam\n";
+$GLOBALS['__mcp_test_filters'] = [];
+add_filter('fluentform/mcp_submission_data', function ($data, $submission) {
+    $data['payment'] = ['status' => 'paid', 'total' => '$10.00', 'form_id' => (int) $submission->form_id];
+    return $data;
+}, 10, 2);
+$base = ['id' => 1, 'form_id' => 5, 'fields' => []];
+$augmented = apply_filters('fluentform/mcp_submission_data', $base, (object) ['form_id' => 5]);
+ok(isset($augmented['payment']) && 'paid' === $augmented['payment']['status'], 'mcp_submission_data listener augments the entry payload');
+eq($augmented['payment']['form_id'], 5, 'mcp_submission_data passes the submission context to listeners');
+ok(!isset($base['payment']), 'mcp_submission_data does not mutate the caller payload by reference');
+
+$GLOBALS['__mcp_test_filters'] = [];
+$passthrough = apply_filters('fluentform/mcp_submission_data', $base, (object) ['form_id' => 5]);
+ok(!isset($passthrough['payment']), 'mcp_submission_data degrades to a clean pass-through without a listener');
+
+add_filter('fluentform/mcp_submission_rows', function ($rows, $items, $formId) {
+    foreach ($rows as &$row) {
+        $row['payment'] = ['status' => 'paid'];
+    }
+    unset($row);
+    return $rows;
+}, 10, 3);
+$rows = apply_filters('fluentform/mcp_submission_rows', [['id' => 1], ['id' => 2]], [], 5);
+ok(isset($rows[0]['payment'], $rows[1]['payment']), 'mcp_submission_rows listener augments every row');
+$GLOBALS['__mcp_test_filters'] = [];
+$rowsPass = apply_filters('fluentform/mcp_submission_rows', [['id' => 1]], [], 5);
+ok(!isset($rowsPass[0]['payment']), 'mcp_submission_rows degrades to a clean pass-through without a listener');
+
+// Regression: the production tool methods must actually fire the seams.
+$submissionToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/SubmissionTools.php');
+ok(false !== strpos($submissionToolsSrc, "apply_filters('fluentform/mcp_submission_data'"), 'getSubmission wires the mcp_submission_data seam');
+ok(false !== strpos($submissionToolsSrc, "apply_filters('fluentform/mcp_submission_rows'"), 'listSubmissions wires the mcp_submission_rows seam');
+
+echo "Advanced tools opt-in gating\n";
+$GLOBALS['__mcp_test_options'] = [];
+$GLOBALS['__mcp_test_can'] = true;
+eq(PermissionGate::isNewToolsEnabled(), false, 'isNewToolsEnabled false by default (advanced ships off)');
+$offDefs = AbilitiesRegistrar::getDefinitions();
+ok(!isset($offDefs['fluentform/bulk-update-submissions']), 'bulk tool absent when opt-in off');
+
+$offCount = count(AbilitiesRegistrar::catalogue());
+eq(PermissionGate::setNewToolsEnabled(true), true, 'setNewToolsEnabled(true) returns true when authorized');
+eq(PermissionGate::isNewToolsEnabled(), true, 'isNewToolsEnabled true after enable');
+$onDefs = AbilitiesRegistrar::getDefinitions();
+ok(isset($onDefs['fluentform/bulk-update-submissions']), 'bulk tool present when opt-in on');
+ok(isset($onDefs['fluentform/get-form-styling']), 'get-form-styling present when opt-in on');
+ok(isset($onDefs['fluentform/update-form-styling']), 'update-form-styling present when opt-in on');
+ok(count(AbilitiesRegistrar::catalogue()) > $offCount, 'advanced opt-in grows the catalogue');
+
+$GLOBALS['__mcp_test_can'] = false;
+eq(PermissionGate::setNewToolsEnabled(false), false, 'setNewToolsEnabled fails closed without manage_options');
+eq(PermissionGate::isNewToolsEnabled(), true, 'advanced opt-in unchanged when unauthorized');
+$GLOBALS['__mcp_test_can'] = true;
+
+echo "bulk-update-submissions definition\n";
+$bulk = $onDefs['fluentform/bulk-update-submissions'];
+ok(!empty($bulk['annotations']['destructive']), 'bulk tool annotated destructive');
+ok(empty($bulk['annotations']['readonly']), 'bulk tool not annotated readonly (it writes)');
+ok(!empty($bulk['advanced']), 'bulk tool flagged advanced');
+$bulkProps = $bulk['input_schema']['properties'];
+ok(isset($bulkProps['entry_ids']) && 'array' === $bulkProps['entry_ids']['type'], 'bulk schema has entry_ids array');
+$bulkActions = $bulkProps['action']['enum'];
+foreach (['read', 'unread', 'trashed', 'favorite', 'unfavorite', 'delete_permanently'] as $verb) {
+    ok(in_array($verb, $bulkActions, true), "bulk action enum includes {$verb}");
+}
+// handleBulkActions has no spam branch (Helper::getEntryStatuses excludes it),
+// so offering it would silently no-op while reporting success.
+ok(!in_array('spam', $bulkActions, true), 'bulk action enum excludes spam (would silently no-op)');
+ok(isset($bulkProps['dry_run'], $bulkProps['confirm_token'], $bulkProps['idempotency_key']), 'bulk schema exposes the guard params');
+eq($bulk['input_schema']['required'], ['entry_ids', 'action'], 'bulk requires entry_ids and action');
+
+echo "form-styling definitions\n";
+$getStyling = $onDefs['fluentform/get-form-styling'];
+ok(!empty($getStyling['annotations']['readonly']), 'get-form-styling annotated readonly');
+ok(!empty($getStyling['advanced']), 'get-form-styling flagged advanced');
+eq($getStyling['input_schema']['required'], ['form_id'], 'get-form-styling requires form_id');
+$updateStyling = $onDefs['fluentform/update-form-styling'];
+ok(empty($updateStyling['annotations']['readonly']), 'update-form-styling not annotated readonly (it writes)');
+ok(!empty($updateStyling['advanced']), 'update-form-styling flagged advanced');
+$styleProps = $updateStyling['input_schema']['properties'];
+ok(isset($styleProps['styler_theme'], $styleProps['css'], $styleProps['js']), 'update-form-styling exposes theme, css, js');
+ok(!isset($styleProps['styler_styles']), 'update-form-styling does NOT accept free-form styler_styles (CSS-injection surface dropped)');
+ok(false === $updateStyling['input_schema']['additionalProperties'], 'update-form-styling rejects unknown keys loudly (no silent drops)');
+
+echo "field-conditions definitions\n";
+ok(isset($onDefs['fluentform/get-field-conditions']), 'get-field-conditions present when opt-in on');
+ok(isset($onDefs['fluentform/update-field-conditions']), 'update-field-conditions present when opt-in on');
+$getCond = $onDefs['fluentform/get-field-conditions'];
+ok(!empty($getCond['annotations']['readonly']), 'get-field-conditions annotated readonly');
+ok(!empty($getCond['advanced']), 'get-field-conditions flagged advanced');
+$updCond = $onDefs['fluentform/update-field-conditions'];
+ok(empty($updCond['annotations']['readonly']), 'update-field-conditions not annotated readonly (it writes)');
+ok(!empty($updCond['advanced']), 'update-field-conditions flagged advanced');
+eq($updCond['input_schema']['required'], ['form_id', 'field_key'], 'update-field-conditions requires form_id + field_key');
+
+echo "get-payment-summary definition + guards\n";
+$paySummary = $onDefs['fluentform/get-payment-summary'];
+ok(!empty($paySummary['advanced']), 'get-payment-summary flagged advanced');
+ok(!empty($paySummary['annotations']['readonly']), 'get-payment-summary annotated readonly');
+eq($paySummary['capability'], 'fluentform_view_payments', 'get-payment-summary gated on the payments capability');
+ok(empty($paySummary['input_schema']['required']), 'get-payment-summary requires nothing (form_id optional, scope-aware)');
+unset($GLOBALS['__mcp_test_options']['__fluentform_payment_module_settings']);
+$res = ReportTools::getPaymentSummary([]);
+ok(is_wp_error($res), 'payment module off returns WP_Error');
+$body = json_decode($res->get_error_message(), true);
+eq($body['error']['code'], ErrorCodes::FEATURE_DISABLED, 'payment module off uses FEATURE_DISABLED');
+$GLOBALS['__mcp_test_options']['__fluentform_payment_module_settings'] = ['status' => 'yes'];
+$res = ReportTools::getPaymentSummary(['date_to' => 'not-a-date']);
+ok(is_wp_error($res), 'invalid date_to rejected before any query');
+$body = json_decode($res->get_error_message(), true);
+eq($body['error']['code'], ErrorCodes::INVALID_PARAM, 'invalid date_to uses INVALID_PARAM');
+$res = ReportTools::getPaymentSummary(['date_from' => '2026-02-01', 'date_to' => '2026-01-01']);
+ok(is_wp_error($res), 'inverted window rejected');
+unset($GLOBALS['__mcp_test_options']['__fluentform_payment_module_settings']);
+
+echo "ConditionTools field walking + validation\n";
+$sampleFields = [
+    ['attributes' => ['name' => 'email'], 'settings' => ['label' => 'Email']],
+    ['attributes' => ['name' => 'reason'], 'settings' => ['label' => 'Reason', 'conditional_logics' => ['status' => true, 'conditions' => [['field' => 'email', 'operator' => '=', 'value' => 'vip']]]]],
+    ['element' => 'container', 'columns' => [
+        ['fields' => [
+            ['attributes' => ['name' => 'nested'], 'settings' => ['label' => 'Nested', 'conditional_logics' => ['status' => true, 'type' => 'group', 'condition_groups' => [['rules' => [['field' => 'email', 'operator' => '!=', 'value' => '']]]]]]],
+        ],],
+    ],],
+];
+$keys = ConditionTools::fieldKeys($sampleFields);
+ok(isset($keys['email'], $keys['reason'], $keys['nested']), 'fieldKeys finds nested field keys');
+$conds = ConditionTools::extractConditions($sampleFields);
+eq(count($conds), 2, 'extractConditions returns only conditioned fields, recursing into containers');
+$condKeys = array_map(function ($c) {
+    return $c['key'];
+}, $conds);
+ok(in_array('reason', $condKeys, true), 'extractConditions includes a simple-conditions field');
+ok(in_array('nested', $condKeys, true), 'extractConditions includes a grouped-conditions nested field');
+$validSimple = ['status' => true, 'type' => 'any', 'conditions' => [['field' => 'email', 'operator' => '=', 'value' => 'vip']]];
+ok(true === ConditionTools::validateLogics($validSimple, $keys), 'validateLogics accepts a valid simple rule set');
+$validGroup = ['status' => true, 'type' => 'group', 'condition_groups' => [['rules' => [['field' => 'email', 'operator' => '!=', 'value' => '']]]]];
+ok(true === ConditionTools::validateLogics($validGroup, $keys), 'validateLogics accepts editor-shaped condition_groups[].rules');
+ok(ConditionTools::validateLogics(['type' => 'any', 'conditions' => [['field' => 'email', 'operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects missing status (rules would be inert at runtime)');
+ok(ConditionTools::validateLogics(['status' => 'yes', 'conditions' => [['field' => 'email', 'operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects non-boolean status');
+ok(ConditionTools::validateLogics(['status' => true, 'type' => 'group', 'condition_groups' => [['conditions' => [['field' => 'email', 'operator' => '=']]]]], $keys) instanceof WP_Error, 'validateLogics rejects group using conditions key (runtime reads rules)');
+ok(ConditionTools::validateLogics(['status' => true, 'conditions' => [['operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects a rule missing field');
+ok(ConditionTools::validateLogics(['status' => true, 'conditions' => [['field' => ['evil'], 'operator' => '=']]], $keys) instanceof WP_Error, 'validateLogics rejects a non-string field without TypeError');
+ok(ConditionTools::validateLogics(['status' => true, 'conditions' => [['field' => 'ghost', 'operator' => '=', 'value' => 'x']]], $keys) instanceof WP_Error, 'validateLogics rejects a rule referencing an unknown field');
+ok(ConditionTools::validateLogics([], $keys) instanceof WP_Error, 'validateLogics rejects empty logics');
+ok(!ConditionTools::hasRules(null) && !ConditionTools::hasRules([]), 'hasRules false for null/empty');
+
+// Lost-update contract: applyToField touches ONLY the targeted field.
+$doc = ['fields' => $sampleFields, 'submitButton' => ['uiElementType' => 'button']];
+$applied = ConditionTools::applyToField($doc, 'nested', $validSimple);
+$appliedConds = ConditionTools::extractConditions($applied['fields']);
+$nestedRow = array_values(array_filter($appliedConds, function ($c) {
+    return 'nested' === $c['key'];
+}));
+eq($nestedRow[0]['conditional_logics'], $validSimple, 'applyToField sets the targeted field\'s logics');
+$untouched = $applied;
+$untouched['fields'][2]['columns'][0]['fields'][0]['settings']['conditional_logics'] = $doc['fields'][2]['columns'][0]['fields'][0]['settings']['conditional_logics'];
+eq(wp_json_encode($untouched), wp_json_encode($doc), 'applyToField leaves every other byte of the definition untouched');
+$cleared = ConditionTools::applyToField($doc, 'reason', []);
+ok([] === $cleared['fields'][1]['settings']['conditional_logics'], 'applyToField clears with an empty logics array');
+
+// Wiring regression: the mutation must re-read the form INSIDE the closure
+// (a stale pre-validation snapshot written back whole is a lost update).
+$conditionToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/ConditionTools.php');
+$mutationPos = strpos($conditionToolsSrc, "Mutation::run('fluentform/update-field-conditions'");
+$freshReadPos = strpos($conditionToolsSrc, 'Form::query()->find($formId)');
+ok(false !== $mutationPos && false !== $freshReadPos && $freshReadPos > $mutationPos, 'updateConditions re-reads the form inside the mutation closure');
+$lockPos = strpos($conditionToolsSrc, 'FOR UPDATE');
+ok(false !== $lockPos && $lockPos > $mutationPos && $lockPos < $freshReadPos, 'updateConditions row-locks the form before the fresh read (no lost-update window)');
+
+echo "create-form storage-key uniquification\n";
+// Repeated field types must never share a storage key (submission responses
+// are keyed by attributes.name). Names are assigned at the tool boundary and
+// re-checked idempotently inside FormCreator::create().
+$formToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/FormTools.php');
+$assignPos = strpos($formToolsSrc, 'assignStorageNames($specFields)');
+$createPos = strpos($formToolsSrc, '$creator->create(');
+ok(false !== $assignPos && false !== $createPos && $assignPos < $createPos, 'createForm assigns unique storage names before saving');
+$formCreatorSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Support/FormCreator.php');
+ok(false !== strpos($formCreatorSrc, 'public function assignStorageNames'), 'FormCreator exposes assignStorageNames publicly');
+ok(false !== strpos($formCreatorSrc, '$this->assignStorageNames(Arr::get($form'), 'create() re-runs the uniquifier as a safety net');
+
+echo "PaymentDataProvider (free default payment seam listener)\n";
+// Every pin below encodes a shipped bug or boundary from the Pro-listener era:
+// Collection-vs-empty(), permission gate, fail-closed, no-overwrite, no blobs.
+$providerSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Support/PaymentDataProvider.php');
+ok(false !== strpos($providerSrc, "add_filter('fluentform/mcp_submission_data'"), 'provider listens on the entry seam');
+ok(false !== strpos($providerSrc, "add_filter('fluentform/mcp_submission_rows'"), 'provider listens on the rows seam');
+eq(substr_count($providerSrc, "Acl::hasPermission('fluentform_view_payments', \$formId)"), 2, 'both paths gate on the payments capability');
+ok(false === strpos($providerSrc, 'empty($subscriptions)'), 'no empty() on the subscriptions Collection (use count())');
+ok(false !== strpos($providerSrc, '0 === count($transactions) && 0 === count($subscriptions)'), 'non-payment guard uses count()');
+ok(false !== strpos($providerSrc, "isset(\$data['payment'])"), 'an addon-populated payment block is never overwritten');
+eq(substr_count($providerSrc, 'catch (\Throwable'), 2, 'both listeners fail closed on Throwable');
+foreach (['payment_note', 'vendor_response', 'original_plan', 'card_last_4', 'payer_email'] as $blob) {
+    ok(false === strpos($providerSrc, "'" . $blob . "'"), "payload never surfaces {$blob}");
+}
+$mcpInitSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/MCPInit.php');
+ok(false !== strpos($mcpInitSrc, 'PaymentDataProvider::register()'), 'provider registered from MCPInit::init');
+
+echo "Discovery stats caching\n";
+// Unrestricted-scope counts scan submissions by status only (no usable index);
+// they must come from the shared long-TTL cache, never recomputed per user/60s.
+eq(FluentForm\App\Modules\MCP\Tools\ContextTools::STATS_CACHE_TTL, 900, 'global stats cache TTL is 15 minutes');
+$contextToolsSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Tools/ContextTools.php');
+$scopeCheckPos = strpos($contextToolsSrc, 'false !== PermissionGate::formScope()');
+$statsCachePos = strpos($contextToolsSrc, 'get_transient(self::STATS_CACHE_KEY)');
+ok(false !== $scopeCheckPos && false !== $statsCachePos && $scopeCheckPos < $statsCachePos, 'buildStats serves unrestricted counts from the shared cache (restricted scopes compute fresh)');
+ok(false !== strpos($contextToolsSrc, '!in_array(null, $stats, true)'), 'failed counts are never pinned into the shared stats cache');
+
+echo "mcp_tool_definitions seam\n";
+$GLOBALS['__mcp_test_options'] = [];
+$GLOBALS['__mcp_test_filters'] = [];
+$baseline = count(AbilitiesRegistrar::getDefinitions());
+add_filter('fluentform/mcp_tool_definitions', function ($defs) {
+    $defs['fluentform/pro-injected'] = ['label' => 'Pro Injected', 'description' => 'x', 'execute_callback' => function () {}, 'permission_callback' => function () {
+        return true;
+    },];
+    return $defs;
+});
+$injected = AbilitiesRegistrar::getDefinitions();
+ok(isset($injected['fluentform/pro-injected']), 'mcp_tool_definitions lets a listener inject a tool definition');
+eq(count($injected), $baseline + 1, 'mcp_tool_definitions adds exactly the injected tool');
+$GLOBALS['__mcp_test_filters'] = [];
+ok(!isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-injected']), 'definitions unchanged without a listener');
+
+// Filter-injected advanced tools must obey the opt-in like inline ones.
+add_filter('fluentform/mcp_tool_definitions', function ($defs) {
+    $defs['fluentform/pro-advanced'] = ['label' => 'Pro Advanced', 'description' => 'x', 'advanced' => true, 'execute_callback' => function () {}, 'permission_callback' => function () {
+        return true;
+    },];
+    return $defs;
+});
+ok(!isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-advanced']), 'filter-injected advanced tool withheld while opt-in is off');
+PermissionGate::setNewToolsEnabled(true);
+ok(isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-advanced']), 'filter-injected advanced tool registers once opt-in is on');
+$GLOBALS['__mcp_test_filters'] = [];
+
+$GLOBALS['__mcp_test_options'] = [];
 
 echo "\n";
 if ($failures) {

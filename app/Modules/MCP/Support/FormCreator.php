@@ -37,7 +37,7 @@ class FormCreator extends AiFormBuilder
     {
         Acl::verify('fluentform_forms_manager');
 
-        $form['fields'] = $this->withUniqueNames(Arr::get($form, 'fields', []));
+        $form['fields'] = $this->assignStorageNames(Arr::get($form, 'fields', []));
 
         return $this->prepareAndSaveForm($form);
     }
@@ -46,9 +46,11 @@ class FormCreator extends AiFormBuilder
      * Assign a unique attributes.name to every input field. Submission responses
      * are keyed by field name, and AiFormBuilder keeps the component default when
      * no name is supplied — so two fields of the same type would share one
-     * storage key and overwrite each other's submitted values.
+     * storage key and overwrite each other's submitted values. Idempotent:
+     * fields that already carry a unique name pass through unchanged, so the
+     * tool boundary can assign names and create() re-running it is a no-op.
      */
-    private function withUniqueNames(array $fields)
+    public function assignStorageNames(array $fields)
     {
         $used = [];
 

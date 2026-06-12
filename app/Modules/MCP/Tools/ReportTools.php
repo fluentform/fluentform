@@ -9,14 +9,17 @@ use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
-use FluentForm\App\Modules\MCP\Support\PermissionGate;
+use FluentForm\App\Services\Report\ReportHelper;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * Report tools (read).
  *
  * The get-form-stats tool answers "how is this form doing?" — entry counts by
  * status, total views, and conversion rate. get-submissions-trend gives a daily time
- * series for charting volume over a window. Both are per-form and form-scoped.
+ * series for charting volume over a window. get-payment-summary (advanced)
+ * answers revenue questions with server-side SUMs from the transactions table
+ * via the same ReportHelper the admin Reports page uses. All form-scoped.
  */
 class ReportTools
 {
@@ -37,9 +40,7 @@ class ReportTools
                     'required' => ['form_id'],
                 ],
                 'execute_callback'    => [self::class, 'getFormStats'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_entries_viewer') || PermissionGate::can('fluentform_dashboard_access');
-                },
+                'capability'          => ['fluentform_entries_viewer', 'fluentform_dashboard_access'],
                 'annotations' => ['readonly' => true],
             ],
 
@@ -57,17 +58,33 @@ class ReportTools
                     'required' => ['form_id'],
                 ],
                 'execute_callback'    => [self::class, 'getTrend'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_entries_viewer') || PermissionGate::can('fluentform_dashboard_access');
-                },
+                'capability'          => ['fluentform_entries_viewer', 'fluentform_dashboard_access'],
                 'annotations' => ['readonly' => true],
+            ],
+
+            'fluentform/get-payment-summary' => [
+                'label'       => __('Get Payment Summary', 'fluentform'),
+                'group'       => __('Reports', 'fluentform'),
+                'description' => __('Payment totals computed server-side: amount and count per payment status (paid, pending, refunded, …), split into one-time and subscription transactions, plus a combined paid total. Scope to one form with form_id or omit it to aggregate every form you can access. Defaults to the last 30 days; widen date_from/date_to for lifetime totals.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'form_id'   => ['type' => 'integer', 'description' => 'Optional. Omit to aggregate across all forms in your access scope.'],
+                        'date_from' => ['type' => 'string', 'description' => 'YYYY-MM-DD (site timezone). Defaults to 30 days ago.'],
+                        'date_to'   => ['type' => 'string', 'description' => 'YYYY-MM-DD (site timezone). Defaults to today.'],
+                    ],
+                ],
+                'execute_callback'    => [self::class, 'getPaymentSummary'],
+                'capability'          => 'fluentform_view_payments',
+                'annotations' => ['readonly' => true],
+                'advanced'    => true,
             ],
         ];
     }
 
     public static function getFormStats($params = [])
     {
-        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        $form = FormAccess::resolveForm($params);
         if (is_wp_error($form)) {
             return $form;
         }
@@ -107,40 +124,17 @@ class ReportTools
 
     public static function getTrend($params = [])
     {
-        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        $form = FormAccess::resolveForm($params);
         if (is_wp_error($form)) {
             return $form;
         }
         $formId = (int) $form->id;
 
-        $to = !empty($params['date_to']) ? sanitize_text_field($params['date_to']) : gmdate('Y-m-d', current_time('timestamp'));
-        if (!MCPHelper::isYmd($to)) {
-            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_to must be a valid date in YYYY-MM-DD format.', 'fluentform'), ['fields' => ['date_to']]);
+        $window = self::dateWindow($params, self::TREND_MAX_DAYS);
+        if (is_wp_error($window)) {
+            return $window;
         }
-
-        $from = !empty($params['date_from']) ? sanitize_text_field($params['date_from']) : gmdate('Y-m-d', strtotime('-30 days', strtotime($to)));
-        if (!MCPHelper::isYmd($from)) {
-            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from must be a valid date in YYYY-MM-DD format.', 'fluentform'), ['fields' => ['date_from']]);
-        }
-
-        if ($from > $to) {
-            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from must be on or before date_to.', 'fluentform'), ['fields' => ['date_from', 'date_to']]);
-        }
-
-        // Span clamp: the window bounds the scan and the GROUP BY bucket count,
-        // so it gets a ceiling just like per_page does.
-        $spanDays = (int) (new \DateTime($from))->diff(new \DateTime($to))->days;
-        if ($spanDays > self::TREND_MAX_DAYS) {
-            return MCPHelper::error(
-                ErrorCodes::INVALID_PARAM,
-                sprintf(
-                    /* translators: %d: maximum allowed days in the trend window */
-                    __('The date window may span at most %d days. Narrow date_from/date_to and call again.', 'fluentform'),
-                    self::TREND_MAX_DAYS
-                ),
-                ['fields' => ['date_from', 'date_to'], 'max_days' => self::TREND_MAX_DAYS]
-            );
-        }
+        list($from, $to) = $window;
 
         $rows = Submission::query()
             ->where('form_id', $formId)
@@ -176,5 +170,129 @@ class ReportTools
                 'series'  => $series,
             ]
         );
+    }
+
+    public static function getPaymentSummary($params = [])
+    {
+        $formId = 0;
+        if (!empty($params['form_id'])) {
+            // ReportHelper trusts a non-zero form id without a scope check, so
+            // the access check has to happen here, before it's passed down.
+            $form = FormAccess::resolveForm($params);
+            if (is_wp_error($form)) {
+                return $form;
+            }
+            $formId = (int) $form->id;
+        }
+
+        $settings = get_option('__fluentform_payment_module_settings');
+        if (!$settings || !Arr::isTrue($settings, 'status')) {
+            return MCPHelper::error(ErrorCodes::FEATURE_DISABLED, __('The payment module is disabled, so there is no payment data to summarize.', 'fluentform'));
+        }
+
+        // No span clamp: this is a SUM grouped by status (a handful of rows),
+        // not per-day buckets, and the admin Reports page runs the same query
+        // unbounded — lifetime totals are a legitimate ask.
+        $window = self::dateWindow($params);
+        if (is_wp_error($window)) {
+            return $window;
+        }
+        list($from, $to) = $window;
+
+        $onetime      = self::normalizePaymentBlock(ReportHelper::getPaymentsByType($from . ' 00:00:00', $to . ' 23:59:59', 'onetime', $formId));
+        $subscription = self::normalizePaymentBlock(ReportHelper::getPaymentsByType($from . ' 00:00:00', $to . ' 23:59:59', 'subscription', $formId));
+
+        $totalPaid = 0;
+        foreach ([$onetime, $subscription] as $block) {
+            $totalPaid += (float) Arr::get($block, 'payment_statuses.paid.amount', 0);
+        }
+
+        $symbol = Arr::get($onetime, 'currency_symbol', Arr::get($subscription, 'currency_symbol', ''));
+
+        return MCPHelper::envelope(
+            sprintf(
+                /* translators: 1: currency symbol, 2: paid amount, 3: start date, 4: end date */
+                __('%1$s%2$s paid between %3$s and %4$s.', 'fluentform'),
+                $symbol,
+                number_format($totalPaid, 2),
+                $from,
+                $to
+            ),
+            [
+                'form_id'         => $formId ? $formId : null,
+                'from'            => $from,
+                'to'              => $to,
+                'currency_symbol' => $symbol,
+                'total_paid'      => round($totalPaid, 2),
+                'onetime'         => $onetime,
+                'subscription'    => $subscription,
+            ]
+        );
+    }
+
+    /**
+     * ReportHelper output is shaped for the admin UI: counts come back as
+     * string column values and the currency sign HTML-encoded. Tighten both
+     * for the agent-facing JSON contract.
+     */
+    private static function normalizePaymentBlock($block)
+    {
+        if (!is_array($block)) {
+            return [];
+        }
+
+        if (isset($block['currency_symbol'])) {
+            $block['currency_symbol'] = html_entity_decode($block['currency_symbol'], ENT_QUOTES);
+        }
+
+        if (!empty($block['payment_statuses']) && is_array($block['payment_statuses'])) {
+            foreach ($block['payment_statuses'] as $status => $row) {
+                if (isset($row['count'])) {
+                    $block['payment_statuses'][$status]['count'] = (int) $row['count'];
+                }
+            }
+        }
+
+        return $block;
+    }
+
+    /**
+     * Validated Y-m-d [from, to] window from tool params. Defaults to the last
+     * 30 days ending today; a non-zero $maxDays caps the span.
+     *
+     * @return array|\WP_Error
+     */
+    private static function dateWindow($params, $maxDays = 0)
+    {
+        $to = !empty($params['date_to']) ? sanitize_text_field($params['date_to']) : gmdate('Y-m-d', current_time('timestamp'));
+        if (!MCPHelper::isYmd($to)) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_to must be a valid date in YYYY-MM-DD format.', 'fluentform'), ['fields' => ['date_to']]);
+        }
+
+        $from = !empty($params['date_from']) ? sanitize_text_field($params['date_from']) : gmdate('Y-m-d', strtotime('-30 days', strtotime($to)));
+        if (!MCPHelper::isYmd($from)) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from must be a valid date in YYYY-MM-DD format.', 'fluentform'), ['fields' => ['date_from']]);
+        }
+
+        if ($from > $to) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('date_from must be on or before date_to.', 'fluentform'), ['fields' => ['date_from', 'date_to']]);
+        }
+
+        if ($maxDays) {
+            $spanDays = (int) (new \DateTime($from))->diff(new \DateTime($to))->days;
+            if ($spanDays > $maxDays) {
+                return MCPHelper::error(
+                    ErrorCodes::INVALID_PARAM,
+                    sprintf(
+                        /* translators: %d: maximum allowed days in the date window */
+                        __('The date window may span at most %d days. Narrow date_from/date_to and call again.', 'fluentform'),
+                        $maxDays
+                    ),
+                    ['fields' => ['date_from', 'date_to'], 'max_days' => $maxDays]
+                );
+            }
+        }
+
+        return [$from, $to];
     }
 }

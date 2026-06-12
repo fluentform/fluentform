@@ -10,7 +10,6 @@ use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\FormCreator;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
 use FluentForm\App\Modules\MCP\Support\Mutation;
-use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Form\FormService;
 
 /**
@@ -41,9 +40,7 @@ class FormTools
                     ],
                 ],
                 'execute_callback'    => [self::class, 'listForms'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_forms_manager') || PermissionGate::can('fluentform_dashboard_access');
-                },
+                'capability'          => ['fluentform_forms_manager', 'fluentform_dashboard_access'],
                 'annotations' => ['readonly' => true],
             ],
 
@@ -59,9 +56,7 @@ class FormTools
                     'required' => ['form_id'],
                 ],
                 'execute_callback'    => [self::class, 'getForm'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_forms_manager') || PermissionGate::can('fluentform_dashboard_access');
-                },
+                'capability'          => ['fluentform_forms_manager', 'fluentform_dashboard_access'],
                 'annotations' => ['readonly' => true],
             ],
 
@@ -90,9 +85,7 @@ class FormTools
                     'required' => ['title'],
                 ],
                 'execute_callback'    => [self::class, 'createForm'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_forms_manager');
-                },
+                'capability'          => 'fluentform_forms_manager',
             ],
         ];
     }
@@ -134,7 +127,14 @@ class FormTools
 
         return Mutation::run('fluentform/create-form', $params, function () use ($title, $specFields, $params) {
             try {
-                $form = (new FormCreator())->create([
+                $creator = new FormCreator();
+
+                // Submission responses are keyed by attributes.name; assign each
+                // field a unique one before saving so repeated field types never
+                // share a storage key (create() re-checks this, idempotently).
+                $specFields = $creator->assignStorageNames($specFields);
+
+                $form = $creator->create([
                     'title'             => $title,
                     'fields'            => $specFields,
                     'is_conversational' => !empty($params['is_conversational']),
@@ -211,7 +211,7 @@ class FormTools
 
     public static function getForm($params = [])
     {
-        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        $form = FormAccess::resolveForm($params);
         if (is_wp_error($form)) {
             return $form;
         }

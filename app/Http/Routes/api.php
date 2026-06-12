@@ -125,6 +125,7 @@ $router->prefix('global-settings')->withPolicy('GlobalSettingsPolicy')->group(fu
 $router->prefix('mcp')->withPolicy('GlobalSettingsPolicy')->group(function ($router) {
     $router->get('status', 'McpSettingsController@status');
     $router->post('toggle', 'McpSettingsController@toggle');
+    $router->post('toggle-advanced-tools', 'McpSettingsController@toggleAdvancedTools');
     $router->post('install-adapter', 'McpSettingsController@installAdapter');
     $router->get('config-snippets', 'McpSettingsController@getConfigSnippets');
 });

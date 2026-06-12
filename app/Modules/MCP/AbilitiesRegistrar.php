@@ -6,6 +6,7 @@ defined('ABSPATH') || exit;
 
 use FluentForm\App\Modules\MCP\Support\ErrorCodes;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
+use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Modules\MCP\Tools\ContextTools;
 use FluentForm\App\Modules\MCP\Tools\FormTools;
 use FluentForm\App\Modules\MCP\Tools\SubmissionTools;
@@ -36,6 +37,18 @@ class AbilitiesRegistrar
         ];
     }
 
+    /**
+     * Tool classes that register only when the advanced-tools opt-in is on.
+     * Their whole catalogue slice is withheld until an admin enables the group.
+     */
+    private static function advancedToolClasses()
+    {
+        return [
+            \FluentForm\App\Modules\MCP\Tools\StylingTools::class,
+            \FluentForm\App\Modules\MCP\Tools\ConditionTools::class,
+        ];
+    }
+
     public static function getDefinitions()
     {
         $defs = [];
@@ -43,6 +56,40 @@ class AbilitiesRegistrar
         foreach (self::toolClasses() as $class) {
             if (class_exists($class) && method_exists($class, 'definitions')) {
                 $defs = array_merge($defs, (array) $class::definitions());
+            }
+        }
+
+        $advancedOn = PermissionGate::isNewToolsEnabled();
+
+        if ($advancedOn) {
+            foreach (self::advancedToolClasses() as $class) {
+                if (class_exists($class) && method_exists($class, 'definitions')) {
+                    $defs = array_merge($defs, (array) $class::definitions());
+                }
+            }
+        }
+
+        /**
+         * Filter the full MCP tool-definition map (name => definition). The one
+         * unified seam for FluentForm Pro to inject a new tool or override an
+         * existing definition; must return the map array. Definitions flagged
+         * 'advanced' => true obey the advanced-tools opt-in, including ones
+         * injected here.
+         *
+         * @since 6.2.5
+         *
+         * @param array $defs Map of ability name to definition.
+         */
+        $filtered = apply_filters('fluentform/mcp_tool_definitions', $defs);
+        $defs     = is_array($filtered) ? $filtered : $defs;
+
+        if (!$advancedOn) {
+            // After the filter, so Pro-injected advanced tools are withheld by
+            // the same opt-in as the inline ones (e.g. the bulk tool).
+            foreach ($defs as $name => $def) {
+                if (!empty($def['advanced'])) {
+                    unset($defs[$name]);
+                }
             }
         }
 
@@ -74,12 +121,21 @@ class AbilitiesRegistrar
     public static function register()
     {
         foreach (self::getDefinitions() as $name => $definition) {
+            $permissionCallback = self::permissionCallback($definition);
+
+            // Filter-injected definitions are untrusted shape-wise: without an
+            // execute callback and a permission source the ability is
+            // uncallable or ungated — skip, don't fatal.
+            if (empty($definition['execute_callback']) || !$permissionCallback) {
+                continue;
+            }
+
             $args = [
-                'label'               => $definition['label'],
-                'description'         => $definition['description'],
+                'label'               => isset($definition['label']) ? $definition['label'] : $name,
+                'description'         => isset($definition['description']) ? $definition['description'] : '',
                 'category'            => 'fluentform',
                 'execute_callback'    => self::wrapExecuteCallback($name, $definition['execute_callback']),
-                'permission_callback' => $definition['permission_callback'],
+                'permission_callback' => $permissionCallback,
                 'meta'                => [
                     'show_in_rest' => true,
                     'mcp'          => ['public' => true],
@@ -100,6 +156,31 @@ class AbilitiesRegistrar
 
             wp_register_ability($name, $args);
         }
+    }
+
+    /**
+     * The gate for one ability: an explicit permission_callback wins (the seam
+     * for filter-injected tools with custom logic); otherwise a 'capability'
+     * key — one cap or an any-of list — is wrapped in the standard
+     * PermissionGate check. Null means the definition declared neither.
+     *
+     * @return callable|null
+     */
+    public static function permissionCallback($definition)
+    {
+        if (!empty($definition['permission_callback'])) {
+            return $definition['permission_callback'];
+        }
+
+        if (empty($definition['capability'])) {
+            return null;
+        }
+
+        $capabilities = (array) $definition['capability'];
+
+        return function () use ($capabilities) {
+            return PermissionGate::canAny($capabilities);
+        };
     }
 
     /**

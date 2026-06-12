@@ -13,6 +13,7 @@ use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Modules\MCP\Support\WriteGuard;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\App\Services\Submission\SubmissionService;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * Submission (entry) tools.
@@ -29,6 +30,8 @@ use FluentForm\App\Services\Submission\SubmissionService;
  */
 class SubmissionTools
 {
+    const BULK_MAX = 200;
+
     public static function definitions()
     {
         return [
@@ -51,9 +54,7 @@ class SubmissionTools
                     'required' => ['form_id'],
                 ],
                 'execute_callback'    => [self::class, 'listSubmissions'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_entries_viewer');
-                },
+                'capability'          => 'fluentform_entries_viewer',
                 'annotations' => ['readonly' => true],
             ],
 
@@ -69,9 +70,7 @@ class SubmissionTools
                     'required' => ['entry_id'],
                 ],
                 'execute_callback'    => [self::class, 'getSubmission'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_entries_viewer');
-                },
+                'capability'          => 'fluentform_entries_viewer',
                 'annotations' => ['readonly' => true],
             ],
 
@@ -88,9 +87,7 @@ class SubmissionTools
                     'required' => ['entry_id', 'status'],
                 ],
                 'execute_callback'    => [self::class, 'updateStatus'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_manage_entries');
-                },
+                'capability'          => 'fluentform_manage_entries',
             ],
 
             'fluentform/add-submission-note' => [
@@ -106,9 +103,7 @@ class SubmissionTools
                     'required' => ['entry_id', 'content'],
                 ],
                 'execute_callback'    => [self::class, 'addNote'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_manage_entries');
-                },
+                'capability'          => 'fluentform_manage_entries',
             ],
 
             'fluentform/delete-submission' => [
@@ -126,17 +121,36 @@ class SubmissionTools
                     'required' => ['entry_id'],
                 ],
                 'execute_callback'    => [self::class, 'deleteSubmission'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_manage_entries');
-                },
+                'capability'          => 'fluentform_manage_entries',
                 'annotations' => ['destructive' => true],
+            ],
+
+            'fluentform/bulk-update-submissions' => [
+                'label'       => __('Bulk Update Submissions', 'fluentform'),
+                'group'       => __('Entries', 'fluentform'),
+                'description' => __('Apply one action to many entries at once: read, unread, trashed, favorite, unfavorite, or delete_permanently. Pass entry_ids (max 200). Entries outside your form access are skipped. Call once with dry_run:true to preview the in-scope count and get a confirm_token, then call again with the same entry_ids plus confirm_token to execute. delete_permanently is irreversible. To mark entries as spam, use update-submission-status per entry.', 'fluentform'),
+                'input_schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'entry_ids'       => ['type' => 'array', 'items' => ['type' => 'integer'], 'description' => 'Entry ids to act on (max 200).'],
+                        'action'          => ['type' => 'string', 'enum' => ['read', 'unread', 'trashed', 'favorite', 'unfavorite', 'delete_permanently']],
+                        'dry_run'         => ['type' => 'boolean', 'description' => 'Preview without changing anything; returns a confirm_token.'],
+                        'confirm_token'   => ['type' => 'string', 'description' => 'The token from the dry_run preview, required to execute.'],
+                        'idempotency_key' => ['type' => 'string', 'description' => 'Optional; a retry with the same key will not act twice.'],
+                    ],
+                    'required' => ['entry_ids', 'action'],
+                ],
+                'execute_callback'    => [self::class, 'bulkUpdate'],
+                'capability'          => 'fluentform_manage_entries',
+                'annotations' => ['destructive' => true],
+                'advanced'    => true,
             ],
         ];
     }
 
     public static function listSubmissions($params = [])
     {
-        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        $form = FormAccess::resolveForm($params);
         if (is_wp_error($form)) {
             return $form;
         }
@@ -175,8 +189,9 @@ class SubmissionTools
 
         $labels = self::formLabels($formId);
 
+        $items = MCPHelper::paginatorItems($paginator);
         $rows = [];
-        foreach (MCPHelper::paginatorItems($paginator) as $submission) {
+        foreach ($items as $submission) {
             $rows[] = [
                 'id'           => (int) $submission->id,
                 'serial'       => isset($submission->serial_number) ? (int) $submission->serial_number : null,
@@ -186,6 +201,9 @@ class SubmissionTools
                 'preview'      => self::valuePreview($submission->response, $labels),
             ];
         }
+
+        // Augmentation seam: $items is passed so Pro can batch-load a per-row `payment` summary (no N+1).
+        $rows = apply_filters('fluentform/mcp_submission_rows', $rows, $items, $formId);
 
         return MCPHelper::envelope(
             sprintf(
@@ -201,7 +219,7 @@ class SubmissionTools
 
     public static function getSubmission($params = [])
     {
-        $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
+        $submission = FormAccess::resolveSubmission($params);
         if (is_wp_error($submission)) {
             return $submission;
         }
@@ -218,23 +236,28 @@ class SubmissionTools
             }
         }
 
+        $data = [
+            'id'          => (int) $submission->id,
+            'form_id'     => (int) $submission->form_id,
+            'serial'      => isset($submission->serial_number) ? (int) $submission->serial_number : null,
+            'status'      => $submission->status,
+            'is_favorite' => (bool) $submission->is_favourite,
+            'created_at'  => MCPHelper::toIso8601($submission->created_at),
+            'updated_at'  => MCPHelper::toIso8601($submission->updated_at),
+            'user'        => $user,
+            'fields'      => $values,
+        ];
+
+        // Augmentation seam: the default PaymentDataProvider (or an addon) injects a compact `payment` block; the listener owns the payments capability check.
+        $data = apply_filters('fluentform/mcp_submission_data', $data, $submission);
+
         return MCPHelper::envelope(
             sprintf(
                 /* translators: %d: entry id */
                 __('Entry #%d loaded.', 'fluentform'),
                 $entryId
             ),
-            [
-                'id'          => (int) $submission->id,
-                'form_id'     => (int) $submission->form_id,
-                'serial'      => isset($submission->serial_number) ? (int) $submission->serial_number : null,
-                'status'      => $submission->status,
-                'is_favorite' => (bool) $submission->is_favourite,
-                'created_at'  => MCPHelper::toIso8601($submission->created_at),
-                'updated_at'  => MCPHelper::toIso8601($submission->updated_at),
-                'user'        => $user,
-                'fields'      => $values,
-            ]
+            $data
         );
     }
 
@@ -245,7 +268,7 @@ class SubmissionTools
             return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('status must be one of: unread, read, spam, trashed.', 'fluentform'), ['fields' => ['status']]);
         }
 
-        $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
+        $submission = FormAccess::resolveSubmission($params);
         if (is_wp_error($submission)) {
             return $submission;
         }
@@ -274,7 +297,7 @@ class SubmissionTools
             return MCPHelper::error(ErrorCodes::MISSING_PARAM, __('content is required.', 'fluentform'), ['fields' => ['content']]);
         }
 
-        $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
+        $submission = FormAccess::resolveSubmission($params);
         if (is_wp_error($submission)) {
             return $submission;
         }
@@ -308,7 +331,7 @@ class SubmissionTools
             return $replay;
         }
 
-        $submission = FormAccess::resolveSubmission(isset($params['entry_id']) ? $params['entry_id'] : 0);
+        $submission = FormAccess::resolveSubmission($params);
         if (is_wp_error($submission)) {
             return $submission;
         }
@@ -346,6 +369,136 @@ class SubmissionTools
         );
     }
 
+    public static function bulkUpdate($params = [])
+    {
+        // No 'spam' here: Helper::getEntryStatuses() (which handleBulkActions
+        // switches on) does not include it, so a bulk spam would silently no-op.
+        $actionMap = [
+            'read'               => 'read',
+            'unread'             => 'unread',
+            'trashed'            => 'trashed',
+            'favorite'           => 'other.make_favorite',
+            'unfavorite'         => 'other.unmark_favorite',
+            'delete_permanently' => 'other.delete_permanently',
+        ];
+
+        $action = isset($params['action']) ? sanitize_text_field($params['action']) : '';
+        if (!isset($actionMap[$action])) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('action must be one of: read, unread, trashed, favorite, unfavorite, delete_permanently.', 'fluentform'), ['fields' => ['action']]);
+        }
+
+        $entryIds = isset($params['entry_ids']) ? $params['entry_ids'] : [];
+        if (!is_array($entryIds) || empty($entryIds)) {
+            return MCPHelper::error(ErrorCodes::MISSING_PARAM, __('entry_ids must be a non-empty array of entry ids.', 'fluentform'), ['fields' => ['entry_ids']]);
+        }
+        $entryIds = array_values(array_unique(array_filter(array_map('intval', $entryIds))));
+        if (empty($entryIds)) {
+            return MCPHelper::error(ErrorCodes::INVALID_PARAM, __('entry_ids must contain valid entry ids.', 'fluentform'), ['fields' => ['entry_ids']]);
+        }
+        if (count($entryIds) > self::BULK_MAX) {
+            return MCPHelper::error(
+                ErrorCodes::LIMIT_EXCEEDED,
+                sprintf(
+                    /* translators: %d: max entries per bulk call */
+                    __('entry_ids exceeds the limit of %d per call; split into smaller batches.', 'fluentform'),
+                    self::BULK_MAX
+                ),
+                ['fields' => ['entry_ids'], 'limit' => self::BULK_MAX]
+            );
+        }
+        sort($entryIds);
+
+        $entityKey = 'bulk:' . $action . ':' . md5(implode(',', $entryIds));
+
+        // Replay before resolving: after delete_permanently the ids no longer
+        // resolve, so a lost-response retry would find zero rows and fail instead
+        // of returning the cached result (same rationale as deleteSubmission).
+        // The replay cache is keyed per user, so no access bypass.
+        $replay = WriteGuard::replay(
+            'fluentform/bulk-update-submissions',
+            $entityKey,
+            isset($params['idempotency_key']) ? $params['idempotency_key'] : ''
+        );
+        if (null !== $replay) {
+            return $replay;
+        }
+
+        // Resolve all entries in one query, then re-assert the user's form scope
+        // per entry (handleBulkActions trusts its form_id and applies no scope) —
+        // a "specific forms" manager can never act on an entry outside their
+        // assignment by passing its id. Out-of-scope ids are skipped, not refused.
+        $rows = Submission::query()->whereIn('id', $entryIds)->get(['id', 'form_id']);
+
+        $byForm      = [];
+        $accessCache = [];
+        foreach ($rows as $row) {
+            $formId = (int) $row->form_id;
+            if (!array_key_exists($formId, $accessCache)) {
+                $accessCache[$formId] = PermissionGate::canAccessForm($formId);
+            }
+            if ($accessCache[$formId]) {
+                $byForm[$formId][] = (int) $row->id;
+            }
+        }
+
+        $inScope = [];
+        foreach ($byForm as $ids) {
+            $inScope = array_merge($inScope, $ids);
+        }
+        sort($inScope);
+        $skipped = array_values(array_diff($entryIds, $inScope));
+
+        if (empty($inScope)) {
+            return MCPHelper::error(ErrorCodes::FORBIDDEN, __('None of the given entries are within your form access.', 'fluentform'), ['fields' => ['entry_ids']]);
+        }
+
+        $actionType  = $actionMap[$action];
+        $fingerprint = $action . '|n:' . count($inScope) . '|' . md5(implode(',', $inScope));
+        $formIds     = array_keys($byForm);
+
+        return Mutation::runGuarded(
+            'fluentform/bulk-update-submissions',
+            $params,
+            $entityKey,
+            $fingerprint,
+            function () use ($action, $inScope, $skipped, $byForm) {
+                return [
+                    'action'    => $action,
+                    'in_scope'  => count($inScope),
+                    'entry_ids' => $inScope,
+                    'skipped'   => $skipped,
+                    'forms'     => array_map('count', $byForm),
+                ];
+            },
+            function () use ($actionType, $action, $byForm, $inScope, $skipped, $formIds) {
+                $service = new SubmissionService();
+                foreach ($byForm as $formId => $ids) {
+                    $service->handleBulkActions([
+                        'form_id'     => $formId,
+                        'entries'     => $ids,
+                        'action_type' => $actionType,
+                    ]);
+                }
+
+                return MCPHelper::envelope(
+                    sprintf(
+                        /* translators: 1: entry count, 2: action */
+                        _n('%1$d entry updated (%2$s).', '%1$d entries updated (%2$s).', count($inScope), 'fluentform'),
+                        count($inScope),
+                        $action
+                    ),
+                    [
+                        'action'  => $action,
+                        'updated' => count($inScope),
+                        'skipped' => $skipped,
+                        'forms'   => $formIds,
+                    ]
+                );
+            },
+            ['form_id' => (1 === count($formIds) ? $formIds[0] : null)]
+        );
+    }
+
     private static function formLabels($formId)
     {
         try {
@@ -375,7 +528,7 @@ class SubmissionTools
             }
             $out[] = [
                 'key'   => $key,
-                'label' => isset($labels[$key]) ? $labels[$key] : $key,
+                'label' => Arr::get($labels, $key, $key),
                 'value' => self::flattenValue($value),
             ];
         }
@@ -394,7 +547,7 @@ class SubmissionTools
             if ('' === $flat || null === $flat) {
                 continue;
             }
-            $label   = isset($labels[$key]) ? $labels[$key] : $key;
+            $label   = Arr::get($labels, $key, $key);
             $parts[] = $label . ': ' . MCPHelper::preview($flat, 60);
             if (count($parts) >= $max) {
                 break;

@@ -6,8 +6,8 @@ defined('ABSPATH') || exit;
 
 use FluentForm\App\Modules\MCP\Support\FormAccess;
 use FluentForm\App\Modules\MCP\Support\MCPHelper;
-use FluentForm\App\Modules\MCP\Support\PermissionGate;
 use FluentForm\App\Services\Integrations\FormIntegrationService;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * Integration tools (read).
@@ -34,11 +34,7 @@ class IntegrationTools
                     'required' => ['form_id'],
                 ],
                 'execute_callback'    => [self::class, 'listIntegrations'],
-                'permission_callback' => function () {
-                    return PermissionGate::can('fluentform_forms_manager')
-                        || PermissionGate::can('fluentform_settings_manager')
-                        || PermissionGate::can('fluentform_dashboard_access');
-                },
+                'capability'          => ['fluentform_forms_manager', 'fluentform_settings_manager', 'fluentform_dashboard_access'],
                 'annotations' => ['readonly' => true],
             ],
         ];
@@ -46,7 +42,7 @@ class IntegrationTools
 
     public static function listIntegrations($params = [])
     {
-        $form = FormAccess::resolveForm(isset($params['form_id']) ? $params['form_id'] : 0);
+        $form = FormAccess::resolveForm($params);
         if (is_wp_error($form)) {
             return $form;
         }
@@ -64,8 +60,8 @@ class IntegrationTools
             }
             $rows[] = [
                 'id'       => isset($feed['id']) ? (int) $feed['id'] : null,
-                'name'     => isset($feed['name']) ? $feed['name'] : null,
-                'provider' => isset($feed['provider']) ? $feed['provider'] : null,
+                'name'     => Arr::get($feed, 'name'),
+                'provider' => Arr::get($feed, 'provider'),
                 'enabled'  => !empty($feed['enabled']),
             ];
         }

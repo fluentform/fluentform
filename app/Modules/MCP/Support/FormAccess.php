@@ -27,12 +27,17 @@ class FormAccess
     ];
 
     /**
-     * Validate + access-check + load a form.
+     * Validate + access-check + load a form. Accepts the raw tool params
+     * (form_id is read from them) or a bare id, so every tool shares one
+     * resolve line instead of repeating the extraction.
+     *
+     * @param array|int|string $params
      *
      * @return Form|\WP_Error
      */
-    public static function resolveForm($formId)
+    public static function resolveForm($params)
     {
+        $formId = is_array($params) ? (isset($params['form_id']) ? $params['form_id'] : 0) : $params;
         $formId = (int) $formId;
         if (!$formId) {
             return MCPHelper::error(ErrorCodes::MISSING_IDENTIFIER, __('form_id is required.', 'fluentform'), ['fields' => ['form_id']]);
@@ -51,11 +56,15 @@ class FormAccess
     /**
      * Validate + load an entry, then check its (DB-resolved) form against the
      * user's form scope — never trusting a caller-supplied form_id (IDOR-safe).
+     * Accepts the raw tool params (entry_id is read from them) or a bare id.
+     *
+     * @param array|int|string $params
      *
      * @return Submission|\WP_Error
      */
-    public static function resolveSubmission($entryId)
+    public static function resolveSubmission($params)
     {
+        $entryId = is_array($params) ? (isset($params['entry_id']) ? $params['entry_id'] : 0) : $params;
         $entryId = (int) $entryId;
         if (!$entryId) {
             return MCPHelper::error(ErrorCodes::MISSING_IDENTIFIER, __('entry_id is required.', 'fluentform'), ['fields' => ['entry_id']]);
