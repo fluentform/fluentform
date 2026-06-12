@@ -237,6 +237,16 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                 <?php esc_html_e('Double Opt-in', 'fluentform'); ?>
                             </a>
                         </li>
+                        <li class="<?php echo esc_attr(Helper::getHtmlElementClass('mcp_settings', $currentComponent)); ?> ff_list_button_item">
+                            <a
+                                    class="ff_list_button_link"
+                                    data-hash="mcp_settings"
+                                    href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                        'hash' => 'mcp_settings'
+                                    ])); ?>">
+                                <?php esc_html_e('MCP for AI Agents', 'fluentform'); ?>
+                            </a>
+                        </li>
                         <?php
                         if (ArrayHelper::exists($components, 'InventoryManager')) { ?>
                             <li class="<?php echo esc_attr(Helper::getHtmlElementClass('inventory', $currentComponent)); ?> ff_list_button_item">
