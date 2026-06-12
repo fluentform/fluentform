@@ -1,18 +1,19 @@
 ## ADDED Requirements
 
-> Cross-repo note: these requirements are satisfied by a companion change in the
-> **`fluentformpro`** repository (a separate git repo, default branch `dev`). FluentForm Pro
-> consumes the free-core seams defined in `mcp-pro-extension-seam`; it MUST NOT register any new
-> MCP tools, abilities, or endpoints. All Pro behavior here is output augmentation through the
-> free-core filters only.
+> Note (revised): these requirements are satisfied by **free core's**
+> `Support\PaymentDataProvider` — the payment module (`app/Modules/Payments`: OrderData,
+> PaymentHelper, transactions/subscriptions tables) lives in the free plugin, so the provider
+> does too. An earlier draft placed it in `fluentformpro` on the false premise that payments were
+> Pro-only. The seams stay open for Pro to augment with genuinely Pro-only data later; any such
+> listener MUST NOT register new MCP tools, abilities, or endpoints, and MUST respect an already
+> populated `payment` key.
 
-### Requirement: Pro injects payment context without new MCP endpoints
+### Requirement: A default provider injects payment context without new MCP endpoints
 
-FluentForm Pro SHALL attach a single listener to the free-core `fluentform/mcp_submission_data`
-filter (entry level) and `fluentform/mcp_submission_rows` filter (list level) to add a compact
-`payment` block to MCP entry output. Pro MUST NOT register new MCP abilities, tools, or server
-endpoints — the existing `fluentform/mcp_loaded` / `fluentform/mcp_ability_names` seams are used
-only for bootstrapping the listener, not for adding a tool catalogue entry.
+Free core SHALL attach a single listener to the `fluentform/mcp_submission_data` filter (entry
+level) and `fluentform/mcp_submission_rows` filter (list level) to add a compact `payment` block
+to MCP entry output. The provider MUST NOT register new MCP abilities, tools, or server
+endpoints, and MUST NOT overwrite a `payment` key an addon listener already populated.
 
 #### Scenario: Paid entry gains a payment block
 - **WHEN** a paid submission is read via `get-submission` and Pro's listener is active

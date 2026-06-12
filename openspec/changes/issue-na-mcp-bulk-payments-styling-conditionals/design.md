@@ -21,7 +21,8 @@ extends that shape rather than reworking it — every decision below defers to a
 ## Non-Goals
 
 - No new admin REST routes beyond the existing MCP settings controller surface.
-- No payment logic in free core — only the seam and isset-guarded surfacing.
+- No new payment logic — the default provider reads the existing core payment
+  module (app/Modules/Payments) read-only.
 - No new database tables or schema changes.
 - No rework of the existing 12 tools' behavior.
 
@@ -119,40 +120,35 @@ new key (e.g. `new_tools_enabled`). `PermissionGate` gains `isNewToolsEnabled()`
 the opt-in is on, so off-by-default means truly unregistered (zero ability surface), not merely
 hidden. The settings card and `McpSettingsController::status()` expose and toggle the flag.
 
-### D10 — Pro consumes the seam through one permission-gated listener (no new endpoints)
+### D10 — Free core ships the default payment provider; the seams stay open for addons
+
+(Revised: an earlier draft placed this listener in FluentForm Pro on the false premise that the
+payment tables/models were Pro-only. The payment module — `app/Modules/Payments` with `OrderData`,
+`PaymentHelper`, and the transactions/subscriptions migrations — lives in free core, so the
+provider does too. Free-plugin payment users get the MCP payment block without Pro.)
 
 The free-core `get-submission` / `list-submissions` tools are authorized by **entry-view**
 permission, not the **payments** capability. Auto-reusing the existing
-`fluentform/submission_order_data` filter (which Pro already implements for the admin entries UI)
-would therefore leak payment data to any MCP user who can read entries but lacks
-`fluentform_view_payments`. So Pro instead attaches a dedicated listener to the MCP-specific
-`fluentform/mcp_submission_data` / `fluentform/mcp_submission_rows` filters and, inside it:
+`fluentform/submission_order_data` filter (built for the admin entries UI) would therefore leak
+payment data to any MCP user who can read entries but lacks `fluentform_view_payments`. So a
+dedicated `Support\PaymentDataProvider`, registered from `MCPInit::init()`, listens on the
+MCP-specific `fluentform/mcp_submission_data` / `fluentform/mcp_submission_rows` filters and:
 
 1. Resolves the entry's `form_id` from the submission passed by the filter.
 2. Calls `Acl::hasPermission('fluentform_view_payments', $formId)` and returns the payload
-   **unchanged** if absent (no leak, fail-closed).
-3. Builds a compact `payment` block by reusing `OrderData::getSummary()` /
-   `getTransactions()` / `getSubscriptionsAndPaymentTotal()` and formatting amounts with
-   `PaymentHelper::formatMoney($cents, $currency)` — surfacing status, formatted total, currency,
-   method, transaction count, and subscription status; never raw cents or serialized vendor blobs.
+   **unchanged** if absent (no leak, fail-closed; any Throwable also returns it unchanged).
+3. Builds a compact `payment` block via core `OrderData::getTransactions()` /
+   `getSubscriptionsAndPaymentTotal()` and `PaymentHelper::formatMoney($cents, $currency)` —
+   surfacing status, formatted total, currency, method, transaction count, and subscription
+   status; never raw cents or serialized vendor blobs. Counts use `count()`, never `empty()`
+   (`->get()` returns a Collection, and `empty(Collection)` is always false).
 
-This answers "does Pro need changes": **yes — exactly one small listener class, and zero new MCP
-endpoints.** It bootstraps from `FluentFormPro::registerHooks()` (direct `add_filter`, matching the
-Pro plugin's existing pattern) or on the `fluentform/mcp_loaded` action; it does not register an
-ability or tool.
+**List-level N+1 guard**: the rows listener builds its per-row summary from the Submission models
+the seam already passes — zero queries of its own.
 
-**Alternative considered**: have free core call the existing `fluentform/submission_order_data`
-directly so Pro needs no change at all. Rejected on the permission-leak ground above, and because
-the admin order-data shape (order_items, refunds, serialized vendor responses) is too heavy for an
-agent context — the MCP block must be compact and permission-aware.
-
-**List-level N+1 guard**: the `mcp_submission_rows` listener must not issue a payment query per row.
-Pro batch-loads payment status for the page's entry ids in one query and maps onto the rows (D10
-scenario), keeping query count independent of page size.
-
-**Cross-repo boundary**: `fluentformpro` is a separate git repository. The free-core seam (this
-change, on `mcp-local-test`) and the Pro listener (a separate `fluentformpro` branch + draft PR)
-ship as two coordinated PRs. The free side is the contract; the Pro side is one optional consumer.
+**Addon precedence**: a listener that already populated `payment` wins; the default provider never
+overwrites (`isset` skip). The seams remain the contract for Pro to add genuinely Pro-only data
+(premium-gateway extras) later — without registering MCP tools, abilities, or endpoints.
 
 ## Risks / Trade-offs
 

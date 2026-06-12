@@ -32,9 +32,9 @@ $failures = [];
 function ok($cond, $label)
 {
     global $tests, $passed, $failures;
-    $tests++;
+    ++$tests;
     if ($cond) {
-        $passed++;
+        ++$passed;
     } else {
         $failures[] = $label;
         echo "  ✘ {$label}\n";
@@ -109,12 +109,17 @@ eq($meta['page']['pages'], 3, 'pagingMeta total pages from array');
 eq($meta['page']['has_more'], true, 'pagingMeta has_more true mid-set');
 $lastMeta = MCPHelper::pagingMeta(['current_page' => 3, 'per_page' => 10, 'total' => 25, 'last_page' => 3]);
 eq($lastMeta['page']['has_more'], false, 'pagingMeta has_more false on last page');
-$paginatorObj = new class {
-    public function total() { return 7; }
-    public function items() { return ['a', 'b']; }
-    public function currentPage() { return 1; }
-    public function perPage() { return 2; }
-    public function lastPage() { return 4; }
+$paginatorObj = new class() {
+    public function total() {
+        return 7; }
+    public function items() {
+        return ['a', 'b']; }
+    public function currentPage() {
+        return 1; }
+    public function perPage() {
+        return 2; }
+    public function lastPage() {
+        return 4; }
 };
 eq(MCPHelper::paginatorTotal($paginatorObj), 7, 'paginatorTotal from object');
 eq(MCPHelper::paginatorItems($paginatorObj), ['a', 'b'], 'paginatorItems from object');
@@ -200,8 +205,11 @@ $preview = Mutation::runGuarded(
     ['entry_id' => 5, 'dry_run' => true],
     'submission:5',
     'status:read',
-    function () { return ['entry_id' => 5, 'permanent' => true]; },
-    function () use (&$applied) { $applied = true; return ['ok' => true]; }
+    function () {
+        return ['entry_id' => 5, 'permanent' => true]; },
+    function () use (&$applied) {
+        $applied = true;
+        return ['ok' => true]; }
 );
 ok(is_array($preview) && !empty($preview['dry_run']), 'dry_run returns a preview envelope');
 ok(!empty($preview['confirm_token']), 'dry_run returns a confirm_token');
@@ -212,8 +220,11 @@ $noConfirm = Mutation::runGuarded(
     ['entry_id' => 5],
     'submission:5',
     'status:read',
-    function () { return []; },
-    function () use (&$applied) { $applied = true; return ['ok' => true]; }
+    function () {
+        return []; },
+    function () use (&$applied) {
+        $applied = true;
+        return ['ok' => true]; }
 );
 ok($noConfirm instanceof WP_Error, 'execute without confirm_token is refused');
 eq($noConfirm->get_error_code(), ErrorCodes::CONFIRMATION_REQUIRED, 'refusal uses CONFIRMATION_REQUIRED');
@@ -227,8 +238,11 @@ $runGuarded = function ($params) use (&$applyCount) {
         $params,
         'submission:9',
         'status:read',
-        function () { return ['entry_id' => 9, 'permanent' => true]; },
-        function () use (&$applyCount) { $applyCount++; return ['ok' => true, 'id' => 9]; }
+        function () {
+            return ['entry_id' => 9, 'permanent' => true]; },
+        function () use (&$applyCount) {
+            $applyCount++;
+            return ['ok' => true, 'id' => 9]; }
     );
 };
 $prevEnvelope = $runGuarded(['entry_id' => 9, 'dry_run' => true]);
@@ -410,14 +424,16 @@ $sampleFields = [
     ['element' => 'container', 'columns' => [
         ['fields' => [
             ['attributes' => ['name' => 'nested'], 'settings' => ['label' => 'Nested', 'conditional_logics' => ['status' => true, 'type' => 'group', 'condition_groups' => [['rules' => [['field' => 'email', 'operator' => '!=', 'value' => '']]]]]]],
-        ]],
-    ]],
+        ],],
+    ],],
 ];
 $keys = ConditionTools::fieldKeys($sampleFields);
 ok(isset($keys['email'], $keys['reason'], $keys['nested']), 'fieldKeys finds nested field keys');
 $conds = ConditionTools::extractConditions($sampleFields);
 eq(count($conds), 2, 'extractConditions returns only conditioned fields, recursing into containers');
-$condKeys = array_map(function ($c) { return $c['key']; }, $conds);
+$condKeys = array_map(function ($c) {
+    return $c['key'];
+}, $conds);
 ok(in_array('reason', $condKeys, true), 'extractConditions includes a simple-conditions field');
 ok(in_array('nested', $condKeys, true), 'extractConditions includes a grouped-conditions nested field');
 $validSimple = ['status' => true, 'type' => 'any', 'conditions' => [['field' => 'email', 'operator' => '=', 'value' => 'vip']]];
@@ -437,7 +453,9 @@ ok(!ConditionTools::hasRules(null) && !ConditionTools::hasRules([]), 'hasRules f
 $doc = ['fields' => $sampleFields, 'submitButton' => ['uiElementType' => 'button']];
 $applied = ConditionTools::applyToField($doc, 'nested', $validSimple);
 $appliedConds = ConditionTools::extractConditions($applied['fields']);
-$nestedRow = array_values(array_filter($appliedConds, function ($c) { return 'nested' === $c['key']; }));
+$nestedRow = array_values(array_filter($appliedConds, function ($c) {
+    return 'nested' === $c['key'];
+}));
 eq($nestedRow[0]['conditional_logics'], $validSimple, 'applyToField sets the targeted field\'s logics');
 $untouched = $applied;
 $untouched['fields'][2]['columns'][0]['fields'][0]['settings']['conditional_logics'] = $doc['fields'][2]['columns'][0]['fields'][0]['settings']['conditional_logics'];
@@ -466,6 +484,23 @@ $formCreatorSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Support/Fo
 ok(false !== strpos($formCreatorSrc, 'public function assignStorageNames'), 'FormCreator exposes assignStorageNames publicly');
 ok(false !== strpos($formCreatorSrc, '$this->assignStorageNames(Arr::get($form'), 'create() re-runs the uniquifier as a safety net');
 
+echo "PaymentDataProvider (free default payment seam listener)\n";
+// Every pin below encodes a shipped bug or boundary from the Pro-listener era:
+// Collection-vs-empty(), permission gate, fail-closed, no-overwrite, no blobs.
+$providerSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/Support/PaymentDataProvider.php');
+ok(false !== strpos($providerSrc, "add_filter('fluentform/mcp_submission_data'"), 'provider listens on the entry seam');
+ok(false !== strpos($providerSrc, "add_filter('fluentform/mcp_submission_rows'"), 'provider listens on the rows seam');
+ok(false !== strpos($providerSrc, "Acl::hasPermission('fluentform_view_payments', \$formId)"), 'both paths gate on the payments capability');
+ok(false === strpos($providerSrc, 'empty($subscriptions)'), 'no empty() on the subscriptions Collection (use count())');
+ok(false !== strpos($providerSrc, '0 === count($transactions) && 0 === count($subscriptions)'), 'non-payment guard uses count()');
+ok(false !== strpos($providerSrc, "isset(\$data['payment'])"), 'an addon-populated payment block is never overwritten');
+eq(substr_count($providerSrc, 'catch (\Throwable'), 2, 'both listeners fail closed on Throwable');
+foreach (['payment_note', 'vendor_response', 'original_plan', 'card_last_4', 'payer_email'] as $blob) {
+    ok(false === strpos($providerSrc, "'" . $blob . "'"), "payload never surfaces {$blob}");
+}
+$mcpInitSrc = file_get_contents(__DIR__ . '/../../app/Modules/MCP/MCPInit.php');
+ok(false !== strpos($mcpInitSrc, 'PaymentDataProvider::register()'), 'provider registered from MCPInit::init');
+
 echo "Discovery stats caching\n";
 // Unrestricted-scope counts scan submissions by status only (no usable index);
 // they must come from the shared long-TTL cache, never recomputed per user/60s.
@@ -481,7 +516,9 @@ $GLOBALS['__mcp_test_options'] = [];
 $GLOBALS['__mcp_test_filters'] = [];
 $baseline = count(AbilitiesRegistrar::getDefinitions());
 add_filter('fluentform/mcp_tool_definitions', function ($defs) {
-    $defs['fluentform/pro-injected'] = ['label' => 'Pro Injected', 'description' => 'x', 'execute_callback' => function () {}, 'permission_callback' => function () { return true; }];
+    $defs['fluentform/pro-injected'] = ['label' => 'Pro Injected', 'description' => 'x', 'execute_callback' => function () {}, 'permission_callback' => function () {
+        return true;
+    },];
     return $defs;
 });
 $injected = AbilitiesRegistrar::getDefinitions();
@@ -492,7 +529,9 @@ ok(!isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-injected']), 'def
 
 // Filter-injected advanced tools must obey the opt-in like inline ones.
 add_filter('fluentform/mcp_tool_definitions', function ($defs) {
-    $defs['fluentform/pro-advanced'] = ['label' => 'Pro Advanced', 'description' => 'x', 'advanced' => true, 'execute_callback' => function () {}, 'permission_callback' => function () { return true; }];
+    $defs['fluentform/pro-advanced'] = ['label' => 'Pro Advanced', 'description' => 'x', 'advanced' => true, 'execute_callback' => function () {}, 'permission_callback' => function () {
+        return true;
+    },];
     return $defs;
 });
 ok(!isset(AbilitiesRegistrar::getDefinitions()['fluentform/pro-advanced']), 'filter-injected advanced tool withheld while opt-in is off');
