@@ -1,0 +1,316 @@
+# Fluent Forms - Customizable Contact Forms, Survey, Quiz, & Conversational Form Builder
+
+**Contributors:** techjewel, adreastrian, heera, pyrobd, hrdelwar, dhrupo, wpmanageninja  
+**Tags:** contact form, wp forms, forms, form builder, custom form  
+**Requires at least:** 4.5  
+**Tested up to:** 7.0
+**Requires PHP:** 7.4  
+**Stable tag:** 6.2.3
+**License:** GPLv2 or later  
+**License URI:** https://www.gnu.org/licenses/gpl-2.0.html
+
+Get a fast contact form plugin. Create advanced forms using drag and drop form builder with all smart features.
+
+[Download Link](https://wordpress.org/plugins/fluentform/)
+## Project Setup
+
+To clone and set up the project, follow these steps:
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/fluentform/fluentform.git
+```
+
+2. **Navigate into the project directory:**
+```bash
+cd fluentform
+```
+
+3. **Install dependencies:**
+```bash
+npm install
+```
+
+4. **Run the development server:**
+```bash
+npm run dev | watch
+```
+
+5. **For production build:**
+```bash
+npm run production
+```
+
+Make sure you have Node.js and npm installed on your machine before running these commands.
+
+## Directory Structure
+```
+├── app
+│   ├── Api         # PHP API Utility classes
+│   ├── Functions   # Global functions
+│   ├── Hooks       # Actions and filters handlers
+│   ├── Http        # REST API routes, controllers, policies
+│   ├── Models      # Database Models
+│   ├── Modules     # Ajax & Old Modules Services
+│   ├── Services    # Module Services
+│   ├── Views       # PHP view files
+│   └── App.php
+│
+├── assets          # CSS, JS, media files
+├── boot            # Plugin boot files
+├── config          # Plugin framework config 
+├── database        # Database migration files
+├── guten_block     # Gutenberg block files
+├── resources       # Vue & Js resources
+├── language        # Language translation files
+├── vendor          # Composer dependencies
+│
+└── fluentform.php  # Plugin entry file
+```
+
+## Description
+
+### Fluent Forms is an advanced and lightweight Contact Form Builder
+
+**Fluent Forms** is the ultimate user-friendly, customizable **drag-and-drop WP contact form plugin** that offers you all the powerful features. It is a perfect **no-code form builder** for both beginners and advanced users.
+
+Anything from a simple contact form to a more advanced payment, quiz, or calculator form, Fluent Forms can meet virtually all your needs.
+
+### Powerful Features available in the Free Version
+
+* Drag & drop builder
+* Smart conditional logic
+* Conversational form
+* 25+ ready-to-use input fields
+* Reusable form templates
+* Adjustable multi-column form layout
+* Spam protection using reCAPTCHA, hCaptcha & more
+* Email notification
+* Form scheduling & restriction
+* Export/import forms
+* Export entries in CSV/Excel/ODS/JSON format
+* Filter entries
+* Form Finder
+* Form Edit history
+* Undo/redo
+* Role manager
+* Form analytics
+* Visual data report
+* Set default value for input fields or populate from URL parameters
+* Custom CSS & JS
+* Fully responsive & accessible for users with special needs
+* Migrate from WPForms, Contact Form 7, Gravity Forms, Ninja Forms & Caldera Forms
+
+### Features available in the Pro version
+
+* 55+ input fields
+* Payment integration
+* Numeric calculation
+* Multi-step form
+* Advanced form styler
+* Quiz & survey module
+* Inventory management
+* Dynamic field
+* Advanced search filter
+* Import form entries
+* Admin approval
+* Conditional confirmation messages
+* Double opt-in
+* Advanced form validation
+* Auto-delete entries
+* Landing page
+* Geo-location provider
+* SMS notifications
+* Conditional email routing
+* User registration
+* Advanced post/CPT creation
+* Address autocomplete
+* 60+ third-party integrations (and more via Zapier)
+
+## Installation
+
+This section describes how to install the plugin and get it working.
+
+1. Upload the plugin files to the `/wp-content/plugins/fluentform` directory, or install the plugin through the WordPress plugins screen directly.
+2. Activate the plugin through the 'Plugins' screen in WordPress
+3. Use the `Fluent Forms` -> `Global Settings` screen to configure the plugin
+
+## Frequently Asked Questions
+
+### Do I need coding skill to use Fluent Forms?
+
+No, you don't need any pre-requisite programming knowledge to build beautiful forms. With Powerful drag and drop features you can build any simple or complex form.
+
+### Will Fluent Forms slow down my website?
+
+Absolutely not. We build Fluent Forms very carefully and maintained WP standards as well as we only load styles / scripts in the pages where you will use the Fluent Forms. Fluent Forms is faster than any form builder plugin. Fluent Forms only load less than 30KB css and js combined.
+
+### Can I use conditional logics when building a form?
+
+Yes, with our powerful conditional logic panel you can build any type of complex forms. You can add one or multiple conditional logics to any field and it will work like a charm.
+
+### Can I build multi-column forms?
+
+Yes, you can use 2 column or 3 column containers and you can build forms.
+
+### Can I export/Import the form submission data?
+
+Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also import in pro version.
+
+## Changelog
+
+### 6.2.3 (Date: May 21, 2026) =
+- Adds option group support for Dropdown and Multi-select fields
+- Adds pinned column support in the entries table
+- Adds new icon presets, SVG icon support, and active/inactive color options for the Ratings field
+- Adds search to the form switcher in entries
+- Improves keyboard navigation in the entries table
+- Improves accessibility for fixed columns and action buttons in entries
+- Updates DOMPurify, PostCSS, and the Babel transform helper to address security vulnerabilities (CVE-2026-44728)
+- Fixes conditional logic settings not showing for custom fields in the editor
+- Fixes conditional logic not-equal check when the target field has no value
+- Fixes Name field layout when a sub-field has no label
+- Fixes text and list formatting differences between the editor and preview
+- Fixes AI form builder losing field hints for non-English prompts
+- Fixes missing submission date in Excel exports
+- Fixes garbled export filenames for forms with non-Latin titles
+- Fixes form import breaking confirmation and notification settings
+- Fixes the Find feature missing forms inside page builder popups
+- Fixes entries not sorting by actual submission date
+- Fixes form import corrupting custom CSS and JavaScript code
+- Fixes visual artifacts in the collapsed form settings sidebar
+- Fixes Global Settings sidebar collapse toggle not working on desktop
+- Fixes the Excel export option incorrectly labeled as xlsv
+- Fixes entry Next and Previous navigation breaking on sites that use a custom database table prefix
+- Fixes fatal error when a Textarea field receives an array value during submission processing
+- Fixes multi-word Google Fonts not loading in conversational forms
+- Fixes textdomain_just_in_time notice on WordPress 6.7 and later, including WP Staging staging environments
+- Fixes several strings that could not be translated on non-English admin sites
+- Fixes the Entries page label showing garbled text on German-language sites
+- Fixes confirmation redirect URL losing query-string values with encoded characters
+
+### 6.2.2 (Date: April 23, 2026) =
+- Hardens email attachment path resolution to keep notification attachments inside allowed paths
+- Hardens predefined form payload handling and confirmation validation
+- Improves compatibility for legacy predefined field option validation
+- Enforces form-scoped access for submission collection and print endpoints
+- Tightens allowed-forms scope handling for form managers
+- Ensures form settings are normalized before use
+- Preserves integration default field mappings
+- Preserves post feed draft values on resume
+- Respects user locale in the form editor
+- Restores raw cookie values for smartcodes
+- Updates `picomatch` from 2.3.1 to 2.3.2
+- Improves ACL permission checks and helper coverage for delegated and full-access flows
+- Hardens form HTML sanitization by blocking event handlers and escaping permission message shortcode output
+- Restricts global integration settings access and protects payment filters AJAX metadata endpoint
+- Sanitizes form step settings while preserving safe HTML in step button text
+- Adds subscription field support in payment calculations
+- Improves entry export to honor submission info selection
+- Defers multisite site setup until initialization
+- Stabilizes long entry content previews
+
+### 6.2.1 (Date: April 15, 2026) =
+- Hardens form-scoped permissions across legacy AJAX and REST actions for settings, entries, reports, logs, exports, and payment routes
+- Restores all-forms reporting while limiting aggregate analytics to authorized forms for scoped managers
+- Adds opt-in legacy HMAC fallback for pre-6.2.0 encrypted tokens to ease upgrade compatibility
+- Adds filter hooks for honeypot, Akismet, and CAPTCHA spam/failed messages
+- Adds database indexes to the `form_analytics` table for faster reporting queries
+- Adds a framework mbstring fallback for hosts without the extension
+- Improves frontend submission reliability by falling back to the form instance AJAX URL when global vars are missing
+- Fixes public PDF download support for legacy links
+- Fixes draft submissions table support in entry export
+- Fixes entries search ACL leakage caused by top-level `orWhereHas`
+- Fixes All Entries page localStorage persistence
+- Fixes character-limit validation showing the configured message instead of a raw field name
+- Fixes numeric validation so numeric-looking text is no longer treated as a number
+- Fixes WPML addon activation failing with an `Invalid plugin` error
+
+### 6.2.0 (Date: April 01, 2026) =
+- Upgrades internal framework for better performance and PHP 8.4 support
+- Improves Stripe payment confirmation security
+- Improves data export security
+- Improves database query performance for reports
+- Adds filter hook for conversational form extra inputs
+- Fixes textarea line breaks not displaying correctly in entries
+- Improves overall plugin security and stability
+- Dev: [Upgrade Guide for developers](https://developers.fluentforms.com/upgrade-guide/6.2.0/)
+
+### 6.1.15 (Date: January 30, 2026) =
+- Adds prefix and suffix support for textarea, url and password input
+- Adds suggested plugin page to show verified plugins
+- Adds mobile keyboard type options for number and mask input
+- Adds default form style share and apply to newly created forms
+- Improves AI form builder security
+- Improves multiselect accessibility
+- Improves form title generation in form history
+- Improves form saving UX
+- Fixes serial number concurrency in submission using hook
+
+### 6.1.13 (Date: January 14, 2026) =
+- Adds mobile keyboard type option for numeric and Mask Input fields
+- Adds 'Inherit Theme' option for Form Style Template in Elementor widget
+- Adds more string translation support for WPML
+- Improves country names according to the latest ISO 3166-1 alpha-2 list
+- Fixes Business Logo upload issue in payment settings
+- Fixes Dynamic SmartCode not working for conversational forms
+
+### 6.1.12 (Date: December 26, 2025) =
+- Fixes delay with condition and range slider field
+- Fixes top performing form report count
+- Fixes Button Style “Other Option” input issue with images
+- Improves security and sanitization for confirmation messages
+
+### 6.1.11 (Date: December 4, 2025) =
+- Fixes issue with saving showing invalid json
+- Fixes default behavior of regex in advanced validation
+
+### 6.1.10 (Date: December 2, 2025) =
+- Fix global settings save issue
+- Support other option in Conversational Form
+- Fix form submission delay issue for a large condition set
+
+
+### 6.1.5 (Date: October 28, 2025) =
+- Adds Gutenberg Block Form Style Customization
+- Adds AI Custom CSS support for form creation
+- Adds Conversational Form Editor shortcode support ({get.text}, {ip}, etc.)
+- Adds warning message for Name Attribute changes to prevent entry data loss
+- Adds Dynamic field greyed-out (Pro Feature) visibility
+- Improves many untranslatable strings throughout the plugin. eg: ("for each month", "Signup Fee for", etc.)
+- Improves Design Preview color handling with block themes
+- Fixes Payment Form submission failures inside Elementor popups
+- Fixes Custom style CSS backtick insertion issue
+- Fixes country name from "Turkey" to "Türkiye" across all references
+- Fixes {user.meta.meta_key} shortcode for non-English languages
+- Fixes Advanced Filter UX issue with persistent dialog box
+- Fixes textarea line break in entry import/export
+- Fixes Entries table showing option values instead of labels for radio/select fields
+- Fixes Quantity field default value not working with conditional logic
+
+### 6.1.4 (Date: September 23, 2025) =
+- Fixes Elementor backend editor not working when Fluent Forms was added
+- Fixes the multiple choice field not working in Elementor popup
+- Fixes Report Page UI not properly showing in RTL
+- Fixes Stripe payment error when global auto-load CAPTCHA is enabled in conversational forms
+- Fixes the Conversational Form Phone Field to return numbers in the full International format
+- Fixes Custom User Meta Fields not populating
+- Fixes the phone field search input style height
+- Fixes email notification triggering for empty payment method form
+- Fixes the PDF Download link in confirmation message
+- Fixes PHP 8 compatibility issues with Excel exports
+- Fixes the range slider in conversational forms causing incorrect progress percentage
+
+
+
+[View complete changelog history](https://fluentforms.com/docs/changelog/)
+
+## Support and Documentation
+
+For additional information and support:
+
+- [Demo](https://fluentforms.com/forms/)
+- [User Guide](https://wpmanageninja.com/docs/fluent-form/)
+- [Youtube Video Tutorials](https://www.youtube.com/playlist?list=PLXpD0vT4thWEY6CbwMISKDiXOd5KPC6wo)
+- [Get Support](https://wpmanageninja.com/support-tickets/)
+- [Official Facebook Community](https://www.facebook.com/groups/fluentforms/)

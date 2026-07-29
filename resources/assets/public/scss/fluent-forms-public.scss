@@ -1,0 +1,21 @@
+.fluentform {
+  * {
+    box-sizing: border-box;
+  }
+  .clearfix {
+    &:before,
+    &:after {
+      display: table;
+      content: " ";
+    }
+    &:after {
+      clear: both;
+    }
+  }
+}
+@import "_var";
+@import "public/_grid";
+@import "public/cropper_modal";
+@import "public/components";
+@import "public/public_helpers";
+@import "public/responsive";

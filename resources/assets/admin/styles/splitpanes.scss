@@ -1,0 +1,12 @@
+@import (less) "../../../../node_modules/splitpanes/dist/splitpanes.css";
+
+.default-theme {
+    &.splitpanes {
+        .splitpanes__splitter {
+            border-left: none;
+        }
+    }
+}
+.splitpanes.default-theme .splitpanes__pane{
+    background-color: transparent;
+}

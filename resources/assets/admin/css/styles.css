@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "wptabledatapress-fontawesome";
+  src:url("fonts/wptabledatapress-fontawesome.eot");
+  src:url("fonts/wptabledatapress-fontawesome.eot?#iefix") format("embedded-opentype"),
+    url("fonts/wptabledatapress-fontawesome.woff") format("woff"),
+    url("fonts/wptabledatapress-fontawesome.ttf") format("truetype"),
+    url("fonts/wptabledatapress-fontawesome.svg#wptabledatapress-fontawesome") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[data-icon]:before {
+  font-family: "wptabledatapress-fontawesome" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="fooicon-"]:before,
+[class*=" fooicon-"]:before {
+  font-family: "wptabledatapress-fontawesome" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fooicon-search:before {
+  content: "\f002";
+}
+.fooicon-sort-desc:before {
+  content: "\f161";
+}
+.fooicon-sort-asc:before {
+  content: "\f160";
+}
+.fooicon-sort:before {
+  content: "\f0dc";
+}
+.fooicon-minus:before {
+  content: "\f068";
+}
+.fooicon-plus:before {
+  content: "\f067";
+}
+.fooicon-circle-o-notch:before {
+  content: "\e000";
+}

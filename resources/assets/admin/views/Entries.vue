@@ -1,0 +1,1848 @@
+<template>
+    <div class="ff_entries_wrap">
+        <section-head class="ff_section_head_between items-center" size="sm">
+            <section-head-content>
+                <h1 class="ff_section_title">{{$t('Entries')}}</h1>
+            </section-head-content>
+            <section-head-content>
+                <btn-group>
+                    <btn-group-item as="div">
+                        <el-button @click="gotoVisualReport()" type="primary">
+                            <i class="ff-icon ff-icon-donut-chart"></i>
+                            <span>{{ $t('Visual Report') }}</span>
+                        </el-button>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <el-dropdown @command="selectFieldsToExport" trigger="click">
+                            <el-button :disabled="exportingEntries">
+                                {{ $t('Export') }}
+                                <i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="csv">{{ $t('Export as %s', 'CSV') }}</el-dropdown-item>
+                                <el-dropdown-item command="xlsx">{{ $t('Export as %s', 'Excel (xlsx)') }}</el-dropdown-item>
+                                <el-dropdown-item command="ods">{{ $t('Export as %s', 'ODS') }}</el-dropdown-item>
+                                <el-dropdown-item command="json">{{ $t('Export as %s', 'JSON Data') }}</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <el-dropdown
+                            ref="formSwitcherDropdown"
+                            @command="handleSwitchForm"
+                            @visible-change="handleFormSwitcherVisible"
+                            class="current_form_name"
+                            trigger="click"
+                        >
+                            <el-button>
+                                {{ current_form_title }}
+                                <i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu
+                                slot="dropdown"
+                                class="ff_form_switcher_menu"
+                                @keydown.native.capture="handleFormSwitcherMenuKeydown"
+                            >
+                                <li class="ff_form_switcher_search" @click.stop>
+                                    <el-input
+                                        v-model="formSearch"
+                                        ref="formSwitcherSearch"
+                                        size="small"
+                                        :placeholder="$t('Search forms...')"
+                                        prefix-icon="el-icon-search"
+                                        clearable
+                                    />
+                                </li>
+                                <el-dropdown-item
+                                        v-for="form in filteredForms"
+                                        :key="'form_switch_'+form.id"
+                                        :command="form.id"
+                                        :disabled="form.id == form_id"
+                                >{{ form.title }}
+                                </el-dropdown-item>
+                                <li
+                                    v-if="!filteredForms.length"
+                                    class="ff_form_switcher_empty"
+                                    role="status"
+                                    aria-live="polite"
+                                >
+                                    {{ $t('No matching forms') }}
+                                </li>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </btn-group-item>
+                    <el-dropdown
+                            @command="showImport"
+                            class="more_menu"
+                    >
+                        <span class="el-dropdown-link">
+                            <i class="ff-icon ff-icon-more-vertical"/>
+                        </span>
+                        <el-dropdown-menu slot="dropdown" >
+                            <el-dropdown-item  >
+                                    {{ $t('Import') }}
+                            </el-dropdown-item >
+                        </el-dropdown-menu>
+                    </el-dropdown>
+
+
+                </btn-group>
+            </section-head-content>
+        </section-head>
+
+        <div class="separator mb-4"></div>
+
+        <section-head class="ff_form_editor_entries_actions ff_section_head_between items-center" size="sm">
+            <section-head-content>
+                 <btn-group class="ff_entries_select_wrap" as="div">
+                    <template v-if="entrySelections.length">
+                        <btn-group-item as="div">
+                            <label for="bulk-action-selector-top" class="screen-reader-text">
+                                {{ $t('Select bulk action') }}
+                            </label>
+                            <el-select
+                                    clearable
+                                    :placeholder="$t('Bulk Actions')"
+                                    id="bulk-action-selector-top"
+                                    name="action"
+                                    popper-class="el-big-items"
+                                    v-model="bulkAction"
+                            >
+                                <el-option-group
+                                        v-for="(group,groupKey) in bulkActions"
+                                        :key="groupKey"
+                                        :label="groupKey"
+                                >
+                                    <el-option
+                                            v-for="item in group"
+                                            :key="item.action"
+                                            :label="$t(item.label)"
+                                            :value="item.action"
+                                    >
+                                    </el-option>
+                                </el-option-group>
+                            </el-select>
+                        </btn-group-item>
+                        <btn-group-item as="div">
+                            <el-button type="primary" @click.prevent="handleBulkAction">{{ $t('Apply') }}</el-button>
+                        </btn-group-item>
+                    </template>
+                    <btn-group-item as="div">
+                        <el-select
+                                clearable
+                                v-model="entry_type"
+                                :placeholder="$t('All Types')"
+                                filterable
+                                @change="filterEntryType()"
+                        >
+                            <el-option
+                                    v-for="(status, status_key) in entry_statuses"
+                                    :key="status_key"
+                                    :value="status_key"
+                                    :label="status"
+                            >
+                                {{ status }}
+                                <span v-show="counts[status_key]">({{ counts[status_key] }})</span>
+                            </el-option>
+                        </el-select>
+                    </btn-group-item>
+                    <btn-group-item v-if="has_payment" as="div">
+                        <el-select
+                                clearable
+                                multiple
+                                v-model="selectedPaymentStatuses"
+                                :placeholder="$t('All Payments')"
+                                @change="filterPaymentStatuses()"
+                        >
+                            <el-option
+                                    v-for="(status, status_key) in payment_statuses"
+                                    :key="status_key"
+                                    :value="status_key"
+                                    :label="status"
+                            >
+                                {{ status }}
+                            </el-option>
+                        </el-select>
+                    </btn-group-item>
+                </btn-group>
+            </section-head-content>
+            <section-head-content>
+                <btn-group class="ff_entries_report_wrap" as="div">
+                    <btn-group-item as="div">
+                        <el-button
+                            :type="advanced_filter_active ? 'primary' : 'default'"
+                            :plain="!advanced_filter_active"
+                            icon="el-icon-s-operation"
+                            @click="advanced_filter_active = !advanced_filter_active"
+                            :title="$t('Toggle advanced filter panel')">
+                            {{ advanced_filter_active ? $t('Hide Filters') : $t('Advanced Filter') }}
+                            <el-badge
+                                v-if="hasAppliedFilters"
+                                :value="appliedFilterGroupCount"
+                                class="ff_advanced_filter_badge" />
+                        </el-button>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <label for="search_bar" class="screen-reader-text">
+                            {{ $t('Search Entry') }}
+                        </label>
+                        <el-input
+                                v-on:keyup.enter.native="handleSearch"
+                                :placeholder="$t('Search')"
+                                v-model="search_string"
+                                prefix-icon="el-icon-search"
+                                class="ff_entries_report_search"
+                        >
+                        </el-input>
+                    </btn-group-item>
+
+                    <btn-group-item as="div">
+                        <el-dropdown v-if="!entrySelections.length" trigger="click" class="current_form_name_column" :hide-on-click="false">
+                            <el-button>
+                                 {{ $t('Columns') }}
+                                <i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown"
+                                style="max-height:300px; overflow-y:scroll;">
+                                <el-dropdown-item key="pin_column_row" class="ff_pin_column_item">
+                                    <div class="ff_pin_column_row" @click.stop>
+                                        <span class="ff_pin_column_label">{{ $t('Pin column:') }}</span>
+                                        <el-select
+                                            v-model="pinnedColumn"
+                                            size="small"
+                                            class="ff_pin_column_select"
+                                            @change="handlePinnedColumnChange"
+                                        >
+                                            <el-option :label="$t('None')" value="none"></el-option>
+                                            <el-option :label="$t('Entry #')" value="id"></el-option>
+                                            <el-option
+                                                v-for="column in formattedColumn"
+                                                :key="'pin_'+column.field"
+                                                :label="column.label"
+                                                :value="column.field"
+                                            ></el-option>
+                                            <el-option :label="$t('Entry Status')" value="status"></el-option>
+                                            <template v-if="has_payment">
+                                                <el-option :label="$t('Amount')" value="payment_total"></el-option>
+                                                <el-option :label="$t('Payment Status')" value="payment_status"></el-option>
+                                                <el-option :label="$t('Payment Method')" value="payment_method"></el-option>
+                                            </template>
+                                            <el-option :label="$t('Submitted at')" value="created_at"></el-option>
+                                        </el-select>
+                                    </div>
+                                </el-dropdown-item>
+                                <el-dropdown-item divided disabled class="ff_pin_column_divider"></el-dropdown-item>
+                                <el-dropdown-item v-for="(column, column_name) in columns" :key="column_name">
+                                    <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"
+                                                 v-model="visibleColumns">
+                                        {{ column }}
+                                    </el-checkbox>
+                                </el-dropdown-item>
+                                <el-dropdown-item key="column_order" command="column_order">
+                                    <el-button @click="visibleColReorderModal = true" type="primary" size="small">
+                                        {{ $t('Reorder Column') }}
+                                    </el-button>
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <div class="ff_advanced_filter_wrap">
+                            <el-button @click="basicFilter = !basicFilter" :class="this.filter_date_range && 'ff_filter_selected'">
+                                <span>{{ $t('Date Filter') }}</span>
+                                <i v-if="basicFilter" class="ff-icon el-icon-circle-close"></i>
+                                <i v-else class="ff-icon ff-icon-filter"></i>
+                            </el-button>
+                            <div v-if="basicFilter" class="ff_advanced_search">
+                                <div class="ff_advanced_search_radios">
+                                    <el-radio-group v-model="radioOption" class="el-radio-group-column">
+                                        <el-radio label="all">{{$t('All')}}</el-radio>
+                                        <el-radio label="today">{{$t('Today')}}</el-radio>
+                                        <el-radio label="yesterday">{{$t('Yesterday')}}</el-radio>
+                                        <el-radio label="last-week">{{$t('Last Week')}}</el-radio>
+                                        <el-radio label="last-month">{{$t('Last Month')}}</el-radio>
+                                    </el-radio-group>
+                                </div>
+                                <div class="ff_advanced_search_date_range">
+                                    <p>{{ $t('Select a Timeframe') }}</p>
+                                    <el-date-picker
+                                            v-model="filter_date_range"
+                                            type="daterange"
+                                            @change="filterDateRangedPicked"
+                                            :picker-options="pickerOptions"
+                                            format="dd MMM, yyyy"
+                                            value-format="yyyy-MM-dd"
+                                            range-separator="-"
+                                            :start-placeholder="$t('Start date')"
+                                            :end-placeholder="$t('End date')">
+                                    </el-date-picker>
+                                </div>
+                            </div>
+                        </div><!-- .ff_advanced_filter_wrap -->
+                    </btn-group-item>
+	                <btn-group-item as="div">
+		                <el-button @click="getData" v-loading="loading && visibleColumns">
+			                <i class="ff-icon el-icon-refresh"></i>
+		                </el-button>
+	                </btn-group-item>
+                </btn-group>
+            </section-head-content>
+        </section-head>
+
+        <ImportEntriesModal :app="app" :form_id="form_id" :visibility.sync="showImportEntriesModal" />
+
+        <el-dialog :visible.sync="visibleColReorderModal">
+            <template slot="title">
+                <h4>{{$t('Change Column Display Order')}}</h4>
+            </template>
+            <div class="mt-4">
+                <ColumnDragAndDrop
+                    :columns="columns"
+                    :columns_order ="columnsOrder"
+                    @save="refreshColumnsOrder"
+                    :form_id="form_id"
+                    :visible_columns="visibleColumns" >
+                </ColumnDragAndDrop>
+            </div>
+        </el-dialog>
+
+        <el-alert
+            v-if="autoDeleteStatus"
+            :title="$t('Auto delete entry on form submission is enabled! No new entry data will be saved for this form.')"
+            :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
+            type="error">
+        </el-alert>
+	    <template v-if="advanced_filter_active">
+                <AdvancedSearch v-if="has_pro" @runSearch="runAdvanceSearch"  :advanced_filter="advanced_filter"/>
+			    <notice v-else type="danger-soft" class="ff_alert_between mb-4">
+				    <div>
+					    <h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>
+					    <p class="text">{{ $t('Upgrade to get access to all the advanced features.') }}</p>
+				    </div>
+				    <a target="_blank" :href="upgradeUrl('feature_lock_advanced_filter')" class="el-button el-button--primary el-button--small">
+					    {{ $t('Upgrade to Pro') }}
+				    </a>
+			    </notice>
+	    </template>
+
+        <applied-filter-summary
+            :filters="advanced_filter"
+            @clear-group="clearFilterGroup" />
+
+        <div style="min-height: 300px;" class="entries_table">
+            <div class="ff_table">
+                <el-skeleton :loading="loading" animated :rows="6">
+                    <el-table
+                        ref="entriesTable"
+                         :size="isCompact? 'mini':''"
+                        :data="entries"
+                        :stripe="true"
+                        :class="['ff_entries_table', {'compact': isCompact}]"
+                        highlight-current-row
+                        @sort-change="handleTableSort"
+                        @selection-change="handleSelectionChange"
+                        @row-click="handleRowClick"
+                        @keydown.native.capture="handleTableKeydown"
+                        @focusin.native="handleRowFocusIn"
+                    >
+
+                        <el-table-column type="selection" width="30" :fixed="pinnedColumn !== 'none' ? 'left' : false"></el-table-column>
+                        <el-table-column label="#" sortable="custom" prop="id" width="100px" :fixed="pinnedColumn === 'id' ? 'left' : false" :class-name="idShortByClassName">
+                            <template slot-scope="scope">
+                                <div class="has_hover_item">
+                                    <span
+                                        class="ff_entry_status_dot"
+                                        :class="'ff_entry_status_dot--' + (scope.row.status || 'unknown')"
+                                        tabindex="-1"
+                                        role="img"
+                                        :title="getStatusName(scope.row.status)"
+                                        :aria-label="$t('Status') + ': ' + getStatusName(scope.row.status)"
+                                    ></span>
+                                    <router-link
+                                        tabindex="-1"
+                                        :to="{
+                                            name: 'form-entry',
+                                            params: {
+                                                form_id: scope.row.form_id,
+                                                entry_id: scope.row.id
+                                            },
+                                            query: {
+                                                sort_by: sort_by,
+                                                current_page: paginate.current_page,
+                                                pos: scope.$index,
+                                                type: entry_type
+                                            }
+                                        }">
+                                        {{ scope.row.serial_number }}
+                                    </router-link>
+                                    <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
+                                        <span v-if="scope.row.is_favourite != '0'"
+                                            tabindex="-1"
+                                            @click="changeFavorite(scope.row.id, scope.$index, 0)"
+                                            :title="$t('Remove from Favorites')"
+                                            class="icon-favorite el-icon-star-on action_button"
+                                        />
+                                        <span v-else
+                                            tabindex="-1"
+                                            @click="changeFavorite(scope.row.id, scope.$index, 1)"
+                                            :title="$t('Mark as Favorites')"
+                                            class="icon-favorite el-icon-star-off action_button"
+                                        />
+
+                                        <span v-if="scope.row.status == 'read'"
+                                            tabindex="-1"
+                                            @click="changeStatus(scope.row.id, scope.$index, 'unread')"
+                                            :title="$t('Mark as Unread')"
+                                            class="icon-status el-icon-circle-check action_button"
+                                        />
+                                        <span v-else
+                                            tabindex="-1"
+                                            @click="changeStatus(scope.row.id, scope.$index, 'read')"
+                                            :title="$t('Mark as Read')"
+                                            class="icon-status el-icon-finished action_button"
+                                        />
+                                    </div>
+
+                                    <div class="inline_actions inline_item" v-else>
+                                            <span tabindex="-1"
+                                                @click="restoreEntry(scope.row.id, scope.$index)"
+                                                class="el-icon-circle-check action_button">{{ $t('Restore') }}</span>
+                                    </div>
+                                </div>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                v-for="(column, index) in formattedColumn"
+                                :label="column.label"
+                                min-width="200"
+                                sortable="custom"
+                                :prop="'user_inputs_column_field-' + column.field"
+                                :fixed="pinnedColumn === column.field ? 'left' : false"
+                                :key="index">
+                            <template slot-scope="scope">
+                                <el-popover
+                                    v-if="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                    popper-class="ff-entry-cell-popover"
+                                    placement="top-start"
+                                    trigger="hover"
+                                    :open-delay="150"
+                                    :popper-options="entryCellPopoverOptions"
+                                >
+                                    <div
+                                        class="ff_entry_table_popover_content"
+                                        v-html="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                    ></div>
+                                    <div
+                                        slot="reference"
+                                        class="ff_entry_table_cell"
+                                    >
+                                        <div
+                                            class="ff_entry_table_cell__content"
+                                            v-html="getEntryCellValue(scope.row.user_inputs[column.field])"
+                                        ></div>
+                                    </div>
+                                </el-popover>
+                                <div v-else class="ff_entry_table_cell">
+                                    <div class="ff_entry_table_cell__content"></div>
+                                </div>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                :label="$t('Entry Status')"
+                                sortable
+                                prop="status"
+                                width="120px"
+                                :fixed="pinnedColumn === 'status' ? 'left' : false">
+                            <template slot-scope="scope">
+                                {{ getStatusName(scope.row.status) }}
+                            </template>
+                        </el-table-column>
+
+                        <template v-if="has_payment">
+                            <el-table-column
+                                    :label="$t('Amount')"
+                                    sortable="custom"
+                                    prop="payment_total"
+                                    min-width="120px"
+                                    :fixed="pinnedColumn === 'payment_total' ? 'left' : false">
+                                <template slot-scope="scope">
+                                    <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    :label="$t('Payment Status')"
+                                    sortable
+                                    prop="payment_status"
+                                    min-width="140px"
+                                    :fixed="pinnedColumn === 'payment_status' ? 'left' : false">
+                                <template slot-scope="scope">
+                                    <span class="ff_badge"
+                                        :class="'ff_badge_'+scope.row.payment_status"
+                                        v-if="scope.row.payment_status"
+                                    >
+                                        {{ payment_statuses[scope.row.payment_status] || scope.row.payment_status }}
+                                    </span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    :label="$t('Payment Method')"
+                                    sortable
+                                    prop="payment_method"
+                                    min-width="140px"
+                                    :fixed="pinnedColumn === 'payment_method' ? 'left' : false">
+                                <template slot-scope="scope">
+                                    <span class="ff_badge" v-if="scope.row.payment_method"
+                                        :class="`ff_badge_${
+                                        scope.row.payment_method == 'stripe' ? 'stripe' :
+                                        scope.row.payment_method == 'paypal' ? 'paypal' :
+                                        scope.row.payment_method == 'mollie' ? 'mollie' :
+                                        scope.row.payment_method == 'razorpay' ? 'razorpay' :
+                                        scope.row.payment_method == 'paystack' ? 'paystack' : 'default' }`">
+                                        {{ getPaymentMethodName(scope.row.payment_method) }}
+                                    </span>
+                                </template>
+                            </el-table-column>
+                        </template>
+
+                        <el-table-column
+                                :label="$t('Submitted at')"
+                                sortable
+                                prop="created_at"
+                                :width="dateColWidth"
+                                :fixed="pinnedColumn === 'created_at' ? 'left' : false">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        {{tooltipDateTime(scope.row.created_at)}}
+                                    </div>
+
+                                   <span>{{humanDiffTime(scope.row.created_at)}}</span>
+                                </el-tooltip>
+
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                fixed="right"
+                                column-key="actions"
+                                :label="$t('Actions')"
+                                :width="115"
+                                align="center"
+                        >
+                            <template slot-scope="scope">
+                                <btn-group size="sm">
+                                    <btn-group-item>
+                                        <router-link
+                                            :aria-label="$t('View entry')"
+                                            :to="{
+                                                name: 'form-entry',
+                                                params: {
+                                                    form_id: scope.row.form_id,
+                                                    entry_id: scope.row.id
+                                                },
+                                                query: {
+                                                    sort_by: sort_by,
+                                                    current_page: paginate.current_page,
+                                                    pos: scope.$index,
+                                                    type: entry_type
+                                                }
+                                            }">
+                                            <span class="el-button el-button--primary el-button--mini el-button--icon">
+                                                <i class="ff-icon ff-icon-eye-filled" aria-hidden="true"></i>
+                                            </span>
+                                        </router-link>
+                                    </btn-group-item>
+                                    <btn-group-item>
+                                        <confirm
+                                            v-if="hasPermission('fluentform_manage_entries')"
+                                            @on-confirm="removeEntry(scope.row.id, scope.$index)">
+                                            <el-button
+                                                class="el-button--icon"
+                                                size="mini"
+                                                type="danger"
+                                                icon="ff-icon ff-icon-trash"
+                                                :aria-label="$t('Delete entry')"
+                                            />
+                                        </confirm>
+                                    </btn-group-item>
+                                </btn-group>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-skeleton>
+            </div><!-- .ff_table -->
+
+            <el-row class="mt-4 items-center">
+                <el-col :xs="24" :sm="8" :lg="12">
+                    <div class="bulkactions">
+                        <email-resend
+                                v-if="entrySelections.length"
+                                :btn_text="$t('Bulk Resend Notifications')"
+                                :entry_ids="selection_ids"
+                                :form_id="form_id">
+                        </email-resend>
+                        <el-checkbox class="compact_input" v-model="isCompact" @change="handleCompactView">{{ $t('Compact View') }}</el-checkbox>
+                    </div>
+                </el-col>
+                <el-col :xs="24" :sm="16" :lg="12">
+                    <div class="ff_pagination_wrap text-right">
+                        <el-pagination
+                                class="ff_pagination"
+                                background
+                                @size-change="handleSizeChange"
+                                @current-change="goToPage"
+                                :current-page.sync="paginate.current_page"
+                                :page-sizes="[5, 10, 20, 50, 100]"
+                                :page-size="parseInt(paginate.per_page)"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="paginate.total">
+                        </el-pagination>
+                    </div>
+                </el-col>
+            </el-row>
+
+            <!-- Modal for field select -->
+            <div :class="{'ff_backdrop': input_selection_visibility}">
+                <el-dialog
+                        top="50px"
+                        width="70%"
+                        element-loading-spinner="el-icon-loading"
+                        :loading="exportingEntries"
+                        :visible="input_selection_visibility"
+                        :before-close="closeInputSelection"
+                >
+                    <template slot="title">
+                        <div class="el-dialog__header_group">
+                            <h4 class="mr-3">{{ $t('Select fields for export') }}</h4>
+                        </div>
+                    </template>
+
+                    <el-checkbox v-if="has_pro" class="mt-5" :indeterminate="isIndeterminateFieldsSelection" v-model="checkAllFields" @change="handleCheckAllFieldsChange">{{$t('Check all')}}</el-checkbox>
+
+                    <div class="ff_card_wrap mt-5 mb-4">
+
+                        <el-checkbox-group class="ff_2_col_items mb15" v-model="fieldsToExport" @change="handleCheckedFieldsChange" >
+                           <div>
+                               <p><b>{{ $t('Form Inputs') }}</b></p>
+                               <div class="separator mb-4"></div>
+                               <el-checkbox :disabled="!has_pro"  v-for="(label,name) in input_labels" :label="name" :key="name" >{{ label }}</el-checkbox>
+                           </div>
+                        </el-checkbox-group>
+
+                        <el-checkbox-group class="ff_2_col_items " v-model="shortcodesToExport" @change="handleCheckedFieldsChange">
+                            <div>
+                                <p><b>{{ $t('Submission Info') }}</b></p>
+                                <div class="separator mb-4"></div>
+                                <el-checkbox :disabled="!has_pro" v-for="(label,name) in editor_shortcodes"   :label="name" :key="name" >{{ label }}</el-checkbox>
+                            </div>
+                        </el-checkbox-group>
+                        <el-checkbox v-model="exportWithNotes">{{ $t('With Notes') }}</el-checkbox>
+                    </div>
+                    <div  class="text-center" v-if="!has_pro">
+                        {{$t('Field selection is available only in Pro version.') }}
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="closeInputSelection" type="info" class="el-button--soft">
+                            {{ $t('Cancel') }}
+                        </el-button>
+                        <el-button
+                            type="primary"
+                            icon="el-icon-download"
+                            :loading="exportingEntries"
+                            @click="exportEntries()"
+                        >
+                            {{ $t('Export') }}
+                        </el-button>
+                    </span>
+                </el-dialog>
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<script type="text/babel">
+    import Confirm from "@/admin/components/confirmRemove.vue";
+    import upgradeUrl from '@/common/upgradeUrl';
+    import moment from 'moment';
+    import each from 'lodash/each';
+    import EmailResend from './Helpers/_ResentEmailNotification'
+    import ColumnDragAndDrop from "./ColumnDragAndDrop";
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
+    import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
+    import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
+    import AdvancedSearch from "@/admin/views/_AdvancedSearch";
+    import AppliedFilterSummary from "@/admin/views/_AppliedFilterSummary";
+    import Notice from '@/admin/components/Notice/Notice.vue'
+
+    export default {
+        name: 'FormEntries',
+        props: ['form_id', 'has_pdf'],
+        components: {
+            AdvancedSearch,
+            AppliedFilterSummary,
+            Confirm,
+            EmailResend,
+            ColumnDragAndDrop,
+            BtnGroup,
+            BtnGroupItem,
+            SectionHead,
+            SectionHeadContent,
+	        Notice,
+            ImportEntriesModal
+        },
+        watch: {
+            search_string() {
+                if (!this.search_string.length) {
+                    this.getData();
+                }
+            },
+            entries() {
+                this.applyRowTabindex();
+            },
+            radioOption() {
+                const start = new Date();
+                const end = new Date();
+                let number = 1;
+                switch (this.radioOption) {
+                    case 'today':
+						number = 0;
+						break;
+                    case 'yesterday':
+                        end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
+                        break;
+                    case 'last-week':
+                        number = 7;
+                        break;
+                    case 'last-month':
+                        number = 30;
+                        break;
+                    case 'all':
+                        this.filter_date_range = null;
+                        this.getData();
+                        return;
+                    default:
+                        return;
+                }
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
+                const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();
+                const endDate = end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
+                this.filter_date_range = [startDate, endDate];
+                this.getData();
+            }
+        },
+        data() {
+            return {
+                loading: true,
+                entry_type: this.$route.query.type || '',
+                sort_by: this.$route.query.sort_by || "DESC",
+                selectedPaymentStatuses: [],
+                entries: [],
+                entrySelections: [],
+                columns: [],
+                bulkAction: '',
+	            idShortByClassName: '',
+                pinnedColumn: 'id',
+                formSearch: '',
+                paginate: {
+                    total: 0,
+                    current_page: parseInt(this.$route.query.page) || 1,
+                    last_page: 1,
+                    per_page: localStorage.getItem('entriesPerPage') || 10
+                },
+                search_string: '',
+                forms: window.fluent_form_entries_vars.forms,
+                current_form_title: window.fluent_form_entries_vars.current_form_title,
+                counts: {},
+                no_found_text: window.fluent_form_entries_vars.no_found_text,
+                entry_statuses: window.fluent_form_entries_vars.entry_statuses,
+                payment_statuses: window.fluent_form_entries_vars?.payment_statuses || {},
+                has_payment: !!window.fluent_form_entries_vars.has_payment,
+                isCompact: true,
+                basicFilter: false,
+                filter_date_range: null,
+                autoDeleteStatus: window.fluent_form_entries_vars.enabled_auto_delete,
+                pickerOptions: {
+                    disabledDate(time) {
+                        return time.getTime() >= Date.now();
+                    },
+                    shortcuts: [
+                        {
+                            text: 'Today',
+                            onClick(picker) {
+                                const start = new Date();
+                                picker.$emit('pick', [start, start]);
+                            }
+                        },
+                        {
+                            text: 'Yesterday',
+                            onClick(picker) {
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                                picker.$emit('pick', [start, start]);
+                            }
+                        },
+                        {
+                            text: 'Last week',
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                                picker.$emit('pick', [start, end]);
+                            }
+                        }, {
+                            text: 'Last month',
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                                picker.$emit('pick', [start, end]);
+                            }
+                        }
+                    ]
+                },
+                show_favorites: 'no',
+                available_pdf: null,
+                pdf_dropdown: null,
+                visibleColReorderModal: false,
+                visibleColumns: null,
+                columnsOrder: null,
+                radioOption: 'all',
+                input_selection_visibility : false,
+                exportingEntries : false,
+                fieldsToExport : [],
+                shortcodesToExport : [],
+                selectExportFormat : 'csv',
+                editor_shortcodes : window.fluent_form_entries_vars.editor_shortcodes,
+                input_labels : window.fluent_form_entries_vars.input_labels,
+                has_pro : window.fluent_form_entries_vars.has_pro,
+                isIndeterminateFieldsSelection: true,
+                checkAllFields : false,
+                showImportEntriesModal: false,
+                app: window.fluent_forms_global_var,
+                advanced_filter_active : false,
+                advanced_filter : [[]],
+                exportWithNotes : false,
+                _isSwitchingForm: false
+            }
+        },
+        computed: {
+            // Filter the form switcher list against the search box. Matches
+            // form title or form id (so users can paste an id and jump).
+            filteredForms() {
+                const list = Array.isArray(this.forms) ? this.forms : [];
+                const q = (this.formSearch || '').trim().toLowerCase();
+                if (!q) return list;
+                return list.filter((form) => {
+                    const title = (form && form.title) ? String(form.title).toLowerCase() : '';
+                    const id = (form && form.id !== undefined) ? String(form.id) : '';
+                    return title.indexOf(q) !== -1 || id.indexOf(q) !== -1;
+                });
+            },
+            /**
+             * Compute bulk action options
+             * @return {Array}
+             */
+            bulkActions() {
+                let bulk_actions = {
+                    'statuses': [],
+                    'other': [
+                        {
+                            label: 'Mark as Favorites',
+                            action: 'other.make_favorite'
+                        },
+                        {
+                            label: 'Remove from Favorites',
+                            action: 'other.unmark_favorite'
+                        },
+	                    {
+                            label: 'Print Entries',
+                            action: 'print'
+                        },
+                    ]
+                };
+
+                if (this.hasPermission('fluentform_manage_entries')) {
+                    bulk_actions['other'].push(
+                        {
+                            label: 'Delete Permanently',
+                            action: 'other.delete_permanently'
+                        }
+                    );
+                }
+
+                each(this.entry_statuses, (status_name, status_key) => {
+                    if (this.entry_type != status_key && status_key != 'favorites') {
+                        bulk_actions.statuses.push({
+                            label: 'Mark as ' + status_name,
+                            action: status_key
+                        });
+                    }
+                });
+
+                return bulk_actions;
+            },
+            /**
+             * Compute selected entry IDs
+             * @return {Array}
+             */
+            selection_ids() {
+                let selectedEntries = [];
+
+                this.entrySelections.forEach(function (element) {
+                    selectedEntries.push(element.id);
+                });
+                return selectedEntries;
+            },
+
+            /**
+             * Whether any advanced filters are currently applied. Used for
+             * the chip summary, the count badge on the Advanced Filter
+             * toggle, and to gate sending the filter to the server. The
+             * panel's visibility (advanced_filter_active) is intentionally
+             * NOT part of this check — once a filter is applied to the
+             * query, hiding the editing panel must not silently make the
+             * indicators disappear, otherwise admins can be looking at
+             * filtered data while believing it's unfiltered.
+             */
+            hasAppliedFilters() {
+                if (!Array.isArray(this.advanced_filter)) return false;
+                return this.advanced_filter.some(group => Array.isArray(group) && group.length > 0);
+            },
+
+            /**
+             * Number of populated filter groups, used for the badge count.
+             */
+            appliedFilterGroupCount() {
+                if (!Array.isArray(this.advanced_filter)) return 0;
+                return this.advanced_filter.filter(group => Array.isArray(group) && group.length > 0).length;
+            },
+
+            /**
+             * Compute columns order
+             * @return {Array}
+             */
+            formattedColumn() {
+                let columnsOrder = [];
+
+                if (this.columnsOrder) {
+                    each(this.columnsOrder, (column) => {
+                        columnsOrder.push({
+                            field: column.value,
+                            label: this.columns[column.value],
+                        });
+                    })
+                } else {
+                    each(this.columns, (label, field) => {
+                        columnsOrder.push({field, label});
+                    })
+                }
+
+                if (this.visibleColumns) {
+                    columnsOrder = columnsOrder.filter(column => this.visibleColumns.includes(column.field));
+                }
+
+                return columnsOrder;
+            },
+	        hasEnabledDateFilter() {
+				return !!(this.radioOption && this.radioOption != 'all' ||
+					(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
+                );
+            },
+
+	        dateColWidth() {
+		        return window.fluent_forms_global_var.disable_time_diff ? '180' : '120';
+	        },
+            entryCellPopoverOptions() {
+                const adminBar = typeof document !== 'undefined'
+                    ? document.getElementById('wpadminbar')
+                    : null;
+                const adminBarHeight = adminBar ? adminBar.offsetHeight : 0;
+
+                return {
+                    gpuAcceleration: false,
+                    boundariesPadding: adminBarHeight + 16
+                };
+            }
+        },
+        methods: {
+            upgradeUrl,
+            getEntryCellValue(value) {
+                return value || '';
+            },
+            getStatusName(status) {
+                if (this.entry_statuses[status]) {
+                    return this.entry_statuses[status];
+                }
+                return status;
+            },
+            setPaginate(data = {}) {
+                this.paginate = {
+                    total: data.total || 0,
+                    current_page: data.current_page || 1,
+                    last_page: data.last_page || 1,
+                    per_page: data.per_page || localStorage.getItem('entriesPerPage') || 20
+                }
+            },
+            getEntryResources() {
+                let data = {
+                    form_id: this.form_id,
+                    counts: true,
+                    labels: true,
+                    visibleColumns: true,
+                    columnsOrder: true,
+                };
+
+                const url = FluentFormsGlobal.$rest.route('getSubmissionsResources');
+
+                FluentFormsGlobal.$rest.get(url, data)
+                    .then((response) => {
+                        this.counts = response.counts;
+                        this.columns = response.labels;
+
+                        this.visibleColumns = response.visibleColumns;
+                        this.columnsOrder = response.columnsOrder;
+                    })
+                    .catch((error) => {
+
+                    })
+                    .finally(() => {
+                        this.getData();
+                    });
+            },
+            runAdvanceSearch(query){
+                this.advanced_filter = query
+                this.getData();
+            },
+
+            /**
+             * Remove a single filter group by index and re-run search
+             * @param {Number} groupIndex
+             */
+            clearFilterGroup(groupIndex) {
+                if (!Array.isArray(this.advanced_filter)) return;
+                const updatedFilters = this.advanced_filter.filter((_, idx) => idx !== groupIndex);
+
+                if (updatedFilters.length === 0) {
+                    this.clearAllAdvancedFilters();
+                    return;
+                }
+
+                this.advanced_filter = updatedFilters;
+                this.getData();
+            },
+
+            /**
+             * Clear all advanced filters and re-run search
+             */
+            clearAllAdvancedFilters() {
+                this.advanced_filter = [[]];
+                this.getData();
+            },
+            getData() {
+                let data = {
+                    form_id: this.form_id,
+                    entry_type: this.entry_type,
+                    page: this.paginate.current_page,
+                    per_page: this.paginate.per_page,
+                    search: this.search_string,
+                    sort_by: this.sort_by,
+                    payment_statuses: this.selectedPaymentStatuses,
+                    parse_entry: true,
+                };
+
+                if (this.hasEnabledDateFilter) {
+                    data.date_range = this.filter_date_range;
+                }
+	            if (this.basicFilter) {
+		            this.basicFilter = false;
+	            }
+                // Send the advanced filter whenever it has data, regardless
+                // of whether the editing panel is currently visible. Gating
+                // by advanced_filter_active would let the user collapse the
+                // panel and silently get unfiltered results back from the
+                // server while the chips and badge still claim a filter is
+                // applied.
+                if (this.hasAppliedFilters) {
+                    data.advanced_filter = this.advanced_filter;
+                }
+
+                this.loading = true;
+
+                const url = FluentFormsGlobal.$rest.route('getSubmissions');
+
+                FluentFormsGlobal.$rest.get(url, data)
+                    .then((response) => {
+                        this.entries = response.data;
+                        this.setPaginate(response);
+                        this.resetUrlParams();
+	                    this.idShortByClassName = this.sort_by === 'ASC' ? 'ascending' : 'descending';
+                    })
+                    .catch((error) => {
+
+                    })
+                    .finally(() => {
+                        this.getVisibleColumns();
+                        this.loading = false;
+                        this.applyRowTabindex();
+                    });
+            },
+            handleTableSort(column) {
+                if (column.order) {
+                    if (column.prop === 'id') {
+                        this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';
+                        this.getData();
+                    } else if (column.prop.includes('user_inputs_column_field-')) {
+						let field = column.prop.split('user_inputs_column_field-')[1];
+	                    this.entries.sort((a, b) => {
+		                    a = a.user_inputs[field] || "";
+		                    b = b.user_inputs[field] || "";
+		                    return this.getSortOrder(a, b, column.order);
+	                    });
+						this.idShortByClassName = '';
+                    } else if (column.prop === 'payment_total') {
+	                    this.entries.sort((a, b) => {
+		                    return this.getSortOrder(a.payment_total, b.payment_total, column.order);
+	                    });
+	                    this.idShortByClassName = '';
+                    }
+                }
+            },
+
+            getSortOrder(a, b, sortBy) {
+                let order;
+				try {
+					a = a.toString();
+					b = b.toString();
+					const isNumber = (a !== '' && !isNaN(a)) && (b !== '' && !isNaN(b));
+					if (isNumber) {
+						order = Number(a) - Number(b);
+					} else {
+						order = a.localeCompare(b);
+                    }
+					if (sortBy === 'descending') {
+						order ||= -1;
+						order *= -1;
+					}
+                } catch (e) {
+                    order = 0;
+				}
+	            return order;
+            },
+            handleSelectionChange(val) {
+                this.entrySelections = val;
+            },
+            applyRowTabindex() {
+                if (typeof document === 'undefined') return;
+                this.$nextTick(() => {
+                    const tableEl = this.getEntriesTableElement();
+                    const mainBody = this.getMainTableBodyWrapper();
+                    if (!tableEl || !mainBody) return;
+
+                    tableEl.querySelectorAll('.el-table__fixed tr.el-table__row, .el-table__fixed-right tr.el-table__row').forEach((row) => {
+                        row.removeAttribute('tabindex');
+                    });
+                    tableEl.querySelectorAll('.ff_entry_status_dot, .inline_actions .action_button, .ff_entry_table_cell, .ff_entry_table_cell__content, .el-tooltip, .el-popover__reference').forEach((node) => {
+                        node.setAttribute('tabindex', '-1');
+                    });
+                    // Strip tabindex from every focusable inside any row clone
+                    // (fixed-left, fixed-right, main body's selection cell and
+                    // is-hidden duplicates) so the row itself is the only tab
+                    // stop. Keyboard model: Tab moves between rows, ArrowUp/Down
+                    // navigates rows, Space toggles selection, Enter opens entry.
+                    tableEl.querySelectorAll([
+                        '.el-table__fixed input',
+                        '.el-table__fixed a[href]',
+                        '.el-table__fixed button',
+                        '.el-table__fixed-right input',
+                        '.el-table__fixed-right a[href]',
+                        '.el-table__fixed-right button',
+                        '.el-table__body-wrapper td.el-table-column--selection input',
+                        '.el-table__body-wrapper td.is-hidden input',
+                        '.el-table__body-wrapper td.is-hidden a[href]',
+                        '.el-table__body-wrapper td.is-hidden button'
+                    ].join(', ')).forEach((node) => {
+                        node.setAttribute('tabindex', '-1');
+                    });
+
+                    const rows = this.getMainTableRows();
+                    rows.forEach((row, index) => {
+                        if (this.entries[index] && this.entries[index].id !== undefined) {
+                            row.setAttribute('data-entry-id', this.entries[index].id);
+                        }
+                        row.setAttribute('tabindex', '0');
+                    });
+                });
+            },
+            getEntriesTableElement() {
+                const tableEl = this.$refs.entriesTable && this.$refs.entriesTable.$el;
+                return tableEl || null;
+            },
+            getMainTableBodyWrapper() {
+                const tableEl = this.getEntriesTableElement();
+                if (!tableEl) return null;
+                const wrappers = Array.from(tableEl.querySelectorAll('.el-table__body-wrapper'));
+                return wrappers.find((wrapper) => {
+                    return !wrapper.closest('.el-table__fixed') && !wrapper.closest('.el-table__fixed-right');
+                }) || null;
+            },
+            getMainTableRows() {
+                const mainBody = this.getMainTableBodyWrapper();
+                return mainBody ? Array.from(mainBody.querySelectorAll('tbody tr.el-table__row')) : [];
+            },
+            getEntryIndexFromRow(tr) {
+                if (!tr) return -1;
+                const entryId = tr.getAttribute('data-entry-id');
+                if (entryId !== null) {
+                    return this.entries.findIndex((entry) => String(entry.id) === String(entryId));
+                }
+                const rows = Array.from(tr.parentElement ? tr.parentElement.querySelectorAll('tr.el-table__row') : []);
+                return rows.indexOf(tr);
+            },
+            handleRowFocusIn(event) {
+                const target = event.target;
+                if (!target || !target.closest) return;
+                const tr = target.closest('tr.el-table__row');
+                if (!tr || !tr.parentElement) return;
+                const index = this.getEntryIndexFromRow(tr);
+                if (index < 0 || !this.entries[index]) return;
+                const tableInstance = this.$refs.entriesTable;
+                if (tableInstance && typeof tableInstance.setCurrentRow === 'function') {
+                    tableInstance.setCurrentRow(this.entries[index]);
+                }
+            },
+            handleTableKeydown(event) {
+                const isArrow = event.key === 'ArrowDown' || event.key === 'ArrowUp';
+                const isEnter = event.key === 'Enter';
+                const isSpace = event.key === ' ' || event.key === 'Spacebar';
+                if (!isArrow && !isEnter && !isSpace) return;
+
+                const target = event.target;
+                if (!target || !target.closest) return;
+
+                const tr = target.matches && target.matches('tr.el-table__row') ? target : null;
+                if (!tr || !tr.parentElement) return;
+                if (tr.closest('.el-table__fixed') || tr.closest('.el-table__fixed-right')) return;
+
+                const rowIndex = this.getEntryIndexFromRow(tr);
+                if (rowIndex < 0) return;
+
+                if (isEnter) {
+                    if (!this.entries[rowIndex]) return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    this.handleRowClick(this.entries[rowIndex], null, event);
+                    return;
+                }
+
+                if (isSpace) {
+                    const tableInstance = this.$refs.entriesTable;
+                    if (!this.entries[rowIndex] || !tableInstance || typeof tableInstance.toggleRowSelection !== 'function') return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    if (!event.repeat) {
+                        tableInstance.toggleRowSelection(this.entries[rowIndex]);
+                    }
+                    return;
+                }
+
+                const nextRowIndex = event.key === 'ArrowDown'
+                    ? Math.min(rowIndex + 1, this.entries.length - 1)
+                    : Math.max(rowIndex - 1, 0);
+                if (nextRowIndex === rowIndex) return;
+                const rows = this.getMainTableRows();
+                const nextEntry = this.entries[nextRowIndex];
+                const nextRow = nextEntry
+                    ? (rows.find((row) => row.getAttribute('data-entry-id') === String(nextEntry.id)) || rows[nextRowIndex])
+                    : null;
+                if (!nextRow) return;
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                nextRow.focus();
+            },
+            handleFormSwitcherVisible(isOpen) {
+                if (isOpen) {
+                    this.$nextTick(() => {
+                        const ref = this.$refs.formSwitcherSearch;
+                        if (ref && typeof ref.focus === 'function') ref.focus();
+                    });
+                } else {
+                    if (this._isSwitchingForm) return;
+                    this.formSearch = '';
+                }
+            },
+            getFormSwitcherMenu() {
+                const dropdown = this.$refs.formSwitcherDropdown;
+                if (dropdown && dropdown.popperElm) return dropdown.popperElm;
+                return null;
+            },
+            focusFormSwitcherTarget(target) {
+                if (!target || typeof target.focus !== 'function') return;
+                window.setTimeout(() => {
+                    target.focus();
+                }, 0);
+            },
+            handleFormSwitcherMenuKeydown(event) {
+                if (!['ArrowDown', 'ArrowUp', 'Enter'].includes(event.key)) return;
+                const menu = this.getFormSwitcherMenu();
+                if (!menu) return;
+
+                const items = Array.from(menu.querySelectorAll('.el-dropdown-menu__item:not(.is-disabled)'));
+                const inputRef = this.$refs.formSwitcherSearch;
+                const inputEl = (inputRef && inputRef.$el) ? inputRef.$el.querySelector('input') : null;
+                const focused = document.activeElement;
+                const isOnInput = !!(inputEl && focused === inputEl);
+                const currentItemIndex = items.indexOf(focused);
+
+                if (event.key === 'ArrowDown') {
+                    if (!items.length) return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    const nextIndex = isOnInput || currentItemIndex < 0
+                        ? 0
+                        : Math.min(currentItemIndex + 1, items.length - 1);
+                    this.focusFormSwitcherTarget(items[nextIndex]);
+                    return;
+                }
+                if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    if (currentItemIndex <= 0) {
+                        this.focusFormSwitcherTarget(inputEl);
+                    } else {
+                        this.focusFormSwitcherTarget(items[currentItemIndex - 1]);
+                    }
+                    return;
+                }
+                if (event.key === 'Enter') {
+                    if (currentItemIndex >= 0) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+                        items[currentItemIndex].click();
+                    } else if (isOnInput) {
+                        const target = (this.filteredForms || []).find((f) => f && f.id != this.form_id);
+                        if (target) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            this.handleSwitchForm(target.id);
+                        }
+                    }
+                }
+            },
+            loadPinnedColumn() {
+                if (!this.form_id) return;
+                try {
+                    const saved = localStorage.getItem('ff_entries_pinned_col_' + this.form_id);
+                    if (saved !== null) this.pinnedColumn = saved;
+                } catch (e) {
+                    // localStorage unavailable (private mode, quota); ignore.
+                }
+            },
+            handlePinnedColumnChange(val) {
+                if (!this.form_id) return;
+                try {
+                    localStorage.setItem('ff_entries_pinned_col_' + this.form_id, val);
+                } catch (e) {
+                    // localStorage unavailable; the choice still applies for this session.
+                }
+                this.applyRowTabindex();
+            },
+            handleRowClick(row, column, event) {
+                const selection = typeof window !== 'undefined' ? window.getSelection() : null;
+                if (selection && selection.toString().length > 0) {
+                    return;
+                }
+
+                if (column && (column.type === 'selection' || column.columnKey === 'actions')) {
+                    return;
+                }
+
+                if (event && event.target && event.target.closest(
+                    'a, button, input, label, .el-checkbox, .action_button, .el-popover, .el-dropdown, .ff_entry_table_popover_content'
+                )) {
+                    return;
+                }
+                this.$router.push({
+                    name: 'form-entry',
+                    params: {
+                        form_id: row.form_id,
+                        entry_id: row.id,
+                    },
+                    query: {
+                        sort_by: this.sort_by,
+                        current_page: this.paginate.current_page,
+                        type: this.entry_type,
+                    },
+                });
+            },
+            removeEntry(entryId, index) {
+                let action = 'post';
+                let route = 'updateSubmissionStatus';
+
+                if (this.entry_type === 'trashed') {
+                    action = 'delete';
+                    route = 'deleteSubmission';
+                }
+
+                const url = FluentFormsGlobal.$rest.route(route, entryId);
+
+                const data = {
+                    status: 'trashed'
+                };
+
+                FluentFormsGlobal.$rest[action](url, data)
+                    .then(response => {
+                        const statusToBeDecreased = this.entries[index].status;
+                        this.counts[statusToBeDecreased] -= 1;
+
+                        if (this.entry_type !== 'trashed') {
+                            this.counts.trashed += 1;
+                        }
+
+                        this.entries.splice(index, 1);
+
+                        this.$success(response.message);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            handleBulkAction() {
+                if (this.bulkAction) {
+                    this.operationOnSelectedEntries(this.bulkAction);
+                }
+            },
+            operationOnSelectedEntries(actionType) {
+				if ('print' === actionType) {
+					this.printEntry({submission_ids: this.selection_ids, form_id : this.form_id, sort_by: this.sort_by});
+					return;
+				}
+                let data = {
+                    form_id: this.form_id,
+                    entries: this.selection_ids,
+                    action_type: actionType
+                };
+
+                const url = FluentFormsGlobal.$rest.route('handleSubmissionsBulkActions');
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        this.$success(response.message);
+                        this.getEntryResources();
+                    })
+                    .catch(error => {
+                        this.$fail(error.message);
+                        console.log(error);
+                    });
+
+            },
+            goToPage(value) {
+                this.paginate.current_page = value;
+                this.getData();
+            },
+            handleSizeChange(val) {
+                this.paginate.per_page = val;
+                localStorage.setItem('entriesPerPage', val);
+                this.getData();
+            },
+            filterEntryType() {
+                this.bulkAction = '';
+                this.search_string = '';
+                this.setPaginate();
+                this.getData();
+            },
+            filterPaymentStatuses() {
+                this.bulkAction = '';
+                this.search_string = '';
+                this.setPaginate();
+                this.getData();
+            },
+            handleSearch() {
+                this.setPaginate();
+                this.getData();
+            },
+            resetUrlParams() {
+                this.$router.push({
+                    name: 'form-entries',
+                    params: {
+                        form_id: this.form_id
+                    },
+                    query: {
+                        sort_by: this.sort_by,
+                        type: this.entry_type,
+                        page: this.paginate.current_page
+                    }
+                })
+                    .catch(failure => {
+
+                    });
+            },
+            changeFavorite(entryId, index, is_favourite) {
+                let data = {
+                    is_favourite
+                };
+
+                const url = FluentFormsGlobal.$rest.route('toggleSubmissionIsFavorite', entryId)
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        this.entries[index].is_favourite = response.is_favourite;
+
+                        const amount = is_favourite ? 1 : -1;
+                        this.counts.favorites += amount;
+
+                        if (this.entry_type === 'favorites') {
+                            this.entries.splice(index, 1);
+                        }
+
+                        this.$success(response.message);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            changeStatus(entryId, index, status) {
+                let data = {
+                    status
+                };
+
+                const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', entryId);
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        this.counts[status] += 1;
+
+                        const statusToBeDecreased = this.entries[index].status;
+                        this.counts[statusToBeDecreased] -= 1;
+
+                        this.entries[index].status = response.status;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            restoreEntry(entryId, index) {
+                let data = {
+                    status: 'read'
+                };
+
+                const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', entryId);
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        this.counts.trashed -= 1;
+                        this.counts.read += 1;
+                        this.entries.splice(index, 1);
+
+                        this.$success(this.$t('The Entry has been restored'));
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            handleSwitchForm(formId) {
+                this._isSwitchingForm = true;
+                const menu = this.getFormSwitcherMenu();
+                if (menu) {
+                    menu.style.visibility = 'hidden';
+                    menu.style.pointerEvents = 'none';
+                }
+                window.location.assign(window.fluent_form_entries_vars.entries_url_base + formId);
+            },
+            closeInputSelection(){
+                this.input_selection_visibility  = false;
+            },
+            selectFieldsToExport(format = 'csv'){
+                if (this.exportingEntries) {
+                    return;
+                }
+
+                this.selectExportFormat = format;
+
+                if (format == 'json'){
+                    //@todo add json column selection support
+                    this.exportEntries();
+                }else{
+                    this.input_selection_visibility  = true;
+                }
+            },
+            exportEntries() {
+                if (this.exportingEntries) {
+                    return;
+                }
+
+                this.input_selection_visibility  = false;
+
+                let selectedShortcodes = [];
+                this.shortcodesToExport.forEach( (element)=> {
+                    selectedShortcodes.push({
+                        label: this.editor_shortcodes[element],
+                        value: element,
+                    });
+                });
+                this.saveLastExportFields();
+                let selectedEntries = [];
+                this.entrySelections.forEach(function (element) {
+                    selectedEntries.push(element.id);
+                });
+
+                let data = {
+	                action: 'fluentform-form-entries-export',
+	                form_id: this.form_id,
+                    format:  this.selectExportFormat || 'csv',
+                    entry_type: this.entry_type,
+                    entries: selectedEntries,
+                    sort_by: this.sort_by,
+                    search: this.search_string,
+                    payment_statuses: this.selectedPaymentStatuses,
+                    fields_to_export: JSON.stringify(this.fieldsToExport),
+                    shortcodes_to_export: selectedShortcodes,
+                    shortcodes_to_export_defined: 'yes',
+	                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
+                };
+                if (this.exportWithNotes){
+                    data.with_notes = this.exportWithNotes;
+                }
+                if (this.hasEnabledDateFilter) {
+                    data.date_range = this.filter_date_range;
+                    data.is_favourite = this.show_favorites;
+                }
+				if (this.hasAppliedFilters) {
+					data.advanced_filter = this.advanced_filter;
+				}
+                this.submitExportRequest(data);
+            },
+            submitExportRequest(data) {
+                this.exportingEntries = true;
+
+                const iframeName = `ff-export-${Date.now()}`;
+                const $iframe = jQuery('<iframe>', {
+                    name: iframeName,
+                    style: 'display:none;'
+                });
+                const $form = jQuery('<form>', {
+                    method: 'POST',
+                    action: ajaxurl,
+                    target: iframeName,
+                    style: 'display:none;'
+                });
+                let hasLoadedInitialFrame = false;
+                let cleanupTimer = null;
+
+                const cleanup = () => {
+                    if (cleanupTimer) {
+                        window.clearTimeout(cleanupTimer);
+                        cleanupTimer = null;
+                    }
+
+                    this.exportingEntries = false;
+                    $form.remove();
+                    $iframe.remove();
+                };
+
+                $iframe.on('load', () => {
+                    if (!hasLoadedInitialFrame) {
+                        hasLoadedInitialFrame = true;
+                        return;
+                    }
+
+                    try {
+                        const iframeDocument = $iframe[0].contentDocument || $iframe[0].contentWindow.document;
+                        const responseText = jQuery(iframeDocument.body).text().trim();
+
+                        if (responseText) {
+                            this.$fail(this.$t('Export failed. Please try again.'));
+                        }
+                    } catch (e) {
+                        // Ignore iframe document access errors and fall back to cleanup.
+                    }
+
+                    cleanup();
+                });
+
+                jQuery.param(data)
+                    .split('&')
+                    .forEach(item => {
+                        const [rawName, rawValue = ''] = item.split('=');
+                        const name = decodeURIComponent(rawName.replace(/\+/g, ' '));
+                        const value = decodeURIComponent(rawValue.replace(/\+/g, ' '));
+
+                        $form.append(
+                            jQuery('<input>', {
+                                type: 'hidden',
+                                name,
+                                value
+                            })
+                        );
+                    });
+
+                jQuery('body').append($iframe, $form);
+                $form.trigger('submit');
+
+                cleanupTimer = window.setTimeout(() => {
+                    this.$fail(this.$t('Export timed out. Please try again.'));
+                    cleanup();
+                }, 30000);
+            },
+            dateFormat(date, format) {
+                if (!format) {
+                    format = 'MMM DD, YYYY';
+                }
+                let dateString = (date === undefined) ? null : date;
+                let dateObj = moment(dateString);
+                return dateObj.isValid() ? dateObj.format(format) : null;
+            },
+	        filterDateRangedPicked() {
+			    this.radioOption = "";
+				this.getData();
+            },
+            resetAdvancedFilter() {
+                this.radioOption = "";
+				this.filter_date_range = null;
+                this.getData();
+            },
+            gotoVisualReport() {
+                this.$router.push({
+                    name: 'form-reports'
+                });
+            },
+            getPaymentMethodName(status) {
+                if (status == 'test') {
+                    return 'Offline';
+                }
+                return status;
+            },
+            handleColumnChange() {
+                const data = {
+                    meta_key: '_visible_columns',
+                    settings: JSON.stringify(this.visibleColumns)
+                };
+
+                const url = FluentFormsGlobal.$rest.route('storeEntryColumns', this.form_id);
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            getVisibleColumns() {
+                if (this.visibleColumns === null) {
+                    //visibleColumns is not set initially so set all columns to visible
+                    this.visibleColumns = Object.keys(this.columns);
+                }
+            },
+            refreshColumnsOrder(columnsOrder) {
+                this.columnsOrder = columnsOrder ? [...columnsOrder] : null;
+                this.visibleColReorderModal = false;
+            },
+            handleCompactView() {
+                localStorage.setItem('compactView', this.isCompact);
+            },
+            handleCheckAllFieldsChange(val) {
+                const fields = Object.keys(this.input_labels);
+                const shortCodes= Object.keys(this.editor_shortcodes);
+
+                this.fieldsToExport = val ? fields : [];
+                this.shortcodesToExport = val ? shortCodes : [];
+
+                this.isIndeterminateFieldsSelection = false;
+            },
+            handleCheckedFieldsChange(value){
+                let checkedCount = value.length;
+                const fieldsCount = Object.keys(this.input_labels).length
+                const shortCodeCountCount = Object.keys(this.editor_shortcodes).length
+                this.checkAll = checkedCount === shortCodeCountCount + fieldsCount;
+
+                this.isIndeterminateFieldsSelection = checkedCount > 0 && checkedCount <  shortCodeCountCount + fieldsCount;
+            },
+            showImport() {
+                this.showImportEntriesModal = !this.showImportEntriesModal;
+            },
+            getDefaultShortcodesToExport() {
+                const defaults = ['{submission.id}', '{submission.created_at}', '{submission.status}'];
+
+                if (this.editor_shortcodes['{payment.payment_status}']) {
+                    defaults.push('{payment.payment_status}');
+                }
+
+                if (this.editor_shortcodes['{payment.payment_total}']) {
+                    defaults.push('{payment.payment_total}');
+                }
+
+                if (this.editor_shortcodes['{submission.currency}']) {
+                    defaults.push('{submission.currency}');
+                }
+
+                return defaults;
+            },
+            /**
+             * Load last used export fields from localStorage
+             */
+            loadLastExportFields() {
+                const storageKey = `ff_last_export_fields_${this.form_id}`;
+                const saved = localStorage.getItem(storageKey);
+                if (saved) {
+                    try {
+                        const lastFields = JSON.parse(saved);
+                        this.fieldsToExport = lastFields.fieldsToExport || Object.keys(this.input_labels);
+                        this.shortcodesToExport = lastFields.shortcodesToExport || this.getDefaultShortcodesToExport();
+                        this.exportWithNotes = lastFields.exportWithNotes || false;
+
+                        this.updateCheckAllState();
+                    } catch (e) {
+                    }
+                }
+            },
+
+            /**
+             * Save current field selection for next time
+             */
+            saveLastExportFields() {
+                const storageKey = `ff_last_export_fields_${this.form_id}`;
+                const fieldsToSave = {
+                    fieldsToExport: [...this.fieldsToExport],
+                    shortcodesToExport: [...this.shortcodesToExport],
+                    exportWithNotes: this.exportWithNotes
+                };
+                localStorage.setItem(storageKey, JSON.stringify(fieldsToSave));
+            },
+            /**
+             * Update the check all state based on current selections
+             */
+            updateCheckAllState() {
+                const totalFields = Object.keys(this.input_labels).length + Object.keys(this.editor_shortcodes).length;
+                const selectedFields = this.fieldsToExport.length + this.shortcodesToExport.length;
+
+                this.checkAllFields = selectedFields === totalFields;
+                this.isIndeterminateFieldsSelection = selectedFields > 0 && selectedFields < totalFields;
+            }
+        },
+        mounted() {
+            this.getEntryResources();
+	        this.clipboard = new ClipboardJS('.copy');
+	        this.clipboard.on('success', () => {
+		        this.$copy();
+	        });
+            this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
+            this.fieldsToExport = Object.keys(this.input_labels)
+            this.shortcodesToExport = this.getDefaultShortcodesToExport()
+            this.loadLastExportFields();
+            this.loadPinnedColumn();
+            this.applyRowTabindex();
+        },
+        beforeCreate() {
+            ffEntriesEvents.$emit('change-title', 'All Entries');
+        },
+	    beforeDestroy() {
+		    if (this.clipboard) {
+			    this.clipboard.destroy();
+		    }
+	    }
+    };
+</script>

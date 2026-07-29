@@ -1,0 +1,127 @@
+.ff_subscriptions {
+  .ff_subscription {
+    background-color: white;
+    border: 2px solid #e3e8ee;
+    padding: 15px 20px;
+    color: rgb(58, 79, 102);
+    button {
+      display: inline-block;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid #dcdfe6;
+      color: #606266;
+      -webkit-appearance: none;
+      text-align: center;
+      box-sizing: border-box;
+      outline: 0;
+      margin: 0;
+      transition: .1s;
+      font-weight: 500;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      padding: 6px 15px;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+    .ff_subscription_header {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%;
+
+      @media only screen and (max-width: 768px) {
+        flex-direction: column;
+        > div {
+          display: flex;
+          flex-direction: column;
+          flex-basis: 100%;
+          flex: 1;
+          &.ff_plan_info {
+            text-align: left;
+          }
+        }
+
+      }
+
+      .ff_form_name {
+        font-size: 110%;
+        font-weight: 500;
+      }
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        flex-basis: 100%;
+        flex: 1;
+      }
+      .ff_plan_info {
+        text-align: right;
+      }
+
+      .pay_amount {
+        font-size: 20px;
+        line-height: 28px;
+      }
+      .ff_sub_name {
+        color: #393c40;
+        padding-bottom: 10px;
+        display: block;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .ff_pay_status_badge {
+        background-color: #d6ecff;
+        border-radius: 20px;
+        padding: 2px 8px;
+        color: #3d4eac;
+        font-weight: 500;
+        font-size: 90%;
+        text-transform: capitalize;
+        &.ff_pay_status_cancelled {
+          background: #ff623e;
+          color: white;
+        }
+        &.ff_pay_status_active {
+          background: #67C23A;
+          color: white;
+        }
+      }
+      .ff_billing_text, .ff_billing_dates {
+        margin: 0;
+        padding: 0 0 10px;
+      }
+      .ff_billing_text {
+        margin-top: 5px;
+      }
+    }
+
+    .ff_subscription_payments.ff_has_payments {
+      margin: 0 -20px -15px;
+      padding: 20px;
+      background: #fafdff;
+      border-top: 1px solid #e3e8ed;
+    }
+    span.ff_sub_id {
+      font-style: italic;
+      font-size: 80%;
+      opacity: 0.5;
+    }
+  }
+
+  .ff_sub_cancel_confirmation {
+    margin: 10px -20px -20px;
+    padding: 20px;
+    text-align: center;
+    background: #fff7f5;
+    overflow: hidden;
+    position: relative;
+    button.ff_confirm_subscription_cancel {
+      background: #cf3917;
+      color: white;
+    }
+  }
+}

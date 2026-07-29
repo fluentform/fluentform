@@ -1,0 +1,204 @@
+import ConditionApp from "./_ConditionClass";
+
+const formConditional = function ($, $theForm, form) {
+    /**
+     * Container to store all conditional
+     *  logics recieved from the server
+     *
+     * @type {Object}
+     */
+    let formSelector = '.' + form.form_instance;
+
+    const formCondition = function () {
+
+        const watchableFields = {};
+
+        let formData = {};
+
+        const getTheForm = function () {
+            return $(formSelector);
+        };
+
+        /**
+         * Register all the required handlers
+         * for elements those, who have conditions
+         *
+         * @return void
+         */
+        const init = function () {
+            if (!form.conditionals) {
+                return;
+            }
+            $.each(form.conditionals, function (fieldName, field) {
+                if (!fieldName) {
+                    return;
+                }
+                if (field.type == 'group' && field.condition_groups) {
+                    $.each(field.condition_groups, function (index, conditionGroup) {
+
+                        $.each(conditionGroup.rules, function (index, condition) {
+                            let el = getElement(condition.field);
+                            let watchName = el.prop('name') || el.attr('data-name');
+                            if (watchName) {
+                                watchableFields[watchName] = el;
+                            }
+                        });
+                    });
+                }else{
+                    $.each(field.conditions, function (index, condition) {
+                        let el = getElement(condition.field);
+                        let watchName = el.prop('name') || el.attr('data-name');
+                        if (watchName) {
+                            watchableFields[watchName] = el;
+                        }
+                    });
+                }
+
+            });
+            formData = getFormData();
+            const conditionAppInstance = new ConditionApp(form.conditionals, formData);
+
+            $.each(watchableFields, (name, el) => {
+                el.on('keyup change', () => {
+                    if ($theForm.hasClass('ff_force_hide') || $theForm.hasClass('ff_submitting')) {
+                        return;
+                    }
+                    formData = getFormData();
+                    conditionAppInstance.setFormData(formData);
+                    setTimeout(() => {
+                        debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    }, 0);
+                });
+            });
+
+            jQuery(document.body).on('fluentform_reset', function(event, resetForm) {
+                if (!resetForm || !resetForm.length || resetForm[0] !== $theForm[0] || $theForm.hasClass('ff_force_hide')) {
+                    return;
+                }
+                setTimeout(() => {
+                    formData = getFormData();
+                    conditionAppInstance.setFormData(formData);
+                    hideShowElements(conditionAppInstance.getCalculatedStatuses());
+                }, 0);
+            });
+
+            setTimeout(() => {
+                hideShowElements(conditionAppInstance.getCalculatedStatuses());
+            }, 0);
+        };
+
+        const debounce = (func, delay = 300) => {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        };
+
+        const debouncedHideShowElements = debounce((statuses) => {
+            hideShowElements(statuses);
+        }, form.debounce_time || 300);
+
+        const hideShowElements = function (items) {
+            let timeoutId;
+            $.each(items, (itemName, status) => {
+                const el = getElement(itemName);
+                let $parent = el.closest('.has-conditions');
+                if (status) {
+                    if ($parent.css('height') == '0px') {
+                        $parent.attr("style", "");
+                    }
+                    $parent.removeClass('ff_excluded')
+                        .addClass('ff_cond_v')
+                        .slideDown(200, function() {
+                            // Check if this container has range sliders that need reinitialization
+                            if ($parent.find('input[type="range"]').length > 0) {
+                                if (timeoutId) {
+                                    clearTimeout(timeoutId);
+                                }
+                                timeoutId = setTimeout(function() {
+                                    $theForm.trigger('reInitRangeSliders');
+                                }, 50);
+                            }
+                        });
+                } else {
+                    $parent.removeClass('ff_cond_v')
+                        .addClass('ff_excluded')
+                        .slideUp(200);
+                }
+            });
+            $theForm.trigger('do_calculation');
+            $theForm.trigger('ff_render_dynamic_smartcodes', $theForm);
+        };
+
+        const getFormData = function () {
+            const data = {};
+            $.each(watchableFields, (name, el) => {
+                let type = el.prop('type') || el.attr('data-type');
+                if (type == 'radio') {
+                    data[name] = '';
+                    el.each((index, item) => {
+                        if ($(item).is(':checked')) {
+                            data[name] = $(item).val();
+                        }
+                    });
+                } else if (type == 'checkbox') {
+                    name = name.replace('[]', '');
+                    data[name] = [];
+                    el.each((index, item) => {
+                        if ($(item).is(':checked')) {
+                            data[name].push($(item).val());
+                        }
+                    });
+                } else if (type == 'select-multiple') {
+                    name = name.replace('[]', '');
+                    let val = el.val();
+                    if (val) {
+                        data[name] = val;
+                    } else {
+                        data[name] = [];
+                    }
+                } else if(type == 'file') {
+                    let file_urls = '';
+                    let $el = $theForm.find('input[name='+name+']')
+                    $el
+                        .closest('.ff-el-input--content')
+                        .find('.ff-uploaded-list')
+                        .find('.ff-upload-preview[data-src]')
+                        .each(function (i, div) {
+                            file_urls += $(this).data('src');
+                        });
+                    data[name] = file_urls;
+                } else if (type == 'ranking' || el.hasClass('ff-ranking-field')) {
+                    data[name] = el.find('input[data-ranking-input="1"]:enabled').map((index, item) => {
+                        return $(item).val();
+                    }).get().filter(Boolean);
+                } else {
+                    data[name] = el.val();
+                }
+            });
+
+
+            return data;
+        };
+
+        /**
+         * Resolve a dom element as jQuery object
+         *
+         * @param  string name
+         * @return jQuery instance
+         */
+        const getElement = function (name) {
+            let $theform = getTheForm();
+            var el = $("[data-name='" + name + "']", $theform);
+            el = el.length ? el : $("[name='" + name + "']", $theform);
+            el = el.length ? el : $("[data-condition_field_name='" + name + "']", $theform);
+            return el.length ? el : $("[name='" + name + "[]']", $theform);
+        };
+
+        return {init};
+    };
+    formCondition().init();
+};
+
+export default formConditional;

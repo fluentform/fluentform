@@ -1,0 +1,41 @@
+.ff_tab {
+    display: flex;
+    border-bottom: 1px solid #ececec;
+    &_item{
+        &:not(:last-child) {
+            margin-right: 30px;
+        }
+        &.active {
+            .ff_tab_link {
+                color: $--color-primary;
+                &::after {
+                    width: 100%;
+                }
+            }
+        }
+    }
+    &_link {
+        padding-bottom: 16px;
+        display: block;
+        font-weight: 500;
+        font-size: 16px;
+        color: $base-color;
+        position: relative;
+        &::after {
+            position: absolute;
+            content: "";
+            bottom: -1px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: $--color-primary;
+            transition: 0.2s;
+        }
+    }
+    &_center{
+        .ff_tab_item{
+            flex: 1;
+            text-align: center;
+        }
+    }
+}

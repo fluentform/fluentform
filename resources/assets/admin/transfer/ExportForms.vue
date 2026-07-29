@@ -1,0 +1,96 @@
+<template>
+    <div class="ff_export_forms">
+        <card>
+            <card-head>
+                <h5 class="title">{{ $t('Export Forms') }}</h5>
+                <p class="text" style="max-width: 700px;">
+                    {{
+                        $t('Select the forms you would like to export. When you click the download button below, Fluent Forms will create a JSON file for you to save to your computer. Once you\'ve saved the downloaded file, you can use the Import tool to import the forms.')
+                    }}
+                </p>
+            </card-head>
+            <card-body>
+                <el-form label-position="top">
+                    <!--Select Forms-->
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Select Forms') }}
+
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Select the forms you would like to export.') }}
+                                    </p>
+                                </div>
+
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
+
+                        <el-select class="ff_input_width" v-model="selected" multiple filterable :placeholder="$t('Select Forms')">
+                            <el-option v-for="(form, index) in forms" :key="index"
+                                    :label="'#'+ form.id +' - ' +form.title" :value="form.id"
+                            ></el-option>
+                        </el-select>
+                        <el-button @click="selectAll()">
+                            <span v-if="!allSelected">{{$t('Select All')}}</span>
+                            <span v-else>{{$t('Deselect All')}}</span>
+                        </el-button>
+
+
+                    </el-form-item>
+
+                    <el-button type="primary" icon="el-icon-success" @click="exportForms">
+                        {{ $t('Export Forms') }}
+                    </el-button>
+                </el-form>
+            </card-body>
+        </card>
+    </div>
+</template>
+
+<script>
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+
+    export default {
+        name: "ExportForms",
+        props: ['app'],
+        components: {
+            Card,
+            CardHead,
+            CardBody
+        },
+        data() {
+            return {
+                forms: this.app.forms,
+                selected: [],
+                allSelected :false,
+            }
+        },
+        methods: {
+            exportForms() {
+                if (this.selected.length) {
+                    const data = {
+	                    action: 'fluentform-export-forms',
+                        forms: this.selected,
+                        format: 'json',
+	                    fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
+                    };
+	                location.href = ajaxurl + '?' + jQuery.param(data);
+                }
+            },
+            selectAll(){
+                this.allSelected = !this.allSelected;
+
+                if (this.allSelected){
+                    this.selected = this.forms.map(form => form.id);;
+                }else{
+                    this.selected = [];
+                }
+
+            }
+        }
+    }
+</script>

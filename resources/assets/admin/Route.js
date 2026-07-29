@@ -1,0 +1,143 @@
+class Route {
+    get(name, ...args) {
+        const route = this[name];
+
+        if (!route) {
+            throw `${name}:Route Not Found`;
+        }
+
+        let continuation = 0;
+
+        return route.replace(/{param}/g, function () {
+            const replaceMent = args[continuation];
+
+            continuation++;
+
+            return encodeURIComponent(replaceMent);
+        });
+    }
+
+    getForms = "forms";
+    storeForms = this.getForms;
+    getTemplates = this.getForms + "/templates";
+
+
+    findForm = this.getForms + "/{param}";
+    updateForm = this.findForm;
+    deleteForm = this.findForm;
+    duplicateForm = this.findForm + "/duplicate";
+    convertForm = this.findForm + "/convert";
+    getFormResources = this.findForm + "/resources";
+    getFormPages = this.findForm + "/pages";
+    getFormFields = this.findForm + "/fields";
+    getFormShortcodes = this.findForm + "/shortcodes";
+    findFormShortCodePage = this.findForm + "/findShortCodePage";
+    getFormEditHistory = this.findForm + "/editHistory";
+    clearFormEditHistory = this.findForm + "/clearHistory";
+
+    getFormSettings = "settings/{param}";
+    storeFormSettings = this.getFormSettings;
+    deleteFormSettings = this.getFormSettings;
+
+    getPresetSettings = this.getFormSettings + "/preset";
+    savePresetSettings = this.getFormSettings + "/save-preset";
+
+    getGeneralFormSettings = this.getFormSettings + "/general";
+    storeGeneralFormSettings = this.getGeneralFormSettings;
+
+    getFormSettingsCustomizer = this.getFormSettings + "/customizer";
+    storeFormSettingsCustomizer = this.getFormSettingsCustomizer;
+    storeEntryColumns = this.getFormSettings + '/entry-columns';
+
+    getFormSettingsConversationalDesign = this.getFormSettings + '/conversational-design';
+    storeFormSettingsConversationalDesign = this.getFormSettings + '/store-conversational-design';
+
+    getSubmissions = "submissions";
+    getSubmissionsResources = this.getSubmissions + '/resources';
+    handleSubmissionsBulkActions = this.getSubmissions + '/bulk-actions';
+    getAllSubmissions = this.getSubmissions + '/all';
+    printSubmissions = this.getSubmissions + '/print';
+
+    findSubmission = this.getSubmissions + '/{param}'; // not implemented
+    deleteSubmission = this.findSubmission;
+    updateSubmissionStatus = this.findSubmission + '/status';
+    toggleSubmissionIsFavorite = this.findSubmission + '/is-favorite';
+
+    getSubmissionLogs = this.findSubmission + '/logs';
+    deleteSubmissionLogs = this.findSubmission + '/logs';
+
+    getSubmissionNotes = this.findSubmission + '/notes';
+    storeSubmissionNote = this.findSubmission + '/notes';
+
+    getSubmissionUsers = this.findSubmission + '/submission-users'
+    updateSubmissionUser = this.findSubmission + '/update-submission-user'
+
+    getLogs = 'logs';
+    getLogFilters = this.getLogs + '/filters';
+    deleteLogs = this.getLogs;
+
+    integrations = 'integrations';
+    getGlobalIntegration = this.integrations;
+    updateGlobalIntegration = this.integrations;
+    updateGlobalIntegrationStatus = this.integrations + '/update-status'
+    findIntegration = this.integrations + "/{param}";
+    getFormIntegrationSettings = this.findIntegration;
+    updateFormIntegrationSettings = this.findIntegration;
+    deleteFormIntegration = this.findIntegration;
+    getIntegrations = this.findIntegration + "/form-integrations";
+    getFormIntegrationList = this.findIntegration + '/integration-list-id';
+
+    getGlobalSettings = 'global-settings';
+    storeGlobalSettings = this.getGlobalSettings;
+
+    getRoles = 'roles';
+    storeRoles = this.getRoles;
+
+    getManagers = 'managers';
+    storeManager = this.getManagers;
+    deleteManager = this.storeManager;
+
+    getUsers = this.getManagers + '/users';
+
+    analytics = 'analytics';
+    getFormAnalytics = this.analytics + '/{param}'
+    resetFormAnalytics = this.analytics + '/{param}/reset/'
+
+    report = 'report';
+    selectFormsForReport = this.report + '/select-forms';
+    formsReport = this.report + '/forms'
+    formReport = this.formsReport + '/{param}'
+    submissionsReport = this.report + '/submissions';
+    submissionsAnalysisReport = this.report + '/submissions-analysis';
+    netRevenueReport = this.report + '/net-revenue';
+
+    // Component-specific report endpoints
+    reportOverviewChart = this.report + '/overview-chart';
+    reportRevenueChart = this.report + '/revenue-chart';
+    reportCompletionRate = this.report + '/completion-rate';
+    reportFormStats = this.report + '/form-stats';
+    reportHeatmapData = this.report + '/heatmap-data';
+    reportCountryHeatmap = this.report + '/country-heatmap';
+    reportApiLogs = this.report + '/api-logs';
+    reportTopPerformingForms = this.report + '/top-performing-forms';
+    reportSubscriptions = this.report + '/subscriptions';
+    reportPaymentTypes = this.report + '/payment-types';
+
+    //pro routes
+    inventory = 'inventory';
+    getInventoryList = this.inventory;
+    storeInventory = this.inventory;
+
+    noticeAction = 'notice';
+
+    globalSearch = 'global-search';
+
+    // Suggested Plugins
+    suggestedPlugins = 'suggested-plugins';
+    suggestedPluginsCheckStatuses = this.suggestedPlugins + '/check-plugin-statuses';
+    suggestedPluginsInstallPlugin = this.suggestedPlugins + '/install-plugin';
+    suggestedPluginsActivatePlugin = this.suggestedPlugins + '/activate-plugin';
+
+}
+
+export default new Route();
