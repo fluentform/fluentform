@@ -794,7 +794,7 @@ jQuery(document).ready(function () {
                         if (element) {
                             var name = element.attr('name');
                             element.attr('aria-invalid', 'true');
-                            var el = $('[name=\'' + name + '\']').first();
+                            var el = $('[name=\'' + name + '\']', $theForm).first();
                             if (el) {
                                 el.closest('.ff-el-group').addClass('ff-el-is-error');
                             }
@@ -813,7 +813,7 @@ jQuery(document).ready(function () {
                             errorStack.hide();
                         })
                         .on('click', '.error-text', function () {
-                            var el = $(`[name='${$(this).data('name')}']`).first();
+                            var el = $(`[name='${$(this).data('name')}']`, $theForm).first();
                             $('html, body').animate({
                                 scrollTop: el.offset() && el.offset().top - 100
                             }, 350, _ => el.focus());
@@ -1497,10 +1497,15 @@ jQuery(document).ready(function () {
                                 return el.parents('.ff-el-group').find('input:checked').length;
                             }
                         }
-                        const checked = $('[name="' + el.prop('name') + '"]:checked');
+                        // No document-wide fallback: every validated element comes from
+                        // $theForm.find(), so this always resolves. If it ever did not,
+                        // an empty scope reports the field as required — failing closed
+                        // beats silently restoring the cross-form leak.
+                        const $scope = el.closest('form');
+                        const checked = $scope.find('[name="' + el.prop('name') + '"]:checked');
                         const name = el.prop('name').replace('[]', '');
                         if (checked.length && checked.val() === `__ff_other_${name}__`) {
-                            const otherInputField = $(`[name="${name}__ff_other_input__"]`);
+                            const otherInputField = $scope.find(`[name="${name}__ff_other_input__"]`);
                             return otherInputField.val()
                         }
                         return checked.length;

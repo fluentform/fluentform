@@ -153,7 +153,7 @@
                             <div class="ff_list_value">{{ transaction.created_at }}</div>
                         </li>
                         <li v-if="transaction.additional_note && typeof transaction.additional_note == 'string'">
-                            <div v-html="transaction.additional_note" class="ff_list_value"></div>
+                            <div v-html="sanitizeHtml(transaction.additional_note)" class="ff_list_value"></div>
                         </li>
                     </ul>
                     
@@ -280,6 +280,7 @@
     import Card from '@/admin/components/Card/Card.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
+    import sanitizeHtml from '@/admin/helpers/sanitizeHtml';
 
     export default {
         name: 'PaymentSummary',
@@ -297,6 +298,7 @@
             }
         },
         methods: {
+            sanitizeHtml,
             getFormattedMoney(amount) {
                 return amount;
             },

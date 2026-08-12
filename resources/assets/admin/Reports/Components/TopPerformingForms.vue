@@ -42,7 +42,7 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
-import { COLORS, formatCurrency, formatNumber, ChartLoader, NoData } from './shared/simple-utils.js';
+import { COLORS, formatCurrency, formatNumber, ChartLoader, NoData, escapeHtml } from './shared/simple-utils.js';
 
 export default {
     name: 'TopPerformingForms',
@@ -116,7 +116,7 @@ export default {
                         const param = params[0];
                         const originalForm = this.topFormsData[param.dataIndex];
                         return `
-                            <div style="font-weight: bold; margin-bottom: 4px;">${originalForm.title}</div>
+                            <div style="font-weight: bold; margin-bottom: 4px;">${escapeHtml(originalForm.title)}</div>
                             <div>${this.metricLabel}: ${this.formatValue(param.value)}</div>
                         `;
                     }

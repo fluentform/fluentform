@@ -7,7 +7,7 @@
                 <el-card class="input_file" :body-style="{ padding: '0px' }">
                     <span class="input_file_ext"><i class="el-icon-document"></i>{{ file | fileExtension }}</span>
                     <div style="padding: 10px; text-align: center;">
-                        <a :href="file" target="_blank">{{ file | filename }}</a>
+                        <a :href="safeUrl(file)" target="_blank">{{ file | filename }}</a>
                     </div>
                 </el-card>
             </el-col>
@@ -30,6 +30,18 @@
         methods: {
             getChunk(items, chunkSize = 4) {
                 return items ? _ff.chunk(items, chunkSize) : [];
+            },
+            // SECURITY (FINDING-23): the file value is an unauthenticated submission and is bound
+            // straight into :href. Vue escapes the attribute value but does not check the scheme,
+            // so a javascript:/data:/vbscript: URL would execute on click in the admin's session.
+            safeUrl(url) {
+                if (!url) {
+                    return '';
+                }
+                if (/^\s*(javascript|data|vbscript):/i.test(String(url))) {
+                    return '#';
+                }
+                return url;
             }
         }
     }

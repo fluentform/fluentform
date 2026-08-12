@@ -101,7 +101,7 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
         }
     } elseif (is_array($input)) {
         $sanitizedInput = [];
-        
+
         foreach ($input as $key => &$value) {
             $key = fluentFormSanitizer($key);
             // Local var: mutating $attribute here would collapse every sibling
@@ -111,7 +111,7 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
             $value = fluentFormSanitizer($value, $childAttribute, $fields);
             $sanitizedInput[$key] = $value;
         }
-        
+
         $input = $sanitizedInput;
     }
 
@@ -212,11 +212,11 @@ if (!function_exists('isWpAsyncRequest')) {
 function fluentFormIsHandlingSubmission()
 {
     $status = fluentFormWasSubmitted() || isWpAsyncRequest('fluentform_async_request');
-    
+
     $status = apply_filters_deprecated(
         'fluentform_is_handling_submission',
         [
-            $status
+            $status,
         ],
         FLUENTFORM_FRAMEWORK_UPGRADE,
         'fluentform/is_handling_submission',
@@ -323,22 +323,6 @@ function fluentform_options_sanitize($options)
     return \FluentForm\App\Helpers\Helper::sanitizeAdvancedOptions($options);
 }
 
-function fluentform_iframe_srcdoc_sanitize($value)
-{
-    $tags = wp_kses_allowed_html('post');
-    $tags['style'] = [
-        'types' => [],
-    ];
-    // Check if decoding is necessary
-    if (strpos($value, '&') !== false) {
-        // Decode HTML entities
-        $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        $value = stripslashes($value);
-    }
-    return wp_kses($value, $tags);
-}
-
-
 function fluentform_sanitize_html($html)
 {
     if (!$html) {
@@ -360,9 +344,6 @@ function fluentform_sanitize_html($html)
         'width'           => [],
         'height'          => [],
         'src'             => [],
-        'srcdoc'          => [
-            'value_callback' => 'fluentform_iframe_srcdoc_sanitize'
-        ],
         'title'           => [],
         'frameborder'     => [],
         'allow'           => [],
@@ -371,7 +352,7 @@ function fluentform_sanitize_html($html)
         'allowfullscreen' => [],
         'style'           => [],
     ];
-    
+
     //svg
     if (empty($tags['svg'])) {
         $svg_args = [
@@ -388,7 +369,7 @@ function fluentform_sanitize_html($html)
                 'stroke'          => true,
                 'stroke-width'    => true,
                 'stroke-linecap'  => true,
-                'stroke-linejoin' => true
+                'stroke-linejoin' => true,
             ],
             'g'     => ['fill' => true],
             'title' => ['title' => true],
@@ -398,16 +379,16 @@ function fluentform_sanitize_html($html)
                 'transform' => true,
             ],
             'polyline' => [
-                'points' => true
-            ]
+                'points' => true,
+            ],
         ];
         $tags = array_merge($tags, $svg_args);
     }
-    
+
     $tags = apply_filters_deprecated(
         'fluentform_allowed_html_tags',
         [
-            $tags
+            $tags,
         ],
         FLUENTFORM_FRAMEWORK_UPGRADE,
         'fluentform/allowed_html_tags',
@@ -491,7 +472,7 @@ function fluentformSanitizeCSS($css)
     if (!is_string($css)) {
         $css = (string) $css;
     }
-    
+
     return preg_match('#</?\w+#', $css) ? '' : $css;
 }
 
@@ -526,4 +507,52 @@ function fluentformGetPages()
     }
 
     return $formattedPages;
+}
+
+function fluentform_maybe_disable_contaminated_pro()
+{
+    $unsafeProFile = WP_PLUGIN_DIR . '/fluentformpro/libs/class-license-sync.php';
+
+    if (! is_file($unsafeProFile)) {
+        return;
+    }
+
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+    deactivate_plugins(
+        'fluentformpro/fluentformpro.php',
+        true
+    );
+
+    $message = sprintf(
+        __('<strong>Fluent Forms Pro has been deactivated for security reasons.</strong> Delete the existing plugin and install a fresh copy from your %1$sWPManageNinja dashboard%2$s. Your Fluent Forms data will remain intact. We recommend %3$sopening a support ticket%4$s so we can help clean up your site. Read the %5$sincident report%6$s for details.', 'fluentform'),
+        '<a href="' . esc_url(add_query_arg('ff_deactivation_error', '1', 'https://wpmanageninja.com/account/downloads')) . '" target="_blank" rel="noopener noreferrer">',
+        '</a>',
+        '<a href="' . esc_url(add_query_arg('ff_deactivation_error', '1', 'https://wpmanageninja.com/account/support-tickets/submit-ticket/')) . '" target="_blank" rel="noopener noreferrer">',
+        '</a>',
+        '<a href="' . esc_url(add_query_arg('ff_deactivation_error', '1', 'https://wpmanageninja.com/security-incident-on-31-july-2026/')) . '" target="_blank" rel="noopener noreferrer">',
+        '</a>'
+    );
+
+    add_action('admin_init', function () use ($message) {
+        $renderNotice = function () use ($message) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Admin notice with HTML links
+            printf('<div class="fluentform-admin-notice notice notice-error"><div style="padding: 15px 10px;">%1$s</div></div>', $message);
+        };
+        add_action('fluentform/global_menu', $renderNotice);
+        add_action('fluentform/after_form_menu', $renderNotice);
+    });
+
+    add_action('admin_notices', function () use ($message) {
+        if (! current_user_can('activate_plugins')) {
+            return;
+        }
+        ?>
+        <div class="notice notice-error">
+            <p>
+                <?php echo $message; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Admin notice with HTML links ?>
+            </p>
+        </div>
+        <?php
+    });
 }

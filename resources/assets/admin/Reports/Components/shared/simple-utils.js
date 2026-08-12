@@ -71,3 +71,12 @@ export function getCurrencySymbol(htmlEntity = '$') {
 export function getFormPreviewUrl(formId) {
     return `${window.location.origin}/?fluent_forms_pages=1&design_mode=1&preview_id=${formId}#ff_preview`;
 }
+
+// ECharts tooltip formatter output is inserted via innerHTML, so any
+// submission-derived label (form title, plan name, …) must be entity-escaped
+// before interpolation.
+export function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (c) => (
+        {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]
+    ));
+}

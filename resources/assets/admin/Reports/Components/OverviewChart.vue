@@ -67,7 +67,7 @@
     import Card from '@/admin/components/Card/Card.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from "@/admin/components/Card/CardHead.vue";
-    import { COLORS, ChartLoader, NoData, formatNumber, formatCurrency, getCurrencySymbol } from './shared/simple-utils.js';
+    import { COLORS, ChartLoader, NoData, formatNumber, formatCurrency, getCurrencySymbol, escapeHtml } from './shared/simple-utils.js';
 
     export default {
         name: 'OverviewChart',
@@ -236,7 +236,7 @@
                             type: 'shadow'
                         },
                         formatter: (params) => {
-                            let result = `${params[0].axisValue}<br/>`;
+                            let result = `${escapeHtml(params[0].axisValue)}<br/>`;
                             params.forEach(param => {
                                 let value = param.value;
                                 if (isPaymentChart) {
@@ -247,7 +247,7 @@
                                 } else {
                                     value = formatNumber(typeof value === 'number' ? value : parseFloat(value) || 0);
                                 }
-                                result += `${param.marker} ${param.seriesName}: ${value}<br/>`;
+                                result += `${param.marker} ${escapeHtml(param.seriesName)}: ${value}<br/>`;
                             });
                             return result;
                         }

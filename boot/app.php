@@ -29,9 +29,15 @@ return function ($file) {
                 add_action('fluentform/after_form_menu', $renderNotice);
             });
         }
+
+        fluentform_maybe_disable_contaminated_pro();
     });
 
     $app = new Application($file);
+
+    // Boot the MCP server (Abilities API tools + endpoint). Self-guards: ships
+    // off, and its Abilities/adapter hooks fire only when those systems exist.
+    \FluentForm\App\Modules\MCP\MCPInit::boot();
 
     register_activation_hook($file, function ($network_wide) use ($app) {
         ($app->make(ActivationHandler::class))->handle($network_wide);

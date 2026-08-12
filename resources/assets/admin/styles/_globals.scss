@@ -829,6 +829,10 @@ label.el-radio, label.el-checkbox {
     border-color: #f2f2f2;
     border-radius: 4px !important;
     color: $--color-text-regular;
+    // WP admin min-height:40px on inputs overrides Element UI's 28px here.
+    height: 28px;
+    min-height: 28px;
+    line-height: 28px;
     &:focus,
     &:hover{
       border-color: #f2f2f2 !important;

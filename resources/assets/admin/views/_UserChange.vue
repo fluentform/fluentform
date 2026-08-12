@@ -11,12 +11,11 @@
                 <h4>{{$t('Select User for this submission')}}</h4>
             </template>
             <div class="ff_uc_body mt-4">
-                <p v-if="submission.user"
-                    v-html="$t(
+                <p v-if="submission.user">
+                    {{ $t(
                         'This entry was submitted by %s. You can change the associate user by using the following form.',
-                        `<a target='_blank' rel='noopener' href='${submission.user.permalink}>${submission.user.name}</a>,`
-                    )"
-                >
+                        submission.user.name
+                    ) }}
                 </p>
                 <p v-else>{{ $t('This entry was submitted by guest user. You can assign a new user for this entry') }}</p>
                 <h6 style="font-weight: 400;" class="mt-4 mb-3">{{ $t('Select corresponding user') }}</h6>

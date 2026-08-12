@@ -58,7 +58,7 @@
     import Card from '@/admin/components/Card/Card.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from "@/admin/components/Card/CardHead.vue";
-    import { ChartLoader, COLORS, formatNumber, formatCurrency, getCurrencySymbol } from './shared/simple-utils.js';
+    import { ChartLoader, COLORS, formatNumber, formatCurrency, getCurrencySymbol, escapeHtml } from './shared/simple-utils.js';
 
 export default {
     name: "ChartDisplay",
@@ -141,7 +141,7 @@ export default {
                             type: 'cross'
                         },
                         formatter: function(params) {
-                            let result = `${params[0].axisValue}<br/>`;
+                            let result = `${escapeHtml(params[0].axisValue)}<br/>`;
                             params.forEach(param => {
                                 let value = param.value;
                                 if (this.type === 'revenue') {
@@ -149,7 +149,7 @@ export default {
                                 } else {
                                     value = formatNumber(value);
                                 }
-                                result += `${param.marker} ${param.seriesName}: ${value}<br/>`;
+                                result += `${param.marker} ${escapeHtml(param.seriesName)}: ${value}<br/>`;
                             });
                             return result;
                         }.bind(this)

@@ -111,13 +111,15 @@ import sanitizeHtml from './sanitizeHtml';
                         let inputDiv =
                             `<div class="ff-el-input--content">
                                 <div class="ff_input-group">
-                                    <input readonly value="${ data.data.saved_url }" class="ff-el-form-control" >
+                                    <input readonly class="ff-el-form-control" >
                                     <div class="ff_input-group-append">
                                         <button class="ff-btn ff-btn-md ff_btn_style ff_btn_copy_link ff_input-group-text">${copyIcon}</button>
                                     </div>
                                 </div>
                             </div>`;
                         let inputGroup = $('<div/>', { class: 'ff-el-group ff-saved-state-input ff-saved-state-link ff-hide-group', html: inputDiv });
+                        // Assign the URL as a value property (no HTML parsing) so a "-bearing url can't break the attribute.
+                        inputGroup.find('input').val(data.data.saved_url);
 
                         $(this).closest('.ff-el-group').after(
                             inputGroup

@@ -7,8 +7,8 @@
             style="margin-bottom: 10px;"
         >
             <el-col v-for="(file, index) in row" :md="6" :key="index">
-                <a :href="file" target="_blank" class="input-image">
-                    <img :src="file" alt="">
+                <a :href="safeUrl(file)" target="_blank" class="input-image">
+                    <img :src="safeUrl(file)" alt="">
                 </a>
             </el-col>
         </el-row>
@@ -25,6 +25,17 @@
                     return [[items]];
                 }
                 return items ? _ff.chunk(items, chunkSize) : [];
+            },
+            // SECURITY (FINDING-23): block javascript:/data:/vbscript: schemes on the submitted
+            // upload value before binding it into :href/:src (see FilesList.vue).
+            safeUrl(url) {
+                if (!url) {
+                    return '';
+                }
+                if (/^\s*(javascript|data|vbscript):/i.test(String(url))) {
+                    return '#';
+                }
+                return url;
             }
         }
     }

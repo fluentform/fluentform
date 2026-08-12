@@ -55,7 +55,7 @@ import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 import Notice from "@/admin/components/Notice/Notice.vue";
-import { COLORS, formatCurrency, ChartLoader, NoData } from './shared/simple-utils.js';
+import { COLORS, formatCurrency, ChartLoader, NoData, escapeHtml } from './shared/simple-utils.js';
 
 export default {
     name: 'TopSubscriptionByPlan',
@@ -250,7 +250,7 @@ export default {
                     },
                     formatter: (params) => {
                         const data = params[0];
-                        return `${data.name}: ${this.formatCurrency(data.value, this.getCurrencySymbol())}`;
+                        return `${escapeHtml(data.name)}: ${this.formatCurrency(data.value, this.getCurrencySymbol())}`;
                     }
                 },
                 animation: true

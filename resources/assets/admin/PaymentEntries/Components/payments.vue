@@ -102,7 +102,7 @@
         <div class="payment_details">
             <div class="ff_table">
                 <el-skeleton :loading="loading" animated :rows="10">
-                    <el-table class="ff_payment_table" :stripe="true" :row-class-name="tableRowClassName"
+                    <el-table ref="entriesTable" class="ff_payment_table" :stripe="true" :row-class-name="tableRowClassName"
                         :data="payments"  @selection-change="handleSelectionChange"
                     >
                     <el-table-column
@@ -291,6 +291,13 @@ import moment from 'moment';
             handleSelectionChange(val){
                 this.entrySelections = val;
             },
+            clearEntrySelection() {
+                this.entrySelections = [];
+                const tableInstance = this.$refs.entriesTable;
+                if (tableInstance && typeof tableInstance.clearSelection === 'function') {
+                    tableInstance.clearSelection();
+                }
+            },
             handleBulkAction() {
                 if (this.bulkAction) {
                     let actionType = this.bulkAction;
@@ -328,6 +335,7 @@ import moment from 'moment';
 
                         console.log(error);
                     }).always(()=>{
+                        this.clearEntrySelection();
                         this.fetchPayments();
                     });
 

@@ -25,6 +25,7 @@
 
                     <div ref="chartRef" class="chart-element"></div>
                 </div>
+
                 <notice class="ff_alert_between update-info-notice" type="info-soft" v-if="!hasPro">
                     <div>
                         <h2 class="text">{{ $t('Please upgrade to pro to unlock this feature.') }}</h2>
@@ -48,7 +49,23 @@ import CardHead from "@/admin/components/Card/CardHead.vue";
 import CardBody from "@/admin/components/Card/CardBody.vue";
 import worldMapJson from "../world.geo.json";
 import Notice from "@/admin/components/Notice/Notice.vue";
-import { COLORS, ChartLoader, NoData } from './shared/simple-utils.js';
+import { COLORS, ChartLoader, NoData, escapeHtml } from './shared/simple-utils.js';
+import {
+    buildRegionIndex,
+    buildRegionNameSet,
+    resolveRegionForItem,
+    resolveMarkerCoords,
+    isValueInVisualMapRange,
+} from '../country-iso';
+
+// Marker size for countries with no polygon, in pixels.
+const MARKER_MIN_SIZE = 6;
+const MARKER_MAX_SIZE = 18;
+
+// Fill for a country the legend's High/Low band excludes. Shared by both
+// series so the filter looks the same whether a country is drawn as a polygon
+// or as a point.
+const OUT_OF_RANGE_COLOR = '#eeeeee';
 
 export default {
     name: 'SubmissionCountryHeatmap',
@@ -81,28 +98,80 @@ export default {
         countryData() {
             return this.countryHeatmap?.country_data || [];
         },
+        regionIndex() {
+            return buildRegionIndex(worldMapJson).index;
+        },
+        mapRegionNames() {
+            return buildRegionNameSet(worldMapJson);
+        },
+        resolvedData() {
+            return (this.countryData || []).map((item) => ({
+                item,
+                region: this.resolveRegion(item),
+            }));
+        },
+        // City-states and small islands have no polygon in the bundled map, so
+        // they are plotted as points. Without this they would be invisible.
+        markerData() {
+            return this.resolvedData
+                .filter((entry) => !entry.region)
+                .map((entry) => ({
+                    entry,
+                    coords: resolveMarkerCoords(entry.item, this.regionIndex, this.mapRegionNames),
+                }))
+                .filter(({coords}) => coords)
+                .map(({entry, coords}) => {
+                    const value = entry.item.value || 0;
+
+                    return {
+                        name: entry.item.name,
+                        displayName: entry.item.name,
+                        value: [...coords, value],
+                        // visualMap only drives the region series — its colour
+                        // ramp reads dimension 0, which here is longitude. The
+                        // marker has to apply the legend's band itself, or the
+                        // filter greys out polygon countries while leaving
+                        // excluded city-states lit.
+                        itemStyle: {
+                            color: this.inVisualMapRange(value)
+                                ? COLORS.views
+                                : OUT_OF_RANGE_COLOR,
+                        },
+                    };
+                });
+        },
+        // One resolver governs the regions, the markers and the legend.
+        // Deriving the scale separately is what painted every country grey.
+        renderedMax() {
+            const drawn = [
+                ...this.resolvedData.filter((entry) => entry.region).map((entry) => entry.item.value),
+                ...this.markerData.map((marker) => marker.value[2]),
+            ]
+                .map((value) => Number(value))
+                .filter((value) => Number.isFinite(value));
+
+            return drawn.length ? Math.max(...drawn) : 0;
+        },
         coloredData() {
-            const result = (this.countryData || []).map((item) => {
-                const normalizedName = this.normalizeCountryName(item.name);
-                const value = item.value || 0;
+            return this.resolvedData
+                .filter((entry) => entry.region)
+                .map(({item, region}) => {
+                    const value = item.value || 0;
+                    const isInRange = this.inVisualMapRange(value);
 
-                // Filter based on current visual map range
-                const [minRange, maxRange] = this.currentVisualMapRange;
-                const isInRange = value >= Math.round(minRange) && value <= Math.round(maxRange);
-
-                return {
-                    ...item,
-                    name: normalizedName,
-                    value: value,
-                    itemStyle: {
-                        color: isInRange ? this.getColor(value) : '#eeeeee'
-                    },
-                    emphasis: {
-                        itemStyle: {shadowBlur: 10, shadowColor: "rgba(0, 0, 0, 0.5)"},
-                    },
-                };
-            });
-            return result;
+                    return {
+                        ...item,
+                        name: region,
+                        displayName: item.name,
+                        value: value,
+                        itemStyle: {
+                            color: isInRange ? this.getColor(value) : OUT_OF_RANGE_COLOR
+                        },
+                        emphasis: {
+                            itemStyle: {shadowBlur: 10, shadowColor: "rgba(0, 0, 0, 0.5)"},
+                        },
+                    };
+                });
         },
         infoMessage() {
             return this.countryHeatmap?.disable ? this.$t('Country detection is disabled. Please enable it to see the submissions by country.') : this.$t('No submission data available for the selected date range');
@@ -134,8 +203,12 @@ export default {
                 tooltip: {
                     trigger: "item",
                     formatter: (params) => {
-                        const value = params.value || 0;
-                        return `<strong>${params.name}</strong><br/>${this.$t('Submissions:')} ${value}`;
+                        // Regions carry a plain count; markers carry
+                        // [longitude, latitude, count].
+                        const raw = params.value;
+                        const value = (Array.isArray(raw) ? raw[2] : raw) || 0;
+                        const label = (params.data && params.data.displayName) || params.name;
+                        return `<strong>${escapeHtml(label)}</strong><br/>${this.$t('Submissions:')} ${value}`;
                     },
                     borderRadius: 8,
                     backgroundColor: "#ffffff",
@@ -146,6 +219,10 @@ export default {
                     },
                 },
                 visualMap: {
+                    // Regions only. The marker series carries [lng, lat, count]
+                    // and colours itself, so letting visualMap at it would map
+                    // the wrong dimension.
+                    seriesIndex: 0,
                     min: 0,
                     max: this.maxValue,
                     left: "left",
@@ -161,36 +238,76 @@ export default {
                         color: "#666",
                     },
                 },
+                // The map is declared as a geo component rather than on the
+                // series, so the marker scatter below can share its coordinate
+                // system and pan/zoom with it.
+                geo: {
+                    map: "world",
+                    roam: true,
+                    zoom: this.zoomLevel,
+                    label: {
+                        show: false,
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            color: "#333",
+                            fontWeight: "bold",
+                        },
+                        itemStyle: {
+                            areaColor: "#40a9ff",
+                            shadowBlur: 10,
+                            shadowColor: "#ccc",
+                        },
+                    },
+                    itemStyle: {
+                        borderColor: "#ddd",
+                        borderWidth: 0.5,
+                    },
+                },
                 series: [
                     {
                         name: this.$t('Submissions'),
                         type: "map",
-                        map: "world",
-                        roam: true,
-                        zoom: this.zoomLevel,
-                        label: {
-                            show: false,
+                        geoIndex: 0,
+                        data: this.coloredData,
+                    },
+                    {
+                        // Countries the map has no polygon for — Singapore,
+                        // Hong Kong, Monaco and the like. Drawn as points so
+                        // their submissions appear on the map instead of being
+                        // dropped for having no shape to fill.
+                        name: this.$t('Submissions'),
+                        type: "scatter",
+                        coordinateSystem: "geo",
+                        geoIndex: 0,
+                        symbolSize: (value) => this.markerSize(value[2]),
+                        // Colour is set per datum in markerData so the legend
+                        // band can grey a marker out. Leaving a series-level
+                        // colour here would override it.
+                        itemStyle: {
+                            borderColor: "#ffffff",
+                            borderWidth: 1,
                         },
                         emphasis: {
-                            label: {
-                                show: true,
-                                color: "#333",
-                                fontWeight: "bold",
-                            },
-                            itemStyle: {
-                                areaColor: "#40a9ff",
-                                shadowBlur: 10,
-                                shadowColor: "#ccc",
-                            },
+                            itemStyle: {shadowBlur: 10, shadowColor: "rgba(0, 0, 0, 0.5)"},
                         },
-                        itemStyle: {
-                            borderColor: "#ddd",
-                            borderWidth: 0.5,
-                        },
-                        data: this.coloredData,
+                        data: this.markerData,
                     },
                 ],
             };
+        },
+
+        // Area-proportional so a marker reads like a filled region does.
+        markerSize(value) {
+            const count = Number(value) || 0;
+            if (count <= 0) {
+                return 0;
+            }
+
+            const ratio = Math.sqrt(count) / Math.sqrt(Math.max(this.maxValue, 1));
+
+            return MARKER_MIN_SIZE + (MARKER_MAX_SIZE - MARKER_MIN_SIZE) * Math.min(ratio, 1);
         },
 
         async initChart() {
@@ -215,12 +332,9 @@ export default {
 
             this.chartInstance = echarts.init(element);
 
-            if (this.countryData && this.countryData.length > 0) {
-                this.maxValue = Math.max(...this.countryData.map((item) => item.value || 0));
-                this.currentVisualMapRange = [0, this.maxValue];
-                const option = this.getMapOption();
-                this.chartInstance.setOption(option);
-            }
+            this.maxValue = Math.max(this.renderedMax, 1);
+            this.currentVisualMapRange = [0, this.maxValue];
+            this.chartInstance.setOption(this.getMapOption());
 
             // Listen for visual map range changes
             this.chartInstance.on("datarangeselected", (params) => {
@@ -230,13 +344,15 @@ export default {
 
             this.chartInstance.on("georoam", () => {
                 const option = this.chartInstance.getOption();
-                if (option.series && option.series[0] && option.series[0].zoom) {
-                    const newZoom = option.series[0].zoom;
+                // Zoom lives on the geo component now that the map is declared
+                // there rather than on the series.
+                if (option.geo && option.geo[0] && option.geo[0].zoom) {
+                    const newZoom = option.geo[0].zoom;
                     if (newZoom !== this.zoomLevel) {
                         if (newZoom < this.minZoom || newZoom > this.maxZoom) {
                             const clamped = Math.max(this.minZoom, Math.min(this.maxZoom, newZoom));
                             this.chartInstance.setOption({
-                                series: [{zoom: clamped}],
+                                geo: [{zoom: clamped}],
                             }, false);
                             this.zoomLevel = clamped;
                         } else {
@@ -263,14 +379,14 @@ export default {
         zoomIn() {
             this.zoomLevel = Math.min(this.zoomLevel + this.zoomInterval, this.maxZoom);
             if (this.chartInstance) {
-                this.chartInstance.setOption({series: [{zoom: this.zoomLevel}]});
+                this.chartInstance.setOption({geo: [{zoom: this.zoomLevel}]});
             }
         },
 
         zoomOut() {
             this.zoomLevel = Math.max(this.zoomLevel - this.zoomInterval, this.minZoom);
             if (this.chartInstance) {
-                this.chartInstance.setOption({series: [{zoom: this.zoomLevel}]});
+                this.chartInstance.setOption({geo: [{zoom: this.zoomLevel}]});
             }
         },
 
@@ -281,21 +397,24 @@ export default {
                 this.chartInstance.setOption(this.getMapOption());
             }
         },
+        
+        /**
+         * Resolve a payload row to the map region it should colour.
+         *
+         * Joins on the ISO code so the match survives country renames and
+         * non-English admin locales, then falls forward to a name match. The
+         * name path is not just a version-skew fallback: the free tier's own
+         * demo payload (Reports/App.vue) ships name-only rows, so it runs on
+         * every install without Pro.
+         */
+        resolveRegion(item) {
+            return resolveRegionForItem(item, this.regionIndex, this.mapRegionNames);
+        },
 
-        normalizeCountryName(countryName) {
-            const countryMapping = {
-                // Major countries with different naming
-                'United States (US)': 'United States of America',
-                'United Kingdom (UK)': 'United Kingdom',
-                'United Kingdom (GB)': 'United Kingdom',
-            };
-
-            if (countryMapping[countryName]) {
-                return countryMapping[countryName];
-            }
-
-            const cleanName = countryName.replace(/\s*\([A-Z]{2,3}\)\s*$/, '').trim();
-            return countryMapping[cleanName] || cleanName;
+        // One membership test for both series, so the legend band means the
+        // same thing for a polygon country and a marker country.
+        inVisualMapRange(value) {
+            return isValueInVisualMapRange(value, this.currentVisualMapRange);
         },
         refreshChart() {
             if (this.chartInstance) {

@@ -1,3 +1,5 @@
+import sanitizeHtml from '../sanitizeHtml';
+
 export default function ($, $form, form, fluentFormVars, formSelector) {
     /**
      * Get translated upload message
@@ -108,8 +110,6 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     return false;
                 }
 
-                let elName = element.prop('name');
-                $(`[name="${elName}"]`).closest('div').find('.error').html('');
                 element.closest('div').find('.error').html('');
 
                 return true;
@@ -267,7 +267,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     const modal = document.createElement('div');
                     modal.id = modalId;
                     modal.className = 'lity-hide ff-cropper-lightbox';
-                    modal.innerHTML = `
+                    modal.innerHTML = sanitizeHtml(`
                         <div class="ff-cropper-lightbox__dialog" role="dialog" aria-modal="true">
                             <div class="ff-cropper-lightbox__header">
                                 <h3 class="ff-cropper-lightbox__title">${fluentFormVars.crop_image_title || 'Crop Image'}</h3>
@@ -286,7 +286,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                                 <button type="button" class="ff-cropper-lightbox__btn ff-cropper-lightbox__btn--primary" data-action="confirm">${fluentFormVars.crop_confirm_txt || 'Crop & Upload'}</button>
                             </div>
                         </div>
-                    `;
+                    `);
 
                     document.body.appendChild(modal);
 
@@ -375,7 +375,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     if (ratioOptions.length) {
                         const toolbar = document.createElement('div');
                         toolbar.className = 'ff-cropper-lightbox__toolbar';
-                        toolbar.innerHTML = `
+                        toolbar.innerHTML = sanitizeHtml(`
                             <span class="ff-cropper-lightbox__toolbar-label">${fluentFormVars.crop_ratio_txt || 'Crop ratio'}</span>
                             <div class="ff-cropper-lightbox__ratio-list">
                                 ${ratioOptions.map(option => `
@@ -386,7 +386,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                                     >${option.label}</button>
                                 `).join('')}
                             </div>
-                        `;
+                        `);
 
                         modal.querySelector('.ff-cropper-lightbox__body').insertBefore(
                             toolbar,

@@ -159,6 +159,22 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
+= 6.2.12 (Date: August 10, 2026) =
+- Adds an optional MCP server that lets AI assistants work with your forms, entries, and reports, turned off by default
+- Adds a Spam option to the entry status filter on the entries list
+- Adds a notice when global captcha auto load is enabled but the keys are missing
+- Improves the Steps progress indicator so you can click it to move between steps, like Tabs
+- Improves how cookie smartcode values are handled and displayed
+- Fixes a fatal error during Stripe checkout when pushing metadata
+- Fixes Keyword-Based Restriction not blocking keywords in other alphabets, such as Cyrillic
+- Fixes http:// being added to smartcode URLs in the email editor
+- Fixes captcha fields not being added back to the form
+- Fixes the bulk action bar showing when no entries are selected
+- Fixes pagination alignment on the forms, entries, and payments lists
+- Hardens output escaping and authorization across entries, reports, integrations, and payments
+- Restricts payment bulk actions to the Manage Payments permission and revenue and payment type reports to the View Payments permission
+- Restricts Slack integration requests to Slack hosts
+
 ### 6.2.3 (Date: May 21, 2026) =
 - Adds option group support for Dropdown and Multi-select fields
 - Adds pinned column support in the entries table

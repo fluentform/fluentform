@@ -1436,7 +1436,7 @@
 // Country Heatmap Section
 .country-heatmap-section {
     width: 100%;
-    height: 350px;
+    min-height: 350px;
     .submission-country-heatmap {
         height: 100%;
         display: flex;
@@ -1501,6 +1501,10 @@
             background: #f8f9fa;
             border-radius: 8px;
             overflow: hidden;
+            // The generic .chart-wrapper reserves 450px for taller charts. This
+            // card's map is 280px, and the section no longer clips it away, so
+            // let the wrapper size to the map instead of leaving dead space.
+            min-height: 0;
 
             .map-controls {
                 position: absolute;
@@ -1515,10 +1519,10 @@
 
             .chart-element {
                 width: 100%;
-                height: 100%;
-                max-height: 280px;
+                height: 280px;
                 background: #f8f9fa;
             }
+
         }
 
         .chart-legend {

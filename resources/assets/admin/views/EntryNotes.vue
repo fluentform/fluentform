@@ -36,7 +36,7 @@
                                 <div class="wpf_entry_label">
                                     {{activity.name}} - {{ activity.created_at }} <span v-show="api_log == 'yes'" class="ff_tag">{{activity.meta_key}}</span>
                                 </div>
-                                <div class="wpf_entry_value" v-html="activity.value"></div>
+                                <div class="wpf_entry_value" v-html="sanitizeHtml(activity.value)"></div>
                             </div>
 
                             <el-button
@@ -64,6 +64,7 @@
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import sanitizeHtml from '@/admin/helpers/sanitizeHtml';
 
     export default {
         name: 'response_notes',
@@ -108,6 +109,7 @@
             }
         },
         methods: {
+            sanitizeHtml,
             fetchNotes() {
                 if (!/^\d+$/.test(String(this.entry_id))) return;
 
@@ -163,4 +165,3 @@
         }
     }
 </script>
-

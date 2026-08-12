@@ -139,6 +139,17 @@ class FluentFormSlider {
     }
 
     /**
+     * Determine if the current indicator should have clickable step navigation.
+     * Both "Tabs" and the classic "Steps" are clickable; tabs-only visual
+     * behaviors stay gated on isTabsIndicator().
+     * @param {string} progressIndicator
+     * @return {boolean}
+     */
+    isClickableIndicator(progressIndicator) {
+        return this.isTabsIndicator(progressIndicator) || progressIndicator === 'steps';
+    }
+
+    /**
      * Initialize form with saved state if step persistence is enabled
      */
     initFormWithSavedState() {
@@ -338,7 +349,6 @@ class FluentFormSlider {
 
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
 
-                    $(`[name=${key}][value="${value}"]`).prop('checked', true).change();
                     this.$theForm.find(`[name=${key}][value="${value}"]`).prop('checked', true).change();
 
                     if ($el.closest('.ff-el-group').find('.ff-el-ratings').length) {
@@ -406,7 +416,10 @@ class FluentFormSlider {
         const totalSteps = formSteps.length;
         const stepTitles = this.$theForm.find('.ff-step-titles li');
         const progressIndicator = this.$theForm.find('.ff-step-container').first().data('progress_indicator');
-        const shouldUseClickableTabs = this.isTabsIndicator(progressIndicator);
+        // Only enhance when the markup marks the list clickable, so the JS gate
+        // and the affordance CSS stay in sync across free/pro version skew.
+        const shouldUseClickableNav = this.isClickableIndicator(progressIndicator)
+            && this.$theForm.find('.ff-step-titles').first().hasClass('ff-step-titles--clickable');
 
         // Pre-skip steps that are fully hidden by conditions on initial load to avoid flicker
         if (!window.ff_disable_auto_step) {
@@ -449,8 +462,12 @@ class FluentFormSlider {
 
         this.registerStepNavigators(this.fluentFormVars.stepAnimationDuration);
 
-        if (shouldUseClickableTabs) {
+        if (shouldUseClickableNav) {
             this.registerClickableStepNav(stepTitles, formSteps);
+        }
+
+        // Top-tab overflow centering is tabs-only; steps keep their own layout.
+        if (this.isTabsIndicator(progressIndicator)) {
             this.syncTopTabOverflowState();
 
             $(window)
@@ -579,7 +596,7 @@ class FluentFormSlider {
 
             // Add ARIA live region for step announcements
             this.$theForm.find('.ff-el-progress-status')
-                .html(stepText)
+                .text(stepText)
                 .attr('aria-live', 'polite');
 
             stepTitles.css('display', 'none');

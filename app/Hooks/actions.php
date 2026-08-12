@@ -163,6 +163,7 @@ add_action('admin_init', function () {
         \FluentForm\App\Modules\Registerer\ReviewQuery::register();
         \FluentForm\App\Modules\Registerer\MigrationNotice::register();
         \FluentForm\App\Modules\Registerer\StripeKeyNotice::register();
+        \FluentForm\App\Modules\Registerer\CaptchaKeyNotice::register();
     }
 });
 
@@ -969,6 +970,18 @@ $app->addAction('fluentform/before_insert_submission', function ($insertData, $r
     $tokenBasedSpamProtection->verify($insertData, $requestData, $form->id);
 }, 9, 3);
 
+// The token-based spam check (FINDING-25) enforces on conversational forms too, but its ~1h TTL
+// token cannot be refreshed by the conversational JS app — it bakes hidden inputs statically at
+// render, so behind a full-page cache the token expires and rejects every legitimate submission.
+// Disable ONLY the token for conversational forms, resolved from server-side form meta (never the
+// client-supplied isFFConversational flag, which was the original bypass). The honeypot still applies.
+$app->addFilter('fluentform/token_based_spam_protection_status', function ($status, $formId) {
+    if ($status && \FluentForm\App\Helpers\Helper::isConversionForm($formId)) {
+        return false;
+    }
+    return $status;
+}, 10, 2);
+
 // Maybe update current user allowed form ids,
 // if current user has specific form permission and capable to create form
 $app->addAction('fluentform/inserted_new_form', function ($formId) {
@@ -1039,6 +1052,10 @@ add_action('fluentform/integration_action_result', function ($feed, $status, $no
         $note = $status;
     }
 
+    $note = is_scalar($note)
+        ? sanitize_text_field(wp_unslash((string) $note))
+        : sanitize_text_field((string) wp_json_encode($note));
+
     if (strlen($note) > 255) {
         if (function_exists('mb_substr')) {
             $note = mb_substr($note, 0, 251) . '...';
@@ -1069,6 +1086,10 @@ add_action('ff_integration_action_result', function ($feed, $status, $note = '')
     if (!$note) {
         $note = $status;
     }
+
+    $note = is_scalar($note)
+        ? sanitize_text_field(wp_unslash((string) $note))
+        : sanitize_text_field((string) wp_json_encode($note));
 
     if (strlen($note) > 255) {
         if (function_exists('mb_substr')) {

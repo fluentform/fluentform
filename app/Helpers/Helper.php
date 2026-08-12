@@ -244,7 +244,9 @@ class Helper
 
         $statuses = apply_filters('fluentform/entry_statuses_core', $statuses, $form_id);
 
-        $statuses['trashed'] = 'Trashed';
+        $statuses['spam'] = __('Spam', 'fluentform');
+
+        $statuses['trashed'] = __('Trashed', 'fluentform');
 
         return $statuses;
     }
@@ -987,7 +989,7 @@ class Helper
 
     public static function sanitizeForCSV($content)
     {
-        $formulas = ['=', '-', '+', '@', "\t", "\r"];
+        $formulas = ['=', '-', '+', '@', "\t", "\r", "\n"];
 
         $formulas = apply_filters('fluentform/csv_sanitize_formulas', $formulas);
 
@@ -1349,7 +1351,7 @@ class Helper
                     $fieldData = ArrayHelper::get($field, 'raw');
                     $data = (new SelectCountry())->loadCountries($fieldData);
                     $validCountries = ArrayHelper::get($fieldData, 'settings.country_list.priority_based', []);
-                    $validCountries = array_merge($validCountries, array_keys(ArrayHelper::get($data, 'options')));
+                    $validCountries = array_merge($validCountries, array_keys((array) ArrayHelper::get($data, 'options', [])));
                     $isValid = in_array($inputValue, $validCountries);
                     break;
                 case 'repeater_field':
@@ -1608,8 +1610,15 @@ class Helper
         return home_url($args);
     }
 
-    public static function getCountryCodeFromHeaders()
+    public static function getCountryCodeFromHeaders($forRestriction = false)
     {
+        // SECURITY (FINDING-26): CDN country headers are client-spoofable. Trust them for analytics
+        // storage (spoof is cosmetic) but not for restriction enforcement (spoof = bypass). Filterable.
+        $trustHeaders = apply_filters('fluentform/trust_geo_headers', !$forRestriction);
+        if (!$trustHeaders) {
+            return null;
+        }
+
         $headers = [
             // Cloudflare (most common)
             'HTTP_CF_IPCOUNTRY',

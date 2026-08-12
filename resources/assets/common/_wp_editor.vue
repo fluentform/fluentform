@@ -99,9 +99,11 @@
             changeContentEvent() {
                 let content = wp.editor.getContent(this.editor_id);
 
-                // Remove auto inserted http:// for {pdf.download_link.id} shortcodes. The shortcode will handle the protocol.
-                if (content && content.includes('http://{pdf.download_link.')) {
-                    content = content.replace(/http:\/\/{pdf.download_link./g, '{pdf.download_link.');
+                // wpLink.correctURL() prepends http:// to any link that isn't already scheme-rooted,
+                // which corrupts smartcodes that already resolve to a full URL. Only strip the bogus
+                // scheme for those absolute-URL smartcodes — never for schemeless ones like {inputs.website}.
+                if (content) {
+                    content = content.replace(/https?:\/\/(\{(?:wp\.site_url|pdf\.download_link\.[^}]*)\})/gi, '$1');
                 }
 
                 this.$emit('input', this.customSanitize(content));

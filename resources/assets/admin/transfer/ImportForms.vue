@@ -123,6 +123,10 @@
 	                        this.$emit('forms-imported', true)
 	                        this.importedForms = response.inserted_forms;
 	                        this.$success(response.message);
+
+	                        if (response.restricted_code_notice) {
+		                        this.$warning(response.restricted_code_notice);
+	                        }
                         },
                         error: (error) => {
 	                        this.clear();

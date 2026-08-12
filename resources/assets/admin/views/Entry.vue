@@ -87,10 +87,10 @@
                                                 </template>
                                                 <template
                                                     v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
-                                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'], original_data[label_index])"></div>
+                                                    <div class="wpf_entry_value" v-html="sanitizeHtml(maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'], original_data[label_index]))"></div>
                                                 </template>
                                                 <template v-else>
-                                                    <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
+                                                    <div class="wpf_entry_value" v-html="sanitizeHtml(entry.user_inputs[label_index])"></div>
                                                 </template>
                                             </div>
                                         </div>
@@ -108,7 +108,7 @@
                             </card-head>
                             <card-body>
                                 <div class="narrow_items">
-                                    <div v-html="card.content"></div>
+                                    <div v-html="sanitizeHtml(card.content)"></div>
                                 </div>
                             </card-body>
                         </card>
@@ -163,7 +163,7 @@
                                 </li>
                                 <li>
                                     <div class="lead-title">{{$t('Source URL')}}:</div>
-                                    <a class="lead-text lead-url" target="_blank" :href="entry.source_url">
+                                    <a class="lead-text lead-url" target="_blank" rel="noopener" :href="entry.source_url">
                                         {{ entry.source_url }}
                                     </a>
                                 </li>
@@ -293,6 +293,7 @@
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
+    import sanitizeHtml from '@/admin/helpers/sanitizeHtml';
 
     export default {
         name: 'Entry',
@@ -365,6 +366,7 @@
             }
         },
         methods: {
+            sanitizeHtml,
             getEntry() {
                 const url = FluentFormsGlobal.$rest.route('findSubmission', this.entry_id);
                 FluentFormsGlobal.$rest.get(url)

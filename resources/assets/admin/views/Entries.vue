@@ -664,6 +664,7 @@
 </template>
 
 <script type="text/babel">
+    import sanitizeHtml from '@/admin/helpers/sanitizeHtml';
     import Confirm from "@/admin/components/confirmRemove.vue";
     import upgradeUrl from '@/common/upgradeUrl';
     import moment from 'moment';
@@ -972,7 +973,7 @@
         methods: {
             upgradeUrl,
             getEntryCellValue(value) {
-                return value || '';
+                return sanitizeHtml(value);
             },
             getStatusName(status) {
                 if (this.entry_statuses[status]) {
@@ -1135,6 +1136,13 @@
             },
             handleSelectionChange(val) {
                 this.entrySelections = val;
+            },
+            clearEntrySelection() {
+                this.entrySelections = [];
+                const tableInstance = this.$refs.entriesTable;
+                if (tableInstance && typeof tableInstance.clearSelection === 'function') {
+                    tableInstance.clearSelection();
+                }
             },
             applyRowTabindex() {
                 if (typeof document === 'undefined') return;
@@ -1432,6 +1440,7 @@
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.$success(response.message);
+                        this.clearEntrySelection();
                         this.getEntryResources();
                     })
                     .catch(error => {
