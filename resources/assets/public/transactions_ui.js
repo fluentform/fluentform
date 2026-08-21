@@ -1,4 +1,4 @@
-import sanitizeHtml from './sanitizeHtml';
+import sanitizeHtml from '../common/sanitizeHtml';
 
 jQuery(document).ready(function ($) {
     const $btn = $('.ff_show_payments');

@@ -271,6 +271,7 @@
 <script type="text/babel">
     import elLabel from '../../includes/el-label.vue';
     import each from 'lodash/each';
+    import { serializeOptions, applyBulkEdit } from './bulk-edit-options';
     import PhotoWidget from '@/common/PhotoUploader';
     import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
     import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
@@ -310,6 +311,8 @@
                 pro_mock: false,
                 editor_options: JSON.parse(window.FluentFormApp.bulk_options_json),
                 activeClass: null,
+                presetApplied: false,
+                bulkEditBaseline: '',
             }
         },
         computed: {
@@ -378,55 +381,63 @@
                 }
             },
             initBulkEdit() {
-                let astext = '';
-                each(this.editItem.settings.advanced_options, item => {
-                    let label = item.label;
-                    let value = item.value;
-
-                    if (label.includes(':')) {
-                        label = label.replace(/:/g, '\\:');
-                    }
-                    if (value.includes(':')) {
-                        value = value.replace(/:/g, '\\:');
-                    }
-
-                    astext += label;
-                    if (item.label && item.label != item.value) {
-                        astext += ' : ' + value;
-                    }
-                    astext += String.fromCharCode(13, 10);
-                });
-                this.value_key_pair_text = astext;
+                this.value_key_pair_text = serializeOptions(this.editItem.settings.advanced_options);
+                this.bulkEditBaseline = this.value_key_pair_text;
+                // The dialog is :visible.sync on a persistent el-dialog, so these
+                // survive a cancel-and-reopen unless reset here.
+                this.presetApplied = false;
+                this.activeClass = null;
                 this.bulkEditVisible = true
             },
             confirmBulkEdit() {
-                let lines = this.value_key_pair_text.split('\n');
-                let values = [];
-                each(lines, line => {
-                    let lineItem = line.split(/(?<!\\):/);
+                // Sticky once a preset is applied: tweaking a line afterwards must
+                // not resume matching and re-expose a name collision (Georgia is in
+                // both Countries and U.S. States). Released only if the text is put
+                // back exactly as the dialog opened it, so an accidental preset
+                // click can be undone without cancelling.
+                const replaceAll = this.presetApplied
+                    && this.value_key_pair_text !== this.bulkEditBaseline;
 
-                    let label = lineItem[0];
-                    if (label) {
-                        label = label.replace(/\\:/g, ':').trim();
-                    }
-                    let value = lineItem[1];
-                    if (value) {
-                        value = value.replace(/\\:/g, ':').trim();
-                    } else {
-                        value = label;
-                    }
-                    if (label && value) {
-                        values.push({
-                            id: nextOptionId(),
-                            label: label,
-                            value: value,
-                            calc_value: '',
-                            image: ''
+                let options;
+                try {
+                    options = applyBulkEdit(
+                        this.value_key_pair_text,
+                        this.editItem.settings.advanced_options,
+                        nextOptionId,
+                        { replaceAll }
+                    );
+                } catch (e) {
+                    if (e && e.code === 'grouped_options') {
+                        this.$notify.error({
+                            message: this.$t('Bulk Edit cannot be applied to grouped options.'),
+                            offset: 30
                         });
-                    }
-                });
 
-                this.editItem.settings.advanced_options = values;
+                        return;
+                    }
+
+                    // Anything else is a genuine fault, not product copy — let it
+                    // surface rather than dressing it up as a validation message.
+                    throw e;
+                }
+
+                // Bulk Edit must not bypass the minimum decrease() enforces: at
+                // zero the list stops rendering and the only add button lives
+                // inside its v-for, leaving the field unrecoverable.
+                const minOptions = this.isRankingField ? 2 : 1;
+                if (options.length < minOptions) {
+                    this.$notify.error({ message: this.minOptionsMessage(), offset: 30 });
+
+                    return;
+                }
+
+                this.editItem.settings.advanced_options = options;
+                // applyBulkEdit copies each source id verbatim, so two distinct
+                // pre-existing options sharing an id both survive with it; and
+                // optionsToRender still references the old array, which gates the
+                // list at :150. handleGroupingModeChange() refreshes both the same way.
+                this.ensureUniqueIds(this.editItem.settings.advanced_options);
+                this.createOptionsToRender();
                 this.bulkEditVisible = false
             },
             isChecked(optVal) {
@@ -446,16 +457,17 @@
                 if (options.length > minOptions) {
                     options.splice(index, 1);
                 } else {
-                    this.$notify.error({
-                        message: this.isRankingField
-                            ? 'You have to have at least two options.'
-                            : 'You have to have at least one option.',
-                        offset: 30
-                    });
+                    this.$notify.error({ message: this.minOptionsMessage(), offset: 30 });
                 }
+            },
+            minOptionsMessage() {
+                return this.isRankingField
+                    ? this.$t('You have to have at least two options.')
+                    : this.$t('You have to have at least one option.');
             },
             setOptions(options) {
                 this.value_key_pair_text = options.join('\n');
+                this.presetApplied = true;
                 this.activeClass = options;
             },
             clear() {

@@ -159,7 +159,7 @@ new Vue({
     el: '#ff_global_settings_option_app',
     components: components,
     data: {
-        component: 'settings',
+        component: window.FluentFormApp.default_component || 'settings',
         App: window.FluentFormApp,
         component_name: '',
         settings_key: ''
@@ -200,7 +200,11 @@ new Vue({
         }
     },
     created() {
-        let hash = location.hash.substr(1) || 'settings';
+        // A dedicated server-rendered screen (for example License) must not be
+        // replaced by a stale hash left behind by the native settings router.
+        let hash = this.component !== 'settings'
+            ? this.component
+            : (location.hash.substr(1) || this.component);
         let $el;
         if (is_payment_compatible && hash.startsWith('payments/')) {
             $el = jQuery('.ff_settings_list li').find('a[data-hash="' + hash + '"]').first();

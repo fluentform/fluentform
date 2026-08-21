@@ -1,5 +1,5 @@
 import formSlider from "./Pro/slider";
-import sanitizeHtml from './sanitizeHtml';
+import sanitizeHtml from '../common/sanitizeHtml';
 
 (function ($) {
     $(document.body).on('fluentform_init', function (e, $theForm, form) {

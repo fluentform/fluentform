@@ -6,37 +6,24 @@
                 <i class="tooltip-icon el-icon-info"></i>
             </el-tooltip>
         </div>
-        <el-input :disabled="listItem.disabled" :class="listItem.css_class" v-model="model" :rows="listItem.rows" :cols="listItem.cols" :placeholder="listItem.placeholder" type="textarea" @input="afterSanitizeInput"></el-input>
+        <el-input :disabled="listItem.disabled" :class="listItem.css_class" v-model="model" :rows="listItem.rows" :cols="listItem.cols" :placeholder="listItem.placeholder" type="textarea"></el-input>
         <p v-if="listItem.inline_help_text" v-html="listItem.inline_help_text"></p>
     </el-form-item>
 </template>
 
 <script type="text/babel">
-import DOMPurify from 'dompurify';
+import sanitizeHtml from '../../../../common/sanitizeHtml';
     export default {
         name: 'inputTextarea',
         props: ['listItem', 'value'],
         watch: {
             model() {
-                this.$emit('input', DOMPurify.sanitize(this.model));
+                this.$emit('input', sanitizeHtml(this.model));
             }
         },
         data() {
             return {
                 model: this.value
-            }
-        },
-        methods: {
-            afterSanitizeInput(val) {
-                DOMPurify.addHook('afterSanitizeAttributes', function (node) {
-                    if (/target=['"]_blank['"]/.test(val)) {
-                        node.setAttribute('target', '_blank');
-                        node.setAttribute('rel', 'noopener');
-                    } else {
-                        node.removeAttribute('target');
-                        node.removeAttribute('rel');
-                    }
-                });
             }
         }
     };

@@ -72,6 +72,21 @@ $app->addAction(
     }
 );
 
+/**
+ * Pro 6.2.13+ supplies the REST API used by Free's Vue license screen. Older
+ * Pro versions keep rendering their PHP page through this component action.
+ */
+$app->addAction(
+    'fluentform/global_settings_component_license_page',
+    function () use ($app) {
+        if (!defined('FLUENTFORMPRO_VERSION') || version_compare(FLUENTFORMPRO_VERSION, '6.2.13', '<')) {
+            return;
+        }
+
+        (new \FluentForm\App\Modules\Renderer\GlobalSettings\Settings($app))->render('license');
+    }
+);
+
 // Register DefaultStyleApplicator on init so it works for REST API requests too
 add_action('init', function () {
     new \FluentForm\App\Modules\Form\DefaultStyleApplicator();
@@ -281,6 +296,48 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
 
             if (!isset($element['settings']['dynamic_default_value'])) {
                 $element['settings']['dynamic_default_value'] = '';
+            }
+
+            // The editor only renders a rule the field already carries, so forms
+            // built before selection limits existed need the keys backfilled.
+            $isMultiSelect = 'select' == $upgradeElement
+                && \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'attributes.multiple');
+
+            if ('input_checkbox' == $upgradeElement || $isMultiSelect) {
+                $rules = \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.validation_rules', []);
+
+                foreach (['max_selection', 'min_selection'] as $selectionRule) {
+                    if (isset($rules[$selectionRule])) {
+                        continue;
+                    }
+
+                    $globalMessage = \FluentForm\App\Helpers\Helper::getGlobalDefaultMessage($selectionRule);
+
+                    // Carry the legacy ceiling across, or the editor would show
+                    // "no limit" on a form that has one and drop it on save.
+                    $value = '';
+                    if ('max_selection' === $selectionRule && $isMultiSelect) {
+                        $value = \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.max_selection', '');
+                    }
+
+                    $rules[$selectionRule] = [
+                        'value'          => $value,
+                        'message'        => $globalMessage,
+                        'global_message' => $globalMessage,
+                        'global'         => true,
+                    ];
+                }
+
+                // Key order is the panel's layout order. Rebuilt rather than
+                // appended, so forms saved by an earlier build get it too.
+                $ordered = [];
+                foreach (['required', 'max_selection', 'min_selection'] as $key) {
+                    if (isset($rules[$key])) {
+                        $ordered[$key] = $rules[$key];
+                    }
+                }
+
+                $element['settings']['validation_rules'] = $ordered + $rules;
             }
 
             if ('select_country' != $upgradeElement && !isset($element['settings']['randomize_options'])) {

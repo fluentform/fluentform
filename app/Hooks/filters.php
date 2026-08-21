@@ -243,6 +243,8 @@ $fluentformRules = [
     "numeric",
     "min",
     "max",
+    "min_selection",
+    "max_selection",
     "digits",
     "url",
     "allowed_image_types",

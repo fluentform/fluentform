@@ -27,7 +27,13 @@ class CaptchaKeyNotice
             return false;
         }
 
-        $statusOption = ArrayHelper::get(static::statusOptionMap(), static::selectedType());
+        $type = static::selectedType();
+
+        if (!$type) {
+            return true;
+        }
+
+        $statusOption = ArrayHelper::get(static::statusOptionMap(), $type);
 
         return !$statusOption || !get_option($statusOption, false);
     }
@@ -41,7 +47,8 @@ class CaptchaKeyNotice
 
     protected static function selectedType()
     {
-        return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.captcha_type');
+        $type = ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.captcha_type');
+        return is_string($type) ? $type : '';
     }
 
     protected static function statusOptionMap()

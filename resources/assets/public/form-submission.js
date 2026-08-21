@@ -1,4 +1,4 @@
-import sanitizeHtml from './sanitizeHtml';
+import sanitizeHtml from '../common/sanitizeHtml';
 
 jQuery(document).ready(function () {
 
@@ -53,6 +53,119 @@ jQuery(document).ready(function () {
 
         var fluentFormAppStore = {};
 
+        /**
+         * Ticking "Other" makes its free text mandatory. Left empty, the
+         * submitted `__ff_other_<field>__` marker is stored raw and then prints
+         * verbatim in entry details, emails and PDFs.
+         */
+        var ffOtherOptionGuard = {
+            INPUT_SUFFIX: '__ff_other_input__',
+
+            /** Must stay in lockstep with the PHP marker (Helper, Checkable, Converter). */
+            markerFor: function (fieldName) {
+                return '__ff_other_' + fieldName + '__';
+            },
+
+            isIncomplete: function (checkedValues, fieldName, otherText, hasOtherInput) {
+                if (!hasOtherInput || !Array.isArray(checkedValues)) {
+                    return false;
+                }
+                if (-1 === checkedValues.indexOf(this.markerFor(fieldName))) {
+                    return false;
+                }
+
+                return '' === String(null === otherText || undefined === otherText ? '' : otherText).trim();
+            },
+
+            check: function (el) {
+                var type = String(el.prop('type') || '').toLowerCase();
+
+                if ('checkbox' !== type && 'radio' !== type) {
+                    return false;
+                }
+
+                var rawName = String(el.prop('name') || '');
+                var fieldName = rawName.replace('[]', '');
+                var $scope = el.closest('form');
+                var $otherInput = $scope.find('[name="' + fieldName + this.INPUT_SUFFIX + '"]');
+
+                // Every ticked input: .val() on a checked set returns only the
+                // first, which let "Item 1" before "Other" slip past.
+                var checkedValues = $scope.find('[name="' + rawName + '"]:checked').map(function () {
+                    return this.value;
+                }).get();
+
+                return this.isIncomplete(checkedValues, fieldName, $otherInput.val(), $otherInput.length > 0);
+            },
+
+            /** The Other text input for a checkable element, if the field has one. */
+            inputFor: function (el) {
+                var fieldName = String(el.prop('name') || '').replace('[]', '');
+
+                return el.closest('form').find('[name="' + fieldName + this.INPUT_SUFFIX + '"]');
+            },
+
+            /**
+             * Selecting Other makes its free text mandatory, so the text input —
+             * not the checkable — is the control needing correction. Reflect that
+             * for assistive tech instead of only flagging the checkbox/radio.
+             */
+            setAriaRequired: function ($input, required) {
+                if (!$input || !$input.length) {
+                    return;
+                }
+                if (required) {
+                    $input.attr('aria-required', 'true');
+                } else {
+                    $input.removeAttr('aria-required');
+                    this.clearAriaInvalid($input);
+                }
+            },
+
+            clearAriaInvalid: function ($input) {
+                if ($input && $input.length) {
+                    $input.removeAttr('aria-invalid').removeAttr('aria-describedby');
+                }
+            },
+
+            /** Point the input at its rendered error and move focus there. */
+            markAriaInvalid: function ($, $input, $error, focus) {
+                if (!$input || !$input.length) {
+                    return;
+                }
+
+                $input.attr('aria-invalid', 'true');
+
+                if ($error && $error.length) {
+                    var errorId = $error.attr('id');
+                    if (!errorId) {
+                        errorId = 'ff_other_error_' + (String($input.attr('name') || 'field').replace(/[^A-Za-z0-9_-]/g, '_'));
+                        $error.attr('id', errorId);
+                    }
+                    $input.attr('aria-describedby', errorId);
+                }
+
+                if (focus) {
+                    $input.trigger('focus');
+                }
+            },
+
+            /** Per-field message from Checkable.php; '' lets the caller fall back. */
+            message: function (el) {
+                var type = String(el.prop('type') || '').toLowerCase();
+
+                if ('checkbox' !== type && 'radio' !== type) {
+                    return '';
+                }
+
+                var fieldName = String(el.prop('name') || '').replace('[]', '');
+                var $wrapper = el.closest('form')
+                    .find('.ff-other-input-wrapper[data-field="' + fieldName + '"]');
+
+                return String($wrapper.attr('data-required-message') || '').trim();
+            }
+        };
+
         window.fluentFormApp = function ($theForm) {
             var formInstanceSelector = $theForm.attr('data-form_instance');
             // Sanitize the selector - only allow alphanumeric, underscore and hyphen
@@ -103,6 +216,9 @@ jQuery(document).ready(function () {
                     registerFormSubmissionHandler();
                     maybeInlineForm();
                     initInlineErrorItems();
+                    // Must bind after initInlineErrorItems — that handler clears the
+                    // group's error on change, and would wipe a limit reported first.
+                    initSelectionLimitFeedback();
                     $theForm.removeClass('ff-form-loading').addClass('ff-form-loaded');
 
                     $theForm.on('show_element_error', function (e, data) {
@@ -296,6 +412,7 @@ jQuery(document).ready(function () {
                             response: e.messages
                         });
                         showErrorMessages(e.messages);
+                        markIncompleteOtherInputs();
                         scrollToFirstError(350);
                     }
                 };
@@ -719,6 +836,37 @@ jQuery(document).ready(function () {
                  * @param  {object} errors
                  * @return void
                  */
+                /**
+                 * Runs after the errors render: the error element only exists by
+                 * then, and aria-describedby needs its id.
+                 */
+                var markIncompleteOtherInputs = function () {
+                    var focused = false;
+
+                    $theForm.find('.ff-other-option input[type="checkbox"], .ff-other-option input[type="radio"]')
+                        .each(function () {
+                            var el = $(this);
+                            var $input = ffOtherOptionGuard.inputFor(el);
+
+                            if (!ffOtherOptionGuard.check(el)) {
+                                ffOtherOptionGuard.clearAriaInvalid($input);
+                                return;
+                            }
+
+                            var name = String(el.prop('name') || '').replace('[]', '');
+                            var $error = $theForm.find('.error-text[data-name="' + el.prop('name') + '"]').closest('.error');
+                            if (!$error.length) {
+                                $error = el.closest('.ff-el-group').find('.error').first();
+                            }
+                            if (!$error.length) {
+                                $error = $theForm.parent().find('.ff-errors-in-stack .error').first();
+                            }
+
+                            ffOtherOptionGuard.markAriaInvalid($, $input, $error, !focused);
+                            focused = true;
+                        });
+                };
+
                 var showErrorMessages = function (errors) {
                     var errorStack = $theForm.parent().find('.ff-errors-in-stack');
                     errorStack.empty();
@@ -755,7 +903,12 @@ jQuery(document).ready(function () {
                  * @param  {object} errors
                  * @return void
                  */
-                var showErrorInStack = function (errors) {
+                /**
+                 * @param {object} errors
+                 * @param {object} options  { scroll: false } to render without
+                 *                          moving the page — see the guard below
+                 */
+                var showErrorInStack = function (errors, options) {
                     var $theForm = getTheForm();
                     var errorStack = $theForm.parent().find('.ff-errors-in-stack');
 
@@ -801,7 +954,14 @@ jQuery(document).ready(function () {
                         }
                     });
 
-                    if (!isElementInViewport(errorStack[0])) {
+                    // On submit the visitor has left the fields behind, so moving
+                    // them to the errors is the point. For live feedback it is the
+                    // opposite: they are looking at the options and the fix is to
+                    // untick one, so pulling the page away mid-correction is worse
+                    // than saying nothing.
+                    var shouldScroll = !options || false !== options.scroll;
+
+                    if (shouldScroll && !isElementInViewport(errorStack[0])) {
                         $('html, body').animate({
                             scrollTop: errorStack.offset().top - 100
                         }, 350);
@@ -860,6 +1020,106 @@ jQuery(document).ready(function () {
                             var $parent = $(this).closest('.ff-el-group');
                             if ($parent.hasClass('ff-el-is-error')) {
                                 $parent.removeClass('ff-el-is-error').find('.error.text-danger').remove();
+                            }
+                        }
+                    });
+                };
+
+                /**
+                 * Report a breached selection limit as it happens, rather than at
+                 * submit like every other rule — the visitor has already made the
+                 * pick. The pick is allowed to land: disabling the remaining
+                 * options would drop them out of the tab order.
+                 *
+                 * @return void
+                 */
+                var initSelectionLimitFeedback = function () {
+                    var limitRules = ['min_selection', 'max_selection'];
+
+                    // Every input, not just checkboxes — an "Other" text box belongs
+                    // to the group beside it, and changing it clears the group error.
+                    $theForm.on('change', 'input, select', function () {
+                        var changed = $(this);
+                        var rawName = String(changed.prop('name') || '');
+
+                        if (!rawName) {
+                            return;
+                        }
+
+                        var name = rawName
+                            .replace('[]', '')
+                            .replace(/__ff_other_input__$/, '');
+                        var fieldRules = (form.rules || {})[name];
+
+                        if (!fieldRules) {
+                            return;
+                        }
+
+                        var hasLimit = limitRules.some(function (ruleName) {
+                            return fieldRules[ruleName] && fieldRules[ruleName].value;
+                        });
+
+                        if (!hasLimit) {
+                            return;
+                        }
+
+                        // Count the field's own options, not the element that changed.
+                        var el = changed;
+
+                        if (rawName !== name && rawName !== name + '[]') {
+                            var $owner = $theForm.find('[name="' + name + '[]"]');
+                            el = $owner.length ? $owner.first() : changed;
+                        }
+
+                        var $group = el.closest('.ff-el-group');
+                        var $stack = $theForm.parent().find('.ff-errors-in-stack');
+
+                        // Only this field's error — a change here should not wipe
+                        // what another field is still reporting. Skipped entirely
+                        // when a consumer has asked for errors to be left alone.
+                        if (!window.ff_disable_error_clear) {
+                            $group.removeClass('ff-el-is-error').find('.error.text-danger').remove();
+                            $group.find('[aria-invalid="true"]').attr('aria-invalid', 'false');
+                            $stack
+                                .find('.error-text[data-name="' + el.prop('name') + '"]')
+                                .closest('.error.text-danger')
+                                .remove();
+
+                            if (!$stack.children().length) {
+                                $stack.hide();
+                            }
+                        }
+
+                        // Limits only — running `required` against a group still
+                        // being filled in would scold the visitor mid-answer.
+                        var breached = null;
+                        var limitChecker = validator();
+
+                        $.each(limitRules, function (index, ruleName) {
+                            var rule = fieldRules[ruleName];
+
+                            if (!breached && rule && rule.value && !limitChecker[ruleName](el, rule)) {
+                                breached = rule;
+                            }
+                        });
+
+                        if (breached) {
+                            // `message`, not `global_message` — the server already
+                            // resolved the live global wording into it, so this
+                            // matches what submit would report for the same rule.
+                            //
+                            // Placement is honoured the way showErrorMessages does
+                            // it, but without its form-wide clear: a keystroke here
+                            // must not wipe another field's error.
+                            var placement = ((form.settings || {}).layout || {}).errorMessagePlacement;
+
+                            if (!placement || 'stackToBottom' == placement) {
+                                var stackError = {};
+                                stackError[name] = [breached.message];
+
+                                showErrorInStack(stackError, { scroll: false });
+                            } else {
+                                showErrorBelowElement(name, breached.message);
                             }
                         }
                     });
@@ -1212,6 +1472,28 @@ jQuery(document).ready(function () {
 
             // Handle "Other" option for checkboxes and radio fields
             initOtherOptionHandlers: function () {
+                // Restored browser state (bfcache, back-navigation) re-checks
+                // inputs without firing `change`, so the server-rendered hidden
+                // wrapper would stay hidden while its input is mandatory.
+                jQuery(".ff-other-option input:checked").each(function () {
+                    var $checkable = jQuery(this);
+                    var $wrapper = $checkable.closest(".ff-el-input--content").find(".ff-other-input-wrapper");
+                    if (!$wrapper.length) {
+                        $wrapper = $checkable.closest("label").next(".ff-other-input-wrapper");
+                    }
+                    if ($wrapper.length) {
+                        $wrapper.show();
+                        ffOtherOptionGuard.setAriaRequired($wrapper.find(".ff-el-form-control"), true);
+                    }
+                });
+
+                // Correcting the value clears the invalid state immediately.
+                jQuery(document).on("input", ".ff-other-input-wrapper .ff-el-form-control", function () {
+                    if (jQuery(this).val().trim() !== "") {
+                        ffOtherOptionGuard.clearAriaInvalid(jQuery(this));
+                    }
+                });
+
                 // Handle checkbox "Other" option - show/hide text input
                 jQuery(document).on("change", ".ff-other-option input[type=\"checkbox\"]", function () {
                     let $checkbox = jQuery(this);
@@ -1220,10 +1502,13 @@ jQuery(document).ready(function () {
                         return;
                     }
 
+                    let $otherInput = $wrapper.find(".ff-el-form-control");
+                    ffOtherOptionGuard.setAriaRequired($otherInput, $checkbox.is(":checked"));
+
                     if ($checkbox.is(":checked")) {
                         $wrapper.show();
                         // Only focus if input is empty to avoid blur conflicts
-                        let $input = $wrapper.find(".ff-el-form-control");
+                        let $input = $otherInput;
                         if ($input.val().trim() === "") {
                             setTimeout(function () {
                                 $input.focus();
@@ -1250,6 +1535,7 @@ jQuery(document).ready(function () {
                         // Show this one
                         if ($wrapper.length) {
                             $wrapper.show();
+                            ffOtherOptionGuard.setAriaRequired($wrapper.find(".ff-el-form-control"), true);
                             $wrapper.find(".ff-el-form-control").focus();
                         }
                     }
@@ -1262,6 +1548,7 @@ jQuery(document).ready(function () {
                     }
                     let $fieldContainer = $radio.closest(".ff-el-input--content");
                     $fieldContainer.find(".ff-other-input-wrapper").hide();
+                    ffOtherOptionGuard.setAriaRequired($fieldContainer.find(".ff-other-input-wrapper .ff-el-form-control"), false);
                     $fieldContainer.find(".ff-other-input-wrapper .ff-el-form-control").val("");
                 });
             },
@@ -1306,15 +1593,26 @@ jQuery(document).ready(function () {
                     const maxSelection = $(el).attr('data-max_selected_options');
                     if (parseInt(maxSelection)) {
                         args.maxItemCount = parseInt(maxSelection);
+
+                        // Choices refuses the pick before validation runs, so its
+                        // notice is the only wording the visitor sees. The server
+                        // ships this attribute only when the site owner wrote a
+                        // message of their own; otherwise Choices' string wins,
+                        // because it is translated and carries the count.
+                        const configuredMessage = $(el).attr('data-max_selection_message');
+
                         args.maxItemText = function (maxItemCount) {
                             let message;
-                            if (maxItemCount === 1) {
+
+                            if (configuredMessage) {
+                                message = configuredMessage;
+                            } else if (maxItemCount === 1) {
                                 message = window.fluentFormVars.choice_js_vars.maxItemTextSingular;
                             } else {
                                 message = window.fluentFormVars.choice_js_vars.maxItemTextPlural;
                             }
-                            message = message.replace('%%maxItemCount%%', maxItemCount);
-                            return message;
+
+                            return String(message).replace('%%maxItemCount%%', maxItemCount);
                         }
                     }
 
@@ -1429,6 +1727,14 @@ jQuery(document).ready(function () {
                  */
                 this.errors = {};
 
+                var otherOptionRequiredMessage = function (el, fieldRules) {
+                    var fieldMessage = fieldRules && fieldRules.required && fieldRules.required.message;
+
+                    return ffOtherOptionGuard.message(el) ||
+                        fieldMessage ||
+                        'This field is required';
+                };
+
                 /**
                  * Validate all given elements using given rules
                  * @param  {jQuery elements} elements
@@ -1461,6 +1767,16 @@ jQuery(document).ready(function () {
                                     // throw new Error('Method [' + ruleName + '] doesn\'t exist in Validator.');
                                 }
                             });
+                        }
+
+                        // Outside the rules loop on purpose: an optional field
+                        // has no active `required` rule to hang this off.
+                        if (ffOtherOptionGuard.check(el)) {
+                            isValid = false;
+                            if (!(elName in self.errors)) {
+                                self.errors[elName] = {};
+                            }
+                            self.errors[elName].required = otherOptionRequiredMessage(el, rules[elName]);
                         }
                     });
 
@@ -1502,13 +1818,8 @@ jQuery(document).ready(function () {
                         // an empty scope reports the field as required — failing closed
                         // beats silently restoring the cross-form leak.
                         const $scope = el.closest('form');
-                        const checked = $scope.find('[name="' + el.prop('name') + '"]:checked');
-                        const name = el.prop('name').replace('[]', '');
-                        if (checked.length && checked.val() === `__ff_other_${name}__`) {
-                            const otherInputField = $scope.find(`[name="${name}__ff_other_input__"]`);
-                            return otherInputField.val()
-                        }
-                        return checked.length;
+                        // Empty "Other" is handled by ffOtherOptionGuard in validate().
+                        return $scope.find('[name="' + el.prop('name') + '"]:checked').length;
                     } else if (type.startsWith('select')) {
                         var selected = el.find(':selected');
                         return !!(selected.length && selected.val().length);
@@ -1524,6 +1835,78 @@ jQuery(document).ready(function () {
                         }
                         return String($.trim(el.val())).length;
                     }
+                };
+
+                /**
+                 * How many options are picked in this field. A checkbox group is
+                 * many inputs sharing one name, so the count comes from the whole
+                 * group rather than the element the rule is running against.
+                 *
+                 * @param  jQuery Element el
+                 * @return int
+                 */
+                this.countSelections = function (el) {
+                    var type = el.prop('type');
+
+                    // Distinct values, matching what the server counts. An option
+                    // list with a repeated value would otherwise read as two
+                    // answers here and one there, so the visitor would see a clean
+                    // form and be refused on submit for a rule nothing showed them.
+                    var distinct = function ($set) {
+                        var seen = {};
+
+                        $set.each(function () {
+                            var value = String($(this).val());
+
+                            if (value.length) {
+                                seen[value] = true;
+                            }
+                        });
+
+                        return Object.keys(seen).length;
+                    };
+
+                    if (type == 'checkbox') {
+                        return distinct(
+                            el.closest('form').find('[name="' + el.prop('name') + '"]:checked')
+                        );
+                    }
+
+                    if (type && type.startsWith('select')) {
+                        return distinct(el.find(':selected'));
+                    }
+
+                    return String($.trim(el.val())).length ? 1 : 0;
+                };
+
+                /**
+                 * Handle min_selection rule (fewest options that may be picked)
+                 *
+                 * Picking nothing is left alone — an unanswered optional field is
+                 * not "too few", and `required` is the rule that should speak.
+                 *
+                 * @param  jQuery Element el
+                 * @return bool
+                 */
+                this.min_selection = function (el, rule) {
+                    if (!rule.value) return true;
+
+                    var selected = this.countSelections(el);
+
+                    if (!selected) return true;
+
+                    return selected >= Number(rule.value);
+                };
+
+                /**
+                 * Handle max_selection rule (most options that may be picked)
+                 * @param  jQuery Element el
+                 * @return bool
+                 */
+                this.max_selection = function (el, rule) {
+                    if (!rule.value) return true;
+
+                    return this.countSelections(el) <= Number(rule.value);
                 };
 
                 /**

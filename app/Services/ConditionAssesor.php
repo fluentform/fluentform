@@ -73,10 +73,6 @@ class ConditionAssesor
             $accessor = rtrim(str_replace(['[', ']', '*'], ['.'], $conditional['field']), '.');
 
             if (!Arr::has($inputs, $accessor)) {
-                // A missing field is "not equal" to any value, matching JS behavior
-                if ($conditional['operator'] === '!=') {
-                    return true;
-                }
                 return false;
             }
             $inputValue = Arr::get($inputs, $accessor);

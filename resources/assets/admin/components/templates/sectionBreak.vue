@@ -7,13 +7,13 @@
 </template>
 
 <script>
-import  DOMPurify from 'dompurify';
+import sanitizeHtml from '../../../common/sanitizeHtml';
 export default {
     name: 'section_break',
     props: ['item'],
 	computed: {
 		html() {
-			return DOMPurify.sanitize(this.item.settings.description);
+			return sanitizeHtml(this.item.settings.description);
 		}
 	}
 }

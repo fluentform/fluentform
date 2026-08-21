@@ -3,13 +3,13 @@
 </template>
 
 <script>
-import  DOMPurify from 'dompurify';
+import sanitizeHtml from '../../../common/sanitizeHtml';
 export default {
     name: 'customHTML',
     props: ['item'],
 	computed: {
 		html() {
-			return DOMPurify.sanitize(this.item.settings.html_codes);
+			return sanitizeHtml(this.item.settings.html_codes);
 		}
 	}
 }

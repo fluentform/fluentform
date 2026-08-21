@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 6.2.12
+Stable tag: 6.2.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,17 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 6.2.13 (Date: August 21, 2026) =
+- Adds minimum and maximum selection limits for checkbox and multi-select fields
+- Improves the Other option so a preselected value shows its text input on page load
+- Improves accessibility of the required Other input with proper validation state
+- Fixes the empty Other marker showing in stored entries, email, and PDF output
+- Fixes file type validation so extensions are matched case-insensitively on upload and import
+- Fixes Global Inventory mappings being lost through Bulk Edit and save
+- Fixes target="_blank" being stripped from Confirmation Message links
+- Fixes the captcha notice showing when no captcha type is selected
+- Fixes geolocation falling back to the next provider when the ipinfo token fails
 
 = 6.2.12 (Date: August 10, 2026) =
 - Adds an optional MCP server that lets AI assistants work with your forms, entries, and reports, turned off by default

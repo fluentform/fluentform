@@ -311,6 +311,20 @@
                         <el-checkbox v-model="form.restrictForm.fields.country.status">
                             {{ $t('Country Based Restriction') }}
                         </el-checkbox>
+
+                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                            <div slot="content">
+                                <p>{{ $t('Blocks or allows a submission based on the country the visitor submits from.') }}</p>
+                                <p>{{ $t('The country comes from the visitor IP address: ipinfo.io first when a GEO API token is saved in Global Settings, then apip.cc.') }}</p>
+                                <p>{{ $t('CDN or server country headers are a last resort, off by default because a visitor can fake them. Only enable this behind a CDN that overwrites them:') }} <code>add_filter('fluentform/trust_geo_headers', '__return_true');</code></p>
+                                <p>{{ $t('If no country is found, \'Fail the submission if match\' lets it through and \'Allow the submission if match\' blocks it.') }}</p>
+                            </div>
+
+                            <i class="ff-icon ff-icon-info-filled text-primary"
+                               tabindex="0"
+                               role="button"
+                               :aria-label="$t('How country based restriction works')"></i>
+                        </el-tooltip>
                         <div v-if="form.restrictForm.fields.country.status && form.restrictForm.enabled" class="conditional-items mb-6">
                             <div>
                                 <el-form-item class="ff-form-item">
@@ -320,7 +334,7 @@
                                         <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                             <div slot="content">
                                                 <p>
-                                                    {{ $t('Select country to set restriction. If you give Ipinfo.io token in global settings, then country will get from Ipinfo.io, otherwise it will use geolocation.net') }}
+                                                    {{ $t('Choose the countries this rule applies to.') }}
                                                 </p>
                                             </div>
 

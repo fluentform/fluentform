@@ -29,7 +29,7 @@
 <script type="text/babel">
     import WpEditor from '../../../../common/_wp_editor';
     export default {
-        name: 'inputTextarea',
+        name: 'inputHTML',
         props: ['listItem', 'value'],
         components: {
             WpEditor

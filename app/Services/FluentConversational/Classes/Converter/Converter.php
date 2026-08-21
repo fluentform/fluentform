@@ -258,8 +258,15 @@ class Converter
                 if ($isMultiple) {
                     $question['multiple'] = true;
                     $question['placeholder'] = self::getComponent()->replaceEditorSmartCodes(ArrayHelper::get($field, 'attributes.placeholder', false), $form);
-                    $question['max_selection'] = ArrayHelper::get($field, 'settings.max_selection');
-                    $question['max_selection'] = $question['max_selection'] ? intval($question['max_selection']) : 0;
+                    $maxSelection = Helper::resolveMaxSelection($field);
+                    $question['max_selection'] = $maxSelection ? intval($maxSelection) : 0;
+
+                    // Resolved here so a form on the legacy setting — which has no
+                    // rule to read a message from — still has wording.
+                    $question['max_selection_message'] = Helper::getSelectionLimitMessage(
+                        ArrayHelper::get($field, 'settings.validation_rules', []),
+                        'max_selection'
+                    );
                 }
             } elseif ('select_country' === $field['element']) {
                 $countryComponent = new \FluentForm\App\Services\FormBuilder\Components\SelectCountry();

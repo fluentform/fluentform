@@ -159,9 +159,29 @@ class Checkable extends BaseComponent
                 $otherInputName = $fieldName . '__ff_other_input__';
                 $otherValue = '';
 
+                // Defaulted like the sibling reads above: forms saved before this
+                // setting existed would otherwise fall through to the field's
+                // "This field is required", which is wrong on an optional field.
+                $otherRequiredMessage = trim((string) ArrayHelper::get(
+                    $data,
+                    'settings.other_option_required_message',
+                    __('Please specify a value for the selected "Other" option', 'fluentform')
+                ));
+
+                // An "Other" that is already selected (configured or dynamic
+                // default) must render with its input visible and required —
+                // otherwise the field is mandatory but invisible and the form
+                // cannot be submitted at all.
+                $otherIsSelected = in_array($option['value'], $defaultValues);
+                $wrapperDisplay = $otherIsSelected ? '' : 'display: none; ';
+                $otherAriaRequired = $otherIsSelected ? " aria-required='true'" : '';
+
                 $marginTop = $hasImageOption ? '20px' : '8px';
-                $otherInputHtml .= "<div class='ff-other-input-wrapper' style='display: none; margin-top: {$marginTop};' data-field='{$fieldName}'>";
-                $otherInputHtml .= "<input type='text' name='" . esc_attr($otherInputName) . "' class='ff-el-form-control' placeholder='" . esc_attr($otherPlaceholder) . "' value='" . esc_attr($otherValue) . "'>";
+                $otherInputHtml .= "<div class='ff-other-input-wrapper' style='{$wrapperDisplay}margin-top: {$marginTop};' data-field='{$fieldName}' data-required-message='" . esc_attr($otherRequiredMessage) . "'>";
+                // The id is what the validator points aria-describedby at when the
+                // free text is required but empty.
+                $otherInputId = $this->getUniqueid('ff_other_' . $fieldName);
+                $otherInputHtml .= "<input type='text' id='" . esc_attr($otherInputId) . "' name='" . esc_attr($otherInputName) . "' class='ff-el-form-control'{$otherAriaRequired} placeholder='" . esc_attr($otherPlaceholder) . "' value='" . esc_attr($otherValue) . "'>";
                 $otherInputHtml .= "</div>";
             }
             

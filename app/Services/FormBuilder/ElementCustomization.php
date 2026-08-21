@@ -917,6 +917,16 @@ $fluentformElementCustomizationSettings = [
             'operator'   => '==',
         ],
     ],
+    'other_option_required_message' => [
+        'template'   => 'inputText',
+        'label'      => __('Other Option Required Message', 'fluentform'),
+        'help_text'  => __('Error message shown when the "Other" option is selected but its text field is left empty.', 'fluentform'),
+        'dependency' => [
+            'depends_on' => 'settings/enable_other_option',
+            'value'      => 'yes',
+            'operator'   => '==',
+        ],
+    ],
 ];
 
 $fluentformElementCustomizationSettings = apply_filters_deprecated(

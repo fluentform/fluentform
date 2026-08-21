@@ -1,6 +1,6 @@
 import formatPrice from "./formatPrice";
 import { _$t } from "@/admin/helpers";
-import sanitizeHtml from './sanitizeHtml';
+import sanitizeHtml from '../common/sanitizeHtml';
 export class Payment_handler {
     constructor($form, instance) {
         let formId = instance.settings.id;

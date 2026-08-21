@@ -1,4 +1,4 @@
-import sanitizeHtml from '../sanitizeHtml';
+import sanitizeHtml from '../../common/sanitizeHtml';
 
 export default function ($, $form, form, fluentFormVars, formSelector) {
     /**
