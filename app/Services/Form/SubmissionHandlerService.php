@@ -127,6 +127,7 @@ class SubmissionHandlerService
     protected function resolveOtherOption($fieldValue, $fieldName, $otherText)
     {
         $otherMarker = '__ff_other_' . $fieldName . '__';
+        $otherText = trim($otherText);
 
         // Empty "Other": remove the marker.
         if ('' === $otherText) {
@@ -328,7 +329,11 @@ class SubmissionHandlerService
             $formSettings = FormMeta::retrieve('formSettings', $form->id);
             $form->settings = is_array($formSettings) ? $formSettings : [];
         }
-        $confirmation = $form->settings['confirmation'];
+        // A form written outside the editor may carry no confirmation block; the editor defaults apply
+        $confirmation = Arr::get($form->settings, 'confirmation');
+        if (!$confirmation) {
+            $confirmation = Arr::get(Form::getFormsDefaultSettings(), 'confirmation', []);
+        }
         $confirmation = apply_filters_deprecated(
             'fluentform_form_submission_confirmation',
             [
@@ -349,7 +354,7 @@ class SubmissionHandlerService
         );
         if ('samePage' == Arr::get($confirmation, 'redirectTo')) {
 
-            $confirmation['messageToShow'] = fluentform_sanitize_html($confirmation['messageToShow']);
+            $confirmation['messageToShow'] = fluentform_sanitize_html(Arr::get($confirmation, 'messageToShow', ''));
 
             $confirmation['messageToShow'] = apply_filters_deprecated(
                 'fluentform_submission_message_parse',
@@ -381,12 +386,12 @@ class SubmissionHandlerService
 
             $returnData = [
                 'message' => $message,
-                'action'  => $confirmation['samePageFormBehavior'],
+                'action'  => Arr::get($confirmation, 'samePageFormBehavior', 'hide_form'),
             ];
         } else {
             $redirectUrl = Arr::get($confirmation, 'customUrl');
-            if ('customPage' == $confirmation['redirectTo']) {
-                $redirectUrl = get_permalink($confirmation['customPage']);
+            if ('customPage' === Arr::get($confirmation, 'redirectTo')) {
+                $redirectUrl = get_permalink(Arr::get($confirmation, 'customPage'));
             }
             $enableQueryString = Arr::get($confirmation, 'enable_query_string') === 'yes';
             $queryStrings = Arr::get($confirmation, 'query_strings');

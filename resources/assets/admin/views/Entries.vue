@@ -761,6 +761,7 @@
                 counts: {},
                 no_found_text: window.fluent_form_entries_vars.no_found_text,
                 entry_statuses: window.fluent_form_entries_vars.entry_statuses,
+                mutable_entry_statuses: window.fluent_form_entries_vars.mutable_entry_statuses || window.fluent_form_entries_vars.entry_statuses,
                 payment_statuses: window.fluent_form_entries_vars?.payment_statuses || {},
                 has_payment: !!window.fluent_form_entries_vars.has_payment,
                 isCompact: true,
@@ -876,7 +877,7 @@
                     );
                 }
 
-                each(this.entry_statuses, (status_name, status_key) => {
+                each(this.mutable_entry_statuses, (status_name, status_key) => {
                     if (this.entry_type != status_key && status_key != 'favorites') {
                         bulk_actions.statuses.push({
                             label: 'Mark as ' + status_name,

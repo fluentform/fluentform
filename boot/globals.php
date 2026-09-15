@@ -422,16 +422,6 @@ function fluentform_kses_js($content)
     return preg_replace('/<\/?script[^>]*>/is', '', $content);
 }
 
-function fluentform_sanitize_json_object($value)
-{
-    return \FluentForm\App\Services\FormBuilder\DateConfigNormalizer::sanitize($value);
-}
-
-function fluentform_date_config_to_js($json)
-{
-    return \FluentForm\App\Services\FormBuilder\DateConfigNormalizer::toJs($json);
-}
-
 /**
  * Sanitize inputs recursively.
  *

@@ -3,6 +3,7 @@
 namespace FluentForm\App\Modules\Payments\PaymentMethods\Stripe;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\SCA;
@@ -107,7 +108,7 @@ class StripeInlineProcessor extends StripeProcessor
         $subscriptionTransactionArgs = Plan::getPriceIdsFromSubscriptionTransaction($subscription, $transaction);
 
         if (is_wp_error($subscriptionTransactionArgs)) {
-            $this->handlePaymentChargeError($customer->get_error_message(), $submission, $transaction, false, 'customer');
+            $this->handlePaymentChargeError($subscriptionTransactionArgs->get_error_message(), $submission, $transaction, false, 'customer');
         }
 
         $subscriptionArgs = [
@@ -249,8 +250,10 @@ class StripeInlineProcessor extends StripeProcessor
             ], 423);
         }
 
-        // Submission status as paid
-        $this->changeSubmissionPaymentStatus('paid');
+        // was: an unconditional write; a refund recorded after the guard's read was overwritten with paid
+        if (!$this->changeSubmissionPaymentStatusUnlessReversed('paid')) {
+            $this->refuseIfReversedMeanwhile($submission, null, null);
+        }
 
         $subscriptions = $this->getSubscriptions();
 
@@ -258,8 +261,11 @@ class StripeInlineProcessor extends StripeProcessor
 
         $transaction = $this->getLastTransaction($submission->id);
 
-        $paymentStatus = $this->getIntentSuccessName($invoice->payment_intent);
-        $this->processOnetimeSuccess($invoice, $transaction, $paymentStatus);
+        // was: intent only; a $0 invoice has none, so the invoice decides
+        $paymentStatus = $this->getIntentSuccessName($invoice->payment_intent, $invoice);
+        if (!$this->processOnetimeSuccess($invoice, $transaction, $paymentStatus)) {
+            $this->refuseIfReversedMeanwhile($submission, $transaction, null);
+        }
 
         $this->recalculatePaidTotal();
 
@@ -283,7 +289,7 @@ class StripeInlineProcessor extends StripeProcessor
         $intent = SCA::createPaymentIntent($intentArgs, $this->form->id);
 
         if (is_wp_error($intent)) {
-            $this->handlePaymentChargeError($intent->get_error_message(), $submission, $transaction, false, 'payment_intent');
+            $this->handlePaymentChargeError($intent->get_error_message(), $submission, $transaction, false, 'payment_intent', $intent);
         }
 
         if (
@@ -343,7 +349,10 @@ class StripeInlineProcessor extends StripeProcessor
 
         $this->updateTransaction($transaction->id, $transactionData);
 
-        $this->changeTransactionStatus($transaction->id, 'paid');
+        // was: an unconditional write; a refund recorded after the guard's read was overwritten with paid
+        if (!$this->changeTransactionStatusUnlessReversed($transaction->id, 'paid')) {
+            $this->refuseIfReversedMeanwhile($submission, $transaction, null);
+        }
 
         $logData = [
             'parent_source_id' => $submission->form_id,
@@ -363,7 +372,9 @@ class StripeInlineProcessor extends StripeProcessor
 
         // Trigger fluentform/after_payment_status_change (via BaseProcessor),
         // consistent with hosted Stripe checkout and offline payment flows.
-        $this->changeSubmissionPaymentStatus('paid');
+        if (!$this->changeSubmissionPaymentStatusUnlessReversed('paid')) {
+            $this->refuseIfReversedMeanwhile($submission, $transaction, null);
+        }
 
         $logData = [
             'parent_source_id' => $submission->form_id,
@@ -422,30 +433,35 @@ class StripeInlineProcessor extends StripeProcessor
             return new \WP_Error('invalid_submission', __('Invalid submission.', 'fluentform'));
         }
 
-        if ($submission->payment_status === 'paid') {
+        // was: rejected a submission already 'paid'; that is now the recovery case, a reversed one is what must never be confirmed
+        if (PaymentHelper::isReversedPaymentStatus($submission->payment_status)) {
             return new \WP_Error(
-                'already_paid',
-                __('This payment has already been completed and cannot be modified.', 'fluentform')
+                'payment_reversed',
+                __('This payment has been reversed and cannot be confirmed.', 'fluentform')
             );
         }
 
-        // Transaction must exist and be in 'intended' status (set by processScaBeforeVerification
-        // when the SCA flow starts). A 'pending' transaction means SCA was never initiated,
-        // 'paid'/'failed' means it's already been processed.
         if (!$transaction) {
             return new \WP_Error('no_transaction', __('No transaction found for this submission.', 'fluentform'));
         }
 
-        if ($transaction->status !== 'intended') {
+        // 'intended' is written when the 3DS challenge starts. If the charge.succeeded webhook
+        // lands before the browser returns, this row is already 'paid' (or 'processing') while
+        // the submission and subscription are still unfinished; the browser must complete them.
+        $isAwaitingBrowserConfirmation = 'intended' === $transaction->status;
+        $wasSettledByWebhookBeforeBrowserReturned = in_array($transaction->status, ['processing', 'paid'], true);
+
+        if (!$isAwaitingBrowserConfirmation && !$wasSettledByWebhookBeforeBrowserReturned) {
             return new \WP_Error(
                 'invalid_transaction_status',
-                __('This transaction is not awaiting payment confirmation.', 'fluentform')
+                __('This transaction is not an active payment attempt and cannot be confirmed.', 'fluentform')
             );
         }
 
         // Verify the payment intent ID matches what was stored during SCA initiation.
         // processScaBeforeVerification() stores the intent as charge_id.
-        if ($transaction->charge_id && $transaction->charge_id !== $paymentIntentId) {
+        // was: skipped when charge_id was empty; the intent binding is the identity check, so it is required
+        if (!$transaction->charge_id || $transaction->charge_id !== $paymentIntentId) {
             return new \WP_Error(
                 'payment_intent_mismatch',
                 __('Payment verification failed. Payment intent does not match.', 'fluentform')
@@ -492,20 +508,39 @@ class StripeInlineProcessor extends StripeProcessor
             ], 423);
         }
 
+        // was: re-ran the status writers, so a repeated callback fired the payment-status hooks again
+        if ($this->isPaymentAlreadyCompleted($submission, $transaction)) {
+            $this->sendSuccess($submission);
+        }
+
         // Use submission's form_id rather than trusting $_REQUEST
         $formId = $submission->form_id;
 
-        $confirmation = SCA::confirmPayment($paymentIntentId, [
-            'payment_method' => $paymentMethod,
-        ], $formId);
+        // was: confirmed blindly; the webhook may already have settled this intent, and a Stripe outage marked the payment failed
+        $confirmation = SCA::retrievePaymentIntent($paymentIntentId, [], $formId);
 
         if (is_wp_error($confirmation)) {
-            $message = 'Payment has been failed. ' . $confirmation->get_error_message();
-            $this->handlePaymentChargeError($message, $submission, $transaction, $confirmation, 'payment_error');
+            $this->sendRetryableVerificationError($submission, $confirmation);
+        }
+
+        // Confirming an intent Stripe has already settled counts against its confirm limit.
+        if ('requires_confirmation' === $confirmation->status) {
+            $confirmation = SCA::confirmPayment($paymentIntentId, [
+                'payment_method' => $paymentMethod,
+            ], $formId);
+
+            if (is_wp_error($confirmation)) {
+                $message = 'Payment has been failed. ' . $confirmation->get_error_message();
+                $this->handlePaymentChargeError($message, $submission, $transaction, $confirmation, 'payment_error');
+            }
         }
 
         if ($confirmation->status == 'succeeded') {
             $charge = $confirmation->charges->data[0];
+
+            // was: settled from the objects read before the Stripe round-trip; a refund recorded meanwhile,
+            // or one Stripe already reports on the charge, was overwritten with paid and fulfilled
+            $this->refuseIfReversedMeanwhile($submission, $transaction, $charge);
 
             $confirmedCurrency = strtolower((string) $confirmation->currency);
             $transactionCurrency = strtolower((string) $transaction->currency);
@@ -561,6 +596,11 @@ class StripeInlineProcessor extends StripeProcessor
             }
 
             $this->handlePaymentSuccess($charge, $transaction, $submission);
+        } elseif ('processing' === $confirmation->status) {
+            // was: fell through to failed; Stripe settles a delayed method later by webhook, so nothing is decided yet
+            wp_send_json([
+                'errors' => __('Your payment is still being processed. You will be notified once it completes.', 'fluentform'),
+            ], 423);
         } else {
             $this->handlePaymentChargeError('We could not verify your payment. Please try again', $submission, $transaction, $confirmation, 'payment_error');
         }
@@ -586,6 +626,11 @@ class StripeInlineProcessor extends StripeProcessor
             ], 423);
         }
 
+        // was: re-ran the status writers, so a repeated callback fired the payment-status hooks again
+        if ($this->isPaymentAlreadyCompleted($submission, $transaction)) {
+            $this->sendSuccess($submission);
+        }
+
         // Use submission's form_id rather than trusting $_REQUEST
         $formId = $submission->form_id;
 
@@ -596,13 +641,79 @@ class StripeInlineProcessor extends StripeProcessor
             ],
         ], $formId);
 
+        // was: handlePaymentChargeError(), which marked a possibly paid submission failed on a Stripe outage
         if (is_wp_error($intent)) {
-            $this->handlePaymentChargeError($intent->get_error_message(), $submission, false, false, 'payment_intent');
+            $this->sendRetryableVerificationError($submission, $intent);
         }
 
         $invoice = $intent->invoice;
 
+        // was: settled from the objects read before the Stripe round-trip
+        $this->refuseIfReversedMeanwhile($submission, $transaction, $intent->charges->data[0] ?? null);
+
         $this->handlePaidSubscriptionInvoice($invoice, $submission);
+    }
+
+    // Re-read after the Stripe round-trip: a refund webhook may have run meanwhile, and Stripe's own
+    // charge carries the refund state before that webhook arrives.
+    protected function refuseIfReversedMeanwhile($submission, $transaction, $charge)
+    {
+        $current = Submission::find($submission->id);
+        $currentTransaction = $transaction ? $this->getTransaction($transaction->id) : null;
+
+        // A row deleted mid-request leaves nothing to settle, so it is refused like a reversal
+        $rowVanished = !$current || ($transaction && !$currentTransaction);
+        $reversedLocally = $rowVanished
+            || PaymentHelper::isReversedPaymentStatus($current->payment_status)
+            || ($currentTransaction && PaymentHelper::isReversedPaymentStatus($currentTransaction->status));
+        // was: full refunds only, while the local check already treats partially-refunded as reversed
+        $refundedAtStripe = $charge && (!empty($charge->refunded) || !empty($charge->amount_refunded));
+
+        if (!$reversedLocally && !$refundedAtStripe) {
+            return;
+        }
+
+        do_action('fluentform/log_data', [
+            'parent_source_id' => $submission->form_id,
+            'source_type'      => 'submission_item',
+            'source_id'        => $submission->id,
+            'component'        => 'Payment',
+            'status'           => 'warning',
+            'title'            => __('Stripe confirmation refused', 'fluentform'),
+            'description'      => $reversedLocally
+                ? __('The payment was reversed before the confirmation completed.', 'fluentform')
+                : __('Stripe reports the charge as refunded.', 'fluentform'),
+        ]);
+
+        wp_send_json([
+            'errors' => __('This payment has been refunded and cannot be confirmed.', 'fluentform'),
+        ], 423);
+    }
+
+    // Transaction paid, submission paid and actions fired: nothing is left for a callback to finish.
+    protected function isPaymentAlreadyCompleted($submission, $transaction)
+    {
+        return 'paid' === $transaction->status
+            && 'paid' === $submission->payment_status
+            && 'yes' === $this->getMetaData('is_form_action_fired');
+    }
+
+    // The outcome is unknown, not failed: no failure hooks, no status downgrade.
+    protected function sendRetryableVerificationError($submission, \WP_Error $error)
+    {
+        do_action('fluentform/log_data', [
+            'parent_source_id' => $submission->form_id,
+            'source_type'      => 'submission_item',
+            'source_id'        => $submission->id,
+            'component'        => 'Payment',
+            'status'           => 'warning',
+            'title'            => __('Stripe verification deferred', 'fluentform'),
+            'description'      => $error->get_error_message(),
+        ]);
+
+        wp_send_json([
+            'errors' => __('We could not reach Stripe to verify your payment. Please try again in a moment.', 'fluentform'),
+        ], 423);
     }
 
     protected function sendSuccess($submission)

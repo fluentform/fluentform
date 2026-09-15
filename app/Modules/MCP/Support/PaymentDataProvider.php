@@ -50,6 +50,11 @@ class PaymentDataProvider
         return $data;
     }
 
+    /**
+     * Attach payment summaries to the supplied submission rows.
+     *
+     * @param iterable<\FluentForm\App\Models\Submission|\stdClass> $items
+     */
     public static function addRowPayments($rows, $items, $formId)
     {
         try {
@@ -95,6 +100,8 @@ class PaymentDataProvider
      * Compact, agent-sized block: status, formatted total, currency, method,
      * transaction count, and subscription status/interval. Never raw cents,
      * payment_note, vendor_response, or original_plan.
+     *
+     * @param \FluentForm\App\Models\Submission|\stdClass $submission
      */
     private static function buildPayment($submission)
     {

@@ -58,7 +58,8 @@ class SCA
 
 		ApiRequest::set_secret_key($secretKey);
 
-		$response =  ApiRequest::request($args, 'payment_intents/'.$intentId);
+		// was: the wrapper's default POST, which on this URL is Stripe's update endpoint, not retrieve
+		$response =  ApiRequest::request($args, 'payment_intents/'.$intentId, 'GET');
 
 		return static::processResponse($response);
 	}

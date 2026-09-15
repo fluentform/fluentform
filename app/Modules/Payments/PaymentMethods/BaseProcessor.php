@@ -103,12 +103,24 @@ abstract class BaseProcessor
 
     public function getLastTransaction($submissionId)
     {
+        // was: any row, so a refund ledger row inserted meanwhile became the row being settled
         return Transaction::bySubmission($submissionId)
+            ->where('transaction_type', '!=', 'refund')
             ->orderBy('id', 'DESC')
             ->first();
     }
 
     public function changeSubmissionPaymentStatus($newStatus)
+    {
+        return $this->writeSubmissionPaymentStatus($newStatus, false);
+    }
+
+    public function changeSubmissionPaymentStatusUnlessReversed($newStatus)
+    {
+        return $this->writeSubmissionPaymentStatus($newStatus, true);
+    }
+
+    protected function writeSubmissionPaymentStatus($newStatus, $unlessReversed)
     {
         do_action_deprecated(
             'fluentform_before_payment_status_change',
@@ -124,12 +136,23 @@ abstract class BaseProcessor
         do_action('fluentform/before_payment_status_change', $newStatus, $this->getSubmission());
 
         Submission::where('id', $this->submissionId)
+            ->when($unlessReversed, function ($query) {
+                $query->whereNotIn('payment_status', PaymentHelper::reversedPaymentStatuses());
+            })
             ->update([
                 'payment_status' => $newStatus,
                 'updated_at'     => current_time('mysql')
             ]);
 
         $this->submission = null;
+
+        // A reversal recorded between the caller's read and this write keeps the row; the caller decides
+        if ($unlessReversed) {
+            $submission = $this->getSubmission();
+            if (!$submission || PaymentHelper::isReversedPaymentStatus($submission->payment_status)) {
+                return false;
+            }
+        }
 
         $logData = [
             'parent_source_id' => $this->getForm()->id,
@@ -159,21 +182,29 @@ abstract class BaseProcessor
         return true;
     }
 
+    protected function shouldRunSubmissionActions()
+    {
+        $current = Submission::find($this->submissionId);
+
+        return $current && apply_filters('fluentform/should_process_submission_actions', true, $current, $this->getForm());
+    }
+
     public function recalculatePaidTotal()
     {
+        // was: the paid scope also matched the refund rows themselves (status refunded), so a full refund
+        // summed gross + refund - refund and total_paid stayed at the gross amount
         $transactions = Transaction::bySubmission($this->submissionId)
             ->paid()
+            ->where('transaction_type', '!=', 'refund')
             ->get();
 
         $total = 0;
         $subscriptionId = false;
-        $subBillCount = 0;
 
         foreach ($transactions as $transaction) {
             $total += $transaction->payment_total;
             if($transaction->subscription_id) {
                 $subscriptionId = $transaction->subscription_id;
-                $subBillCount += 1;
             }
         }
 
@@ -188,9 +219,11 @@ abstract class BaseProcessor
                 'updated_at' => current_time('mysql')
             ]);
 
-        if($subscriptionId && $subBillCount) {
+        // was: its own count of every paid-scope row here, so a $0 trial start became installment one
+        if ($subscriptionId) {
+            list($installmentCount) = $this->getPaymentCountsAndTotal($subscriptionId);
             $this->updateSubscription($subscriptionId, [
-                'bill_count' => $subBillCount
+                'bill_count' => $installmentCount
             ]);
         }
     }
@@ -210,6 +243,16 @@ abstract class BaseProcessor
     }
 
     public function changeTransactionStatus($transactionId, $newStatus)
+    {
+        return $this->writeTransactionStatus($transactionId, $newStatus, false);
+    }
+
+    public function changeTransactionStatusUnlessReversed($transactionId, $newStatus)
+    {
+        return $this->writeTransactionStatus($transactionId, $newStatus, true);
+    }
+
+    protected function writeTransactionStatus($transactionId, $newStatus, $unlessReversed)
     {
         do_action_deprecated(
             'fluentform_before_transaction_status_change',
@@ -231,10 +274,20 @@ abstract class BaseProcessor
         );
 
         Transaction::where('id', $transactionId)
+            ->when($unlessReversed, function ($query) {
+                $query->whereNotIn('status', PaymentHelper::reversedPaymentStatuses());
+            })
             ->update([
                 'status'     => $newStatus,
                 'updated_at' => current_time('mysql')
             ]);
+
+        if ($unlessReversed) {
+            $transaction = $this->getTransaction($transactionId);
+            if (!$transaction || PaymentHelper::isReversedPaymentStatus($transaction->status)) {
+                return false;
+            }
+        }
 
         do_action_deprecated(
             'fluentform_after_transaction_status_change',
@@ -295,6 +348,14 @@ abstract class BaseProcessor
                         $this->maybeAutoLogin($loginId, $submission);
                     }
                 }
+            } elseif (!$this->shouldRunSubmissionActions()) {
+                // was: fired the actions unconditionally; a reversal recorded since the paid write is
+                // skipped here as it is on the deferred pipeline (PaymentHandler::skipActionsForReversedPayment)
+                $returnData = [
+                    'insert_id' => $submission->id,
+                    'result'    => $submissionService->getReturnData($submission->id, $this->getForm(), $submission->response),
+                    'error'     => '',
+                ];
             } else {
                 $returnData = $submissionService->processSubmissionData(
                     $this->submissionId, $submission->response, $this->getForm()
@@ -476,6 +537,21 @@ abstract class BaseProcessor
         $status = 'refunded';
 
         $alreadyRefunded = $this->getRefundTotal();
+
+        // Submission-wide, matching getRefundTotal(); a subscription's invoices share one submission.
+        $charged = (int) Transaction::bySubmission($submission->id)
+            ->where('transaction_type', '!=', 'refund')
+            ->whereIn('status', ['paid', 'processing', 'refunded', 'partially-refunded'])
+            ->sum('payment_total');
+
+        // round(), not intval(): gateways pass floats (PayPal does mc_gross * -100) and
+        // 19.99 * 100 is 1998.9999... - truncating would shave a cent off the refund.
+        $refund_amount = min((int) round($refund_amount), max(0, $charged - (int) round($alreadyRefunded)));
+
+        if ($refund_amount <= 0) {
+            return;
+        }
+
         $totalRefund = intval($refund_amount + $alreadyRefunded);
 
         if ($totalRefund < $transaction->payment_total) {
@@ -737,6 +813,11 @@ abstract class BaseProcessor
             unset($item['transaction_hash']);
             unset($item['created_at']);
 
+            // was: overwrote the status unconditionally, so a replayed success event un-refunded the row
+            if (PaymentHelper::isReversedPaymentStatus($exists->status)) {
+                unset($item['status']);
+            }
+
             Transaction::where('id', $exists->id)->update($item);
 
             $id = $exists->id;
@@ -772,15 +853,20 @@ abstract class BaseProcessor
                     'updated_at'    => current_time('mysql')
                 ]);
 
+            // was: total_paid took the gross subscription sum here, so a renewal or a replayed invoice
+            // after a refund put the refunded amount back; recalculatePaidTotal() is the net authority
             Submission::where('id', $parentSubscription->submission_id)
                 ->update([
                     'payment_total' => $paymentTotal,
-                    'total_paid'    => $paymentTotal,
                 ]);
+            $this->recalculatePaidTotal();
 
             $subscription = Subscription::where('id', $parentSubscription->id)->first();
 
-            if($isNew) {
+            // Keep a missing 6.2.13 renewal without reviving a closed subscription.
+            $isTerminalSubscription = in_array($subscription->status, ['cancelled', 'completed'], true);
+
+            if ($isNew && !$isTerminalSubscription) {
                 $submission = $this->getSubmission();
                 do_action_deprecated(
                     'fluentform_subscription_received_payment',
@@ -807,7 +893,20 @@ abstract class BaseProcessor
                 do_action('fluentform/subscription_received_payment_' . $submission->payment_method, $subscription, $submission);
             }
 
-            if($subscription->bill_times >= $subscription->bill_count) {
+            if ($isNew && $isTerminalSubscription) {
+                $submission = $this->getSubmission();
+                do_action('fluentform/log_data', [
+                    'parent_source_id' => $submission->form_id,
+                    'source_type'      => 'submission_item',
+                    'source_id'        => $submission->id,
+                    'component'        => 'Payment',
+                    'status'           => 'info',
+                    'title'            => __('Late subscription payment recorded', 'fluentform'),
+                    'description'      => __('The subscription is already closed, so no renewal actions were fired.', 'fluentform'),
+                ]);
+            }
+
+            if (!$isTerminalSubscription && $subscription->bill_times > 0 && $subscription->bill_count >= $subscription->bill_times) {
                 // We have to mark the subscription as completed
                 $this->updateSubscriptionStatus($subscription, 'completed');
             }
@@ -818,21 +917,34 @@ abstract class BaseProcessor
 
     public function getPaymentCountsAndTotal($subscriptionId, $paymentMethod = false)
     {
-        $payments = Transaction::select(['id', 'payment_total'])
+        // was: every row of any status, so a pending echeck or a failed attempt counted as an installment
+        $payments = Transaction::select(['id', 'payment_method', 'payment_total', 'payment_note'])
             ->subscriptionType()
             ->where('subscription_id', $subscriptionId)
+            ->whereIn('status', ['paid', 'partially-refunded', 'refunded'])
             ->when($paymentMethod, function ($q) use ($paymentMethod) {
                 $q->where('payment_method', $paymentMethod);
             })
             ->get();
 
+        $subscription = Subscription::find($subscriptionId);
+
+        $installmentCount = 0;
         $paymentTotal = 0;
 
         foreach ($payments as $payment) {
             $paymentTotal += $payment->payment_total;
+            if ($this->isCountableSubscriptionPayment($payment, $subscription)) {
+                $installmentCount++;
+            }
         }
 
-        return [count($payments), $paymentTotal];
+        return [$installmentCount, $paymentTotal];
+    }
+
+    protected function isCountableSubscriptionPayment($payment, $subscription)
+    {
+        return $payment->payment_total > 0;
     }
 
     protected function getCancelAtTimeStamp($subscription)
@@ -961,6 +1073,7 @@ abstract class BaseProcessor
         $transactionData = [
             'transaction_type' => 'onetime',
             'transaction_hash' => $uniqueHash,
+            'subscription_id' => null,
             'payment_total'    => $this->getAmountTotal(),
             'status'           => 'pending',
             'currency'         => strtoupper($submission->currency),
@@ -984,7 +1097,27 @@ abstract class BaseProcessor
             }
         }
 
-        $transactionId = $this->insertTransaction($transactionData);
+        $existingTransaction = Transaction::bySubmission($submission->id)
+            ->where('payment_method', $this->method)
+            ->where('transaction_type', '!=', 'refund')
+            ->where('status', 'pending')
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        if ($existingTransaction) {
+            Transaction::where('id', $existingTransaction->id)->update([
+                'transaction_type' => $transactionData['transaction_type'],
+                'subscription_id'  => $transactionData['subscription_id'],
+                'payment_mode'     => $transactionData['payment_mode'],
+                'status'           => 'pending',
+                'payment_total'    => $transactionData['payment_total'],
+                'currency'         => $transactionData['currency'],
+                'updated_at'       => current_time('mysql')
+            ]);
+            $transactionId = $existingTransaction->id;
+        } else {
+            $transactionId = $this->insertTransaction($transactionData);
+        }
 
         $this->updateSubmission($submission->id, [
             'payment_total' => $transactionData['payment_total']
@@ -1013,7 +1146,14 @@ abstract class BaseProcessor
 
         $oldStatus = $subscription->status;
 
-        if($oldStatus == $newStatus) {
+        if ($oldStatus == $newStatus) {
+            return $subscription;
+        }
+
+        // A terminal subscription never moves again: a late/replayed event must not revive
+        // cancelled -> completed (or completed -> cancelled) and fire its status side effects.
+        $terminalStatuses = ['cancelled', 'completed'];
+        if (in_array($oldStatus, $terminalStatuses)) {
             return $subscription;
         }
 

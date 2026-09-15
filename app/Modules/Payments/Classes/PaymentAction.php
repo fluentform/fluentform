@@ -52,6 +52,8 @@ class PaymentAction
 
     protected $couponField = [];
 
+    private $decodedFormFields = null;
+
     public function __construct($form, $insertData, $data)
     {
         $this->form = $form;
@@ -86,7 +88,10 @@ class PaymentAction
                     continue;
                 }
                 if ($targetProductName = ArrayHelper::get($field, 'settings.target_product')) {
-                    $quantityItems[$targetProductName] = ArrayHelper::get($field, 'attributes.name');
+                    $quantityItems[$targetProductName] = [
+                        'name'  => ArrayHelper::get($field, 'attributes.name'),
+                        'field' => $field,
+                    ];
                 }
             } else if ($element == 'payment_method') {
                 $paymentMethod = $field;
@@ -166,16 +171,21 @@ class PaymentAction
      */
     public function isCouponFieldVisible($couponField)
     {
-        if (!$this->isFieldConditionPass($couponField)) {
+        return $this->isFieldVisible($couponField);
+    }
+
+    /**
+     * Whether a field is actually shown to the submitter: its own conditional
+     * logic has to pass, and so does that of every container it sits inside.
+     */
+    protected function isFieldVisible($field)
+    {
+        if (!$this->isFieldConditionPass($field)) {
             return false;
         }
 
-        $formFields = $this->form->form_fields;
-        if (is_string($formFields)) {
-            $formFields = json_decode($formFields, true);
-        }
-        $couponName = ArrayHelper::get($couponField, 'attributes.name');
-        $ancestors = $this->getFieldAncestorContainers(ArrayHelper::get($formFields, 'fields', []), $couponName);
+        $fieldName = ArrayHelper::get($field, 'attributes.name');
+        $ancestors = $this->getFieldAncestorContainers($this->getDecodedFormFields(), $fieldName);
 
         foreach ((array) $ancestors as $container) {
             if (!$this->isFieldConditionPass($container)) {
@@ -184,6 +194,161 @@ class PaymentAction
         }
 
         return true;
+    }
+
+    /**
+     * The form definition does not change during a request, but this is now
+     * consulted once per payment input and per subscription input, and
+     * `applyDiscountCodes()` forces a full recompute -- so decoding it each time
+     * meant re-parsing the whole form many times over on a multi-item order.
+     */
+    private function getDecodedFormFields()
+    {
+        if (is_null($this->decodedFormFields)) {
+            $formFields = $this->form->form_fields;
+            if (is_string($formFields)) {
+                $formFields = json_decode($formFields, true);
+            }
+            $this->decodedFormFields = ArrayHelper::get($formFields, 'fields', []);
+        }
+
+        return $this->decodedFormFields;
+    }
+
+    /**
+     * Which plan a subscription input is for.
+     *
+     * A submitted choice always wins, including an empty one. When the key never
+     * arrived at all, the plan is inferred only from a plan the form actually
+     * renders pre-selected -- which is exactly `is_default`, and nothing else:
+     * a select leads with a blank "--Select Plan--" option and a radio group
+     * starts unchecked, so on any other form not choosing is a real answer.
+     * Where nothing is pre-selected the input is skipped rather than guessed at.
+     *
+     * @return string|int|null the plan key, or null when there is none to use
+     */
+    private function resolvePlanKey($subscriptionInput, $subscriptionOptions)
+    {
+        if (!$subscriptionOptions) {
+            return null;
+        }
+
+        $name = ArrayHelper::get($subscriptionInput, 'attributes.name');
+        $data = $this->submissionData['response'];
+
+        // An empty submitted value is an answer, not a missing one. A select
+        // renders a blank "--Select Plan--" placeholder first and the field is
+        // optional by default, so choosing it is a genuine "no subscription".
+        // Only a key that never arrived at all can be inferred.
+        if (isset($data[$name])) {
+            if ('' === $data[$name]) {
+                return null;
+            }
+
+            return isset($subscriptionOptions[$data[$name]]) ? $data[$name] : null;
+        }
+
+        if (!$this->isFieldVisible($subscriptionInput)) {
+            return null;
+        }
+
+        // Only a plan the form renders pre-selected may be inferred. The renderer
+        // sets checked/selected solely for is_default and skips expired-hidden plans,
+        // so any other plan is a choice the submitter still had to make -- and not
+        // making it is legitimate, not tampering. Definitions carry no single-default
+        // constraint, so a stale/imported form can mark several defaults or leave the
+        // first default expired-hidden. Collect every inferable default and infer only
+        // when exactly one remains; zero or many is ambiguous and needs an explicit
+        // choice, so it resolves to no subscription rather than the wrong plan.
+        $inferableDefaults = [];
+        foreach ($subscriptionOptions as $planKey => $plan) {
+            if ('yes' === ArrayHelper::get($plan, 'is_default') && $this->isInferablePlan($plan)) {
+                $inferableDefaults[] = $planKey;
+            }
+        }
+
+        return 1 === count($inferableDefaults) ? $inferableDefaults[0] : null;
+    }
+
+    /**
+     * A plan may only be inferred when the form already knows what it costs and
+     * still offers it.
+     *
+     * A "name your price" plan takes its amount from a companion input, so with
+     * nothing submitted there is no amount to charge -- and inferring the plan
+     * anyway would create a subscription at 0. Trial days make that worse: the
+     * zero-amount guard further down is skipped while a trial is configured, so
+     * the result would be a free perpetual subscription.
+     *
+     * An expired plan set to hide is never rendered at all, so its absence is
+     * the admin closing sales, not a dropped input.
+     */
+    private function isInferablePlan($plan)
+    {
+        if ('yes' === ArrayHelper::get($plan, 'user_input')) {
+            return false;
+        }
+
+        return !PaymentHelper::isPlanExpiredAndHidden($plan);
+    }
+
+    /**
+     * Whether the server already knows this item's price, i.e. the request only
+     * ever echoed back a value taken from the form definition.
+     *
+     * Those items must not be skippable by leaving the input out of the request,
+     * because the submitter never supplied the amount in the first place. Items
+     * the submitter genuinely chooses -- an option, a typed amount, a dynamic
+     * default -- are excluded, so leaving those out stays a legitimate
+     * zero-total submission.
+     */
+    private function isServerPricedItem($paymentInput, $inputType)
+    {
+        if ('single' !== $inputType) {
+            return false;
+        }
+
+        if (ArrayHelper::get($paymentInput, 'settings.dynamic_default_value')) {
+            return false;
+        }
+
+        $price = ArrayHelper::get($paymentInput, 'attributes.value');
+        if (!is_numeric($price) || !$price) {
+            return false;
+        }
+
+        if (
+            'yes' === ArrayHelper::get($paymentInput, 'settings.hide_input_when_stockout')
+            && $this->proCannotJudgeHiddenStock()
+        ) {
+            return false;
+        }
+
+        if (!$this->isFieldVisible($paymentInput)) {
+            return false;
+        }
+
+        // Lets an add-on that removes an input at render time -- for reasons the
+        // stored definition cannot express -- keep it out of the order too.
+        return (bool) apply_filters(
+            'fluentform/is_server_priced_payment_item',
+            true,
+            $paymentInput,
+            $this->form
+        );
+    }
+
+    /**
+     * Pro before its renderer-count veto hides a sold-out item at render but judges
+     * stock from a different count on submit, so an omitted hidden item can still read
+     * as in stock and be charged. Until that Pro is updated its sites stay on the
+     * presence check for the hide flag: the fail-open that leaves is the one they
+     * already have, and charging a buyer for an item they never saw is worse.
+     */
+    protected function proCannotJudgeHiddenStock()
+    {
+        return defined('FLUENTFORMPRO')
+            && !method_exists('\FluentFormPro\classes\Inventory\InventoryValidation', 'getRenderedEntryReport');
     }
 
     /**
@@ -227,6 +392,15 @@ class PaymentAction
 
         $existingSubmission = $this->checkForExistingSubmission();
 
+        if (is_wp_error($existingSubmission)) {
+            wp_send_json([
+                'errors' => __('This payment is already complete or still processing. Please wait for confirmation.', 'fluentform'),
+                'append_data' => [
+                    '__entry_intermediate_hash' => ArrayHelper::get($this->submissionData, 'response.__entry_intermediate_hash')
+                ]
+            ], 423);
+        }
+
         $formSettings = PaymentHelper::getFormSettings($this->form->id, 'public');
         $submission = $this->submissionData;
         $submission['payment_status'] = 'pending';
@@ -248,11 +422,7 @@ class PaymentAction
         $submission = apply_filters('fluentform/payment_submission_data', $submission, $this->form);
 
         if ($existingSubmission) {
-            $insertId = $existingSubmission->id;
-            Submission::where('id', $insertId)->update($submission);
-
-            // delete the existing transactions here if any
-            Transaction::where('submission_id', $insertId)->delete();
+            $insertId = $this->updateExistingSubmission($existingSubmission, $submission);
         } else {
             $insertId = Submission::create($submission)->id;
             $uidHash = md5(wp_generate_uuid4() . $insertId);
@@ -369,14 +539,20 @@ class PaymentAction
 
         foreach ($paymentInputs as $paymentInput) {
             $name = ArrayHelper::get($paymentInput, 'attributes.name');
-            if (!$name || !isset($data[$name])) {
+            if (!$name) {
                 continue;
             }
             $price = 0;
             $inputType = ArrayHelper::get($paymentInput, 'attributes.type');
 
-            if (!$data[$name]) {
-                continue;
+            // A server-priced item is resolved from the form definition, so an
+            // absent or falsy request value must not drop it -- otherwise an
+            // unauthenticated submitter zeroes the order simply by omitting the
+            // input. Every other item still needs a submitted value.
+            if (!$this->isServerPricedItem($paymentInput, $inputType)) {
+                if (!isset($data[$name]) || !$data[$name]) {
+                    continue;
+                }
             }
 
             if ($inputType == 'number') {
@@ -462,8 +638,18 @@ class PaymentAction
         if (!isset($this->quantityItems[$productName])) {
             return $quantity;
         }
-        $inputName = $this->quantityItems[$productName];
-        $quantity = ArrayHelper::get($this->submissionData['response'], $inputName);
+        $quantityField = $this->quantityItems[$productName]['field'];
+        $inputName = $this->quantityItems[$productName]['name'];
+        $data = $this->submissionData['response'];
+
+        // An absent input is either hidden by conditional logic or stripped to zero
+        // the order; only the field's own visibility separates the two. A submitted
+        // 0 or blank box still means none.
+        if (!isset($data[$inputName])) {
+            return $this->isFieldVisible($quantityField) ? 1 : 0;
+        }
+
+        $quantity = ArrayHelper::get($data, $inputName);
         if (!$quantity) {
             return 0;
         }
@@ -586,7 +772,7 @@ class PaymentAction
             $name = ArrayHelper::get($subscriptionInput, 'attributes.name');
             $quantity = $this->getQuantity($name);
 
-            if (!$name || !isset($data[$name]) || $quantity === 0) {
+            if (!$name || $quantity === 0) {
                 continue;
             }
 
@@ -594,15 +780,20 @@ class PaymentAction
 
             $subscriptionOptions = ArrayHelper::get($subscriptionInput, 'settings.subscription_options');
 
-            $plan = $subscriptionOptions[$data[$name]];
+            $planKey = $this->resolvePlanKey($subscriptionInput, $subscriptionOptions);
+
+            if (is_null($planKey)) {
+                continue;
+            }
+
+            $plan = ArrayHelper::get($subscriptionOptions, $planKey);
 
             if (!$plan) {
                 continue;
             }
 
             if (ArrayHelper::get($plan, 'user_input') === 'yes') {
-                $plan['subscription_amount'] = ArrayHelper::get($data, $name . '_custom_' . $data[$name]);
-                $plan['subscription_amount'] = $plan['subscription_amount'] ?: 0;
+                $plan['subscription_amount'] = $this->getCustomSubscriptionAmount($data, $name, $planKey);
             }
 
             $noTrial = ArrayHelper::get($plan, 'has_trial_days') === 'no' ||
@@ -728,10 +919,34 @@ class PaymentAction
         $submission = Submission::find($meta->response_id);
 
         if ($submission && ($submission->payment_status == 'failed' || $submission->payment_status == 'pending' || $submission->payment_status == 'draft')) {
+            // A settled charge means the earlier attempt went through after the error
+            // was shown; reusing the row would delete that ledger entry.
+            $hasPaidOrProcessingCharge = Transaction::where('submission_id', $submission->id)
+                ->whereIn('status', ['paid', 'processing'])
+                ->exists();
+            if ($hasPaidOrProcessingCharge) {
+                return new \WP_Error('payment_retry_blocked');
+            }
+
             return $submission;
         }
 
         return false;
+    }
+
+    /**
+     * Update a retry in place while retaining its transaction rows for
+     * processor reuse and delayed webhook settlement.
+     */
+    private function updateExistingSubmission($existingSubmission, $submission)
+    {
+        $submissionId = $existingSubmission->id;
+        Submission::where('id', $submissionId)->update($submission);
+        Transaction::where('submission_id', $submissionId)
+            ->where('status', 'failed')
+            ->delete();
+
+        return $submissionId;
     }
 
     private function insertOrderItems($items, $existing = false)
@@ -789,6 +1004,20 @@ class PaymentAction
         return true;
     }
 
+    private function getCustomSubscriptionAmount($data, $name, $planKey)
+    {
+        $amount = ArrayHelper::get($data, $name . '_custom_' . $planKey) ?: 0;
+
+        // Past PHP_INT_MAX cents, convertToCents() returns 0 or wraps negative, which drops the plan and leaves the order unpaid.
+        if (abs((float) $amount) >= PHP_INT_MAX / 100) {
+            wp_send_json([
+                'errors' => [__('This subscription plan value is invalid', 'fluentform')]
+            ], 423);
+        }
+
+        return $amount;
+    }
+
     private function validateSubscriptionInputs()
     {
         $subscriptionInputs = $this->subscriptionInputs;
@@ -807,13 +1036,19 @@ class PaymentAction
                 continue;
             }
 
-            if (!$name || !isset($data[$name])) {
+            if (!$name) {
                 continue;
             }
 
             $subscriptionOptions = ArrayHelper::get($subscriptionInput, 'settings.subscription_options');
 
-            $plan = $subscriptionOptions[$data[$name]];
+            $planKey = $this->resolvePlanKey($subscriptionInput, $subscriptionOptions);
+
+            if (is_null($planKey)) {
+                continue;
+            }
+
+            $plan = ArrayHelper::get($subscriptionOptions, $planKey);
 
             if (!$plan) {
                 continue;
@@ -834,11 +1069,17 @@ class PaymentAction
             // We have bill times 1 so we have to remove this and push to  hooked inputs and later merged to payment inputs
 
             if (ArrayHelper::get($plan, 'user_input') === 'yes') {
-                $plan['subscription_amount'] = ArrayHelper::get($data, $name . '_custom_' . $data[$name]);
-                $plan['subscription_amount'] = $plan['subscription_amount'] ?: 0;
+                $plan['subscription_amount'] = $this->getCustomSubscriptionAmount($data, $name, $planKey);
             }
 
             $amount = PaymentHelper::convertToCents($plan['subscription_amount']);
+
+            // Bypasses pushItem()'s positive-price guard, so a negative custom amount would
+            // otherwise become a line item that drags the order total down. Checked before
+            // the signup fee so the fee cannot mask it.
+            if ($amount < 0) {
+                continue;
+            }
 
             if (ArrayHelper::get($plan, 'has_signup_fee') === 'yes' && ArrayHelper::get($plan, 'signup_fee')) {
                 $amount += PaymentHelper::convertToCents($plan['signup_fee']);

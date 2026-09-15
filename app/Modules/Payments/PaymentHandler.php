@@ -28,6 +28,28 @@ use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeSettings;
 
 class PaymentHandler
 {
+    /**
+     * A reversed order (refund/partial-refund/cancel) must not fire the deferred
+     * submission action pipeline (notifications, integrations, user registration)
+     * when it is later reached via a double-opt-in / admin-approval confirmation or a
+     * subscription webhook. The normal paid flow is unaffected (latch already set),
+     * as are non-payment forms and unsettled-but-not-reversed states (pending/failed).
+     */
+    public function skipActionsForReversedPayment($shouldProcess, $submission, $form)
+    {
+        if (!$shouldProcess || empty($form->has_payment)) {
+            return $shouldProcess;
+        }
+
+        $paymentStatus = isset($submission->payment_status) ? $submission->payment_status : null;
+
+        if (PaymentHelper::isReversedPaymentStatus($paymentStatus)) {
+            return false;
+        }
+
+        return $shouldProcess;
+    }
+
     public function init()
     {
         
@@ -36,7 +58,9 @@ class PaymentHandler
         add_filter('fluentform/global_settings_component_settings_data', [$this, 'getGlobalSettingsPaymentVars']);
 
         add_action('wp_ajax_fluentform_handle_payment_ajax_endpoint', [$this, 'handleAjaxEndpoints']);
-        
+
+        add_filter('fluentform/should_process_submission_actions', [$this, 'skipActionsForReversedPayment'], 10, 3);
+
         if (!$this->isEnabled()) {
             return;
         }
@@ -617,7 +641,12 @@ class PaymentHandler
         $submissionIds = array_unique($submissionIds);
         $transactionIds = array_unique($transactionIds);
         
+        // Claim only unowned submissions; payer_email is unverified and may match a registered owner.
         \FluentForm\App\Models\Submission::whereIn('id', $submissionIds)
+            ->where(function ($query) {
+                $query->whereNull('user_id')
+                    ->orWhere('user_id', '');
+            })
             ->update([
                 'user_id'    => $userId,
                 'updated_at' => current_time('mysql')
@@ -686,7 +715,7 @@ class PaymentHandler
                 $userGivenValue = ArrayHelper::get($formData, "{$field['name']}_custom_$selectedPlanIndex");
                 $userGivenValue = $userGivenValue ?: 0;
                 $planMinValue = ArrayHelper::get($selectedPlan, 'user_input_min_value');
-                if (!is_numeric($userGivenValue) || ($planMinValue && $userGivenValue < $planMinValue)) {
+                if (!is_numeric($userGivenValue) || $userGivenValue < 0 || ($planMinValue && $userGivenValue < $planMinValue)) {
                     $error = __('This subscription plan value is invalid', 'fluentform');
                 }
             }

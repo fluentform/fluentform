@@ -66,6 +66,22 @@ class AddOnModule
     {
         wp_enqueue_script('fluentform-modules');
 
+        $addOns = $this->getRegisteredAddOns();
+
+        wp_localize_script('fluentform-modules', 'fluent_addon_modules', [
+            'addons'          => $addOns,
+            'has_pro'         => defined('FLUENTFORMPRO'),
+            'addOnModule_str' => TranslationString::getAddOnModuleI18n(),
+        ]);
+
+        wpFluentForm('view')->render('admin.addons.list', []);
+    }
+
+    /**
+     * The registry the Add-on Modules screen renders from, so the status writer can validate against the same source.
+     */
+    public function getRegisteredAddOns()
+    {
         $addOns = apply_filters_deprecated(
             'fluentform_global_addons',
             [
@@ -90,13 +106,7 @@ class AddOnModule
             $addOns = array_merge($addOns, $this->getPremiumAddOns());
         }
 
-        wp_localize_script('fluentform-modules', 'fluent_addon_modules', [
-            'addons'          => $addOns,
-            'has_pro'         => defined('FLUENTFORMPRO'),
-            'addOnModule_str' => TranslationString::getAddOnModuleI18n(),
-        ]);
-
-        wpFluentForm('view')->render('admin.addons.list', []);
+        return $addOns;
     }
 
     public function getPremiumAddOns()

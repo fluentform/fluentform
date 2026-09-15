@@ -57,13 +57,20 @@ class ManagersController extends Controller
     public function getUsers(ManagerService $managerService)
     {
         $search = sanitize_text_field($this->request->get('search', ''));
-        
-        $users = get_users([
-            'search' => "*{$search}*",
-            'number' => 50,
-            'fields'  => ['ID', 'display_name', 'user_email']
-        ]);
-        
+
+        if (current_user_can('list_users')) {
+            $users = get_users([
+                'search' => "*{$search}*",
+                'number' => 50,
+                'fields'  => ['ID', 'display_name', 'user_email']
+            ]);
+        } else {
+            // A delegated full-access manager may confirm an address they already know,
+            // but must not browse the site's user roster (FF-SEC-45).
+            $user = is_email($search) ? get_user_by('email', $search) : false;
+            $users = $user ? [$user] : [];
+        }
+
         $formattedUsers = [];
         foreach ($users as $user) {
             $formattedUsers[] = [

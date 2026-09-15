@@ -89,12 +89,15 @@ class ManagerService
         $hasSpecificFormsPermission = 'yes' === Arr::get($manager, 'has_specific_forms_permission');
         $allowedForms = array_values(array_filter(array_map('intval', (array) Arr::get($manager, 'forms', []))));
 
+        // The UI always sends this flag, so an absent one is a partial payload, not a request to clear.
+        $restrictionWasSubmitted = null !== Arr::get($manager, 'has_specific_forms_permission');
+
         // Keep an empty selection unrestricted so the manager UI's
         // "leave blank for all forms" behavior matches the saved ACL state.
         if ($hasSpecificFormsPermission && $allowedForms) {
             FormManagerService::updateHasSpecificFormsPermission($user->ID, 'yes');
             FormManagerService::addUserAllowedForms($allowedForms, $user->ID);
-        } else {
+        } elseif ($restrictionWasSubmitted) {
             FormManagerService::updateHasSpecificFormsPermission($user->ID, 'no');
             FormManagerService::deleteUserAllowedForms($user->ID);
         }
@@ -121,6 +124,20 @@ class ManagerService
         if (!$user) {
             return ([
                 'message' => __('Associate user could not be found', 'fluentform'),
+            ]);
+        }
+
+        // Removal deletes _fluent_forms_has_role, which is what suppresses the role fallback.
+        if (get_current_user_id() === $user->ID) {
+            return ([
+                'message' => __('You cannot remove yourself as a manager.', 'fluentform'),
+            ]);
+        }
+
+        // Mirrors the grant-side guard at :73.
+        if (in_array('fluentform_full_access', (array) Acl::getUserPermissions($user), true) && !current_user_can('manage_options')) {
+            return ([
+                'message' => __('You do not have permission to remove a full access manager.', 'fluentform'),
             ]);
         }
 

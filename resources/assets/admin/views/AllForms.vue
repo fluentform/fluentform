@@ -98,6 +98,7 @@
                         <el-table
                             :data="items"
                             :stripe="true"
+                            :default-sort="tableDefaultSort"
                             @sort-change="handleTableSort"
                             @selection-change="handleSelectionChange"
                             :row-class-name="tableRowClass"
@@ -540,7 +541,21 @@ export default {
                 this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';
                 localStorage.setItem('ff_all_form_sort_column', this.sort_column);
                 localStorage.setItem('ff_all_form_sort_by', this.sort_by);
-                this.fetchItems();
+            } else {
+                this.sort_column = 'id';
+                this.sort_by = 'DESC';
+                localStorage.removeItem('ff_all_form_sort_column');
+                localStorage.removeItem('ff_all_form_sort_by');
+            }
+            this.fetchItems();
+        },
+        restoreSavedSort() {
+            const savedSortColumn = localStorage.getItem('ff_all_form_sort_column');
+            const savedSortBy = localStorage.getItem('ff_all_form_sort_by');
+
+            if (savedSortColumn && savedSortBy) {
+                this.sort_column = savedSortColumn;
+                this.sort_by = savedSortBy;
             }
         },
         handleSelectionChange(val) {
@@ -651,6 +666,12 @@ export default {
         }
     },
     computed: {
+        tableDefaultSort() {
+            return {
+                prop: this.sort_column,
+                order: this.sort_by === 'ASC' ? 'ascending' : 'descending'
+            };
+        },
 	    hasEnabledDateFilter() {
 		    return !!(this.radioOption && this.radioOption != 'all' ||
 			    (Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
@@ -665,18 +686,12 @@ export default {
         if (savedOption) {
             this.filter_by = savedOption;
         }
-
-        const savedSortColumn = localStorage.getItem('ff_all_form_sort_column');
-        const savedSortBy = localStorage.getItem('ff_all_form_sort_by');
-
-        if (savedSortColumn && savedSortBy) {
-            this.sort_column = savedSortColumn;
-            this.sort_by = savedSortBy;
-        }
         this.fetchItems();
 
     },
     created() {
+        this.restoreSavedSort();
+
         let hash = window.location.hash;
 
         if (hash.indexOf('add=1') != -1) {

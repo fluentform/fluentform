@@ -85,14 +85,24 @@ class EmailNotificationActions
 
     public function notify($feed, $formData, $entry, $form)
     {
-        // If this is a payment form and the feed is configured to run on payment_success,
-        // then do not send while the submission's payment status is still pending.
+        // Defer a payment_success email only for a KNOWN unsettled status. An empty
+        // status is a genuine $0 order (an all-optional form or a 100% coupon, no payment
+        // attempted) and still confirms; any status NOT in the deny-list still sends, so a
+        // custom/settled status a gateway registers via fluentform/available_payment_statuses
+        // is never silently dropped. Custom unsettled statuses extend the deny-list via
+        // fluentform/unsettled_payment_statuses. A non-success gateway return never reaches
+        // here as empty -- it is gated in the processor and left as its pending status.
         if (isset($form->has_payment) && $form->has_payment) {
             if (FormFieldsParser::hasElement($form, 'payment_method')) {
                 $isTriggerOnPaymentSuccess = ArrayHelper::get($feed, 'processedValues.feed_trigger_event') === 'payment_success';
-                $isPaymentPending = isset($entry->payment_status) && $entry->payment_status === 'pending';
-                if ($isTriggerOnPaymentSuccess && $isPaymentPending) {
-                    return;
+                if ($isTriggerOnPaymentSuccess) {
+                    $paymentStatus     = is_null($entry->payment_status ?? null) ? '' : (string) $entry->payment_status;
+                    $unsettledStatuses = apply_filters('fluentform/unsettled_payment_statuses', [
+                        'pending', 'failed', 'requires_review', 'cancelled', 'refunded', 'partially-refunded',
+                    ]);
+                    if (in_array($paymentStatus, $unsettledStatuses, true)) {
+                        return;
+                    }
                 }
             }
         }

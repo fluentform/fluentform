@@ -255,7 +255,17 @@ class AjaxEndpoints
         $transactionId = $transactionData['id'];
         $oldTransaction = Transaction::find($transactionId);
 
+        if (!$oldTransaction) {
+            wp_send_json_error(['message' => __('Transaction not found.', 'fluentform')], 404);
+        }
+
         $changingStatus = $oldTransaction->status != $transactionData['status'];
+
+        // Only a *changed* status is validated; a row may already hold one this build does not
+        // register, e.g. Pro's 'requires_review', and editing other fields must not be blocked.
+        if ($changingStatus && !isset(PaymentHelper::getPaymentStatuses()[$transactionData['status']])) {
+            wp_send_json_error(['message' => __('Invalid payment status.', 'fluentform')], 422);
+        }
 
         $updateData = ArrayHelper::only($transactionData, [
             'payer_name',
@@ -272,13 +282,19 @@ class AjaxEndpoints
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified in route registration
         if ($subscriptionId) {
-            $existingSubscription = Subscription::find($subscriptionId);
+            // Bind to the transaction's submission; submission_id comes from the row, not the request.
+            $existingSubscription = Subscription::where('id', $subscriptionId)
+                ->where('submission_id', $oldTransaction->submission_id)
+                ->first();
 
             $changedStatus = ArrayHelper::get($transactionData, 'status');
 
-            $isStatusChanged = $existingSubscription->status != $changedStatus;
+            // Only mirror real subscription statuses; 'paid' here would block cancellation forever.
+            $isMappable = $existingSubscription
+                && isset(PaymentHelper::getSubscriptionStatuses()[$changedStatus])
+                && $existingSubscription->status != $changedStatus;
 
-            if ($isStatusChanged) {
+            if ($isMappable) {
                 Subscription::where('id', $subscriptionId)
                     ->update([
                         'status' => $changedStatus,
@@ -296,8 +312,8 @@ class AjaxEndpoints
         };
 
         if (
-            ($changingStatus && ($newStatus == 'refunded' || $newStatus == 'partial-refunded')) ||
-            ($newStatus == 'partial-refunded' && ArrayHelper::get($transactionData, 'refund_amount'))
+            ($changingStatus && ($newStatus == 'refunded' || $newStatus == 'partially-refunded')) ||
+            ($newStatus == 'partially-refunded' && ArrayHelper::get($transactionData, 'refund_amount'))
         ) {
             $refundAmount = 0;
             $refundNote = 'Refunded by Admin';
@@ -307,7 +323,7 @@ class AjaxEndpoints
                 $refundAmount = $oldTransaction->payment_total;
             } else if ($newStatus == 'partially-refunded') {
                 $refundAmount = ArrayHelper::get($transactionData, 'refund_amount') * 100;
-                $refundNote = ArrayHelper::get($transactionData, 'refund_note');
+                $refundNote = ArrayHelper::get($transactionData, 'refund_note') ?: $refundNote;
             }
 
             if ($refundAmount) {
@@ -315,6 +331,10 @@ class AjaxEndpoints
 
                 $submission = $baseProcessor->getSubmission();
                 $baseProcessor->refund($refundAmount, $oldTransaction, $submission, $oldTransaction->payment_method, 'refund_' . time(), $refundNote);
+
+                // refund() derives the real status from the refunded total: an amount covering
+                // the whole charge is a full refund, whatever status was requested.
+                $newStatus = Transaction::find($transactionId)->status;
             }
 
         }
@@ -322,8 +342,8 @@ class AjaxEndpoints
         if ($changingStatus) {
 
             if ($newStatus == 'paid' || $newStatus == 'pending' || $newStatus == 'processing') {
-                // Delete All Refunds
-                Transaction::bySubmission($oldTransaction->submission_id)->refunds()->delete();
+                // Delete All Refunds, recording them first
+                $this->recordAndRemoveRefundLedger($oldTransaction, $newStatus);
             }
 
             $baseProcessor->setSubmissionId($oldTransaction->submission_id);
@@ -349,6 +369,55 @@ class AjaxEndpoints
         wp_send_json_success([
             'message' => __('Successfully updated data', 'fluentform')
         ], 200);
+    }
+
+    /**
+     * The record is the compensating control for an irreversible delete, so if it cannot be written the rows must survive.
+     */
+    private function recordAndRemoveRefundLedger($oldTransaction, $newStatus)
+    {
+        $refunds = Transaction::bySubmission($oldTransaction->submission_id)->refunds()->get();
+
+        if (!count($refunds)) {
+            return;
+        }
+
+        $ids = [];
+        $total = 0;
+        $records = [];
+
+        foreach ($refunds as $refund) {
+            $ids[] = $refund->id;
+            $total += $refund->payment_total;
+            $records[] = '#' . $refund->id . ' (' . PaymentHelper::formatMoney($refund->payment_total, $refund->currency) . ')';
+        }
+
+        $description = sprintf(
+            /* translators: 1: previous status, 2: new status, 3: number of refund records, 4: formatted total, 5: the deleted records */
+            __(
+                'Payment status changed from %1$s to %2$s, which removed %3$d refund record(s) totalling %4$s: %5$s',
+                'fluentform'
+            ),
+            $oldTransaction->status,
+            $newStatus,
+            count($refunds),
+            PaymentHelper::formatMoney($total, $oldTransaction->currency),
+            implode(', ', $records)
+        );
+
+        // Record first: if this write fails the rows are still here to try again.
+        do_action('fluentform/log_data', [
+            'parent_source_id' => $oldTransaction->form_id,
+            'source_type'      => 'submission_item',
+            'source_id'        => $oldTransaction->submission_id,
+            'component'        => 'Payment',
+            'status'           => 'info',
+            'title'            => __('Refund records deleted', 'fluentform'),
+            'description'      => $description,
+        ]);
+
+        // Only the rows just recorded, so a refund added meanwhile is not destroyed unrecorded.
+        Transaction::whereIn('id', $ids)->delete();
     }
 
     public function getStripeConnectConfig()

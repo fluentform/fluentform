@@ -117,6 +117,16 @@ class TransactionShortcodes
 
         $submission = fluentFormApi('submissions')->find($transaction->submission_id);
 
+        // A trashed entry's receipt must not render on the public route.
+        if ($submission && 'trashed' === $submission->status) {
+            if ($echo) {
+                status_header(200);
+                echo esc_html__('Sorry no transaction found', 'fluentform');
+                exit(200);
+            }
+            return '';
+        }
+
         if ($transaction->transaction_type == 'subscription') {
             $transaction->subscription = fluentFormApi('submissions')->getSubscription($transaction->subscription_id);
         }

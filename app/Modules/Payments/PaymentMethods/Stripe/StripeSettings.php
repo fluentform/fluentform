@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Modules\Payments\PaymentMethods\Stripe;
 
+use FluentForm\App\Models\Subscription;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 
@@ -238,14 +239,25 @@ class StripeSettings
 
         $metaDataEvents = [
             'checkout.session.completed',
+            'checkout.session.async_payment_succeeded',
+            'checkout.session.async_payment_failed',
             'charge.refunded',
-            'charge.succeeded'
+            'charge.succeeded',
+            'charge.failed',
         ];
 
         if (in_array($eventType, $metaDataEvents)) {
             $data = $event->data->object;
             $metaData = (array)$data->metadata;
             return ArrayHelper::get($metaData, 'form_id');
+        }
+
+        // A delayed subscription's first invoice settles the entry, so it needs the form's own key too. Once the entry is
+        // linked, renewals keep the global key: a form moved to its own account still bills older subscriptions on it.
+        $invoice = $event->data->object;
+        if ('invoice.payment_succeeded' === $eventType && isset($invoice->subscription, $invoice->subscription_details->metadata->form_id)
+            && !Subscription::byVendorSubscriptionId($invoice->subscription)->first()) {
+            return $invoice->subscription_details->metadata->form_id;
         }
 
         return false;

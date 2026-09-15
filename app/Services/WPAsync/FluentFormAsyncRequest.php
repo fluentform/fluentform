@@ -6,6 +6,7 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
+use FluentForm\App\Services\Integrations\GlobalNotificationManager;
 
 class FluentFormAsyncRequest
 {
@@ -110,6 +111,8 @@ class FluentFormAsyncRequest
         $formCache = [];
         $submissionCache = [];
         $entryCache = [];
+        $formDataCache = [];
+        $feedCache = $this->loadFeedRows($actionFeeds);
 
         foreach ($actionFeeds as $actionFeed) {
             $action = $actionFeed->action;
@@ -119,13 +122,31 @@ class FluentFormAsyncRequest
                 $submission = $submissionCache[$actionFeed->origin_id];
             } else {
                 $submission = wpFluent()->table('fluentform_submissions')->find($actionFeed->origin_id);
+                if (!$submission) {
+                    $this->abandonStaleRow($actionFeed, 'Skipped: the submission or form no longer exists');
+                    continue;
+                }
                 $submissionCache[$submission->id] = $submission;
             }
             if(isset($formCache[$submission->form_id])) {
                 $form = $formCache[$submission->form_id];
             } else {
                 $form = wpFluent()->table('fluentform_forms')->find($submission->form_id);
+                if (!$form) {
+                    $this->abandonStaleRow($actionFeed, 'Skipped: the submission or form no longer exists');
+                    continue;
+                }
                 $formCache[$form->id] = $form;
+            }
+
+            if (!isset($formDataCache[$submission->id])) {
+                $formDataCache[$submission->id] = json_decode($submission->response, true);
+            }
+            $formData = $formDataCache[$submission->id];
+
+            if (!$this->feedStillEnabled($actionFeed, $feedCache, $formData, $submission->id)) {
+                $this->abandonStaleRow($actionFeed, 'Skipped: the feed was disabled or deleted after queueing');
+                continue;
             }
 
             if(isset($entryCache[$submission->id])) {
@@ -134,15 +155,20 @@ class FluentFormAsyncRequest
                 $entry = $this->getEntry($submission, $form);
                 $entryCache[$submission->id] = $entry;
             }
-            $formData = json_decode($submission->response, true);
 
-            wpFluent()->table($this->table)
+            // Same atomic claim as process(); this path is a public nopriv ajax endpoint.
+            $claimed = wpFluent()->table($this->table)
                 ->where('id', $actionFeed->id)
+                ->whereIn('status', ['pending', 'failed'])
                 ->update([
                     'status' => 'processing',
                     'retry_count' => $actionFeed->retry_count + 1,
                     'updated_at' => current_time('mysql')
                 ]);
+
+            if (!$claimed) {
+                continue;
+            }
 
             // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name for async request
             do_action($action, $feed, $formData, $entry, $form);
@@ -180,7 +206,10 @@ class FluentFormAsyncRequest
             $submission = static::$submissionCache[$queue->origin_id];
         } else {
             $submission = wpFluent()->table('fluentform_submissions')->find($queue->origin_id);
-            
+            if (!$submission) {
+                $this->abandonStaleRow($queue, 'Skipped: the submission or form no longer exists');
+                return;
+            }
             static::$submissionCache[$submission->id] = $submission;
         }
 
@@ -188,8 +217,20 @@ class FluentFormAsyncRequest
             $form = static::$formCache[$submission->form_id];
         } else {
             $form = wpFluent()->table('fluentform_forms')->find($submission->form_id);
-            
+            if (!$form) {
+                $this->abandonStaleRow($queue, 'Skipped: the submission or form no longer exists');
+                return;
+            }
             static::$formCache[$form->id] = $form;
+        }
+
+        $formData = json_decode($submission->response, true);
+
+        if (!$this->feedStillEnabled($queue, $this->loadFeedRows([$queue]), $formData, $submission->id)) {
+            if ($this->abandonStaleRow($queue, 'Skipped: the feed was disabled or deleted after queueing')) {
+                $this->maybeFinished($submission->id, $form);
+            }
+            return;
         }
 
         if (isset(static::$entryCache[$submission->id])) {
@@ -200,20 +241,82 @@ class FluentFormAsyncRequest
             static::$entryCache[$submission->id] = $entry;
         }
 
-        $formData = json_decode($submission->response, true);
-
-        wpFluent()->table($this->table)
+        // Atomic claim: the cron passes a row object, so status is never re-read. Must admit
+        // 'failed' or retries die, and must always change a column - wpdb reports CHANGED rows.
+        $claimed = wpFluent()->table($this->table)
             ->where('id', $queue->id)
+            ->whereIn('status', ['pending', 'failed'])
             ->update([
                 'status' => 'processing',
                 'retry_count' => $queue->retry_count + 1,
                 'updated_at' => current_time('mysql')
             ]);
 
+        if (!$claimed) {
+            return;
+        }
+
         // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name for async request
         do_action($action, $feed, $formData, $entry, $form);
 
         $this->maybeFinished($submission->id, $form);
+    }
+
+    // 'skipped' is outside every consumer's selection: cron retries only 'failed', Pro's
+    // failed-integration email reads 'failed'/'error', maybeFinished() counts 'pending'.
+    // Same status predicate as the claim, so a row another worker owns is left alone.
+    private function abandonStaleRow($row, $note)
+    {
+        return (bool) wpFluent()->table($this->table)
+            ->where('id', $row->id)
+            ->whereIn('status', ['pending', 'failed'])
+            ->update([
+                'status'     => 'skipped',
+                'note'       => $note,
+                'updated_at' => current_time('mysql'),
+            ]);
+    }
+
+    // One query for every distinct feed in the batch, keyed by form_meta id.
+    private function loadFeedRows($actionFeeds)
+    {
+        $feedIds = [];
+        foreach ($actionFeeds as $actionFeed) {
+            if ($actionFeed->feed_id) {
+                $feedIds[(int) $actionFeed->feed_id] = true;
+            }
+        }
+        if (!$feedIds) {
+            return [];
+        }
+
+        $rows = wpFluent()->table('fluentform_form_meta')->whereIn('id', array_keys($feedIds))->get();
+
+        $byId = [];
+        foreach ($rows as $row) {
+            $byId[(int) $row->id] = $row;
+        }
+
+        return $byId;
+    }
+
+    // The row carries a snapshot of the feed taken at submission time; re-run the producer's
+    // own enabled + condition check against the live form_meta row before dispatching it.
+    private function feedStillEnabled($row, $feedRows, $formData, $submissionId)
+    {
+        $feedId = (int) $row->feed_id;
+        if (!$feedId) {
+            return true;
+        }
+
+        $meta = $feedRows[$feedId] ?? null;
+        if (!$meta) {
+            return false;
+        }
+
+        $manager = new GlobalNotificationManager($this->app);
+
+        return (bool) $manager->getEnabledFeeds([$meta], $formData, $submissionId);
     }
 
     public function maybeFinished($originId, $form)

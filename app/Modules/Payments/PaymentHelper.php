@@ -611,6 +611,24 @@ class PaymentHelper
         return apply_filters('fluentform/available_payment_statuses', $paymentStatuses);
     }
 
+    public static function reversedPaymentStatuses()
+    {
+        return apply_filters('fluentform/reversed_payment_statuses', [
+            'refunded', 'partially-refunded', 'cancelled',
+        ]);
+    }
+
+    public static function isReversedPaymentStatus($status)
+    {
+        $status = is_null($status) ? '' : (string) $status;
+
+        if ('' === $status) {
+            return false;
+        }
+
+        return in_array($status, static::reversedPaymentStatuses(), true);
+    }
+
     public static function getFormPaymentMethods($formId)
     {
         $inputs = FormFieldsParser::getInputs($formId, ['element', 'settings']);
@@ -856,6 +874,10 @@ class PaymentHelper
 
         $form = \FluentForm\App\Models\Form::find($submission->form_id);
 
+        if (!apply_filters('fluentform/should_process_submission_actions', true, $submission, $form)) {
+            return false;
+        }
+
         $formData = $submission->response;
         if (!is_array($formData)) {
             $formData = json_decode($formData, true);
@@ -1006,13 +1028,16 @@ class PaymentHelper
 
         $billingInterval = $plan['billing_interval'];
         $billingInterval = ArrayHelper::get(self::getBillingIntervals(), $billingInterval, $billingInterval);
+        $billingInterval = esc_html($billingInterval);
+        $trialDays = esc_html(ArrayHelper::get($plan, 'trial_days'));
+        $billTimes = esc_html(ArrayHelper::get($plan, 'bill_times'));
         $replaces = array(
             '{signup_fee}'           => '<span class="ff_bs ffbs_signup_fee">' . $signupFee . '</span>',
             '{first_interval_total}' => '<span class="ff_bs ffbs_first_interval_total">' . $firstIntervalTotal . '</span>',
             '{subscription_amount}'  => '<span class="ff_bs ffbs_subscription_amount">' . $subscriptionAmount . '</span>',
             '{billing_interval}'     => '<span class="ff_bs ffbs_billing_interval">' . $billingInterval . '</span>',
-            '{trial_days}'           => '<span class="ff_bs ffbs_trial_days">' . $plan['trial_days'] . '</span>',
-            '{bill_times}'           => '<span class="ff_bs ffbs_bill_times">' . ArrayHelper::get($plan, 'bill_times') . '</span>'
+            '{trial_days}'           => '<span class="ff_bs ffbs_trial_days">' . $trialDays . '</span>',
+            '{bill_times}'           => '<span class="ff_bs ffbs_bill_times">' . $billTimes . '</span>',
         );
 
         if (ArrayHelper::get($plan, 'user_input') == 'yes') {
@@ -1045,7 +1070,7 @@ class PaymentHelper
         }
         if($withMarkup) {
             $class = $plan['is_default'] === 'yes' ? '' : 'hidden_field';
-            return '<div class="ff_summary_container ff_summary_container_' . $plan['index'] . ' ' . $class . '">' . $customText . '</div>';
+            return '<div class="ff_summary_container ff_summary_container_' . esc_attr($plan['index']) . ' ' . $class . '">' . $customText . '</div>';
         }
         return $customText;
     }

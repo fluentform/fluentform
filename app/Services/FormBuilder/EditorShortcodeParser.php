@@ -219,7 +219,7 @@ class EditorShortcodeParser
             if (false !== strpos($prop, 'meta.')) {
                 $metaKey = substr($prop, strlen('meta.'));
                 $metaKey = sanitize_text_field($metaKey);
-                if (empty($metaKey)) {
+                if (empty($metaKey) || ShortCodeParser::isDeniedUserProperty($metaKey)) {
                     return '';
                 }
                 $userId = $user->ID;
@@ -229,6 +229,10 @@ class EditorShortcodeParser
                     return esc_html($data);
                 }
                 return esc_html(implode(',', $data));
+            }
+
+            if (ShortCodeParser::isDeniedUserProperty($prop)) {
+                return '';
             }
 
             return esc_html($user->{$prop});
@@ -256,7 +260,7 @@ class EditorShortcodeParser
         if (false !== strpos($key, 'author.')) {
             $authorProperty = substr($key, strlen('author.'));
             $authorId = $post->post_author;
-            if ($authorId) {
+            if ($authorId && !ShortCodeParser::isDeniedUserProperty($authorProperty)) {
                 $data = get_the_author_meta($authorProperty, $authorId);
                 if (!is_array($data)) {
                     return esc_html($data);
@@ -287,7 +291,7 @@ class EditorShortcodeParser
             return site_url(esc_attr(urldecode(wpFluentForm('request')->server('REQUEST_URI'))));
         }
 
-        if (property_exists($post, $prop)) {
+        if ('post_password' !== $prop && property_exists($post, $prop)) {
             return esc_html($post->{$prop});
         }
         return '';

@@ -37,6 +37,13 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
         $this->settingsKey = $settingsKey;
         $this->priority = $priority;
 
+        // GlobalIntegrationService redacts these credentials on read; the option itself must not
+        // be readable raw through the global-settings endpoint, which shares the prefix.
+        add_filter('fluentform/global_settings_denied_option_keys', function ($keys) {
+            $keys[] = $this->optionKey;
+            return $keys;
+        });
+
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Constructor, nonce verified in route handlers
         if (isset($_REQUEST['form_id'])) {
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Constructor, nonce verified in route handlers

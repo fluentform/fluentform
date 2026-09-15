@@ -1716,7 +1716,11 @@ abstract class BaseMigrator
         }
         $values = [];
         foreach ($urls as $url) {
-            $file_name = 'ff-' . wp_basename($url);
+            $source = $this->resolveMigrationSource($url);
+            if (!$source) {
+                continue;
+            }
+
             $basDir = wp_upload_dir()['basedir'] . '/fluentform/';
             $baseurl = wp_upload_dir()['baseurl'] . '/fluentform/';
 
@@ -1724,15 +1728,72 @@ abstract class BaseMigrator
                 wp_mkdir_p($basDir);
             }
 
+            // Unique name so two sources that sanitise alike do not overwrite.
+            $file_name = wp_unique_filename($basDir, $source['name']);
             $destination = $basDir . $file_name;
             require_once(ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php');
             require_once(ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php');
             $fileSystemDirect = new \WP_Filesystem_Direct(false);
-            if ($fileSystemDirect->copy($url, $destination, true)) {
+            if ($fileSystemDirect->copy($source['path'], $destination, true)) {
                 $values[] = $baseurl . $file_name;
             }
+            @unlink($source['path']);
         }
         return $values;
+    }
+
+    // Entry values come from the source plugin's export. PHP copy() would also read local
+    // server paths, so only an upload-allowed type fetched over http(s) reaches the
+    // web-reachable destination; download_url() refuses internal addresses on its own.
+    protected function resolveMigrationSource($url)
+    {
+        $name = $this->safeMigrationFileName($url);
+        if (!$name) {
+            return null;
+        }
+
+        if (!function_exists('download_url')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+        $tmp = download_url((string) $url);
+        if (is_wp_error($tmp)) {
+            return null;
+        }
+
+        return ['path' => $tmp, 'name' => $name];
+    }
+
+    /**
+     * Build the destination name from the URL PATH, not the raw URL: the raw basename
+     * keeps the query string (scan.pdf?/shell.php -> shell.php). Inner dots are collapsed
+     * so exactly one gate-approved extension survives.
+     *
+     * @param  string $url
+     * @return string|null  ff-<name>.<ext>, or null when the type/scheme is not allowed
+     */
+    protected function safeMigrationFileName($url)
+    {
+        $url = (string) $url;
+        if (!preg_match('#^https?://#i', $url)) {
+            return null;
+        }
+
+        $base = wp_basename((string) wp_parse_url($url, PHP_URL_PATH));
+        // The upload list grows with unfiltered_html and upload_mimes; HTML, script and SVG would run on the site's origin.
+        $mimes = array_filter(get_allowed_mime_types(), function ($mime) {
+            return !preg_match('#html|javascript|xml$#i', $mime);
+        });
+        $ext = wp_check_filetype($base, $mimes)['ext'];
+        if (!$ext) {
+            return null;
+        }
+
+        $stem = str_replace('.', '_', sanitize_file_name(pathinfo($base, PATHINFO_FILENAME)));
+        if ('' === $stem) {
+            $stem = 'file';
+        }
+
+        return 'ff-' . $stem . '.' . strtolower($ext);
     }
 
     protected function getResolveOperator($key)

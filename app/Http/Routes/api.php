@@ -4,13 +4,16 @@ defined('ABSPATH') || exit;
 
 /**
  * REST API route definitions.
- *
- * @var $router \FluentForm\Framework\Http\Router
  */
 
 /*
 * Forms resource
 */
+/**
+ * Router supplied by the framework's route loader.
+ *
+ * @var \FluentForm\Framework\Http\Router $router
+ */
 $router->prefix('forms')->withPolicy('FormPolicy')->group(function ($router) {
     $router->get('/', 'FormController@index');
     $router->post('/', 'FormController@store');

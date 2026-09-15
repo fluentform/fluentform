@@ -6,8 +6,34 @@ use FluentForm\Framework\Support\Arr;
 
 class GlobalSettingsService
 {
+    // Keying material and the gateway secrets it encrypts. Together they let a settings
+    // manager decrypt every stored API key offline, so neither is readable here.
+    const DENIED_OPTION_KEYS = ['_fluentform_encryption_key'];
+    const DENIED_OPTION_PREFIXES = ['fluentform_payment_settings_'];
+
     private function isAllowedOptionKey($key)
     {
+        $deniedKeys = (array) apply_filters('fluentform/global_settings_denied_option_keys', self::DENIED_OPTION_KEYS);
+        $deniedPrefixes = (array) apply_filters('fluentform/global_settings_denied_option_prefixes', self::DENIED_OPTION_PREFIXES);
+
+        // wp_options.option_name also collates accent-insensitively: an accented, fullwidth or zero-width
+        // spelling misses the deny list yet resolves the denied row, so only the plain alphabet is looked up
+        $isPlainOptionKey = (bool) preg_match('/^[A-Za-z0-9_-]+$/', $key);
+        if (!$isPlainOptionKey) {
+            return false;
+        }
+
+        $comparableKey = strtolower($key);
+
+        if (in_array($comparableKey, array_map('strtolower', $deniedKeys), true)) {
+            return false;
+        }
+        foreach ($deniedPrefixes as $prefix) {
+            if ('' !== $prefix && strpos($comparableKey, strtolower($prefix)) === 0) {
+                return false;
+            }
+        }
+
         $allowedPrefixes = [
             'fluentform_',
             '_fluentform_',
@@ -15,7 +41,7 @@ class GlobalSettingsService
             '_fluentform-',
         ];
         foreach ($allowedPrefixes as $prefix) {
-            if (strpos($key, $prefix) === 0) {
+            if (strpos($comparableKey, $prefix) === 0) {
                 return true;
             }
         }
@@ -42,12 +68,12 @@ class GlobalSettingsService
             }
             $values[$key] = get_option($sanitizedKey);
         }
-    
+
         $values = apply_filters_deprecated(
             'fluentform_get_global_settings_values',
             [
                 $values,
-                $key
+                $key,
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/get_global_settings_values',
@@ -97,7 +123,7 @@ class GlobalSettingsService
         do_action_deprecated(
             'fluentform_saving_global_settings_with_key_method',
             [
-                $attributes
+                $attributes,
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/saving_global_settings_with_key_method',

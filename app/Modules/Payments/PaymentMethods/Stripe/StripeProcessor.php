@@ -407,11 +407,32 @@ class StripeProcessor extends BaseProcessor
             return $this->getReturnData();
         }
 
+        if (PaymentHelper::isReversedPaymentStatus($submission->payment_status)) {
+            return $this->reversedDisplayData($submission);
+        }
+
         $invoice = empty($session->subscription->latest_invoice) ? $session : $session->subscription->latest_invoice;
 
-        $paymentStatus = $this->getIntentSuccessName($invoice->payment_intent);
+        // was: intent only; a $0 invoice has none, so the invoice decides
+        $paymentStatus = $this->getIntentSuccessName($invoice->payment_intent, $invoice);
 
-        $this->changeSubmissionPaymentStatus($paymentStatus);
+        if (!$paymentStatus) {
+            // Intent did not succeed (declined / requires_action / processing / etc.):
+            // do NOT run success processing (status->paid, subscription activation,
+            // fulfillment, action firing). Leave the status as-is so a later webhook can
+            // still settle it, and return display data only.
+            return [
+                'insert_id' => $submission->id,
+                'result'    => false,
+                'title'     => __('Payment Pending', 'fluentform'),
+                'error'     => __('Your payment is being processed and hasn\'t been confirmed yet. You\'ll receive a confirmation once it completes.', 'fluentform'),
+            ];
+        }
+
+        // was: an unconditional write; a refund recorded after the check above was overwritten with paid
+        if (!$this->changeSubmissionPaymentStatusUnlessReversed($paymentStatus)) {
+            return $this->reversedDisplayData($submission);
+        }
 
         if($transaction->transaction_type == 'subscription') {
             $subscriptions = $this->getSubscriptions();
@@ -426,7 +447,9 @@ class StripeProcessor extends BaseProcessor
             }
         }
 
-        $this->processOneTimeSuccess($invoice, $transaction, $paymentStatus);
+        if (!$this->processOneTimeSuccess($invoice, $transaction, $paymentStatus)) {
+            return $this->reversedDisplayData($submission);
+        }
 
         $returnData = $this->completePaymentSubmission(false);
         $this->recalculatePaidTotal();
@@ -435,10 +458,27 @@ class StripeProcessor extends BaseProcessor
         return $returnData;
     }
 
-    protected function getIntentSuccessName($intent)
+    /**
+     * Stripe issues no PaymentIntent for an invoice that owes nothing -- a trial, or a
+     * first invoice discounted to zero. Such an invoice is already settled, so the
+     * absence of an intent must not be read as an unsettled payment.
+     *
+     * All three conditions are required: a declined or in-flight intent is a non-null
+     * object, so it can never reach here, and a nonzero or unpaid invoice is still denied.
+     */
+    protected function isSettledZeroInvoice($invoice)
+    {
+        return empty($invoice->payment_intent)
+            && isset($invoice->status, $invoice->amount_due)
+            && 'paid' === $invoice->status
+            && 0 === (int) $invoice->amount_due;
+    }
+
+    protected function getIntentSuccessName($intent, $invoice = null)
     {
         if (!$intent || !$intent->status) {
-            return false;
+            // was: false, which the callers then stored as the string '0' for a settled $0 invoice
+            return $this->isSettledZeroInvoice($invoice) ? 'paid' : false;
         }
 
         $successStatuses = [
@@ -504,6 +544,16 @@ class StripeProcessor extends BaseProcessor
             $amountRefunded = $amountRefunded * 100;
         }
 
+        // amount_refunded is cumulative per charge; a subscription's other invoices refund separately.
+        $chargeRefunded = (int) Transaction::bySubmission($submission->id)
+            ->refunds()
+            ->where('charge_id', $chargeId)
+            ->sum('payment_total');
+
+        if ($amountRefunded <= $chargeRefunded) {
+            return;
+        }
+
         // Remove All Existing Refunds
         Transaction::bySubmission($submission->id)->refunds()->delete();
 
@@ -515,6 +565,17 @@ class StripeProcessor extends BaseProcessor
     {
         $stripeSettings = StripeSettings::getSettings();
         return $stripeSettings['payment_mode'];
+    }
+
+    // Already reversed (refund/partial-refund/cancel): never resurrect to paid or fire the pipeline.
+    // Callers reach here with the latch unset, and getReturnData() would fire it, so display data only.
+    protected function reversedDisplayData($submission)
+    {
+        return [
+            'insert_id' => $submission->id,
+            'result'    => false,
+            'error'     => __('This payment has been reversed.', 'fluentform'),
+        ];
     }
 
     public function processSubscriptionSuccess($subscriptions, $invoice, $submission)
@@ -610,18 +671,27 @@ class StripeProcessor extends BaseProcessor
     protected function processOneTimeSuccess($invoice, $transaction, $paymentStatus)
     {
         if ($transaction) {
+            // was: also 'status' => 'paid' here, an unconditional write the guarded one below always replaced
             $updateData = [
                 'charge_id'    => $invoice->payment_intent ? $invoice->payment_intent->id : null,
-                'status'       => 'paid',
                 'payment_note' => maybe_serialize($invoice->payment_intent)
             ];
+
+            // was: charge_id null and note null; with no intent the invoice id is the row's only identity
+            if ($this->isSettledZeroInvoice($invoice) && !empty($invoice->id)) {
+                $updateData['charge_id'] = $invoice->id;
+                $updateData['payment_note'] = maybe_serialize($invoice);
+                $updateData['payment_total'] = 0;
+            }
 
             $updateData = array_merge($updateData, $this->retrieveCustomerDetailsFromInvoice($invoice));
 
             $this->updateTransaction($transaction->id, $updateData);
 
-            $this->changeTransactionStatus($transaction->id, $paymentStatus);
+            return $this->changeTransactionStatusUnlessReversed($transaction->id, $paymentStatus);
         }
+
+        return true;
     }
 
     protected function getIntentMetaData($submission, $form, $transaction, $paymentSettings = false)
@@ -712,14 +782,15 @@ class StripeProcessor extends BaseProcessor
         return $customer;
     }
 
-    protected function handlePaymentChargeError($message, $submission, $transaction, $charge = false, $type = 'general')
+    // One contract for every Stripe failure, whichever path reports it: the inline flows and the delayed Checkout webhook.
+    public function fireFailureHooks($submission, $transaction, $formId, $charge = false, $type = 'general')
     {
         do_action_deprecated(
             'fluentform_payment_stripe_failed',
             [
                 $submission,
                 $transaction,
-                $this->form->id,
+                $formId,
                 $charge,
                 $type
             ],
@@ -728,14 +799,14 @@ class StripeProcessor extends BaseProcessor
             'Use fluentform/payment_stripe_failed instead of fluentform_payment_stripe_failed.'
         );
 
-        do_action('fluentform/payment_stripe_failed', $submission, $transaction, $this->form->id, $charge, $type);
+        do_action('fluentform/payment_stripe_failed', $submission, $transaction, $formId, $charge, $type);
 
         do_action_deprecated(
             'fluentform_payment_failed',
             [
                 $submission,
                 $transaction,
-                $this->form->id,
+                $formId,
                 $charge,
                 $type
             ],
@@ -743,13 +814,19 @@ class StripeProcessor extends BaseProcessor
             'fluentform/payment_failed',
             'Use fluentform/payment_failed instead of fluentform_payment_failed.'
         );
-        do_action('fluentform/payment_failed', $submission, $transaction, $this->form->id, $charge, $type);
+        do_action('fluentform/payment_failed', $submission, $transaction, $formId, $charge, $type);
+    }
 
+    protected function handlePaymentChargeError($message, $submission, $transaction, $charge = false, $type = 'general', $error = null)
+    {
+        $this->fireFailureHooks($submission, $transaction, $this->form->id, $charge, $type);
+
+        $isIndeterminate = is_wp_error($error) && 'stripe_error' === $error->get_error_code();
         if ($transaction) {
-            $this->changeTransactionStatus($transaction->id, 'failed');
+            $this->changeTransactionStatus($transaction->id, $isIndeterminate ? 'processing' : 'failed');
         }
 
-        $this->changeSubmissionPaymentStatus('failed');
+        $this->changeSubmissionPaymentStatus($isIndeterminate ? 'pending' : 'failed');
 
         if ($message) {
             $logData = [
@@ -771,6 +848,60 @@ class StripeProcessor extends BaseProcessor
                 '__entry_intermediate_hash' => Helper::getSubmissionMeta($submission->id, '__entry_intermediate_hash')
             ]
         ], 423);
+    }
+
+    protected function isCountableSubscriptionPayment($payment, $subscription)
+    {
+        if ($this->isTrialStartInvoice($payment, $subscription)) {
+            return false;
+        }
+
+        if ($payment->payment_total > 0) {
+            return true;
+        }
+
+        $invoice = (array) Helper::safeUnserialize($payment->payment_note);
+        $reason = $invoice['billing_reason'] ?? null;
+
+        return 'subscription_cycle' === $reason
+            || ('subscription_create' === $reason && (!$subscription || !$subscription->trial_days));
+    }
+
+    protected function isTrialStartInvoice($payment, $subscription)
+    {
+        if (!$subscription || !$subscription->trial_days || 'stripe' !== $payment->payment_method) {
+            return false;
+        }
+
+        $storedPayment = (array) Helper::safeUnserialize($payment->payment_note);
+
+        if ('subscription_create' === ($storedPayment['billing_reason'] ?? null)) {
+            return true;
+        }
+
+        // Match legacy invoice or browser intent data only to the saved initial invoice.
+        $initialInvoice = (array) Helper::safeUnserialize($subscription->vendor_response);
+        $storedId = $storedPayment['id'] ?? null;
+
+        if (!$storedId) {
+            return false;
+        }
+
+        if ('invoice' === ($storedPayment['object'] ?? null)) {
+            return 0 === strcmp((string) ($initialInvoice['id'] ?? ''), (string) $storedId);
+        }
+
+        if ('payment_intent' !== ($storedPayment['object'] ?? null)) {
+            return false;
+        }
+
+        $initialIntent = $initialInvoice['payment_intent'] ?? null;
+        if (is_object($initialIntent) || is_array($initialIntent)) {
+            $initialIntent = (array) $initialIntent;
+            $initialIntent = $initialIntent['id'] ?? null;
+        }
+
+        return $initialIntent === $storedId;
     }
 
     public function recordSubscriptionCharge($subscription, $transactionData)

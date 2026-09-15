@@ -60,19 +60,29 @@ class StripeListener
 
                 if ($event && !is_wp_error($event)) {
                     $eventType = $event->type;
+                    $result = null;
 
                     if ($eventType == 'charge.succeeded' || $eventType == 'charge.captured') {
-                        $this->handleChargeSucceeded($event);
+                        $result = $this->handleChargeSucceeded($event);
                     } else if ($eventType == 'invoice.payment_succeeded') {
-                        $this->maybeHandleSubscriptionPayment($event);
+                        $result = $this->maybeHandleSubscriptionPayment($event);
                     } else if ($eventType == 'charge.refunded') {
                         $this->handleChargeRefund($event);
                     } else if ($eventType == 'customer.subscription.deleted') {
                         $this->handleSubscriptionCancelled($event);
-                    } else if ($eventType == 'checkout.session.completed') {
-                        $this->handleCheckoutSessionCompleted($event);
+                    } else if ('checkout.session.completed' == $eventType || 'checkout.session.async_payment_succeeded' == $eventType) {
+                        $result = $this->handleCheckoutSessionCompleted($event);
+                    } elseif ('checkout.session.async_payment_failed' === $eventType) {
+                        $this->handleCheckoutSessionAsyncPaymentFailed($event);
+                    } elseif ('charge.failed' === $eventType) {
+                        $this->handleChargeFailed($event);
                     } else if($eventType == 'customer.subscription.updated') {
                         // maybe we have to handle the
+                    }
+
+                    if (is_wp_error($result) && 'stripe_settlement_retry' === $result->get_error_code()) {
+                        status_header(503);
+                        exit('Payment settlement temporarily unavailable');
                     }
                 }
             } catch (\Exception $e) {
@@ -111,8 +121,19 @@ class StripeListener
             return;
         }
 
-        if($transaction->status == 'paid') {
-            return; // Already paid we don't have to do anything here
+        // Ignore replayed/late events for terminal states; 'failed'/'requires_capture' stay live.
+        if (in_array($transaction->status, ['paid', 'refunded', 'partially-refunded', 'cancelled'], true)) {
+            return;
+        }
+
+        // A delayed method settles long after hosted Checkout completed, and this is the one event every documented
+        // endpoint receives for it. Cards settle on the return redirect or checkout.session.completed; settling them
+        // here as well would race those and fire the form actions twice.
+        if ('onetime' === $transaction->transaction_type && $this->isDelayedCharge($charge)) {
+            $result = $this->settleCheckoutSession($transaction);
+            if ($result) {
+                return $result;
+            }
         }
 
         // We have the transaction so we have to update some fields
@@ -145,6 +166,60 @@ class StripeListener
 
     }
 
+    // False when the charge is not for an unfulfilled hosted Checkout entry, which leaves it to the plain transaction update.
+    private function settleCheckoutSession($transaction)
+    {
+        $sessionId = Helper::getSubmissionMeta($transaction->submission_id, 'stripe_session_id');
+        $submission = $sessionId ? Submission::find($transaction->submission_id) : null;
+
+        if (!$submission || Helper::getSubmissionMeta($submission->id, 'is_form_action_fired') == 'yes') {
+            return false;
+        }
+
+        // Nothing is marked paid until the session settles it, so an attempt that fails stays retryable on a resend.
+        $session = CheckoutSession::retrieve($sessionId, ['expand' => ['subscription.latest_invoice.payment_intent', 'payment_intent']], $submission->form_id);
+
+        if (!$session || is_wp_error($session)) {
+            return new \WP_Error('stripe_settlement_retry', 'Unable to retrieve Stripe Checkout session.');
+        }
+
+        // The session's own intent decides whether the entry is paid; this event only prompts the check.
+        (new StripeProcessor())->processStripeSession($session, $submission, $transaction);
+
+        return true;
+    }
+
+    // A delayed first invoice settles before the entry is linked to its Stripe subscription, so the vendor-id lookup misses it.
+    private function settleDelayedSubscriptionInvoice($invoice)
+    {
+        $meta = isset($invoice->subscription_details->metadata) ? (array) $invoice->subscription_details->metadata : [];
+
+        $transaction = Transaction::bySubmission(intval(ArrayHelper::get($meta, 'submission_id')))
+            ->where('id', intval(ArrayHelper::get($meta, 'transaction_id')))
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$transaction || empty($invoice->charge)) {
+            return false;
+        }
+
+        ApiRequest::set_secret_key(StripeSettings::getSecretKey($transaction->form_id));
+        $charge = ApiRequest::request([], 'charges/' . $invoice->charge, 'GET');
+
+        if (!$charge || is_wp_error($charge)) {
+            return new \WP_Error('stripe_settlement_retry', 'Unable to retrieve Stripe charge.');
+        }
+
+        return $this->isDelayedCharge($charge) ? $this->settleCheckoutSession($transaction) : false;
+    }
+
+    private function isDelayedCharge($charge)
+    {
+        $delayedMethods = ['acss_debit', 'au_becs_debit', 'bacs_debit', 'boleto', 'customer_balance', 'konbini', 'oxxo', 'sepa_debit', 'sofort', 'us_bank_account'];
+
+        return isset($charge->payment_method_details->type) && in_array($charge->payment_method_details->type, $delayedMethods, true);
+    }
+
     /*
      * Handle Subscription Payment IPN
      * Refactored in version 2.0
@@ -162,18 +237,43 @@ class StripeListener
             return;
         }
 
+        $result = $this->settleDelayedSubscriptionInvoice($data);
+        if ($result) {
+            return $result;
+        }
+
         $subscription = Subscription::byVendorSubscriptionId($subscriptionId)
             ->where('vendor_customer_id', $data->customer)
             ->first();
 
-        if (!$subscription) {
+        if (!$subscription || 'cancelled' === $subscription->status) {
             return;
+        }
+
+        // Record still-due cycles for fixed plans completed under legacy counting.
+        if ('completed' === $subscription->status) {
+            if (!$subscription->bill_times || 'subscription_cycle' !== ($data->billing_reason ?? null)) {
+                return;
+            }
+
+            $counter = new StripeProcessor();
+            list($recordedInstallments) = $counter->getPaymentCountsAndTotal($subscription->id, 'stripe');
+            if ($recordedInstallments >= $subscription->bill_times) {
+                return;
+            }
         }
 
         $submission = Submission::find($subscription->submission_id);
 
         if (!$submission) {
             return;
+        }
+
+        $processor = new StripeProcessor();
+        $processor->setSubmissionId($submission->id);
+
+        if ('trialling' === $subscription->status && 'subscription_cycle' === ($data->billing_reason ?? null)) {
+            $subscription = $processor->updateSubscriptionStatus($subscription, 'active');
         }
 
         $transactionData = $this->createSubsTransactionDataFromInvoice($data, $subscription, $submission);
@@ -184,14 +284,33 @@ class StripeListener
             ->where('status', 'pending')
             ->first();
 
+        // was: only pending rows; 6.2.13 and earlier recorded a $0 first invoice with no charge_id and status '0',
+        // and the subscription kept that invoice, so a resend of its event must reconcile the row, not add one.
+        if (!$pendingTransaction && empty($data->payment_intent) && $this->isStoredInitialInvoice($subscription, $data)) {
+            $pendingTransaction = Transaction::bySubmission($submission->id)
+                ->subscriptionType()
+                ->where('subscription_id', $subscription->id)
+                ->whereNull('charge_id')
+                ->orderBy('id', 'ASC')
+                ->first();
+        }
+
         if($pendingTransaction) {
             unset($transactionData['transaction_hash']);
             unset($transactionData['created_at']);
 
             Transaction::where('id', $pendingTransaction->id)->update($transactionData);
         } else {
-            (new StripeProcessor())->recordSubscriptionCharge($subscription, $transactionData);
+            $processor->recordSubscriptionCharge($subscription, $transactionData);
         }
+    }
+
+    private function isStoredInitialInvoice($subscription, $invoice)
+    {
+        // The accessor unserializes with classes disallowed; the incomplete object still exposes its fields as an array
+        $stored = (array) $subscription->vendor_response;
+
+        return !empty($stored['id']) && $stored['id'] === $invoice->id;
     }
 
     /*
@@ -236,6 +355,65 @@ class StripeListener
     }
 
 
+    private function handleChargeFailed($event)
+    {
+        $meta = (array) $event->data->object->metadata;
+        $sessionId = Helper::getSubmissionMeta(intval(ArrayHelper::get($meta, 'submission_id')), 'stripe_session_id');
+
+        // A card declined inside hosted Checkout is retried on the Checkout page, so only a failed delayed debit is final.
+        if ($sessionId && $this->isDelayedCharge($event->data->object)) {
+            $event->data->object = (object) ['id' => $sessionId, 'metadata' => $meta];
+            $this->handleCheckoutSessionAsyncPaymentFailed($event);
+        }
+    }
+
+    private function handleCheckoutSessionAsyncPaymentFailed($event)
+    {
+        $data = $event->data->object;
+        $metaData = (array) $data->metadata;
+        $formId = ArrayHelper::get($metaData, 'form_id');
+
+        $session = CheckoutSession::retrieve($data->id, [], $formId);
+        if (!$session || is_wp_error($session)) {
+            return;
+        }
+
+        $submission = Submission::find(intval($session->client_reference_id));
+        $transaction = $submission ? Transaction::bySubmission($submission->id)
+            ->where('form_id', $submission->form_id)
+            ->where('id', intval(ArrayHelper::get($metaData, 'transaction_id')))
+            ->first() : null;
+        if (!$submission || !$transaction) {
+            return;
+        }
+
+        // A row already settled or reversed is never downgraded by a late or replayed failure event.
+        $isStillAwaitingSettlement = !in_array($transaction->status, ['paid', 'failed'], true)
+            && 'paid' !== $submission->payment_status
+            && !PaymentHelper::isReversedPaymentStatus($submission->payment_status)
+            && 'yes' !== Helper::getSubmissionMeta($submission->id, 'is_form_action_fired');
+        if (!$isStillAwaitingSettlement) {
+            return;
+        }
+
+        $processor = new StripeProcessor();
+        $processor->setSubmissionId($submission->id);
+        $processor->changeTransactionStatus($transaction->id, 'failed');
+        $processor->changeSubmissionPaymentStatus('failed');
+
+        do_action('fluentform/log_data', [
+            'parent_source_id' => $submission->form_id,
+            'source_type'      => 'submission_item',
+            'source_id'        => $submission->id,
+            'component'        => 'Payment',
+            'status'           => 'error',
+            'title'            => __('Stripe Payment Failed', 'fluentform'),
+            'description'      => __('Stripe reported that the delayed payment did not complete.', 'fluentform'),
+        ]);
+
+        $processor->fireFailureHooks($submission, $transaction, $submission->form_id, $session, 'async_payment_failed');
+    }
+
     private function handleCheckoutSessionCompleted($event)
     {
         $data = $event->data->object;
@@ -252,7 +430,7 @@ class StripeListener
         ], $formId);
 
         if (!$session || is_wp_error($session)) {
-            return;
+            return new \WP_Error('stripe_settlement_retry', 'Unable to retrieve Stripe Checkout session.');
         }
 
         $submissionId = intval($session->client_reference_id);
@@ -395,7 +573,10 @@ class StripeListener
     protected function createSubsTransactionDataFromInvoice($invoice, $subscription, $submission)
     {
         $paymentIntent = false;
-        if(!is_object($invoice->payment_intent)) {
+        if (empty($invoice->payment_intent)) {
+            // was: null; a $0 invoice has no intent, and the return path stores the invoice id, so match on that
+            $chargeId = $invoice->id;
+        } elseif(!is_object($invoice->payment_intent)) {
             ApiRequest::set_secret_key(StripeSettings::getSecretKey($subscription->form_id));
             $paymentIntent = ApiRequest::request([], 'payment_intents/'.$invoice->payment_intent, 'GET');
             if(is_wp_error($paymentIntent)) {

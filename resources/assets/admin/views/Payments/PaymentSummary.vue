@@ -248,8 +248,8 @@
                             :label="status_key"
                         >{{paymentStatus}}</el-radio>
                     </el-radio-group>
-                    <p class="text-note mt-2" v-if="(editingTransaction.status == 'refunded' || editingTransaction.status == 'partial-refunded') && original_editing_status != editingTransaction.status">
-                        $t{{'refunds-to-be-handled-from-provider-text'}}
+                    <p class="text-note mt-2" v-if="(editingTransaction.status == 'refunded' || editingTransaction.status == 'partially-refunded') && original_editing_status != editingTransaction.status">
+                        {{$t('Please note that, Actual Refund needs to be handled in your Payment Service Provider.')}}
                     </p>
                 </el-form-item>
                 <template v-if="editingTransaction.status == 'partially-refunded'">

@@ -141,14 +141,17 @@ class DateTime extends BaseComponent
 
     public function getCustomConfig($settings, $form = null)
     {
-        $customConfigObject = fluentform_sanitize_json_object(
-            (string) ArrayHelper::get($settings, 'date_config')
-        );
+        $customConfigObject = trim((string) ArrayHelper::get($settings, 'date_config'));
 
-        // Emitted JS is rebuilt from validated data tokens (ints only) — the raw setting never reaches the script sink.
-        $customConfigObject = fluentform_date_config_to_js($customConfigObject);
-
-        $customConfigObject = '' !== $customConfigObject ? $customConfigObject : '{}';
+        if (
+            !$customConfigObject ||
+            '{' !== substr($customConfigObject, 0, 1) ||
+            '}' !== substr($customConfigObject, -1)
+        ) {
+            $customConfigObject = '{}';
+        } else {
+            $customConfigObject = str_ireplace('</script', '<\\/script', $customConfigObject);
+        }
 
         return apply_filters('fluentform/date_time_custom_config', $customConfigObject, $settings, $form);
     }

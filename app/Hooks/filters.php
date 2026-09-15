@@ -15,6 +15,13 @@ defined('ABSPATH') or die;
  * @var $app FluentForm\Framework\Foundation\Application
  */
 
+// Render-time bridge for date configs saved as data-only tokens by 6.2.7-6.2.12; a listener (not inline in DateTime) so a migration can drop it in one line.
+add_filter('fluentform/date_time_custom_config', function ($config) {
+    $decoded = \FluentForm\App\Services\FormBuilder\LegacyDateConfigDecoder::decode((string) $config);
+
+    return null !== $decoded ? $decoded : $config;
+}, 5, 1);
+
 add_filter('fluentform/addons_extra_menu', function ($menus) {
     $menus['fluentform_pdf'] = __('Fluent Forms PDF', 'fluentform');
 

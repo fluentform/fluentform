@@ -91,7 +91,7 @@ class Select extends BaseComponent
             $ariaRequired = 'true';
         }
 
-        $ariaLabelledBy = 'label_' . ArrayHelper::get($data, 'attributes.id');
+        $ariaLabelledBy = esc_attr('label_' . ArrayHelper::get($data, 'attributes.id'));
 
         $elMarkup = '<select ' . $atts . ' aria-invalid="false" aria-required="' . $ariaRequired . '" aria-labelledby="' . $ariaLabelledBy .'"'.'>' . $options . '</select>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts, $options are escaped before being passed in.
 

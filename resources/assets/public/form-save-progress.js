@@ -249,7 +249,12 @@ import sanitizeHtml from '../common/sanitizeHtml';
         if (!hashKey) {
             return;
         }
-        $theForm.append(`<input type="hidden" value="${ hashKey }" class="__fluent_state_hash" name="__fluent_state_hash"/>`)
+        // Build via DOM props (no HTML parsing) so a "-bearing hash can't break out of the attribute.
+        $theForm.append($('<input/>', {
+            type: 'hidden',
+            name: '__fluent_state_hash',
+            'class': '__fluent_state_hash'
+        }).val(hashKey))
 
         const stepPersistency = $theForm.find(
             '.ff-step-container'

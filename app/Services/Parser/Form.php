@@ -288,7 +288,7 @@ class Form
             }
         }
 
-        return (boolean)$exist;
+        return (bool) $exist;
     }
 
 

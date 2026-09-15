@@ -14,6 +14,7 @@ use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
+use FluentForm\App\Services\FormBuilder\DateConfigPolicy;
 use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Http\Request\File;
 use FluentForm\Framework\Support\Arr;
@@ -47,18 +48,114 @@ class TransferService
     private static function sanitizeJsonNode(&$node)
     {
         if (is_array($node)) {
-            foreach ($node as &$value) {
+            foreach ($node as $key => &$value) {
+                if ('attributes' === $key) {
+                    $value = self::dropEventHandlerAttributeKeys($value);
+                }
+                $value = self::sanitizeAttributeControlSetting($key, $value);
                 self::sanitizeJsonNode($value);
             }
             unset($value);
         } elseif (is_object($node)) {
             foreach (get_object_vars($node) as $key => $value) {
+                if ('attributes' === $key) {
+                    $value = self::dropEventHandlerAttributeKeys($value);
+                }
+                $value = self::sanitizeAttributeControlSetting($key, $value);
                 self::sanitizeJsonNode($value);
                 $node->{$key} = $value;
             }
         } elseif (is_string($node)) {
             $node = wp_kses_post($node);
         }
+    }
+
+    private static function sanitizeAttributeControlSetting($key, $value)
+    {
+        if ('max_repeat_field' === $key) {
+            return is_scalar($value) && '' !== trim((string) $value) ? absint($value) : '';
+        }
+
+        if ('display_mode' === $key) {
+            $mode = is_scalar($value) ? sanitize_key((string) $value) : '';
+            return in_array($mode, ['accordion', 'tabs'], true) ? $mode : 'accordion';
+        }
+
+        if ('display_type' === $key) {
+            return is_scalar($value) ? sanitize_html_class((string) $value) : '';
+        }
+
+        if ('subscription_options' === $key && is_array($value)) {
+            foreach ($value as &$option) {
+                if (!is_array($option)) {
+                    continue;
+                }
+
+                foreach (['name', 'user_input_label'] as $labelKey) {
+                    if (!array_key_exists($labelKey, $option)) {
+                        continue;
+                    }
+
+                    $label = $option[$labelKey];
+                    $option[$labelKey] = is_scalar($label) ? fluentform_sanitize_html((string) $label) : '';
+                }
+            }
+            unset($option);
+
+            return $value;
+        }
+
+        if ('pricing_options' !== $key || !is_array($value)) {
+            return $value;
+        }
+
+        foreach ($value as &$option) {
+            if (!is_array($option)) {
+                continue;
+            }
+
+            if (array_key_exists('label', $option)) {
+                $label = $option['label'];
+                $option['label'] = is_scalar($label) ? fluentform_sanitize_html((string) $label) : '';
+            }
+
+            if (array_key_exists('image', $option)) {
+                $image = $option['image'];
+                $option['image'] = is_scalar($image) ? esc_url_raw((string) $image) : '';
+            }
+        }
+        unset($option);
+
+        return $value;
+    }
+
+    /**
+     * kses cleans string values only, so an `onfocus` KEY survives an import untouched.
+     * Shares the Helper rule so the two write paths cannot drift apart.
+     */
+    private static function dropEventHandlerAttributeKeys($attributes)
+    {
+        if (!is_array($attributes) && !is_object($attributes)) {
+            return $attributes;
+        }
+
+        $keys = is_object($attributes)
+            ? array_keys(get_object_vars($attributes))
+            : array_keys($attributes);
+
+        foreach ($keys as $key) {
+            if (Helper::isSafeAttributeKey($key)) {
+                continue;
+            }
+
+            if (is_object($attributes)) {
+                unset($attributes->{$key});
+            } else {
+                unset($attributes[$key]);
+            }
+        }
+
+        return $attributes;
     }
 
     public static function exportForms($formIds)
@@ -89,8 +186,8 @@ class TransferService
     }
 
     /**
-     * Build the notice shown when imported custom JS/CSS was skipped because the
-     * importer lacks unfiltered_html. Returns an empty string when nothing was skipped.
+     * Build the notice shown when imported custom JS/CSS or executable date
+     * configuration was skipped because the importer lacks unfiltered_html. Returns an empty string when nothing was skipped.
      *
      * @param int $skippedForms
      * @param int $totalForms
@@ -103,12 +200,12 @@ class TransferService
         }
 
         if ($totalForms < 2) {
-            return __('Custom JS and CSS were not imported because your account cannot add custom code. Ask an administrator to add it.', 'fluentform');
+            return __('Custom JS, CSS and advanced date configuration were not imported because your account cannot add custom code. Ask an administrator to add it.', 'fluentform');
         }
 
         return sprintf(
             /* translators: 1: number of forms whose custom code was skipped, 2: total number of imported forms */
-            __('Custom JS and CSS were not imported for %1$d of %2$d forms because your account cannot add custom code. Ask an administrator to add it.', 'fluentform'),
+            __('Custom JS, CSS and advanced date configuration were not imported for %1$d of %2$d forms because your account cannot add custom code. Ask an administrator to add it.', 'fluentform'),
             $skippedForms,
             $totalForms
         );
@@ -142,10 +239,15 @@ class TransferService
                     // stored XSS (e.g. a field label of <img onerror=...>). Apply the same
                     // recursive HTML sanitizer used for imported meta values unless the importer
                     // may author raw HTML.
+                    $droppedDateConfigs = 0;
                     if (!fluentformCanUnfilteredHTML()) {
                         $decodedFields = json_decode($formFields, true);
                         if (is_array($decodedFields)) {
-                            static::sanitizeJsonNode($decodedFields);
+                            self::sanitizeJsonNode($decodedFields);
+                            $decodedFields['fields'] = DateConfigPolicy::dropExecutableConfigs(
+                                Arr::get($decodedFields, 'fields', []),
+                                $droppedDateConfigs
+                            );
                             $formFields = wp_json_encode($decodedFields) ?: $formFields;
                         }
                     }
@@ -174,7 +276,7 @@ class TransferService
                         'edit_url' => admin_url('admin.php?page=fluent_forms&route=editor&form_id=' . $formId),
                     ];
 
-                    $skippedCustomCode = false;
+                    $skippedCustomCode = $droppedDateConfigs > 0;
 
                     if (isset($formItem['metas'])) {
                         foreach ($formItem['metas'] as $metaData) {

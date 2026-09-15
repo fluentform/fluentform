@@ -18,6 +18,7 @@ if (! defined('ABSPATH')) {
 
 $fluentformDateFormats = (new \FluentForm\App\Services\FormBuilder\Components\DateTime())->getAvailableDateFormats();
 $fluentformRatingIconOptions = \FluentForm\App\Services\FormBuilder\RatingIcon::getPresetOptions();
+$fluentformCanAuthorDateConfig = fluentformCanUnfilteredHTML();
 
 $fluentformDateConfigSettings = [
     'template'         => 'inputTextarea',
@@ -25,14 +26,16 @@ $fluentformDateConfigSettings = [
     'placeholder'      => __('Advanced Date Configuration', 'fluentform'),
     'rows'             => (defined('FLUENTFORMPRO')) ? 10 : 2,
     'start_text'       => (defined('FLUENTFORMPRO')) ? 10 : 2,
-    'disabled'         => ! defined('FLUENTFORMPRO'),
+    'disabled'         => ! defined('FLUENTFORMPRO') || ! $fluentformCanAuthorDateConfig,
     'css_class'        => 'ff_code_editor',
-    'inline_help_text' => 'Only valid JS object will work. Please check <a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/field-types/time-date#advanced_configaration">the documentation for available config options</a>',
+    'inline_help_text' => 'Only valid JS object will work. Please check <a target="_blank" href="https://docs.fluentforms.com/time-date-input-field">the documentation for available config options</a>',
     'help_text'        => __('You can write your own date configuration as JS object. Please write valid configuration as per flatpickr config.', 'fluentform'),
 ];
 
 if (! defined('FLUENTFORMPRO')) {
     $fluentformDateConfigSettings['inline_help_text'] = 'Available on Fluent Forms Pro';
+} elseif (! $fluentformCanAuthorDateConfig) {
+    $fluentformDateConfigSettings['inline_help_text'] = __('Only administrators can edit the Advanced Date Configuration.', 'fluentform');
 }
 
 $fluentformElementCustomizationSettings = [

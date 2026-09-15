@@ -11,6 +11,8 @@ use FluentForm\App\Helpers\Helper;
 
 class ShortCodeParser
 {
+    const USER_SECRET_PROPERTIES = ['user_pass', 'user_activation_key', 'session_tokens', 'data'];
+
     protected static $form = null;
 
     protected static $entry = null;
@@ -315,6 +317,9 @@ class ShortCodeParser
             'user_login', 'user_nicename', 'nickname', 'user_url', 'description', 'roles',
             'user_registered', // non-sensitive wp_users column; keep {user.user_registered} working
         ];
+        if (static::isDeniedUserProperty($key)) {
+            return '';
+        }
         if (in_array($key, $allowed, true)) {
             return $user->{$key};
         }
@@ -341,7 +346,7 @@ class ShortCodeParser
         if (false !== strpos($key, 'author.')) {
             $authorProperty = substr($key, strlen('author.'));
             $authorId = static::$store['post']->post_author;
-            if ($authorId) {
+            if ($authorId && !static::isDeniedUserProperty($authorProperty)) {
                 $data = get_the_author_meta($authorProperty, $authorId);
                 if (!is_array($data)) {
                     return $data;
@@ -368,7 +373,26 @@ class ShortCodeParser
             }
         }
 
+        if ('post_password' === $key) {
+            return '';
+        }
+
         return static::$store['post']->{$key};
+    }
+
+    // Shared by {user.*} and {embed_post.author.*} in both parsers. get_the_author_meta() and
+    // WP_User fall through to any user meta, where plugins keep 2FA secrets and tokens under
+    // protected (underscore) keys, so the secret columns alone are not enough to deny.
+    public static function isDeniedUserProperty($property)
+    {
+        // Same aliases get_the_author_meta() accepts: 'pass' means user_pass
+        if (in_array($property, ['login', 'pass', 'nicename', 'email', 'url', 'registered', 'activation_key', 'status'], true)) {
+            $property = 'user_' . $property;
+        }
+
+        $denied = (array) apply_filters('fluentform/smartcode_user_denied_properties', self::USER_SECRET_PROPERTIES);
+
+        return in_array($property, $denied, true) || is_protected_meta($property, 'user');
     }
 
     protected static function getWPData($key)

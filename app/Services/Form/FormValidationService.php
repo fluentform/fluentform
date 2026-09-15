@@ -1135,11 +1135,11 @@ class FormValidationService
      *   all, so no boundary can ever exist around a keyword. Whole-word is
      *   meaningless there and the keyword is matched as a substring instead.
      *
-     * Everything else — underscore, zero-width joiners, non-ASCII digits — stays
-     * a separator, matching the class the previous implementation tokenised on.
-     * That keeps this a strict superset of the old matcher: a keyword that used
-     * to be blocked is still blocked, and padding a keyword with an invisible
-     * ZWNJ can't slip it past the filter.
+     * The neighbouring-character guard covers base letters and digits. Marks
+     * that are part of the keyword remain in the quoted literal, while a mark
+     * appended after a keyword cannot turn into a bypass. Everything else —
+     * underscore, zero-width joiners and punctuation — stays a separator,
+     * matching the class the previous implementation tokenised on.
      *
      * @param string $keyword
      * @return string
@@ -1152,12 +1152,13 @@ class FormValidationService
             return '/' . $quoted . '/ui';
         }
 
-        $wordChar = '\p{L}\p{M}\d';
+        $edgeChar = '\p{L}\p{M}\d';
+        $neighborChar = '\p{L}\d';
 
         // Only guard an edge that is itself a word character, so keywords
         // wrapped in punctuation (e.g. "$$$" or "buy!") stay matchable.
-        $lead  = preg_match('/^[' . $wordChar . ']/u', $keyword) ? '(?<![' . $wordChar . '])' : '';
-        $trail = preg_match('/[' . $wordChar . ']$/u', $keyword) ? '(?![' . $wordChar . '])' : '';
+        $lead  = preg_match('/^[' . $edgeChar . ']/u', $keyword) ? '(?<![' . $neighborChar . '])' : '';
+        $trail = preg_match('/[' . $edgeChar . ']$/u', $keyword) ? '(?![' . $neighborChar . '])' : '';
 
         return '/' . $lead . $quoted . $trail . '/ui';
     }

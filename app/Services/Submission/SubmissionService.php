@@ -16,6 +16,7 @@ use FluentForm\Framework\Support\Collection;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\Manager\FormManagerService;
 
 class SubmissionService
 {
@@ -290,6 +291,18 @@ class SubmissionService
 
         $status = sanitize_text_field(Arr::get($attributes, 'status'));
 
+        $submission = $this->model->find($submissionId);
+
+        if (!$submission) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
+            throw new Exception(__('Submission not found', 'fluentform'));
+        }
+
+        if (!isset(Helper::getMutableEntryStatuses($submission->form_id, $submissionId)[$status])) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
+            throw new Exception(__('Invalid entry status', 'fluentform'));
+        }
+
         $this->model->amend($submissionId, ['status' => $status]);
 
         do_action('fluentform/after_submission_status_update', $submissionId, $status);
@@ -348,20 +361,33 @@ class SubmissionService
             throw new Exception(__('Please select entries first', 'fluentform'));
         }
 
+        // Re-verify against the form actually mutated; the policy scopes on a request entry_id.
+        if (!FormManagerService::hasFormPermission($formId)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
+            throw new Exception(__('You do not have permission to modify this form\'s entries.', 'fluentform'));
+        }
+
         $query = $this->model->where('form_id', $formId)->whereIn('id', $submissionIds);
 
-        $statuses = Helper::getEntryStatuses($formId);
+        $statuses = Helper::getMutableEntryStatuses($formId);
 
         $message = '';
 
         if (isset($statuses[$actionType])) {
+            // Hook only ids this form owns; array_flip keeps the caller's own id values and order.
+            $ownedIds = array_flip(
+                $this->model->where('form_id', $formId)->whereIn('id', $submissionIds)->pluck('id')->all()
+            );
+
             $query->update([
                 'status'     => $actionType,
                 'updated_at' => current_time('mysql'),
             ]);
 
             foreach ($submissionIds as $submissionId) {
-                do_action('fluentform/after_submission_status_update', $submissionId, $actionType);
+                if (isset($ownedIds[$submissionId])) {
+                    do_action('fluentform/after_submission_status_update', $submissionId, $actionType);
+                }
             }
 
             $message = 'Selected entries successfully marked as ' . $statuses[$actionType];
@@ -447,7 +473,15 @@ class SubmissionService
             $deletables = $this->getAttachments($submissionIds, $formId);
 
             foreach ($deletables as $file) {
-                $file = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/' . basename($file);
+                $fileName = basename($file);
+
+                // Plugin uploads are ff-prefixed, so guard files and dot-files can only be crafted.
+                if ('' === $fileName || '.' === $fileName[0]
+                    || in_array(strtolower($fileName), ['index.php', 'web.config'], true)) {
+                    continue;
+                }
+
+                $file = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/' . $fileName;
 
                 if (is_readable($file) && !is_dir($file)) {
                     wp_delete_file($file);
@@ -458,8 +492,10 @@ class SubmissionService
                 $tempDir = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR . '/temp/';
                 $files = glob($tempDir . '*');
                 if(!empty($files)){
+                    // Shared across forms/visitors: only aged files, never an in-flight upload.
+                    $cutoff = time() - apply_filters('fluentform/temp_file_delete_time', 172800);
                     foreach ($files as $file) {
-                        if (basename($file) !== 'index.php') {
+                        if (basename($file) !== 'index.php' && is_file($file) && filemtime($file) < $cutoff) {
                             wp_delete_file($file);
                         }
                     }

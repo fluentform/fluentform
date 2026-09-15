@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Integrations;
 
 use Exception;
+use FluentForm\App\Modules\AddOnModule;
 use FluentForm\Framework\Support\Arr;
 class GlobalIntegrationService
 {
@@ -127,13 +128,32 @@ class GlobalIntegrationService
             // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new Exception(__('Status update failed. Not valid module or status', 'fluentform'));
         }
+        $modules = (array)get_option('fluentform_global_modules_status');
+
+        if (!$this->isTogglableModuleKey($moduleKey, $modules)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
+            throw new Exception(__('Status update failed. Not valid module or status', 'fluentform'));
+        }
+
         try {
-            $modules = (array)get_option('fluentform_global_modules_status');
             $modules[$moduleKey] = $moduleStatus;
             update_option('fluentform_global_modules_status', $modules, 'no');
         } catch (Exception $e) {
             // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
             throw new Exception($e->getMessage());
         }
+    }
+
+    /**
+     * Read from the live registry, never a second list here, so a newly registered add-on stays togglable.
+     * Administrators bypass it: this REST request misses add-ons that register only in wp-admin context.
+     */
+    private function isTogglableModuleKey($moduleKey, array $storedModules)
+    {
+        if (current_user_can('manage_options') || array_key_exists($moduleKey, $storedModules)) {
+            return true;
+        }
+
+        return array_key_exists($moduleKey, (array) (new AddOnModule())->getRegisteredAddOns());
     }
 }

@@ -123,10 +123,16 @@ class ApiRequest
     public static function request($request, $api = 'charges', $method = 'POST')
     {
         $headers = self::get_headers();
-        if ('charges' === $api && 'POST' === $method) {
+        if ('POST' === $method && in_array($api, ['charges', 'payment_intents', 'checkout/sessions'], true)) {
             $customer = !empty($request['customer']) ? $request['customer'] : '';
             $source = !empty($request['source']) ? $request['source'] : $customer;
-            $key = ArrayHelper::get($request, 'metadata.fluentform_tid') . '-' . $source . '-' . $api;
+            $transactionId = ArrayHelper::get($request, 'metadata.transaction_id');
+            if (!$transactionId) {
+                $transactionId = ArrayHelper::get($request, 'payment_intent_data.metadata.transaction_id');
+            }
+            $key = $transactionId
+                ? 'fluentform-' . $transactionId . '-' . $api
+                : ArrayHelper::get($request, 'metadata.fluentform_tid') . '-' . $source . '-' . $api;
             $key = apply_filters_deprecated(
                 'fluentform_stripe_idempotency_key',
                 [
@@ -152,15 +158,23 @@ class ApiRequest
             'Use fluentform/stripe_request_body instead of fluentform_stripe_request_body.'
         );
 
-        $response = wp_safe_remote_post(
-            self::$ENDPOINT . $api,
-            array(
-                'method' => $method,
-                'headers' => $headers,
-                'body' => apply_filters('fluentform/stripe_request_body', $request, $api),
-                'timeout' => 50,
-            )
-        );
+        $requestArgs = [
+            'method'  => $method,
+            'headers' => $headers,
+            'body'    => apply_filters('fluentform/stripe_request_body', $request, $api),
+            'timeout' => 50,
+        ];
+        $response = wp_safe_remote_post(self::$ENDPOINT . $api, $requestArgs);
+
+        // Stripe replays the original result for this identical idempotent request.
+        if (
+            'POST' === $method &&
+            'payment_intents' === $api &&
+            (is_wp_error($response) || empty($response['body']))
+        ) {
+            $response = wp_safe_remote_post(self::$ENDPOINT . $api, $requestArgs);
+        }
+
         if (is_wp_error($response) || empty($response['body'])) {
             return new \WP_Error('stripe_error', __('There was a problem connecting to the Stripe API endpoint.', 'fluentform'));
         }

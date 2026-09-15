@@ -177,7 +177,7 @@ class Checkable extends BaseComponent
                 $otherAriaRequired = $otherIsSelected ? " aria-required='true'" : '';
 
                 $marginTop = $hasImageOption ? '20px' : '8px';
-                $otherInputHtml .= "<div class='ff-other-input-wrapper' style='{$wrapperDisplay}margin-top: {$marginTop};' data-field='{$fieldName}' data-required-message='" . esc_attr($otherRequiredMessage) . "'>";
+                $otherInputHtml .= "<div class='ff-other-input-wrapper' style='{$wrapperDisplay}margin-top: {$marginTop};' data-field='" . esc_attr($fieldName) . "' data-required-message='" . esc_attr($otherRequiredMessage) . "'>";
                 // The id is what the validator points aria-describedby at when the
                 // free text is required but empty.
                 $otherInputId = $this->getUniqueid('ff_other_' . $fieldName);

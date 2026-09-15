@@ -51,6 +51,7 @@ class EntryViewRenderer
             'enabled_auto_delete' => Helper::isEntryAutoDeleteEnabled($form_id),
             'current_form_title'  => $form->title,
             'entry_statuses'      => Helper::getEntryStatuses($form_id),
+            'mutable_entry_statuses' => Helper::getMutableEntryStatuses($form_id),
             'entries_url_base'    => admin_url('admin.php?page=fluent_forms&route=entries&form_id='),
             'no_found_text'       => __('Sorry! No entries found. All your entries will be shown here once you start getting form submissions',
                 'fluentform'),

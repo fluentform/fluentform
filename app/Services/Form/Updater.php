@@ -6,6 +6,7 @@ use Exception;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
+use FluentForm\App\Services\FormBuilder\DateConfigPolicy;
 use FluentForm\App\Services\FormBuilder\RatingIcon;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Form\FormFieldsParser;
@@ -48,7 +49,7 @@ class Updater
                 'Use fluentform/form_fields_update instead of fluentform_form_fields_update.'
             );
             $formFields = apply_filters('fluentform/form_fields_update', $formFields, $formId);
-            $formFields = $this->sanitizeFields($formFields);
+            $formFields = $this->sanitizeFields($formFields, $form->form_fields);
             $data['form_fields'] = $formFields;
             /**
              * Fires before a Form is updated.
@@ -107,15 +108,23 @@ class Updater
         }
     }
 
-    private function sanitizeFields($formFields)
+    private function sanitizeFields($formFields, $existingFormFields)
     {
         if (fluentformCanUnfilteredHTML()) {
             return $formFields;
         }
 
         $fieldsArray = json_decode($formFields, true);
+        $existingFieldsArray = json_decode($existingFormFields, true);
+        $existingFields = Arr::get($existingFieldsArray, 'fields', []);
 
         if (isset($fieldsArray['submitButton'])) {
+            if (!empty($fieldsArray['submitButton']['attributes'])) {
+                $fieldsArray['submitButton']['attributes'] = $this->dropEventHandlerAttributeKeys(
+                    $fieldsArray['submitButton']['attributes']
+                );
+            }
+
             $fieldsArray['submitButton']['settings']['button_ui']['text'] = fluentform_sanitize_html(
                 $fieldsArray['submitButton']['settings']['button_ui']['text']
             );
@@ -127,6 +136,7 @@ class Updater
             }
         }
         $fieldsArray['fields'] = $this->sanitizeFieldMaps($fieldsArray['fields']);
+        $fieldsArray['fields'] = DateConfigPolicy::preserveStored($fieldsArray['fields'], $existingFields);
         $fieldsArray['fields'] = $this->sanitizeCustomSubmit($fieldsArray['fields']);
         if ($stepsWrapper = Arr::get($fieldsArray, 'stepsWrapper')) {
             $fieldsArray['stepsWrapper'] = $this->sanitizeStepsWrapper($stepsWrapper);
@@ -171,7 +181,11 @@ class Updater
             'description'               => 'fluentform_sanitize_html',
             'grid_columns'              => [Helper::class, 'sanitizeArrayKeysAndValues'],
             'grid_rows'                 => [Helper::class, 'sanitizeArrayKeysAndValues'],
-            'date_config'               => 'fluentform_sanitize_json_object',
+            'max_repeat_field'          => [$this, 'sanitizeRepeatLimit'],
+            'display_mode'              => [$this, 'sanitizeDisplayMode'],
+            'display_type'              => [$this, 'sanitizeClassSetting'],
+            'pricing_options'           => [$this, 'sanitizePricingOptionImages'],
+            'subscription_options'      => [$this, 'sanitizeSubscriptionOptions'],
             'enable_crop'               => 'sanitize_text_field',
             'crop_mode'                 => 'sanitize_text_field',
             'crop_ratio'                => 'sanitize_text_field',
@@ -191,6 +205,11 @@ class Updater
 
         foreach ($fields as $fieldIndex => &$field) {
             $element = Arr::get($field, 'element');
+
+            // Must stay above the element branching: containers return early yet still render their attributes.
+            if (!empty($field['attributes'])) {
+                $fields[$fieldIndex]['attributes'] = $this->dropEventHandlerAttributeKeys($field['attributes']);
+            }
 
             if ('container' == $element) {
                 $columns = $field['columns'];
@@ -248,7 +267,7 @@ class Updater
                 }
             }
 
-            if (!empty($field['attributes'])) {
+            if (!empty($field['attributes']) && is_array($field['attributes'])) {
                 $attributes = array_filter(Arr::only($field['attributes'], $attributesKeys));
 
                 foreach ($attributes as $key => $value) {
@@ -257,7 +276,7 @@ class Updater
             }
 
             if (!empty($field['settings'])) {
-                $settings = array_filter(Arr::only($field['settings'], array_values($settingsKeys)));
+                $settings = Arr::only($field['settings'], array_values($settingsKeys));
                 foreach ($settings as $key => $value) {
                     $fields[$fieldIndex]['settings'][$key] = call_user_func($settingsMap[$key], $value);
                 }
@@ -291,6 +310,78 @@ class Updater
         }
 
         return $fields;
+    }
+
+    private function sanitizeRepeatLimit($value)
+    {
+        if (!is_scalar($value) || '' === trim((string) $value)) {
+            return '';
+        }
+
+        return absint($value);
+    }
+
+    private function sanitizeDisplayMode($value)
+    {
+        $value = is_scalar($value) ? sanitize_key((string) $value) : '';
+
+        return in_array($value, ['accordion', 'tabs'], true) ? $value : 'accordion';
+    }
+
+    private function sanitizeClassSetting($value)
+    {
+        return is_scalar($value) ? sanitize_html_class((string) $value) : '';
+    }
+
+    private function sanitizePricingOptionImages($options)
+    {
+        if (!is_array($options)) {
+            return [];
+        }
+
+        foreach ($options as &$option) {
+            if (!is_array($option)) {
+                continue;
+            }
+
+            if (array_key_exists('label', $option)) {
+                $label = $option['label'];
+                $option['label'] = is_scalar($label) ? fluentform_sanitize_html((string) $label) : '';
+            }
+
+            if (array_key_exists('image', $option)) {
+                $image = $option['image'];
+                $option['image'] = is_scalar($image) ? esc_url_raw((string) $image) : '';
+            }
+        }
+        unset($option);
+
+        return $options;
+    }
+
+    private function sanitizeSubscriptionOptions($options)
+    {
+        if (!is_array($options)) {
+            return [];
+        }
+
+        foreach ($options as &$option) {
+            if (!is_array($option)) {
+                continue;
+            }
+
+            foreach (['name', 'user_input_label'] as $labelKey) {
+                if (!array_key_exists($labelKey, $option)) {
+                    continue;
+                }
+
+                $label = $option[$labelKey];
+                $option[$labelKey] = is_scalar($label) ? fluentform_sanitize_html((string) $label) : '';
+            }
+        }
+        unset($option);
+
+        return $options;
     }
 
     private function updatePrimaryEmail($form)
@@ -356,6 +447,25 @@ class Updater
         return $fields;
     }
 
+    /**
+     * An `on*` key renders as a live event handler, and every attribute map here is
+     * sanitized by value against keys it already knows — never by key.
+     */
+    private function dropEventHandlerAttributeKeys($attributes)
+    {
+        if (!is_array($attributes)) {
+            return $attributes;
+        }
+
+        foreach (array_keys($attributes) as $attributeKey) {
+            if (!Helper::isSafeAttributeKey($attributeKey)) {
+                unset($attributes[$attributeKey]);
+            }
+        }
+
+        return $attributes;
+    }
+
     private function sanitizeStepsWrapper($stepWrapper)
     {
         $stepsSanitizationMap = [
@@ -404,6 +514,10 @@ class Updater
 
             if ('step_start' === $element && isset($field['fields'])) {
                 $field['fields'] = $this->sanitizeStepsWrapper($field['fields']);
+            }
+
+            if (!empty($field['attributes'])) {
+                $field['attributes'] = $this->dropEventHandlerAttributeKeys($field['attributes']);
             }
 
             $stepWrapper[$fieldIndex] = $field;

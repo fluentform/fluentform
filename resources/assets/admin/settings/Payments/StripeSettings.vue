@@ -133,6 +133,8 @@
                             <li><code>customer.subscription.deleted</code></li>
                             <li><code>customer.subscription.updated</code></li>
                             <li><code>checkout.session.completed</code></li>
+                            <li><code>checkout.session.async_payment_succeeded</code></li>
+                            <li><code>checkout.session.async_payment_failed</code></li>
                         </ul>
                     </div>
                 </div>

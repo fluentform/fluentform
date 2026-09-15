@@ -5,6 +5,7 @@ defined('ABSPATH') || die;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Services\FormBuilder\LegacyDateConfigDecoder;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 /**
@@ -459,6 +460,11 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     add_filter('fluentform/editor_init_element_input_date', function ($item) {
         if (!isset($item['settings']['date_config'])) {
             $item['settings']['date_config'] = '';
+        }
+        // Show the executable form of any legacy 6.2.7-6.2.12 tokens; only a trusted author's verbatim save persists it (restricted saves keep the stored value).
+        $decoded = LegacyDateConfigDecoder::decode((string) $item['settings']['date_config']);
+        if (null !== $decoded) {
+            $item['settings']['date_config'] = $decoded;
         }
         return $item;
     });

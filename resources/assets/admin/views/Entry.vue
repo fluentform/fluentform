@@ -211,7 +211,7 @@
                                             </el-button>
                                             <el-dropdown-menu slot="dropdown">
                                                 <el-dropdown-item
-                                                    v-for="(statusName, statusKey) in entry_statuses"
+                                                    v-for="(statusName, statusKey) in mutable_entry_statuses"
                                                     :command="statusKey"
                                                     :key="statusKey"
                                                 >
@@ -363,6 +363,13 @@
                 delete statuses['favorites'];
 
                 return statuses;
+            },
+            mutable_entry_statuses() {
+                let statuses = {...(window.fluent_form_entries_vars.mutable_entry_statuses || window.fluent_form_entries_vars.entry_statuses)}
+
+                delete statuses['favorites'];
+
+                return statuses;
             }
         },
         methods: {
@@ -391,7 +398,7 @@
                     .then(() => {
                         const statusUpdate = window.fluent_form_entries_vars.update_status;
                         if (
-                            statusUpdate && this.entry_statuses.hasOwnProperty(statusUpdate) &&
+                            statusUpdate && this.mutable_entry_statuses.hasOwnProperty(statusUpdate) &&
                             statusUpdate !== this.entry.status
                         ) {
                             return this.handleStatusChange(statusUpdate)

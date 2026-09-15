@@ -296,7 +296,8 @@ class MultiPaymentComponent extends BaseFieldManager
                     'disabled' => ArrayHelper::get($option, 'disabled') ? 'disabled' : '',
                     'data-quantity_remaining' => ArrayHelper::get($option, 'quantity_remaining', false)
                 ], $form);
-                $elMarkup .= '<option ' . $optionAtts . '>' . $option['label'] . $quantityLabel.'</option>';
+                $optionLabel = fluentform_sanitize_html($option['label'] . $quantityLabel);
+                $elMarkup .= '<option ' . $optionAtts . '>' . $optionLabel . '</option>';
                 continue;
             }
 
@@ -326,19 +327,22 @@ class MultiPaymentComponent extends BaseFieldManager
 
             
             $atts = $this->buildAttributes($data['attributes'], $form);
-            $id = $this->getUniqueid(str_replace(['[', ']'], ['', ''], $data['attributes']['name']));
+            $id = esc_attr($this->getUniqueid(str_replace(['[', ']'], ['', ''], $data['attributes']['name'])));
 
             if ($hasImageOption && !empty($option['image'])) {
                 $parentClass .= ' ff-el-image-holder';
             }
 
-            $elMarkup .= "<div class='{$parentClass}'>";
+            $elMarkup .= "<div class='" . esc_attr($parentClass) . "'>";
             // Here we can push the visual items
             if ($hasImageOption && !empty($option['image'])) {
-                $elMarkup .= "<label style='background-image: url({$option['image']})' class='ff-el-image-input-src' for={$id}></label>";
+                $imageStyle = 'background-image: url("' . esc_url($option['image']) . '")';
+                $escapedImageStyle = htmlspecialchars($imageStyle, ENT_QUOTES, 'UTF-8', true);
+                $elMarkup .= "<label style='{$escapedImageStyle}' class='ff-el-image-input-src' for='{$id}'></label>";
             }
 
-            $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$atts} id='{$id}'> <span class='ff_plan_title'>{$option['label']}{$quantityLabel}</span></label>";
+            $safeLabel = fluentform_sanitize_html($option['label'] . $quantityLabel);
+            $elMarkup .= "<label class='ff-el-form-check-label' for='{$id}'><input {$atts} id='{$id}'> <span class='ff_plan_title'>{$safeLabel}</span></label>";
             $elMarkup .= "</div>";
         }
 

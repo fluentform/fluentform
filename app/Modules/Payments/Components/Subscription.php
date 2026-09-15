@@ -53,7 +53,9 @@ class Subscription extends BaseFieldManager
             if (!$isHtml) {
                 return $response;
             }
-            return ArrayHelper::get($field, 'raw.settings.subscription_options.' . $response . '.name', $response);
+            return fluentform_sanitize_html(
+                ArrayHelper::get($field, 'raw.settings.subscription_options.' . $response . '.name', $response)
+            );
         }, 10, 4);
         add_filter('fluentform/white_listed_fields', [$this, 'addWhiteListedFields'], 10, 2);
     }
@@ -341,7 +343,8 @@ class Subscription extends BaseFieldManager
                 ]);
                 $optionAtts = $this->buildAttributes($optionAtts, $form);
 
-                $elMarkup .= '<option ' . $optionAtts . '>' . $pricingPlan['name'] . '</option>';
+                $optionLabel = fluentform_sanitize_html($pricingPlan['name']);
+                $elMarkup .= '<option ' . $optionAtts . '>' . $optionLabel . '</option>';
             } else {
                 $displayType = isset($data['settings']['display_type']) ? ' ff-el-form-check-' . $data['settings']['display_type'] : '';
                 $parentClass = "ff-el-form-check{$displayType}";
@@ -361,19 +364,20 @@ class Subscription extends BaseFieldManager
                 $atts['value'] = $index;
                 $atts['data-group_id'] = $groupId;
 
-                $id = $this->getUniqueid(str_replace(['[', ']'], ['', ''], $atts['name']));
+                $id = esc_attr($this->getUniqueid(str_replace(['[', ']'], ['', ''], $atts['name'])));
                 $atts = $this->buildAttributes(array_merge($billingAttributes, $atts), $form);
 
-                $labelHtml = "<span class='ff_plan_name'>{$pricingPlan['name']}</span>";
+                $safePlanName = fluentform_sanitize_html($pricingPlan['name']);
+                $labelHtml = "<span class='ff_plan_name'>{$safePlanName}</span>";
 
                 if ($isSmartUi) {
                     $paymentSummary = $this->getPaymentSummaryText($pricingPlan, $form->id, $currency);
                     $summaryHtml = '<div class="ff_sub_desc">' . $paymentSummary . '</div>';
-                    $labelHtml = "<span class='ff_plan_holder'><span class='ff_plan_title'>{$pricingPlan['name']}</span>" . $summaryHtml . "</span>";
+                    $labelHtml = "<span class='ff_plan_holder'><span class='ff_plan_title'>{$safePlanName}</span>" . $summaryHtml . '</span>';
                 }
 
-                $elMarkup .= "<div class='{$parentClass}'>";
-                $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$atts} id='{$id}'>" . $labelHtml . "</label>";
+                $elMarkup .= "<div class='" . esc_attr($parentClass) . "'>";
+                $elMarkup .= "<label class='ff-el-form-check-label' for='{$id}'><input {$atts} id='{$id}'>" . $labelHtml . '</label>';
                 $elMarkup .= "</div>";
             }
 
@@ -466,6 +470,8 @@ class Subscription extends BaseFieldManager
     private function makeCustomInputHtml($field, $plan, $parentInputType, $markup)
     {
         $htmlID = ArrayHelper::get($field, 'attributes.name') . '_custom_' . $plan['index'];
+        $escapedHtmlID = esc_attr($htmlID);
+        $escapedPlanIndex = esc_attr($plan['index']);
         $isDefault = ArrayHelper::get($plan, 'is_default') === 'yes';
 
         $customAmountInputAttributes = $this->buildAttributes([
@@ -486,10 +492,11 @@ class Subscription extends BaseFieldManager
 
         $class = $isDefault ? '' : 'hidden_field';
         $style = $parentInputType === 'hidden' ? '' : "style='margin-top: 5px'";
-        $markup .= "<div class='ff-custom-user-input-wrapper ff-custom-user-input-wrapper-{$plan['index']} {$class}' {$style}>";
+        $markup .= "<div class='ff-custom-user-input-wrapper ff-custom-user-input-wrapper-{$escapedPlanIndex} {$class}' {$style}>";
 
         if ($parentInputType !== 'hidden') {
-            $markup .= "<label class='ff-el-form-check-label' for='{$htmlID}'>" . ArrayHelper::get($plan, 'user_input_label') . '</label>';
+            $customLabel = fluentform_sanitize_html(ArrayHelper::get($plan, 'user_input_label'));
+            $markup .= "<label class='ff-el-form-check-label' for='{$escapedHtmlID}'>{$customLabel}</label>";
         }
 
         $markup .= "<input {$customAmountInputAttributes}>";

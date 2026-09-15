@@ -40,6 +40,7 @@ class TermsAndConditions extends BaseComponent
         );
 
         $uniqueId = $this->getUniqueId($data['attributes']['name']);
+        $escapedUniqueId = esc_attr($uniqueId);
 
         $data['attributes']['id'] = $uniqueId;
         $data['attributes']['class'] = trim(
@@ -85,7 +86,7 @@ class TermsAndConditions extends BaseComponent
         $ariaLabel = esc_attr($ariaLabel);
         $html = "<div class='" . esc_attr($cls) . "'>";
         $html .= "<div class='ff-el-form-check ff-el-tc'>";
-        $html .= "<label aria-label='{$ariaLabel}' class='ff-el-form-check-label ff_tc_label' for={$uniqueId}>";
+        $html .= "<label aria-label='{$ariaLabel}' class='ff-el-form-check-label ff_tc_label' for='{$escapedUniqueId}'>";
         $html .= "{$checkbox} <div class='ff_t_c'>" . fluentform_sanitize_html($data['settings']['tnc_html']) . '</div>';
         $html .= '</label>';
         $html .= '</div>';

@@ -44,7 +44,7 @@ class TextArea extends BaseComponent
             $ariaRequired = 'true';
         }
 
-        $ariaLabelledBy = 'label_' . ArrayHelper::get($data, 'attributes.id');
+        $ariaLabelledBy = esc_attr('label_' . ArrayHelper::get($data, 'attributes.id'));
         $elMarkup = '<textarea aria-required="' . $ariaRequired . '" aria-labelledby="' . $ariaLabelledBy . '" %s>%s</textarea>';
 
         $atts = $this->buildAttributes($data['attributes']);

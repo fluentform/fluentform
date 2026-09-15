@@ -122,6 +122,30 @@ class Helper
         return is_scalar($value) ? sanitize_title($value) : '';
     }
 
+    /**
+     * A key is unsafe when it opens a handler, or when it carries a character that
+     * ENDS an attribute name in the HTML tokeniser -- whitespace, quote, slash,
+     * equals or angle bracket. `esc_attr()` leaves those intact, so `x onclick`
+     * renders as two attributes and the second one is live.
+     *
+     * Deny those characters rather than allow-list a charset: an allow-list also
+     * rejects the legal-but-unusual keys real sites carry (leading underscore,
+     * non-Latin names, framework prefixes) and silently drops working markup.
+     *
+     * @param  string|int $key
+     * @return bool
+     */
+    public static function isSafeAttributeKey($key)
+    {
+        $key = (string) $key;
+
+        if ('' === $key || preg_match('/^on[a-z]/i', $key)) {
+            return false;
+        }
+
+        return !preg_match('/[\s"\'\/=<>`]|[\x00-\x1F\x7F]/', $key);
+    }
+
     /*
      * Keys the whitelist above drops but the editor and Pro Inventory need back.
      * They are sanitized rather than passed through, since preserving unknown
@@ -328,6 +352,12 @@ class Helper
         $statuses['trashed'] = __('Trashed', 'fluentform');
 
         return $statuses;
+    }
+
+    // Statuses a caller may write by hand; add-ons withhold the ones they own as workflow steps.
+    public static function getMutableEntryStatuses($form_id = false, $submission_id = null)
+    {
+        return apply_filters('fluentform/entry_statuses_for_mutation', static::getEntryStatuses($form_id), $form_id, $submission_id);
     }
 
     public static function getReportableInputs()

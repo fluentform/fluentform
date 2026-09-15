@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 6.4
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 6.2.13
+Stable tag: 6.2.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -440,9 +440,21 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.2.13 (Date: August 21, 2026) =
+= 6.2.14 (Date: September 15, 2026) =
+- Improves Stripe payment confirmation when updates arrive after checkout
+- Improves payment retries and checkout confirmation messages
+- Improves subscription trial, installment, and custom amount processing
+- Improves refund and completed payment consistency
+- Refines payment totals for conditional quantities and inventory-controlled items
+- Improves notification delivery for valid zero-value orders
+- Refines manager search and admin data handling
+- Improves form import reliability
+- Improves Save & Resume, entry status, and payment receipt handling
+- Improves compatibility for advanced Date field configuration
+
+= 6.2.13 (Date: August 22, 2026) =
 - Adds minimum and maximum selection limits for checkbox and multi-select fields
-- Improves the Other option so a preselected value shows its text input on page load
+- Improves the Other option (checkable inputs) so a preselected value shows its text input on page load
 - Improves accessibility of the required Other input with proper validation state
 - Fixes the empty Other marker showing in stored entries, email, and PDF output
 - Fixes file type validation so extensions are matched case-insensitively on upload and import

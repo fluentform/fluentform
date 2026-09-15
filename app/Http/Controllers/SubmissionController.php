@@ -5,6 +5,7 @@ namespace FluentForm\App\Http\Controllers;
 use Exception;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Support\Arr;
 
@@ -155,10 +156,17 @@ class SubmissionController extends Controller
             return $this->sendError(['message' => __('You do not have permission to list users.', 'fluentform')], 403);
         }
         $search = sanitize_text_field($this->request->get('search'));
-        $users = get_users([
-            'search' => "*{$search}*",
-            'number' => 50,
-        ]);
+        if (current_user_can('list_users')) {
+            $users = get_users([
+                'search' => "*{$search}*",
+                'number' => 50,
+            ]);
+        } else {
+            // A delegated entries manager may confirm an address they already know,
+            // but must not browse the site's user roster (FF-SEC-45).
+            $user = is_email($search) ? get_user_by('email', $search) : false;
+            $users = $user ? [$user] : [];
+        }
 
         $formattedUsers = [];
         foreach ($users as $user) {
@@ -243,6 +251,13 @@ class SubmissionController extends Controller
                 $attributes['submission_ids'] = is_array($entryIds)
                     ? array_map('intval', $entryIds)
                     : [];
+            }
+
+            // Re-verify against the form actually printed; the policy scopes on a request entry_id.
+            if (!FormManagerService::hasFormPermission((int) Arr::get($attributes, 'form_id'))) {
+                return $this->sendError([
+                    'message' => __('You do not have permission to view this form\'s entries.', 'fluentform'),
+                ], 403);
             }
 
             return $this->sendSuccess(

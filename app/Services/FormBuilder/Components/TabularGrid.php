@@ -68,7 +68,8 @@ class TabularGrid extends BaseComponent
                 // SECURITY (FINDING-12): esc_attr the row/column labels before interpolating them
                 // into the double-quoted aria-label; save-time sanitizers do not encode quotes.
                 $input = '<input aria-label="'. esc_attr($row['name']) .'-'. esc_attr($column['label']) . '" ' . $attributes . " {$isChecked} aria-invalid='false' aria-required={$ariaRequired}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $attributes is escaped before being passed in.
-                $elMarkup .= "<td data-label='" . fluentform_sanitize_html($column['label']) . "'>{$input}</td>";
+                $responsiveLabel = esc_attr(wp_strip_all_tags($column['label']));
+                $elMarkup .= "<td data-label='{$responsiveLabel}'>{$input}</td>";
             }
             $elMarkup .= '</tr>';
         }
