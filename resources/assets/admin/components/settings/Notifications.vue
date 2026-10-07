@@ -538,6 +538,18 @@ import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
 import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 import Notice from '@/admin/components/Notice/Notice.vue';
 
+// Keep this list aligned with Form::hasPaymentFields(). A payment method is
+// optional for payment-item-only forms, but those forms still need the
+// payment notification trigger settings.
+const paymentFieldElements = [
+    'custom_payment_component',
+    'multi_payment_component',
+    'payment_method',
+    'item_quantity_component',
+    'payment_coupon',
+    'subscription_payment_component'
+];
+
 export default {
     name: 'EmailNotifications',
     props: ['form_id', 'inputs', 'has_pro', 'has_pdf', 'editorShortcodes'],
@@ -666,10 +678,11 @@ export default {
             return !!inputAttachment || !!fileAttachment || !!pdfAttachment;
         },
         hasPaymentField() {
-            let inputs = _ff.filter(this.inputs, (input) => {
-                return input.element === 'payment_method';
-            });
+            let inputs = _ff.filter(this.inputs, (input) => paymentFieldElements.indexOf(input.element) !== -1);
             return !!inputs.length;
+        },
+        hasPaymentMethod() {
+            return !!_ff.filter(this.inputs, (input) => input.element === 'payment_method').length;
         },
     },
     methods: {
@@ -696,6 +709,10 @@ export default {
         add() {
             this.selectedIndex = this.notifications.length;
             this.selected = _ff.cloneDeep(this.mock);
+            this.selected.value.feed_trigger_event = this.getDefaultFeedTriggerEvent();
+        },
+        getDefaultFeedTriggerEvent() {
+            return this.hasPaymentField && !this.hasPaymentMethod ? 'payment_form_submit' : 'payment_success';
         },
         clone(index) {
             let freshCopy = _ff.cloneDeep(this.notifications[index]);
@@ -721,7 +738,7 @@ export default {
                 freshCopy.value.media_attachments = [];
             }
             if (!freshCopy.value.feed_trigger_event) {
-                freshCopy.value.feed_trigger_event = 'payment_success';
+                freshCopy.value.feed_trigger_event = this.getDefaultFeedTriggerEvent();
             }
 
             this.selected = freshCopy;
@@ -731,6 +748,7 @@ export default {
             let notification = this.notifications[index];
             if (!notification.value || !notification.value.name || !notification.value.sendTo) {
                 this.selected = _ff.cloneDeep(this.mock);
+                this.selected.value.feed_trigger_event = this.getDefaultFeedTriggerEvent();
                 this.selectedIndex = index;
                 return;
             }
@@ -747,7 +765,7 @@ export default {
                 this.$set(this.selected.value, 'pdf_attachments', []);
             }
             if (!this.selected.value.feed_trigger_event) {
-                this.$set(this.selected.value, 'feed_trigger_event', 'payment_success');
+                this.$set(this.selected.value, 'feed_trigger_event', this.getDefaultFeedTriggerEvent());
             }
 
             this.selectedIndex = index;
